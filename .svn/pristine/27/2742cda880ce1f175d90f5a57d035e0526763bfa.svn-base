@@ -1,0 +1,51 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+
+    <color name="color_4fb648">#4FB648</color>
+
+    <color name="color_ccffffff">#CCFFFFFF</color>
+    <color name="color_f6f6f6">#F6F6F6</color>
+    <color name="color_303030">#303030</color>
+    <color name="color_f1f1f1">#F1F1F1</color>
+    <color name="color_3c3c4d">#3C3C4D</color>
+    <color name="color_80ffffff">#80FFFFFF</color>
+    <color name="color_4dffffff">#4DFFFFFF</color>
+    <color name="color_5ca658">#5CA658</color>
+    <color name="color_58b951">#58B951</color>
+    <color name="color_79c774">#79C774</color>
+    <color name="color_f6fbf6">#F6FBF6</color>
+    <color name="color_f0f0f0">#F0F0F0</color>
+    <color name="color_ebebeb">#EBEBEB</color>
+    <color name="color_363BE7">#363BE7</color>
+    <color name="color_e5e5e5">#E5E5E5</color>
+    <color name="color_8f8f8f">#8F8F8F</color>
+    <color name="color_32bd87">#32BD87</color>
+    <color name="color_ff7611">#FF7611</color>
+    <color name="color_666666">#666666</color>
+    <color name="color_ff0000">#FF0000</color>
+    <color name="color_909090">#909090</color>
+    <color name="color_767676">#767676</color>
+    <color name="color_d4d3d3">#D4D3D3</color>
+    <color name="color_d2d2d2">#D2D2D2</color>
+    <color name="color_a7a7a7">#A7A7A7</color>
+    <color name="color_1f1f1f">#1F1F1F</color>
+    <color name="color_6092ec">#6092EC</color>
+    <color name="color_6e6e6e">#6E6E6E</color>
+    <color name="color_fefefe">#FEFEFE</color>
+    <color name="color_d1d1d1">#D1D1D1</color>
+    <color name="color_969696">#969696</color>
+
+
+
+    <color name="white">#ffffff</color>
+    <color name="dark_gray">#696969</color>
+    <color name="black">#000000</color>
+    <color name="possible_result_points">#c0ffff00</color>
+    <color name="result_image_border">#ffffffff</color>
+    <color name="result_points">#c000ff00</color>
+    <color name="result_view">#b0000000</color>
+    <color name="transparent">#00000000</color>
+    <color name="viewfinder_frame">#ff000000</color>
+    <color name="viewfinder_laser">#ffff0000</color>
+    <color name="viewfinder_mask">#60000000</color>
+</resources>

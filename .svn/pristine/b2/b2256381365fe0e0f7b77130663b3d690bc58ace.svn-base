@@ -1,0 +1,10 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="firebase_database_url" translatable="false">https://qsign-qdrive.firebaseio.com</string>
+    <string name="gcm_defaultSenderId" translatable="false">777364279754</string>
+    <string name="google_api_key" translatable="false">AIzaSyDdR9xYiMKaLajHBEF80A-tGYx_XwVLAsQ</string>
+    <string name="google_app_id" translatable="false">1:777364279754:android:66bdc416d316217a</string>
+    <string name="google_crash_reporting_api_key" translatable="false">AIzaSyDdR9xYiMKaLajHBEF80A-tGYx_XwVLAsQ</string>
+    <string name="google_storage_bucket" translatable="false">qsign-qdrive.appspot.com</string>
+    <string name="project_id" translatable="false">qsign-qdrive</string>
+</resources>

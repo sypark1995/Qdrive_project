@@ -1,0 +1,24 @@
+cordova.define("com.giosis.util.qdrive.util.ConfirmWindow", function (require, exports, module) {	
+    var exec = require("cordova/exec");
+    var ConfirmWindow = function () {};
+	
+    ConfirmWindow.prototype.alert = function(options, successCallback, errorCallback) {	
+		var defaults = {
+				buttonTitle:'buttonTitle',
+				alertMessage:'alertMessage'
+		};
+			
+		if (options == null) { options = defaults };
+		if (successCallback == null) { successCallback = function() {} };
+		if (errorCallback == null) { errorCallback = function() {} };
+	
+		for ( var key in defaults ) {
+			if (typeof options[key] != "undefined") {
+				defaults[key] = options[key];	
+			}
+		}
+		exec(null, null, 'ConfirmWindow', 'alert', new Array(defaults));	
+	}
+    var plugin = new ConfirmWindow();
+    module.exports = plugin;
+});

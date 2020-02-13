@@ -1,0 +1,118 @@
+var eventType = '';
+var isPhoneGapReady = false;
+var prev_nid = 0;
+var next_nid = 0;
+
+function init() {
+	
+	eventType = 'IN';
+	
+	setPage();
+	document.addEventListener("resume", setPage, false);	
+}
+
+function setPage() {
+	
+	if (eventType == 'IN') {
+		
+		setButton("btnBack", function () {location.href = 'file:///android_asset/www/Settings/settings.html';});
+		setButton("btnReload", setNoticeDetailWithServerData);
+		setButton("btnBackToList", function () {location.href = 'file:///android_asset/www/Settings/noticeList.html';});		
+		setButton("btnPrev", function () {localStorage.setItem('nid', prev_nid); setNoticeDetailWithServerData();});		
+		setButton("btnNext", function () {localStorage.setItem('nid', next_nid); setNoticeDetailWithServerData();});		
+		
+		document.addEventListener("deviceready", onDeviceReady, false);
+		
+		eventType = '';
+	}	
+
+	setNoticeDetailWithServerData();		
+}
+
+function onDeviceReady() {
+	
+	isPhoneGapReady = true;
+	setNoticeDetailWithServerData();
+	
+	document.addEventListener("backbutton", onBackKeyDown, false);
+}
+
+function setNoticeDetailWithServerData() {
+	
+	if (isPhoneGapReady == true) {
+
+		networkState = navigator.connection.type;
+		
+		if (networkState == Connection.NONE) {
+			$("#qlps_alert_reload").show();
+			return;
+		} else {
+			$("#qlps_alert_reload").hide();
+		}
+	} else {
+		return;
+	} 
+	
+	var methodName = "GetNoticeData";
+	var params = new RMSParam();
+	var where = '';
+
+	params.add("gubun", "DETAIL");
+	params.add("kind", "QSIGN");
+	params.add("page_no", 0);
+	params.add("page_size", 0);	
+	params.add("nid", localStorage.getItem('nid'));
+	params.add("svc_nation_cd", "SG");
+	params.add("opId", localStorage.getItem('opId'));
+	params.add("officeCd", localStorage.getItem('officeCd'));
+	params.add("device_id", device.uuid);
+	params.add("network_type", networkState);	
+	
+	$("#qlps_alert_loading").show();
+	$("a").addClass("ui-disabled");
+
+	cordova.require("com.giosis.util.qdrive.util.LoadingDialog").show();
+	
+	var result_GetNoticeDetail = RMSHelper.callWebMethod(serviceName, methodName, params.toJson());
+
+	cordova.require("com.giosis.util.qdrive.util.LoadingDialog").hide();
+	
+	if (result_GetNoticeDetail != null) {
+		
+		if (result_GetNoticeDetail.ResultCode == 0) {
+							
+			if (result_GetNoticeDetail.ResultObject.length != 0) {	
+				
+				$("#divDate").text(result_GetNoticeDetail.ResultObject[0].reg_dt_long);
+				$("#hTitle").html(result_GetNoticeDetail.ResultObject[0].title);		
+				$("#divContents").html(result_GetNoticeDetail.ResultObject[0].contents);
+				
+				if (result_GetNoticeDetail.ResultObject[0].prevnid == undefined || result_GetNoticeDetail.ResultObject[0].prevnid == null || 
+				    result_GetNoticeDetail.ResultObject[0].prevnid == 0 || result_GetNoticeDetail.ResultObject[0].prevnid == "") {
+					prev_nid = 0;
+				} else {
+					prev_nid = result_GetNoticeDetail.ResultObject[0].prevnid;				
+				} 
+	
+				if (result_GetNoticeDetail.ResultObject[0].nextnid == undefined || result_GetNoticeDetail.ResultObject[0].nextnid == null || 
+				    result_GetNoticeDetail.ResultObject[0].nextnid == 0 || result_GetNoticeDetail.ResultObject[0].nextnid == "") {
+					next_nid = 0;
+				} else {
+					next_nid = result_GetNoticeDetail.ResultObject[0].nextnid;				
+				} 
+			}
+		} else {
+			
+			alert(result_GetNoticeDetail.ResultMsg);			
+		}
+	}
+
+	$("#qlps_alert_loading").hide();
+	$("a").removeClass("ui-disabled");
+	
+	if (prev_nid == 0)
+		$("#btnPrev").addClass("ui-disabled");
+	
+	if (next_nid == 0)
+		$("#btnNext").addClass("ui-disabled");
+}

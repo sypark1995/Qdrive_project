@@ -1,0 +1,61 @@
+cordova.define("com.giosis.util.qdrive.util.SharedPreferencesHelper", function (require, exports, module) {	
+   
+	var exec = require('cordova/exec');
+	var sharedpreferences = {
+		setSigninState : function(options, successCallback, errorCallback) {
+			var defaults = {
+					signInState:false,
+					opId:"",
+					opNm:"",
+					officeCd:"",
+					officeNm:"",
+					device_id:"",
+					service_type:"",
+					DefaultYn:"",
+					opType:"",
+					authNo:"",
+					opEmail:"",
+					pickupDriverYN:"",
+					outletDriverYN:""
+				};
+			
+				if (options == null) { options = defaults };
+				
+				for ( var key in defaults ) {
+					if (typeof options[key] != "undefined") {
+						defaults[key] = options[key];	
+					}
+				}
+				
+				if (successCallback == null) { successCallback = function() {} };
+				if (errorCallback == null) { errorCallback = function() {} };
+				
+				if (typeof errorCallback != "function") {
+					console.log("SharedPreferencesHelper.setSigninState failure: failure parameter not a function");
+					return;
+				}
+				
+				if (typeof successCallback != "function") {
+					console.log("SharedPreferencesHelper.setSigninState failure: success callback parameter must be a function");
+					return;
+				}
+				
+				cordova.exec(successCallback, errorCallback, "SharedPreferencesHelper", "setSigninState", new Array(defaults));
+		},
+		getSharedPref : function(key, success, fail) {
+			cordova.exec(success, fail, "SharedPreferencesHelper", "getSharedPref", [key]);
+		},
+		setSharedPref : function(key, value, success, fail) {
+			cordova.exec(success, fail, "SharedPreferencesHelper", "setSharedPref", [key, value]);
+		},
+		getTargetInvoiceNo : function(key, success, fail) {
+			cordova.exec(success, fail, "SharedPreferencesHelper", "getTargetInvoiceNo", [key]);
+		},
+		getOpName : function(key, success, fail) {
+			cordova.exec(success, fail, "SharedPreferencesHelper", "getOpName", [key]);
+		}
+	}
+
+	module.exports =  sharedpreferences;
+
+});

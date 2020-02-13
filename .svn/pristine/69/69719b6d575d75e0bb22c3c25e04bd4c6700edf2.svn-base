@@ -1,0 +1,72 @@
+function init() {
+
+    eventType = 'IN';
+
+	var outletDriverYN = localStorage.getItem('shuttle_driver_yn');
+
+	if(outletDriverYN == 'Y') {
+
+        $("#btn_confirm_my_order").text('Start Delivery for Outlet');
+        $("#text_confirm_my_order").text('Start Delivery for Outlet');
+	} else if(outletDriverYN == 'N') {
+
+        $("#btn_confirm_my_order").text('Confirm my delivery order');
+        $("#text_confirm_my_order").text('Confirm my delivery order');
+	}
+
+	if(localStorage.getItem('officeNm').indexOf("Qxpress SG") != -1) {
+		$("#section_self_collect").attr("style", "display:;");
+	}
+
+	setPage();
+	document.addEventListener("resume", setPage, false);
+}
+
+
+function setPage() {
+
+	setPage_Default();
+
+	if (eventType == 'IN') {
+
+		setButton("btnDriverAssign", callScanPage, 'MDA');
+		setButton("btnDelivered", callScanPage, 'D4');
+
+		setButton("btnSelfCollection", callScanPage, 'SEC');   // 1건씩 Self Collectior
+		setButton("btnPickuCNR", callScanPage, 'CNR');  // add CNR    2016-08-30 eylee
+        setButton("btnHome", onClick_btn_home);
+
+
+		setButton("btnScanSheetClose", onClick_btnScanSheetClose);
+		setButton("btnScanSheetFailList", onClick_btnScanSheetFailList);
+
+		eventType = '';
+	}
+}
+
+
+function onDeviceReady() {
+	
+	document.addEventListener("backbutton", onBackKeyDown, false);
+}
+
+
+function onClick_btn_home(){
+	cordova.require("com.giosis.util.qdrive.util.MainActivityStarter").start();
+}
+
+
+function onClick_btnScanSheetClose() {
+
+	$("#qlps_alert_complete").hide();
+	$("a").removeClass("ui-disabled");
+	$("div.btn_area").removeClass("ui-disabled");
+}
+
+function onClick_btnScanSheetFailList() {
+
+	$("#qlps_alert_complete").hide();
+	$("a").removeClass("ui-disabled");
+	$("div.btn_area").removeClass("ui-disabled");
+	location.href = "file:///android_asset/www/Scan/scanSheetFailList.html";
+}

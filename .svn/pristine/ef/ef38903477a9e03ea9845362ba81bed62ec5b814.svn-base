@@ -1,0 +1,50 @@
+/**
+ *
+ * Sign PhoneGap Javascript
+ * 
+ * 2014-11-06
+ * Phonegap Version 3.6 upgrage
+ * 
+ */
+cordova.define("com.giosis.util.qdrive.signer.Signer", function (require, exports, module) {	
+    var exec = require("cordova/exec");
+    var Signer = function () {};
+    Signer.prototype.start = function(options, successCallback, errorCallback) {
+    	var defaults = {
+    			title:'Sign',
+    			receiverName:'',
+    			senderName:'',
+    			waybillNo:'',
+    			type:'',
+    			reqQty:'',
+    			duplAddr:''
+    				
+    		};
+    		
+    		if (options == null) { options = defaults };
+    		if (successCallback == null) { successCallback = function() {} };
+    		if (errorCallback == null) { errorCallback = function() {} };
+    		
+    		for ( var key in defaults ) {
+    			if (typeof options[key] != "undefined") {
+    				defaults[key] = options[key];	
+    			}
+    		}
+    		
+    		if (typeof errorCallback != "function") {
+    			console.log("Signer.sign failure: failure parameter not a function");
+    			return;
+    		}
+    		
+    		if (typeof successCallback != "function") {
+    			console.log("Signer.sign failure: success callback parameter must be a function");
+    			return;
+    		}
+    		
+    		exec(successCallback, errorCallback, 'Signer', 'sign',  new Array(defaults));
+	}
+	
+    
+    var plugin = new Signer();
+    module.exports = plugin;
+});

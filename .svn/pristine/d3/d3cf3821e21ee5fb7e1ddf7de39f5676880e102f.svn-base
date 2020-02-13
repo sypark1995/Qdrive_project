@@ -1,0 +1,76 @@
+/*
+ * DeviceHelper PhoneGap Javascript
+ * 2012.04.20 Wontae, Kim
+ * 2014.11.07 Jintae, Park - 3.6 Update
+ * 
+ */
+cordova.define("com.giosis.util.qdrive.util.DeviceHelper", function (require, exports, module) {	
+    var exec = require("cordova/exec");
+    var DeviceHelper = function () {};
+    //CALL
+    DeviceHelper.prototype.call = function(options) {
+    	var defaults = {
+			phoneNumber:'010-9072-9695'
+		};
+
+		if (options == null) { options = defaults };
+		
+		for ( var key in defaults ) {
+			if (typeof options[key] != "undefined") {
+				defaults[key] = options[key];	
+			}
+		}
+    	
+		exec(null, null, 'DeviceHelper', 'call', new Array(defaults));
+	}
+    //SEND SMS
+    DeviceHelper.prototype.sendSMS = function(options) {
+    	var defaults = {
+    		phoneNumber:'01090729695',
+    		smsBody:'TEST'
+    	};
+
+    	if (options == null) { options = defaults };
+    	
+    	for ( var key in defaults ) {
+    		if (typeof options[key] != "undefined") {
+    			defaults[key] = options[key];	
+    		}
+    	}
+    	exec(null, null, 'DeviceHelper', 'sendSMS', new Array(defaults));
+    };
+    
+    //Send Log
+    DeviceHelper.prototype.sendLog = function(options, successCallback, errorCallback) {
+    	var defaults = {
+    			title:'Scannig',
+    			type:'N'
+    	};
+
+    	if (options == null) { options = defaults };
+    	if (successCallback == null) { successCallback = function() {} };
+    	if (errorCallback == null) { errorCallback = function() {} };
+
+    	for ( var key in defaults ) {
+    		if (typeof options[key] != "undefined") {
+    			defaults[key] = options[key];	
+    		}
+    	}
+    	
+    	if (typeof errorCallback != "function") {
+    		console.log("DeviceHelper.sendLog failure: failure parameter not a function");
+    		return;
+    	}
+    	
+    	if (typeof successCallback != "function") {
+    		console.log("DeviceHelper.sendLog failure: success callback parameter must be a function");
+    		return;
+    	}
+    	
+    	exec(successCallback, errorCallback, 'DeviceHelper', 'sendLog', new Array(defaults));
+    };
+    
+	
+    var plugin = new DeviceHelper();
+    module.exports = plugin;
+});

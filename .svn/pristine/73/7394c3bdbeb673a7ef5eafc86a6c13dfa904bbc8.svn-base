@@ -1,0 +1,26 @@
+{
+    "logs": [
+        {
+            "outputFile": "D:\\androidstudio-workspace\\2019_Qdrive_FCM\\app\\build\\intermediates\\incremental\\mergeDebugResources\\merged.dir\\values-zh\\values-zh.xml",
+            "map": [
+                {
+                    "source": "D:\\androidstudio-workspace\\2019_Qdrive_FCM\\app\\src\\main\\res\\values-zh\\pull_refresh_strings.xml",
+                    "from": {
+                        "startLines": "8,10,9,3,5,4",
+                        "startColumns": "4,4,4,4,4,4",
+                        "startOffsets": "383,582,481,56,193,123",
+                        "endColumns": "97,113,100,66,71,69",
+                        "endOffsets": "476,691,577,118,260,188"
+                    },
+                    "to": {
+                        "startLines": "2,3,4,5,6,7",
+                        "startColumns": "4,4,4,4,4,4",
+                        "startOffsets": "55,153,267,368,429,495",
+                        "endColumns": "97,113,100,60,65,63",
+                        "endOffsets": "148,262,363,424,490,554"
+                    }
+                }
+            ]
+        }
+    ]
+}

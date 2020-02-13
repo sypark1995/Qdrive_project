@@ -1,0 +1,230 @@
+var eventType = '';
+var selected_option = '';
+var selected_option_auth_1 = '';
+
+function init() {
+
+    eventType = 'IN';
+
+    document.addEventListener("deviceready", function() {
+        setPage();
+    }, false)
+
+    document.addEventListener("resume", function() {
+        setPage();
+    }, false);
+
+
+    // RealTime upload 권한
+    if (localStorage.getItem('authNo').indexOf("94") != -1) {
+        $("#section_realtime_upload").attr("style", "display:;");
+    }
+
+    var lockerDriverStatus = localStorage.getItem('locker_driver_status').toLowerCase();
+
+    console.log("◆◆◆◆ Setting Locker Driver Status > " + lockerDriverStatus);
+
+    if (localStorage.getItem('shuttle_driver_yn') == 'Y') {
+        if (lockerDriverStatus.indexOf('no pin') != -1 || lockerDriverStatus.indexOf('active') != -1 || lockerDriverStatus.indexOf('expired') != -1) {
+
+            console.log("◆◆◆◆ Locker User Info Show ");
+            $("#btn_locker_user_info").show();
+        }
+    }
+
+   /*  if (localStorage.getItem('opId').indexOf("karam") != -1) {
+           $("#btn_language_setting").show();
+    }*/
+}
+
+function setPage() {
+
+    var temp_sigin_state = "";
+    cordova.require("com.giosis.util.qdrive.util.SharedPreferencesHelper").getOpName(
+        "sigin_state",
+        function(sigin_state) {
+            temp_sigin_state = sigin_state;
+
+            localStorage.setItem('sigin_state', sigin_state);
+
+        },
+        function(error) {
+            console.log("sigin_state error  :: " + error);
+        });
+
+
+    if (eventType == 'IN') {
+
+        setButton("btnHome", onClick_btn_home);
+        setButton("btnSignOut", getLoginLocation);
+
+        setButton("btnSignIn", onClick_btnSignIn);
+        setButton("btnNotice", onClick_btnSignOut);
+
+        setButton("spn_real_upld_y", onClick_spnRealUpload, 'Y');
+        setButton("spn_real_upld_n", onClick_spnRealUpload, 'N');
+        setButton("btnDeviceDataDelete", onClick_btnDeviceDataDelete);
+        setButton("btnLogDataSend", onClick_btnLogDataSend);
+
+        // 2016.02.12 add eylee modify user info
+        setButton("btn_modify", onClick_btnModifyUserInfo);
+        setButton("btn_chgpwd", onClick_btnChangePwd);
+
+        //2018-04-21 added printer setting by eylee
+        setButton("btn_printer_setting", onClick_btn_printer_setting);
+        // 2019.01 add scan setting  by krm0219
+        setButton("btn_scan_setting", onClick_btn_scan_setting);
+        // 2019.01 by krm0219
+        setButton("btn_locker_user_info", onClick_btn_locker_info);
+
+        // 2019.04 by krm0219
+        setButton("btn_language_setting", onClick_btn_language_setting);
+
+        eventType = '';
+    }
+
+    // sharedpreference 에서 opname 가져오기
+    // 2016.02.17 eylee
+    var temp_opNm = "";
+    cordova.require("com.giosis.util.qdrive.util.SharedPreferencesHelper").getOpName(
+        "signin_opNm",
+        function(signin_opNm) {
+            console.log("signin_opNm signin_opNm:: " + signin_opNm);
+            temp_opNm = signin_opNm;
+            localStorage.setItem('opNm', signin_opNm);
+        },
+        function(error) {
+            console.log("signin_opNm error  :: " + error);
+        });
+
+    // 2016.02.18 eylee bug fix	 setTimeout
+    setTimeout(function() {
+        if (temp_opNm == "") {
+            $("#ddOpId_Nm").text(localStorage.getItem('opId') == null ? "" : localStorage.getItem('opId') + ' / ' + (localStorage.getItem('opNm') == null ? "" : localStorage.getItem('opNm')));
+        } else {
+            $("#ddOpId_Nm").text(localStorage.getItem('opId') == null ? "" : localStorage.getItem('opId') + ' / ' + (temp_opNm == null ? "" : temp_opNm));
+        }
+    }, 500);
+
+    $("#ddBrnchNm").text(localStorage.getItem('officeNm') == null ? "" : localStorage.getItem('officeNm'));
+    $("#ddVersion").text(localStorage.getItem('qsign_version') == null ? version : localStorage.getItem('qsign_version'));
+
+    if (localStorage.getItem('opId') == null || localStorage.getItem('opId') == '') {
+        $("a").addClass("ui-disabled");
+        $("#btnSignIn").attr("style", "display:;");
+        $("#btnSignOut").attr("style", "display:none;");
+        $("#btnSignIn").removeClass("ui-disabled");
+    } else {
+        $("a").removeClass("ui-disabled");
+        $("#btnSignIn").attr("style", "display:none;");
+        $("#btnSignOut").attr("style", "display:;");
+    }
+
+    if (localStorage.getItem('auto_upld_yn') == 'Y') {
+        $("#spn_auto_upld_n").addClass("inert");
+        $("#spn_auto_upld_y").removeClass("inert");
+    } else {
+        $("#spn_auto_upld_y").addClass("inert");
+        $("#spn_auto_upld_n").removeClass("inert");
+    }
+
+    if (localStorage.getItem('auth_1') != 'N') {
+        $("#spn_real_upld_n").addClass("inert");
+        $("#spn_real_upld_y").removeClass("inert");
+
+    } else {
+        $("#spn_real_upld_y").addClass("inert");
+        $("#spn_real_upld_n").removeClass("inert");
+    }
+
+    $("#spnPunchedInTime").text(localStorage.getItem('lastPunchedOutTime') == null ? "" : localStorage.getItem('lastPunchedOutTime'));
+}
+
+
+
+function onClick_btnModifyUserInfo() {
+    cordova.require("com.giosis.util.qdrive.settings.SettingsStarter").modify();
+}
+
+function onClick_btnChangePwd() {
+    cordova.require("com.giosis.util.qdrive.settings.SettingsStarter").changepwd();
+}
+
+function onClick_btn_printer_setting() {
+    cordova.require("com.giosis.util.qdrive.settings.BluetoothSettingStarter").start();
+}
+
+function onClick_btn_scan_setting() {
+    cordova.require("com.giosis.util.qdrive.settings.SettingsStarter").scan();
+}
+
+function onClick_btn_language_setting() {
+
+     cordova.require("com.giosis.util.qdrive.settings.SettingsStarter").language();
+}
+
+function onClick_btn_locker_info() {
+
+    cordova.require("com.giosis.util.qdrive.settings.SettingsStarter").locker_info();
+}
+
+
+function onClick_btn_home() {
+    cordova.require("com.giosis.util.qdrive.util.MainActivityStarter").start();
+}
+
+function onDeviceReady() {
+
+    document.addEventListener("backbutton", onBackKeyDown, false);
+
+}
+
+
+
+// 사인화면입력후 실시간 업로드 사용여부
+function onClick_spnRealUpload(real_upld_yn) {
+
+    var columns = ' auth_1 = ' + '"' + real_upld_yn + '"';
+    var where = 'opId = "' + localStorage.getItem('opId') + '"';
+
+    selected_option_auth_1 = real_upld_yn;
+
+    updateTableData(db, "USER_INFO", columns, where, succCB_setUserInfo_auth_1, failCB_Common);
+}
+
+function succCB_setUserInfo(tx, results) {
+
+    if (!results.rowsAffected) {
+        alert('Fail to update data.');
+    } else {
+
+        localStorage.setItem('auto_upld_yn', selected_option);
+
+        if (selected_option == 'Y') {
+            $("#spn_auto_upld_n").addClass("inert");
+            $("#spn_auto_upld_y").removeClass("inert");
+        } else {
+            $("#spn_auto_upld_y").addClass("inert");
+            $("#spn_auto_upld_n").removeClass("inert");
+        }
+    }
+}
+
+
+function succCB_setUserInfo_auth_1(tx, results) {
+
+    if (!results.rowsAffected) {
+        alert('Fail to update data.');
+    } else {
+
+        localStorage.setItem('auth_1', selected_option_auth_1);
+
+        if (selected_option_auth_1 == 'Y') {
+            $("#spn_real_upld_n").addClass("inert");
+            $("#spn_real_upld_y").removeClass("inert");
+        } else {
+            $("#spn_real_upld_y").addClass("inert");
+            $("#spn_real_upld_n").removeClass("inert");
+        }
+    }
+}

@@ -1,0 +1,19 @@
+/**
+var BluetoothSettingsStarter = {};
+
+BluetoothSettingsStarter.start = function() {
+    cordova.exec(null, null, "BluetoothSettingsStarter", "start", []);
+};
+*/
+cordova.define("com.giosis.util.qdrive.settings.BluetoothSettingStarter", function (require, exports, module) {	
+    var exec = require("cordova/exec");
+    var BluetoothSettingStarter = function () {};
+    
+    
+    BluetoothSettingStarter.prototype.start = function() {
+    	  cordova.exec(null, null, "BluetoothSettingStarter", "start", []);
+	}   
+    var plugin = new BluetoothSettingStarter();
+    module.exports = plugin;
+});
+

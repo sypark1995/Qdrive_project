@@ -1,0 +1,2 @@
+# Referenced at D:\androidstudio-workspace\2019_Qdrive_FCM\app\build\intermediates\merged_manifests\release\processReleaseManifest\merged\AndroidManifest.xml:66
+-keep class com.giosis.util.qdrive.singapore.MyApplication { <init>(...); }

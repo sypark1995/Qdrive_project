@@ -1,0 +1,354 @@
+package com.giosis.util.qdrive.main;
+
+import android.app.AlertDialog;
+import android.app.ProgressDialog;
+import android.content.ContentValues;
+import android.content.Context;
+import android.content.DialogInterface;
+import android.content.DialogInterface.OnClickListener;
+import android.graphics.Bitmap;
+import android.graphics.BitmapFactory;
+import android.os.AsyncTask;
+import android.os.Environment;
+import android.text.TextUtils;
+import android.util.Log;
+
+import com.gc.android.market.api.Base64;
+import com.giosis.util.qdrive.barcodescanner.ManualHelper;
+import com.giosis.util.qdrive.singapore.UploadData;
+import com.giosis.util.qdrive.util.Custom_JsonParser;
+import com.giosis.util.qdrive.util.DataUtil;
+import com.giosis.util.qdrive.util.DatabaseHelper;
+import com.giosis.util.qdrive.util.NetworkUtil;
+
+import org.json.JSONObject;
+
+import java.io.ByteArrayOutputStream;
+import java.io.File;
+import java.util.ArrayList;
+
+
+public class ManualPodUploadHelper extends ManualHelper {
+    String TAG = "ManualPodUploadHelper";
+
+    private final Context context;
+    private final String opID;
+    private final String officeCode;
+    private final String deviceID;
+    private final ArrayList<UploadData> assignBarcodeList;
+
+    private final String networkType;
+    private final OnPodUploadEventListener eventListener;
+    private final ProgressDialog progressDialog;
+    private final AlertDialog allSuccessDialog;
+    private final AlertDialog resultDialog;
+    private ArrayList<String> FailedList;
+
+    public static class Builder {
+
+        private final Context context;
+        private final String opID;
+        private final String officeCode;
+        private final String deviceID;
+        private final ArrayList<UploadData> assignBarcodeList;
+
+        private String networkType;
+        private OnPodUploadEventListener eventListener;
+
+        public Builder(Context context, String opID, String officeCode, String deviceID, ArrayList<UploadData> assignBarcodeList) {
+
+            this.context = context;
+            this.opID = opID;
+            this.officeCode = officeCode;
+            this.deviceID = deviceID;
+            this.assignBarcodeList = assignBarcodeList;
+
+            this.networkType = NetworkUtil.getNetworkType(context);
+        }
+
+        public ManualPodUploadHelper build() {
+            return new ManualPodUploadHelper(this);
+        }
+
+        public Builder setOnPodUploadEventListener(OnPodUploadEventListener eventListener) {
+            this.eventListener = eventListener;
+
+            return this;
+        }
+    }
+
+    private ManualPodUploadHelper(Builder builder) {
+
+        this.context = builder.context;
+        this.opID = builder.opID;
+        this.officeCode = builder.officeCode;
+        this.deviceID = builder.deviceID;
+        this.assignBarcodeList = builder.assignBarcodeList;
+
+        this.networkType = builder.networkType;
+        this.eventListener = builder.eventListener;
+        this.progressDialog = getProgressDialog(this.context);
+        this.allSuccessDialog = getAllSuccessAlertDialog(this.context);
+        this.resultDialog = getResultAlertDialog(this.context);
+    }
+
+    private ProgressDialog getProgressDialog(Context context) {
+
+        String progressTitle = "Set Transfer...";
+        ProgressDialog progressDialog = new ProgressDialog(context);
+        progressDialog.setProgressStyle(ProgressDialog.STYLE_HORIZONTAL);
+        progressDialog.setMessage(progressTitle);
+        progressDialog.setCancelable(false);
+        return progressDialog;
+    }
+
+    private AlertDialog getAllSuccessAlertDialog(Context context) {
+
+        AlertDialog dialog = new AlertDialog.Builder(context).setTitle("[Upload] Result")
+                .setCancelable(true).setPositiveButton("OK", new OnClickListener() {
+
+                    @Override
+                    public void onClick(DialogInterface dialog, int which) {
+                        if (dialog != null)
+                            dialog.dismiss();
+
+                        if (eventListener != null) {
+                            eventListener.onPostResult();
+                        }
+                    }
+                }).create();
+
+        return dialog;
+    }
+
+    private AlertDialog getResultAlertDialog(final Context context) {
+
+        AlertDialog dialog = new AlertDialog.Builder(context).setTitle("[Upload] Result")
+                .setCancelable(true).setPositiveButton("OK", new OnClickListener() {
+
+                    @Override
+                    public void onClick(DialogInterface dialog, int which) {
+                        if (dialog != null)
+                            dialog.dismiss();
+
+                        if (eventListener != null) {
+                            eventListener.onPostFailList(FailedList);
+                        }
+                    }
+                })
+                .create();
+
+        return dialog;
+    }
+
+    private void showAllSuccessDialog(String message) {
+        allSuccessDialog.setMessage(message);
+        allSuccessDialog.show();
+    }
+
+    private void showResultDialog(String message) {
+        resultDialog.setMessage(message);
+        resultDialog.show();
+    }
+
+
+    class PodUploadTask extends AsyncTask<Void, Integer, ArrayList<Integer>> {
+        int progress = 0;
+
+        @Override
+        protected void onPreExecute() {
+            super.onPreExecute();
+
+            if (progressDialog != null) {
+                int maxCount = assignBarcodeList.size();
+                progressDialog.setMax(maxCount);
+                progressDialog.show();
+            }
+        }
+
+        @Override
+        protected ArrayList<Integer> doInBackground(Void... params) {
+
+            ArrayList<Integer> resultList = new ArrayList<>();
+            FailedList = new ArrayList<>();
+
+            if (assignBarcodeList != null && assignBarcodeList.size() > 0) {
+
+                int resultCode = -999;
+                for (UploadData assignData : assignBarcodeList) {
+                    if (!TextUtils.isEmpty(assignData.getNoSongjang())) {
+                        resultCode = requestServerUpload(assignData);
+                    }
+
+                    if (resultCode < 0) {
+
+                        FailedList.add(assignData.getNoSongjang());
+                    }
+
+                    resultList.add(resultCode);
+                    publishProgress(1);
+                }
+            }
+            return resultList;
+        }
+
+        @Override
+        protected void onProgressUpdate(Integer... values) {
+            super.onProgressUpdate(values);
+            progress += values[0];
+            progressDialog.setProgress(progress);
+        }
+
+        @Override
+        protected void onPostExecute(ArrayList<Integer> resultList) {
+            super.onPostExecute(resultList);
+
+            if (progressDialog != null)
+                progressDialog.dismiss();
+
+            int successCount = 0;
+            int failCount = 0;
+            int resultCode = -999;
+
+            try {
+
+                for (int i = 0; i < resultList.size(); i++) {
+
+                    resultCode = resultList.get(i);
+
+                    if (resultCode < 0) {
+
+                        failCount++;
+                    } else {
+                        successCount++;
+                    }
+                }
+
+                if (successCount > 0 && failCount == 0) {
+                    String msg = String.format("Upload Success : %d", successCount);
+                    showAllSuccessDialog(msg);
+                } else {
+
+                    if (resultCode == -16) {
+                        showResultDialog("Please check your network connection. ");
+                    } else {
+                        String msg = String.format("Upload Success:%d\nUpload Failed:%d\n", successCount, failCount);
+                        showResultDialog(msg);
+                    }
+                }
+            } catch (Exception e) {
+
+                Log.e("Exception", TAG + "  onPostExecute Exception : " + e.toString());
+            }
+        }
+
+
+        private int requestServerUpload(UploadData uploadData) {
+
+            if (!NetworkUtil.isNetworkAvailable(context)) {  // Wifi, 3G,4G,LTE(Network) 연결이 모두 안될경우
+                return -16;
+            }
+
+            DatabaseHelper dbHelper = DatabaseHelper.getInstance();
+            int result = -15;
+
+            try {
+
+                JSONObject job = new JSONObject();
+
+                if (uploadData.getType().equals("D")) {
+
+                    String bitmapString = "";
+                    String dirPath = Environment.getExternalStorageDirectory().toString() + "/Qdrive";
+                    String filePath = dirPath + "/SC_" + uploadData.getNoSongjang() + ".png";   //SC_SGSG101402.png
+                    File imgFile = new File(filePath);
+
+                    if (imgFile.exists()) {
+                        Bitmap myBitmap = BitmapFactory.decodeFile(imgFile.getAbsolutePath());
+                        bitmapString = bitmapToString(myBitmap);
+                    }
+
+                    if (bitmapString.equals("")) {
+                        return -14;
+                    }
+
+                    job.accumulate("stat", uploadData.getStat());
+                    job.accumulate("chg_id", opID);
+                    job.accumulate("deliv_msg", "(by Qdrive Scan Delivery Sheet)");
+                    job.accumulate("opId", opID);
+                    job.accumulate("officeCd", officeCode);
+                    job.accumulate("device_id", deviceID);
+                    job.accumulate("network_type", networkType);
+                    job.accumulate("no_songjang", uploadData.getNoSongjang());
+                    job.accumulate("fileData", bitmapString);
+                    job.accumulate("punchOut_stat", "N");
+                    job.accumulate("app_id", DataUtil.appID);
+                    job.accumulate("nation_cd", DataUtil.nationCode);
+                }
+
+                String methodName = "SetScanTransportDataRefac";
+                String jsonString = Custom_JsonParser.requestServerDataReturnJSON(MOBILE_SERVER_URL, methodName, job);
+                // {"ResultCode":-12,"ResultMsg":"SUCCESS"}
+
+                JSONObject jsonObject = new JSONObject(jsonString);
+                result = jsonObject.getInt("ResultCode");
+
+                if (result == 0) {
+
+                    dbHelper.delete(DatabaseHelper.DB_TABLE_SCAN_DELIVERY, "invoice_no='" + uploadData.getNoSongjang() + "' COLLATE NOCASE  and reg_id ='" + opID + "'");
+                } else {
+
+                    ContentValues contentVal2 = new ContentValues();
+                    contentVal2.put("punchOut_stat", String.valueOf(result).replace('-', 'F'));
+
+                    dbHelper.update(DatabaseHelper.DB_TABLE_SCAN_DELIVERY, contentVal2,
+                            "invoice_no=? COLLATE NOCASE " + "and reg_id = ?", new String[]{uploadData.getNoSongjang(), opID});
+                }
+            } catch (Exception e) {
+
+                Log.e("Exception", TAG + "  SetScanTransportDataRefac Exception : " + e.toString());
+                ContentValues contentVal2 = new ContentValues();
+                contentVal2.put("punchOut_stat", "F15");
+
+                dbHelper.update(DatabaseHelper.DB_TABLE_SCAN_DELIVERY, contentVal2,
+                        "invoice_no=? COLLATE NOCASE " + "and reg_id = ?", new String[]{uploadData.getNoSongjang(), opID});
+            }
+
+            return result;
+        }
+    }
+
+
+    public ManualPodUploadHelper execute() {
+        PodUploadTask PodUploadTask = new PodUploadTask();
+        PodUploadTask.execute();
+        return this;
+    }
+
+    // 비트맵을 바이트로 변환한후 스트링으로 변환
+    public String bitmapToString(Bitmap bitmap) {
+
+        String pngImage = "";
+        try {
+            ByteArrayOutputStream stream = new ByteArrayOutputStream();
+            bitmap.compress(Bitmap.CompressFormat.PNG, 100, stream);
+            byte[] byteArray = stream.toByteArray();
+            String imgToString = Base64.encodeBytes(byteArray);
+
+            StringBuilder sb = new StringBuilder();
+            sb.append("data:image/png;base64,");
+            sb.append(imgToString);
+            pngImage = sb.toString();
+
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+        return pngImage;
+    }
+
+    public interface OnPodUploadEventListener {
+        void onPostResult();
+
+        void onPostFailList(ArrayList<String> resultList);
+    }
+}

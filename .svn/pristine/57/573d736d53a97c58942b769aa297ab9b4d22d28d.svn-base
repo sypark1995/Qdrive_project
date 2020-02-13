@@ -1,0 +1,13 @@
+
+cordova.define("com.giosis.util.qdrive.singapore.HomeStarter", function (require, exports, module) {
+    var exec = require("cordova/exec");
+    var HomeStarter = function () {};
+    
+    
+    HomeStarter.prototype.start = function() {
+    	  cordova.exec(null, null, "HomeStarter", "start", []);
+	}   
+    var plugin = new HomeStarter();
+    module.exports = plugin;
+});
+

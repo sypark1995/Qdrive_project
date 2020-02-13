@@ -1,0 +1,973 @@
+document.write('<script type="text/javascript" src="../libs/js/enviroment.js"><\/script>');
+
+var result_GetDeliveryList;
+var result_GetPickupList;
+var networkState;
+var currentAction;
+var results_PickupList;
+var results_deliveryList;
+var results_scan_deliveryList;
+var scanType;
+var scanTitle;
+var scanList;
+var arryList = '';
+var targetCnt = 0;
+var successCnt = 0;
+var failCnt = 0;
+var noImageCnt = 0;
+var noImageInvoiceNo = '';
+var failList = '';
+var processType = '';
+var notChangedList_D = '';
+var notChangedList_P = '';
+var reAssignList_D = '';
+var partner_ref_no_fail_assign = '';
+var reason_fail_assign = '';
+var scan_sheet_upload_gubun = 'normal';
+var pickup_binary_files;
+var openApiKey = '';
+var dr_req_list;
+
+var cntTimer;
+var serverError = null;
+var apiStat = new Object(); // key/value - P123, PX Qoo10 상태연동 서비스 호출 시 필요
+
+var pickup_binary_files;
+
+
+function getAPIUrl() {
+
+    console.log("common_integration > " + getAPIUrl);
+
+	var apiUrl = 'http://service.qxpress.asia/GMKT.INC.GLPS.Service.WebService/swe_QSignService.asmx';
+	
+	window.plugins.deviceHelper.getAPIUrl({
+		title : ttl,
+		type : "stat"
+	}, function(obj) {
+		alert("Log send job Successed");
+	}, failCB_FL);
+	
+}
+
+function setPage_Default() {
+	$("#spnOpNm").text(localStorage.getItem('opNm') == null ? "" : localStorage.getItem('opNm'));
+
+	if (localStorage.getItem('opId') == null || localStorage.getItem('opId') == '') {
+		$("a").addClass("ui-disabled");
+	} else {
+		$("a").removeClass("ui-disabled");
+	}
+	
+	if(localStorage.getItem('lastPunchedInTime') != null && localStorage.getItem('lastPunchedInTime') != ''){
+
+		var piDate=  new Date(localStorage.getItem('lastPunchedInTime')).toLocaleString();
+
+		console.log("common_integration  setPage_Default()  last Punched InTime : " + piDate);
+		$("#spnPunchedInTime").text(piDate);
+	}
+	else{
+
+		console.log("common_integration  setPage_Default()  last Punched InTime : null / " + localStorage.getItem('lastPunchedInTime'));
+		$("#spnPunchedInTime").text('');
+	}
+}
+
+function setButton(elementId, eventObj, eventParams) {
+
+	var elementObj_1 = $("#" + elementId);
+	var elementObj_2 = $("#" + elementId + " span");
+	var elementObj_3 = $("#" + elementId + " strong");
+	var elementObj_4 = $("#" + elementId + " .r_arrow");
+
+	elementObj_1.bind('click', function() {
+		elementObj_1.addClass('active');
+		elementObj_2.addClass('active');
+		elementObj_3.addClass('active');
+		elementObj_4.addClass('active');
+
+		var timer = setInterval(function() {
+			elementObj_1.removeClass('active');
+			elementObj_2.removeClass('active');
+			elementObj_3.removeClass('active');
+			elementObj_4.removeClass('active');
+
+			eventObj(eventParams);
+
+			clearInterval(timer);
+		}, 200);
+	});
+}
+
+
+function onClick_btnSignIn() {
+
+	window.plugins.sharedPreferencesHelper.setSigninState({
+		signInState : false,
+		opId : localStorage.getItem('opId'),
+		officeCd : localStorage.getItem('officeCd'),
+		device_id : device.uuid
+	}, succCB_signOut, function(error) {
+		// console.log("sharedPreferencesHelper setSigninStat failed: " +
+		// error);
+	});
+}
+
+function onClick_btnSignOut() {
+
+	if (confirm("In case you sign out before uploading, your lists won't be synchronized.  Do you want to continue?")) {
+		/*
+		window.plugins.sharedPreferencesHelper.setSigninState({
+			signInState : false,
+			opId : ''
+		}, succCB_signOut, function(error) {
+			
+		});
+		*/
+		/*
+		cordova.require("com.giosis.util.qdrive.util.SharedPreferencesHelper").setSigninState({
+			signInState : false,
+			opId : ""
+		}, 
+		succCB_signOut,function(error) {
+
+		});
+		*/
+		var methodName = "setQuickAppUserInfo";
+		var params = new RMSParam();
+		params.add("channel", "QUICK");  
+		params.add("type", "logoutbtn"); 
+		params.add("op_id", localStorage.getItem('opId'));
+		params.add("vehicle_code", "");	
+		params.add("device_id", device.uuid);
+		params.add("api_level", "");
+		params.add("device_info", "");
+		params.add("device_model", "");
+		params.add("device_product", "");
+		params.add("device_os_version", "");
+		params.add("network_type", networkState);
+		
+		params.add("fused_provider_stat", "");
+		params.add("fused_provider_stat", "");
+		params.add("location_mng_stat", "");
+		params.add("device_os_version", "");
+		var date = new Date();		
+		var bb = date.getFullYear() + "-" +(1 + date.getMonth()).toString() +"-" +date.getDate().toString() + " "+ date.getHours() +":" + date.getMinutes() +":" +date.getSeconds();
+		params.add("logout_dt", bb);
+		
+		
+		params.add("desc1", "");
+		params.add("desc2", "");
+		params.add("desc3", "");
+		params.add("desc4", "");
+		params.add("desc5", "");
+		
+		params.add("reg_id", localStorage.getItem('opId'));
+		params.add("chg_id", localStorage.getItem('opId'));
+		
+		var result = RMSHelper.callWebMethod(serviceName, methodName, params.toJson());
+		/*
+		if(result == 0){			
+			alert("logout Success: "+result  );
+		}
+		else{
+			alert("logout Failed: "+ result  );			
+		}
+		*/
+		cordova.require("com.giosis.util.qdrive.util.SharedPreferencesHelper").setSigninState({
+			signInState : false,
+			opId : ""
+		}, 
+		succCB_signOut,function(error) {
+
+		});
+				
+				
+	}
+}
+
+
+
+function onClick_btnSignOutWithLocation(Latitude, Longitude){
+
+	if (confirm("In case you sign out before uploading, your lists won't be synchronized.  Do you want to continue?")) {
+		/*
+		window.plugins.sharedPreferencesHelper.setSigninState({
+			signInState : false,
+			opId : ''
+		}, succCB_signOut, function(error) {
+			
+		});
+		*/		
+
+		var methodName = "setQuickAppUserInfo";
+		var params = new RMSParam();
+		params.add("channel", "QDRIVE");  
+		params.add("type", "logoutbtn"); 
+		params.add("op_id", localStorage.getItem('opId'));
+		params.add("vehicle_code", "");	
+		params.add("device_id", device.uuid);
+		params.add("api_level", "");
+		params.add("device_info", "");
+		params.add("device_model", "");
+		params.add("device_product", "");
+		params.add("device_os_version", "");
+		params.add("network_type", networkState);
+		
+		params.add("fused_provider_stat", "");
+		params.add("fused_provider_stat", "");
+		params.add("location_mng_stat", "");
+		params.add("device_os_version", "");
+		var date = new Date();		
+		var bb = date.getFullYear() + "-" +(1 + date.getMonth()).toString() +"-" +date.getDate().toString() + " "+ date.getHours() +":" + date.getMinutes() +":" +date.getSeconds();
+		params.add("logout_dt", bb);
+		
+		
+		params.add("desc1", Latitude);
+		params.add("desc2", Longitude);
+		params.add("desc3", "");
+		params.add("desc4", "");
+		params.add("desc5", "");
+		
+		params.add("reg_id", localStorage.getItem('opId'));
+		params.add("chg_id", localStorage.getItem('opId'));
+		
+		var result = RMSHelper.callWebMethod(serviceName, methodName, params.toJson());
+		/*
+		if(result == 0){			
+			alert("logout Success: "+result  );
+		}
+		else{
+			alert("logout Failed: "+ result  );			
+		}
+		*/
+		cordova.require("com.giosis.util.qdrive.util.SharedPreferencesHelper").setSigninState({
+			signInState : false,
+			opId : ""
+		}, 
+		succCB_signOut,function(error) {
+		});
+	}
+}
+
+
+function getLoginLocation(){
+	
+	var Latitude = 0;
+	var Longitude = 0;			
+		
+	try {
+		if (navigator.geolocation) {
+				navigator.geolocation.getCurrentPosition(onLocationSuccess, onLocationError, { enableHighAccuracy: true ,   timeout: 2000,
+				      maximumAge: 300});
+			
+		}else{
+			onClick_btnSignOutWithLocation(Latitude, Longitude);
+		}
+	} catch (e) {
+		
+		console.log("★★★★★★★ :: getLoginLocation failed");  
+	    console.log('★★★★★★★ :: ' + error.code + '\n' +
+	        'message: ' + error.message + '\n');
+	    onClick_btnSignOutWithLocation(Latitude, Longitude);
+	}
+}
+
+
+function onLocationSuccess(position) {
+	var Latitude = 0;
+	var Longitude = 0;
+	console.log("★★★★★★★ :: getLoginLocation sucess");
+    Latitude = position.coords.latitude;
+    Longitude = position.coords.longitude;
+    console.log("★★★★★★★ :: getLoginLocation Latitude :: "+Latitude);
+    console.log("★★★★★★★ :: getLoginLocation Longitude :: "+Longitude);
+    onClick_btnSignOutWithLocation(Latitude, Longitude);
+}
+
+//Error callback
+function onLocationError(error) {
+	var Latitude = 0;
+	var Longitude = 0;
+	console.log("★★★★★★★ :: getLoginLocation failed");  
+    console.log('★★★★★★★ :: ' + error.code + '\n' +
+        'message: ' + error.message + '\n');
+    onClick_btnSignOutWithLocation(Latitude, Longitude);
+}
+function onClick_btnDeviceDataDelete() {
+	var where = "";
+	if (confirm("Your data of device will be deleted.\n Do you want to continue?")) {
+		
+		deleteTable(db, "INTEGRATION_LIST", where, null,
+				failCB_Common);
+		deleteTable(db, "DELIVERY", where, setAfterDeliveryList,
+				failCB_Common);
+	}
+}
+
+function onClick_btnLogDataSend() {
+
+    console.log("krm0219 common_integration > onClick_btnLogDataSend");
+
+	var ttl = '';
+	cordova.require("com.giosis.util.qdrive.util.DeviceHelper").sendLog ({
+		title : ttl,
+		type : "stat"
+	}, function(obj) {
+
+		var methodName = "SetLogDataList";
+		var params = new RMSParam();
+
+		result_GetDeliveryList = null;
+
+		params.add("opId", localStorage.getItem('opId'));
+		params.add("partner_ref_no", obj);
+		params.add("device_id", device.uuid);
+
+		result_SetDataLog = RMSHelper.callWebMethod(serviceName, methodName, params.toJson());
+		if (result_SetDataLog.ResultMsg == "SUCCESS")
+			alert("Log send job Successed");
+	}, failCB_FL);
+}
+
+// DELIVERY 삭제 처리 후 콜백메소드
+function setAfterDeliveryList() {
+	//PICKUP 테이블 삭제
+	deleteTable(db, "PICKUP", '', setAfterPickupList,
+			failCB_Common);
+	
+
+}
+function setAfterPickupList(){
+	alert("Your lists deleted");
+}
+
+function succCB_signOut() {
+
+	currentAction = "to sign out";
+
+	localStorage.setItem('opId', '');
+	localStorage.setItem('opPasswd', '');
+
+	cordova.require("com.giosis.util.qdrive.util.MainActivityStarter").LoginStart();
+	cordova.require("cordova/plugin/android/app").exitApp();
+
+}
+
+
+function successCB_common(returnObj) {
+
+    cconsole.log("common_integration  auto_upld_yn : " + localStorage.getItem('auto_upld_yn'));
+	if (localStorage.getItem('auto_upld_yn') == 'Y') {
+		processType == 'AS';
+		onClick_btnPunchOut();
+	}
+
+	if (returnObj.Scan_id == "Delivery Failed") {
+		// Delivery Failed 화면으로 이동시킨다.
+		//moveFail(returnObj.waybillNo);
+		window.plugins.mainActivityStarter.start();
+	}
+
+	if (returnObj.Scan_id == "SigningActivity") {
+		// 메인화면으로 이동시킨다.
+		window.plugins.mainActivityStarter.start();
+	}
+	return;
+}
+
+function moveFail(invoiceNo) {
+
+	scanTitle = 'Delivery Failed';
+	scanType = 'DX';
+	localStorage.setItem('scanTitle', scanTitle);
+	localStorage.setItem('scanType', scanType);
+	localStorage.setItem('unsuccInvoiceNo', invoiceNo);
+	localStorage.setItem('FailInfoForWeb', 'Y');
+
+	currentAction = "to set fail reason for " + '"' + scanTitle + '"';
+
+	cordova.require("com.giosis.util.qdrive.popup.DroidGapPopup").popup({
+		urlForWebUI : 'file:///android_asset/www/Scan/setFailInfo.html'
+	}, successCB_common, failCB_FL);
+}
+
+//로컬 DB 카운트 조회
+function getLocalData_ListCnt() {
+//	console.log("HOME_LOG: 1. getLocalData_ListCnt");
+	
+	var columns_DeliveryListCnt = '   ifnull(sum(case when chg_dt is null then 1 else 0 end), 0) as QueueCnt '
+			+ ' , ifnull(sum(case when chg_dt is not null and punchOut_stat = "S" then 1 else 0 end), 0) as CompleteCnt '
+			+ ' , ifnull(sum(case when stat = "AI" and punchOut_stat <> "S" and chg_dt is not null then 1 else 0 end), 0) as ArrivedCnt '
+			+ ' , ifnull(sum(case when stat = "D3" and punchOut_stat <> "S" and chg_dt is not null then 1 else 0 end), 0) as OutforDeliveryCnt '
+			+ ' , ifnull(sum(case when stat = "D4" and punchOut_stat <> "S" and chg_dt is not null then 1 else 0 end), 0) as DeliveredCnt '
+			+ ' , ifnull(sum(case when stat = "DX" and punchOut_stat <> "S" and chg_dt is not null then 1 else 0 end), 0) as UnsuccessfulCnt '
+			+ ' , ifnull((select count(*) from delivery where punchOut_stat <> "S" and delivery_dt = date("now")),0) as deliveryD0Day '
+			+ ' , ifnull((select count(*) from delivery where punchOut_stat <> "S" and delivery_dt = date("now", "-1 day")),0) as deliveryD1Day '
+			+ ' , ifnull((select count(*) from delivery where punchOut_stat <> "S" and delivery_dt = date("now", "-2 day")),0) as deliveryD2Day '
+			+ ' , ifnull((select count(*) from delivery where punchOut_stat <> "S" and delivery_dt = date("now", "-3 day")),0) as deliveryD3Day '
+			+ ' , ifnull((select count(*) from delivery where punchOut_stat <> "S" and delivery_dt <= date("now", "-4 day")),0) as deliveryD3OverDay '
+			+ ' , ifnull((select count(*) from delivery where punchOut_stat = "S" and stat= "D4" and strftime("%Y-%m-%d", chg_dt) = date("now")),0) as todayDelivered '
+			+ ' , (select count(*) from delivery where cast(delivery_cnt as integer) = 2) as deliveryD2Cnt '
+			+ ' , (select count(*) from delivery where cast(delivery_cnt as integer) = 3) as deliveryD3Cnt '
+			+ ' , (select count(*) from delivery where cast(delivery_cnt as integer) >= 4) as deliveryD4OverCnt ';
+
+	selectTable(
+			db,
+			columns_DeliveryListCnt,
+			"DELIVERY",
+			'reg_id = "' + localStorage.getItem('opId') + '"', '', '', '',
+			successCB_selectDeliveryCnt, failCB_Common);
+}
+
+function successUpgradeCB() {
+	// console.log("DataBase Upgrade Sucess !! ");
+}
+
+function successCB_selectDeliveryCnt(tx, results) {
+//	console.log("HOME_LOG: 2. getLocalData_ListCnt");
+	
+	var len = results.rows.length;
+
+	if (len > 0) {
+		
+		if (!isNaN(results.rows.item(0).CompleteCnt)){
+			$("#unUpload").val(results.rows.item(0).CompleteCnt);
+		}
+		
+		$("#queue_d_l").text(results.rows.item(0).QueueCnt);
+		$("#delivered_l").text(results.rows.item(0).DeliveredCnt);
+		$("#unsuccessful_d_l").text(results.rows.item(0).UnsuccessfulCnt);
+		
+		// Backlog
+		$("#delivery0day").text(results.rows.item(0).deliveryD0Day); // D+0
+		$("#delivery1day").text(results.rows.item(0).deliveryD1Day); // D+1
+		$("#delivery2day").text(results.rows.item(0).deliveryD2Day); // D+2
+		$("#delivery3day").text(results.rows.item(0).deliveryD3Day); // D+3
+		$("#delivery3OverDay").text(results.rows.item(0).deliveryD3OverDay); // D+@
+		$("#today_delivery_done").text(results.rows.item(0).todayDelivered); // uploaded today
+		
+		
+		if($("#delivery1day").text() != "0"){
+			$("#delivery1day").css("color","red");
+		}
+		else{
+			$("#delivery1day").css("color","black");
+		}
+		if($("#delivery2day").text() != "0"){
+			$("#delivery2day").css("color","red");
+		}
+		else{
+			$("#delivery2day").css("color","black");
+		}
+		if($("#delivery3day").text() != "0"){
+			$("#delivery3day").css("color","red");
+		}
+		else{
+			$("#delivery3day").css("color","black");
+		}
+		if($("#delivery3OverDay").text() != "0"){
+			$("#delivery3OverDay").css("color","red");
+		}
+		else{
+			$("#delivery3OverDay").css("color","black");
+		}
+		//$("#retry_d_l").text(results.rows.item(0).ItWillBeRetryCnt);
+		
+		/* Backlog
+		$("#delivery2day").text(results.rows.item(0).deliveryD2Day); // 2일
+																		// 경과
+		$("#delivery3day").text(results.rows.item(0).deliveryD3Day); // 3일
+																		// 경과
+		$("#delivery5OverDay").text(results.rows.item(0).deliveryD5OverDay); // 5일
+																				// 경과
+		$("#delivery2cnt").text(results.rows.item(0).deliveryD2Cnt); // 2회차시도
+		$("#delivery3cnt").text(results.rows.item(0).deliveryD3Cnt); // 3회차
+																		// 시도
+		$("#delivery4_over_cnt").text(
+				results.rows.item(0).deliveryD4OverCnt); // 4회차이상
+		 */
+	}
+	
+		var columns_PickupListCnt = '   ifnull(sum(case when chg_dt is null then 1 else 0 end), 0) as QueueCnt ' + 
+	    ' , ifnull(sum(case when chg_dt is not null and punchOut_stat = "S" then 1 else 0 end), 0) as CompleteCnt ' + 
+	    ' , ifnull(sum(case when stat = "P3" and punchOut_stat <> "S" and chg_dt is not null then 1 else 0 end), 0) as PickedUpCnt ' +
+	    ' , ifnull(sum(case when stat = "PX" and punchOut_stat <> "S" and chg_dt is not null then 1 else 0 end), 0) as CancelledCnt ' +
+	    ' , ifnull(sum(case when stat = "PF" and punchOut_stat <> "S" and chg_dt is not null then 1 else 0 end), 0) as UnsuccessfulCnt '+
+	    ' , ifnull((select count(*) from pickup where desired_date = date("now", "-1 day")),0) as delay1Day ' + 
+		' , ifnull((select count(*) from pickup where desired_date = date("now", "-2 day")),0) as delay2Day ' + 
+		' , ifnull((select count(*) from pickup where desired_date <= date("now", "-3 day")),0) as delay3Day ' +
+	    ' , ifnull((select count(*) from pickup where punchOut_stat = "S" and stat= "P3" and strftime("%Y-%m-%d", chg_dt) = date("now")),0) as todayPickupDone ' +
+		' , (select count(*) from pickup where route = "RPC") as rpcCnt ' + 
+	    ' , (select count(*) from pickup where cast(failed_count as integer) = 1) as failed1Cnt ' + 
+		' , (select count(*) from pickup where cast(failed_count as integer) = 2) as failed2Cnt ' + 
+		' , (select count(*) from pickup where cast(failed_count as integer) >= 3) as failed3OverCnt '  ;
+
+		selectTable(db, columns_PickupListCnt, "PICKUP", 'reg_id = "' + localStorage.getItem('opId')  + '"', '', '', '', successCB_selectPickupCnt, failCB_Common);
+	
+}
+
+function successCB_selectPickupCnt(tx, results) {
+	var len = results.rows.length;	
+	
+	if (len > 0) {
+		
+		if (!isNaN(results.rows.item(0).CompleteCnt)) {
+			var tmpCnt = parseInt($("#unUpload").val()) + results.rows.item(0).CompleteCnt;
+			$("#unUpload").text(tmpCnt);
+		}
+
+		$("#queue_p_l").text(results.rows.item(0).QueueCnt);
+		$("#pickedUp_l").text(results.rows.item(0).PickedUpCnt);
+		$("#unsuccessful_p_l").text(results.rows.item(0).UnsuccessfulCnt);
+		$("#cancelled_l").text(results.rows.item(0).CancelledCnt);
+		$("#today_pickup_done").text(results.rows.item(0).todayPickupDone);  
+		//popup RPC 카운트 
+		$("#sp_rpc_cnt").text(results.rows.item(0).rpcCnt);
+
+	}
+	
+	if (processType == 'PI' || processType == 'RD') {
+		releasePage();
+	}
+}
+
+function exceptionClose() {
+	cordova.require("com.giosis.util.qdrive.util.LoadingDialog").hide();
+
+	$("#qlps_alert_complete").hide();
+
+	$("a").removeClass("ui-disabled");
+	$("div.btn_area").removeClass("ui-disabled");
+
+}
+
+function releasePage() {
+//	console.log("HOME_LOG: 5. getLocalData_ListCnt - releasePage" );
+
+
+	$("#qlps_alert_complete").show();
+
+	var timer = setInterval(function() {
+		$("#qlps_alert_complete").hide();
+		clearInterval(timer);
+	}, 900);
+
+	if (processType == 'PI' || processType == 'RD') {
+		localStorage.setItem('lastPunchedInTime', $.format.date(new Date(), 'yyyy-MM-dd HH:mm:ss'));
+		$("#pComplete").html("<span class='icon_check_y'></span>Success to download.");
+		
+		//리스트 정렬 순서 초기화
+		var columns = 'use_custom = "N",  sort_idx = "0"';
+		var where = 'opId = "' + localStorage.getItem('opId') + '"';
+		updateTableData(db, "USER_INFO", columns, where, null, failCB_Common);
+		
+		//파트너 Default Driver 만  Alert 이후 Driver Change를 위한 RPC LIST 이동
+		if(localStorage.getItem("DefaultYn") == "Y" && $("#sp_rpc_cnt").text() != "0"){
+			setTimeout(function(){
+					$("#rpc_alert").show();
+			}, 1000);
+		}
+	} 
+	else if (processType == 'PO') {
+		localStorage.setItem('lastPunchedOutTime', $.format.date(new Date().toLocaleString(), 'yyyy-MM-dd HH:mm:ss'));
+		$("#pComplete").html("<span class='icon_check_y'></span>Success to upload.");
+	}
+
+	if (noImageCnt > 0) {
+		// signature_not_found_alert
+		$("#signature_not_found_alert").show();
+		$("#signature_not_found_alert_invoice_no").html(
+				"<span class='icon_check_y'></span>" + noImageInvoiceNo);
+
+	}
+
+	$("a").removeClass("ui-disabled");
+	$("div.btn_area").removeClass("ui-disabled");
+
+	$("#spnPunchedInTime").text(localStorage.getItem('lastPunchedInTime'));
+	$("#spnPunchedInTime").attr("style", "display:;");
+
+	processType = '';
+	setPage();
+}
+
+// Delivery Upload 버튼
+function onClick_btnPunchOut() {
+	if (processType != 'AS') {
+		if (!confirm("Your lists will be synchronized.  Do you want to continue?")) {
+			setPage_Default();
+			return;
+		}
+	}
+
+	networkState = navigator.connection.type;
+
+	if (networkState == Connection.NONE) {
+		alert("Please check your network connection.");
+		return;
+	}
+
+	processType = 'PO';
+	var columns_DeliveryList = '   contr_no ' + ' , partner_ref_no '
+			+ ' , invoice_no ' + ' , stat ' + ' , chg_id ' + ' , chg_dt '
+			+ ' , rcv_type ' + ' , del_memo ' + ' , fail_reason '
+			+ ' , driver_memo ' + ' , img_path ';
+	selectTable(
+			db,
+			columns_DeliveryList,
+			"DELIVERY",
+			'punchOut_stat <> "S" and reg_id = "'
+					+ localStorage.getItem('opId') + '" and chg_dt is not null',
+			'', '', '', selectDeliveryTblCB_List, failCB_Common);
+
+}
+
+// PO-2
+function selectDeliveryTblCB_List(tx, results) {
+
+	var len = results.rows.length;
+
+
+	targetCnt = 0;
+	successCnt = 0;
+	failCnt = 0;
+	noImageCnt = 0;
+	noImageInvoiceNo = ''; // 사인이미지가 없어진 배송번호
+
+	targetCnt = len;
+	results_deliveryList = results;
+	serverError = null;
+
+	if (len > 0) {
+		for ( var i = 0; i < len; i++) {
+			if (results.rows.item(i).img_path == null
+					|| results.rows.item(i).img_path == '') {
+
+				var params = new RMSParam();
+
+				params.add("contr_no", results.rows.item(i).contr_no);
+				params.add("stat", results.rows.item(i).stat);
+				params.add("chg_id", results.rows.item(i).chg_id);
+				params.add("chg_dt",
+						results.rows.item(i).chg_dt == null ? new Date()
+								.toISOString() : results.rows.item(i).chg_dt);
+				params.add("rcv_type", results.rows.item(i).rcv_type);
+				params.add("fileData", null);
+				params.add("fail_reason", results.rows.item(i).fail_reason);
+				params.add("del_memo", results.rows.item(i).del_memo);
+				params.add("driver_memo", results.rows.item(i).driver_memo);
+				params.add("opId", localStorage.getItem('opId'));
+				params.add("officeCd", localStorage.getItem('officeCd'));
+				params.add("device_id", device.uuid);
+				params.add("network_type", networkState);
+
+				var result_SetChangedData = RMSHelper.callWebMethod(
+						serviceName, "SetTransportData", params.toJson());
+				if (result_SetChangedData == null) {
+					return;
+				}
+
+				setPunchOutStat_delivery(result_SetChangedData, results.rows
+						.item(i).contr_no);
+			} else {
+
+				currentAction = "to get FileEntry";
+
+				if (serverError) {
+					return;
+				} else {
+					handle_files_upload(results.rows.item(i).img_path,
+							results.rows.item(i).invoice_no);
+				}
+
+			}
+		}
+
+	} else {
+
+		if (processType != 'AS') {
+
+			cordova.require("com.giosis.util.qdrive.util.LoadingDialog").hide();
+
+			localStorage.setItem('lastPunchedInTime', '');
+			releasePage();
+		}
+	}
+}
+
+
+function handle_files_upload(filepath, invoice_no) {
+
+	// var filepath = "file:///storage/sdcard0//QSign/krsg101623.png";
+	// console.log("SCRIPT TAG invoice_no :: " + invoice_no);
+
+	var reader = new FileReader();
+	reader.onload = function(e) {
+		// console.log("SCRIPT TAG OK");
+		window.resolveLocalFileSystemURI(filepath, gotFileEntry, failCB_FL); // upload시
+																				// 이미지올리기
+	}
+	reader.onerror = function(e) {
+		noImageCnt++;
+		alert(invoice_no + " Parcel’s signature image file not found. ");
+		noImageInvoiceNo = invoice_no + ' ' + noImageInvoiceNo;
+		failCB_punchOut_delivery();
+	}
+
+	try { // 바이너리데이터 체크
+		var imageData = reader.readAsDataURL(filepath);
+	} catch (e) {
+		noImageCnt++;
+		alert(invoice_no + " Parcel’s signature image file not found.");
+		noImageInvoiceNo = invoice_no + ' ' + noImageInvoiceNo;
+		failCB_punchOut_delivery();
+	}
+}
+
+function gotFileEntry(FileEntry) {
+
+	currentAction = "to get File";
+	FileEntry.file(gotFile, failCB_FL);
+}
+
+function gotFile(file) {
+
+	readDataUrl(file);
+}
+
+function readDataUrl(file) {
+
+	var reader = new FileReader();
+
+	reader.onloadend = function(evt) {
+
+		var result_SetChangedData;
+		var len = results_deliveryList.rows.length;
+		// var partner_ref_no = file.name.substring(0,
+		// file.name.lastIndexOf('.'));
+		var invoice_no = file.name.substring(0, file.name.lastIndexOf('.'));
+		var contr_no = '';
+		var params = new RMSParam();
+
+		for ( var i = 0; i < len; i++) {
+
+			// if
+			// (results_deliveryList.rows.item(i).partner_ref_no.toLowerCase()
+			// == partner_ref_no.toLowerCase()) {
+			if (results_deliveryList.rows.item(i).invoice_no.toLowerCase() == invoice_no
+					.toLowerCase()) {
+				params.add("contr_no",
+						results_deliveryList.rows.item(i).contr_no);
+				params.add("stat", results_deliveryList.rows.item(i).stat);
+				params.add("chg_id", results_deliveryList.rows.item(i).chg_id);
+				params.add("chg_dt", results_deliveryList.rows.item(i).chg_dt);
+				params.add("rcv_type",
+						results_deliveryList.rows.item(i).rcv_type);
+				params.add("del_memo",
+						results_deliveryList.rows.item(i).del_memo);
+				params.add("fail_reason",
+						results_deliveryList.rows.item(i).fail_reason);
+				params.add("driver_memo",
+						results_deliveryList.rows.item(i).driver_memo);
+				params.add("opId", localStorage.getItem('opId'));
+				params.add("officeCd", localStorage.getItem('officeCd'));
+				params.add("device_id", device.uuid);
+				params.add("network_type", networkState);
+
+				contr_no = results_deliveryList.rows.item(i).contr_no;
+
+				break;
+			}
+		}
+
+		params.add("fileData", evt.target.result);
+
+		if (serverError) {
+			return;
+		}
+
+		result_SetChangedData = RMSHelper.callWebMethod(serviceName,
+				"SetTransportData", params.toJson());
+		if (result_SetChangedData == null) {
+			serverError = true;
+			return;
+		} else {
+			serverError = false;
+			setPunchOutStat_delivery(result_SetChangedData, contr_no);
+		}
+
+	};
+
+	var imageData = reader.readAsDataURL(file);
+};
+// po-4
+function setPunchOutStat_delivery(returnObj, contr_no) {
+
+	if (returnObj != null) {
+
+		if (returnObj.ResultCode == 0) {
+
+			var result = returnObj.ResultCode;
+			var columns = 'punchOut_stat = ';
+			var where = 'contr_no = "' + contr_no + '"';
+
+			if (result == 0) {
+				columns += '"S"';
+			} else {
+				columns += '"F"';
+			}
+
+			updateTableData(db, "DELIVERY", columns, where,
+					successCB_punchOut_delivery, failCB_punchOut_delivery);
+		}
+	} else {
+
+		alert(returnObj.ResultMsg);
+		setPage_Default();
+	}
+}
+// po-5
+function successCB_punchOut_delivery(tx, results) {
+
+	if (!results.rowsAffected) {
+		failCnt += 1;
+	} else {
+		successCnt += 1;
+	}
+
+
+	if (targetCnt == (successCnt + failCnt)) {
+
+		if (processType != 'AS') {
+
+			cordova.require("com.giosis.util.qdrive.util.LoadingDialog").hide();
+
+			if (location.href == 'file:///android_asset/www/My/myHome.html') {
+
+				setSummaryWithServerData();
+			}
+
+			getLocalData_ListCnt();
+
+			localStorage.setItem('lastPunchedInTime', '');
+
+			releasePage();
+
+			if (location.href == 'file:///android_asset/www/Settings/settings.html') {
+				$("#btnPunchOut").addClass("ui-disabled");
+				$("#btnReDownload").addClass("ui-disabled");
+			}
+		}
+	}
+}
+
+function failCB_punchOut_delivery(err) {
+
+	failCnt += 1;
+
+	if (targetCnt == (successCnt + failCnt)) {
+
+		if (processType != 'AS') {
+			cordova.require("com.giosis.util.qdrive.util.LoadingDialog").hide();
+
+			if (location.href == 'file:///android_asset/www/My/IntegrationHome.html') {
+				releasePage();
+			}
+		}
+	}
+}
+
+function failCB_FL(evt) {
+	alert("Fail " + currentAction + " - error code : " + evt.target.error.code);
+	return;
+};
+
+
+function callScanPage(stat) {
+
+	arryList = '';
+	targetCnt = 0;
+	successCnt = 0;
+	failCnt = 0;
+	failList = '';
+
+	var ttl = '';
+	var callbackFunction;
+
+	switch (stat) {
+    case "MDA":
+		ttl = "Driver Assign";
+		callbackFunction = successCB_scanBarcode;
+		localStorage.setItem('scanTitle', ttl);
+		break;
+
+	case "D4":
+		ttl = "Delivered";
+		callbackFunction = successCB_common;
+		break;
+
+	case "SEC":
+		ttl = "(Step2) Signature";
+		callbackFunction = successCB_common;
+		break;
+
+	//2016-08-30 eylee add
+	case "CNR":
+		ttl = "Scan Pickup C&R no";
+		callbackFunction = successCB_common;
+		break;
+
+	default:
+		break;
+	}
+
+	scanType = stat;
+	scanTitle = ttl;
+	currentAction = "to scan for " + '"' + ttl + '"';
+
+	 cordova.require("com.giosis.util.qdrive.barcodescanner.BarcodeScanner").scan({
+			title : ttl,
+			type : stat
+		}, callbackFunction, failCB_FL);
+}
+
+
+function successCB_scanBarcode(returnObj) {
+
+	if (returnObj == null || returnObj == undefined)
+		alert('Fail to get scan data.');
+	else if (returnObj.canceled == true)
+		return;
+
+	arryList = returnObj.result.replace('[', '').replace(']', '').split('},');
+	targetCnt = arryList.length;
+
+	 if (scanType == 'MDA') {
+
+		failList = returnObj.result;
+
+		localStorage.setItem('scanFailList', failList);
+		localStorage.setItem('scanType', scanType);
+		callFailListPage();
+	}
+}
+
+function callFailListPage() {
+
+
+	currentAction = " to open fail list.";
+
+	cordova.require("com.giosis.util.qdrive.popup.DroidGapPopup").popup ({
+		urlForWebUI : 'file:///android_asset/www/Scan/scanFailList.html'
+	}, function(returnObj) {
+		return;
+	}, failCB_FL);
+}
+
+
+function onBackKeyDown() {
+	// Handle the back button
+}
+
+

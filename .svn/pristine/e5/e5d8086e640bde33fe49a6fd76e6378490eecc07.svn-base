@@ -1,0 +1,109 @@
+/**
+ *
+ * DroidGapActivity PhoneGap Javascript
+ * 
+ * 2014-11-06
+ * Phonegap 3.6 update
+ * 
+ */
+
+cordova.define("com.giosis.util.qdrive.popup.DroidGapPopup", function (require, exports, module) {	
+    var exec = require("cordova/exec");
+    var DroidGapPopup = function () {};
+    DroidGapPopup.prototype.popup = function(options, successCallback, errorCallback) {
+    	var defaults = {
+			urlForWebUI:''
+		};
+		
+		if (options == null) { options = defaults };
+    		
+    		for ( var key in defaults ) {
+    			if (typeof options[key] != "undefined") {
+    				defaults[key] = options[key];	
+    			}
+    		}
+    		
+    		if (typeof errorCallback != "function") {
+    			console.log("DroidGapPopup.popup failure: failure parameter not a function");
+    			return;
+    		}
+    		
+    		if (typeof successCallback != "function") {
+    			console.log("DroidGapPopup.popup failure: success callback parameter must be a function");
+    			return;
+    		}
+    		exec(successCallback, errorCallback, 'DroidGapPopup', 'popup',  new Array(defaults));
+	}
+	
+    DroidGapPopup.prototype.closeWithReturnInfo = function(options) {
+    	var defaults = {
+    		returnCode:"0",
+    		result:""
+    	};
+    	
+    	if (options == null) { options = defaults };
+    	
+    	for ( var key in defaults ) {
+    		if (typeof options[key] != "undefined") {
+    			defaults[key] = options[key];	
+    		}
+    	}
+    	exec(null, null, 'DroidGapPopup', 'closeWithReturnInfo',  new Array(defaults));
+    };
+
+    
+    var plugin = new DroidGapPopup();
+    module.exports = plugin;
+});
+
+
+/*
+var DroidGapActivityPopup = function() {};
+
+DroidGapActivityPopup.prototype.popup = function(options, successCallback, errorCallback) {
+	var defaults = {
+		urlForWebUI:''
+	};
+	
+	if (options == null) { options = defaults };
+	
+	for ( var key in defaults ) {
+		if (typeof options[key] != "undefined") {
+			defaults[key] = options[key];	
+		}
+	}
+	
+	if (typeof errorCallback != "function") {
+		console.log("DroidGapActivityPopup.popup failure: failure parameter not a function");
+		return;
+	}
+	
+	if (typeof successCallback != "function") {
+		console.log("DroidGapActivityPopup.popup failure: success callback parameter must be a function");
+		return;
+	}
+	
+	cordova.exec(successCallback, errorCallback, 'DroidGapActivityPopup', 'popup', new Array(defaults));
+};
+
+DroidGapActivityPopup.prototype.closeWithReturnInfo = function(options) {
+	var defaults = {
+		returnCode:"0",
+		result:""
+	};
+	
+	if (options == null) { options = defaults };
+	
+	for ( var key in defaults ) {
+		if (typeof options[key] != "undefined") {
+			defaults[key] = options[key];	
+		}
+	}
+	
+	cordova.exec(null, null, 'DroidGapActivityPopup', 'closeWithReturnInfo', new Array(defaults));
+};
+
+cordova.addConstructor(function () {
+	cordova.addPlugin('droidGapActivityPopup', new DroidGapActivityPopup());
+});
+*/

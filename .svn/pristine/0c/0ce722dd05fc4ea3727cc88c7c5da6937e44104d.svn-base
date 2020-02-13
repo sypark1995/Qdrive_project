@@ -1,0 +1,48 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:orientation="vertical"
+    android:paddingTop="15dp">
+
+    <TextView
+        android:id="@+id/text_printer_connected_item_device_name"
+        android:layout_width="match_parent"
+        android:layout_height="26dp"
+        android:layout_marginStart="5dp"
+        android:layout_marginEnd="5dp"
+        android:ellipsize="end"
+        android:gravity="center_vertical"
+        android:maxLines="1"
+        android:singleLine="true"
+        android:textColor="@color/color_303030"
+        android:textSize="@dimen/text_size_32px"
+        tools:text="MI Band2" />
+
+    <View
+        android:layout_width="match_parent"
+        android:layout_height="1dp"
+        android:background="@color/color_d2d2d2" />
+
+    <RelativeLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="10dp">
+
+        <Button
+            android:id="@+id/btn_printer_connected_item_disconnect"
+            android:layout_width="wrap_content"
+            android:layout_height="30dp"
+            android:layout_alignParentEnd="true"
+            android:layout_centerVertical="true"
+            android:layout_marginStart="10dp"
+            android:background="@drawable/custom_button_selector"
+            android:paddingStart="15dp"
+            android:paddingEnd="15dp"
+            android:text="@string/button_disconnect"
+            android:textAllCaps="false"
+            android:textColor="@color/color_4fb648"
+            android:textSize="@dimen/text_size_28px" />
+    </RelativeLayout>
+</LinearLayout>

@@ -1,0 +1,294 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN" "http://www.w3.org/TR/html4/loose.dtd">
+<html>
+	<head>
+		<meta charset="utf-8" />
+		<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, minimum-scale=1.0, user-scalable=no" />
+
+    	<title></title>
+    
+		
+		<link rel="stylesheet" href="../libs/css/common.css" type="text/css" />
+
+		<link rel="stylesheet" href="../libs/css/icon.css" type="text/css"/>			
+	
+		<link rel="stylesheet" href="../libs/js/jqueryMobile/external/jscrollpane/jquery.jscrollpane.css" type="text/css" />
+		<link rel="stylesheet" href="../libs/js/jqueryMobile/jquery.mobile-1.4.3.min.css" type="text/css" />
+		<link rel="stylesheet" href="../libs/js/jqueryMobile/external/jqgrid/ui.jqgrid.css" type="text/css" />
+		<link rel="stylesheet" href="../libs/js/jqueryMobile/jquery.mobile.datepicker.css" type="text/css" />
+		<link rel="stylesheet" href="../libs/js/jqueryMobile/jquery.mobile.datepicker.theme.css" type="text/css" />
+		<link rel="stylesheet" href="../libs/js/jqueryMobile/external/jqgrid/table.css" type="text/css" />
+		<link rel="stylesheet" href="../libs/css/mobile_app.css" type="text/css" />
+
+
+		
+
+
+<script type="text/javascript" charset="utf-8" src="../libs/js/jqueryMobile/external/jscrollpane/jquery.mousewheel.js"></script>
+<script type="text/javascript" charset="utf-8" src="../libs/js/jqueryMobile/external/jscrollpane/mwheelIntent.js"></script>
+<script type="text/javascript" charset="utf-8" src="../libs/js/jqueryMobile/external/jscrollpane/jquery.jscrollpane.min.js"></script>
+
+	  <script type="text/javascript" charset="utf-8" src="../libs/js/jqueryMobile/jquery.min.js"></script>
+	  <script type="text/javascript" charset="utf-8" src="../libs/js/jqueryMobile/external/jquery-ui/datepicker.js"></script>
+		<script type="text/javascript" charset="utf-8" src="../libs/js/jqueryMobile/jquery.mobile.datepicker.js"></script>
+		<script type="text/javascript" charset="utf-8" src="../libs/js/jqueryMobile/external/jqgrid/grid.locale-en.js"></script>
+		<script type="text/javascript" charset="utf-8" src="../libs/js/jqueryMobile/external/jqgrid/jquery.jqGrid.min.js"></script>
+	   <script type="text/javascript" charset="utf-8" src="../libs/js/jqueryMobile/jquery.mobile-1.4.3.min.js"></script>
+
+
+
+		<script type="text/javascript" charset="utf-8" src="../cordova.js"></script>
+		<script type="text/javascript" charset="utf-8" src="../libs/js/jquery.dateFormat-1.0.js"></script>
+		<script type="text/javascript" charset="utf-8" src="../libs/js/giosis_mobile_util.js"></script>
+		<script type="text/javascript" charset="utf-8" src="../libs/js/shared_pref_helper.js"></script>
+		<script type="text/javascript" charset="utf-8" src="../libs/js/main_activity_starter.js"></script>		
+		<script type="text/javascript" charset="utf-8" src="../libs/js/droidgap_activity_popup.js"></script>
+		<script type="text/javascript" charset="utf-8" src="../libs/js/loading_dialog.js"></script>	
+		<script type="text/javascript" charset="utf-8" src="../libs/js/device_helper.js"></script>	
+		<script type="text/javascript" charset="utf-8" src="./scripts/statistic.js"></script>
+		<script type="text/javascript" charset="utf-8" src="../libs/js/common.js"></script>
+		<script type="text/javascript" charset="utf-8" src="../libs/js/home_activity_starter.js"></script>
+		<style type="text/css">
+	/*.search_area .ui-input-text  { width:45%; float:left }
+	.search_area button.ui-btn, .ui-controlgroup-controls button.ui-btn-icon-notext{ padding: 0.1em 0.1em 0.1em 2.2em; text-align: left;}
+	*/
+		.d_search_area .stc_btn_search { height:45px;}
+		.tot_count .ui-btn{ padding: .5em .3em; height:2.7em;}
+
+		
+		.badge {
+  display: block;
+  background: #BA070F;
+  color: #fff;
+  padding: 1px 7px;
+  position:relative;
+  top: -31px;
+  z-index: 0;
+  border-radius: .8em;
+  border: 2px solid #fff;
+  width:2.3em;
+}
+.ui-badge-container {
+  position: relative;
+}
+
+.left {
+    text-align: left;
+}
+.ui-input-text, .ui-input-search {margin:0}
+
+.ui-collapsible-inset .ui-collapsible-content {padding: 0.01em;}
+.ui-content  {padding: 0.1em;}
+.ui-header.hd h1 {padding:0}
+
+.ui-jqgrid {margin-top: -24px;}
+.btn_p_search {padding: 0.3em 1em; }
+.ui-jqgrid .ui-jqgrid-hbox {padding-right:2px;}
+.h1_comment2 .customer_id2 {position:absolute;top:2px; right:6px; color:white; font-weight:normal; font-size:12px;  margin-top:22px; }
+.ui-header-fixed, .ui-footer-fixed {z-index:0}
+.ui-select .ui-btn select { z-index:0}
+</style>
+		</style>
+	</head>
+	<body onload="init();">
+		<!-- WRAP -->
+		<div data-role="page" id="wrap">
+				<div class="hd ui-header" data-role="header" data-theme="b" data-position="fixed" >
+				 
+					<h1 class="h1_comment2">Statistics<em class="customer_id2"><span class="icon "></span><span id="spnDriverNm" class="blue"></span></em></h1>
+							<div class=btn_area_left>
+								  <a id="btnHome" data-ajax="false" class="ui-link" href=""  >Home</a>
+							</div>
+      			</div>
+				
+				<div role="main" class="ui-content">
+				<select id="sel_type" class="SelectBox">
+					<option value="DLV">Delivery</option>
+					<option value="PIC">Pickup</option>
+				</select>
+
+				<div id="delivery_set">
+				<h3 style="background-color:#a2a2a2; font-size:12px; color:#fff; font-weight:normal; padding:1px 10px;">
+						<span >Search condition</span>
+				</h3>
+				<table width="100%" class="d_search_area" style="height:88px">	
+						<tr>
+							<td  align="center" colspan="3">
+								<a href="#popupDateMenu" data-rel="popup"  > 
+								<input  type="text"  style="text-align:center; height:3em;" readonly="true" id="search_date" value="DPC3-Out Date">
+								</input>
+								</a>
+								<div data-role="popup" id="popupDateMenu" >
+										<ul data-role="listview" data-inset="true" style="min-width:210px;">
+											<li><a class="ui-btn" onClick="setSearchDate('DPC3-Out Date') " >DPC3-Out Date </a></li>
+											<li><a class="ui-btn" onClick="setSearchDate('Delivered Date') " >Delivered Date </a></li>
+										</ul>
+								</div>
+
+									
+							</td>
+							<td  width="30%" rowspan="2" style="padding:0 0.5em;">
+									<button id="btn_delivery_search"   class="stc_btn_search  ui-btn ui-shadow ui-corner-all ui-btn-icon-left ui-icon-search">Search</button>
+							</td>
+						</tr>
+						<tr>
+							<td width="32%" align="center">
+								<input type="text" id="d_date_from" style="text-align:center; height:3em; "  class="date-input-css"  data-role="date"  readonly="true" >
+							</td>
+							<td width="5%" align="center">
+								<div> ~ </div>
+							</td>
+							<td width="32%" > 
+								<input type="text"  class="date-input-css " style="text-align:center; height:3em; "  id="d_date_to" data-role="date" readonly="true" >
+							</td>
+						</tr>
+					</table>
+				<h3 style="background-color:#a2a2a2; font-size:12px; color:#fff; font-weight:normal; padding:1px 10px;">
+						<span >Result</span>
+				</h3>
+					<div data-role="tabs">
+					  <div data-role="navbar">
+							<ul>
+							  <li><a id='tab_del_detail' href="#fragment-2" class="ui-btn-active">Detail</a></li>
+							  <li ><a id='tab_del_summary'  href="#fragment-1"  >Summary</a></li>
+							</ul>
+					  </div>
+					 <!-- Deilivery Summary TAB-->
+					 <div id="fragment-1">
+							<table width="100%" class="tot_count">
+							<tr>
+								<td width="33%" >
+									 <a id='btn_d_sum_total' href="#" class="ui-btn ui-mini ui-shadow ui-corner-all "  style="font-size:12px; text-align:center">Total</a>
+										<div class="ui-badge-container" align="center"><span  id="sp_d_tot"  class="badge">0</span></div>
+								</td>
+								<td width="33%" >
+									 <a id='btn_d_sum_delivered' href="#" class="ui-btn ui-mini ui-shadow ui-corner-all " style="font-size:12px; text-align:center">Delivered</a>
+									<div class="ui-badge-container " align="center"><span  id="sp_d_delivered" class="badge">0</span></div>
+									</td>
+								<td width="33%">
+									 <a id='btn_d_sum_not_delivered' href="#" class="ui-btn ui-mini ui-shadow ui-corner-all "  style="font-size:12px; text-align:center">Not Delivered</a>
+									<div class="ui-badge-container" align="center"><span  id="sp_d_not_delivered" class="badge">0</span></div>
+								</td>
+							</tr>
+							</table>
+							<table id="list2" width="100%" ></table>
+							<div id="pager2" ></div>
+					</div>
+					<!--END fragment-1 -->
+					<!-- fragment-2  Deilivery Detail TAB-->
+					<div id="fragment-2">
+						<table width="100%" class="tot_count">
+							<tr>
+								<td width="33%" >
+								 <a id ="btn_d_det_total" href="#" class="ui-btn ui-shadow ui-corner-all "  style="font-size:12px; text-align:center">Total</a>
+										<div class="ui-badge-container" align="center"><span  id="sp_d_det_tot"  class="badge">0</span></div>
+								</td>
+								<td width="33%" >
+									 <a   id ="btn_d_det_delivered"  href="#" class="ui-btn  ui-shadow ui-corner-all " style="font-size:12px; text-align:center">Delivered</a>
+									<div class="ui-badge-container " align="center"><span  id="sp_d_det_delivered" class="badge">0</span></div>
+									</td>
+								<td width="33%">
+									 <a  id ="btn_d_det_not_delivered" href="#" class="ui-btn  ui-shadow ui-corner-all "  style="font-size:12px; text-align:center">Not Delivered</a>
+									<div class="ui-badge-container" align="center"><span  id="sp_d_det_not_delivered" class="badge">0</span></div>
+								</td>
+							</tr>
+							</table>
+							<table id="list3" width="100%" ></table>
+							<div id="pager3" ></div>
+					</div>
+					<!--END fragment-2-->
+				</div>
+				<!--END tabs-->
+			  </div>
+			  <!--END collapsible-->
+			  	<div id="pickup_set" style="display:none" >
+				<h3 style="background-color:#a2a2a2; font-size:12px; color:#fff; font-weight:normal; padding:1px 10px;">
+						<span >Search condition</span>
+				</h3>
+						<table width="100%" class="p_search_area">
+						<tr>
+							<td width="32%" align="center">
+									<input type="text" id="p_date_from" style="text-align:center; height:3em; "   class="date-input-css"  data-role="date"  readonly="true"></td>
+							<td  width="5%"  align="center"><div> ~ </div></td>
+							<td width="32%">
+								<input type="text" style="text-align:center; height:3em; "   class="date-input-css"  id="p_date_to" data-role="date"		readonly="true"></td>
+							<td  width="30%" style="padding:0 0.3em;">
+							<button id="btn_pickup_search"   class="stc_btn_search  ui-btn ui-shadow ui-corner-all ui-btn-icon-left ui-icon-search btn_p_search"><span style="padding-left:1em;">Search</span></button>
+							</td>
+						</tr>
+					</table>
+				<h3 style="background-color:#a2a2a2; font-size:12px; color:#fff; font-weight:normal; padding:1px 10px;">
+						<span >Result</span>
+				</h3>
+					<div data-role="tabs">
+					  <div data-role="navbar">
+							<ul>
+							  <li><a id='tab_pic_detail' href="#fragment-4" class="ui-btn-active">Detail</a></li>
+							   <li ><a id='tab_pic_summary' href="#fragment-3"  >Summary</a></li>
+							</ul>
+					  </div>
+					 <div id="fragment-3">
+						<table width="100%" class="tot_count">
+						<tr>
+							<td width="20%" >
+								<!--<button class="ui-btn  ui-shadow ui-corner-all " style="font-size:13px; text-align:left">Total</button>-->
+								 <a  id="btn_p_sum_total" href="#" class="ui-btn  ui-shadow ui-corner-all "  style="font-size:12px; text-align:center">Total</a>
+										<div class="ui-badge-container" align="center"><span id="sp_p_tot" class="badge">0</span></div>
+								</td>
+								<td width="20%" >
+									<!--<button class="ui-btn ui-shadow ui-corner-all "  style="font-size:13px; text-align:left">Delivered</button>-->
+									 <a   id="btn_p_sum_done" href="#" class="ui-btn  ui-shadow ui-corner-all " style="font-size:12px; text-align:center">Done</a>
+									<div class="ui-badge-container " align="center"><span id="sp_p_done" class="badge">0</span></div>
+									</td>
+								<td width="20%">
+								<!--<button class="ui-btn ui-shadow ui-corner-all "  style="font-size:13px; text-align:left">Not Delivered</button>-->
+									 <a  id="btn_p_sum_failed" href="#" class="ui-btn  ui-shadow ui-corner-all "  style="font-size:12px; text-align:center">Failed</a>
+									<div class="ui-badge-container" align="center"><span  id="sp_p_failed"class="badge">0</span></div>
+									<td width="20%">
+								<!--<button class="ui-btn ui-shadow ui-corner-all "  style="font-size:13px; text-align:left">Not Delivered</button>-->
+									 <a id="btn_p_sum_cancelled" href="#" class="ui-btn  ui-shadow ui-corner-all "  style="font-size:12px; text-align:center">Cancelled</a>
+									<div class="ui-badge-container" align="center"><span  id="sp_p_cancelled" class="badge">0</span></div>
+									<td width="20%">
+								<!--<button class="ui-btn ui-shadow ui-corner-all "  style="font-size:13px; text-align:left">Not Delivered</button>-->
+									 <a id="btn_p_sum_confirmed" href="#" class="ui-btn  ui-shadow ui-corner-all "  style="font-size:12px; text-align:center">Confirmed</a>
+									<div class="ui-badge-container" align="center"><span  id="sp_p_confirmed"class="badge">0</span></div>
+						</td>
+						</tr>
+						</table>
+						<table id="list_pickup_summary" width="100%"></table>
+						<div id="pager4"></div>
+				</div>
+				<div id="fragment-4">
+							<table width="100%" class="tot_count">
+						<tr>
+							<td width="20%" >
+								<!--<button class="ui-btn  ui-shadow ui-corner-all " style="font-size:13px; text-align:left">Total</button>-->
+								 <a id="btn_p_det_total" href="#" class="ui-btn ui-mini ui-shadow ui-corner-all "  style="font-size:12px; text-align:center">Total</a>
+										<div class="ui-badge-container" align="center"><span id="sp_p_det_tot" class="badge">0</span></div>
+								</td>
+								<td width="20%" >
+									<!--<button class="ui-btn ui-shadow ui-corner-all "  style="font-size:13px; text-align:left">Delivered</button>-->
+									 <a id="btn_p_det_done"  href="#" class="ui-btn ui-mini ui-shadow ui-corner-all " style="font-size:12px; text-align:center">Done</a>
+									<div class="ui-badge-container " align="center"><span id="sp_p_det_done" class="badge">0</span></div>
+									</td>
+								<td width="20%">
+								<!--<button class="ui-btn ui-shadow ui-corner-all "  style="font-size:13px; text-align:left">Not Delivered</button>-->
+									 <a id="btn_p_det_failed" href="#" class="ui-btn ui-mini ui-shadow ui-corner-all "  style="font-size:12px; text-align:center">Failed</a>
+									<div class="ui-badge-container" align="center"><span  id="sp_p_det_failed"class="badge">0</span></div>
+									<td width="20%">
+								<!--<button class="ui-btn ui-shadow ui-corner-all "  style="font-size:13px; text-align:left">Not Delivered</button>-->
+									 <a id="btn_p_det_cancelled" href="#" class="ui-btn ui-mini ui-shadow ui-corner-all "  style="font-size:12px; text-align:center">Cancelled</a>
+									<div class="ui-badge-container" align="center"><span  id="sp_p_det_cancelled" class="badge">0</span></div>
+									<td width="20%">
+								<!--<button class="ui-btn ui-shadow ui-corner-all "  style="font-size:13px; text-align:left">Not Delivered</button>-->
+									 <a id="btn_p_det_confirmed" href="#" class="ui-btn ui-mini ui-shadow ui-corner-all "  style="font-size:12px; text-align:center">Confirmed</a>
+									<div class="ui-badge-container" align="center"><span  id="sp_p_det_confirmed"class="badge">0</span></div>
+						</td>
+						</tr>
+						</table>
+						<table id="list_pickup_detail" width="100%" ></table>
+						<div id="pager5"></div>
+				</div>
+			</div>
+		</div>
+	</body>
+</html>

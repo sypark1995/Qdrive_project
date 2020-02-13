@@ -1,0 +1,140 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:background="@color/color_f6f6f6"
+    android:orientation="vertical">
+
+    <include layout="@layout/top_title" />
+
+    <RelativeLayout
+        android:layout_width="match_parent"
+        android:layout_height="match_parent">
+
+        <LinearLayout
+            android:id="@+id/layout_notice_detail"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:orientation="vertical">
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:background="@color/white"
+                android:orientation="vertical">
+
+                <TextView
+                    android:id="@+id/text_notice_detail_content"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginBottom="20dp"
+                    android:layout_marginTop="20dp"
+                    android:paddingEnd="25dp"
+                    android:paddingStart="25dp"
+                    android:textColor="@color/color_303030"
+                    android:textSize="@dimen/text_size_28px"
+                    tools:text="Every conversation gets me high on motivation Gets me craving of you own familiar ..." />
+
+                <TextView
+                    android:id="@+id/text_notice_detail_date"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_gravity="end"
+                    android:layout_marginBottom="20dp"
+                    android:layout_marginEnd="20dp"
+                    android:textColor="@color/color_767676"
+                    android:textSize="@dimen/text_size_22px"
+                    tools:text="Jul 25, 3:08 PM" />
+            </LinearLayout>
+
+            <RelativeLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginEnd="20dp"
+                android:layout_marginStart="20dp"
+                android:layout_marginTop="30dp">
+
+                <LinearLayout
+                    android:id="@+id/layout_notice_detail_prev"
+                    android:layout_width="wrap_content"
+                    android:layout_height="30dp"
+                    android:layout_centerVertical="true"
+                    android:background="@drawable/custom_button_normal_30"
+                    android:gravity="center_vertical"
+                    android:orientation="horizontal"
+                    android:paddingEnd="15dp"
+                    android:paddingStart="15dp">
+
+                    <ImageView
+                        android:layout_width="6dp"
+                        android:layout_height="10dp"
+                        android:layout_marginEnd="10dp"
+                        android:background="@drawable/qdrive_setting_btn_arrow_l" />
+
+                    <TextView
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:text="@string/button_prev"
+                        android:textAllCaps="false"
+                        android:textColor="@color/color_4fb648"
+                        android:textSize="@dimen/text_size_28px" />
+                </LinearLayout>
+
+                <LinearLayout
+                    android:id="@+id/layout_notice_detail_next"
+                    android:layout_width="wrap_content"
+                    android:layout_height="30dp"
+                    android:layout_alignParentEnd="true"
+                    android:layout_centerVertical="true"
+                    android:background="@drawable/custom_button_normal_30"
+                    android:gravity="center_vertical"
+                    android:orientation="horizontal"
+                    android:paddingEnd="15dp"
+                    android:paddingStart="15dp">
+
+                    <TextView
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:text="@string/button_next"
+                        android:textAllCaps="false"
+                        android:textColor="@color/color_4fb648"
+                        android:textSize="@dimen/text_size_28px" />
+
+                    <ImageView
+                        android:layout_width="6dp"
+                        android:layout_height="10dp"
+                        android:layout_marginStart="10dp"
+                        android:background="@drawable/qdrive_setting_btn_arrow_r" />
+                </LinearLayout>
+            </RelativeLayout>
+        </LinearLayout>
+
+        <LinearLayout
+            android:id="@+id/layout_notice_detail_reload"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_centerInParent="true"
+            android:gravity="center"
+            android:orientation="vertical"
+            android:visibility="gone">
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginBottom="10dp"
+                android:text="@string/msg_network_connect_error"
+                android:textColor="@color/color_303030"
+                android:textSize="@dimen/text_size_32px" />
+
+            <Button
+                android:id="@+id/btn_notice_detail_reload"
+                android:layout_width="wrap_content"
+                android:layout_height="30dp"
+                android:background="@drawable/custom_button_eraser"
+                android:text="@string/text_reload"
+                android:textColor="@color/color_767676"
+                android:textSize="@dimen/text_size_28px" />
+        </LinearLayout>
+    </RelativeLayout>
+</LinearLayout>

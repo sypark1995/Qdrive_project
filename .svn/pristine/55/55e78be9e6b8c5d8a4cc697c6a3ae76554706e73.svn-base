@@ -1,0 +1,64 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN" "http://www.w3.org/TR/html4/loose.dtd">
+<html>
+	<head>
+		<meta charset="utf-8" />
+		<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, minimum-scale=1.0, user-scalable=no" />
+
+    	<title></title>
+    
+		<link rel="stylesheet" href="../libs/css/jquery.mobile-1.1.0.min.css" type="text/css" />
+		<link rel="stylesheet" href="../libs/css/common.css" type="text/css" />
+		<link rel="stylesheet" href="../libs/css/mobile_app.css" type="text/css" />	
+	
+		<script type="text/javascript" charset="utf-8" src="../cordova.js"></script>
+	 	<script type="text/javascript" charset="utf-8" src="../libs/js/jquery-1.7.2.js"></script>
+		<script type="text/javascript" charset="utf-8" src="../libs/js/jquery.mobile-1.1.0.js"></script>
+		<script type="text/javascript" charset="utf-8" src="../libs/js/giosis_mobile_util.js"></script>
+		<script type="text/javascript" charset="utf-8" src="../libs/js/loading_dialog.js"></script>				
+		<script type="text/javascript" charset="utf-8" src="../libs/js/common.js"></script>
+		<script type="text/javascript" charset="utf-8" src="./scripts/noticeList.js"></script>
+
+	</head>
+	<body onload="init();">
+		<!-- WRAP -->
+		<div data-role="page" id="wrap" class="settings">
+			<!-- HEADER -->
+		    <div class="hd ui-header" data-role="header" data-theme="b" data-position="fixed" >        
+	        	<h1>Notice</h1>
+	        	<!--<a href="" id="btnBack" class="btn_back">Back</a>-->
+				<div class=btn_area_left>
+					<a id="btnBack" data-ajax="false" class="ui-link" href=""  >Back</a>
+				</div>
+		    </div><!-- //HEADER -->
+
+
+			<!-- CONTENTS -->
+			<div class="content" >
+				<div class="section_index" style="min-height:270px;">
+		            <div class="lists notice">
+	            		<ul id="ulList">
+		                </ul>
+		            </div>
+	        	</div>
+	        </div>
+
+		    <!-- ALERT : 로딩중 -->
+		    <div class="qlps_alert" id="qlps_alert_loading" style="top:; display:none;">
+		        <div class="inner">
+		            <p class="loading"><span class="icon_loading"></span>Loading...</p>
+		        </div>   
+		    </div>
+		    <!-- // ALERT : 로딩중 -->
+		    
+		    <!-- ALERT : NETWORK DISCONNECTED -->
+		    <div class="qlps_alert reload" id="qlps_alert_reload" style="top:70px; left:5px; display:none;">
+		        <div class="inner">
+		            <p>Network disconnected.</p>
+		            <a href="" id="btnReload"><span class="icon_reload"></span></a>
+		        </div>   
+		    </div>
+		    <!-- // ALERT : NETWORK DISCONNECTED -->
+		    		                
+	    </div>
+	</body>
+</html>

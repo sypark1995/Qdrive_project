@@ -1,0 +1,123 @@
+var eventType = '';
+var isPhoneGapReady = false;
+
+function init() {
+
+	eventType = 'IN';
+
+	setPage();
+	document.addEventListener("resume", setPage, false);
+}
+
+function setPage() {
+	
+	if (eventType == 'IN') {
+		
+		setButton("btnBack", function () {location.href = 'file:///android_asset/www/Settings/settings.html';});
+		setButton("btnReload", setNoticeListWithServerData);
+		
+		document.addEventListener("deviceready", onDeviceReady, false);
+		
+		eventType = '';
+	}	
+
+	setNoticeListWithServerData();		
+}
+
+function onDeviceReady() {
+	
+	isPhoneGapReady = true;
+	setNoticeListWithServerData();
+
+	document.addEventListener("backbutton", onBackKeyDown, false);
+}
+
+function setNoticeListWithServerData() {
+	
+	$("#ulList").html('');
+	
+	if (isPhoneGapReady == true) {
+
+		networkState = navigator.connection.type;
+		
+		if (networkState == Connection.NONE) {
+			$("#qlps_alert_reload").show();
+			return;
+		} else {
+			$("#qlps_alert_reload").hide();
+		}
+	} else {
+		return;
+	} 
+	
+	var methodName = "GetNoticeData";
+	var params = new RMSParam();
+	var where = '';
+
+	params.add("gubun", "LIST");
+	params.add("kind", "QSIGN");
+	params.add("page_no", 1);
+	params.add("page_size", 30);	
+	params.add("nid", 0);
+	params.add("svc_nation_cd", "SG");
+	params.add("opId", localStorage.getItem('opId'));
+	params.add("officeCd", localStorage.getItem('officeCd'));
+	params.add("device_id", device.uuid);
+	params.add("network_type", networkState);	
+	
+	$("#qlps_alert_loading").show();
+	$("a").addClass("ui-disabled");
+
+	cordova.require("com.giosis.util.qdrive.util.LoadingDialog").show();
+	
+	var result_GetNoticeList = RMSHelper.callWebMethod(serviceName, methodName, params.toJson());
+
+	cordova.require("com.giosis.util.qdrive.util.LoadingDialog").hide();
+	
+	if (result_GetNoticeList != null) {
+		
+		if (result_GetNoticeList.ResultCode == 0) {
+									
+			for (var i = 0; i < result_GetNoticeList.ResultObject.length; i++) {
+				
+				var ul = "";
+				var li = ""; 
+				var a = "";		
+				var span1st = "";
+				var span2nd = "";			
+				var p1st = "";
+				
+				span1st = '<span id="spnDate_' + i + '" class="con">' + result_GetNoticeList.ResultObject[i].reg_dt_short + '</span>';			
+				p1st = '<p id="pTitle_' + i + '" >' + result_GetNoticeList.ResultObject[i].title + '</p>';
+				span2nd = '<span id="spnNid_' + i + '" style="display:none;">' + result_GetNoticeList.ResultObject[i].nid + '</span>';			
+				
+				a = '<a id="a_' + i + '" href="" class="ui-link" style="vertical-align:middle;">' + p1st + span1st + span2nd + '</a>';
+				li = '<li id="li_' + i + '">';
+				 
+				li += a + '</li>';
+				
+				ul = $("#ulList").html();
+				$("#ulList").html(ul + li);
+				
+				$("#ulList a").bind('click', function (event) {
+					
+					$("#li_" + event.srcElement.id.split('_')[1]).addClass('active');
+			     
+				    var timer = setInterval(function () {
+				    							$("#li_" + event.srcElement.id.split('_')[1]).removeClass('active');
+				    	 						localStorage.setItem('nid', $('#spnNid_' + event.srcElement.id.split('_')[1]).text());
+				    	 						location.href = "file:///android_asset/www/Settings/noticeDetail.html";
+	
+				    	 						clearInterval(timer);
+			         						}, 200);
+				});
+			}
+		} else {
+			
+			alert(result_GetNoticeList.ResultMsg);			
+		}		
+	}
+	
+	$("#qlps_alert_loading").hide();
+	$("a").removeClass("ui-disabled");	
+}

@@ -1,0 +1,53 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:background="@color/color_f6f6f6"
+    android:orientation="vertical">
+
+    <RelativeLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="20dp"
+        android:layout_marginEnd="20dp">
+
+        <Button
+            android:id="@+id/btn_qd_intro_back"
+            android:layout_width="30dp"
+            android:layout_height="30dp"
+            android:layout_alignParentEnd="true"
+            android:background="@drawable/btn_delete" />
+    </RelativeLayout>
+
+    <LinearLayout
+        android:id="@+id/layout_qd_intro_request_qdelivery"
+        android:layout_width="match_parent"
+        android:layout_height="45dp"
+        android:layout_marginTop="90dp"
+        android:background="@drawable/back_rect_e2e2e2"
+        android:gravity="center"
+        android:orientation="vertical">
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="@string/text_request_qdelivery" />
+
+    </LinearLayout>
+
+    <LinearLayout
+        android:id="@+id/layout_qd_intro_my_qdelivery"
+        android:layout_width="match_parent"
+        android:layout_height="45dp"
+        android:layout_marginTop="20dp"
+        android:background="@drawable/back_rect_e2e2e2"
+        android:gravity="center"
+        android:orientation="vertical">
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="@string/text_my_qdelivery" />
+
+    </LinearLayout>
+</LinearLayout>

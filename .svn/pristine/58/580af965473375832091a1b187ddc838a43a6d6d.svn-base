@@ -1,0 +1,829 @@
+﻿var eventType = '';
+var selected_option = '';
+var selected_option_auth_1 = '';
+var summaryData = [];
+var detailData = [];
+var pickupSummaryData= [];
+var pickupDetailData = [];
+
+$(function(){
+    $('#sel_type').change(function(){
+        var type =  $("#sel_type option:selected").val();
+		if(type =='PIC')
+		{
+				$("#delivery_set").hide();
+				$("#pickup_set").show();
+		}
+		else if(type == "DLV")
+		{
+				$("#delivery_set").show();
+				$("#pickup_set").hide();
+		}
+    });
+
+	// Delivery  검색 버튼 
+	$( "#btn_delivery_search" ).bind( "click", function(event, ui) {
+		if($("#search_date").val().indexOf( 'Delivered') > -1)
+		{
+				onClick_dlv_search('D_Summary_DLV');
+		}
+		else{
+				onClick_dlv_search('D_Summary');
+		}
+	});
+	// 픽업 검색
+	$( "#btn_pickup_search" ).bind( "click", function(event, ui) {
+			onClick_pickup_search();
+	});
+	//Detail TAB 클릭 
+	$( "#tab_del_detail" ).bind( "click", function(event, ui) {
+			tabShow("D", "Detail");
+			//countBtnSelected('d', 'Total');
+			//onClick_tabDeliveryDetail("Total");
+	});
+	$( "#tab_pic_detail" ).bind( "click", function(event, ui) {
+			tabShow("P", "Detail");
+			//countBtnSelected('p', 'Total');
+			//onClick_tabPickupDetail("Total");
+	});
+
+	//Summary TAB 클릭 
+	$( "#tab_del_summary" ).bind( "click", function(event, ui) {
+			tabShow("D", "Summary");
+	});
+	$( "#tab_pic_summary" ).bind( "click", function(event, ui) {
+			tabShow("P", "Summary");
+	});
+
+	//Summary Total 클릭 
+	$( "#btn_d_sum_total" ).bind( "click", function(event, ui) {
+  		//    tabShow("D","DETAIL");
+		//	countBtnSelected('d_sum', 'total');
+		//	onClick_tabDeliveryDetail("total");
+	});
+	$( "#sp_d_tot" ).bind( "click", function(event, ui) {
+  		  //  tabShow("D","DETAIL");
+		//	countBtnSelected('d_sum', 'total');
+	});
+   //Summary Delivered 클릭 
+	$( "#btn_d_sum_delivered" ).bind( "click", function(event, ui) {
+		  //  tabShow("D","DETAIL");
+		//	countBtnSelected('d_sum', 'delivered');
+	});
+	$( "#sp_d_delivered" ).bind( "click", function(event, ui) {
+		  //  tabShow("D","DETAIL");
+		//	countBtnSelected('d_sum', 'delivered');
+	});
+	 //Summary Not Delivered 클릭 
+	$( "#btn_d_sum_not_delivered" ).bind( "click", function(event, ui) {
+		  //  tabShow("D","DETAIL");
+		//	countBtnSelected('d_sum', 'not_delivered');
+	});
+	$( "#sp_d_not_delivered" ).bind( "click", function(event, ui) {
+		//    tabShow("D","DETAIL");
+		//	countBtnSelected('d_sum', 'not_delivered');
+	});
+	
+
+	//Detail Total 클릭 시 조회 
+	$( "#btn_d_det_total" ).bind( "click", function(event, ui) {
+			countBtnSelected('d', 'total');
+			onClick_tabDeliveryDetail("total");
+	});
+	$( "#sp_d_det_tot" ).bind( "click", function(event, ui) {
+			countBtnSelected('d', 'total');
+			onClick_tabDeliveryDetail("total");
+	});
+	//Detail Delivered 클릭 시 조회 
+	$( "#btn_d_det_delivered" ).bind( "click", function(event, ui) {
+			countBtnSelected('d', 'delivered');
+			onClick_tabDeliveryDetail("delivered");
+	});
+	$( "#sp_d_det_delivered" ).bind( "click", function(event, ui) {
+			countBtnSelected('d', 'delivered');
+			onClick_tabDeliveryDetail("delivered");
+	});
+	//Detail Delivered 클릭 시 조회 
+	$( "#btn_d_det_not_delivered" ).bind( "click", function(event, ui) {
+			countBtnSelected('d', 'not_delivered');
+			onClick_tabDeliveryDetail("not_delivered");
+	});
+	$( "#sp_d_det_not_delivered" ).bind( "click", function(event, ui) {
+			countBtnSelected('d', 'not_delivered');
+			onClick_tabDeliveryDetail("not_delivered");
+	});
+	
+	//Pickup
+
+	//Pickup Detail Total
+	$( "#btn_p_det_total" ).bind( "click", function(event, ui) {
+			countBtnSelected('p', 'total');
+			onClick_tabPickupDetail("total");
+	});
+	$( "#sp_p_det_tot" ).bind( "click", function(event, ui) {
+			countBtnSelected('p', 'total');
+			onClick_tabPickupDetail("total");
+	});
+// Done (Detail)
+   $( "#btn_p_det_done" ).bind( "click", function(event, ui) {
+			countBtnSelected('p', 'done');
+			onClick_tabPickupDetail("done");
+	});
+	$( "#sp_p_det_done" ).bind( "click", function(event, ui) {
+			countBtnSelected('p', 'done');
+			onClick_tabPickupDetail("done");
+	});
+// Failed (Detail)
+   $( "#btn_p_det_failed" ).bind( "click", function(event, ui) {
+			countBtnSelected('p', 'failed');
+			onClick_tabPickupDetail("failed");
+	});
+	$( "#sp_p_det_failed" ).bind( "click", function(event, ui) {
+			countBtnSelected('p', 'failed');
+			onClick_tabPickupDetail("failed");
+	});
+// Cancelled (Detail)
+   $( "#btn_p_det_cancelled" ).bind( "click", function(event, ui) {
+			countBtnSelected('p', 'cancelled');
+			onClick_tabPickupDetail("cancelled");
+	});
+	$( "#sp_p_det_cancelled" ).bind( "click", function(event, ui) {
+			countBtnSelected('p', 'cancelled');
+			onClick_tabPickupDetail("cancelled");
+	});
+	// Confirmed (Detail) btn_p_det_confirmed
+   $( "#btn_p_det_confirmed" ).bind( "click", function(event, ui) {
+			countBtnSelected('p', 'confirmed');
+			onClick_tabPickupDetail("confirmed");
+	});
+	$( "#sp_p_det_confirmed" ).bind( "click", function(event, ui) {
+			countBtnSelected('p', 'confirmed');
+			onClick_tabPickupDetail("confirmed");
+	});
+	
+	var dt = new Date();
+	var month = dt.getMonth()+1;
+	if(month.toString().length == 1){month = "0"+month.toString();}
+	
+	var day = dt.getDate();
+	if(day.toString().length == 1){day = "0"+day.toString();}
+	var year = dt.getFullYear();
+
+//	$("#set").collapsible( "expand" );
+//$("#pickup_set").collapsible( "expand" );
+	$( ".date-input-css" ).datepicker({ dateFormat: 'yy-mm-dd' });
+    $( ".date-input-css" ).val(year+'-'+month+'-'+day);
+    
+	
+		
+
+	// Summary 테스트 데이타
+	summaryData = [  {"dpc3out_dt":"2014-06-02",
+							"total_cnt":"1",
+							"driver_id":"sg021",
+							"delivered_cnt":"0",
+							"delivered_prcntg":"0",
+							"avg_delivery_day":"0"},
+							{"dpc3out_dt":"2014-06-10",
+							"total_cnt":"1",
+							"driver_id":"sg021",
+							"delivered_cnt":"1",
+							"delivered_prcntg":"100",
+							"avg_delivery_day":"0"},
+							{"dpc3out_dt":"2014-07-11",
+							"total_cnt":"1",
+							"driver_id":"sg021",
+							"delivered_cnt":"0",
+							"delivered_prcntg":"0",
+							"avg_delivery_day":"0"}
+	,
+							{"dpc3out_dt":"2014-07-11",
+							"total_cnt":"1",
+							"driver_id":"sg021",
+							"delivered_cnt":"0",
+							"delivered_prcntg":"0",
+							"avg_delivery_day":"0"}
+	,
+							{"dpc3out_dt":"2014-07-11",
+							"total_cnt":"1",
+							"driver_id":"sg021",
+							"delivered_cnt":"0",
+							"delivered_prcntg":"0",
+							"avg_delivery_day":"0"}
+	,
+							{"dpc3out_dt":"2014-07-11",
+							"total_cnt":"1",
+							"driver_id":"sg021",
+							"delivered_cnt":"0",
+							"delivered_prcntg":"0",
+							"avg_delivery_day":"0"}
+	,
+							{"dpc3out_dt":"2014-07-11",
+							"total_cnt":"1",
+							"driver_id":"sg021",
+							"delivered_cnt":"0",
+							"delivered_prcntg":"0",
+							"avg_delivery_day":"0"}
+	,
+							{"dpc3out_dt":"2014-07-11",
+							"total_cnt":"1",
+							"driver_id":"sg021",
+							"delivered_cnt":"0",
+							"delivered_prcntg":"0",
+							"avg_delivery_day":"0"}
+	,
+							{"dpc3out_dt":"2014-07-11",
+							"total_cnt":"1",
+							"driver_id":"sg021",
+							"delivered_cnt":"0",
+							"delivered_prcntg":"0",
+							"avg_delivery_day":"0"}
+						];
+	detailData  = [ { 	"tracking_no":"KRSG1000015",
+							"stat":"Delivered",
+							"driver_id":"Zai",
+							"delivered_dt":"2014-07-15 13:14:33 111"},
+							{"tracking_no":"KRSG1001546",
+													"stat":"D4",
+													"driver_id":"Zai",
+													"delivered_dt":"2014-07-11 13:14:33 111"},
+							{"tracking_no":"KRSG1007894",
+													"stat":"D2",
+													"driver_id":"Zai",
+													"delivered_dt":"2014-07-12 13:14:33 111"}	
+						];
+
+//
+summaryData =[];
+detailData = [];
+var dlvHeight = window.innerHeight - 338;
+var picHeight = window.innerHeight - 302;
+		//Deilvery Summary 
+		jQuery("#list2").jqGrid({
+			    datatype: 'local',
+                data: summaryData,
+                gridview: true,
+                height: dlvHeight,
+			    rowNum: 10000,
+                colNames: ['DPC3-Out Date', 'Total', 'Delivered','%','Avg Date'],
+                colModel: [
+                    {name: 'dpc3out_dt' , width:"110",   align:"center" },
+                    {name: 'total_cnt', width:"60",  align:"center"  },
+                    {name: 'delivered_cnt', width:"70" ,  align:"center" },
+					{name: 'delivered_prcntg', width:"50",  align:"center"},
+					{name: 'avg_delivery_day' ,width:"70",  align:"center" },
+                ]
+            });
+
+		//Delivery Detail
+		jQuery("#list3").jqGrid({
+			    datatype: 'local',
+                data: detailData,
+                gridview: true,
+				rowNum: 10000,
+                height: dlvHeight,
+                colNames: ['Shipping No', 'Tracking No', 'Status', 'Delivered Date'],
+                colModel: [
+					{name: 'shipping_no' , width:"100",   align:"center" },
+                    {name: 'tracking_no' , width:"100",   align:"center" },
+                    {name: 'stat', width:"70" ,  align:"center", formatter:dlvStatFormatter  },
+					//{name: 'driver_id', width:"70",  align:"center"},
+					{name: 'delivered_dt' ,width:"100",  align:"center", formatter:'date', formatoptions: { srcformat:'Y-m-d', newformat:'Y-m-d' } },
+                ]
+            });
+	
+		//Pickup Summary 
+		jQuery("#list_pickup_summary").jqGrid({
+			    datatype: 'local',
+                data: pickupSummaryData,
+                gridview: true,
+                height: picHeight,
+			    rowNum: 10000,
+                colNames: ['Date', 'Total', 'Pickup Done','%','Avg Date'],
+                colModel: [
+                    {name: 'desired_dt' , width:"100",   align:"center" },
+                    {name: 'total_cnt', width:"60",  align:"center"  },
+                    {name: 'done', width:"90" ,  align:"center" },
+					{name: 'done_prcntg', width:"50",  align:"center"},
+					{name: 'avg_done_day' ,width:"50",  align:"center" },
+                ]
+            });
+	
+		//Pickup Detail
+		jQuery("#list_pickup_detail").jqGrid({
+			    datatype: 'local',
+                data: pickupDetailData,
+                gridview: true,
+				rowNum: 10000,
+                height: picHeight,
+                colNames: ['Pickup No',  'Status','Qty','Desired Date'],
+                colModel: [
+                    {name: 'pickup_no' , width:"80",   align:"center" },
+					//{name: 'driver_id', width:"70",  align:"center"},
+                    {name: 'stat', width:"60" ,  align:"center", formatter:picStatFormatter },
+				    {name: 'qty', width:"50" ,  align:"center" },
+					{name: 'desired_dt' ,width:"80",  align:"center", formatter:'date', formatoptions: { srcformat:'Y-m-d', newformat:'Y-m-d' } },
+                ]
+            });
+
+/*
+		$('.ui-jqgrid-bdiv').jScrollPane({
+		  showArrows: true, 
+		  horizontalDragMaxWidth: 30,
+		  verticalDragMaxHeight: 30,     
+		  maintainPosition:false
+		}); 
+*/
+});
+
+//Detail 탭 카운트 버튼 Background 설정
+function countBtnSelected(type, val ){
+	if(type.toUpperCase() == 'D')
+	{
+			if(val.toUpperCase() == 'TOTAL'){
+				$("#btn_d_det_total").css({"background-color":"#38c", "color":"white"});
+				$("#btn_d_det_delivered").css({"background-color":"#f6f6f6", "color":"#333"});
+				$("#btn_d_det_not_delivered").css({"background-color":"#f6f6f6", "color":"#333"});
+			}
+			else if (val.toUpperCase() == 'DELIVERED')
+			{
+				$("#btn_d_det_total").css({"background-color":"#f6f6f6", "color":"#333"});
+				$("#btn_d_det_delivered").css({"background-color":"#38c", "color":"white"});
+				$("#btn_d_det_not_delivered").css({"background-color":"#f6f6f6", "color":"#333"});
+			}
+			else if (val.toUpperCase() == 'NOT_DELIVERED')
+			{
+				$("#btn_d_det_total").css({"background-color":"#f6f6f6", "color":"#333"});
+				$("#btn_d_det_delivered").css({"background-color":"#f6f6f6", "color":"#333"});
+				$("#btn_d_det_not_delivered").css({"background-color":"#38c", "color":"white"});
+			}
+	}
+	/*
+	else if (type.toUpperCase() == 'D_SUM'){
+			if(val.toUpperCase() == 'TOTAL'){
+				$("#btn_d_sum_total").css({"background-color":"#38c", "color":"white"});
+				$("#btn_d_sum_delivered").css({"background-color":"#f6f6f6", "color":"#333"});
+				$("#btn_d_sum_not_delivered").css({"background-color":"#f6f6f6", "color":"#333"});
+			}
+			else if (val.toUpperCase() == 'DELIVERED')
+			{
+				$("#btn_d_sum_total").css({"background-color":"#f6f6f6", "color":"#333"});
+				$("#btn_d_sum_delivered").css({"background-color":"#38c", "color":"white"});
+				$("#btn_d_sum_not_delivered").css({"background-color":"#f6f6f6", "color":"#333"});
+			}
+			else if (val.toUpperCase() == 'NOT_DELIVERED')
+			{
+				$("#btn_d_sum_total").css({"background-color":"#f6f6f6", "color":"#333"});
+				$("#btn_d_sum_delivered").css({"background-color":"#f6f6f6", "color":"#333"});
+				$("#btn_d_sum_not_delivered").css({"background-color":"#38c", "color":"white"});
+			}
+	}*/
+	else if(type.toUpperCase() == 'P')
+	{
+			if(val.toUpperCase() == 'TOTAL'){
+				$("#btn_p_det_total").css({"background-color":"#38c", "color":"white"});
+				$("#btn_p_det_done").css({"background-color":"#f6f6f6", "color":"#333"});
+				$("#btn_p_det_failed").css({"background-color":"#f6f6f6", "color":"#333"});
+				$("#btn_p_det_cancelled").css({"background-color":"#f6f6f6", "color":"#333"});
+				$("#btn_p_det_confirmed").css({"background-color":"#f6f6f6", "color":"#333"});
+			}
+			else if (val.toUpperCase() == 'DONE')
+			{
+				$("#btn_p_det_total").css({"background-color":"#f6f6f6", "color":"#333"});
+				$("#btn_p_det_done").css({"background-color":"#38c", "color":"white"});
+				$("#btn_p_det_failed").css({"background-color":"#f6f6f6", "color":"#333"});
+				$("#btn_p_det_cancelled").css({"background-color":"#f6f6f6", "color":"#333"});
+				$("#btn_p_det_confirmed").css({"background-color":"#f6f6f6", "color":"#333"});
+			}
+			else if (val.toUpperCase() == 'FAILED')
+			{
+				$("#btn_p_det_total").css({"background-color":"#f6f6f6", "color":"#333"});
+				$("#btn_p_det_done").css({"background-color":"#f6f6f6", "color":"#333"});
+				$("#btn_p_det_failed").css({"background-color":"#38c", "color":"white"});
+				$("#btn_p_det_cancelled").css({"background-color":"#f6f6f6", "color":"#333"});
+				$("#btn_p_det_confirmed").css({"background-color":"#f6f6f6", "color":"#333"});
+			}
+			else if (val.toUpperCase() == 'CANCELLED')
+			{
+				$("#btn_p_det_total").css({"background-color":"#f6f6f6", "color":"#333"});
+				$("#btn_p_det_done").css({"background-color":"#f6f6f6", "color":"#333"});
+				$("#btn_p_det_failed").css({"background-color":"#f6f6f6", "color":"#333"});
+				$("#btn_p_det_cancelled").css({"background-color":"#38c", "color":"white"});
+				$("#btn_p_det_confirmed").css({"background-color":"#f6f6f6", "color":"#333"});
+			}
+			else if (val.toUpperCase() == 'CONFIRMED')
+			{
+				$("#btn_p_det_total").css({"background-color":"#f6f6f6", "color":"#333"});
+				$("#btn_p_det_done").css({"background-color":"#f6f6f6", "color":"#333"});
+				$("#btn_p_det_failed").css({"background-color":"#f6f6f6", "color":"#333"});
+				$("#btn_p_det_cancelled").css({"background-color":"#f6f6f6", "color":"#333"});
+				$("#btn_p_det_confirmed").css({"background-color":"#38c", "color":"white"});
+			}
+	}
+}
+function test (val, val2,val3){
+  //  '<a title=MA href=javascript:alert(' + rowObject[5] + ')>MA<a>' ;
+	 alert(val);
+}
+//, formatter:opsFormatter 
+function picStatFormatter (cellvalue, options, rowObject) {
+	var stat = "";
+	switch(cellvalue){
+			case "P1" :
+				stat = "Request";
+				break;
+			case "P2" :
+				stat = "Confirmed";
+				break;
+			case "P3" :
+				stat = "Done";
+				break;
+			case "PX" :
+				stat = "Cancelled";
+				break;
+			case "PF" :
+				stat = "Failed";
+				break;
+			default :
+					stat = cellvalue;
+					break;
+	}
+	
+	var det = "<span>"+stat+"</span>";
+	return det;
+		
+}
+
+function dlvStatFormatter (cellvalue, options, rowObject) {
+			//  i = options.rowId;
+	
+			var stat = "";
+			switch(cellvalue){
+					case "D2" :
+						stat = "DPC1-IN";
+						break;
+					case "SI" :
+						stat = "DPC1-OUT";
+						break;
+					case "SA" :
+						stat = "DPC2-IN";
+						break;
+					case "AO" :
+						stat = "DPC2-OUT";
+						break;
+					case "AI" :
+						stat = "DPC3-IN";
+						break;
+					case "D3" :
+						stat = "DPC3-OUT";
+						break;
+					case "LK" :
+						stat = "Long Keep";
+						break;
+					case "DA" :
+						stat = "Voided";
+						break;
+					case "D4" :
+							stat = "Delivered";
+							break;
+					default :
+							stat = cellvalue;
+							break;
+			}
+			
+			var det = "<span>"+stat+"</span>";
+			return det;
+			 // var tst = '<a class="nau" name="nau" onClick="alert('+i+');return false;" href="#">1</a>';
+			//  var det = '<a class="det" name="det" onClick="javascript:test('+ rowObject["dpc3out_dt"]+' ,' +rowObject["total_cnt"]+','+options.rowId+ '); " href="#">'+cellvalue+'</a>';
+			
+ }
+
+function setGridSize(){
+		$(window).bind('resize', function() {
+	   $("#list2").setGridWidth($(window).width());
+		$("#list3").setGridWidth($(window).width());
+		$("#list_pickup_summary").setGridWidth($(window).width());
+		$("#list_pickup_detail").setGridWidth($(window).width());
+		}).trigger('resize');
+}
+function init () {
+	
+	setGridSize();
+	eventType = 'IN';
+	setPage();
+	setDriverName();;
+
+	document.addEventListener("resume", setPage, false);
+
+	// RealTime upload 권한 
+	if(localStorage.getItem('authNo').indexOf("94") != -1) {
+		$("#section_realtime_upload").attr("style", "display:;");
+	}	2014-08-19
+}
+function onClick_btn_home(){
+	cordova.require("com.giosis.util.qdrive.util.MainActivityStarter").start();
+}
+function onDeviceReady() {
+	document.addEventListener("backbutton", onBackKeyDown, false);
+}
+
+function setPage () {
+  
+	if (eventType == 'IN') {
+
+		document.addEventListener("deviceready", onDeviceReady, false);
+        setButton("btnHome", onClick_btn_home);
+		eventType = '';
+	}
+}
+
+
+function tabShow(stype, stab)
+{
+	if(stype.toUpperCase() == "D")
+	{
+		if(stab .toUpperCase()== "SUMMARY")
+		{
+			$("#tab_del_detail").removeClass("ui-btn-active");
+			$("#tab_del_summary").addClass("ui-btn-active");
+			$("#fragment-1").show();
+			$("#fragment-2").hide();
+		}
+		else if(stab.toUpperCase() == "DETAIL")
+		{
+			$("#tab_del_detail").addClass("ui-btn-active");
+			$("#tab_del_summary").removeClass("ui-btn-active");
+			$("#fragment-1").hide();
+			$("#fragment-2").show();
+		}
+	}
+	else if(stype.toUpperCase() == "P")
+	{
+		if(stab .toUpperCase()== "SUMMARY")
+		{
+			$("#tab_pic_detail").removeClass("ui-btn-active");
+			$("#tab_pic_summary").addClass("ui-btn-active");
+			$("#fragment-3").show();
+			$("#fragment-4").hide();
+		}
+		else if(stab.toUpperCase() == "DETAIL")
+		{
+			$("#tab_pic_detail").addClass("ui-btn-active");
+			$("#tab_pic_summary").removeClass("ui-btn-active");
+			$("#fragment-3").hide();
+			$("#fragment-4").show();
+		}
+	}
+}
+
+//픽업 조회 Summary
+function onClick_pickup_search(){
+	
+	if(dateDiffCheck($("#p_date_from").val(), $("#p_date_to").val()) == false){
+		alert("Please check the date range. Max 1 month");
+		return;
+	}
+	
+	tabShow("P", "Detail");
+
+	var totCnt=0;
+	var pickupDoneCnt=0;
+	var pickupFailedCnt=0;
+	var pickupCancelledCnt=0;
+	var pickupConfirmedCnt=0;
+
+	$("#btn_p_det_total").css({"background-color":"#f6f6f6", "color":"#333"});
+	$("#btn_p_det_done").css({"background-color":"#f6f6f6", "color":"#333"});
+	$("#btn_p_det_failed").css({"background-color":"#f6f6f6", "color":"#333"});
+	$("#btn_p_det_cancelled").css({"background-color":"#f6f6f6", "color":"#333"});
+	$("#btn_p_det_confirmed").css({"background-color":"#f6f6f6", "color":"#333"});
+
+	var methodName = "GetStaticPickupSummary";
+	var params = new RMSParam();
+	params.add("search_type", 'P_Summary'); 
+	params.add("date_from", $("#p_date_from").val());
+	params.add("date_to",$("#p_date_to").val());
+	params.add("del_driver_id", localStorage.getItem('opId'));
+    params.add("status", '');
+
+	$("#qlps_alert_loading").show();
+//	$("a").addClass("ui-disabled");
+	cordova.require("com.giosis.util.qdrive.util.LoadingDialog").show();
+	var result = RMSHelper.callWebMethod(serviceName, methodName, params.toJson());
+	cordova.require("com.giosis.util.qdrive.util.LoadingDialog").hide();
+	if(result != null && result.ResultObject.length > 0) {
+	
+		for(var i = 0; i < result.ResultObject.length; i++){
+			totCnt += parseInt(result.ResultObject[i].total_cnt);
+			pickupDoneCnt += parseInt(result.ResultObject[i].done);
+			pickupFailedCnt +=  parseInt(result.ResultObject[i].failed);
+			pickupCancelledCnt +=  parseInt(result.ResultObject[i].cancelled);
+			pickupConfirmedCnt += parseInt(result.ResultObject[i].confirmed);
+		}
+		
+		$("#sp_p_tot").text(totCnt);
+		$("#sp_p_done").text(pickupDoneCnt);
+		$("#sp_p_failed").text(pickupFailedCnt);
+		$("#sp_p_cancelled").text(pickupCancelledCnt);
+		$("#sp_p_confirmed").text(pickupConfirmedCnt);
+
+		$("#sp_p_det_tot").text(totCnt);
+		$("#sp_p_det_done").text(pickupDoneCnt);
+		$("#sp_p_det_failed").text(pickupFailedCnt);
+		$("#sp_p_det_cancelled").text(pickupCancelledCnt);
+		$("#sp_p_det_confirmed").text(pickupConfirmedCnt);
+
+		jQuery("#list_pickup_summary").jqGrid('clearGridData')
+						.jqGrid('setGridParam', { data: result.ResultObject })
+						.trigger('reloadGrid');
+		}
+	else
+	{
+			jQuery("#list_pickup_summary").jqGrid('clearGridData')
+			
+		$("#sp_p_tot").text("0");
+		$("#sp_p_done").text("0");
+		$("#sp_p_failed").text("0");
+		$("#sp_p_cancelled").text("0");
+		$("#sp_p_confirmed").text("0");
+
+		$("#sp_p_det_tot").text("0");
+		$("#sp_p_det_done").text("0");
+		$("#sp_p_det_failed").text("0");
+		$("#sp_p_det_cancelled").text("0");
+		$("#sp_p_det_confirmed").text("0");
+	}
+
+	jQuery("#list_pickup_detail").jqGrid('clearGridData');
+
+	cordova.require("com.giosis.util.qdrive.util.LoadingDialog").hide();
+}
+
+function dateDiffCheck(sdate, edate){
+	 var startDay = sdate + " 00:00:00";
+	 var endDay = edate + " 23:59:59";
+
+	 var diffDay = DateUtil.DateDiff(startDay, endDay);
+	 
+	 if(diffDay > 31){
+		 return false;
+	 }
+	 
+	 return true;
+}
+//Delivery Search
+function onClick_dlv_search(type) {
+	if(dateDiffCheck($("#d_date_from").val(), $("#d_date_to").val()) == false){
+		alert("Please check the date range. Max 1 month");
+		return;
+	}
+	
+	tabShow("D", "Detail");
+	var totCnt=0;
+	var deliveredCnt=0;
+
+	$("#btn_d_det_total").css({"background-color":"#f6f6f6", "color":"#333"});
+	$("#btn_d_det_delivered").css({"background-color":"#f6f6f6", "color":"#333"});
+	$("#btn_d_det_not_delivered").css({"background-color":"#f6f6f6", "color":"#333"});
+
+
+	var methodName = "GetStaticDeliverySummary";
+	var params = new RMSParam();
+	params.add("search_type", type); 
+	params.add("date_from", $("#d_date_from").val());
+	params.add("date_to",$("#d_date_to").val());
+	params.add("del_driver_id", localStorage.getItem('opId'));
+    params.add("status", '');
+
+	$("#qlps_alert_loading").show();
+//	$("a").addClass("ui-disabled");
+	cordova.require("com.giosis.util.qdrive.util.LoadingDialog").show();
+	var result = RMSHelper.callWebMethod(serviceName, methodName, params.toJson());
+	cordova.require("com.giosis.util.qdrive.util.LoadingDialog").hide();
+	if(result != null && result.ResultObject.length > 0) {
+		for(var i = 0; i < result.ResultObject.length; i++){
+			totCnt += parseInt(result.ResultObject[i].total_cnt);
+			deliveredCnt += parseInt(result.ResultObject[i].delivered_cnt);
+		}
+		
+		$("#sp_d_tot").text(totCnt);
+		$("#sp_d_delivered").text(deliveredCnt);
+		$("#sp_d_not_delivered").text(totCnt-deliveredCnt);
+		$("#sp_d_det_tot").text(totCnt);
+		$("#sp_d_det_delivered").text(deliveredCnt);
+		$("#sp_d_det_not_delivered").text(totCnt-deliveredCnt);
+	   
+	   //Summary tab grid
+		jQuery("#list2").jqGrid('clearGridData')
+						.jqGrid('setGridParam', { data: result.ResultObject })
+						.trigger('reloadGrid');
+		}
+	else
+	{
+			jQuery("#list2").jqGrid('clearGridData');
+
+			$("#sp_d_tot").text("0");
+			$("#sp_d_delivered").text("0");
+			$("#sp_d_not_delivered").text("0");
+
+			$("#sp_d_det_tot").text("0");
+			$("#sp_d_det_delivered").text("0");
+			$("#sp_d_det_not_delivered").text("0");
+	}
+		
+	jQuery("#list3").jqGrid('clearGridData');
+
+	//$("#btn_d_sum_total").css({"background-color":"#f6f6f6", "color":"#333"});
+	//$("#btn_d_sum_delivered").css({"background-color":"#f6f6f6", "color":"#333"});
+	//$("#btn_d_sum_not_delivered").css({"background-color":"#f6f6f6", "color":"#333"});
+
+	//$("a").removeClass("ui-disabled");	
+}
+
+
+function onClick_tabPickupDetail(status){
+	var totCnt=0;
+	var deliveredCnt=0;
+	var methodName = "GetStaticPickupDetail";
+	var params = new RMSParam();
+	params.add("search_type", 'P_Detail'); 
+	params.add("date_from", $("#p_date_from").val());
+	params.add("date_to",$("#p_date_to").val());
+	params.add("del_driver_id", localStorage.getItem('opId'));
+    params.add("status", status);
+	$("#qlps_alert_loading").show();
+//	$("a").addClass("ui-disabled");
+	cordova.require("com.giosis.util.qdrive.util.LoadingDialog").show();
+	var result = RMSHelper.callWebMethod(serviceName, methodName, params.toJson());
+	cordova.require("com.giosis.util.qdrive.util.LoadingDialog").hide();
+
+	if(result != null && result.ResultObject.length > 0) {
+		jQuery("#list_pickup_detail").jqGrid('clearGridData')
+						.jqGrid('setGridParam', { data: result.ResultObject })
+						.trigger('reloadGrid');
+	}
+	else
+	{
+		jQuery("#list_pickup_detail").jqGrid('clearGridData')
+	}
+	cordova.require("com.giosis.util.qdrive.util.LoadingDialog").hide();
+}
+
+//Detail Tab Click 시 Search
+function onClick_tabDeliveryDetail(status){
+	var totCnt=0;
+	var deliveredCnt=0;
+    var type="";
+	if($("#search_date").val().indexOf('Delivered') > -1){
+			type = "D_Detail_DLV";
+	}
+	else{
+			type = "D_Detail";
+	}
+		
+	var methodName = "GetStaticDeliveryDetail";
+	var params = new RMSParam();
+	params.add("search_type", type); 
+	params.add("date_from", $("#d_date_from").val());
+	params.add("date_to",$("#d_date_to").val());
+	params.add("del_driver_id", localStorage.getItem('opId'));
+    params.add("status", status);
+	$("#qlps_alert_loading").show();
+//	$("a").addClass("ui-disabled");
+	cordova.require("com.giosis.util.qdrive.util.LoadingDialog").show();
+	var result = RMSHelper.callWebMethod(serviceName, methodName, params.toJson());
+	cordova.require("com.giosis.util.qdrive.util.LoadingDialog").hide();
+	if(result != null && result.ResultObject.length > 0) {
+		/*
+		for(var i = 0; i < result.ResultObject.length; i++){
+			totCnt += parseInt(result.ResultObject[i].total_cnt);
+			deliveredCnt += parseInt(result.ResultObject[i].delivered_cnt);
+		}*/
+		jQuery("#list3").jqGrid('clearGridData')
+						.jqGrid('setGridParam', { data: result.ResultObject })
+						.trigger('reloadGrid');
+		}
+	else
+	{
+		jQuery("#list3").jqGrid('clearGridData')
+	}
+
+	cordova.require("com.giosis.util.qdrive.util.LoadingDialog").hide();
+	//$("a").removeClass("ui-disabled");	
+}
+
+function setSearchDate(text)
+{
+	$("#popupDateMenu").popup('close');
+	$("#search_date").val(text );
+
+	var colModel = $("#list2").jqGrid('getGridParam', 'colModel'); 
+	jQuery("#list2").jqGrid("setLabel", colModel[0]['name'], text);
+}
+
+
+function setDriverName()
+{
+    $("#spnDriverNm").text(localStorage.getItem('opNm') == null ?  "librahim4" : localStorage.getItem('opNm'));
+
+}

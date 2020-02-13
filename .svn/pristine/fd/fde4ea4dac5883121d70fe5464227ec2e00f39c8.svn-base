@@ -1,0 +1,16 @@
+ .ui-jqgrid-htable thead tr{
+    background-color:#55C7E9;    
+    color: #FFFFFF;
+    height:25px;
+	border:1px
+}
+
+.ui-jqgrid tr.jqgrow {
+	 height:30px;
+}
+
+.ui-jqgrid tr.jqgrow td:last-child {
+	border-right-style:none;
+}
+
+

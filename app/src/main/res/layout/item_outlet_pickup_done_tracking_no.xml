@@ -1,0 +1,64 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:id="@+id/layout_outlet_pickup_done_tracking_no"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:background="@color/white"
+    android:paddingBottom="7dp"
+    android:paddingTop="7dp">
+
+    <LinearLayout
+        android:id="@+id/layout_outlet_pickup_done_tracking_no_item"
+        android:layout_width="match_parent"
+        android:layout_height="35dp"
+        android:layout_toStartOf="@+id/img_outlet_pickup_done_tracking_no_item_check"
+        android:background="@drawable/custom_background_barcode_active"
+        android:gravity="center_vertical"
+        android:orientation="horizontal"
+        android:paddingEnd="10dp"
+        android:paddingStart="10dp">
+
+        <ImageView
+            android:id="@+id/img_outlet_pickup_done_tracking_no_item"
+            android:layout_width="24dp"
+            android:layout_height="19dp"
+            android:layout_marginEnd="10dp"
+            android:background="@drawable/qdrive_btn_icon_barcode" />
+
+        <TextView
+            android:id="@+id/text_outlet_pickup_done_tracking_no_item"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:ellipsize="end"
+            android:maxLines="1"
+            android:singleLine="true"
+            android:textColor="@color/color_303030"
+            android:textSize="@dimen/text_size_36px"
+            android:textStyle="bold"
+            tools:text="SGSG1232132123" />
+
+        <TextView
+            android:id="@+id/text_outlet_pickup_done_tracking_no_item_receiver"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="15dp"
+            android:ellipsize="end"
+            android:maxLines="1"
+            android:singleLine="true"
+            android:textColor="@color/color_303030"
+            android:textSize="@dimen/text_size_32px"
+            android:visibility="gone"
+            tools:text="receiver name" />
+    </LinearLayout>
+
+    <Button
+        android:id="@+id/img_outlet_pickup_done_tracking_no_item_check"
+        android:layout_width="23dp"
+        android:layout_height="23dp"
+        android:layout_alignParentEnd="true"
+        android:layout_centerVertical="true"
+        android:layout_marginEnd="8dp"
+        android:layout_marginStart="10dp"
+        android:background="@drawable/qdrive_btn_icon_big_on" />
+</RelativeLayout>

@@ -1,0 +1,18 @@
+@charset "utf-8";
+
+/* Common */
+body,p,h1,h2,h3,h4,h5,h6,ul,ol,li,dl,dt,dd,table,th,td,form,fieldset,legend,input,textarea,a,button,select{margin:0; padding:0; -webkit-text-size-adjust:none;}
+body,input,textarea,select,button,table{font-size:16px; font-family:Arial, Helvetica, AppleGothic, San-serif;}
+body{position:relative; color:#333; background:#ddd;}
+.it, textarea{border:1px solid #bcbcbc;}
+ul,ol{list-style:none;}
+table{border-collapse:collapse;}
+img,fieldset{border:0;}
+a{color:#333; text-decoration:none; cursor:pointer;}
+label{ cursor:pointer;}
+em,address{font-style:normal;}
+.hc{ visibility:hidden; overflow:hidden; position:absolute; left:-9999em; width:0; height:0; font-size:0; line-height:0;}
+.nc,hr{display:none;}
+#ct{clear:both; width:1000%; background-color:#fff;}
+#ct:after{content:''; display:block; clear:both;}
+dfn{font-style:normal;}

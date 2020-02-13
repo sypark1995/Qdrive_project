@@ -1,0 +1,357 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:background="@color/color_f6f6f6"
+    android:orientation="vertical">
+
+    <include layout="@layout/top_title" />
+
+    <ScrollView
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content">
+
+        <RelativeLayout
+            android:layout_width="match_parent"
+            android:layout_height="match_parent">
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:orientation="vertical">
+
+                <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="50dp"
+                    android:focusable="true"
+                    android:focusableInTouchMode="true"
+                    android:orientation="vertical">
+
+                    <TextView
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_marginStart="20dp"
+                        android:layout_marginEnd="20dp"
+                        android:text="@string/text_item_information"
+                        android:textColor="@color/color_303030"
+                        android:textSize="@dimen/text_size_34px"
+                        android:textStyle="bold" />
+
+                    <LinearLayout
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:layout_marginTop="10dp"
+                        android:background="@color/white"
+                        android:orientation="vertical"
+                        android:padding="20dp">
+
+                        <LinearLayout
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            android:layout_gravity="center_vertical"
+                            android:orientation="horizontal">
+
+                            <TextView
+                                android:layout_width="120dp"
+                                android:layout_height="wrap_content"
+                                android:layout_gravity="center_vertical"
+                                android:text="@string/text_item_name"
+                                android:textColor="@color/color_303030"
+                                android:textSize="@dimen/text_size_30px" />
+
+                            <EditText
+                                android:id="@+id/edit_qd_step4_item_name"
+                                android:layout_width="match_parent"
+                                android:layout_height="35dp"
+                                android:background="@drawable/back_bottom"
+                                android:hint="@string/msg_input_item_name_info"
+                                android:paddingStart="10dp"
+                                android:paddingEnd="10dp"
+                                android:scrollHorizontally="true"
+                                android:singleLine="true"
+                                android:textColor="@color/color_8f8f8f"
+                                android:textSize="@dimen/text_size_30px" />
+                        </LinearLayout>
+
+                        <LinearLayout
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            android:layout_gravity="center_vertical"
+                            android:layout_marginTop="15dp"
+                            android:orientation="horizontal">
+
+                            <TextView
+                                android:layout_width="120dp"
+                                android:layout_height="wrap_content"
+                                android:layout_gravity="center_vertical"
+                                android:text="@string/text_item_price"
+                                android:textColor="@color/color_303030"
+                                android:textSize="@dimen/text_size_30px" />
+
+                            <RelativeLayout
+                                android:layout_width="match_parent"
+                                android:layout_height="35dp">
+
+                                <EditText
+                                    android:id="@+id/edit_qd_step4_item_price"
+                                    android:layout_width="match_parent"
+                                    android:layout_height="35dp"
+                                    android:layout_toStartOf="@id/text_qd_step4_item_price_currency"
+                                    android:background="@drawable/back_bottom"
+                                    android:inputType="number"
+                                    android:paddingStart="10dp"
+                                    android:paddingEnd="10dp"
+                                    android:scrollHorizontally="true"
+                                    android:singleLine="true"
+                                    android:textColor="@color/color_8f8f8f"
+                                    android:textSize="@dimen/text_size_30px" />
+
+                                <EditText
+                                    android:id="@+id/text_qd_step4_item_price_currency"
+                                    android:layout_width="wrap_content"
+                                    android:layout_height="35dp"
+                                    android:layout_alignParentEnd="true"
+                                    android:background="@drawable/back_bottom"
+                                    android:focusableInTouchMode="false"
+                                    android:paddingEnd="5dp"
+                                    android:text="S$" />
+                            </RelativeLayout>
+                        </LinearLayout>
+
+                        <LinearLayout
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            android:layout_gravity="center_vertical"
+                            android:layout_marginTop="15dp"
+                            android:orientation="horizontal">
+
+                            <TextView
+                                android:layout_width="120dp"
+                                android:layout_height="wrap_content"
+                                android:text="@string/text_item_definition"
+                                android:textColor="@color/color_303030"
+                                android:textSize="@dimen/text_size_30px" />
+
+                            <EditText
+                                android:id="@+id/edit_qd_step4_item_definition"
+                                android:layout_width="match_parent"
+                                android:layout_height="35dp"
+                                android:background="@drawable/back_bottom"
+                                android:paddingStart="10dp"
+                                android:paddingEnd="10dp"
+                                android:scrollHorizontally="true"
+                                android:singleLine="true"
+                                android:textColor="@color/color_8f8f8f"
+                                android:textSize="@dimen/text_size_30px" />
+                        </LinearLayout>
+                    </LinearLayout>
+                </LinearLayout>
+
+                <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="30dp"
+                    android:orientation="vertical">
+
+                    <TextView
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_marginStart="20dp"
+                        android:layout_marginEnd="20dp"
+                        android:text="@string/text_packing_information"
+                        android:textColor="@color/color_303030"
+                        android:textSize="@dimen/text_size_34px"
+                        android:textStyle="bold" />
+
+                    <LinearLayout
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:layout_marginTop="10dp"
+                        android:background="@color/white"
+                        android:orientation="vertical"
+                        android:padding="20dp">
+
+                        <LinearLayout
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            android:layout_gravity="center_vertical"
+                            android:orientation="horizontal">
+
+                            <TextView
+                                android:layout_width="120dp"
+                                android:layout_height="wrap_content"
+                                android:layout_gravity="center_vertical"
+                                android:text="@string/text_size_lhw"
+                                android:textColor="@color/color_303030"
+                                android:textSize="@dimen/text_size_30px" />
+
+                            <RelativeLayout
+                                android:layout_width="match_parent"
+                                android:layout_height="35dp">
+
+                                <RelativeLayout
+                                    android:id="@+id/layout_qd_step4_size"
+                                    android:layout_width="wrap_content"
+                                    android:layout_height="35dp"
+                                    android:layout_alignParentEnd="true"
+                                    android:layout_centerVertical="true"
+                                    android:background="@drawable/custom_button_list">
+
+                                    <TextView
+                                        android:id="@+id/text_qd_step4_size"
+                                        android:layout_width="wrap_content"
+                                        android:layout_height="wrap_content"
+                                        android:layout_centerVertical="true"
+                                        android:layout_marginStart="10dp"
+                                        android:layout_marginEnd="5dp"
+                                        android:ellipsize="end"
+                                        android:maxLines="1"
+                                        android:text="@string/text_select"
+                                        android:textColor="@color/color_303030"
+                                        android:textSize="@dimen/text_size_26px" />
+
+                                    <ImageView
+                                        android:layout_width="10dp"
+                                        android:layout_height="6dp"
+                                        android:layout_alignParentEnd="true"
+                                        android:layout_centerVertical="true"
+                                        android:layout_marginEnd="10dp"
+                                        android:background="@drawable/qdrive_btn_icon_down" />
+                                </RelativeLayout>
+
+                                <Spinner
+                                    android:id="@+id/spinner_qd_step4_size"
+                                    android:layout_width="match_parent"
+                                    android:layout_height="wrap_content"
+                                    android:layout_below="@id/layout_qd_step4_size"
+                                    android:layout_marginStart="10dp"
+                                    android:background="#FFFFFF"
+                                    android:minWidth="50dp" />
+                            </RelativeLayout>
+                        </LinearLayout>
+
+                        <LinearLayout
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            android:layout_gravity="center_vertical"
+                            android:layout_marginTop="15dp"
+                            android:orientation="horizontal">
+
+                            <TextView
+                                android:layout_width="120dp"
+                                android:layout_height="wrap_content"
+                                android:layout_gravity="center_vertical"
+                                android:text="@string/text_weight"
+                                android:textColor="@color/color_303030"
+                                android:textSize="@dimen/text_size_30px" />
+
+                            <RelativeLayout
+                                android:layout_width="match_parent"
+                                android:layout_height="35dp">
+
+                                <RelativeLayout
+                                    android:id="@+id/layout_qd_step4_weight"
+                                    android:layout_width="wrap_content"
+                                    android:layout_height="35dp"
+                                    android:layout_alignParentEnd="true"
+                                    android:layout_centerVertical="true"
+                                    android:background="@drawable/custom_button_list">
+
+                                    <TextView
+                                        android:id="@+id/text_qd_step4_weight"
+                                        android:layout_width="wrap_content"
+                                        android:layout_height="wrap_content"
+                                        android:layout_centerVertical="true"
+                                        android:layout_marginStart="10dp"
+                                        android:layout_marginEnd="5dp"
+                                        android:ellipsize="end"
+                                        android:maxLines="1"
+                                        android:text="@string/text_select"
+                                        android:textColor="@color/color_303030"
+                                        android:textSize="@dimen/text_size_26px" />
+
+                                    <ImageView
+                                        android:layout_width="10dp"
+                                        android:layout_height="6dp"
+                                        android:layout_alignParentEnd="true"
+                                        android:layout_centerVertical="true"
+                                        android:layout_marginEnd="10dp"
+                                        android:background="@drawable/qdrive_btn_icon_down" />
+                                </RelativeLayout>
+
+                                <Spinner
+                                    android:id="@+id/spinner_qd_step4_weight"
+                                    android:layout_width="match_parent"
+                                    android:layout_height="wrap_content"
+                                    android:layout_below="@id/layout_qd_step4_weight"
+                                    android:layout_marginStart="10dp"
+                                    android:background="#FFFFFF"
+                                    android:minWidth="50dp" />
+                            </RelativeLayout>
+                        </LinearLayout>
+                    </LinearLayout>
+                </LinearLayout>
+
+                <RelativeLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="30dp"
+                    android:background="@color/white"
+                    android:padding="20dp">
+
+                    <TextView
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_centerVertical="true"
+                        android:text="@string/text_shipping_cost"
+                        android:textColor="@color/color_303030"
+                        android:textSize="@dimen/text_size_34px" />
+
+                    <TextView
+                        android:id="@+id/text_qd_step4_shipping_cost"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_centerVertical="true"
+                        android:layout_marginEnd="7dp"
+                        android:layout_toStartOf="@id/text_qd_step4_currency"
+                        android:text="0"
+                        android:textColor="@color/color_303030"
+                        android:textSize="@dimen/text_size_38px"
+                        android:textStyle="bold" />
+
+                    <TextView
+                        android:id="@+id/text_qd_step4_currency"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_alignParentEnd="true"
+                        android:layout_centerVertical="true"
+                        android:text="S$"
+                        android:textColor="@color/color_303030"
+                        android:textSize="@dimen/text_size_34px" />
+                </RelativeLayout>
+
+                <Button
+                    android:id="@+id/btn_qd_step4_order_place"
+                    android:layout_width="131dp"
+                    android:layout_height="40dp"
+                    android:layout_gravity="center"
+                    android:layout_marginTop="30dp"
+                    android:layout_marginBottom="30dp"
+                    android:background="@drawable/back_round_30_4fb648"
+                    android:gravity="center"
+                    android:text="@string/button_order_place"
+                    android:textAllCaps="false"
+                    android:textColor="@color/white"
+                    android:textSize="@dimen/text_size_36px" />
+            </LinearLayout>
+
+            <ProgressBar
+                android:id="@+id/progress_qd_step4"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_centerInParent="true"
+                android:visibility="gone" />
+        </RelativeLayout>
+    </ScrollView>
+</LinearLayout>

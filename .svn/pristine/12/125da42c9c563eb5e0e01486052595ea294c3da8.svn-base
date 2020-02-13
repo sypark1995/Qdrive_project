@@ -1,0 +1,36 @@
+cordova.define("com.giosis.util.qdrive.barcodescanner.BarcodeScanner", function (require, exports, module) {	
+	
+    var exec = require("cordova/exec");
+    var BarcodeScanner = function () {};
+    BarcodeScanner.prototype.scan = function(options, successCallback, errorCallback) {
+    	var defaults = {
+    			title:'Scannig',
+    			type:'N'
+    	};
+    	
+    	if (options == null) { options = defaults };
+    	
+    	for ( var key in defaults ) {
+    		if (typeof options[key] != "undefined") {
+    			defaults[key] = options[key];	
+    		}
+    	}
+    	
+    	if (typeof errorCallback != "function") {
+    		console.log("BarcodeScanner.scan failure: failure parameter not a function");
+    		return;
+    	}
+    	
+    	if (typeof successCallback != "function") {
+    		console.log("BarcodeScanner.scan failure: success callback parameter must be a function");
+    		return;
+    	}
+
+		exec(successCallback, errorCallback, 'BarcodeScanner', 'scan', new Array(defaults));
+
+	}
+	
+    var plugin = new BarcodeScanner();
+    module.exports = plugin;
+});
+

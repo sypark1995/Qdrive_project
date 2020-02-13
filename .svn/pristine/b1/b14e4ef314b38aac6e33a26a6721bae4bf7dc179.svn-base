@@ -1,0 +1,63 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN"
+        "http://www.w3.org/TR/html4/loose.dtd">
+<html>
+<head>
+    <meta charset="utf-8"/>
+    <meta name="viewport"
+          content="width=device-width, initial-scale=1.0, maximum-scale=1.0, minimum-scale=1.0, user-scalable=no"/>
+
+    <title></title>
+
+    <link rel="stylesheet" href="../libs/css/jquery.mobile-1.1.0.min.css" type="text/css"/>
+    <link rel="stylesheet" href="../libs/css/style.css" type="text/css"/>
+    <script type="text/javascript" charset="utf-8" src="../cordova.js"></script>
+    <script type="text/javascript" charset="utf-8" src="../libs/js/jquery-1.7.2.js"></script>
+    <script type="text/javascript" charset="utf-8" src="../libs/js/jquery.mobile-1.1.0.js"></script>
+    <script type="text/javascript" charset="utf-8" src="../libs/js/jquery.dateFormat-1.0.js"></script>
+    <script type="text/javascript" charset="utf-8" src="../libs/js/giosis_mobile_util.js"></script>
+    <script type="text/javascript" charset="utf-8" src="../libs/js/main_activity_starter.js"></script>
+    <script type="text/javascript" charset="utf-8" src="../libs/js/shared_pref_helper.js"></script>
+    <script type="text/javascript" charset="utf-8" src="../libs/js/loading_dialog.js"></script>
+    <script type="text/javascript" charset="utf-8" src="../libs/js/common.js"></script>
+    <script type="text/javascript" charset="utf-8" src="./scripts/logIn.js"></script>
+
+    <!--<style type="text/css">-->
+    <!--.on_img{background-image:url(../libs/image/app/qsign_bt_s.png);background-repeat:no-repeat; background-size:140px; }-->
+    <!--.off_img {background-image:url(../libs/image/app/qsign_bt_n.png);background-repeat:no-repeat; background-size:140px; }-->
+    <!--.on_sp {color:#fff;font-size:23px;}-->
+    <!--.off_sp {color:#696969;font-size:23px;}-->
+    <!--</style>-->
+</head>
+<body onload="init();">
+
+<!-- WRAP -->
+
+<div class="qdrive_login" id="wrap">
+    <section class="cont">
+        <div class="inner">
+            <h1 class="logo"><img src="../libs/image/app/logo_qdrive.png" width="149" height="45"
+                                  alt="Qdrive"/></h1>
+            <p class="logo_dsc">Delivery &amp; Pickup for Qxpress SG</p>
+
+            <fieldset class="login_form">
+                <legend>Login</legend>
+                <div class="row"><input class="form_txt" type="text" placeholder="ID" id="loginID"/>
+                </div>
+                <div class="row"><input class="form_txt" type="password" placeholder="Password"
+                                        id="pw"/></div>
+                <div class="button_set">
+                    <button class="btn_sign" id="btnLogin" data-role="none">Sign</button>
+                    </li>
+                    <div class="support"><img src="../libs/image/app/logo_qxpress.png" width="50"
+                                              height="16" alt="Qdrive"/>
+                    </div>
+                </div>
+            </fieldset>
+        </div>
+    </section>
+
+    <footer class="footer">Only Qxpress partner driver can use this application<br><span id="environment"></span>version <span id="versionCode"></span></footer>
+</div>
+
+</body>
+</html>

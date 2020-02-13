@@ -1,0 +1,183 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN"
+        "http://www.w3.org/TR/html4/loose.dtd">
+<html>
+
+<head>
+    <meta charset="utf-8"/>
+    <meta name="viewport"
+          content="width=device-width, initial-scale=1.0, maximum-scale=1.0, minimum-scale=1.0, user-scalable=no"/>
+
+    <title></title>
+
+    <link rel="stylesheet" href="../libs/css/jquery.mobile-1.1.0.min.css" type="text/css"/>
+    <link rel="stylesheet" href="../libs/css/common.css" type="text/css"/>
+    <link rel="stylesheet" href="../libs/css/mobile_app.css" type="text/css"/>
+    <link rel="stylesheet" href="../libs/css/icon.css" type="text/css"/>
+
+    <script type="text/javascript" charset="utf-8" src="../cordova.js"></script>
+    <script type="text/javascript" charset="utf-8" src="../libs/js/jquery-1.7.2.js"></script>
+    <script type="text/javascript" charset="utf-8" src="../libs/js/jquery.mobile-1.1.0.js"></script>
+    <script type="text/javascript" charset="utf-8"
+            src="../libs/js/jquery.dateFormat-1.0.js"></script>
+    <script type="text/javascript" charset="utf-8" src="../libs/js/giosis_mobile_util.js"></script>
+    <script type="text/javascript" charset="utf-8" src="../libs/js/shared_pref_helper.js"></script>
+    <script type="text/javascript" charset="utf-8"
+            src="../libs/js/droidgap_activity_popup.js"></script>
+    <script type="text/javascript" charset="utf-8" src="../libs/js/loading_dialog.js"></script>
+    <script type="text/javascript" charset="utf-8" src="../libs/js/device_helper.js"></script>
+    <script type="text/javascript" charset="utf-8" src="../libs/js/common_integration.js"></script>
+    <script type="text/javascript" charset="utf-8"
+            src="../libs/js/main_activity_starter.js"></script>
+    <script type="text/javascript" charset="utf-8" src="./scripts/settings.js"></script>
+    <script type="text/javascript" charset="utf-8"
+            src="../libs/js/settings_activity_starter.js"></script>
+    <script type="text/javascript" charset="utf-8"
+            src="../libs/js/printer_activity_starter.js"></script>
+    <script type="text/javascript" charset="utf-8"
+            src="../libs/js/home_activity_starter.js"></script>
+
+</head>
+
+<body onload="init();">
+<!-- WRAP -->
+<div data-role="page" id="wrap" class="settings">
+
+    <!-- HEADER -->
+    <div class="hd ui-header" data-role="header" data-theme="b" data-position="fixed">
+
+        <h1>Settings</h1>
+        <div class=btn_area_left>
+            <a id="btnHome" data-ajax="false" class="ui-link" href="">Home</a>
+        </div>
+        <!-- BTN AREA RIGHT -->
+        <div class="btn_area_right">
+            <a id="btnSignIn" data-ajax="false" class="ui-link" href="" style="display:none;">Sign
+                In</a>
+            <a id="btnSignOut" data-ajax="false" class="ui-link" href="">Sign Out</a>
+        </div><!-- //BTN AREA RIGHT -->
+    </div><!-- //HEADER -->
+
+    <!-- CONTENTS -->
+    <div class="content">
+        <div class="section_index" style="min-height:0px;">
+            <div class="section myinfo">
+                <h3><span>My Information</span></h3>
+                <div class="inner">
+                    <div class="infobox">
+                        <dl>
+                            <dt>ID/Name</dt>
+                            <dd id="ddOpId_Nm"></dd>
+                        </dl>
+                        <dl>
+                            <dt>Branch</dt>
+                            <dd id="ddBrnchNm"></dd>
+                        </dl>
+                    </div>
+                    <div class="col2 add_modify_user">
+                        <a href="#" class="bt_big left" id="btn_modify"><span>Modify</span></a>
+                        <a href="#" class="bt_big right"
+                           id="btn_chgpwd"><span>Change password</span></a>
+                    </div>
+
+                </div>
+            </div>
+            <div style="clear:both"></div>
+
+            <div class="section work">
+                <h3><span>Work</span></h3>
+                <div class="inner">
+                    <div class="infobox">
+                        <dl>
+                            <dt>Delete data in Device</dt>
+                            <dd>
+                                <a href="#none" class="button white">
+                                    <span id="btnDeviceDataDelete" class="icon-delete">Delete</span>
+                                </a>
+                            </dd>
+                        </dl>
+                    </div>
+                    <div class="infobox" id="section_realtime_upload" style="display:none">
+                        <dl>
+                            <dt>Realtime Delivery Upload</dt>
+                            <dd>
+                                    <span class="slider_swc">
+                                        <span id="spn_real_upld_y" class="swc on inert">ON</span>
+                                        <span id="spn_real_upld_n" class="swc off">OFF</span>
+                                    </span>
+                            </dd>
+                        </dl>
+                    </div>
+
+                    <div id="send_log" style="display:none;">
+                    <p>Last uploaded : <span id="spnPunchedInTime"></span></p>
+                    <div class="infobox" style="margin-bottom:10px;">
+                        <dl>
+                            <dt>Log</dt>
+                            <dd>
+                                <a href="#none" class="button white">
+                                    <span id="btnLogDataSend" class="icon-delete">Send</span>
+                                </a>
+                            </dd>
+                        </dl>
+                    </div></div>
+                </div>
+            </div>
+
+            <div class="section others">
+                <h3><span>Others</span></h3>
+                <div class="inner">
+                    <a href="" class="bt_big" id="btnNotice"
+                       onclick="location.href = 'file:///android_asset/www/Settings/noticeList.html';">Notice<span
+                            class="r_arrow"></span></a>
+                    <div class="infobox">
+                        <dl>
+                            <dt>Version</dt>
+                            <dd id="ddVersion"></dd>
+                        </dl>
+                    </div>
+                </div>
+            </div>
+
+            <!-- printer setting page start -->
+            <div class="printer_header">
+                <h3><span>Setting</span></h3>
+                <div class="printer_body" id="btn_printer_setting"><span>Printer Setting</span>
+                    <arrow_2 class="arrow_2_right"></arrow_2>
+                </div>
+                <div class="printer_body" id="btn_scan_setting"><span>Scan Setting</span>
+                    <arrow_2 class="arrow_2_right"></arrow_2>
+                </div>
+                <div class="printer_body" id="btn_language_setting" style="display:none;"><span>Language Setting</span>
+                    <arrow_2 class="arrow_2_right"></arrow_2>
+                </div>
+                <div class="printer_body" id="btn_locker_user_info" style="display:none; "><span>Locker Alliance User Information</span>
+                    <arrow_2 class="arrow_2_right"></arrow_2>
+                </div>
+            </div>
+
+
+            <!-- ALERT : Downloading... -->
+            <div class="qlps_alert" id="qlps_alert_processing" style="top:; display:none;">
+                <div class="inner">
+                    <p>Downloading...</p>
+                    <p class="progressbar"><span style="width:0%">
+                                <!-- style- 너비사이즈로 저장 현황을 체크합니다.--></span></p>
+                    <p><em>0%</em></p>
+                </div>
+            </div>
+            <!-- // ALERT : Downloading... -->
+
+            <!-- ALERT : Success to download. -->
+            <div class="qlps_alert" id="qlps_alert_complete" style="top:; display:none;">
+                <div class="inner">
+                    <p class="single" id="pComplete"></p>
+                </div>
+            </div>
+            <!-- // ALERT : Success to download. -->
+
+        </div><!-- WRAP -->
+    </div>
+</div>
+</body>
+
+</html>

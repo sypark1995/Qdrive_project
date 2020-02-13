@@ -1,0 +1,28 @@
+
+cordova.define("com.giosis.util.qdrive.settings.SettingsStarter", function (require, exports, module) {	
+    var exec = require("cordova/exec");
+    var SettingsStarter = function () {};
+    
+    
+    SettingsStarter.prototype.modify = function() {
+    	  cordova.exec(null, null, "SettingsStarter", "modify", []);
+	}
+    SettingsStarter.prototype.changepwd = function() {
+    	 cordova.exec(null, null, "SettingsStarter", "changepwd", []);
+	}
+
+	SettingsStarter.prototype.scan = function() {
+         cordova.exec(null, null, "SettingsStarter", "scan", []);
+    }
+
+    SettingsStarter.prototype.locker_info = function() {
+    	 cordova.exec(null, null, "SettingsStarter", "locker_info", []);
+	}
+
+	SettingsStarter.prototype.language = function() {
+             cordova.exec(null, null, "SettingsStarter", "language", []);
+        }
+
+    var plugin = new SettingsStarter();
+    module.exports = plugin;
+});

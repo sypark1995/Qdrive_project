@@ -1,0 +1,23 @@
+
+// TEST
+/*var serviceName = "http://test.service.qxpress.asia/GMKT.INC.GLPS.Service.WebService/QSignService.qapi";
+var serviceNameLogin = "http://test.service.qxpress.asia/GMKT.INC.GLPS.Service.WebService/LoginService.qapi";*/
+
+// Staging
+/*var serviceName = "http://staging-service.qxpress.asia/GMKT.INC.GLPS.Service.WebService/QSignService.qapi";
+var serviceNameLogin = "http://staging-service.qxpress.asia/GMKT.INC.GLPS.Service.WebService/LoginService.qapi";*/
+
+// REAL
+var serviceName = "https://qps.qxpress.asia/GMKT.INC.GLPS.Service.WebService/QSignService.qapi";
+var serviceNameLogin = "https://qps.qxpress.asia/GMKT.INC.GLPS.Service.WebService/LoginService.qapi";
+
+// Qdrive 버젼관리
+var version = '3.2.6';
+
+//로컬 VM eylee
+//var serviceName = "http://172.30.89.56/GMKT.INC.GLPS.Service.WebService/swe_QSignService.asmx";
+//var serviceNameLogin = "http://172.30.89.56/GMKT.INC.GLPS.Service.WebService/swe_LoginService.asmx";
+
+//var serviceName = "http://172.30.89.53/GMKT.INC.GLPS.Service.WebService/swe_QSignService.asmx";
+//var serviceNameLogin = "http://172.30.89.53/GMKT.INC.GLPS.Service.WebService/swe_LoginService.asmx";
+

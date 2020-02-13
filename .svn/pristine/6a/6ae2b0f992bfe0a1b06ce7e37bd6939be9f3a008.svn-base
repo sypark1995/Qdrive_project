@@ -1,0 +1,4 @@
+# Referenced at F:\Android project\0_Qdrive_SG\app\build\intermediates\merged_manifests\debug\AndroidManifest.xml:67
+-keep class com.giosis.util.qdrive.singapore.MyApplication { <init>(); }
+# Referenced at F:\Android project\0_Qdrive_SG\app\build\intermediates\merged_manifests\debug\AndroidManifest.xml:67
+-keep class com.giosis.util.qdrive.singapore.whateverString { <init>(); }

@@ -1,0 +1,83 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN"
+        "http://www.w3.org/TR/html4/loose.dtd">
+<html>
+<head>
+    <meta charset="utf-8"/>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, minimum-scale=1.0, user-scalable=no"/>
+    <title></title>
+    <link rel="stylesheet" href="../libs/css/jquery.mobile-1.1.0.min.css" type="text/css"/>
+    <link rel="stylesheet" href="../libs/css/common.css" type="text/css"/>
+    <link rel="stylesheet" href="../libs/css/mobile_app.css" type="text/css"/>
+    <script type="text/javascript" charset="utf-8" src="../cordova.js"></script>
+    <script type="text/javascript" charset="utf-8" src="../libs/js/jquery-1.7.2.js"></script>
+    <script type="text/javascript" charset="utf-8" src="../libs/js/jquery.mobile-1.1.0.js"></script>
+    <script type="text/javascript" charset="utf-8" src="../libs/js/jquery.dateFormat-1.0.js"></script>
+    <script type="text/javascript" charset="utf-8" src="../libs/js/giosis_mobile_util.js"></script>
+    <script type="text/javascript" charset="utf-8" src="../libs/js/main_activity_starter.js"></script>
+    <script type="text/javascript" charset="utf-8" src="../libs/js/barcodescanner.js"></script>
+    <script type="text/javascript" charset="utf-8" src="../libs/js/droidgap_activity_popup.js"></script>
+    <script type="text/javascript" charset="utf-8" src="../libs/js/loading_dialog.js"></script>
+    <script type="text/javascript" charset="utf-8" src="../libs/js/common_integration.js"></script>
+    <script type="text/javascript" charset="utf-8" src="./scripts/scanTypes.js"></script>
+    <script type="text/javascript" charset="utf-8" src="../libs/js/home_activity_starter.js"></script>
+    <link rel="stylesheet" href="../libs/css/jquery.mobile-1.1.0.min.css" type="text/css"/>
+</head>
+<body onload="init();">
+<!-- WRAP -->
+<div data-role="page" id="wrap" class="scan">
+    <!-- HEADER -->
+    <div class="hd ui-header" data-role="header" data-theme="b" data-position="fixed">
+        <h1>Delivery Scan</h1>
+        <div class=btn_area_left>
+            <a id="btnHome" data-ajax="false" class="ui-link" href="">Home</a>
+        </div>
+    </div>
+    <!-- //HEADER -->
+    <!-- CONTENTS -->
+    <div class="content" style="min-height:400px;">
+        <!-- SECTION INDEX -->
+        <div class="section_index">
+            <h2 class="h1_comment"><span id="spnPunchedInTime"></span><em class="customer_id"><span class="icon"></span><span id="spnOpNm"></span></em></h2>
+            <div class="section delivery">
+                <h3><span>Delivery data scan input</span></h3>
+                <div class="inner">
+                    <a class="bt_big gray" id="btnDriverAssign"><i class="red" id="btn_confirm_my_order"></i><span class="r_arrow"></span></a>
+                    <a class="bt_big gray" id="btnDelivered"><i class="blue">Delivery Done</i><span class="r_arrow"></span></a>
+
+                </div>
+                <div style="padding-left:20px">
+                    * This is for Qdrive delivery use (normal case)
+                </div>
+                <div style="padding-left:20px;padding-bottom:20px; color:#8B4513;">
+                    * When your delivery data not shown, execute '<span id="text_confirm_my_order"></span>'
+                </div>
+            </div>
+            <div class="newsection newpickup" id="section_self_collect" style="display:none;">
+                <h3><span>Self Collection</span></h3>
+                <div class="inner last">
+                    <a class="bt_big gray" id="btnSelfCollection"> Self-Collection <span class="r_arrow"></span></a>
+                </div>
+            </div>
+            <!-- add Pickup C&R      by 2016-08-30 eylee -->
+            <div class="newsection cnr" id="section_pickup_cnr" style="">
+                <h3><span>Pickup Qoo10 C & R parcels</span></h3>
+                <div class="inner last">
+                    <a class="bt_big gray" id="btnPickuCNR">Pickup Done <span class="r_arrow"></span></a>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div class="qlps_alert" id="qlps_alert_complete" style="top:; display:none;">
+        <div class="inner">
+            <div id="pComplete">
+            </div>
+            <p>
+            </p>
+            <span id="btnScanSheetClose" data-role="button" data-inline="true">OK</span>
+            <span id="btnScanSheetFailList" data-role="button" data-inline="true">Fail list Detail</span>
+        </div>
+    </div>
+</div>
+</body>
+</html>

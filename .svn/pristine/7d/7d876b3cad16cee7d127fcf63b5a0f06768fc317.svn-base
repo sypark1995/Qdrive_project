@@ -1,0 +1,685 @@
+/* DB */
+var db;
+var currentAction;
+ document.addEventListener("deviceready", onModuleReady, false);
+
+function onModuleReady() {
+
+    try {
+
+        console.log("★★★★★★★ ::  onReadyTest  openDatabase");
+        db = window.sqlitePlugin.openDatabase({
+            name: 'QdriveDB.db',
+            location: 'default',
+            androidDatabaseProvider: 'system'
+        });
+    } catch(e) {
+        alert("Error. Please try again." + e.message);
+    }
+}
+
+function createTable(db, tableName, columns, successCB, failCB) {
+
+    // console.log("★★★★★★★ ::  createTable  :: ★★★★★★★");
+    currentAction = "CREATE TABLE :: " + tableName;
+    db.transaction(function(tx) {
+        tx.executeSql('CREATE TABLE IF NOT EXISTS ' + tableName + ' (' + columns + ')', [], successCB);
+    }, failCB);
+}
+
+function insertTableData(db, tableName, columns, data, successCB, failCB) {
+
+    currentAction = "INSERT TABLE :: " + tableName;
+    db.transaction(function(tx) {
+        tx.executeSql('INSERT INTO ' + tableName + '(' + columns + ') VALUES(' + data + ')', [], successCB);
+    }, failCB);
+}
+
+function selectTable(db, columns, tableName, where, groupBy, orderBy, option, successCB, failCB) {
+
+    if (where != '' && where != undefined)
+        where = ' WHERE ' + where;
+
+    if (groupBy != '' && groupBy != undefined)
+        groupBy = ' GROUP BY ' + groupBy;
+
+    if (orderBy != '' && orderBy != undefined)
+        orderBy = ' ORDER BY ' + orderBy;
+
+    // console.log("★★★★★★★ ::  selectTable  :: ★★★★★★★");
+    currentAction = "SELECT TABLE :: " + tableName;
+
+    db.transaction(function(tx) {
+
+        tx.executeSql('SELECT ' + columns + ' FROM ' + tableName + where + groupBy + orderBy + option, [], successCB);
+    }, failCB);
+}
+
+function updateTableData(db, tableName, columns, where, successCB, failCB) {
+
+    if (where != '' && where != undefined)
+        where = ' WHERE ' + where;
+
+    currentAction = "UPDATE TABLE :: " + tableName;
+    db.transaction(function(tx) {
+        tx.executeSql('UPDATE ' + tableName + ' SET ' + columns + where, [], successCB);
+    }, failCB);
+}
+
+function deleteTable(db, tableName, where, successCB, failCB) {
+
+    if (where != '' && where != undefined)
+        where = ' WHERE ' + where;
+
+    currentAction = "DELETE TABLE :: " + tableName;
+    db.transaction(function(tx) {
+        tx.executeSql('DELETE FROM ' + tableName + where, [], successCB);
+    }, failCB);
+}
+
+function failCB_Common(err) {
+
+	alert("Fail > " + currentAction + " / error code : " + err.code);
+	return;
+}
+
+
+
+/* RMSHelper.js */
+var RMSHelper = function() {};
+RMSHelper.getXMLHTTP = function() {
+    if (window.XMLHttpRequest) {
+        return new XMLHttpRequest();
+    }
+    var versions = [
+        "MSXML2.XMLHTTP.6.0",
+        "MSXML2.XMLHTTP.4.0",
+        "Microsoft.XMLHTTP",
+        "MSXML2.XMLHTTP.5.0",
+        "MSXML2.XMLHTTP.3.0",
+        "MSXML2.XMLHTTP"
+    ];
+    for (var i = 0; i < versions.length; i++) {
+        try {
+            var oXMLHTTP = new ActiveXObject(versions[i]);
+            return oXMLHTTP;
+        } catch (e) {};
+    }
+    throw new Error("No XMLHTTP");
+}
+
+RMSHelper.successCB_giosis_mobile_util = function(returnObj) {
+    return;
+}
+
+RMSHelper.failCB_giosis_mobile_util = function(evt) {
+    return;
+}
+
+RMSHelper.callWebMethodJquery = function(serviceName, methodName, argument) {
+
+    var svc = serviceName + "/" + methodName;
+    var result = null;
+
+    $.ajax({
+        url: svc,
+        dataType: 'json',
+        contentType: 'application/json',
+        data: argument,
+        timeout: 1000,
+        type: 'POST',
+        async: false,
+        success: function(data) {
+            if (data && data.d != undefined) {
+                result = data.d;
+            }
+        },
+        error: function(XMLHttpRequest, textStatus, errorThrown) {
+            exceptionClose(); //common
+            //console.log("PO callweb exception - "+methodName);
+            //alert("Please check your network connection status");
+            //return null;
+            alert("Error status :" + textStatus);
+            alert("Error type :" + errorThrown);
+            alert("Error message :" + XMLHttpRequest.responseXML);
+            return null;
+        }
+    });
+
+    return result;
+}
+
+//TODO
+RMSHelper.callWebMethod = function(serviceName, methodName, argument) {
+    var svc = serviceName + "/" + methodName;
+    console.log("callWebMethod URL : " + svc);
+
+    if (!argument) argument = "";
+
+    var xmlHttp = RMSHelper.getXMLHTTP();
+    xmlHttp.open("POST", svc, false);
+    xmlHttp.setRequestHeader('Content-Type', 'application/json');
+
+    try {
+        xmlHttp.send(argument);
+    } catch (e) {
+        xmlHttp.abort();
+        exceptionClose(); //common
+        console.log("callWebMethod exception - " + methodName);
+        console.log(e.message);
+        alert("Please check your network connection status");
+        return null;
+    }
+
+    var result = null;
+    try {
+        result = eval("(" + xmlHttp.responseText + ")");
+    } catch (ex) {}
+
+    if (result && result.ExceptionType != undefined) {
+        alert(result.Message);
+        throw result;
+    }
+
+    if (result && result.d != undefined)
+        return result.d;
+    return result;
+}
+
+RMSHelper.callWebMethod2 = function(serviceName, methodName, argument) {
+
+    var svc = serviceName + "/" + methodName;
+    if (!argument) argument = "";
+    var xhr = new XMLHttpRequest();
+    xhr.onreadystatechange = function() {
+        if (xhr.readyState == 4) {
+            alert("ready state = 4");
+        }
+    };
+
+    xhr.open("POST", svc, true);
+    xhr.setRequestHeader('Content-Type', 'application/json');
+    xhr.timeout = 4000;
+    xhr.ontimeout = function() {
+        alert("Timed out!!!");
+    }
+    xhr.send(argument);
+
+    var result = null;
+    try {
+        result = eval("(" + xhr.responseText + ")");
+    } catch (ex) {}
+
+    if (result && result.ExceptionType != undefined) {
+        alert(result.Message);
+        throw result;
+    }
+
+    if (result && result.d != undefined)
+        return result.d;
+    return result;
+}
+
+
+
+RMSHelper.asyncCallWebMethod = function(serviceName, methodName, argument, callBackFunction) {
+    var svc = serviceName + "/" + methodName;
+    var xmlHttpasync = null;
+
+    xmlHttpasync = RMSHelper.getXMLHTTP();
+
+    if (!argument) argument = "";
+    xmlHttpasync.open("POST", svc, true);
+    xmlHttpasync.setRequestHeader('Content-Type', 'application/json');
+    xmlHttpasync.onreadystatechange = function() {
+        if (xmlHttpasync.readyState == 4) {
+            var result = null;
+            try {
+                result = eval("(" + xmlHttpasync.responseText + ")");
+            } catch (ex) {}
+            try {
+                if (result && result.ExceptionType != undefined) {
+                    //alert(result.Message);
+                    throw result;
+                }
+                if (result && result.d != undefined)
+                    result = result.d;
+            } catch (ex) {}
+            callBackFunction(result, svc, methodName, xmlHttpasync);
+        }
+    };
+    xmlHttpasync.send(argument);
+}
+
+RMSHelper.callWebObject = function(url, httpMethod, postData) {
+    var svc = url;
+
+    var xmlHttp = RMSHelper.getXMLHTTP();
+
+    if (httpMethod == "POST") {
+        xmlHttp.setRequestHeader('Content-Type', 'application/x-www-form-urlencoded');
+        xmlHttp.open("POST", svc, false);
+        xmlHttp.send(postData);
+    } else {
+        xmlHttp.open("GET", svc, false);
+        xmlHttp.send();
+    }
+
+    return xmlHttp.responseText;
+}
+
+RMSHelper.asyncCallWebObject = function(url, httpMethod, postData, callBackFunction, statObject) {
+    var svc = url;
+
+    var xmlHttp = RMSHelper.getXMLHTTP();
+
+    if (httpMethod == "POST") {
+        xmlHttp.setRequestHeader('Content-Type', 'application/x-www-form-urlencoded');
+        xmlHttp.open("POST", svc, true);
+        xmlHttp.onreadystatechange = function() {
+            if (xmlHttp.readyState == 4) {
+                callBackFunction(xmlHttp.responseText, svc, xmlHttp, statObject);
+            }
+        };
+        xmlHttp.send(postData);
+    } else {
+        xmlHttp.open("GET", svc, true);
+        xmlHttp.onreadystatechange = function() {
+            if (xmlHttp.readyState == 4) {
+                callBackFunction(xmlHttp.responseText, svc, xmlHttp, statObject);
+            }
+        };
+        xmlHttp.send();
+    }
+}
+
+var RMSParam = function() {
+    this._pl = new Array();
+}
+
+RMSParam.prototype.add = function(name, value) {
+    this._pl[name] = value;
+    return this;
+}
+RMSParam.prototype.toXml = function() {
+    var xml = "";
+    for (var p in this._pl) {
+        if (typeof(this._pl[p]) != "function")
+            xml += "<" + p + ">" + this._pl[p].toString().replace(/&/g, "&amp;").replace(/</g, "&lt;").replace(/>/g, "&gt;") + "</" + p + ">";
+    }
+    return xml;
+}
+
+RMSParam.prototype.toJson = function() {
+    var query = "";
+    for (var p in this._pl) {
+        if (typeof(this._pl[p]) != "function") {
+            if (query.length > 0)
+                query += ",";
+
+            if (this._pl[p] == null)
+                query += "\"" + p + "\"" + ":null";
+            else
+                query += "\"" + p + "\"" + ":\"" + this._pl[p].toString().replace(/\\/g, "\\\\").replace(/"/g, "\\\"") + "\"";
+        }
+    }
+    return "{" + query + "}";
+}
+/* RMSHelper.js End*/
+
+
+/* Binder.js */
+SelectBoxBinder = function() {};
+
+SelectBoxBinder.bindingJson = function(objSelect, json, valuekey, textkey, valueBinder, textBinder) {
+    if (json.__type == "System.Data.DataTable") {
+        for (var i = 0; i < json.Rows.length; i++) {
+            var valueData = json.Rows[i][valuekey];
+            var textData = json.Rows[i][textkey];
+            if (valueBinder != undefined && valueBinder != null) {
+                valueData = valueBinder(valuekey, valueData, json, i);
+            }
+            if (textBinder != undefined && textBinder != null) {
+                textData = textBinder(valuekey, textData, json, i);
+            }
+            SelectBoxBinder.addOption(objSelect, textData, valueData);
+        }
+    } else {
+        for (var i = 0; i < json.length; i++) {
+            var valueData = json[i][valuekey];
+            var textData = json[i][textkey];
+            if (valueBinder != undefined && valueBinder != null) {
+                valueData = valueBinder(valuekey, valueData, json, i);
+            }
+            if (textBinder != undefined && textBinder != null) {
+                textData = textBinder(valuekey, textData, json, i);
+            }
+            SelectBoxBinder.addOption(objSelect, textData, valueData);
+        }
+    }
+};
+
+SelectBoxBinder.addOption = function(objSelect, text, value) {
+    var opt = new Option(text, value);
+    objSelect.options.add(opt);
+    return opt;
+};
+
+SelectBoxBinder.clear = function(objSelect, rowIndex, delGroup) {
+    if (!rowIndex)
+        rowIndex = 0;
+
+    if (delGroup) {
+        while (objSelect.firstChild) {
+            objSelect.removeChild(objSelect.firstChild);
+        }
+    } else
+        objSelect.options.length = rowIndex;
+}
+/* Binder.js End */
+
+
+
+/* DateUtil */
+var DateUtil = function() {};
+
+DateUtil.GetCurrentDate = function() {
+    var cur_date = new Date();
+    return DateUtil.FormatDate(cur_date);
+};
+
+DateUtil.GetCurrentTime = function() {
+    var cur_date = new Date();
+    return DateUtil.FormatDate(cur_date);
+};
+
+DateUtil.CheckTime = function(from, to) {
+    from = (((from.split("-").join("")).split("/").join("")).split(" ").join("")).split(":").join("");
+    to = (((to.split("-").join("")).split("/").join("")).split(" ").join("")).split(":").join("");
+
+    var now_date = new Date();
+    var from_date = new Date(from.substr(0, 4), from.substr(4, 2) - 1, from.substr(6, 2), from.substr(8, 2), from.substr(10, 2), from.substr(12, 2));
+    var to_date = new Date(to.substr(0, 4), to.substr(4, 2) - 1, to.substr(6, 2), to.substr(8, 2), to.substr(10, 2), to.substr(12, 2));
+
+    if (now_date.getTime() > from_date.getTime() && now_date.getTime() < to_date.getTime())
+        return true;
+    else
+        return false;
+}
+
+DateUtil.DateAdd = function(addValue, addType, nDate) {
+    var dt = DateUtil.ReturnDateTypeValue(nDate);
+
+    switch (addType.toLowerCase()) {
+        case "yy":
+            { // year
+                dt.setFullYear(dt.getFullYear() + parseInt(addValue));
+                break;
+            }
+
+        case "mm":
+            { // month
+                dt.setMonth(dt.getMonth() + parseInt(addValue));
+                break;
+            }
+        case "dd":
+            { // day
+                dt.setDate(dt.getDate() + parseInt(addValue));
+                break;
+            }
+    }
+
+    return DateUtil.FormatDate(dt);
+};
+
+DateUtil.ReturnDateTypeValue = function(strDate) {
+    var mmm = {
+        "JAN": "01",
+        "FEB": "02",
+        "MAR": "03",
+        "APR": "04",
+        "MAY": "05",
+        "JUN": "06",
+        "JUL": "07",
+        "AUG": "08",
+        "SEP": "09",
+        "OCT": "10",
+        "NOV": "11",
+        "DEC": "12"
+    };
+    var tmpDateString;
+
+    if (strDate == null) {
+        strDate = DateUtil.GetCurrentDate();
+    }
+
+    if (typeof(strDate) == "object") {
+        dt = strDate;
+    } else {
+        strDate = strDate.replace(/-/g, '').replace(/\//g, '').replace(/:/g, '').replace(/ /g, '').replace(/,/g, '');
+
+        if (strDate.length == 8 || strDate.length == 14) // "yyyymmdd" or "yyyymmddhhmmss"
+        {
+            tmpDateString = strDate.substring(0, 4) + "/" + strDate.substring(4, 6) + "/" + strDate.substring(6, 8);
+            dt = new Date(tmpDateString);
+        } else if (strDate.length == 9 || strDate.length == 15) // "MMMddyyyy" or"MMMddyyyyhhmmss"
+        {
+            tmpDateString = strDate.substring(5, 9) + "/" + mmm[strDate.substring(0, 3).toUpperCase()] + "/" + strDate.substring(3, 5);
+            dt = new Date(tmpDateString);
+        }
+    }
+    return dt;
+};
+
+DateUtil.FormatDate = function(nDate) {
+    var dt = DateUtil.ReturnDateTypeValue(nDate);
+    var MMM = {
+        "01": "Jan",
+        "02": "Feb",
+        "03": "Mar",
+        "04": "Apr",
+        "05": "May",
+        "06": "Jun",
+        "07": "Jul",
+        "08": "Aug",
+        "09": "Sep",
+        "10": "Oct",
+        "11": "Nov",
+        "12": "Dec"
+    };
+    var format = "yyyy-MM-dd";
+
+    var y, m, d;
+    y = dt.getFullYear();
+    m = dt.getMonth() + 1;
+    d = dt.getDate();
+
+    m = m < 10 ? "0" + m : m;
+    d = d < 10 ? "0" + d : d;
+
+    format = format.replace("yyyy", y);
+    format = format.replace("MMM", MMM[m]);
+    format = format.replace("MM", m);
+    format = format.replace("dd", d);
+
+    return format;
+};
+
+DateUtil.DateDiff = function(date1, date2) {
+    var sDate = DateUtil.ReturnDateTypeValue(date1);
+    var eDate = DateUtil.ReturnDateTypeValue(date2);
+
+    var timeSpan = (eDate - sDate) / 86400000;
+    var daysApart = Math.abs(Math.round(timeSpan));
+
+    return daysApart;
+};
+
+DateUtil.DateDiff2 = function(date1, date2) {
+    var sDate = DateUtil.ReturnDateTypeValue(date1);
+    var eDate = DateUtil.ReturnDateTypeValue(date2);
+
+    var timeSpan = (eDate - sDate) / 86400000;
+    var daysApart = Math.round(timeSpan);
+
+    return daysApart;
+};
+
+var PriceUtil = function() {};
+PriceUtil.nation = "SG";
+PriceUtil.currency = "S$";
+PriceUtil.money_format = "0,000.00";
+
+PriceUtil.FormatCurrency = function(money) {
+    var sign, cents, roundFloat;
+    roundFloat = 0.50000000001
+
+    money = money.toString().replace(/\$|\,/g, '');
+
+    if (isNaN(money))
+        money = "0";
+
+    sign = (money == (money = Math.abs(money)));
+    money = Math.floor(money * 100 + roundFloat);
+
+    cents = money % 100;
+    money = Math.floor(money / 100).toString();
+
+    if (cents < 10) cents = "0" + cents;
+
+    for (var i = 0; i < Math.floor((money.length - (1 + i)) / 3); i++)
+        money = money.substring(0, money.length - (4 * i + 3)) + ',' + money.substring(money.length - (4 * i + 3));
+
+    if (PriceUtil.nation == "SG") return (((sign) ? '' : '-') + money + "." + cents);
+    else if (PriceUtil.nation == "MY") {
+        if (cents == 0)
+            return (((sign) ? '' : '-') + money);
+        else
+            return (((sign) ? '' : '-') + money + "." + cents);
+    } else if (PriceUtil.nation == "US") return (((sign) ? '' : '-') + money + "." + cents)
+    else return (((sign) ? '' : '-') + money);
+};
+
+PriceUtil.FormatCurrencySymbol = function(money) {
+    return this.AddCurrencySymbol(this.FormatCurrency(money));
+};
+
+PriceUtil.FormatCurrencyCode = function(money, currency_code) {
+    var d_svc_nation = {
+        "SGD": "S$",
+        "JPY": "��",
+        "MYR": "RM",
+        "IDR": "Rp",
+        "KRW": "��",
+        "USD": "US$",
+        "CNY": "�",
+        "HKD": "HK$",
+        "RMB": "�"
+    }
+
+    var currency = "";
+    for (var key in d_svc_nation) {
+        if (key == currency_code)
+            currency = d_svc_nation[key];
+    }
+
+    var sign, cents, roundFloat;
+    roundFloat = 0.50000000001
+
+    money = money.toString().replace(/\$|\,/g, '');
+
+    if (isNaN(money))
+        money = "0";
+
+    sign = (money == (money = Math.abs(money)));
+    money = Math.floor(money * 100 + roundFloat);
+
+    cents = money % 100;
+    money = Math.floor(money / 100).toString();
+
+    if (cents < 10) cents = "0" + cents;
+
+    for (var i = 0; i < Math.floor((money.length - (1 + i)) / 3); i++)
+        money = money.substring(0, money.length - (4 * i + 3)) + ',' + money.substring(money.length - (4 * i + 3));
+
+    var disp_money = "";
+
+    if (currency_code == "SGD")
+        disp_money = currency + (((sign) ? '' : '-') + money + "." + cents);
+    else if (currency_code == "MYR") {
+        if (cents == 0)
+            disp_money = currency + (((sign) ? '' : '-') + money);
+        else
+            disp_money = currency + (((sign) ? '' : '-') + money + "." + cents);
+    } else if (currency_code == "USD")
+        disp_money = currency + (((sign) ? '' : '-') + money + "." + cents)
+    else if (currency_code == "RMB" || currency_code == "CNY")
+        disp_money = (((sign) ? '' : '-') + money + "." + cents) + currency;
+    else {
+        if (currency_code == "JPY" || currency_code == "KRW")
+            disp_money = (((sign) ? '' : '-') + money) + currency;
+        else
+            disp_money = currency + (((sign) ? '' : '-') + money);
+    }
+
+    return disp_money;
+};
+
+PriceUtil.FormatNumber = function(value) {
+    value = value.toString().replace(/\$|\,/g, '');
+    for (var i = 0; i < Math.floor((value.length - (1 + i)) / 3); i++)
+        value = value.substring(0, value.length - (4 * i + 3)) + ',' + value.substring(value.length - (4 * i + 3));
+
+    return value;
+}
+
+PriceUtil.PriceCuttingService = function(value, nation) {
+
+    var format = PriceUtil.money_format;
+    var digits;
+    var rtnTmp;
+
+    value = Number(value);
+
+    if (nation == "ID") {
+        digits = -1;
+    } else if (format.indexOf(".") == -1) {
+        digits = 0;
+    } else {
+        digits = format.substr(format.indexOf(".") + 1, format.length).length;
+    }
+
+    if (digits < 0 || value < 1) {
+        rtnTmp = PriceUtil.Round(value, digits);
+    } else {
+        rtnTmp = value.toFixed(digits);
+    }
+
+    return rtnTmp;
+}
+
+PriceUtil.Round = function(valuenum, digits) {
+    var sourceDouble = valuenum;
+    return Math.round(sourceDouble * Math.pow(10, digits)) / Math.pow(10, digits);
+}
+
+PriceUtil.PriceCutting = function(value) {
+    var nation = PriceUtil.nation;
+    return PriceUtil.PriceCuttingService(value, nation);
+}
+
+PriceUtil.GetMoney = function(money) {
+    money = money.toString().replace(/\S\$|RM|Rp|\$|\US\$|\HK\$|\�|\,/g, '');
+    return parseFloat(money);
+}
+
+PriceUtil.ChangeFormatToNum = function(sValue) {
+    return sValue.toString().replace(/\$|\,/g, '');
+}
+
+PriceUtil.AddCurrencySymbol = function(amt) {
+    if (PriceUtil.nation == "JP")
+        return amt + PriceUtil.currency;
+    else
+        return PriceUtil.currency + amt;
+}
