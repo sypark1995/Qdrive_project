@@ -83,6 +83,7 @@ import static com.giosis.util.qdrive.barcodescanner.ManualHelper.MOBILE_SERVER_U
 /**
  * @author wontae
  * @editor krm0219
+ * from git
  */
 public class MainActivity extends AppBaseActivity {
     String TAG = "MainActivity";
