@@ -1,0 +1,108 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:background="@color/color_4fb648">
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="20dp"
+        android:layout_marginTop="65dp"
+        android:layout_marginEnd="20dp"
+        android:background="@drawable/background_radius_10_ffffff"
+        android:orientation="vertical"
+        android:paddingTop="25dp"
+        android:paddingBottom="20dp">
+
+        <ImageView
+            android:layout_width="140dp"
+            android:layout_height="47.5dp"
+            android:layout_gravity="center_horizontal"
+            android:background="@drawable/logo_qdrive" />
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center_horizontal"
+            android:layout_marginTop="12dp"
+            android:layout_marginBottom="30dp"
+            android:text="@string/login_desc"
+            android:textSize="@dimen/text_size_26px" />
+
+        <EditText
+            android:id="@+id/edit_login_id"
+            android:layout_width="match_parent"
+            android:layout_height="35dp"
+            android:layout_marginStart="35dp"
+            android:layout_marginEnd="35dp"
+            android:background="@drawable/border_radius_2_e6e6e6"
+            android:hint="@string/text_id"
+            android:paddingStart="13dp"
+            android:paddingEnd="13dp"
+            android:textColor="@color/color_222222"
+            android:textSize="@dimen/text_size_28px" />
+
+        <EditText
+            android:id="@+id/edit_login_password"
+            android:layout_width="match_parent"
+            android:layout_height="35dp"
+            android:layout_marginStart="35dp"
+            android:layout_marginTop="7dp"
+            android:layout_marginEnd="35dp"
+            android:background="@drawable/border_radius_2_e6e6e6"
+            android:hint="@string/login_password"
+            android:paddingStart="13dp"
+            android:paddingEnd="13dp"
+            android:textColor="@color/color_222222"
+            android:textSize="@dimen/text_size_28px" />
+
+        <Button
+            android:id="@+id/btn_login_sign"
+            android:layout_width="match_parent"
+            android:layout_height="45dp"
+            android:layout_gravity="center_horizontal"
+            android:layout_marginStart="35dp"
+            android:layout_marginTop="20dp"
+            android:layout_marginEnd="35dp"
+            android:layout_marginBottom="20dp"
+            android:background="@drawable/custom_button_pressed_30"
+            android:text="@string/login_sign"
+            android:textAllCaps="false"
+            android:textColor="@color/white"
+            android:textSize="@dimen/text_size_36px" />
+
+        <ImageView
+            android:layout_width="67dp"
+            android:layout_height="21dp"
+            android:layout_gravity="center_horizontal"
+            android:background="@drawable/logo_qxpress" />
+    </LinearLayout>
+
+    <LinearLayout
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignParentBottom="true"
+        android:layout_centerHorizontal="true"
+        android:layout_marginBottom="40dp"
+        android:gravity="center_horizontal"
+        android:orientation="vertical">
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="@string/login_footer"
+            android:textColor="@color/color_9dd59a"
+            android:textSize="@dimen/text_size_24px" />
+
+        <TextView
+            android:id="@+id/text_login_version"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="3dp"
+            android:textColor="@color/color_9dd59a"
+            android:textSize="@dimen/text_size_24px"
+            tools:text="test - 1.0.0" />
+    </LinearLayout>
+</RelativeLayout>

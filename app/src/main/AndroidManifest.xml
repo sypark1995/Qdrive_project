@@ -83,11 +83,18 @@
         <activity
             android:name="com.giosis.util.qdrive.main.AppBaseActivity"
             android:screenOrientation="portrait" />
+
         <activity
             android:name="com.giosis.util.qdrive.util.PermissionActivity"
             android:configChanges="orientation|screenSize|screenLayout|keyboard|keyboardHidden"
             android:screenOrientation="unspecified"
             android:theme="@style/Theme.AppCompat.Transparent" />
+
+        <activity
+            android:name=".LoginActivity2"
+            android:screenOrientation="portrait" />
+
+
         <activity
             android:name=".AlertDialogActivity"
             android:launchMode="singleTop"

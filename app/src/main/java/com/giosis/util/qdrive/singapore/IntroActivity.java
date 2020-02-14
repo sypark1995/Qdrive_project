@@ -35,8 +35,8 @@ public class IntroActivity extends Activity {
 
 
         // Live10 설치 여부 확인
-        Intent qtalkLink = getPackageManager().getLaunchIntentForPackage("net.giosis.qpost");
-        if (qtalkLink == null) {
+        Intent intent = getPackageManager().getLaunchIntentForPackage("net.giosis.qpost");
+        if (intent == null) {
             new AlertDialog.Builder(this)
                     .setMessage(context.getResources().getString(R.string.msg_live10_installed))
                     .setCancelable(false).setPositiveButton(context.getResources().getString(R.string.button_ok),
@@ -53,6 +53,7 @@ public class IntroActivity extends Activity {
 
                     }).show();
         } else {
+
             try {
 
                 BluetoothDeviceData.connectedPrinterAddress = null;
@@ -76,9 +77,9 @@ public class IntroActivity extends Activity {
 
                     Intent intent = new Intent();
                     intent.setClass(IntroActivity.this, LoginActivity.class);
+                    //intent.setClass(IntroActivity.this, LoginActivity2.class);
                     intent.addFlags(Intent.FLAG_ACTIVITY_NO_ANIMATION);
                     startActivity(intent);
-                    overridePendingTransition(android.R.anim.fade_in, android.R.anim.fade_out);
                     finish();
                 }
             }, 500);

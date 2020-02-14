@@ -298,7 +298,7 @@
     <string name="text_qty1">Qty</string>
 
     <!-- Message -->
-    <string name="msg_live10_installed">To use Qdrive, Live10 app should be installed on your phone.</string>
+    <string name="msg_live10_installed">To use Qdrive, Qoo10 Live app should be installed on your phone.</string>
     <string name="msg_your_account_deactivated">Your Qdrive account has been deactivated.</string>
     <string name="msg_no_data_to_upload">There is no data to upload</string>
     <string name="msg_download_not_supported">Download is not supported\nReason : The modified data has not uploaded.</string>
@@ -510,10 +510,7 @@
 
 
     <string name="wifi_connect_failed">Network connection failed</string>
-
     <string name="cancel_reason">Cancel Reason</string>
-
-
     <string name="fail_reason">Fail Reason</string>
 
 
@@ -523,6 +520,12 @@
     <string name="msg_smart_route_creating">The smart route is creating…</string>
     <string name="msg_smart_route_created">The smart route is created!</string>
 
+
+    <!--  2020  Login  -->
+    <string name="login_desc">Delivery &amp; Pickup for Qxpress SG</string>
+    <string name="login_password">Password</string>
+    <string name="login_sign">Sign</string>
+    <string name="login_footer">Only Qxpress partner driver can use the application</string>
 
     <!-- -->
 
