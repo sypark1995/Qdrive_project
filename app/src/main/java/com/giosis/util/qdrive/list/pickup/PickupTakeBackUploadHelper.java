@@ -26,8 +26,8 @@ import org.json.JSONObject;
 import java.text.SimpleDateFormat;
 import java.util.Date;
 
-public class ManualPickupTakeBackUploadHelper extends ManualHelper {
-    String TAG = "ManualPickupTakeBackUploadHelper";
+public class PickupTakeBackUploadHelper extends ManualHelper {
+    String TAG = "PickupTakeBackUploadHelper";
 
     private final Context context;
     private final String opID;
@@ -91,8 +91,8 @@ public class ManualPickupTakeBackUploadHelper extends ManualHelper {
             this.lon = lon;
         }
 
-        public ManualPickupTakeBackUploadHelper build() {
-            return new ManualPickupTakeBackUploadHelper(this);
+        public PickupTakeBackUploadHelper build() {
+            return new PickupTakeBackUploadHelper(this);
         }
 
         public Builder setOnServerEventListener(OnServerEventListener eventListener) {
@@ -102,7 +102,7 @@ public class ManualPickupTakeBackUploadHelper extends ManualHelper {
         }
     }
 
-    private ManualPickupTakeBackUploadHelper(Builder builder) {
+    private PickupTakeBackUploadHelper(Builder builder) {
 
         this.context = builder.context;
         this.opID = builder.opID;
@@ -337,7 +337,8 @@ public class ManualPickupTakeBackUploadHelper extends ManualHelper {
         }
     }
 
-    public ManualPickupTakeBackUploadHelper execute() {
+
+    public PickupTakeBackUploadHelper execute() {
         TakeBackUploadTask serverUploadTask = new TakeBackUploadTask();
         serverUploadTask.execute();
         return this;

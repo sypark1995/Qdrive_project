@@ -10,7 +10,7 @@ import android.os.AsyncTask;
 import android.util.Log;
 
 import com.giosis.util.qdrive.barcodescanner.ManualHelper;
-import com.giosis.util.qdrive.barcodescanner.PickupAssignResult;
+import com.giosis.util.qdrive.list.PickupAssignResult;
 import com.giosis.util.qdrive.singapore.R;
 import com.giosis.util.qdrive.util.BarcodeType;
 import com.giosis.util.qdrive.util.Custom_JsonParser;

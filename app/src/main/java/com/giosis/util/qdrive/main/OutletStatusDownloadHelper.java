@@ -11,7 +11,7 @@ import android.util.Log;
 
 import com.giosis.util.qdrive.barcodescanner.DriverAssignResult;
 import com.giosis.util.qdrive.barcodescanner.ManualHelper;
-import com.giosis.util.qdrive.barcodescanner.PickupAssignResult;
+import com.giosis.util.qdrive.list.PickupAssignResult;
 import com.giosis.util.qdrive.list.ChildItem;
 import com.giosis.util.qdrive.list.RowItem;
 import com.giosis.util.qdrive.util.BarcodeType;

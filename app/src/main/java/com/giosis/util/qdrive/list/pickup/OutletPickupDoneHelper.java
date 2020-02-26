@@ -243,6 +243,7 @@ public class OutletPickupDoneHelper extends ManualHelper {
                 DataUtil.captureSign("/QdriveCollector", pickup_no, signingView);
             }
 
+
             SimpleDateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
             Date date = new Date();
             String changeDataString = dateFormat.format(date);
@@ -277,7 +278,7 @@ public class OutletPickupDoneHelper extends ManualHelper {
 
                         signingView.buildDrawingCache();
                         Bitmap captureView = signingView.getDrawingCache();
-                        bitmapString = DataUtil.bitmapToString(captureView);  // 비트맵을 스트링으로 변환
+                        bitmapString = DataUtil.bitmapToString(captureView);
                     }
                 } catch (Exception e) {
 

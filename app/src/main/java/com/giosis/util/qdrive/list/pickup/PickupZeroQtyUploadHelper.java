@@ -167,8 +167,8 @@ public class PickupZeroQtyUploadHelper extends ManualHelper {
             super.onPreExecute();
 
             if (progressDialog != null) {
-                int maxCount = 1;
-                progressDialog.setMax(maxCount);
+
+                progressDialog.setMax(1);
                 progressDialog.show();
             }
         }

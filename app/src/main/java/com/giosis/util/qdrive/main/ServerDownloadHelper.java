@@ -12,7 +12,7 @@ import android.widget.Toast;
 
 import com.giosis.util.qdrive.barcodescanner.DriverAssignResult;
 import com.giosis.util.qdrive.barcodescanner.ManualHelper;
-import com.giosis.util.qdrive.barcodescanner.PickupAssignResult;
+import com.giosis.util.qdrive.list.PickupAssignResult;
 import com.giosis.util.qdrive.singapore.R;
 import com.giosis.util.qdrive.util.BarcodeType;
 import com.giosis.util.qdrive.util.DataUtil;
@@ -241,7 +241,7 @@ public class ServerDownloadHelper extends ManualHelper {
         try {
 
           /*  // TODO. Outlet TEST
-            String MOBILE_SERVER_URL = "http://qxapi.qxpress.asia/GMKT.INC.GLPS.MobileApiService/GlobalMobileService.qapi";
+            String MOBILE_SERVER_URL = "https://qxapi.qxpress.asia/GMKT.INC.GLPS.MobileApiService/GlobalMobileService.qapi";
             "Ramlan_7E"*/
 
             GMKT_SyncHttpTask httpTask = new GMKT_SyncHttpTask("QSign");

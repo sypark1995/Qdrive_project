@@ -33,7 +33,6 @@ import android.widget.Toast;
 
 import androidx.fragment.app.Fragment;
 
-import com.giosis.util.qdrive.barcodescanner.PickupAssignResult;
 import com.giosis.util.qdrive.portableprinter.bluetooth.GPrinterData;
 import com.giosis.util.qdrive.singapore.MyApplication;
 import com.giosis.util.qdrive.singapore.R;

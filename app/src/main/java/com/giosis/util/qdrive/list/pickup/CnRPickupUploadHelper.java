@@ -301,12 +301,14 @@ public class CnRPickupUploadHelper extends ManualHelper {
 
         private StdResult requestPickupUpload(String assignNo) {
 
-            // CnR Done
             if (pickupStat.equals("P3")) {
 
                 DataUtil.captureSign("/QdrivePickup", assignNo, signingView);
                 DataUtil.captureSign("/QdriveCollector", assignNo, collectorSigningView);
-            }
+            }/* else if (pickupStat.equals("PF")) {   // cnr failed 시 이미지 선택x
+
+                DataUtil.captureSign("/QdrivePickup", assignNo, signingView);
+            }*/
 
 
             SimpleDateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");

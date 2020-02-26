@@ -1,32 +1,30 @@
-package com.giosis.util.qdrive.list.pickup;
+package com.giosis.util.qdrive.barcodescanner;
 
 import android.app.AlertDialog;
-import android.app.ProgressDialog;
 import android.content.Context;
 import android.content.DialogInterface;
 import android.content.DialogInterface.OnClickListener;
 import android.os.AsyncTask;
 import android.util.Log;
-import android.widget.Toast;
 
-import com.giosis.util.qdrive.barcodescanner.ManualHelper;
-import com.giosis.util.qdrive.barcodescanner.StdResult;
 import com.giosis.util.qdrive.singapore.R;
 import com.giosis.util.qdrive.util.Custom_JsonParser;
 import com.giosis.util.qdrive.util.DataUtil;
+import com.giosis.util.qdrive.util.NetworkUtil;
 
 import org.json.JSONObject;
 
-public class ManualPickupTakeBackValidationCheckHelper extends ManualHelper {
-    String TAG = "ManualPickupTakeBackValidationCheckHelper";
+public class OutletPickupScanValidationCheckHelper extends ManualHelper {
+    String TAG = "OutletPickupScanValidationCheckHelper";
 
     private final Context context;
     private final String opID;
     private final String pickup_no;
     private final String scanNo;
+    private final String route;
 
-    private final OnPickupTakeBackValidationCheckListener eventListener;
-    private final ProgressDialog progressDialog;
+    private final String networkType;
+    private final OnPickupAddScanNoOneByOneUploadListener eventListener;
     private final AlertDialog resultDialog;
 
     public static class Builder {
@@ -35,51 +33,48 @@ public class ManualPickupTakeBackValidationCheckHelper extends ManualHelper {
         private final String opID;
         private final String pickup_no;
         private final String scanNo;
+        private final String route;
 
-        private OnPickupTakeBackValidationCheckListener eventListener;
+        private String networkType;
+        private OnPickupAddScanNoOneByOneUploadListener eventListener;
 
-        public Builder(Context context, String opID, String pickup_no, String scanNo) {
+        public Builder(Context context, String opID, String pickup_no, String scanNo, String route) {
 
             this.context = context;
             this.opID = opID;
             this.pickup_no = pickup_no;
             this.scanNo = scanNo;
+            this.route = route;
+            this.networkType = NetworkUtil.getNetworkType(context);
         }
 
-        public ManualPickupTakeBackValidationCheckHelper build() {
-            return new ManualPickupTakeBackValidationCheckHelper(this);
+        public OutletPickupScanValidationCheckHelper build() {
+            return new OutletPickupScanValidationCheckHelper(this);
         }
 
-        public Builder setOnPickupTakeBackValidationCheckListener(OnPickupTakeBackValidationCheckListener eventListener) {
+        public Builder setOnPickupAddScanNoOneByOneUploadListener(OnPickupAddScanNoOneByOneUploadListener eventListener) {
             this.eventListener = eventListener;
             return this;
         }
     }
 
-    private ManualPickupTakeBackValidationCheckHelper(Builder builder) {
+    private OutletPickupScanValidationCheckHelper(Builder builder) {
 
         this.context = builder.context;
         this.opID = builder.opID;
         this.pickup_no = builder.pickup_no;
         this.scanNo = builder.scanNo;
+        this.route = builder.route;
 
+        this.networkType = builder.networkType;
         this.eventListener = builder.eventListener;
-        this.progressDialog = getProgressDialog(this.context);
         this.resultDialog = getResultAlertDialog(this.context);
-    }
-
-    private ProgressDialog getProgressDialog(Context context) {
-        ProgressDialog progressDialog = new ProgressDialog(context);
-        progressDialog.setProgressStyle(ProgressDialog.STYLE_HORIZONTAL);
-        progressDialog.setMessage(context.getResources().getString(R.string.text_driver_assign));
-        progressDialog.setCancelable(false);
-
-        return progressDialog;
     }
 
     private AlertDialog getResultAlertDialog(final Context context) {
         AlertDialog dialog = new AlertDialog.Builder(context)
-                .setTitle("[" + context.getResources().getString(R.string.text_scanned_failed) + "]").setCancelable(false)
+                .setTitle("[" + context.getResources().getString(R.string.text_scanned_failed) + "]")
+                .setCancelable(false)
                 .setPositiveButton(context.getResources().getString(R.string.button_ok), new OnClickListener() {
 
                     @Override
@@ -97,8 +92,7 @@ public class ManualPickupTakeBackValidationCheckHelper extends ManualHelper {
         resultDialog.show();
     }
 
-
-    class TakeBackValidationCheckAsyncTask extends AsyncTask<Void, Void, StdResult> {
+    class OutletPickupScanValidationTask extends AsyncTask<Void, Void, StdResult> {
 
         @Override
         protected StdResult doInBackground(Void... params) {
@@ -106,8 +100,7 @@ public class ManualPickupTakeBackValidationCheckHelper extends ManualHelper {
             StdResult result = new StdResult();
 
             if (scanNo != null && !scanNo.equals("")) {
-
-                result = validationCheck(scanNo);
+                result = updateAddScanNo(scanNo);
             }
 
             return result;
@@ -115,52 +108,42 @@ public class ManualPickupTakeBackValidationCheckHelper extends ManualHelper {
 
         @Override
         protected void onPostExecute(StdResult result) {
-            try {
+            super.onPostExecute(result);
 
-                if (progressDialog != null)
-                    progressDialog.dismiss();
+            if (result.getResultCode() < 0) {
+                showResultDialog(result.getResultMsg());
+            }
 
-                if (result.getResultCode() < 0) {
-                    showResultDialog(result.getResultMsg());
-                }
-
-                if (eventListener != null) {
-                    eventListener.onPickupTakeBackValidationCheckResult(result);
-                }
-
-                super.onPostExecute(result);
-            } catch (Exception e) {
-
-                Log.e("Exception", TAG + "  onPostExecute Exception : " + e.toString());
-                Toast.makeText(context, context.getResources().getString(R.string.msg_error_check_again), Toast.LENGTH_SHORT).show();
+            if (eventListener != null) {
+                eventListener.onPickupAddScanNoOneByOneUploadResult(result);
             }
         }
 
 
-        private StdResult validationCheck(String scan_no) {
+        private StdResult updateAddScanNo(String scan_no) {
 
             StdResult resultObj = new StdResult();
 
             try {
 
                 JSONObject job = new JSONObject();
-                job.accumulate("op_id", opID);
+                job.accumulate("opId", opID);
+                job.accumulate("type", route);
                 job.accumulate("pickup_no", pickup_no);
                 job.accumulate("scan_no", scan_no);
                 job.accumulate("app_id", DataUtil.appID);
                 job.accumulate("nation_cd", DataUtil.nationCode);
 
-                String methodName = "SetAddScanNo_TakeBack";
+                String methodName = "SetPickupScanNo";
                 String jsonString = Custom_JsonParser.requestServerDataReturnJSON(MOBILE_SERVER_URL, methodName, job);
-                // {"ResultCode":10,"ResultMsg":"Success"}
-                // {"ResultCode":-2,"ResultMsg":"Scanned number is not take back"}
+                // {"ResultCode":0,"ResultMsg":"STD"}
 
                 JSONObject jsonObject = new JSONObject(jsonString);
                 resultObj.setResultCode(jsonObject.getInt("ResultCode"));
                 resultObj.setResultMsg(jsonObject.getString("ResultMsg"));
             } catch (Exception e) {
 
-                Log.e("Exception", TAG + "  changePassword Exception : " + e.toString());
+                Log.e("Exception", TAG + "  SetPickupScanNo Exception : " + e.toString());
 
                 String msg = String.format(context.getResources().getString(R.string.text_exception), e.toString());
                 resultObj.setResultCode(-15);
@@ -172,14 +155,13 @@ public class ManualPickupTakeBackValidationCheckHelper extends ManualHelper {
     }
 
 
-    public ManualPickupTakeBackValidationCheckHelper execute() {
-        TakeBackValidationCheckAsyncTask TakeBackValidationCheckAsyncTask = new TakeBackValidationCheckAsyncTask();
-        TakeBackValidationCheckAsyncTask.execute();
+    public OutletPickupScanValidationCheckHelper execute() {
+        OutletPickupScanValidationTask outletPickupScanValidationTask = new OutletPickupScanValidationTask();
+        outletPickupScanValidationTask.execute();
         return this;
     }
 
-    public interface OnPickupTakeBackValidationCheckListener {
-
-        void onPickupTakeBackValidationCheckResult(StdResult result);
+    public interface OnPickupAddScanNoOneByOneUploadListener {
+        void onPickupAddScanNoOneByOneUploadResult(StdResult result);
     }
 }

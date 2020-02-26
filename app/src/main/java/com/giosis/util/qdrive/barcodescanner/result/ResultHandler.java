@@ -18,18 +18,15 @@ package com.giosis.util.qdrive.barcodescanner.result;
 
 import android.app.Activity;
 import android.app.AlertDialog;
-import android.app.SearchManager;
 import android.content.ActivityNotFoundException;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.SharedPreferences;
-import android.content.pm.PackageManager;
 import android.net.Uri;
 import android.preference.PreferenceManager;
 import android.util.Log;
 import android.view.View;
 
-import com.giosis.util.qdrive.barcodescanner.LocaleManager;
 import com.giosis.util.qdrive.barcodescanner.PreferencesActivity;
 import com.giosis.util.qdrive.singapore.R;
 import com.google.zxing.Result;
@@ -206,19 +203,6 @@ public abstract class ResultHandler {
         launchIntent(intent);
     }
 
-    // Uses the mobile-specific version of Product Search, which is formatted for small screens.
-    final void openProductSearch(String upc) {
-        Uri uri = Uri.parse("http://www.google." + LocaleManager.getProductSearchCountryTLD() +
-                "/m/products?q=" + upc + "&source=zxing");
-        launchIntent(new Intent(Intent.ACTION_VIEW, uri));
-    }
-
-    final void openBookSearch(String isbn) {
-        Uri uri = Uri.parse("http://books.google." + LocaleManager.getBookSearchCountryTLD() +
-                "/books?vid=isbn" + isbn);
-        launchIntent(new Intent(Intent.ACTION_VIEW, uri));
-    }
-
     final void openURL(String url) {
         launchIntent(new Intent(Intent.ACTION_VIEW, Uri.parse(url)));
     }
@@ -229,26 +213,6 @@ public abstract class ResultHandler {
         launchIntent(intent);
     }
 
-    final void openGoogleShopper(String query) {
-        try {
-
-            activity.getPackageManager().getPackageInfo(GOOGLE_SHOPPER_PACKAGE, 0);
-            // If we didn't throw, Shopper is installed, so launch it.
-            Intent intent = new Intent(Intent.ACTION_SEARCH);
-            intent.setClassName(GOOGLE_SHOPPER_PACKAGE, GOOGLE_SHOPPER_ACTIVITY);
-            intent.putExtra(SearchManager.QUERY, query);
-            activity.startActivity(intent);
-
-        } catch (PackageManager.NameNotFoundException e) {
-            // Otherwise offer to install it from Market.
-            AlertDialog.Builder builder = new AlertDialog.Builder(activity);
-            builder.setTitle(R.string.app_name);
-            builder.setMessage(R.string.app_name);
-            builder.setPositiveButton(R.string.button_ok, shopperMarketListener);
-            builder.setNegativeButton(R.string.button_cancel, null);
-            builder.show();
-        }
-    }
 
     void launchIntent(Intent intent) {
         if (intent != null) {

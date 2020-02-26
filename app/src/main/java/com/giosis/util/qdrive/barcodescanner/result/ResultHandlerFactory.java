@@ -38,8 +38,6 @@ public final class ResultHandlerFactory {
 
         if (type.equals(ParsedResultType.TEXT)) {
             return new TextResultHandler(activity, result, rawResult);
-        } else if (type.equals(ParsedResultType.ISBN)) {
-            return new ISBNResultHandler(activity, result, rawResult);
         } else {
             // The TextResultHandler is the fallthrough for unsupported formats.
             return new TextResultHandler(activity, result, rawResult);

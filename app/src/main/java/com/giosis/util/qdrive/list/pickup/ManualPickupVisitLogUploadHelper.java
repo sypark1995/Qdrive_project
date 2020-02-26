@@ -291,7 +291,7 @@ public class ManualPickupVisitLogUploadHelper extends ManualHelper {
 
                 imageView.buildDrawingCache();
                 Bitmap captureView = imageView.getDrawingCache();
-                String bitmapString = DataUtil.bitmapToString(captureView);  // 비트맵을 스트링으로 변환
+                String bitmapString = DataUtil.bitmapToString(captureView);
 
                 JSONObject job = new JSONObject();
                 job.accumulate("rcv_type", "VL");

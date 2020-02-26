@@ -291,7 +291,7 @@ public class DeliveryDoneUploadHelper extends ManualHelper {
 
             StdResult result = new StdResult();
 
-            if (!NetworkUtil.isNetworkAvailable(context)) {  // Wifi, 3G,4G,LTE(Network) 연결이 모두 안될경우
+            if (!NetworkUtil.isNetworkAvailable(context)) {
 
                 result.setResultCode(-16);
                 result.setResultMsg(context.getResources().getString(R.string.msg_network_connect_error_saved));

@@ -85,15 +85,12 @@ import com.giosis.util.qdrive.barcodescanner.result.ResultHandler;
 import com.giosis.util.qdrive.barcodescanner.result.ResultHandlerFactory;
 import com.giosis.util.qdrive.gps.GPSTrackerManager;
 import com.giosis.util.qdrive.list.delivery.SigningDeliveryDoneActivity;
-import com.giosis.util.qdrive.list.pickup.ManualPickupAddScanNoOneByOneUploadHelper;
-import com.giosis.util.qdrive.list.pickup.ManualPickupTakeBackValidationCheckHelper;
+import com.giosis.util.qdrive.list.pickup.CnRPickupDoneActivity;
 import com.giosis.util.qdrive.list.pickup.OutletPickupDoneActivity;
 import com.giosis.util.qdrive.list.pickup.OutletPickupDoneResult;
-import com.giosis.util.qdrive.list.pickup.OutletPickupScanValidationCheckHelper;
 import com.giosis.util.qdrive.list.pickup.PickupAddScanActivity;
-import com.giosis.util.qdrive.list.pickup.CnRPickupDoneActivity;
+import com.giosis.util.qdrive.list.pickup.PickupTakeBackActivity;
 import com.giosis.util.qdrive.list.pickup.SigningPickupScanAllDoneActivity;
-import com.giosis.util.qdrive.list.pickup.SigningPickupTakeBackActivity;
 import com.giosis.util.qdrive.main.ManualChangeDelDriverHelper;
 import com.giosis.util.qdrive.main.ManualChangeDelDriverHelper.OnChangeDelDriverEventListener;
 import com.giosis.util.qdrive.main.ManualChangeDelDriverValidCheckHelper;
@@ -1578,7 +1575,7 @@ public final class CaptureActivity extends AppCompatActivity implements SurfaceH
 
         if (barcode == null) {
             // This is from history -- no saved barcode
-            handleDecodeInternally(rawResult, resultHandler, null);
+            handleDecodeInternally(resultHandler);
         } else {
             if (isHistorySave) {
 
@@ -1598,13 +1595,13 @@ public final class CaptureActivity extends AppCompatActivity implements SurfaceH
                     break;
                 case ZXING_LINK:
                     if (returnUrlTemplate == null) {
-                        handleDecodeInternally(rawResult, resultHandler, barcode);
+                        handleDecodeInternally(resultHandler);
                     } else {
                         handleDecodeExternally(rawResult, resultHandler, barcode);
                     }
                     break;
                 case NONE:
-                    handleDecodeInternally(rawResult, resultHandler, barcode);
+                    handleDecodeInternally(resultHandler);
                     break;
             }
         }
@@ -1659,7 +1656,7 @@ public final class CaptureActivity extends AppCompatActivity implements SurfaceH
     }
 
     // Put up our own UI for how to handle the decoded contents.
-    private void handleDecodeInternally(Result rawResult, ResultHandler resultHandler, Bitmap barcode) {
+    private void handleDecodeInternally(ResultHandler resultHandler) {
         CharSequence displayContents = resultHandler.getDisplayContents();
         // add barcode No validation 하는 부분 2016-08-23
         addBarcodeNo(displayContents.toString(), false, "handleDecodeInternally");
@@ -1670,9 +1667,11 @@ public final class CaptureActivity extends AppCompatActivity implements SurfaceH
         }
     }
 
+
     // Briefly show the contents of the barcode, then handle the result outside
     // Barcode Scanner.
     private void handleDecodeExternally(Result rawResult, ResultHandler resultHandler, Bitmap barcode) {
+
         if (source != Source.NATIVE_APP_INTENT) {
             viewfinder_capture_preview.drawResultBitmap(barcode);
 
@@ -2368,8 +2367,8 @@ public final class CaptureActivity extends AppCompatActivity implements SurfaceH
 
 
             // ADD 버튼으로 픽업 번호와 연결 된 패킹 번호 추가
-            new ManualPickupAddScanNoOneByOneUploadHelper.Builder(this, opID, pickupNo, strBarcodeNo)
-                    .setOnPickupAddScanNoOneByOneUploadListener(new ManualPickupAddScanNoOneByOneUploadHelper.OnPickupAddScanNoOneByOneUploadListener() {
+            new PickupScanValidationCheckHelper.Builder(this, opID, pickupNo, strBarcodeNo)
+                    .setOnPickupAddScanNoOneByOneUploadListener(new PickupScanValidationCheckHelper.OnPickupAddScanNoOneByOneUploadListener() {
 
                         @Override
                         public void onPickupAddScanNoOneByOneUploadResult(StdResult result) {
@@ -2399,7 +2398,7 @@ public final class CaptureActivity extends AppCompatActivity implements SurfaceH
                                     passedValidation = true;
 //
                                     //바인딩을 위해 재호출
-                                    addBarcodeNo(scanNo, isDupl, "ManualPickupAddScanNoOneByOneUploadHelper");
+                                    addBarcodeNo(scanNo, isDupl, "PickupScanValidationCheckHelper");
                                     return;
                                 }
                             }
@@ -2434,8 +2433,8 @@ public final class CaptureActivity extends AppCompatActivity implements SurfaceH
             final boolean isDupl = isDuplicate;
 
             // ADD 버튼으로 픽업 번호와 연결 된 패킹 번호 추가
-            new ManualPickupAddScanNoOneByOneUploadHelper.Builder(this, opID, pickupNo, strBarcodeNo)
-                    .setOnPickupAddScanNoOneByOneUploadListener(new ManualPickupAddScanNoOneByOneUploadHelper.OnPickupAddScanNoOneByOneUploadListener() {
+            new PickupScanValidationCheckHelper.Builder(this, opID, pickupNo, strBarcodeNo)
+                    .setOnPickupAddScanNoOneByOneUploadListener(new PickupScanValidationCheckHelper.OnPickupAddScanNoOneByOneUploadListener() {
 
                         @Override
                         public void onPickupAddScanNoOneByOneUploadResult(StdResult result) {
@@ -2463,7 +2462,7 @@ public final class CaptureActivity extends AppCompatActivity implements SurfaceH
                                     passedValidation = true;
 //
                                     //바인딩을 위해 재호출
-                                    addBarcodeNo(scanNo, isDupl, "ManualPickupAddScanNoOneByOneUploadHelper");
+                                    addBarcodeNo(scanNo, isDupl, "PickupScanValidationCheckHelper");
                                     return;
                                 }
                             }
@@ -2485,8 +2484,8 @@ public final class CaptureActivity extends AppCompatActivity implements SurfaceH
             final boolean isDupl = isDuplicate;
 
             // Take Back Validation Check
-            new ManualPickupTakeBackValidationCheckHelper.Builder(this, opID, pickupNo, strBarcodeNo)
-                    .setOnPickupTakeBackValidationCheckListener(new ManualPickupTakeBackValidationCheckHelper.OnPickupTakeBackValidationCheckListener() {
+            new PickupTakeBackValidationCheckHelper.Builder(this, opID, pickupNo, strBarcodeNo)
+                    .setOnPickupTakeBackValidationCheckListener(new PickupTakeBackValidationCheckHelper.OnPickupTakeBackValidationCheckListener() {
 
                         @Override
                         public void onPickupTakeBackValidationCheckResult(StdResult result) {
@@ -2522,7 +2521,7 @@ public final class CaptureActivity extends AppCompatActivity implements SurfaceH
                                     passedValidation = true;
 
                                     //바인딩을 위해 재호출
-                                    addBarcodeNo(scanNo, isDupl, "ManualPickupTakeBackValidationCheckHelper");
+                                    addBarcodeNo(scanNo, isDupl, "PickupTakeBackValidationCheckHelper");
                                     return;
                                 }
                             }
@@ -3214,7 +3213,7 @@ public final class CaptureActivity extends AppCompatActivity implements SurfaceH
 
         } else if (mScanType.equals(BarcodeType.PICKUP_TAKE_BACK)) {
 
-            Intent intent = new Intent(this, SigningPickupTakeBackActivity.class);
+            Intent intent = new Intent(this, PickupTakeBackActivity.class);
 
             intent.putExtra("title", context.getResources().getString(R.string.button_take_back));
             intent.putExtra("type", BarcodeType.PICKUP_TAKE_BACK);

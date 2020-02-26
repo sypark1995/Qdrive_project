@@ -1,4 +1,4 @@
-package com.giosis.util.qdrive.list.pickup;
+package com.giosis.util.qdrive.barcodescanner;
 
 import android.app.AlertDialog;
 import android.content.Context;
@@ -8,8 +8,6 @@ import android.os.AsyncTask;
 import android.util.Log;
 import android.widget.Toast;
 
-import com.giosis.util.qdrive.barcodescanner.ManualHelper;
-import com.giosis.util.qdrive.barcodescanner.StdResult;
 import com.giosis.util.qdrive.singapore.R;
 import com.giosis.util.qdrive.util.Custom_JsonParser;
 import com.giosis.util.qdrive.util.DataUtil;
@@ -17,8 +15,8 @@ import com.giosis.util.qdrive.util.NetworkUtil;
 
 import org.json.JSONObject;
 
-public class ManualPickupAddScanNoOneByOneUploadHelper extends ManualHelper {
-    String TAG = "ManualPickupAddScanNoOneByOneUploadHelper";
+public class PickupScanValidationCheckHelper extends ManualHelper {
+    String TAG = "PickupScanValidationCheckHelper";
 
     private final Context context;
     private final String opID;
@@ -49,8 +47,8 @@ public class ManualPickupAddScanNoOneByOneUploadHelper extends ManualHelper {
             this.networkType = NetworkUtil.getNetworkType(context);
         }
 
-        public ManualPickupAddScanNoOneByOneUploadHelper build() {
-            return new ManualPickupAddScanNoOneByOneUploadHelper(this);
+        public PickupScanValidationCheckHelper build() {
+            return new PickupScanValidationCheckHelper(this);
         }
 
         public Builder setOnPickupAddScanNoOneByOneUploadListener(OnPickupAddScanNoOneByOneUploadListener eventListener) {
@@ -59,7 +57,7 @@ public class ManualPickupAddScanNoOneByOneUploadHelper extends ManualHelper {
         }
     }
 
-    private ManualPickupAddScanNoOneByOneUploadHelper(Builder builder) {
+    private PickupScanValidationCheckHelper(Builder builder) {
 
         this.context = builder.context;
         this.opID = builder.opID;
@@ -163,7 +161,7 @@ public class ManualPickupAddScanNoOneByOneUploadHelper extends ManualHelper {
     }
 
 
-    public ManualPickupAddScanNoOneByOneUploadHelper execute() {
+    public PickupScanValidationCheckHelper execute() {
         PickupScanValidationTask pickupScanValidationTask = new PickupScanValidationTask();
         pickupScanValidationTask.execute();
         return this;

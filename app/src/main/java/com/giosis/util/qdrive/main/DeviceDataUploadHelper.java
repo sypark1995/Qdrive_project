@@ -331,6 +331,7 @@ public class DeviceDataUploadHelper extends ManualHelper {
                     String bitmapString2 = "";
 
                     if (!uploadData.getStat().equals("PF")) {
+
                         String dirPath = Environment.getExternalStorageDirectory().toString() + "/QdrivePickup";
                         String dirPath2 = Environment.getExternalStorageDirectory().toString() + "/QdriveCollector";
                         String filePath = dirPath + "/" + uploadData.getNoSongjang() + ".png";

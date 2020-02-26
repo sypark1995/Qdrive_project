@@ -26,6 +26,8 @@ import org.json.JSONObject;
 import java.text.SimpleDateFormat;
 import java.util.Date;
 
+
+// Pickup - Start to Scan
 public class ManualScanAllPickupUploadHelper extends ManualHelper {
     String TAG = "ManualScanAllPickupUploadHelper";
 

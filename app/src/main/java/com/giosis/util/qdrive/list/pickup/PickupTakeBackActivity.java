@@ -36,8 +36,8 @@ import com.giosis.util.qdrive.util.SharedPreferencesHelper;
  * LIST > TODAY DONE > Take Back
  */
 
-public class SigningPickupTakeBackActivity extends AppCompatActivity {
-    String TAG = "SigningPickupTakeBackActivity";
+public class PickupTakeBackActivity extends AppCompatActivity {
+    String TAG = "PickupTakeBackActivity";
 
     // krm0219
     FrameLayout layout_top_back;
@@ -165,7 +165,7 @@ public class SigningPickupTakeBackActivity extends AppCompatActivity {
                 Log.e("Location", TAG + " GPSTrackerManager onResume : " + latitude + "  " + longitude + "  ");
             } else {
 
-                DataUtil.enableLocationSettings(SigningPickupTakeBackActivity.this, context);
+                DataUtil.enableLocationSettings(PickupTakeBackActivity.this, context);
             }
         }
     }
@@ -256,7 +256,7 @@ public class SigningPickupTakeBackActivity extends AppCompatActivity {
                 Log.e("Firebase", "mFirebaseAnalytics error : " + e.toString());
             }
 
-            new ManualPickupTakeBackUploadHelper.Builder(this, opID, officeCode, deviceID,
+            new PickupTakeBackUploadHelper.Builder(this, opID, officeCode, deviceID,
                     pickup_no, packing_no_list, result_total_qty, sign_view_sign_p_tb_applicant_signature, sign_view_sign_p_tb_collector_signature,
                     MemoryStatus.getAvailableInternalMemorySize(), latitude, longitude)
                     .setOnServerEventListener(new OnServerEventListener() {

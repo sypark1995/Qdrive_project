@@ -10,6 +10,7 @@ import android.content.Intent;
 import android.graphics.Bitmap;
 import android.os.Environment;
 import android.provider.Settings;
+import android.util.Log;
 import android.view.View;
 
 import com.gc.android.market.api.Base64;
@@ -127,8 +128,11 @@ public class DataUtil {
 
     public static void stopGPSManager(GPSTrackerManager gpsTrackerManager) {
 
-        if (gpsTrackerManager != null)
+        if (gpsTrackerManager != null) {
+
+            Log.e("DataUtil", "Stop GPS");
             gpsTrackerManager.stopFusedProviderService();
+        }
     }
 
     public static void captureSign(String dirName, String fileName, View targetView) {
