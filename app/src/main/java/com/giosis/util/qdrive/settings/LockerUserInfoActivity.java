@@ -9,7 +9,6 @@ import android.graphics.drawable.BitmapDrawable;
 import android.net.Uri;
 import android.os.AsyncTask;
 import android.os.Bundle;
-import androidx.appcompat.app.AppCompatActivity;
 import android.text.SpannableString;
 import android.text.style.UnderlineSpan;
 import android.util.Log;
@@ -21,6 +20,8 @@ import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.TextView;
 import android.widget.Toast;
+
+import androidx.appcompat.app.AppCompatActivity;
 
 import com.giosis.util.qdrive.singapore.R;
 import com.giosis.util.qdrive.util.Custom_XmlPullParser;
@@ -173,7 +174,7 @@ public class LockerUserInfoActivity extends AppCompatActivity {
         String op_id;
 
 
-        public LockerUserInfoAsyncTask(String op_id) {
+        LockerUserInfoAsyncTask(String op_id) {
 
             this.op_id = op_id;
         }

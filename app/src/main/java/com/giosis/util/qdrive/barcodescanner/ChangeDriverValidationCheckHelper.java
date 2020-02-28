@@ -1,4 +1,4 @@
-package com.giosis.util.qdrive.main;
+package com.giosis.util.qdrive.barcodescanner;
 
 import android.app.Activity;
 import android.app.AlertDialog;
@@ -8,8 +8,6 @@ import android.content.DialogInterface.OnClickListener;
 import android.os.AsyncTask;
 import android.util.Log;
 
-import com.giosis.util.qdrive.barcodescanner.ChgDelDriverResult;
-import com.giosis.util.qdrive.barcodescanner.ManualHelper;
 import com.giosis.util.qdrive.singapore.R;
 import com.giosis.util.qdrive.util.DataUtil;
 import com.giosis.util.qdrive.util.NetworkUtil;
@@ -22,8 +20,8 @@ import java.util.HashMap;
 import gmkt.inc.android.common.GMKT_SyncHttpTask;
 import gmkt.inc.android.common.network.http.GMKT_HTTPResponseMessage;
 
-public class ManualChangeDelDriverValidCheckHelper extends ManualHelper {
-    String TAG = "ManualChangeDelDriverValidCheckHelper";
+public class ChangeDriverValidationCheckHelper extends ManualHelper {
+    String TAG = "ChangeDriverValidationCheckHelper";
 
     private final Context context;
     private final String opID;
@@ -51,18 +49,18 @@ public class ManualChangeDelDriverValidCheckHelper extends ManualHelper {
             this.networkType = NetworkUtil.getNetworkType(context);
         }
 
-        public ManualChangeDelDriverValidCheckHelper build() {
-            return new ManualChangeDelDriverValidCheckHelper(this);
+        public ChangeDriverValidationCheckHelper build() {
+            return new ChangeDriverValidationCheckHelper(this);
         }
 
-        public Builder setOnChangeDelDriverValidCheckListener(OnChangeDelDriverValidCheckListener eventListener) {
+        Builder setOnChangeDelDriverValidCheckListener(OnChangeDelDriverValidCheckListener eventListener) {
             this.eventListener = eventListener;
 
             return this;
         }
     }
 
-    private ManualChangeDelDriverValidCheckHelper(Builder builder) {
+    private ChangeDriverValidationCheckHelper(Builder builder) {
 
         this.context = builder.context;
         this.opID = builder.opID;
@@ -95,12 +93,12 @@ public class ManualChangeDelDriverValidCheckHelper extends ManualHelper {
         resultDialog.show();
     }
 
-    class ChangeDriverValidationTask extends AsyncTask<Void, Void, ChgDelDriverResult> {
+    class ChangeDriverValidationTask extends AsyncTask<Void, Void, ChangeDriverResult> {
 
         @Override
-        protected ChgDelDriverResult doInBackground(Void... params) {
+        protected ChangeDriverResult doInBackground(Void... params) {
 
-            ChgDelDriverResult result = new ChgDelDriverResult();
+            ChangeDriverResult result = new ChangeDriverResult();
 
             if (scanNo != null && !scanNo.equals("")) {
                 result = validateScanNo(scanNo);
@@ -110,7 +108,7 @@ public class ManualChangeDelDriverValidCheckHelper extends ManualHelper {
         }
 
         @Override
-        protected void onPostExecute(ChgDelDriverResult result) {
+        protected void onPostExecute(ChangeDriverResult result) {
             super.onPostExecute(result);
 
             if (result != null) {
@@ -138,9 +136,9 @@ public class ManualChangeDelDriverValidCheckHelper extends ManualHelper {
         }
 
 
-        private ChgDelDriverResult validateScanNo(String scan_no) {
+        private ChangeDriverResult validateScanNo(String scan_no) {
 
-            ChgDelDriverResult resultObj = null;
+            ChangeDriverResult resultObj = null;
 
             try {
 
@@ -161,7 +159,7 @@ public class ManualChangeDelDriverValidCheckHelper extends ManualHelper {
                 // <ResultCode>-3</ResultCode><ResultMsg>[SG19611819] can't be changed to you.</ResultMsg><ResultObject />
                 // <ResultCode>-1</ResultCode><ResultMsg>No data.</ResultMsg><ResultObject />
 
-                resultObj = serializer.read(ChgDelDriverResult.class, resultString);
+                resultObj = serializer.read(ChangeDriverResult.class, resultString);
             } catch (Exception e) {
 
                 Log.e("Exception", TAG + "  GetChangeDriverValidationCheck Exception : " + e.toString());
@@ -172,15 +170,15 @@ public class ManualChangeDelDriverValidCheckHelper extends ManualHelper {
     }
 
 
-    public ManualChangeDelDriverValidCheckHelper execute() {
+    public ChangeDriverValidationCheckHelper execute() {
         ChangeDriverValidationTask changeDriverValidationTask = new ChangeDriverValidationTask();
         changeDriverValidationTask.execute();
         return this;
     }
 
     public interface OnChangeDelDriverValidCheckListener {
-        void OnChangeDelDriverValidCheckResult(ChgDelDriverResult result);
+        void OnChangeDelDriverValidCheckResult(ChangeDriverResult result);
 
-        void OnChangeDelDriverValidCheckFailList(ChgDelDriverResult result);
+        void OnChangeDelDriverValidCheckFailList(ChangeDriverResult result);
     }
 }

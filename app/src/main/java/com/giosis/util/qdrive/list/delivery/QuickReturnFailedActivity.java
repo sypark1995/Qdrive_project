@@ -45,8 +45,8 @@ import com.giosis.util.qdrive.util.PermissionChecker;
 import com.giosis.util.qdrive.util.SharedPreferencesHelper;
 
 
-public class SigningReturnedVisitLog extends AppCompatActivity implements Camera2APIs.Camera2Interface, TextureView.SurfaceTextureListener {
-    String TAG = "ReturnedVisitLog";
+public class QuickReturnFailedActivity extends AppCompatActivity implements Camera2APIs.Camera2Interface, TextureView.SurfaceTextureListener {
+    String TAG = "QuickReturnFailedActivity";
 
     //
     FrameLayout layout_top_back;
@@ -155,7 +155,7 @@ public class SigningReturnedVisitLog extends AppCompatActivity implements Camera
                     camera2.takePhoto(texture_sign_d_r_f_preview, img_sign_d_r_f_visit_log);
                 } else {
 
-                    Toast.makeText(SigningReturnedVisitLog.this, context.getResources().getString(R.string.msg_back_camera_required), Toast.LENGTH_SHORT).show();
+                    Toast.makeText(QuickReturnFailedActivity.this, context.getResources().getString(R.string.msg_back_camera_required), Toast.LENGTH_SHORT).show();
                 }
 
             }
@@ -244,7 +244,7 @@ public class SigningReturnedVisitLog extends AppCompatActivity implements Camera
                 Log.e("Location", TAG + " GPSTrackerManager onResume : " + latitude + "  " + longitude + "  ");
             } else {
 
-                DataUtil.enableLocationSettings(SigningReturnedVisitLog.this, context);
+                DataUtil.enableLocationSettings(QuickReturnFailedActivity.this, context);
             }
         }
     }
@@ -368,7 +368,7 @@ public class SigningReturnedVisitLog extends AppCompatActivity implements Camera
                 Log.e("Firebase", "mFirebaseAnalytics error : " + e.toString());
             }
 
-            new ManualServerUploadReturnedVisitLogHelper.Builder(this, opID, officeCode, deviceID,
+            new QuickReturnFailedUploadHelper.Builder(this, opID, officeCode, deviceID,
                     mStrWaybillNo, driverMemo, img_sign_d_r_f_visit_log,
                     MemoryStatus.getAvailableInternalMemorySize(), latitude, longitude)
                     .setOnServerEventListener(new OnServerEventListener() {
@@ -452,7 +452,7 @@ public class SigningReturnedVisitLog extends AppCompatActivity implements Camera
             camera2.setCameraDevice(cameraManager, cameraId);
         } else {
 
-            Toast.makeText(SigningReturnedVisitLog.this, context.getResources().getString(R.string.msg_back_camera_required), Toast.LENGTH_SHORT).show();
+            Toast.makeText(QuickReturnFailedActivity.this, context.getResources().getString(R.string.msg_back_camera_required), Toast.LENGTH_SHORT).show();
         }
     }
 

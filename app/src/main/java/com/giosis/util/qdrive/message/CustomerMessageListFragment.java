@@ -8,7 +8,6 @@ import android.os.AsyncTask;
 import android.os.Bundle;
 import android.os.Handler;
 import android.os.Message;
-import androidx.fragment.app.Fragment;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -18,6 +17,8 @@ import android.widget.ListView;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
 import android.widget.Toast;
+
+import androidx.fragment.app.Fragment;
 
 import com.giosis.util.qdrive.singapore.R;
 import com.giosis.util.qdrive.util.Custom_XmlPullParser;
@@ -42,37 +43,36 @@ import static com.giosis.util.qdrive.barcodescanner.ManualHelper.MOBILE_SERVER_U
  * @author krm0219
  **/
 public class CustomerMessageListFragment extends Fragment {
-    String TAG = "CustomerMessageListFragment";
+    private String TAG = "CustomerMessageListFragment";
 
     private Context mContext;
-    View view;
+    private View view;
 
-    ListView list_message_list;
-    TextView text_message_list_empty;
+    private ListView list_message_list;
+    private TextView text_message_list_empty;
 
-    RelativeLayout layout_message_list_bottom;
-    LinearLayout layout_message_list_prev;
-    LinearLayout layout_message_list_next;
-    TextView text_message_list_current_page;
-    TextView text_message_list_total_page;
+    private RelativeLayout layout_message_list_bottom;
+    private LinearLayout layout_message_list_prev;
+    private LinearLayout layout_message_list_next;
+    private TextView text_message_list_current_page;
+    private TextView text_message_list_total_page;
 
 
-    MessageListAdapter messageListAdapter;
+    private MessageListAdapter messageListAdapter;
     private static ArrayList<MessageListResult.MessageList> messageList;
 
-    Boolean isNetworkConnect = false;
-    String opID;
+    private String opID;
 
-    int current_page_no = 1;
-    int total_page_no = 1;
+    private int current_page_no = 1;
+    private int total_page_no = 1;
 
     // 1 min refresh
-    AsyncHandler handler;
-    Thread customerThread;
-    public static final int SEND_CUTOMER_START = 100;
+    private AsyncHandler handler;
+    private Thread customerThread;
+    private static final int SEND_CUTOMER_START = 100;
 
-    String old_resultString = null;
-    String new_resultString = null;
+    private String old_resultString = null;
+    private String new_resultString = null;
 
 
     @Override
@@ -102,9 +102,7 @@ public class CustomerMessageListFragment extends Fragment {
     public void onResume() {
         super.onResume();
 
-        isNetworkConnect = NetworkUtil.isNetworkAvailable(mContext);
-
-        if (!isNetworkConnect) {
+        if (!NetworkUtil.isNetworkAvailable(mContext)) {
 
             try {
                 showDialog(getResources().getString(R.string.text_warning), getResources().getString(R.string.msg_network_connect_error));
@@ -345,9 +343,7 @@ public class CustomerMessageListFragment extends Fragment {
             switch (view.getId()) {
                 case R.id.layout_message_list_prev: {
 
-                    isNetworkConnect = NetworkUtil.isNetworkAvailable(mContext);
-
-                    if (!isNetworkConnect) {
+                    if (!NetworkUtil.isNetworkAvailable(mContext)) {
 
                         showDialog(getResources().getString(R.string.text_warning), getResources().getString(R.string.msg_network_connect_error));
                         return;
@@ -367,9 +363,7 @@ public class CustomerMessageListFragment extends Fragment {
 
                 case R.id.layout_message_list_next: {
 
-                    isNetworkConnect = NetworkUtil.isNetworkAvailable(mContext);
-
-                    if (!isNetworkConnect) {
+                    if (!NetworkUtil.isNetworkAvailable(mContext)) {
 
                         showDialog(getResources().getString(R.string.text_warning), getResources().getString(R.string.msg_network_connect_error));
                         return;

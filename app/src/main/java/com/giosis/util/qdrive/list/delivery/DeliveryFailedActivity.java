@@ -1,11 +1,9 @@
-package com.giosis.util.qdrive.list.pickup;
+package com.giosis.util.qdrive.list.delivery;
 
 import android.app.AlertDialog;
-import android.app.DatePickerDialog;
 import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
-import android.database.Cursor;
 import android.graphics.Bitmap;
 import android.graphics.SurfaceTexture;
 import android.hardware.camera2.CameraDevice;
@@ -17,22 +15,16 @@ import android.text.Editable;
 import android.text.TextWatcher;
 import android.util.Log;
 import android.util.Size;
-import android.view.Gravity;
 import android.view.KeyEvent;
 import android.view.Surface;
 import android.view.TextureView;
 import android.view.View;
 import android.view.WindowManager;
-import android.widget.AdapterView;
-import android.widget.ArrayAdapter;
 import android.widget.Button;
-import android.widget.DatePicker;
 import android.widget.EditText;
 import android.widget.FrameLayout;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
-import android.widget.RelativeLayout;
-import android.widget.Spinner;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -43,70 +35,50 @@ import com.giosis.util.qdrive.singapore.OnServerEventListener;
 import com.giosis.util.qdrive.singapore.R;
 import com.giosis.util.qdrive.util.Camera2APIs;
 import com.giosis.util.qdrive.util.DataUtil;
-import com.giosis.util.qdrive.util.DatabaseHelper;
 import com.giosis.util.qdrive.util.MemoryStatus;
 import com.giosis.util.qdrive.util.NetworkUtil;
 import com.giosis.util.qdrive.util.PermissionActivity;
 import com.giosis.util.qdrive.util.PermissionChecker;
 import com.giosis.util.qdrive.util.SharedPreferencesHelper;
 
-import java.text.SimpleDateFormat;
-import java.util.Calendar;
-import java.util.Locale;
-
 /***
  *
  * @author eylee
- * @date 2016-09-30
- * Pickup Cancel -> Visit log 로 기능 개선
- * <p></p>
- * @editor krm0219
- * 2019.12 - Fail Reason / Retry Date 추가
+ * @date 2017-06-23
+ * Delivery failed -> Visit log 로 기능 개선
  */
-public class SigningPickupVisitLog extends AppCompatActivity implements Camera2APIs.Camera2Interface, TextureView.SurfaceTextureListener {
-    String TAG = "SigningPickupVisitLog";
+public class DeliveryFailedActivity extends AppCompatActivity implements Camera2APIs.Camera2Interface, TextureView.SurfaceTextureListener {
+    private static final String TAG = "DeliveryFailedActivity";
 
-    //
+
+    // krm0219
     FrameLayout layout_top_back;
     TextView text_top_title;
 
-    TextView text_sign_p_f_pickup_no;
-    TextView text_sign_p_f_applicant;
-    TextView text_sign_p_f_requested_qty;
+    TextView text_sign_d_f_tracking_no;
+    TextView text_sign_d_f_receiver;
+    TextView text_sign_d_f_sender;
+    EditText edit_sign_d_f_memo;
 
-    RelativeLayout layout_sign_p_f_failed_reason;
-    TextView text_sign_p_f_failed_reason;
-    Spinner spinner_p_f_failed_reason;
-    RelativeLayout layout_sign_p_f_retry_date;
-    TextView text_sign_p_f_retry_date;
-
-    EditText edit_sign_p_f_memo;
-    LinearLayout layout_sign_p_f_take_photo;
-    LinearLayout layout_sign_p_f_gallery;
-    TextureView texture_sign_p_f_preview;
-    ImageView img_sign_p_f_visit_log;
-    Button btn_sign_p_f_save;
+    LinearLayout layout_sign_d_f_take_photo;
+    LinearLayout layout_sign_d_f_gallery;
+    TextureView texture_sign_d_f_preview;
+    ImageView img_sign_d_f_visit_log;
+    Button btn_sign_d_f_save;
 
 
-    //---
+    //
     Context context;
     String opID = "";
     String officeCode = "";
     String deviceID = "";
-    String pickupNo;
-
-    String[] failReasonCode = {"WA", "WP", "NA", "NO", "NR", "NQ", "ET"}; //Wrong address, Wrong phone number,No answer,No one available,Not ready for parcel,Others
-
-    DatePickerDialog datePickerDialog;
-    Calendar mCalendar;
-    DatePickerDialog.OnDateSetListener dateListener;
+    String mStrWaybillNo;
 
     // Camera & Gallery
     Camera2APIs camera2;
     String cameraId;
     private static final int RESULT_LOAD_IMAGE = 3;
     boolean isGalleryActivate = false;
-
 
     GPSTrackerManager gpsTrackerManager;
     boolean gpsEnable = false;
@@ -126,31 +98,25 @@ public class SigningPickupVisitLog extends AppCompatActivity implements Camera2A
                 | WindowManager.LayoutParams.FLAG_DISMISS_KEYGUARD
                 | WindowManager.LayoutParams.FLAG_SHOW_WHEN_LOCKED
                 | WindowManager.LayoutParams.FLAG_TURN_SCREEN_ON);
-        setContentView(R.layout.activity_pickup_visit_log);
+        setContentView(R.layout.activity_delivery_visit_log);
 
 
         layout_top_back = findViewById(R.id.layout_top_back);
         text_top_title = findViewById(R.id.text_top_title);
 
-        text_sign_p_f_pickup_no = findViewById(R.id.text_sign_p_f_pickup_no);
-        text_sign_p_f_applicant = findViewById(R.id.text_sign_p_f_applicant);
-        text_sign_p_f_requested_qty = findViewById(R.id.text_sign_p_f_requested_qty);
+        text_sign_d_f_tracking_no = findViewById(R.id.text_sign_d_f_tracking_no);
+        text_sign_d_f_receiver = findViewById(R.id.text_sign_d_f_receiver);
+        text_sign_d_f_sender = findViewById(R.id.text_sign_d_f_sender);
+        edit_sign_d_f_memo = findViewById(R.id.edit_sign_d_f_memo);
 
-        layout_sign_p_f_failed_reason = findViewById(R.id.layout_sign_p_f_failed_reason);
-        text_sign_p_f_failed_reason = findViewById(R.id.text_sign_p_f_failed_reason);
-        spinner_p_f_failed_reason = findViewById(R.id.spinner_p_f_failed_reason);
-        layout_sign_p_f_retry_date = findViewById(R.id.layout_sign_p_f_retry_date);
-        text_sign_p_f_retry_date = findViewById(R.id.text_sign_p_f_retry_date);
-
-        edit_sign_p_f_memo = findViewById(R.id.edit_sign_p_f_memo);
-        layout_sign_p_f_take_photo = findViewById(R.id.layout_sign_p_f_take_photo);
-        layout_sign_p_f_gallery = findViewById(R.id.layout_sign_p_f_gallery);
-        texture_sign_p_f_preview = findViewById(R.id.texture_sign_p_f_preview);
-        img_sign_p_f_visit_log = findViewById(R.id.img_sign_p_f_visit_log);
-        btn_sign_p_f_save = findViewById(R.id.btn_sign_p_f_save);
+        layout_sign_d_f_take_photo = findViewById(R.id.layout_sign_d_f_take_photo);
+        layout_sign_d_f_gallery = findViewById(R.id.layout_sign_d_f_gallery);
+        texture_sign_d_f_preview = findViewById(R.id.texture_sign_d_f_preview);
+        img_sign_d_f_visit_log = findViewById(R.id.img_sign_d_f_visit_log);
+        btn_sign_d_f_save = findViewById(R.id.btn_sign_d_f_save);
 
 
-        //------------
+        //
         context = getApplicationContext();
         camera2 = new Camera2APIs(this);
         opID = SharedPreferencesHelper.getSigninOpID(getApplicationContext());
@@ -158,117 +124,17 @@ public class SigningPickupVisitLog extends AppCompatActivity implements Camera2A
         deviceID = SharedPreferencesHelper.getSigninDeviceID(getApplicationContext());
 
         String strTitle = getIntent().getStringExtra("title");
-        pickupNo = getIntent().getStringExtra("pickupNo");
-        String applicant = getIntent().getStringExtra("applicant");
-        String strReqQty = getIntent().getStringExtra("reqQty");
+        mStrWaybillNo = getIntent().getStringExtra("waybillNo");
+        String strReceiverName = getIntent().getStringExtra("receiverName");
+        String strSenderName = getIntent().getStringExtra("senderName");
 
 
         text_top_title.setText(strTitle);
-        text_sign_p_f_pickup_no.setText(pickupNo);
-        text_sign_p_f_applicant.setText(applicant);
-        text_sign_p_f_requested_qty.setText(strReqQty);
+        text_sign_d_f_tracking_no.setText(mStrWaybillNo);
+        text_sign_d_f_receiver.setText(strReceiverName);
+        text_sign_d_f_sender.setText(strSenderName);
 
 
-        //
-        mCalendar = Calendar.getInstance();
-        mCalendar.add(Calendar.DATE, 1);
-
-        dateListener = new DatePickerDialog.OnDateSetListener() {
-
-            @Override
-            public void onDateSet(DatePicker view, int year, int monthOfYear, int dayOfMonth) {
-                Log.e("krm0219", "DATE : " + year + " / " + monthOfYear + " / " + dayOfMonth);
-
-                mCalendar.set(Calendar.YEAR, year);
-                mCalendar.set(Calendar.MONTH, monthOfYear);
-                mCalendar.set(Calendar.DAY_OF_MONTH, dayOfMonth);
-
-                String restDay = getRestDay(year, monthOfYear + 1, dayOfMonth);
-
-                if (mCalendar.get(Calendar.DAY_OF_WEEK) == Calendar.SUNDAY) {
-
-                    Toast calToast = Toast.makeText(SigningPickupVisitLog.this, context.getResources().getString(R.string.msg_choose_sunday_error), Toast.LENGTH_SHORT);
-                    calToast.setGravity(Gravity.CENTER, 0, 10);
-                    calToast.show();
-                    text_sign_p_f_retry_date.setText(getString(R.string.text_select));
-                } else if (!restDay.isEmpty()) {    //휴무일 선택 시
-
-                    Toast calToast = Toast.makeText(SigningPickupVisitLog.this, restDay + context.getResources().getString(R.string.msg_choose_another_day), Toast.LENGTH_SHORT);
-                    calToast.setGravity(Gravity.CENTER, 0, 10);
-                    calToast.show();
-                    text_sign_p_f_retry_date.setText(getString(R.string.text_select));
-                } else {
-
-                    String myFormat = "yyyy-MM-dd";
-                    SimpleDateFormat sdf = new SimpleDateFormat(myFormat, Locale.US);
-                    text_sign_p_f_retry_date.setText(sdf.format(mCalendar.getTime()));
-                }
-            }
-        };
-
-
-        datePickerDialog = new DatePickerDialog(SigningPickupVisitLog.this,
-                dateListener,
-                mCalendar.get(Calendar.YEAR),
-                mCalendar.get(Calendar.MONTH),
-                mCalendar.get(Calendar.DAY_OF_MONTH));
-
-        Calendar minDate = Calendar.getInstance();
-        minDate.add(Calendar.DAY_OF_YEAR, 1);
-        Calendar maxDate = Calendar.getInstance();
-        maxDate.add(Calendar.DAY_OF_YEAR, 8);
-
-        datePickerDialog.getDatePicker().setMinDate(minDate.getTimeInMillis());
-        datePickerDialog.getDatePicker().setMaxDate(maxDate.getTimeInMillis());
-
-        layout_sign_p_f_retry_date.setOnClickListener(new View.OnClickListener() {
-
-            @Override
-            public void onClick(View v) {
-
-                datePickerDialog.show();
-            }
-        });
-
-
-        ArrayAdapter<CharSequence> spin_adapter = ArrayAdapter.createFromResource(this, R.array.fail_reason_array, android.R.layout.simple_spinner_item);
-        spin_adapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
-        spinner_p_f_failed_reason.setAdapter(spin_adapter);
-        spinner_p_f_failed_reason.setPrompt(context.getResources().getString(R.string.text_failed_reason));
-
-        layout_sign_p_f_failed_reason.setOnClickListener(new View.OnClickListener() {
-
-            @Override
-            public void onClick(View v) {
-
-                spinner_p_f_failed_reason.setVisibility(View.INVISIBLE);
-                spinner_p_f_failed_reason.performClick();
-            }
-
-        });
-
-        spinner_p_f_failed_reason.post(new Runnable() {
-            @Override
-            public void run() {
-
-                spinner_p_f_failed_reason.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
-
-                    @Override
-                    public void onItemSelected(AdapterView<?> parentView, View arg1, int position, long arg3) {
-
-                        String selected_text = parentView.getItemAtPosition(position).toString();
-                        text_sign_p_f_failed_reason.setText(selected_text);
-                    }
-
-                    @Override
-                    public void onNothingSelected(AdapterView<?> arg0) {
-                    }
-                });
-            }
-        });
-
-
-        //
         layout_top_back.setOnClickListener(new View.OnClickListener() {
 
             @Override
@@ -278,22 +144,22 @@ public class SigningPickupVisitLog extends AppCompatActivity implements Camera2A
             }
         });
 
-        layout_sign_p_f_take_photo.setOnClickListener(new View.OnClickListener() {
+        layout_sign_d_f_take_photo.setOnClickListener(new View.OnClickListener() {
 
             @Override
             public void onClick(View view) {
 
                 if (cameraId != null) {
 
-                    camera2.takePhoto(texture_sign_p_f_preview, img_sign_p_f_visit_log);
+                    camera2.takePhoto(texture_sign_d_f_preview, img_sign_d_f_visit_log);
                 } else {
 
-                    Toast.makeText(SigningPickupVisitLog.this, context.getResources().getString(R.string.msg_back_camera_required), Toast.LENGTH_SHORT).show();
+                    Toast.makeText(DeliveryFailedActivity.this, context.getResources().getString(R.string.msg_back_camera_required), Toast.LENGTH_SHORT).show();
                 }
             }
         });
 
-        layout_sign_p_f_gallery.setOnClickListener(new View.OnClickListener() {
+        layout_sign_d_f_gallery.setOnClickListener(new View.OnClickListener() {
 
             @Override
             public void onClick(View view) {
@@ -302,7 +168,7 @@ public class SigningPickupVisitLog extends AppCompatActivity implements Camera2A
             }
         });
 
-        btn_sign_p_f_save.setOnClickListener(new View.OnClickListener() {
+        btn_sign_d_f_save.setOnClickListener(new View.OnClickListener() {
 
             @Override
             public void onClick(View v) {
@@ -312,23 +178,26 @@ public class SigningPickupVisitLog extends AppCompatActivity implements Camera2A
         });
 
         // Memo 입력제한
-        edit_sign_p_f_memo.addTextChangedListener(new TextWatcher() {
+        edit_sign_d_f_memo.addTextChangedListener(new TextWatcher() {
             @Override
             public void beforeTextChanged(CharSequence charSequence, int i, int i1, int i2) {
+
             }
 
             @Override
             public void onTextChanged(CharSequence charSequence, int i, int i1, int i2) {
 
-                if (99 <= edit_sign_p_f_memo.length()) {
+                if (99 <= edit_sign_d_f_memo.length()) {
                     Toast.makeText(context, context.getResources().getText(R.string.msg_memo_too_long), Toast.LENGTH_SHORT).show();
                 }
             }
 
             @Override
             public void afterTextChanged(Editable editable) {
+
             }
         });
+
 
         //
         PermissionChecker checker = new PermissionChecker(this);
@@ -345,6 +214,7 @@ public class SigningPickupVisitLog extends AppCompatActivity implements Camera2A
         }
     }
 
+
     @Override
     protected void onResume() {
         super.onResume();
@@ -354,12 +224,12 @@ public class SigningPickupVisitLog extends AppCompatActivity implements Camera2A
             // Camera
             camera2 = new Camera2APIs(this);
 
-            if (texture_sign_p_f_preview.isAvailable()) {
+            if (texture_sign_d_f_preview.isAvailable()) {
 
                 openCamera();
             } else {
 
-                texture_sign_p_f_preview.setSurfaceTextureListener(this);
+                texture_sign_d_f_preview.setSurfaceTextureListener(this);
             }
 
             // Location
@@ -369,16 +239,17 @@ public class SigningPickupVisitLog extends AppCompatActivity implements Camera2A
             if (gpsEnable && gpsTrackerManager != null) {
 
                 gpsTrackerManager.GPSTrackerStart();
-
                 latitude = gpsTrackerManager.getLatitude();
                 longitude = gpsTrackerManager.getLongitude();
+
                 Log.e("Location", TAG + " GPSTrackerManager onResume : " + latitude + "  " + longitude + "  ");
             } else {
 
-                DataUtil.enableLocationSettings(SigningPickupVisitLog.this, context);
+                DataUtil.enableLocationSettings(DeliveryFailedActivity.this, context);
             }
         }
     }
+
 
     @Override
     protected void onActivityResult(int requestCode, int resultCode, Intent data) {
@@ -392,8 +263,8 @@ public class SigningPickupVisitLog extends AppCompatActivity implements Camera2A
 
                 Bitmap selectedImage = Images.Media.getBitmap(getContentResolver(), selectedImageUri);
                 Bitmap resizeBitmap = camera2.getResizeBitmap(selectedImage);
-                img_sign_p_f_visit_log.setImageBitmap(resizeBitmap);
-                img_sign_p_f_visit_log.setScaleType(ImageView.ScaleType.CENTER_INSIDE);
+                img_sign_d_f_visit_log.setImageBitmap(resizeBitmap);
+                img_sign_d_f_visit_log.setScaleType(ImageView.ScaleType.CENTER_INSIDE);
                 onResume();
             } catch (Exception e) {
                 Log.e("eylee", e.toString());
@@ -424,6 +295,7 @@ public class SigningPickupVisitLog extends AppCompatActivity implements Camera2A
     public boolean onKeyDown(int keyCode, KeyEvent event) {
         return super.onKeyDown(keyCode, event);
     }
+
 
     @Override
     public void onBackPressed() {
@@ -473,22 +345,13 @@ public class SigningPickupVisitLog extends AppCompatActivity implements Camera2A
                 Log.e("Location", TAG + " saveServerUploadSign  GPSTrackerManager : " + latitude + "  " + longitude + "  ");
             }
 
-            if (text_sign_p_f_failed_reason.getText().equals(getString(R.string.text_select))) {
-                Toast.makeText(getApplicationContext(), context.getResources().getString(R.string.msg_select_fail_reason), Toast.LENGTH_SHORT).show();
-                return;
-            }
-            if (text_sign_p_f_retry_date.getText().equals(getString(R.string.text_select))) {
-                Toast.makeText(getApplicationContext(), context.getResources().getString(R.string.msg_select_retry_date), Toast.LENGTH_SHORT).show();
-                return;
-            }
-
-            String driverMemo = edit_sign_p_f_memo.getText().toString().trim();
+            String driverMemo = edit_sign_d_f_memo.getText().toString().trim();
             if (driverMemo.equals("")) {
                 Toast.makeText(this.getApplicationContext(), context.getResources().getString(R.string.msg_must_enter_memo1), Toast.LENGTH_SHORT).show();
                 return;
             }
 
-            if (!camera2.hasImage(img_sign_p_f_visit_log)) {
+            if (!camera2.hasImage(img_sign_d_f_visit_log)) {
                 Toast.makeText(this.getApplicationContext(), context.getResources().getString(R.string.msg_visit_photo_require), Toast.LENGTH_SHORT).show();
                 return;
             }
@@ -498,22 +361,20 @@ public class SigningPickupVisitLog extends AppCompatActivity implements Camera2A
                 return;
             }
 
-            String retry_day = text_sign_p_f_retry_date.getText().toString();
-            String fail_code = failReasonCode[spinner_p_f_failed_reason.getSelectedItemPosition()];
 
             try {
 
                 Bundle params = new Bundle();
                 params.putString("Activity", TAG);
-                params.putString("method", "SetPickupUploadData");
+                params.putString("method", "SetDeliveryUploadData");
                 DataUtil.mFirebaseAnalytics.logEvent("button_click", params);
             } catch (Exception e) {
 
                 Log.e("Firebase", "mFirebaseAnalytics error : " + e.toString());
             }
 
-            new ManualPickupVisitLogUploadHelper.Builder(this, opID, officeCode, deviceID,
-                    pickupNo, fail_code, retry_day, driverMemo, img_sign_p_f_visit_log,
+            new DeliveryFailedUploadHelper.Builder(this, opID, officeCode, deviceID,
+                    mStrWaybillNo, driverMemo, img_sign_d_f_visit_log,
                     MemoryStatus.getAvailableInternalMemorySize(), latitude, longitude)
                     .setOnServerEventListener(new OnServerEventListener() {
 
@@ -535,6 +396,7 @@ public class SigningPickupVisitLog extends AppCompatActivity implements Camera2A
         }
     }
 
+
     private void AlertShow(String msg) {
         AlertDialog.Builder alert_internet_status = new AlertDialog.Builder(this);
         alert_internet_status.setTitle(context.getResources().getString(R.string.text_warning));
@@ -549,30 +411,6 @@ public class SigningPickupVisitLog extends AppCompatActivity implements Camera2A
         alert_internet_status.show();
     }
 
-    private String getRestDay(int year, int month, int day) {
-
-        String rest_dt;
-        String rtn = "";
-        String s_year = Integer.toString(year);
-        String s_month = Integer.toString(month);
-        String s_day = Integer.toString(day);
-
-        if (s_month.length() == 1) {
-            s_month = "0" + s_month;
-        }
-        if (s_day.length() == 1) {
-            s_day = "0" + s_day;
-        }
-        rest_dt = s_year + "-" + s_month + "-" + s_day;
-        DatabaseHelper dbHelper = DatabaseHelper.getInstance();
-        Cursor cs = dbHelper.get("SELECT title FROM " + DatabaseHelper.DB_TABLE_REST_DAYS + " WHERE rest_dt = '" + rest_dt + "'");
-
-        if (cs != null && cs.moveToFirst()) {
-            rtn = cs.getString(cs.getColumnIndex("title"));
-        }
-
-        return rtn;
-    }
 
     // Gallery
     private void getImageFromAlbum() {
@@ -587,10 +425,12 @@ public class SigningPickupVisitLog extends AppCompatActivity implements Camera2A
                 startActivityForResult(Intent.createChooser(intent, "Select Picture"), RESULT_LOAD_IMAGE);
             }
         } catch (Exception ex) {
+
             isGalleryActivate = false;
             Log.i("eylee", ex.toString());
         }
     }
+
 
     // CAMERA
     private void openCamera() {
@@ -605,7 +445,7 @@ public class SigningPickupVisitLog extends AppCompatActivity implements Camera2A
             camera2.setCameraDevice(cameraManager, cameraId);
         } else {
 
-            Toast.makeText(SigningPickupVisitLog.this, context.getResources().getString(R.string.msg_back_camera_required), Toast.LENGTH_SHORT).show();
+            Toast.makeText(DeliveryFailedActivity.this, context.getResources().getString(R.string.msg_back_camera_required), Toast.LENGTH_SHORT).show();
         }
     }
 
@@ -614,14 +454,14 @@ public class SigningPickupVisitLog extends AppCompatActivity implements Camera2A
         camera2.closeCamera();
     }
 
-
     @Override
     public void onCameraDeviceOpened(CameraDevice cameraDevice, Size cameraSize, int rotation) {
 
-        texture_sign_p_f_preview.setRotation(rotation);
+        texture_sign_d_f_preview.setRotation(rotation);
 
-        SurfaceTexture texture = texture_sign_p_f_preview.getSurfaceTexture();
+        SurfaceTexture texture = texture_sign_d_f_preview.getSurfaceTexture();
         texture.setDefaultBufferSize(cameraSize.getWidth(), cameraSize.getHeight());
+        // texture.setDefaultBufferSize(1088, 1088);
         Surface surface = new Surface(texture);
 
         camera2.setCaptureSessionRequest(cameraDevice, surface);

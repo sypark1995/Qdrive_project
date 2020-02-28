@@ -17,7 +17,7 @@ import androidx.core.content.ContextCompat;
 import androidx.drawerlayout.widget.DrawerLayout;
 
 import com.giosis.util.qdrive.barcodescanner.CaptureActivity;
-import com.giosis.util.qdrive.list.ListActivity2;
+import com.giosis.util.qdrive.list.ListActivity;
 import com.giosis.util.qdrive.message.MessageListActivity;
 import com.giosis.util.qdrive.qdelivery.QDeliveryIntroActivity;
 import com.giosis.util.qdrive.settings.SettingActivity;
@@ -186,6 +186,7 @@ public class AppBaseActivity extends AppCompatActivity {
                         drawerLayout.closeDrawers();
                         Intent intent = new Intent(AppBaseActivity.this, SettingActivity.class);
                         // Intent intent = new Intent(AppBaseActivity.this, MainTestVisitLog.class);
+                        //Intent intent = new Intent(AppBaseActivity.this, SMSVerificationActivity.class);
                         startActivity(intent);
 
                         if (!(top_title_string.contains(getString(R.string.navi_home)))) {
@@ -263,7 +264,7 @@ public class AppBaseActivity extends AppCompatActivity {
                         case 1:
                         case 2: {
 
-                            Intent intent = new Intent(AppBaseActivity.this, ListActivity2.class);
+                            Intent intent = new Intent(AppBaseActivity.this, ListActivity.class);
                             intent.putExtra("position", child_position);
                             startActivity(intent);
 
@@ -359,7 +360,7 @@ public class AppBaseActivity extends AppCompatActivity {
 
                 case R.id.layout_bottom_bar_list: {
 
-                    Intent intent = new Intent(AppBaseActivity.this, ListActivity2.class);
+                    Intent intent = new Intent(AppBaseActivity.this, ListActivity.class);
                     startActivity(intent);
                 }
                 break;

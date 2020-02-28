@@ -18,8 +18,8 @@ import gmkt.inc.android.common.GMKT_SyncHttpTask;
 import gmkt.inc.android.common.network.http.GMKT_HTTPResponseMessage;
 
 
-public class TodayDonePickupOrderServerDownloadHelper extends ManualHelper {
-    String TAG = "TodayDonePickupOrderServerDownloadHelper";
+public class TodayDonePickupListDownloadHelper extends ManualHelper {
+    String TAG = "TodayDonePickupListDownloadHelper";
 
     private final Context context;
     private final String opID;
@@ -44,8 +44,8 @@ public class TodayDonePickupOrderServerDownloadHelper extends ManualHelper {
             this.networkType = NetworkUtil.getNetworkType(context);
         }
 
-        public TodayDonePickupOrderServerDownloadHelper build() {
-            return new TodayDonePickupOrderServerDownloadHelper(this);
+        public TodayDonePickupListDownloadHelper build() {
+            return new TodayDonePickupListDownloadHelper(this);
         }
 
         Builder setOnTodayDonePickupOrderDownloadEventListener(OnTodayDonePickupOrderDownloadEventListener eventListener) {
@@ -55,7 +55,7 @@ public class TodayDonePickupOrderServerDownloadHelper extends ManualHelper {
         }
     }
 
-    private TodayDonePickupOrderServerDownloadHelper(Builder builder) {
+    private TodayDonePickupListDownloadHelper(Builder builder) {
 
         this.context = builder.context;
         this.opID = builder.opID;
@@ -156,7 +156,7 @@ public class TodayDonePickupOrderServerDownloadHelper extends ManualHelper {
     }
 
 
-    public TodayDonePickupOrderServerDownloadHelper execute() {
+    public TodayDonePickupListDownloadHelper execute() {
         TodayPickupDoneDownloadAsyncTask todayPickupDoneDownloadAsyncTask = new TodayPickupDoneDownloadAsyncTask();
         todayPickupDoneDownloadAsyncTask.execute();
         return this;

@@ -8,7 +8,6 @@ import android.os.AsyncTask;
 import android.os.Bundle;
 import android.os.Handler;
 import android.os.Message;
-import androidx.fragment.app.Fragment;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -17,6 +16,8 @@ import android.widget.ListView;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
 import android.widget.Toast;
+
+import androidx.fragment.app.Fragment;
 
 import com.giosis.util.qdrive.singapore.R;
 import com.giosis.util.qdrive.util.Custom_XmlPullParser;
@@ -50,7 +51,6 @@ public class AdminMessageListFragment extends Fragment {
     MessageListAdapter messageListAdapter;
     private static ArrayList<MessageListResult.MessageList> messageList;
 
-    Boolean isNetworkConnect = false;
     String opID = "";
 
     // 5 min refresh
@@ -82,9 +82,7 @@ public class AdminMessageListFragment extends Fragment {
     public void onResume() {
         super.onResume();
 
-        isNetworkConnect = NetworkUtil.isNetworkAvailable(mContext);
-
-        if (!isNetworkConnect) {
+        if (!NetworkUtil.isNetworkAvailable(mContext)) {
 
             try {
                 showDialog(getResources().getString(R.string.text_warning), getResources().getString(R.string.msg_network_connect_error));

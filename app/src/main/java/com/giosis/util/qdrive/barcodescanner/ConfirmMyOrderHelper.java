@@ -1,4 +1,4 @@
-package com.giosis.util.qdrive.main;
+package com.giosis.util.qdrive.barcodescanner;
 
 import android.app.ProgressDialog;
 import android.content.ContentValues;
@@ -8,9 +8,6 @@ import android.os.AsyncTask;
 import android.text.TextUtils;
 import android.util.Log;
 
-import com.giosis.util.qdrive.barcodescanner.CaptureActivity;
-import com.giosis.util.qdrive.barcodescanner.DriverAssignResult;
-import com.giosis.util.qdrive.barcodescanner.ManualHelper;
 import com.giosis.util.qdrive.singapore.R;
 import com.giosis.util.qdrive.util.BarcodeType;
 import com.giosis.util.qdrive.util.DataUtil;
@@ -31,8 +28,8 @@ import java.util.TimeZone;
 import gmkt.inc.android.common.GMKT_SyncHttpTask;
 import gmkt.inc.android.common.network.http.GMKT_HTTPResponseMessage;
 
-public class ManualDriverAssignHelper extends ManualHelper {
-    String TAG = "ManualDriverAssignHelper";
+public class ConfirmMyOrderHelper extends ManualHelper {
+    String TAG = "ConfirmMyOrderHelper";
 
     private final Context context;
     private final String opID;
@@ -66,8 +63,8 @@ public class ManualDriverAssignHelper extends ManualHelper {
             this.networkType = NetworkUtil.getNetworkType(context);
         }
 
-        public ManualDriverAssignHelper build() {
-            return new ManualDriverAssignHelper(this);
+        public ConfirmMyOrderHelper build() {
+            return new ConfirmMyOrderHelper(this);
         }
 
         public Builder setOnDriverAssignEventListener(OnDriverAssignEventListener eventListener) {
@@ -77,7 +74,7 @@ public class ManualDriverAssignHelper extends ManualHelper {
         }
     }
 
-    private ManualDriverAssignHelper(Builder builder) {
+    private ConfirmMyOrderHelper(Builder builder) {
 
         this.context = builder.context;
         this.opID = builder.opID;
@@ -305,7 +302,7 @@ public class ManualDriverAssignHelper extends ManualHelper {
         dbHelper.delete(DatabaseHelper.DB_TABLE_INTEGRATION_LIST, "contr_no='" + contr_no + "' COLLATE NOCASE");
     }
 
-    public ManualDriverAssignHelper execute() {
+    public ConfirmMyOrderHelper execute() {
         DriverAssignTask driverAssignTask = new DriverAssignTask();
         driverAssignTask.execute();
         return this;

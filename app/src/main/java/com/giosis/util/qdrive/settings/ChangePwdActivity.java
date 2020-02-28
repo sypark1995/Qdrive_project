@@ -6,13 +6,14 @@ import android.content.DialogInterface;
 import android.content.DialogInterface.OnClickListener;
 import android.os.AsyncTask;
 import android.os.Bundle;
-import androidx.appcompat.app.AppCompatActivity;
 import android.util.Log;
 import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.FrameLayout;
 import android.widget.TextView;
+
+import androidx.appcompat.app.AppCompatActivity;
 
 import com.giosis.util.qdrive.barcodescanner.StdResult;
 import com.giosis.util.qdrive.singapore.R;
@@ -91,9 +92,9 @@ public class ChangePwdActivity extends AppCompatActivity {
         });
     }
 
+
     public void chgPwdConfirmClick() {
 
-//		 Do you want to change your Password?
         AlertDialog.Builder builder = new AlertDialog.Builder(this);
         builder.setTitle(getResources().getString(R.string.text_title_change_password));
         builder.setMessage(getResources().getString(R.string.msg_want_change_password));
@@ -107,14 +108,9 @@ public class ChangePwdActivity extends AppCompatActivity {
                 new_pwd = edit_setting_change_new_password.getText().toString().trim();
                 confirm_pwd = edit_setting_change_confirm_password.getText().toString().trim();
 
-//		    	1.validation check
-                Boolean isValid = false;
-                isValid = isValidData();
+                boolean isValid = isValidData();
 
                 if (isValid) {
-//		    		2. send api
-//		    		pwd setting
-//		    		Log.d(Tag, "isValid :: "+isValid);
 
                     ChangePasswordTask changePasswordTask = new ChangePasswordTask();
                     changePasswordTask.execute();
@@ -135,9 +131,9 @@ public class ChangePwdActivity extends AppCompatActivity {
         alertDialog.show();
     }
 
-    private Boolean isValidData() {
+    private boolean isValidData() {
 
-        Boolean isValid = false;
+        boolean isValid;
         AlertDialog.Builder builder = new AlertDialog.Builder(this);
 
         if (!old_pwd.equals("")) {
@@ -147,7 +143,7 @@ public class ChangePwdActivity extends AppCompatActivity {
                 String pwd_pattern = "((?=.*\\d)(?=.*[A-Za-z])(?=.*[!@#$%]).{11,20})";
                 Pattern pattern = Pattern.compile(pwd_pattern);
                 Matcher matcher = pattern.matcher(new_pwd);
-                Boolean isValidPwd = matcher.matches();
+                boolean isValidPwd = matcher.matches();
                 if (isValidPwd) {
 
                     if (new_pwd.equals(confirm_pwd)) {

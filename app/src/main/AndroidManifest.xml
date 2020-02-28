@@ -138,7 +138,7 @@
             android:name="com.giosis.util.qdrive.main.OutletOrderStatusActivity"
             android:screenOrientation="portrait" />
         <activity
-            android:name="com.giosis.util.qdrive.list.ListActivity2"
+            android:name="com.giosis.util.qdrive.list.ListActivity"
             android:configChanges="orientation|keyboardHidden"
             android:label="@string/app_name"
             android:screenOrientation="portrait">
@@ -208,12 +208,12 @@
             android:screenOrientation="portrait"
             android:windowSoftInputMode="stateAlwaysHidden|adjustPan" />
         <activity
-            android:name="com.giosis.util.qdrive.list.delivery.SigningDeliveryVisitLog"
+            android:name="com.giosis.util.qdrive.list.delivery.DeliveryFailedActivity"
             android:configChanges="orientation|keyboardHidden"
             android:screenOrientation="portrait"
             android:windowSoftInputMode="stateAlwaysHidden|adjustPan" />
         <activity
-            android:name="com.giosis.util.qdrive.list.delivery.SigningDeliveryDoneActivity"
+            android:name="com.giosis.util.qdrive.list.delivery.DeliveryDoneActivity"
             android:configChanges="orientation|keyboardHidden"
             android:screenOrientation="portrait"
             android:windowSoftInputMode="stateAlwaysHidden|adjustPan" />
@@ -223,7 +223,7 @@
             android:screenOrientation="portrait"
             android:windowSoftInputMode="stateAlwaysHidden|adjustPan" />
         <activity
-            android:name="com.giosis.util.qdrive.list.pickup.SigningPickupScanAllDoneActivity"
+            android:name="com.giosis.util.qdrive.list.pickup.PickupDoneActivity"
             android:configChanges="orientation|keyboardHidden"
             android:screenOrientation="portrait"
             android:windowSoftInputMode="stateAlwaysHidden|adjustPan" />
@@ -246,7 +246,7 @@
             android:screenOrientation="portrait"
             android:windowSoftInputMode="stateAlwaysHidden|adjustPan" />
         <activity
-            android:name="com.giosis.util.qdrive.list.pickup.SigningPickupVisitLog"
+            android:name="com.giosis.util.qdrive.list.pickup.PickupFailedActivity"
             android:configChanges="orientation|keyboardHidden"
             android:screenOrientation="portrait"
             android:windowSoftInputMode="stateAlwaysHidden|adjustPan" />
@@ -256,12 +256,12 @@
             android:screenOrientation="portrait"
             android:windowSoftInputMode="stateAlwaysHidden|adjustPan" />
         <activity
-            android:name="com.giosis.util.qdrive.list.delivery.SigningReturnedActivity"
+            android:name="com.giosis.util.qdrive.list.delivery.QuickReturnedActivity"
             android:configChanges="orientation|keyboardHidden"
             android:screenOrientation="portrait"
             android:windowSoftInputMode="stateAlwaysHidden|adjustPan" />
         <activity
-            android:name="com.giosis.util.qdrive.list.delivery.SigningReturnedVisitLog"
+            android:name="com.giosis.util.qdrive.list.delivery.QuickReturnFailedActivity"
             android:configChanges="orientation|keyboardHidden"
             android:screenOrientation="portrait"
             android:windowSoftInputMode="stateAlwaysHidden|adjustPan" />

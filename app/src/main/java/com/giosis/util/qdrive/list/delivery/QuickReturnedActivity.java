@@ -33,7 +33,7 @@ import com.giosis.util.qdrive.util.PermissionActivity;
 import com.giosis.util.qdrive.util.PermissionChecker;
 import com.giosis.util.qdrive.util.SharedPreferencesHelper;
 
-public class SigningReturnedActivity extends AppCompatActivity {
+public class QuickReturnedActivity extends AppCompatActivity {
     String TAG = "ReturnedActivity";
 
     //
@@ -188,7 +188,7 @@ public class SigningReturnedActivity extends AppCompatActivity {
                 Log.e("Location", TAG + " GPSTrackerManager onResume : " + latitude + "  " + longitude + "  ");
             } else {
 
-                DataUtil.enableLocationSettings(SigningReturnedActivity.this, context);
+                DataUtil.enableLocationSettings(QuickReturnedActivity.this, context);
             }
         }
     }
@@ -280,7 +280,7 @@ public class SigningReturnedActivity extends AppCompatActivity {
                 Log.e("Firebase", "mFirebaseAnalytics error : " + e.toString());
             }
 
-            new ManualServerUploadReturnedTypeHelper.Builder(this, opID, officeCode, deviceID,
+            new QuickReturnedUploadHelper.Builder(this, opID, officeCode, deviceID,
                     mStrWaybillNo, mReceiveType, sign_view_sign_d_r_signature, driverMemo,
                     MemoryStatus.getAvailableInternalMemorySize(), latitude, longitude)
                     .setOnServerEventListener(new OnServerEventListener() {

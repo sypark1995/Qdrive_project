@@ -31,7 +31,6 @@ import android.hardware.camera2.CameraDevice;
 import android.hardware.camera2.CameraManager;
 import android.os.Bundle;
 import android.os.Environment;
-import androidx.appcompat.app.AppCompatActivity;
 import android.util.Log;
 import android.util.Size;
 import android.view.Surface;
@@ -45,6 +44,8 @@ import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.TextView;
 import android.widget.Toast;
+
+import androidx.appcompat.app.AppCompatActivity;
 
 import com.giosis.util.qdrive.singapore.R;
 import com.giosis.util.qdrive.util.Camera2APIs;

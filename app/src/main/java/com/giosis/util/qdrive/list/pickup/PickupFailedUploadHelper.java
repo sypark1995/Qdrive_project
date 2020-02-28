@@ -26,8 +26,8 @@ import java.text.SimpleDateFormat;
 import java.util.Date;
 
 
-public class ManualPickupVisitLogUploadHelper extends ManualHelper {
-    String TAG = "ManualPickupVisitLogUploadHelper";
+public class PickupFailedUploadHelper extends ManualHelper {
+    String TAG = "PickupFailedUploadHelper";
 
     private final Context context;
     private final String opID;
@@ -90,8 +90,8 @@ public class ManualPickupVisitLogUploadHelper extends ManualHelper {
             this.lon = lon;
         }
 
-        public ManualPickupVisitLogUploadHelper build() {
-            return new ManualPickupVisitLogUploadHelper(this);
+        public PickupFailedUploadHelper build() {
+            return new PickupFailedUploadHelper(this);
         }
 
         public Builder setOnServerEventListener(OnServerEventListener eventListener) {
@@ -101,7 +101,7 @@ public class ManualPickupVisitLogUploadHelper extends ManualHelper {
         }
     }
 
-    private ManualPickupVisitLogUploadHelper(Builder builder) {
+    private PickupFailedUploadHelper(Builder builder) {
 
         this.context = builder.context;
         this.opID = builder.opID;
@@ -346,7 +346,7 @@ public class ManualPickupVisitLogUploadHelper extends ManualHelper {
     }
 
 
-    public ManualPickupVisitLogUploadHelper execute() {
+    public PickupFailedUploadHelper execute() {
         PickupUploadTask pickupUploadTask = new PickupUploadTask();
         pickupUploadTask.execute();
         return this;

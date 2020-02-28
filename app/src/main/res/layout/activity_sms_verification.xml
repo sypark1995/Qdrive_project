@@ -72,6 +72,7 @@
                     android:layout_alignParentEnd="true"
                     android:background="@drawable/back_rect_e2e2e2"
                     android:text="@string/button_request"
+                    android:textAllCaps="false"
                     android:textColor="@color/color_fefefe"
                     android:textSize="@dimen/text_size_26px" />
             </RelativeLayout>

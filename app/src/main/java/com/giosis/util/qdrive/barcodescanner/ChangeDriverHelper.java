@@ -1,4 +1,4 @@
-package com.giosis.util.qdrive.main;
+package com.giosis.util.qdrive.barcodescanner;
 
 import android.app.ProgressDialog;
 import android.content.ContentValues;
@@ -9,9 +9,6 @@ import android.text.TextUtils;
 import android.util.Log;
 import android.widget.Toast;
 
-import com.giosis.util.qdrive.barcodescanner.DriverAssignResult;
-import com.giosis.util.qdrive.barcodescanner.ManualHelper;
-import com.giosis.util.qdrive.barcodescanner.StdResult;
 import com.giosis.util.qdrive.singapore.R;
 import com.giosis.util.qdrive.util.BarcodeType;
 import com.giosis.util.qdrive.util.Custom_JsonParser;
@@ -36,8 +33,8 @@ import java.util.TimeZone;
 import gmkt.inc.android.common.GMKT_SyncHttpTask;
 import gmkt.inc.android.common.network.http.GMKT_HTTPResponseMessage;
 
-public class ManualChangeDelDriverHelper extends ManualHelper {
-    String TAG = "ManualChangeDelDriverHelper";
+public class ChangeDriverHelper extends ManualHelper {
+    String TAG = "ChangeDriverHelper";
 
     private final Context context;
     private final String opID;
@@ -78,18 +75,18 @@ public class ManualChangeDelDriverHelper extends ManualHelper {
             this.networkType = NetworkUtil.getNetworkType(context);
         }
 
-        public ManualChangeDelDriverHelper build() {
-            return new ManualChangeDelDriverHelper(this);
+        public ChangeDriverHelper build() {
+            return new ChangeDriverHelper(this);
         }
 
-        public Builder setOnChangeDelDriverEventListener(OnChangeDelDriverEventListener eventListener) {
+        Builder setOnChangeDelDriverEventListener(OnChangeDelDriverEventListener eventListener) {
             this.eventListener = eventListener;
 
             return this;
         }
     }
 
-    private ManualChangeDelDriverHelper(Builder builder) {
+    private ChangeDriverHelper(Builder builder) {
 
         this.context = builder.context;
         this.opID = builder.opID;
@@ -155,7 +152,7 @@ public class ManualChangeDelDriverHelper extends ManualHelper {
                     }
                 }
 
-                result = requestDriverAssign(str);
+                result = changeDriver(str);
                 publishProgress(1);
             }
 
@@ -200,7 +197,7 @@ public class ManualChangeDelDriverHelper extends ManualHelper {
         }
 
 
-        private DriverAssignResult requestDriverAssign(String assignNo) {
+        private DriverAssignResult changeDriver(String assignNo) {
 
             DriverAssignResult resultObj;
 
@@ -397,7 +394,7 @@ public class ManualChangeDelDriverHelper extends ManualHelper {
         dbHelper.delete(DatabaseHelper.DB_TABLE_INTEGRATION_LIST, "contr_no='" + contr_no + "' COLLATE NOCASE");
     }
 
-    public ManualChangeDelDriverHelper execute() {
+    public ChangeDriverHelper execute() {
         ChangeDriverAsyncTask changeDriverAsyncTask = new ChangeDriverAsyncTask();
         changeDriverAsyncTask.execute();
         return this;

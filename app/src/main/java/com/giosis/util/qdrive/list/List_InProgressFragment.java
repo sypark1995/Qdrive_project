@@ -660,8 +660,8 @@ public class List_InProgressFragment extends Fragment implements OnQueryTextList
         // LIST 들어갈 때 TODAY DONE Count 표시하기 위함.
         // ViewPage 특성상 TODAY DONE 페이지는 처음에 호출되지 않아서 0 으로 표시되어있음.
 
-        new TodayDonePickupOrderServerDownloadHelper.Builder(getActivity(), opID)
-                .setOnTodayDonePickupOrderDownloadEventListener(new TodayDonePickupOrderServerDownloadHelper.OnTodayDonePickupOrderDownloadEventListener() {
+        new TodayDonePickupListDownloadHelper.Builder(getActivity(), opID)
+                .setOnTodayDonePickupOrderDownloadEventListener(new TodayDonePickupListDownloadHelper.OnTodayDonePickupOrderDownloadEventListener() {
 
                     @Override
                     public void onTodayDonePickupOrderDownloadResult(ArrayList<Object> resultList) {

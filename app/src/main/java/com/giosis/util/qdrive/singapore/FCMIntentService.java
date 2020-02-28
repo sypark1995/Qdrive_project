@@ -18,7 +18,7 @@ import android.os.Vibrator;
 import androidx.core.app.NotificationCompat;
 import android.util.Log;
 
-import com.giosis.util.qdrive.list.ListActivity2;
+import com.giosis.util.qdrive.list.ListActivity;
 import com.giosis.util.qdrive.main.MainActivity;
 import com.giosis.util.qdrive.message.MessageListActivity;
 import com.giosis.util.qdrive.util.DataUtil;
@@ -280,7 +280,7 @@ public class FCMIntentService extends FirebaseMessagingService {
             notificationIntent = new Intent(Intent.ACTION_VIEW, Uri.parse(DataUtil.locker_pin_url));
         } else if (action_key.equals("SRL") || action_key.equals("TEST_KARAM")) {
 
-            notificationIntent = new Intent(context, ListActivity2.class);
+            notificationIntent = new Intent(context, ListActivity.class);
         }
 
 

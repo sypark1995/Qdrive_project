@@ -1,10 +1,11 @@
-package com.giosis.util.qdrive.list;
+package com.giosis.util.qdrive.list.pickup;
 
 import android.content.Context;
 import android.os.AsyncTask;
 import android.util.Log;
 
 import com.giosis.util.qdrive.barcodescanner.ManualHelper;
+import com.giosis.util.qdrive.list.PrintDataResult;
 import com.giosis.util.qdrive.singapore.R;
 import com.giosis.util.qdrive.util.DataUtil;
 import com.giosis.util.qdrive.util.NetworkUtil;
@@ -17,8 +18,8 @@ import java.util.HashMap;
 import gmkt.inc.android.common.GMKT_SyncHttpTask;
 import gmkt.inc.android.common.network.http.GMKT_HTTPResponseMessage;
 
-public class ManualCnRPrintDataHelper extends ManualHelper {
-    String TAG = "ManualCnRPrintDataHelper";
+public class CnRPickupInfoGetHelper extends ManualHelper {
+    String TAG = "CnRPickupInfoGetHelper";
 
     private final Context context;
     private final String opID;
@@ -41,18 +42,18 @@ public class ManualCnRPrintDataHelper extends ManualHelper {
             this.tracking_no = tracking_no;
         }
 
-        public ManualCnRPrintDataHelper build() {
-            return new ManualCnRPrintDataHelper(this);
+        public CnRPickupInfoGetHelper build() {
+            return new CnRPickupInfoGetHelper(this);
         }
 
-        Builder setOnCnRPrintDataEventListener(OnCnRPrintDataEventListener eventListener) {
+        public Builder setOnCnRPrintDataEventListener(OnCnRPrintDataEventListener eventListener) {
             this.eventListener = eventListener;
 
             return this;
         }
     }
 
-    private ManualCnRPrintDataHelper(Builder builder) {
+    private CnRPickupInfoGetHelper(Builder builder) {
 
         this.context = builder.context;
         this.opID = builder.opID;
@@ -135,7 +136,7 @@ public class ManualCnRPrintDataHelper extends ManualHelper {
     }
 
 
-    public ManualCnRPrintDataHelper execute() {
+    public CnRPickupInfoGetHelper execute() {
         CNRPrintData printData = new CNRPrintData();
         printData.execute();
         return this;

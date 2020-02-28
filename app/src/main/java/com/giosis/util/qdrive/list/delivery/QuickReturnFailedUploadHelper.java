@@ -9,10 +9,10 @@ import android.content.DialogInterface.OnClickListener;
 import android.graphics.Bitmap;
 import android.os.AsyncTask;
 import android.util.Log;
+import android.widget.ImageView;
 
 import com.giosis.util.qdrive.barcodescanner.ManualHelper;
 import com.giosis.util.qdrive.barcodescanner.StdResult;
-import com.giosis.util.qdrive.list.SigningView;
 import com.giosis.util.qdrive.singapore.OnServerEventListener;
 import com.giosis.util.qdrive.singapore.R;
 import com.giosis.util.qdrive.util.Custom_JsonParser;
@@ -26,8 +26,9 @@ import org.json.JSONObject;
 import java.text.SimpleDateFormat;
 import java.util.Date;
 
-public class ManualServerUploadReturnedTypeHelper extends ManualHelper {
-    String TAG = "ManualServerUploadReturnedTypeHelper";
+
+public class QuickReturnFailedUploadHelper extends ManualHelper {
+    String TAG = "QuickReturnFailedUploadHelper";
 
     private final Context context;
     private final String opID;
@@ -35,9 +36,8 @@ public class ManualServerUploadReturnedTypeHelper extends ManualHelper {
     private final String deviceID;
 
     private final String shippingNo;
-    private final String receiveType;
-    private final SigningView signingView;
     private final String driverMemo;
+    private final ImageView imageView;
 
     private final long disk_size;
     private final double lat;
@@ -56,9 +56,8 @@ public class ManualServerUploadReturnedTypeHelper extends ManualHelper {
         private final String deviceID;
 
         private final String shippingNo;
-        private final String receiveType;
-        private final SigningView signingView;
         private final String driverMemo;
+        private final ImageView imageView;
 
         private final long disk_size;
         private final double lat;
@@ -68,7 +67,7 @@ public class ManualServerUploadReturnedTypeHelper extends ManualHelper {
         private OnServerEventListener eventListener;
 
         public Builder(Context context, String opID, String officeCode, String deviceID,
-                       String shippingNo, String receiveType, SigningView signingView, String driverMemo,
+                       String shippingNo, String driverMemo, ImageView imageView,
                        long disk_size, double lat, double lon) {
 
             this.context = context;
@@ -78,17 +77,16 @@ public class ManualServerUploadReturnedTypeHelper extends ManualHelper {
             this.networkType = NetworkUtil.getNetworkType(context);
 
             this.shippingNo = shippingNo;
-            this.receiveType = receiveType;
-            this.signingView = signingView;
             this.driverMemo = driverMemo;
+            this.imageView = imageView;
 
             this.disk_size = disk_size;
             this.lat = lat;
             this.lon = lon;
         }
 
-        public ManualServerUploadReturnedTypeHelper build() {
-            return new ManualServerUploadReturnedTypeHelper(this);
+        public QuickReturnFailedUploadHelper build() {
+            return new QuickReturnFailedUploadHelper(this);
         }
 
         public Builder setOnServerEventListener(OnServerEventListener eventListener) {
@@ -98,7 +96,7 @@ public class ManualServerUploadReturnedTypeHelper extends ManualHelper {
         }
     }
 
-    private ManualServerUploadReturnedTypeHelper(Builder builder) {
+    private QuickReturnFailedUploadHelper(Builder builder) {
 
         this.context = builder.context;
         this.opID = builder.opID;
@@ -106,9 +104,8 @@ public class ManualServerUploadReturnedTypeHelper extends ManualHelper {
         this.deviceID = builder.deviceID;
 
         this.shippingNo = builder.shippingNo;
-        this.receiveType = builder.receiveType;
-        this.signingView = builder.signingView;
         this.driverMemo = builder.driverMemo;
+        this.imageView = builder.imageView;
 
         this.disk_size = builder.disk_size;
         this.lat = builder.lat;
@@ -155,8 +152,7 @@ public class ManualServerUploadReturnedTypeHelper extends ManualHelper {
         resultDialog.show();
     }
 
-    class ReturnedUploadTask extends AsyncTask<Void, Integer, StdResult> {
-
+    class ReturnFailUploadTask extends AsyncTask<Void, Integer, StdResult> {
         int progress = 0;
 
         @Override
@@ -173,7 +169,7 @@ public class ManualServerUploadReturnedTypeHelper extends ManualHelper {
         @Override
         protected StdResult doInBackground(Void... params) {
 
-            StdResult stdResult = requestReturnUpload(shippingNo);
+            StdResult stdResult = requestReturnFailUpload(shippingNo);
             publishProgress(1);
 
             return stdResult;
@@ -181,9 +177,9 @@ public class ManualServerUploadReturnedTypeHelper extends ManualHelper {
 
         @Override
         protected void onProgressUpdate(Integer... values) {
+            super.onProgressUpdate(values);
             progress += values[0];
             progressDialog.setProgress(progress);
-            super.onProgressUpdate(values);
         }
 
         @Override
@@ -220,10 +216,7 @@ public class ManualServerUploadReturnedTypeHelper extends ManualHelper {
         }
 
 
-        private StdResult requestReturnUpload(String assignNo) {
-
-            DataUtil.captureSign("/Qdrive", assignNo, signingView);
-
+        private StdResult requestReturnFailUpload(String assignNo) {
 
             SimpleDateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
             Date date = new Date();
@@ -244,19 +237,20 @@ public class ManualServerUploadReturnedTypeHelper extends ManualHelper {
             if (!NetworkUtil.isNetworkAvailable(context)) {
 
                 result.setResultCode(-16);
-                result.setResultMsg(context.getResources().getString(R.string.msg_network_connect_error_saved));
+                result.setResultMsg(context.getResources().getString(R.string.msg_upload_fail_16));
                 return result;
             }
 
             try {
 
-                signingView.buildDrawingCache();
-                Bitmap captureView = signingView.getDrawingCache();
+                imageView.buildDrawingCache();
+                Bitmap captureView = imageView.getDrawingCache();
                 String bitmapString = DataUtil.bitmapToString(captureView);
 
                 JSONObject job = new JSONObject();
-                job.accumulate("rcv_type", receiveType);
-                job.accumulate("stat", "RT");
+
+                job.accumulate("rcv_type", "RC");
+                job.accumulate("stat", "RF");
                 job.accumulate("chg_id", opID);
                 job.accumulate("deliv_msg", "(by Qdrive RealTime-Upload)"); // 내부관리자용 메세지
                 job.accumulate("opId", opID);
@@ -265,10 +259,11 @@ public class ManualServerUploadReturnedTypeHelper extends ManualHelper {
                 job.accumulate("network_type", networkType);
                 job.accumulate("fileData", bitmapString);
                 job.accumulate("no_songjang", assignNo);
-                job.accumulate("remark", driverMemo);           // 드라이버 메세지 driver_memo	== remark
+                job.accumulate("remark", driverMemo);               // 드라이버 메세지 driver_memo	== remark
                 job.accumulate("disk_size", disk_size);
                 job.accumulate("lat", lat);
                 job.accumulate("lon", lon);
+                job.accumulate("del_channel", "QDRIVE");
                 job.accumulate("app_id", DataUtil.appID);
                 job.accumulate("nation_cd", DataUtil.nationCode);
 
@@ -306,9 +301,9 @@ public class ManualServerUploadReturnedTypeHelper extends ManualHelper {
     }
 
 
-    public ManualServerUploadReturnedTypeHelper execute() {
-        ReturnedUploadTask returnedUploadTask = new ReturnedUploadTask();
-        returnedUploadTask.execute();
+    public QuickReturnFailedUploadHelper execute() {
+        ReturnFailUploadTask returnFailUploadTask = new ReturnFailUploadTask();
+        returnFailUploadTask.execute();
         return this;
     }
 
@@ -321,12 +316,13 @@ public class ManualServerUploadReturnedTypeHelper extends ManualHelper {
         Date date = new Date();
 
         ContentValues contentVal = new ContentValues();
-        contentVal.put("stat", "RT");
+        contentVal.put("stat", "RF");
         contentVal.put("chg_id", opId);
         contentVal.put("chg_dt", dateFormat.format(date));
-        contentVal.put("real_qty", "0");                // 업로드시 값 Parse 시 에러나서 0 넘김
+        contentVal.put("real_qty", "0");
         contentVal.put("driver_memo", driverMemo);
         contentVal.put("retry_dt", "");
+        contentVal.put("rev_type", "VL");
         contentVal.put("punchOut_stat", "S");
 
         DatabaseHelper dbHelper = DatabaseHelper.getInstance();

@@ -61,8 +61,8 @@ import static com.giosis.util.qdrive.barcodescanner.ManualHelper.MOBILE_SERVER_U
  * SCAN > Delivery Done
  *
  */
-public class SigningDeliveryDoneActivity extends AppCompatActivity {
-    String TAG = "SigningDeliveryDoneActivity";
+public class DeliveryDoneActivity extends AppCompatActivity {
+    String TAG = "DeliveryDoneActivity";
 
     private static String RECEIVE_TYPE_SELF = "RC";
 
@@ -381,7 +381,7 @@ public class SigningDeliveryDoneActivity extends AppCompatActivity {
                 text_sign_d_outlet_address_title.setText(R.string.text_federated_locker_address);
                 layout_sign_d_sign_memo.setVisibility(View.GONE);
 
-                outletTrackingNoAdapter = new OutletTrackingNoAdapter(SigningDeliveryDoneActivity.this, outletDeliveryDoneListItemArrayList, "FL");
+                outletTrackingNoAdapter = new OutletTrackingNoAdapter(DeliveryDoneActivity.this, outletDeliveryDoneListItemArrayList, "FL");
                 list_sign_d_outlet_list.setAdapter(outletTrackingNoAdapter);
                 setListViewHeightBasedOnChildren(list_sign_d_outlet_list);
             }
@@ -451,7 +451,7 @@ public class SigningDeliveryDoneActivity extends AppCompatActivity {
                 Log.e("Location", TAG + " GPSTrackerManager onResume : " + latitude + "  " + longitude + "  ");
             } else {
 
-                DataUtil.enableLocationSettings(SigningDeliveryDoneActivity.this, context);
+                DataUtil.enableLocationSettings(DeliveryDoneActivity.this, context);
             }
         }
     }
@@ -512,7 +512,7 @@ public class SigningDeliveryDoneActivity extends AppCompatActivity {
                 saveOutletDeliveryDone();
             } else {                // QR Code Not Show... > 진행 불가능
 
-                Toast.makeText(SigningDeliveryDoneActivity.this, context.getResources().getString(R.string.msg_outlet_qrcode_require), Toast.LENGTH_SHORT).show();
+                Toast.makeText(DeliveryDoneActivity.this, context.getResources().getString(R.string.msg_outlet_qrcode_require), Toast.LENGTH_SHORT).show();
             }
         } else if (outletInfo.route.contains("FL")) {
 
@@ -789,7 +789,7 @@ public class SigningDeliveryDoneActivity extends AppCompatActivity {
         ArrayList<QRCodeResult> qrCodeResultArrayList;
         String imgUrl;
 
-        ProgressDialog progressDialog = new ProgressDialog(SigningDeliveryDoneActivity.this);
+        ProgressDialog progressDialog = new ProgressDialog(DeliveryDoneActivity.this);
 
         public QRCodeAsyncTask(String outletType, ArrayList<OutletDeliveryDoneListItem> outletDeliveryDoneListItemArrayList) {
 
@@ -878,7 +878,7 @@ public class SigningDeliveryDoneActivity extends AppCompatActivity {
 
                 showQRCode = true;
 
-                outletTrackingNoAdapter = new OutletTrackingNoAdapter(SigningDeliveryDoneActivity.this, outletDeliveryDoneListItemArrayList, "7E");
+                outletTrackingNoAdapter = new OutletTrackingNoAdapter(DeliveryDoneActivity.this, outletDeliveryDoneListItemArrayList, "7E");
                 list_sign_d_outlet_list.setAdapter(outletTrackingNoAdapter);
                 setListViewHeightBasedOnChildren(list_sign_d_outlet_list);
             } else {

@@ -3,12 +3,13 @@ package com.giosis.util.qdrive.singapore;
 import android.content.Context;
 import android.content.Intent;
 import android.os.Bundle;
-import androidx.appcompat.app.AppCompatActivity;
 import android.view.View;
 import android.widget.FrameLayout;
 import android.widget.LinearLayout;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
+
+import androidx.appcompat.app.AppCompatActivity;
 
 import com.giosis.util.qdrive.barcodescanner.CaptureActivity;
 import com.giosis.util.qdrive.util.BarcodeType;

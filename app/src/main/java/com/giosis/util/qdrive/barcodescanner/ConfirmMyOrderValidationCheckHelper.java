@@ -1,4 +1,4 @@
-package com.giosis.util.qdrive.main;
+package com.giosis.util.qdrive.barcodescanner;
 
 import android.app.Activity;
 import android.app.AlertDialog;
@@ -9,8 +9,6 @@ import android.os.AsyncTask;
 import android.util.Log;
 import android.widget.Toast;
 
-import com.giosis.util.qdrive.barcodescanner.ManualHelper;
-import com.giosis.util.qdrive.barcodescanner.StdResult;
 import com.giosis.util.qdrive.singapore.R;
 import com.giosis.util.qdrive.util.Custom_JsonParser;
 import com.giosis.util.qdrive.util.DataUtil;
@@ -18,8 +16,8 @@ import com.giosis.util.qdrive.util.NetworkUtil;
 
 import org.json.JSONObject;
 
-public class ManualDpc3OutValidationCheckHelper extends ManualHelper {
-    String TAG = "ManualDpc3OutValidationCheckHelper";
+public class ConfirmMyOrderValidationCheckHelper extends ManualHelper {
+    String TAG = "ConfirmMyOrderValidationCheckHelper";
 
     private final Context context;
     private final String opID;
@@ -50,18 +48,18 @@ public class ManualDpc3OutValidationCheckHelper extends ManualHelper {
             this.networkType = NetworkUtil.getNetworkType(context);
         }
 
-        public ManualDpc3OutValidationCheckHelper build() {
-            return new ManualDpc3OutValidationCheckHelper(this);
+        public ConfirmMyOrderValidationCheckHelper build() {
+            return new ConfirmMyOrderValidationCheckHelper(this);
         }
 
-        public Builder setOnDpc3OutValidationCheckListener(OnDpc3OutValidationCheckListener eventListener) {
+        Builder setOnDpc3OutValidationCheckListener(OnDpc3OutValidationCheckListener eventListener) {
             this.eventListener = eventListener;
 
             return this;
         }
     }
 
-    private ManualDpc3OutValidationCheckHelper(Builder builder) {
+    private ConfirmMyOrderValidationCheckHelper(Builder builder) {
 
         this.context = builder.context;
         this.opID = builder.opID;
@@ -182,7 +180,7 @@ public class ManualDpc3OutValidationCheckHelper extends ManualHelper {
 
     }
 
-    public ManualDpc3OutValidationCheckHelper execute() {
+    public ConfirmMyOrderValidationCheckHelper execute() {
         Dpc3OutValidationTask dpc3OutValidationTask = new Dpc3OutValidationTask();
         dpc3OutValidationTask.execute();
         return this;

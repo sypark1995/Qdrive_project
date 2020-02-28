@@ -39,7 +39,7 @@ import com.giosis.util.qdrive.gps.FusedProviderService;
 import com.giosis.util.qdrive.gps.GPSTrackerManager;
 import com.giosis.util.qdrive.gps.LocationManagerService;
 import com.giosis.util.qdrive.gps.QuickAppUserInfoUploadHelper;
-import com.giosis.util.qdrive.list.ListActivity2;
+import com.giosis.util.qdrive.list.ListActivity;
 import com.giosis.util.qdrive.settings.BluetoothDeviceData;
 import com.giosis.util.qdrive.singapore.LoginActivity;
 import com.giosis.util.qdrive.singapore.MyApplication;
@@ -858,7 +858,7 @@ public class MainActivity extends AppBaseActivity {
 
                 case R.id.layout_home_list_count: {
 
-                    Intent intent = new Intent(MainActivity.this, ListActivity2.class);
+                    Intent intent = new Intent(MainActivity.this, ListActivity.class);
                     intent.putExtra("position", 0);
                     startActivity(intent);
                 }

@@ -75,6 +75,7 @@ import android.widget.ToggleButton;
 
 import androidx.appcompat.app.AppCompatActivity;
 
+import com.giosis.util.qdrive.barcodescanner.ChangeDriverHelper.OnChangeDelDriverEventListener;
 import com.giosis.util.qdrive.barcodescanner.bluetooth.BluetoothChatService;
 import com.giosis.util.qdrive.barcodescanner.bluetooth.DeviceListActivity;
 import com.giosis.util.qdrive.barcodescanner.bluetooth.KScan;
@@ -84,18 +85,13 @@ import com.giosis.util.qdrive.barcodescanner.history.HistoryManager;
 import com.giosis.util.qdrive.barcodescanner.result.ResultHandler;
 import com.giosis.util.qdrive.barcodescanner.result.ResultHandlerFactory;
 import com.giosis.util.qdrive.gps.GPSTrackerManager;
-import com.giosis.util.qdrive.list.delivery.SigningDeliveryDoneActivity;
+import com.giosis.util.qdrive.list.delivery.DeliveryDoneActivity;
 import com.giosis.util.qdrive.list.pickup.CnRPickupDoneActivity;
 import com.giosis.util.qdrive.list.pickup.OutletPickupDoneActivity;
 import com.giosis.util.qdrive.list.pickup.OutletPickupDoneResult;
 import com.giosis.util.qdrive.list.pickup.PickupAddScanActivity;
+import com.giosis.util.qdrive.list.pickup.PickupDoneActivity;
 import com.giosis.util.qdrive.list.pickup.PickupTakeBackActivity;
-import com.giosis.util.qdrive.list.pickup.SigningPickupScanAllDoneActivity;
-import com.giosis.util.qdrive.main.ManualChangeDelDriverHelper;
-import com.giosis.util.qdrive.main.ManualChangeDelDriverHelper.OnChangeDelDriverEventListener;
-import com.giosis.util.qdrive.main.ManualChangeDelDriverValidCheckHelper;
-import com.giosis.util.qdrive.main.ManualDpc3OutValidationCheckHelper;
-import com.giosis.util.qdrive.main.ManualDriverAssignHelper;
 import com.giosis.util.qdrive.main.ManualPodUploadHelper;
 import com.giosis.util.qdrive.main.SigningActivity;
 import com.giosis.util.qdrive.singapore.R;
@@ -306,7 +302,7 @@ public final class CaptureActivity extends AppCompatActivity implements SurfaceH
 
     private boolean passedValidation = false;
 
-    private ChgDelDriverResult.ResultObject chgDelDriverResultObj = null;
+    private ChangeDriverResult.ResultObject chgDelDriverResultObj = null;
 
     InputMethodManager inputMethodManager = null;
 
@@ -864,10 +860,10 @@ public final class CaptureActivity extends AppCompatActivity implements SurfaceH
 
                     if (mScanType.equals(BarcodeType.CONFIRM_MY_DELIVERY_ORDER) || mScanType.equals(BarcodeType.CHANGE_DELIVERY_DRIVER)) {
 
-                        onUpdateButtonClick(null);
+                        onUpdateButtonClick();
                     } else if (mScanType.equals(BarcodeType.TYPE_SCAN_CAPTURE) || mScanType.equals(BarcodeType.SELF_COLLECTION)) {
 
-                        onCaptureConfirmButtonClick(null);
+                        onCaptureConfirmButtonClick();
                     } else if (mScanType.equals(BarcodeType.PICKUP_CNR)
                             || mScanType.equals(BarcodeType.PICKUP_SCAN_ALL) || mScanType.equals(BarcodeType.PICKUP_ADD_SCAN)
                             || mScanType.equals(BarcodeType.OUTLET_PICKUP_SCAN) || mScanType.equals(BarcodeType.PICKUP_TAKE_BACK)) {
@@ -1904,7 +1900,7 @@ public final class CaptureActivity extends AppCompatActivity implements SurfaceH
             Gson gson = new Gson();
             String jsonResult = gson.toJson(newBarcodeNoList);
             // 사인입력화면으로 인텐트
-            Intent intentSign = new Intent(this, SigningDeliveryDoneActivity.class);
+            Intent intentSign = new Intent(this, DeliveryDoneActivity.class);
             intentSign.putExtra("title", mScanTitle);
             intentSign.putExtra("type", BarcodeType.TYPE_DELIVERY);
             intentSign.putExtra("result", jsonResult);
@@ -1925,7 +1921,7 @@ public final class CaptureActivity extends AppCompatActivity implements SurfaceH
      * 송장번호 규칙에 맞는지 체크한후 프리뷰영역에 이미지를 보여준다.
      * modified : 2016-09-09 eylee self-collection 복수 건 처리 add
      */
-    public void onCaptureConfirmButtonClick(View sender) {
+    public void onCaptureConfirmButtonClick() {
 
         if (scanBarcodeArrayList == null || scanBarcodeArrayList.size() < 1) {
 
@@ -2068,7 +2064,8 @@ public final class CaptureActivity extends AppCompatActivity implements SurfaceH
     }
 
 
-    public void onUpdateButtonClick(View sender) {
+    public void onUpdateButtonClick() {
+
         if (scanBarcodeArrayList == null || scanBarcodeArrayList.size() < 1) {
             Toast toast = Toast.makeText(this, R.string.msg_tracking_number_manually, Toast.LENGTH_SHORT);
             toast.setGravity(Gravity.CENTER_HORIZONTAL, 0, 0);
@@ -2083,15 +2080,14 @@ public final class CaptureActivity extends AppCompatActivity implements SurfaceH
                 return;
             }
 
-            //서버에 올리기전 용량체크  내장메모리가 10메가 안남은경우
             if (MemoryStatus.getAvailableInternalMemorySize() != MemoryStatus.ERROR && MemoryStatus.getAvailableInternalMemorySize() < MemoryStatus.PRESENT_BYTE) {
                 AlertShow(context.getResources().getString(R.string.msg_disk_size_error));
                 return;
             }
 
 
-            new ManualDriverAssignHelper.Builder(this, opID, officeCode, deviceID, scanBarcodeArrayList)
-                    .setOnDriverAssignEventListener(new ManualDriverAssignHelper.OnDriverAssignEventListener() {
+            new ConfirmMyOrderHelper.Builder(this, opID, officeCode, deviceID, scanBarcodeArrayList)
+                    .setOnDriverAssignEventListener(new ConfirmMyOrderHelper.OnDriverAssignEventListener() {
 
                         @Override
                         public void onPostAssignResult(DriverAssignResult stdResult) {
@@ -2122,7 +2118,6 @@ public final class CaptureActivity extends AppCompatActivity implements SurfaceH
                 return;
             }
 
-            //서버에 올리기전 용량체크  내장메모리가 10메가 안남은경우
             if (MemoryStatus.getAvailableInternalMemorySize() != MemoryStatus.ERROR && MemoryStatus.getAvailableInternalMemorySize() < MemoryStatus.PRESENT_BYTE) {
                 AlertShow(context.getResources().getString(R.string.msg_disk_size_error));
                 return;
@@ -2135,7 +2130,7 @@ public final class CaptureActivity extends AppCompatActivity implements SurfaceH
                 Log.e("Location", TAG + " onUpdateButtonClick GPSTrackerManager : " + latitude + "  " + longitude + "  ");
             }
 
-            new ManualChangeDelDriverHelper.Builder(this, opID, officeCode, deviceID, barcodeContrNoList, latitude, longitude)
+            new ChangeDriverHelper.Builder(this, opID, officeCode, deviceID, barcodeContrNoList, latitude, longitude)
                     .setOnChangeDelDriverEventListener(new OnChangeDelDriverEventListener() {
 
                         @Override
@@ -2241,6 +2236,128 @@ public final class CaptureActivity extends AppCompatActivity implements SurfaceH
         strBarcodeNo = strBarcodeNo.replaceAll("\\r\\n|\\r|\\n", "");
         boolean isConn = NetworkUtil.isNetworkAvailable(context);
 
+
+        if (mScanType.equals(BarcodeType.CONFIRM_MY_DELIVERY_ORDER) && !passedValidation) {
+
+            if (!isConn) {
+                AlertShow(context.getResources().getString(R.string.msg_network_connect_error));
+                return;
+            }
+
+            final String scanNo = strBarcodeNo;
+            final boolean isDupl = isDuplicate;
+
+
+            new ConfirmMyOrderValidationCheckHelper.Builder(this, opID, outletDriverYN, strBarcodeNo)
+                    .setOnDpc3OutValidationCheckListener(new ConfirmMyOrderValidationCheckHelper.OnDpc3OutValidationCheckListener() {
+
+                        @Override
+                        public void OnDpc3OutValidationCheckResult(StdResult result) {
+                            //유효성 검사 실패 시
+                            if (result.getResultCode() < 0) {
+                                beepManager2.playBeepSoundAndVibrate(); //실패 시 삐~~
+                                passedValidation = false;
+
+                                edit_capture_type_number.setText("");
+                                InputMethodManager imm = (InputMethodManager) getSystemService(Context.INPUT_METHOD_SERVICE);
+                                deletePrevious(scanNo);
+
+                                imm.hideSoftInputFromWindow(edit_capture_type_number.getWindowToken(), 0);
+                                return;
+                            } else {
+
+                                if (isDupl) {
+                                    beepManager3.playBeepSoundAndVibrate();
+                                    Toast toast = Toast.makeText(getApplicationContext(), R.string.msg_tracking_number_already_entered, Toast.LENGTH_SHORT);
+                                    toast.setGravity(Gravity.CENTER, 0, 20);
+                                    toast.show();
+
+                                    edit_capture_type_number.setText("");
+                                    InputMethodManager imm = (InputMethodManager) getSystemService(Context.INPUT_METHOD_SERVICE);
+                                    imm.hideSoftInputFromWindow(edit_capture_type_number.getWindowToken(), 0);
+                                    return;
+                                } else {
+                                    beepManager.playBeepSoundAndVibrate(); // 성공 시 딩동 소리
+                                    passedValidation = true;
+//
+                                    //바인딩을 위해 재호출
+                                    addBarcodeNo(scanNo, isDupl, "ConfirmMyOrderValidationCheckHelper");
+                                    return;
+                                }
+                            }
+                        }
+
+                        @Override
+                        public void OnDpc3OutValidationCheckFailList(StdResult result) {
+                            try {
+                                Toast.makeText(context, context.getResources().getString(R.string.msg_error_check_again), Toast.LENGTH_SHORT).show();
+                            } catch (Exception e) {
+
+                            }
+                        }
+                    }).build().execute();
+            return;
+        }
+
+        if (mScanType.equals(BarcodeType.CHANGE_DELIVERY_DRIVER) && !passedValidation) {
+
+            if (!isConn) {
+                AlertShow(context.getResources().getString(R.string.msg_network_connect_error));
+                return;
+            }
+
+            final String scanNo = strBarcodeNo;
+            final boolean isDupl = isDuplicate;
+
+
+            new ChangeDriverValidationCheckHelper.Builder(this, opID, strBarcodeNo)
+                    .setOnChangeDelDriverValidCheckListener(new ChangeDriverValidationCheckHelper.OnChangeDelDriverValidCheckListener() {
+
+                        @Override
+                        public void OnChangeDelDriverValidCheckResult(ChangeDriverResult result) {
+                            //유효성 검사 실패 시
+                            if (result.getResultCode() < 0) {
+                                beepManager2.playBeepSoundAndVibrate(); //실패 시 삐~~
+                                passedValidation = false;
+
+                                edit_capture_type_number.setText("");
+                                InputMethodManager imm = (InputMethodManager) getSystemService(Context.INPUT_METHOD_SERVICE);
+                                deletePrevious(scanNo);
+
+                                imm.hideSoftInputFromWindow(edit_capture_type_number.getWindowToken(), 0);
+                                return;
+                            } else {
+
+                                if (isDupl) {
+                                    beepManager3.playBeepSoundAndVibrate();
+                                    Toast toast = Toast.makeText(getApplicationContext(), R.string.msg_tracking_number_already_entered, Toast.LENGTH_SHORT);
+                                    toast.setGravity(Gravity.CENTER, 0, 20);
+                                    toast.show();
+
+                                    edit_capture_type_number.setText("");
+                                    InputMethodManager imm = (InputMethodManager) getSystemService(Context.INPUT_METHOD_SERVICE);
+                                    imm.hideSoftInputFromWindow(edit_capture_type_number.getWindowToken(), 0);
+                                    return;
+                                } else {
+                                    beepManager.playBeepSoundAndVibrate(); // 성공 시 딩동 소리
+                                    passedValidation = true;
+                                    chgDelDriverResultObj = result.getResultObject();
+                                    //바인딩을 위해 재호출
+                                    addBarcodeNo(scanNo, isDupl, "ChangeDriverValidationCheckHelper");
+                                    return;
+                                }
+                            }
+                        }
+
+                        @Override
+                        public void OnChangeDelDriverValidCheckFailList(ChangeDriverResult result) {
+                        }
+                    }).build().execute();
+
+            return;
+        }
+
+
         if (mScanType.equals(BarcodeType.PICKUP_CNR) && isValidationPickupCnr == false) {  //2016-09-21 add type validation
 
             if (!isConn) {
@@ -2253,16 +2370,16 @@ public final class CaptureActivity extends AppCompatActivity implements SurfaceH
             // sqlite 에 cnr barcode scan no 가 있는지 확인하고 insert 하는 sqlite validation 부분 필요
             // validation 성공했을 때, editext 에 넣고 실패하면, alert 띄우고 editText 에 들어가지 않음
             // 성공하면 sqlite 에 insert
-            ValidationPickupCNRRequestTask validationPickupCNRRequestTask = new ValidationPickupCNRRequestTask();
-            validationPickupCNRRequestTask.execute(strBarcodeNo, String.valueOf(isDuplicate));
+            CnRPickupValidationCheckHelper cnRPickupValidationCheckHelper = new CnRPickupValidationCheckHelper();
+            cnRPickupValidationCheckHelper.execute(strBarcodeNo, String.valueOf(isDuplicate));
 
             beepManager.playBeepSoundAndVibrate(); // 소리추가
             return;
         }
 
-        // 2016-09-20 eylee add scan Barcode No
+        // 2016-09-20 eylee
         if (mScanType.equals(BarcodeType.SELF_COLLECTION)) {
-            // duplicate 체크
+
             if (isDuplicate) {
                 Toast toast = Toast.makeText(this, context.getResources().getString(R.string.msg_duplicate_tracking_no), Toast.LENGTH_SHORT);
                 toast.setGravity(Gravity.CENTER_HORIZONTAL, 0, 0);
@@ -2300,61 +2417,6 @@ public final class CaptureActivity extends AppCompatActivity implements SurfaceH
         } // end of self collector
 
 
-        if (mScanType.equals(BarcodeType.OUTLET_PICKUP_SCAN) && !passedValidation) {
-
-            if (!isConn) {
-                AlertShow(context.getResources().getString(R.string.msg_network_connect_error));
-                return;
-            }
-
-            final String scanNo = strBarcodeNo;
-            final boolean isDupl = isDuplicate;
-
-            new OutletPickupScanValidationCheckHelper.Builder(this, opID, pickupNo, strBarcodeNo, mRoute)
-                    .setOnPickupAddScanNoOneByOneUploadListener(new OutletPickupScanValidationCheckHelper.OnPickupAddScanNoOneByOneUploadListener() {
-
-                        @Override
-                        public void onPickupAddScanNoOneByOneUploadResult(StdResult result) {
-                            //유효성 검사 실패 시
-                            if (result.getResultCode() < 0) {
-
-                                Log.e("krm0219", "addBarcodeNo  Fail  ----------------");
-                                beepManager2.playBeepSoundAndVibrate(); //실패 시 삐~~
-                                passedValidation = false;
-                                edit_capture_type_number.setText("");
-                                InputMethodManager imm = (InputMethodManager) getSystemService(Context.INPUT_METHOD_SERVICE);
-                                imm.hideSoftInputFromWindow(edit_capture_type_number.getWindowToken(), 0);
-                                deletePrevious(scanNo);
-                                return;
-                            } else {
-
-                                if (isDupl) {
-                                    Log.e("krm0219", "addBarcodeNo  Success  Duplicate ----------------");
-                                    beepManager3.playBeepSoundAndVibrate();
-                                    Toast toast = Toast.makeText(getApplicationContext(), R.string.msg_tracking_number_already_entered, Toast.LENGTH_SHORT);
-                                    toast.setGravity(Gravity.CENTER, 0, 20);
-                                    toast.show();
-                                    edit_capture_type_number.setText("");
-                                    InputMethodManager imm = (InputMethodManager) getSystemService(Context.INPUT_METHOD_SERVICE);
-                                    imm.hideSoftInputFromWindow(edit_capture_type_number.getWindowToken(), 0);
-                                    return;
-                                } else {
-                                    Log.e("krm0219", "addBarcodeNo  Success  ----------------");
-
-                                    beepManager.playBeepSoundAndVibrate(); // 성공 시 딩동 소리
-                                    passedValidation = true;
-//
-                                    //바인딩을 위해 재호출
-                                    addBarcodeNo(scanNo, isDupl, "OutletPickupScanValidationCheckHelper");
-                                    return;
-                                }
-                            }
-                        }
-                    }).build().execute();
-
-            return;
-        }
-
         if (mScanType.equals(BarcodeType.PICKUP_SCAN_ALL) && !passedValidation) {
 
             if (!isConn) {
@@ -2366,7 +2428,6 @@ public final class CaptureActivity extends AppCompatActivity implements SurfaceH
             final boolean isDupl = isDuplicate;
 
 
-            // ADD 버튼으로 픽업 번호와 연결 된 패킹 번호 추가
             new PickupScanValidationCheckHelper.Builder(this, opID, pickupNo, strBarcodeNo)
                     .setOnPickupAddScanNoOneByOneUploadListener(new PickupScanValidationCheckHelper.OnPickupAddScanNoOneByOneUploadListener() {
 
@@ -2432,7 +2493,7 @@ public final class CaptureActivity extends AppCompatActivity implements SurfaceH
             final String scanNo = strBarcodeNo;
             final boolean isDupl = isDuplicate;
 
-            // ADD 버튼으로 픽업 번호와 연결 된 패킹 번호 추가
+
             new PickupScanValidationCheckHelper.Builder(this, opID, pickupNo, strBarcodeNo)
                     .setOnPickupAddScanNoOneByOneUploadListener(new PickupScanValidationCheckHelper.OnPickupAddScanNoOneByOneUploadListener() {
 
@@ -2530,7 +2591,8 @@ public final class CaptureActivity extends AppCompatActivity implements SurfaceH
             return;
         }
 
-        if (mScanType.equals(BarcodeType.CONFIRM_MY_DELIVERY_ORDER) && !passedValidation) {
+
+        if (mScanType.equals(BarcodeType.OUTLET_PICKUP_SCAN) && !passedValidation) {
 
             if (!isConn) {
                 AlertShow(context.getResources().getString(R.string.msg_network_connect_error));
@@ -2540,118 +2602,50 @@ public final class CaptureActivity extends AppCompatActivity implements SurfaceH
             final String scanNo = strBarcodeNo;
             final boolean isDupl = isDuplicate;
 
-
-            // ADD 버튼으로 픽업 번호와 연결 된 패킹 번호 추가   // Validation Check
-            new ManualDpc3OutValidationCheckHelper.Builder(this, opID, outletDriverYN, strBarcodeNo)
-                    .setOnDpc3OutValidationCheckListener(new ManualDpc3OutValidationCheckHelper.OnDpc3OutValidationCheckListener() {
+            new OutletPickupScanValidationCheckHelper.Builder(this, opID, pickupNo, strBarcodeNo, mRoute)
+                    .setOnPickupAddScanNoOneByOneUploadListener(new OutletPickupScanValidationCheckHelper.OnPickupAddScanNoOneByOneUploadListener() {
 
                         @Override
-                        public void OnDpc3OutValidationCheckResult(StdResult result) {
+                        public void onPickupAddScanNoOneByOneUploadResult(StdResult result) {
                             //유효성 검사 실패 시
                             if (result.getResultCode() < 0) {
+
+                                Log.e("krm0219", "addBarcodeNo  Fail  ----------------");
                                 beepManager2.playBeepSoundAndVibrate(); //실패 시 삐~~
                                 passedValidation = false;
-
                                 edit_capture_type_number.setText("");
                                 InputMethodManager imm = (InputMethodManager) getSystemService(Context.INPUT_METHOD_SERVICE);
-                                deletePrevious(scanNo);
-
                                 imm.hideSoftInputFromWindow(edit_capture_type_number.getWindowToken(), 0);
+                                deletePrevious(scanNo);
                                 return;
                             } else {
 
                                 if (isDupl) {
+                                    Log.e("krm0219", "addBarcodeNo  Success  Duplicate ----------------");
                                     beepManager3.playBeepSoundAndVibrate();
                                     Toast toast = Toast.makeText(getApplicationContext(), R.string.msg_tracking_number_already_entered, Toast.LENGTH_SHORT);
                                     toast.setGravity(Gravity.CENTER, 0, 20);
                                     toast.show();
-
                                     edit_capture_type_number.setText("");
                                     InputMethodManager imm = (InputMethodManager) getSystemService(Context.INPUT_METHOD_SERVICE);
                                     imm.hideSoftInputFromWindow(edit_capture_type_number.getWindowToken(), 0);
                                     return;
                                 } else {
+                                    Log.e("krm0219", "addBarcodeNo  Success  ----------------");
+
                                     beepManager.playBeepSoundAndVibrate(); // 성공 시 딩동 소리
                                     passedValidation = true;
 //
                                     //바인딩을 위해 재호출
-                                    addBarcodeNo(scanNo, isDupl, "ManualDpc3OutValidationCheckHelper");
+                                    addBarcodeNo(scanNo, isDupl, "OutletPickupScanValidationCheckHelper");
                                     return;
                                 }
                             }
-                        }
-
-                        @Override
-                        public void OnDpc3OutValidationCheckFailList(StdResult result) {
-                            try {
-                                Toast.makeText(context, context.getResources().getString(R.string.msg_error_check_again), Toast.LENGTH_SHORT).show();
-                            } catch (Exception e) {
-
-                            }
-                        }
-                    }).build().execute();
-            return;
-        }
-
-
-        if (mScanType.equals(BarcodeType.CHANGE_DELIVERY_DRIVER) && !passedValidation) {
-
-            if (!isConn) {
-                AlertShow(context.getResources().getString(R.string.msg_network_connect_error));
-                return;
-            }
-            final String scanNo = strBarcodeNo;
-            final boolean isDupl = isDuplicate;
-
-
-            // ADD 버튼으로 픽업 번호와 연결 된 패킹 번호 추가
-            new ManualChangeDelDriverValidCheckHelper.Builder(this, opID, strBarcodeNo)
-                    .setOnChangeDelDriverValidCheckListener(new ManualChangeDelDriverValidCheckHelper.OnChangeDelDriverValidCheckListener() {
-
-                        @Override
-                        public void OnChangeDelDriverValidCheckResult(ChgDelDriverResult result) {
-                            //유효성 검사 실패 시
-                            if (result.getResultCode() < 0) {
-                                beepManager2.playBeepSoundAndVibrate(); //실패 시 삐~~
-                                passedValidation = false;
-
-                                edit_capture_type_number.setText("");
-                                InputMethodManager imm = (InputMethodManager) getSystemService(Context.INPUT_METHOD_SERVICE);
-                                deletePrevious(scanNo);
-
-                                imm.hideSoftInputFromWindow(edit_capture_type_number.getWindowToken(), 0);
-                                return;
-                            } else {
-
-                                if (isDupl) {
-                                    beepManager3.playBeepSoundAndVibrate();
-                                    Toast toast = Toast.makeText(getApplicationContext(), R.string.msg_tracking_number_already_entered, Toast.LENGTH_SHORT);
-                                    toast.setGravity(Gravity.CENTER, 0, 20);
-                                    toast.show();
-
-                                    edit_capture_type_number.setText("");
-                                    InputMethodManager imm = (InputMethodManager) getSystemService(Context.INPUT_METHOD_SERVICE);
-                                    imm.hideSoftInputFromWindow(edit_capture_type_number.getWindowToken(), 0);
-                                    return;
-                                } else {
-                                    beepManager.playBeepSoundAndVibrate(); // 성공 시 딩동 소리
-                                    passedValidation = true;
-                                    chgDelDriverResultObj = result.getResultObject();
-                                    //바인딩을 위해 재호출
-                                    addBarcodeNo(scanNo, isDupl, "ManualChangeDelDriverValidCheckHelper");
-                                    return;
-                                }
-                            }
-                        }
-
-                        @Override
-                        public void OnChangeDelDriverValidCheckFailList(ChgDelDriverResult result) {
                         }
                     }).build().execute();
 
             return;
         }
-
 
         Log.e("krm0219", TAG + "  addBarcodeNo  HERE");
         //TODO  -  SCAN LIST 보여주기
@@ -2874,7 +2868,7 @@ public final class CaptureActivity extends AppCompatActivity implements SurfaceH
                     String strReceiverName = info.receiverName;
                     String strSenderName = info.senderName;
 
-                    Intent intentSign = new Intent(this, SigningDeliveryDoneActivity.class);                // krm0219  2018.10.12
+                    Intent intentSign = new Intent(this, DeliveryDoneActivity.class);                // krm0219  2018.10.12
                     intentSign.putExtra("title", mScanTitle);
                     intentSign.putExtra("type", BarcodeType.TYPE_DELIVERY);
                     intentSign.putExtra("receiverName", strReceiverName);
@@ -3189,7 +3183,7 @@ public final class CaptureActivity extends AppCompatActivity implements SurfaceH
         } else if (mScanType.equals(BarcodeType.PICKUP_SCAN_ALL)) {
 
             // 2017-03-27 eylee
-            Intent intent = new Intent(this, SigningPickupScanAllDoneActivity.class);
+            Intent intent = new Intent(this, PickupDoneActivity.class);
             intent.putExtra("title", context.getResources().getString(R.string.text_start_to_scan));
             intent.putExtra("type", BarcodeType.PICKUP_SCAN_ALL);
             intent.putExtra("receiverName", opName);
@@ -3228,7 +3222,7 @@ public final class CaptureActivity extends AppCompatActivity implements SurfaceH
         }
     }
 
-    class ValidationPickupCNRRequestTask extends AsyncTask<String, Integer, PickupCNRResult> {
+    class CnRPickupValidationCheckHelper extends AsyncTask<String, Integer, PickupCNRResult> {
 
         String scanBarcodeNoStr = "";
         String tempBarcodeNo = "";

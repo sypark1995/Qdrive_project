@@ -42,8 +42,8 @@ import com.giosis.util.qdrive.util.SharedPreferencesHelper;
  * LIST > In-Progress > 'Start To Scan'
  */
 
-public class SigningPickupScanAllDoneActivity extends AppCompatActivity {
-    String TAG = "SigningPickupScanAllDoneActivity";
+public class PickupDoneActivity extends AppCompatActivity {
+    String TAG = "PickupDoneActivity";
 
     // krm0219
     FrameLayout layout_top_back;
@@ -190,7 +190,7 @@ public class SigningPickupScanAllDoneActivity extends AppCompatActivity {
                 Log.e("Location", TAG + " GPSTrackerManager onResume : " + latitude + "  " + longitude + "  ");
             } else {
 
-                DataUtil.enableLocationSettings(SigningPickupScanAllDoneActivity.this, context);
+                DataUtil.enableLocationSettings(PickupDoneActivity.this, context);
             }
         }
     }
@@ -298,7 +298,7 @@ public class SigningPickupScanAllDoneActivity extends AppCompatActivity {
                 Log.e("Firebase", "mFirebaseAnalytics error : " + e.toString());
             }
 
-            new ManualScanAllPickupUploadHelper.Builder(this, opID, officeCode, deviceID,
+            new PickupDoneUploadHelper.Builder(this, opID, officeCode, deviceID,
                     pickup_no, mStrWaybillNo, realQty, sign_view_sign_p_applicant_signature, sign_view_sign_p_collector_signature, driverMemo,
                     MemoryStatus.getAvailableInternalMemorySize(), latitude, longitude)
                     .setOnServerEventListener(new OnServerEventListener() {

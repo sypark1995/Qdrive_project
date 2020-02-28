@@ -40,7 +40,7 @@ import java.util.Vector;
  */
 public final class CaptureActivityHandler extends Handler {
 
-    private static final String TAG = CaptureActivityHandler.class.getSimpleName();
+    private static final String TAG = "CaptureActivity";
 
     private final CaptureActivity activity;
     private final DecodeThread decodeThread;
@@ -82,7 +82,6 @@ public final class CaptureActivityHandler extends Handler {
                 break;
             case R.id.decode_succeeded:
                 Log.d(TAG, "Got decode succeeded message");
-
 
                 state = State.SUCCESS;
                 Bundle bundle = message.getData();

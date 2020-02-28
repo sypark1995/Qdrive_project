@@ -4,7 +4,6 @@ import android.app.ProgressDialog;
 import android.content.Context;
 import android.os.AsyncTask;
 import android.os.Bundle;
-import androidx.appcompat.app.AppCompatActivity;
 import android.util.Log;
 import android.view.View;
 import android.widget.Button;
@@ -12,6 +11,8 @@ import android.widget.FrameLayout;
 import android.widget.LinearLayout;
 import android.widget.ListView;
 import android.widget.TextView;
+
+import androidx.appcompat.app.AppCompatActivity;
 
 import com.giosis.util.qdrive.singapore.R;
 import com.giosis.util.qdrive.util.Custom_JsonParser;
@@ -192,12 +193,8 @@ public class NoticeActivity extends AppCompatActivity {
         @Override
         public void onClick(View v) {
 
-            switch (v.getId()) {
-                case R.id.layout_top_back: {
-
-                    finish();
-                }
-                break;
+            if (v.getId() == R.id.layout_top_back) {
+                finish();
             }
         }
     };

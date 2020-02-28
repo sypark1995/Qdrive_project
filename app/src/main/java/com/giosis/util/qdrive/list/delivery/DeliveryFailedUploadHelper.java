@@ -27,15 +27,18 @@ import java.text.SimpleDateFormat;
 import java.util.Date;
 
 
-public class ManualServerUploadReturnedVisitLogHelper extends ManualHelper {
-    String TAG = "ManualServerUploadReturnedVisitLogHelper";
+/**
+ * Delivery Visit Log
+ */
+public class DeliveryFailedUploadHelper extends ManualHelper {
+    String TAG = "DeliveryFailedUploadHelper";
 
     private final Context context;
     private final String opID;
     private final String officeCode;
     private final String deviceID;
 
-    private final String shippingNo;
+    private final String trackingNo;
     private final String driverMemo;
     private final ImageView imageView;
 
@@ -55,7 +58,7 @@ public class ManualServerUploadReturnedVisitLogHelper extends ManualHelper {
         private final String officeCode;
         private final String deviceID;
 
-        private final String shippingNo;
+        private final String trackingNo;
         private final String driverMemo;
         private final ImageView imageView;
 
@@ -67,7 +70,7 @@ public class ManualServerUploadReturnedVisitLogHelper extends ManualHelper {
         private OnServerEventListener eventListener;
 
         public Builder(Context context, String opID, String officeCode, String deviceID,
-                       String shippingNo, String driverMemo, ImageView imageView,
+                       String trackingNo, String driverMemo, ImageView imageView,
                        long disk_size, double lat, double lon) {
 
             this.context = context;
@@ -76,7 +79,7 @@ public class ManualServerUploadReturnedVisitLogHelper extends ManualHelper {
             this.deviceID = deviceID;
             this.networkType = NetworkUtil.getNetworkType(context);
 
-            this.shippingNo = shippingNo;
+            this.trackingNo = trackingNo;
             this.driverMemo = driverMemo;
             this.imageView = imageView;
 
@@ -85,8 +88,8 @@ public class ManualServerUploadReturnedVisitLogHelper extends ManualHelper {
             this.lon = lon;
         }
 
-        public ManualServerUploadReturnedVisitLogHelper build() {
-            return new ManualServerUploadReturnedVisitLogHelper(this);
+        public DeliveryFailedUploadHelper build() {
+            return new DeliveryFailedUploadHelper(this);
         }
 
         public Builder setOnServerEventListener(OnServerEventListener eventListener) {
@@ -96,14 +99,15 @@ public class ManualServerUploadReturnedVisitLogHelper extends ManualHelper {
         }
     }
 
-    private ManualServerUploadReturnedVisitLogHelper(Builder builder) {
+
+    private DeliveryFailedUploadHelper(Builder builder) {
 
         this.context = builder.context;
         this.opID = builder.opID;
         this.officeCode = builder.officeCode;
         this.deviceID = builder.deviceID;
 
-        this.shippingNo = builder.shippingNo;
+        this.trackingNo = builder.trackingNo;
         this.driverMemo = builder.driverMemo;
         this.imageView = builder.imageView;
 
@@ -152,7 +156,7 @@ public class ManualServerUploadReturnedVisitLogHelper extends ManualHelper {
         resultDialog.show();
     }
 
-    class ReturnFailUploadTask extends AsyncTask<Void, Integer, StdResult> {
+    class DeliveryFailUploadTask extends AsyncTask<Void, Integer, StdResult> {
         int progress = 0;
 
         @Override
@@ -169,10 +173,10 @@ public class ManualServerUploadReturnedVisitLogHelper extends ManualHelper {
         @Override
         protected StdResult doInBackground(Void... params) {
 
-            StdResult stdResult = requestReturnFailUpload(shippingNo);
+            StdResult result = requestDeliveryUpload(trackingNo);
             publishProgress(1);
 
-            return stdResult;
+            return result;
         }
 
         @Override
@@ -186,23 +190,24 @@ public class ManualServerUploadReturnedVisitLogHelper extends ManualHelper {
         protected void onPostExecute(StdResult result) {
             super.onPostExecute(result);
 
-            if (progressDialog != null)
-                progressDialog.dismiss();
+            try {
 
+                if (progressDialog != null && progressDialog.isShowing()) {
 
-            int resultCode = result.getResultCode();
-            String resultMsg = result.getResultMsg();
+                    progressDialog.dismiss();
+                }
+            } catch (Exception e) {
+
+                // !((Activity)context).isFinishing()
+            }
 
             try {
 
+                int resultCode = result.getResultCode();
+
                 if (resultCode < 0) {
 
-                    if (resultCode == -14) {
-
-                        resultMsg = context.getResources().getString(R.string.msg_upload_fail_14);
-                    }
-
-                    String msg = String.format(context.getResources().getString(R.string.text_upload_fail_count2), resultMsg);
+                    String msg = String.format(context.getResources().getString(R.string.text_upload_fail_count1), 1, result.getResultMsg());
                     showResultDialog(msg);
                 } else {
 
@@ -212,19 +217,26 @@ public class ManualServerUploadReturnedVisitLogHelper extends ManualHelper {
             } catch (Exception e) {
 
                 Log.e("Exception", TAG + "  onPostExecute Exception : " + e.toString());
+
+                String msg = String.format(context.getResources().getString(R.string.text_upload_fail_count1), 1, e.toString());
+                showResultDialog(msg);
             }
         }
 
 
-        private StdResult requestReturnFailUpload(String assignNo) {
+        private StdResult requestDeliveryUpload(String assignNo) {
+
+            DataUtil.captureSign("/QdriveFailed", trackingNo, imageView);
+
 
             SimpleDateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
             Date date = new Date();
 
             ContentValues contentVal = new ContentValues();
-            contentVal.put("stat", "");
+            contentVal.put("stat", "DX");
             contentVal.put("chg_id", opID);
             contentVal.put("chg_dt", dateFormat.format(date));
+            contentVal.put("fail_reason", "");
             contentVal.put("driver_memo", driverMemo);
 
             DatabaseHelper dbHelper = DatabaseHelper.getInstance();
@@ -234,12 +246,20 @@ public class ManualServerUploadReturnedVisitLogHelper extends ManualHelper {
 
             StdResult result = new StdResult();
 
-            if (!NetworkUtil.isNetworkAvailable(context)) {
-
+            if (!NetworkUtil.isNetworkAvailable(context)) {  // Wifi, 3G,4G,LTE(Network) 연결이 모두 안될경우
                 result.setResultCode(-16);
-                result.setResultMsg(context.getResources().getString(R.string.msg_upload_fail_16));
+                result.setResultMsg(context.getResources().getString(R.string.msg_network_connect_error_saved));
                 return result;
             }
+
+          /*  // TEST.  Upload Failed
+            if (true) {
+
+                result.setResultCode(-15);
+                result.setResultMsg("Exception : error - test");
+                return result;
+            }*/
+
 
             try {
 
@@ -248,11 +268,10 @@ public class ManualServerUploadReturnedVisitLogHelper extends ManualHelper {
                 String bitmapString = DataUtil.bitmapToString(captureView);
 
                 JSONObject job = new JSONObject();
-
                 job.accumulate("rcv_type", "RC");
-                job.accumulate("stat", "RF");
+                job.accumulate("stat", "DX");
                 job.accumulate("chg_id", opID);
-                job.accumulate("deliv_msg", "(by Qdrive RealTime-Upload)"); // 내부관리자용 메세지
+                job.accumulate("deliv_msg", "(by Qdrive RealTime-Upload)");
                 job.accumulate("opId", opID);
                 job.accumulate("officeCd", officeCode);
                 job.accumulate("device_id", deviceID);
@@ -263,35 +282,39 @@ public class ManualServerUploadReturnedVisitLogHelper extends ManualHelper {
                 job.accumulate("disk_size", disk_size);
                 job.accumulate("lat", lat);
                 job.accumulate("lon", lon);
+                job.accumulate("stat_reason", "");
                 job.accumulate("del_channel", "QDRIVE");
                 job.accumulate("app_id", DataUtil.appID);
                 job.accumulate("nation_cd", DataUtil.nationCode);
 
 
-                String methodName = "setDeliveryRTNDPTypeUploadData";
+                String methodName = "SetDeliveryUploadData";
                 String jsonString = Custom_JsonParser.requestServerDataReturnJSON(MOBILE_SERVER_URL, methodName, job);
-                // {"ResultCode":-32,"ResultMsg":"SUCCESS"}
+                // {"ResultCode":0,"ResultMsg":"SUCCESS"}
+                // {"ResultCode":-11,"ResultMsg":"Upload Failed."}
 
                 JSONObject jsonObject = new JSONObject(jsonString);
-                int resultCode = jsonObject.getInt("ResultCode");
-                result.setResultCode(resultCode);
+                int ResultCode = jsonObject.getInt("ResultCode");
+                result.setResultCode(ResultCode);
                 result.setResultMsg(jsonObject.getString("ResultMsg"));
 
-                if (resultCode == 0) {
+                if (ResultCode == 0) {
 
                     ContentValues contentVal2 = new ContentValues();
                     contentVal2.put("punchOut_stat", "S");
 
                     dbHelper.update(DatabaseHelper.DB_TABLE_INTEGRATION_LIST, contentVal2,
                             "invoice_no=? COLLATE NOCASE " + "and reg_id = ?", new String[]{assignNo, opID});
+                } else if (ResultCode == -25) {
+
+                    dbHelper.delete(DatabaseHelper.DB_TABLE_INTEGRATION_LIST, "invoice_no= '" + assignNo + "' COLLATE NOCASE");
                 } else {
 
                     updateReceiverSign(assignNo, driverMemo);
                 }
             } catch (Exception e) {
 
-                Log.e("Exception", TAG + "  setDeliveryRTNDPTypeUploadData Exception : " + e.toString());
-
+                Log.e("Exception", TAG + "  SetDeliveryUploadData Exception : " + e.toString());
                 result.setResultCode(-15);
                 result.setResultMsg(context.getResources().getString(R.string.msg_upload_fail_15));
             }
@@ -301,9 +324,9 @@ public class ManualServerUploadReturnedVisitLogHelper extends ManualHelper {
     }
 
 
-    public ManualServerUploadReturnedVisitLogHelper execute() {
-        ReturnFailUploadTask returnFailUploadTask = new ReturnFailUploadTask();
-        returnFailUploadTask.execute();
+    public DeliveryFailedUploadHelper execute() {
+        DeliveryFailUploadTask deliveryFailUploadTask = new DeliveryFailUploadTask();
+        deliveryFailUploadTask.execute();
         return this;
     }
 
@@ -316,10 +339,11 @@ public class ManualServerUploadReturnedVisitLogHelper extends ManualHelper {
         Date date = new Date();
 
         ContentValues contentVal = new ContentValues();
-        contentVal.put("stat", "RF");
+        contentVal.put("stat", "DX");
         contentVal.put("chg_id", opId);
         contentVal.put("chg_dt", dateFormat.format(date));
-        contentVal.put("real_qty", "0");
+        contentVal.put("real_qty", "0");            // 업로드시 값 Parse 시 에러나서 0 넘김
+        contentVal.put("fail_reason", "");
         contentVal.put("driver_memo", driverMemo);
         contentVal.put("retry_dt", "");
         contentVal.put("rev_type", "VL");

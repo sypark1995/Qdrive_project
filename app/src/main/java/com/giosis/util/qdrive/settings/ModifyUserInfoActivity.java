@@ -8,13 +8,14 @@ import android.content.SharedPreferences;
 import android.content.SharedPreferences.Editor;
 import android.os.AsyncTask;
 import android.os.Bundle;
-import androidx.appcompat.app.AppCompatActivity;
 import android.util.Log;
 import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.FrameLayout;
 import android.widget.TextView;
+
+import androidx.appcompat.app.AppCompatActivity;
 
 import com.giosis.util.qdrive.barcodescanner.StdResult;
 import com.giosis.util.qdrive.singapore.R;
@@ -45,7 +46,7 @@ public class ModifyUserInfoActivity extends AppCompatActivity {
 
 
     Context context = null;
-    String op_id = ""; // request 날릴 때
+    String op_id = "";
 
     String opName = "";
     String opEmail = "";
@@ -122,18 +123,14 @@ public class ModifyUserInfoActivity extends AppCompatActivity {
                 name = edit_setting_change_name.getText().toString().trim();
                 email = edit_setting_change_email.getText().toString().trim();
 
-//		    	1.validation check
-                Boolean isValid = false;
-                isValid = isValidData();
+
+                boolean isValid = isValidData();
 
                 if (isValid) {
-//		    		2. send api
-//		    		resultCode = changMyInfo();
-                    ChangeMyInfoTask changeMyInfoTask = new ChangeMyInfoTask();
-                    changeMyInfoTask.execute();
-                }
 
-                // modify my info end
+                    ChangeMyInfoAsyncTask changeMyInfoAsyncTask = new ChangeMyInfoAsyncTask();
+                    changeMyInfoAsyncTask.execute();
+                }
 
                 dialog.cancel();
             }
@@ -150,16 +147,18 @@ public class ModifyUserInfoActivity extends AppCompatActivity {
     }
 
 
-    private Boolean isValidData() {
-        Boolean isValid = false;
+    private boolean isValidData() {
+
+        boolean isValid;
         AlertDialog.Builder builder = new AlertDialog.Builder(this);
+
         if (name.length() >= 6) {
             if (!email.equals("")) {  // email에 입력값이 있을 때만 유효성 검사
 
                 String email_pattern = "^[_A-Za-z0-9-\\+]+(\\.[_A-Za-z0-9-]+)*@" + "[A-Za-z0-9-]+(\\.[A-Za-z0-9]+)*(\\.[A-Za-z]{2,})$";
                 Pattern pattern = Pattern.compile(email_pattern);
                 Matcher matcher = pattern.matcher(email);
-                Boolean isEmail = matcher.matches();
+                boolean isEmail = matcher.matches();
                 if (isEmail) {
                     isValid = true;
                 } else {
@@ -179,7 +178,7 @@ public class ModifyUserInfoActivity extends AppCompatActivity {
                     AlertDialog alertDialog = builder.create();
                     alertDialog.show();
                 }
-            } else {// if(isEmail) end of else
+            } else {
                 isValid = true;
             }
         } else {
@@ -204,7 +203,7 @@ public class ModifyUserInfoActivity extends AppCompatActivity {
     }
 
 
-    public class ChangeMyInfoTask extends AsyncTask<Void, Void, StdResult> {
+    public class ChangeMyInfoAsyncTask extends AsyncTask<Void, Void, StdResult> {
 
         @Override
         protected StdResult doInBackground(Void... params) {

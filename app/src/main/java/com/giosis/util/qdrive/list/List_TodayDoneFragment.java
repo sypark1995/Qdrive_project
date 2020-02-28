@@ -187,9 +187,8 @@ public class List_TodayDoneFragment extends Fragment implements OnQueryTextListe
         opID = SharedPreferencesHelper.getSigninOpID(getActivity());
 
 
-        // list 데이터 다운로드 시작
-        new TodayDonePickupOrderServerDownloadHelper.Builder(getActivity(), opID)
-                .setOnTodayDonePickupOrderDownloadEventListener(new TodayDonePickupOrderServerDownloadHelper.OnTodayDonePickupOrderDownloadEventListener() {
+        new TodayDonePickupListDownloadHelper.Builder(getActivity(), opID)
+                .setOnTodayDonePickupOrderDownloadEventListener(new TodayDonePickupListDownloadHelper.OnTodayDonePickupOrderDownloadEventListener() {
 
                     @Override
                     public void onTodayDonePickupOrderDownloadResult(ArrayList<Object> resultList) {

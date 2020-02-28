@@ -10,7 +10,6 @@ import android.database.Cursor;
 import android.graphics.Color;
 import android.net.Uri;
 import android.os.AsyncTask;
-import android.provider.Settings;
 import android.text.SpannableString;
 import android.text.style.UnderlineSpan;
 import android.util.Log;
@@ -32,10 +31,9 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import com.giosis.util.qdrive.barcodescanner.StdResult;
-import com.giosis.util.qdrive.gps.GPSTrackerManager;
 import com.giosis.util.qdrive.list.ChildItem;
 import com.giosis.util.qdrive.list.RowItem;
-import com.giosis.util.qdrive.list.delivery.SigningDeliveryDoneActivity;
+import com.giosis.util.qdrive.list.delivery.DeliveryDoneActivity;
 import com.giosis.util.qdrive.list.pickup.OutletPickupScanActivity;
 import com.giosis.util.qdrive.message.CustomerMessageListDetailActivity;
 import com.giosis.util.qdrive.singapore.R;
@@ -505,7 +503,7 @@ public class OutletOrderStatusAdapter extends BaseExpandableListAdapter {
 
                 if (type.equals("D")) {
 
-                    Intent intent = new Intent(context, SigningDeliveryDoneActivity.class);
+                    Intent intent = new Intent(context, DeliveryDoneActivity.class);
                     intent.putExtra("title", "Signature");
                     intent.putExtra("type", BarcodeType.TYPE_DELIVERY);
                     intent.putExtra("receiverName", name);

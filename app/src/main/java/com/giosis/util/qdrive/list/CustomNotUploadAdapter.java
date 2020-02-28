@@ -324,7 +324,7 @@ public class CustomNotUploadAdapter extends BaseExpandableListAdapter {
                 String[] dxStringArray = context.getResources().getStringArray(R.array.delivery_fail_reason_array);
                 for (int i = 0; i < dx_array.length; i++) {
                     if (dx_array[i].equals(reasonCode)) {
-                        reasonText = dxStringArray[i].toString();
+                        reasonText = dxStringArray[i];
                     }
                 }
                 text_list_item_child_failed_reason.setText(reasonText);
@@ -333,7 +333,7 @@ public class CustomNotUploadAdapter extends BaseExpandableListAdapter {
                 String[] pxStringArray = context.getResources().getStringArray(R.array.cancel_reason_array);
                 for (int i = 0; i < px_array.length; i++) {
                     if (px_array[i].equals(reasonCode)) {
-                        reasonText = pxStringArray[i].toString();
+                        reasonText = pxStringArray[i];
                     }
                 }
                 text_list_item_child_failed_reason.setText(reasonText);
@@ -342,7 +342,7 @@ public class CustomNotUploadAdapter extends BaseExpandableListAdapter {
                 String[] pfStringArray = context.getResources().getStringArray(R.array.fail_reason_array);
                 for (int i = 0; i < pf_array.length; i++) {
                     if (pf_array[i].equals(reasonCode)) {
-                        reasonText = pfStringArray[i].toString();
+                        reasonText = pfStringArray[i];
                     }
                 }
                 text_list_item_child_failed_reason.setText(reasonText);

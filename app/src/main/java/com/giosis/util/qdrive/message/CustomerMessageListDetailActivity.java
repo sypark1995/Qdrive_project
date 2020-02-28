@@ -8,7 +8,6 @@ import android.os.AsyncTask;
 import android.os.Bundle;
 import android.os.Handler;
 import android.os.Message;
-import androidx.appcompat.app.AppCompatActivity;
 import android.text.Editable;
 import android.text.TextWatcher;
 import android.util.Log;
@@ -23,6 +22,8 @@ import android.widget.LinearLayout;
 import android.widget.ListView;
 import android.widget.TextView;
 import android.widget.Toast;
+
+import androidx.appcompat.app.AppCompatActivity;
 
 import com.giosis.util.qdrive.singapore.R;
 import com.giosis.util.qdrive.util.Custom_XmlPullParser;
@@ -58,7 +59,6 @@ public class CustomerMessageListDetailActivity extends AppCompatActivity {
     Context mContext;
 
     String opID;
-    Boolean isConn = false;
 
     String questionNo;
     String trackingNo;
@@ -140,9 +140,8 @@ public class CustomerMessageListDetailActivity extends AppCompatActivity {
         super.onResume();
 
         DataUtil.setCustomerMessageListDetailActivity(this);
-        isConn = NetworkUtil.isNetworkAvailable(mContext);
 
-        if (!isConn) {
+        if (!NetworkUtil.isNetworkAvailable(mContext)) {
 
             try {
 
@@ -573,9 +572,7 @@ public class CustomerMessageListDetailActivity extends AppCompatActivity {
 
                 case R.id.layout_message_detail_send: {
 
-                    isConn = NetworkUtil.isNetworkAvailable(mContext);
-
-                    if (!isConn) {
+                    if (!NetworkUtil.isNetworkAvailable(mContext)) {
 
                         try {
                             showDialog(getResources().getString(R.string.text_warning), getResources().getString(R.string.msg_network_connect_error));

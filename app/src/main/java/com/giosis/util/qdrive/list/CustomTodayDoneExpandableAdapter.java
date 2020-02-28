@@ -24,6 +24,7 @@ import android.widget.PopupMenu;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import com.giosis.util.qdrive.list.pickup.CnRPickupInfoGetHelper;
 import com.giosis.util.qdrive.portableprinter.bluetooth.GPrinterBroadcastReceiver;
 import com.giosis.util.qdrive.portableprinter.bluetooth.GPrinterData;
 import com.giosis.util.qdrive.portableprinter.bluetooth.GPrinterHandler;
@@ -567,8 +568,8 @@ public class CustomTodayDoneExpandableAdapter extends BaseExpandableListAdapter 
             String opId = SharedPreferencesHelper.getSigninOpID(context);
             Log.e("print", TAG + "  printLabel Command : " + GPrinterData.printerConnManagerList.get(0).getCurrentPrinterCommand() + " / " + tracking_no);
 
-            new ManualCnRPrintDataHelper.Builder(context, opId, tracking_no)
-                    .setOnCnRPrintDataEventListener(new ManualCnRPrintDataHelper.OnCnRPrintDataEventListener() {
+            new CnRPickupInfoGetHelper.Builder(context, opId, tracking_no)
+                    .setOnCnRPrintDataEventListener(new CnRPickupInfoGetHelper.OnCnRPrintDataEventListener() {
 
                         @Override
                         public void onPostAssignResult(PrintDataResult stdResult) {

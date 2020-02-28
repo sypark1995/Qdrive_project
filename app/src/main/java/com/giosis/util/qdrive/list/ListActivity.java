@@ -36,9 +36,9 @@ import java.text.SimpleDateFormat;
 import java.util.Date;
 
 /* 수정된 Main Activity */
-public class ListActivity2 extends FragmentActivity implements OnClickListener, List_InProgressFragment.OnCountListener,
+public class ListActivity extends FragmentActivity implements OnClickListener, List_InProgressFragment.OnCountListener,
         List_UploadFailedFragment.OnFailedCountListener, List_TodayDoneFragment.OnTodayDoneCountListener, List_InProgressFragment.OnTodayDoneCountListener {
-    String TAG = "ListActivity2";
+    String TAG = "ListActivity";
     Context context;
 
     // krm0219
@@ -247,7 +247,7 @@ public class ListActivity2 extends FragmentActivity implements OnClickListener, 
 
                 DataUtil.inProgressListPosition = 0;
                 DataUtil.uploadFailedListPosition = 0;
-                Intent intent = new Intent(ListActivity2.this, MainActivity.class);
+                Intent intent = new Intent(ListActivity.this, MainActivity.class);
                 intent.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP | Intent.FLAG_ACTIVITY_SINGLE_TOP);
                 startActivity(intent);
             }
@@ -273,14 +273,14 @@ public class ListActivity2 extends FragmentActivity implements OnClickListener, 
                         @Override
                         public void onSuccess(ServerResult result) {      // resultCode '0000'   성공
 
-                            Toast.makeText(ListActivity2.this, context.getResources().getString(R.string.msg_smart_route_creating), Toast.LENGTH_SHORT).show();
+                            Toast.makeText(ListActivity.this, context.getResources().getString(R.string.msg_smart_route_creating), Toast.LENGTH_SHORT).show();
                         }
 
                         @Override
                         public void onFailure(ServerResult result) {
 
                             String msg = context.getResources().getString(R.string.text_error) + "\n" + result.getResultMsg();
-                            Toast.makeText(ListActivity2.this, msg, Toast.LENGTH_SHORT).show();
+                            Toast.makeText(ListActivity.this, msg, Toast.LENGTH_SHORT).show();
                         }
                     }).execute();
                 }

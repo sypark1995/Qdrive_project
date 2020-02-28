@@ -23,7 +23,7 @@ import androidx.annotation.Nullable;
 import androidx.appcompat.app.AppCompatActivity;
 
 import com.giosis.util.qdrive.gps.GPSTrackerManager;
-import com.giosis.util.qdrive.list.ListActivity2;
+import com.giosis.util.qdrive.list.ListActivity;
 import com.giosis.util.qdrive.list.SigningView;
 import com.giosis.util.qdrive.list.delivery.OnOutletDataUploadEventListener;
 import com.giosis.util.qdrive.singapore.R;
@@ -345,7 +345,7 @@ public class OutletPickupDoneActivity extends AppCompatActivity {
                         public void onPostResult() {
 
                             DataUtil.inProgressListPosition = 0;
-                            Intent intent = new Intent(OutletPickupDoneActivity.this, ListActivity2.class);
+                            Intent intent = new Intent(OutletPickupDoneActivity.this, ListActivity.class);
                             startActivity(intent);
                         }
 

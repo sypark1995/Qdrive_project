@@ -4,8 +4,6 @@ import android.app.SearchManager;
 import android.content.Context;
 import android.content.Intent;
 import android.os.Bundle;
-import androidx.annotation.Nullable;
-import androidx.appcompat.app.AppCompatActivity;
 import android.util.Log;
 import android.util.TypedValue;
 import android.view.View;
@@ -19,6 +17,9 @@ import android.widget.RelativeLayout;
 import android.widget.SearchView;
 import android.widget.Spinner;
 import android.widget.TextView;
+
+import androidx.annotation.Nullable;
+import androidx.appcompat.app.AppCompatActivity;
 
 import com.giosis.util.qdrive.list.RowItem;
 import com.giosis.util.qdrive.singapore.R;
@@ -36,7 +37,7 @@ import java.util.Comparator;
  * HOME > Outlet Order Status
  */
 public class OutletOrderStatusActivity extends AppCompatActivity implements SearchView.OnQueryTextListener, SearchView.OnCloseListener {
-    String TAG = "OutletOrderStatusActivity1";
+    String TAG = "OutletOrderStatusActivity";
 
 
     FrameLayout layout_top_back;

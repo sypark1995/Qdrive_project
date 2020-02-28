@@ -26,7 +26,7 @@ class PickupAddScanActivity : AppCompatActivity() {
 
     lateinit var pickupNo: String
     private lateinit var scannedList: String
-    lateinit var scannedQty: String
+    private lateinit var scannedQty: String
 
     // Location
     private var gpsTrackerManager: GPSTrackerManager? = GPSTrackerManager(context)

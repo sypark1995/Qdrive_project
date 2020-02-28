@@ -38,14 +38,15 @@ import android.widget.Toast;
 
 import com.giosis.util.qdrive.barcodescanner.CaptureActivity;
 import com.giosis.util.qdrive.barcodescanner.StdResult;
-import com.giosis.util.qdrive.list.delivery.SigningDeliveryDoneActivity;
-import com.giosis.util.qdrive.list.delivery.SigningDeliveryVisitLog;
-import com.giosis.util.qdrive.list.delivery.SigningReturnedActivity;
-import com.giosis.util.qdrive.list.delivery.SigningReturnedVisitLog;
+import com.giosis.util.qdrive.list.delivery.DeliveryDoneActivity;
+import com.giosis.util.qdrive.list.delivery.DeliveryFailedActivity;
+import com.giosis.util.qdrive.list.delivery.QuickReturnFailedActivity;
+import com.giosis.util.qdrive.list.delivery.QuickReturnedActivity;
 import com.giosis.util.qdrive.list.pickup.CnRPickupFailedActivity;
+import com.giosis.util.qdrive.list.pickup.CnRPickupInfoGetHelper;
 import com.giosis.util.qdrive.list.pickup.OutletPickupScanActivity;
+import com.giosis.util.qdrive.list.pickup.PickupFailedActivity;
 import com.giosis.util.qdrive.list.pickup.PickupZeroQtyActivity;
-import com.giosis.util.qdrive.list.pickup.SigningPickupVisitLog;
 import com.giosis.util.qdrive.message.CustomerMessageListDetailActivity;
 import com.giosis.util.qdrive.portableprinter.bluetooth.GPrinterBroadcastReceiver;
 import com.giosis.util.qdrive.portableprinter.bluetooth.GPrinterData;
@@ -533,7 +534,7 @@ public class CustomExpandableAdapter extends BaseExpandableListAdapter implement
             text_list_item_child_mobile_number.setText(content);
         } else {          //안심번호 사용안함
 
-            if (child.getTel().toString() != null && child.getTel().toString().length() > 5) {
+            if (child.getTel() != null && child.getTel().length() > 5) {
 
                 layout_list_item_child_telephone.setVisibility(View.VISIBLE);
 
@@ -544,7 +545,7 @@ public class CustomExpandableAdapter extends BaseExpandableListAdapter implement
                 layout_list_item_child_telephone.setVisibility(View.GONE);
             }
 
-            if (child.getHp().toString() != null && child.getHp().toString().length() > 5) {
+            if (child.getHp() != null && child.getHp().length() > 5) {
 
                 layout_list_item_child_mobile.setVisibility(View.VISIBLE);
 
@@ -589,15 +590,6 @@ public class CustomExpandableAdapter extends BaseExpandableListAdapter implement
             String reasonText = "";
 
             if (child.getStat().equals("DX")) {
-
-               /*   fail_reason ""
-
-               String[] dxStringArray = context.getResources().getStringArray(R.array.delivery_fail_reason_array);
-                for (int i = 0; i < devliery_failed_reason_array.length; i++) {
-                    if (devliery_failed_reason_array[i].equals(reasonCode)) {
-                        reasonText = dxStringArray[i];
-                    }
-                }*/
 
                 layout_list_item_child_failed.setVisibility(View.VISIBLE);
                 text_list_item_child_failed_reason.setText(reasonText);
@@ -699,7 +691,7 @@ public class CustomExpandableAdapter extends BaseExpandableListAdapter implement
             //tracking_no 에 따라서 layout 선택하기  by 2016-09-23
             boolean isNotCNR = isPickupNotCNR(tracking_no);
 
-           /* //TODO  CNR TEST
+           /* //TEST.  CNR
             isNotCNR = true;*/
 
             if (isNotCNR) { // true 이면 cnr      // C&R  주문건
@@ -853,7 +845,7 @@ public class CustomExpandableAdapter extends BaseExpandableListAdapter implement
                 // TEST.
                 //isConnectPortablePrint(tracking_no);
 
-                Intent intent = new Intent(context, SigningDeliveryDoneActivity.class);
+                Intent intent = new Intent(context, DeliveryDoneActivity.class);
                 intent.putExtra("title", context.getResources().getString(R.string.text_signature));
                 intent.putExtra("type", BarcodeType.TYPE_DELIVERY);
                 intent.putExtra("receiverName", receiver);
@@ -869,7 +861,7 @@ public class CustomExpandableAdapter extends BaseExpandableListAdapter implement
             @Override
             public void onClick(View v) {
 
-                Intent intent = new Intent(context, SigningDeliveryVisitLog.class);
+                Intent intent = new Intent(context, DeliveryFailedActivity.class);
                 intent.putExtra("title", context.getResources().getString(R.string.text_visit_log));
                 intent.putExtra("waybillNo", tracking_no);
                 intent.putExtra("receiverName", receiver);
@@ -900,7 +892,6 @@ public class CustomExpandableAdapter extends BaseExpandableListAdapter implement
             @Override
             public void onClick(View v) {
 
-                //Intent intent = new Intent(context, SigningPickupScanAllDoneActivity.class);
                 Intent intent = new Intent(context, PickupZeroQtyActivity.class);
                 intent.putExtra("title", context.getResources().getString(R.string.text_zero_qty));
                 intent.putExtra("pickupNo", tracking_no);
@@ -914,7 +905,7 @@ public class CustomExpandableAdapter extends BaseExpandableListAdapter implement
             @Override
             public void onClick(View v) {
 
-                Intent intent = new Intent(context, SigningPickupVisitLog.class);
+                Intent intent = new Intent(context, PickupFailedActivity.class);
                 intent.putExtra("title", context.getResources().getString(R.string.text_visit_log));
                 intent.putExtra("reqQty", qty);
                 intent.putExtra("applicant", requestor);
@@ -944,7 +935,7 @@ public class CustomExpandableAdapter extends BaseExpandableListAdapter implement
             @Override
             public void onClick(View v) {
 
-                Intent intent = new Intent(context, SigningReturnedActivity.class);
+                Intent intent = new Intent(context, QuickReturnedActivity.class);
                 intent.putExtra("title", context.getResources().getString(R.string.text_signature));
                 intent.putExtra("waybillNo", tracking_no);
                 context.startActivity(intent);
@@ -956,7 +947,7 @@ public class CustomExpandableAdapter extends BaseExpandableListAdapter implement
             @Override
             public void onClick(View v) {
 
-                Intent intent = new Intent(context, SigningReturnedVisitLog.class);
+                Intent intent = new Intent(context, QuickReturnFailedActivity.class);
                 intent.putExtra("title", context.getResources().getString(R.string.text_visit_log));
                 intent.putExtra("waybillNo", tracking_no);
                 context.startActivity(intent);
@@ -1371,14 +1362,14 @@ public class CustomExpandableAdapter extends BaseExpandableListAdapter implement
         }
 
         // 위에 if 문은 아마 그냥 통과 될 것 왜냐면 커넥션을 자동으로 하고 바로 프린터 버튼 누른 것처럼 trigger 보완 소스 넣고 있음
-        //  handler 에서 메시지 받으면 다시 버튼 클릭을 interface 함수로 호출 하고 있음 - onStartGprinter
+        //  handler 에서 메시지 받으면 다시 버튼 클릭을 interface 함수로 호getTodayPickupDone출 하고 있음 - onStartGprinter
         if (GPrinterData.printerConnManagerList.get(0).getCurrentPrinterCommand() == PrinterConnManager.PrinterCommand.TSC) {
 
             String opId = SharedPreferencesHelper.getSigninOpID(context);
             Log.e("print", TAG + "  printLabel Command : " + GPrinterData.printerConnManagerList.get(0).getCurrentPrinterCommand() + " / " + address + " / " + tracking_no);
 
-            new ManualCnRPrintDataHelper.Builder(context, opId, tracking_no)
-                    .setOnCnRPrintDataEventListener(new ManualCnRPrintDataHelper.OnCnRPrintDataEventListener() {
+            new CnRPickupInfoGetHelper.Builder(context, opId, tracking_no)
+                    .setOnCnRPrintDataEventListener(new CnRPickupInfoGetHelper.OnCnRPrintDataEventListener() {
 
                         @Override
                         public void onPostAssignResult(PrintDataResult stdResult) {
