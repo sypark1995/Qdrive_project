@@ -119,8 +119,8 @@ public class CnRPickupDoneActivity extends AppCompatActivity {
         String strTitle = getIntent().getStringExtra("title");
         mType = getIntent().getStringExtra("type");
         String strSenderName = getIntent().getStringExtra("senderName");
-        mStrWaybillNo = getIntent().getStringExtra("waybillNo");
-        String strReqQty = getIntent().getStringExtra("reqQty");
+        mStrWaybillNo = getIntent().getStringExtra("scannedList");
+        String strReqQty = getIntent().getStringExtra("scannedQty");
 
 
         text_sign_p_tracking_no_title.setText(R.string.text_pickup_no);
@@ -316,10 +316,7 @@ public class CnRPickupDoneActivity extends AppCompatActivity {
                         public void onPostResult() {
 
                             DataUtil.inProgressListPosition = 0;
-
-                            Intent intent = new Intent();
-                            intent.putExtra("result", "OK");
-                            setResult(Activity.RESULT_OK, intent);
+                            setResult(Activity.RESULT_OK);
                             finish();
                         }
 

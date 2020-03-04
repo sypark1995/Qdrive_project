@@ -877,8 +877,6 @@ public class MainActivity extends AppBaseActivity {
 
                 case R.id.btn_home_confirm_my_delivery_order: {
 
-                    CaptureActivity.removeBarcodeListInstance();
-
                     Intent intentScan = new Intent(MainActivity.this, CaptureActivity.class);
                     intentScan.putExtra("title", mContext.getResources().getString(R.string.text_title_driver_assign));
                     intentScan.putExtra("type", BarcodeType.CONFIRM_MY_DELIVERY_ORDER);
@@ -905,8 +903,6 @@ public class MainActivity extends AppBaseActivity {
                 case R.id.btn_home_change_delivery_driver: {
 
                     if (gpsOnceEnable && gpsTrackerManager != null) {
-
-                        CaptureActivity.removeBarcodeListInstance();
 
                         Intent intentScan = new Intent(MainActivity.this, CaptureActivity.class);
                         intentScan.putExtra("title", mContext.getResources().getString(R.string.button_change_delivery_driver));
@@ -955,7 +951,7 @@ public class MainActivity extends AppBaseActivity {
         Log.i("FCM", TAG + "  Device ID : " + device_id + "  Device Token : " + fcmToken);
 
         // TEST   -  Galaxy Note5
-        if (device_id.equals("890525e99f30801a") || device_id.equals("acd248681b26f53f")) {
+        if (device_id.equals("890525e99f30801a") || device_id.equals("acd248681b26f53f") || device_id.equals("b843772197349df9")) {
 
             Log.i("FCM", "REAL TEST~~~~~");
         } else if (!op_id.equals("") && !device_id.equals("") && !fcmToken.equals("")) {

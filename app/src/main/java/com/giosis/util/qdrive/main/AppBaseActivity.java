@@ -187,6 +187,7 @@ public class AppBaseActivity extends AppCompatActivity {
                         Intent intent = new Intent(AppBaseActivity.this, SettingActivity.class);
                         // Intent intent = new Intent(AppBaseActivity.this, MainTestVisitLog.class);
                         //Intent intent = new Intent(AppBaseActivity.this, SMSVerificationActivity.class);
+                        // Intent intent = new Intent(AppBaseActivity.this, MyRouteActivity.class);
                         startActivity(intent);
 
                         if (!(top_title_string.contains(getString(R.string.navi_home)))) {

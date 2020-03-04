@@ -876,8 +876,6 @@ public class CustomExpandableAdapter extends BaseExpandableListAdapter implement
             @Override
             public void onClick(View v) {
 
-                CaptureActivity.removeBarcodeListInstance();
-
                 Intent intentScan = new Intent(context, CaptureActivity.class);
                 intentScan.putExtra("title", context.getResources().getString(R.string.text_start_to_scan));
                 intentScan.putExtra("type", BarcodeType.PICKUP_SCAN_ALL);

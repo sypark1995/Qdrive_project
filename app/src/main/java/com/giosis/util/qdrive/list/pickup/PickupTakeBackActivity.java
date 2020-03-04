@@ -18,7 +18,6 @@ import android.widget.Toast;
 import androidx.annotation.Nullable;
 import androidx.appcompat.app.AppCompatActivity;
 
-import com.giosis.util.qdrive.barcodescanner.CaptureActivity;
 import com.giosis.util.qdrive.gps.GPSTrackerManager;
 import com.giosis.util.qdrive.list.SigningView;
 import com.giosis.util.qdrive.singapore.OnServerEventListener;
@@ -67,7 +66,6 @@ public class PickupTakeBackActivity extends AppCompatActivity {
     String take_back_qty;
     int result_total_qty;
     String packing_no_list;
-    String scan_type;
 
     GPSTrackerManager gpsTrackerManager;
     boolean gpsEnable = false;
@@ -115,12 +113,11 @@ public class PickupTakeBackActivity extends AppCompatActivity {
         deviceID = SharedPreferencesHelper.getSigninDeviceID(context);
 
         String strTitle = getIntent().getStringExtra("title");
-        pickup_no = getIntent().getStringExtra("pickup_no");
+        pickup_no = getIntent().getStringExtra("pickupNo");
         applicant = getIntent().getStringExtra("applicant");
-        total_qty = getIntent().getStringExtra("total_qty");
-        take_back_qty = getIntent().getStringExtra("take_back_qty");
-        packing_no_list = getIntent().getStringExtra("waybillNo");
-        scan_type = getIntent().getStringExtra("type");
+        packing_no_list = getIntent().getStringExtra("scannedList");
+        total_qty = getIntent().getStringExtra("totalQty");
+        take_back_qty = getIntent().getStringExtra("takeBackQty");
         result_total_qty = Integer.parseInt(total_qty) - Integer.parseInt(take_back_qty);
 
 
@@ -186,7 +183,6 @@ public class PickupTakeBackActivity extends AppCompatActivity {
     @Override
     public void onBackPressed() {
 
-        CaptureActivity.removeBarcodeListInstance();
         cancelSigning();
     }
 
@@ -264,9 +260,7 @@ public class PickupTakeBackActivity extends AppCompatActivity {
                         @Override
                         public void onPostResult() {
 
-                            Intent intent = new Intent();
-                            intent.putExtra("result", "OK");
-                            setResult(Activity.RESULT_OK, intent);
+                            setResult(Activity.RESULT_OK);
                             finish();
                         }
 
@@ -308,8 +302,6 @@ public class PickupTakeBackActivity extends AppCompatActivity {
 
             switch (view.getId()) {
                 case R.id.layout_top_back: {
-
-                    CaptureActivity.removeBarcodeListInstance();
 
                     cancelSigning();
                 }

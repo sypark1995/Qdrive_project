@@ -304,8 +304,8 @@ public class OutletPickupScanActivity extends AppCompatActivity {
                     if (showQRCode) {        // QR Code Show
 
                         if (0 < result.getTrackingNoList().size()) {
-                            Intent intentScan = new Intent(OutletPickupScanActivity.this, CaptureActivity.class);
 
+                            Intent intentScan = new Intent(OutletPickupScanActivity.this, CaptureActivity.class);
                             intentScan.putExtra("title", mTitle);
                             intentScan.putExtra("type", BarcodeType.OUTLET_PICKUP_SCAN);
                             intentScan.putExtra("pickup_no", mPickupNo);
@@ -313,9 +313,6 @@ public class OutletPickupScanActivity extends AppCompatActivity {
                             intentScan.putExtra("qty", mQty);
                             intentScan.putExtra("tracking_data", result);
                             intentScan.putExtra("route", mRoute);
-
-                            CaptureActivity.removeBarcodeListInstance();
-
                             startActivityForResult(intentScan, 13);
                         } else {
 

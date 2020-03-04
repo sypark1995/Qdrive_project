@@ -21,12 +21,10 @@ import android.widget.Toast;
 import androidx.annotation.Nullable;
 import androidx.appcompat.app.AppCompatActivity;
 
-import com.giosis.util.qdrive.barcodescanner.CaptureActivity;
 import com.giosis.util.qdrive.gps.GPSTrackerManager;
 import com.giosis.util.qdrive.list.SigningView;
 import com.giosis.util.qdrive.singapore.OnServerEventListener;
 import com.giosis.util.qdrive.singapore.R;
-import com.giosis.util.qdrive.util.BarcodeType;
 import com.giosis.util.qdrive.util.DataUtil;
 import com.giosis.util.qdrive.util.MemoryStatus;
 import com.giosis.util.qdrive.util.NetworkUtil;
@@ -70,7 +68,6 @@ public class PickupDoneActivity extends AppCompatActivity {
 
     String pickup_no;
     String mStrWaybillNo = "";
-    String mType = "";
     String realQty;
 
     GPSTrackerManager gpsTrackerManager;
@@ -121,9 +118,8 @@ public class PickupDoneActivity extends AppCompatActivity {
         String strTitle = getIntent().getStringExtra("title");
         pickup_no = getIntent().getStringExtra("pickup_no");
         String applicant = getIntent().getStringExtra("applicant");
-        mStrWaybillNo = getIntent().getStringExtra("waybillNo");
-        String strReqQty = getIntent().getStringExtra("reqQty");
-        mType = getIntent().getStringExtra("type");             // PSA(Start to scan)
+        mStrWaybillNo = getIntent().getStringExtra("scannedList");
+        String strReqQty = getIntent().getStringExtra("scannedQty");
 
 
         text_top_title.setText(strTitle);
@@ -210,10 +206,6 @@ public class PickupDoneActivity extends AppCompatActivity {
 
     @Override
     public void onBackPressed() {
-
-        if (mType.equals(BarcodeType.PICKUP_SCAN_ALL)) {
-            CaptureActivity.removeBarcodeListInstance();
-        }
 
         cancelSigning();
     }
@@ -350,11 +342,6 @@ public class PickupDoneActivity extends AppCompatActivity {
 
             switch (view.getId()) {
                 case R.id.layout_top_back: {
-
-                    if (mType.equals(BarcodeType.PICKUP_SCAN_ALL)) {
-
-                        CaptureActivity.removeBarcodeListInstance();
-                    }
 
                     cancelSigning();
                 }

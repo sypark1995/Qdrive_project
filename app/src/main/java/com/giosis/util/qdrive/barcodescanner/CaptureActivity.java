@@ -17,6 +17,7 @@
 package com.giosis.util.qdrive.barcodescanner;
 
 
+import android.annotation.SuppressLint;
 import android.app.Activity;
 import android.app.AlertDialog;
 import android.bluetooth.BluetoothAdapter;
@@ -27,25 +28,18 @@ import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.database.Cursor;
-import android.graphics.Bitmap;
-import android.graphics.Canvas;
-import android.graphics.Paint;
-import android.graphics.Rect;
 import android.graphics.Typeface;
 import android.graphics.drawable.Drawable;
 import android.hardware.Sensor;
 import android.hardware.SensorEvent;
 import android.hardware.SensorEventListener;
 import android.hardware.SensorManager;
-import android.net.Uri;
 import android.os.AsyncTask;
-import android.os.Build;
 import android.os.Bundle;
 import android.os.Handler;
 import android.os.Message;
 import android.os.Vibrator;
 import android.preference.PreferenceManager;
-import android.text.ClipboardManager;
 import android.text.Editable;
 import android.text.TextUtils;
 import android.text.TextWatcher;
@@ -105,15 +99,12 @@ import com.giosis.util.qdrive.util.PermissionActivity;
 import com.giosis.util.qdrive.util.PermissionChecker;
 import com.giosis.util.qdrive.util.SharedPreferencesHelper;
 import com.google.gson.Gson;
-import com.google.zxing.BarcodeFormat;
 import com.google.zxing.Result;
 import com.google.zxing.ResultMetadataType;
-import com.google.zxing.ResultPoint;
 
 import org.simpleframework.xml.Serializer;
 import org.simpleframework.xml.core.Persister;
 
-import java.io.IOException;
 import java.io.Serializable;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
@@ -123,7 +114,6 @@ import java.util.HashSet;
 import java.util.Hashtable;
 import java.util.Set;
 import java.util.TimeZone;
-import java.util.Vector;
 import java.util.regex.Pattern;
 
 import gmkt.inc.android.common.GMKT_SyncHttpTask;
@@ -149,18 +139,18 @@ public final class CaptureActivity extends AppCompatActivity implements SurfaceH
     private static final int REQUEST_CONNECT_DEVICE = 1;
     private static final int REQUEST_ENABLE_BT = 2;
     private static final int REQUEST_CAMERA_REQUEST = 3;
-    private static final int REQUEST_SIGN_REQUEST = 4;
-    //add Intent request codes for Pickup C&R
-    private static final int REQUEST_PICKUP_CNR_REQUEST = 5;
-    //2016-09-09 eylee
-    private static final int REQUEST_SELF_COLLECTION = 7;
-    //2016-09-26 eylee
-    public static final int REQUEST_PICKUP_SCAN_ALL = 9;
+
+
+    private static final int REQUEST_DELIVERY_DONE = 4;
+    private static final int REQUEST_PICKUP_CNR = 5;     //add Intent request codes for Pickup C&R
+    private static final int REQUEST_PICKUP_SCAN_ALL = 6;     //2016-09-26 eylee
+    private static final int REQUEST_PICKUP_TAKE_BACK = 14;
+    private static final int REQUEST_SELF_COLLECTION = 7;    //2016-09-09 eylee
+
     //2017-03-16
     private static final int REQUEST_PICKUP_ADD_SCAN = 12;
     // krm0219
     private static final int REQUEST_OUTLET_PICKUP_SCAN = 13;
-    private static final int REQUEST_PICKUP_TAKE_BACK = 14;
 
 
     // Message types sent from the BluetoothChatService Handler
@@ -266,12 +256,7 @@ public final class CaptureActivity extends AppCompatActivity implements SurfaceH
     }
 
     private CaptureActivityHandler handler;
-    private Result lastResult;
-    private boolean copyToClipboard;
     private Source source;
-    private String sourceUrl;
-    private String returnUrlTemplate;
-    private Vector<BarcodeFormat> decodeFormats;
     private String characterSet;
     private HistoryManager historyManager;
     private InactivityTimer inactivityTimer;
@@ -306,24 +291,14 @@ public final class CaptureActivity extends AppCompatActivity implements SurfaceH
 
     InputMethodManager inputMethodManager = null;
 
+
     // resume 시 recreate 할 data list
-    private static ArrayList<String> barcodeList = null;
+    private ArrayList<String> barcodeList = new ArrayList<>();
     // resume 시 recreate 할 data list -> Change Delivery Driver 용도
-    private static Hashtable<String, String> barcodeContrNoList = null;
+    private static Hashtable<String, String> barcodeContrNoList = new Hashtable<>();
 
 
-    public static void getBarcodeListInstance() {
-
-        if (barcodeList == null) {
-            barcodeList = new ArrayList<>();
-        }
-
-        if (barcodeContrNoList == null) {
-            barcodeContrNoList = new Hashtable<>();
-        }
-    }
-
-    public static void removeBarcodeListInstance() {
+    public void removeBarcodeListInstance() {
         if (barcodeList != null) {
             barcodeList.clear();
         }
@@ -349,9 +324,6 @@ public final class CaptureActivity extends AppCompatActivity implements SurfaceH
     double longitude = 0;
 
 
-    String mTitle;
-    String mPickupNo;
-    String mApplicant;
     String mQty;
     String mRoute;
     OutletPickupDoneResult resultData;
@@ -405,7 +377,6 @@ public final class CaptureActivity extends AppCompatActivity implements SurfaceH
 
         btn_capture_barcode_reset = findViewById(R.id.btn_capture_barcode_reset);
         btn_capture_barcode_confirm = findViewById(R.id.btn_capture_barcode_confirm);
-
         //
         mManualScanPodUpload = findViewById(R.id.barcode_pod_upload); //Pod 업로드 버튼
 
@@ -442,46 +413,16 @@ public final class CaptureActivity extends AppCompatActivity implements SurfaceH
             outletDriverYN = "N";
         }
 
-        Log.e("krm0219", TAG + "  outletDriverYN : " + outletDriverYN);
+        Log.e("krm0219", TAG + "  outletDriverYN : " + outletDriverYN + " / ");
 
-        // 시스템서비스로부터 SensorManager 객체를 얻는다.
-        m_sensor_manager = (SensorManager) getSystemService(SENSOR_SERVICE);
-        // SensorManager 를 이용해서 조도 센서 객체를 얻는다.
-        m_light_sensor = m_sensor_manager.getDefaultSensor(Sensor.TYPE_LIGHT);
 
-        CameraManager.init(getApplication());
-        surfaceHolder = surface_capture_preview.getHolder();
-        surfaceHolder.addCallback(this);
-        hasSurface = false;
+        mScanTitle = getIntent().getStringExtra("title");
+        mScanType = getIntent().getStringExtra("type");
 
-        handler = null;
-        lastResult = null;
-
-        historyManager = new HistoryManager(this);
-        historyManager.clearHistory();
-
-        inactivityTimer = new InactivityTimer(this);
-
-        beepManager = new BeepManager(this, BELL_SOUNDS);
-        beepManager2 = new BeepManager(this, BELL_SOUNDS_ERROR);
-        beepManager3 = new BeepManager(this, BELL_SOUNDS_DUPLE);
-
-        editTextDelButtonDrawable = getResources().getDrawable(R.drawable.btn_delete);
-        editTextDelButtonDrawable.setBounds(0, 0, editTextDelButtonDrawable.getIntrinsicWidth(), editTextDelButtonDrawable.getIntrinsicHeight());
-
-        String strTitle = getIntent().getStringExtra("title");
-        String strType = getIntent().getStringExtra("type");
-        if (strTitle == null) {
-            strTitle = context.getResources().getString(R.string.text_scanning);
-        }
-        mScanTitle = strTitle;
         text_top_title.setText(mScanTitle);
 
-        if (strType == null) {
-            strType = "N";
-        }
-        mScanType = strType;
 
+        scanBarcodeArrayList = new ArrayList<>();
 
         // eylee 2015.10.06
         if (mScanType.equals(BarcodeType.TYPE_SCAN_CAPTURE) || mScanType.equals(BarcodeType.SELF_COLLECTION)) {
@@ -492,36 +433,14 @@ public final class CaptureActivity extends AppCompatActivity implements SurfaceH
             String podCount = getScanDeliveryCount();
             text_capture_scan_count.setText(podCount);
 
-            if (Integer.parseInt(podCount) > 0) {
+            if (0 < Integer.parseInt(podCount)) {
 
                 mManualScanPodUpload.setVisibility(View.VISIBLE);
             } else {
 
                 mManualScanPodUpload.setVisibility(View.GONE);
             }
-        }
-
-        //krm0219
-        if (mScanType.equals(BarcodeType.OUTLET_PICKUP_SCAN)) {
-
-            pickupNo = getIntent().getStringExtra("pickup_no");
-            pickupApplicantName = getIntent().getStringExtra("applicant");
-            mTitle = getIntent().getStringExtra("title");
-            mPickupNo = getIntent().getStringExtra("pickup_no");
-            mApplicant = getIntent().getStringExtra("applicant");
-            mQty = getIntent().getStringExtra("qty");
-            mRoute = getIntent().getStringExtra("route");
-            resultData = (OutletPickupDoneResult) getIntent().getSerializableExtra("tracking_data");
-
-            if (mRoute.equals("FL")) {
-                text_top_title.setText(R.string.text_title_fl_pickup);
-            }
-        } else if (mScanType.equals(BarcodeType.PICKUP_SCAN_ALL)) {       //eylee 2016-09-26
-
-            pickupNo = getIntent().getStringExtra("pickup_no");
-            pickupApplicantName = getIntent().getStringExtra("applicant");
-
-        } else if (mScanType.equals(BarcodeType.PICKUP_ADD_SCAN)) {
+        } else if (mScanType.equals(BarcodeType.PICKUP_SCAN_ALL) || mScanType.equals(BarcodeType.PICKUP_ADD_SCAN)) {
 
             pickupNo = getIntent().getStringExtra("pickup_no");
             pickupApplicantName = getIntent().getStringExtra("applicant");
@@ -530,13 +449,18 @@ public final class CaptureActivity extends AppCompatActivity implements SurfaceH
             pickupNo = getIntent().getStringExtra("pickup_no");
             pickupApplicantName = getIntent().getStringExtra("applicant");
             mQty = getIntent().getStringExtra("scanned_qty");
-        }
+        } else if (mScanType.equals(BarcodeType.OUTLET_PICKUP_SCAN)) {
 
+            pickupNo = getIntent().getStringExtra("pickup_no");
+            pickupApplicantName = getIntent().getStringExtra("applicant");
+            mQty = getIntent().getStringExtra("qty");
+            mRoute = getIntent().getStringExtra("route");
+            resultData = (OutletPickupDoneResult) getIntent().getSerializableExtra("tracking_data");
 
-        // krm0219
-        scanBarcodeArrayList = new ArrayList<>();
+            if (mRoute.equals("FL")) {
+                text_top_title.setText(R.string.text_title_fl_pickup);
+            }
 
-        if (mScanType.equals(BarcodeType.OUTLET_PICKUP_SCAN)) {
 
             ArrayList<OutletPickupDoneResult.OutletPickupDoneTrackingNoItem> listItem = resultData.getTrackingNoList();
 
@@ -553,10 +477,36 @@ public final class CaptureActivity extends AppCompatActivity implements SurfaceH
         inputBarcodeNoListAdapter = new InputBarcodeNoListAdapter(this, scanBarcodeArrayList, mScanType);
         list_capture_scan_barcode.setAdapter(inputBarcodeNoListAdapter);
 
-        if (scanBarcodeArrayList.size() > 0) {
+        if (0 < scanBarcodeArrayList.size()) {
 
             list_capture_scan_barcode.setSelection(scanBarcodeArrayList.size() - 1);
         }
+
+
+        // 시스템서비스로부터 SensorManager 객체를 얻는다.
+        m_sensor_manager = (SensorManager) getSystemService(SENSOR_SERVICE);
+        // SensorManager 를 이용해서 조도 센서 객체를 얻는다.
+        m_light_sensor = m_sensor_manager.getDefaultSensor(Sensor.TYPE_LIGHT);
+
+        CameraManager.init(getApplication());
+        surfaceHolder = surface_capture_preview.getHolder();
+        surfaceHolder.addCallback(this);
+        hasSurface = false;
+
+        handler = null;
+
+        historyManager = new HistoryManager(this);
+        historyManager.clearHistory();
+
+        inactivityTimer = new InactivityTimer(this);
+
+        beepManager = new BeepManager(this, BELL_SOUNDS);
+        beepManager2 = new BeepManager(this, BELL_SOUNDS_ERROR);
+        beepManager3 = new BeepManager(this, BELL_SOUNDS_DUPLE);
+
+        editTextDelButtonDrawable = getResources().getDrawable(R.drawable.btn_delete);
+        editTextDelButtonDrawable.setBounds(0, 0, editTextDelButtonDrawable.getIntrinsicWidth(), editTextDelButtonDrawable.getIntrinsicHeight());
+
 
         toggle_btn_capture_camera_flash.setOnCheckedChangeListener(new OnCheckedChangeListener() {
 
@@ -568,9 +518,9 @@ public final class CaptureActivity extends AppCompatActivity implements SurfaceH
                         handler.quitSynchronously();
                     }
                     CameraManager.get().onFlash();
-                    resetStatusView();
+                    viewfinder_capture_preview.setVisibility(View.VISIBLE);
                     if (handler != null) {
-                        handler = new CaptureActivityHandler(CaptureActivity.this, decodeFormats, characterSet);
+                        handler = new CaptureActivityHandler(CaptureActivity.this, null, characterSet);
                     }
                 } else {
 
@@ -579,29 +529,19 @@ public final class CaptureActivity extends AppCompatActivity implements SurfaceH
                     }
 
                     CameraManager.get().offFlash();
-                    resetStatusView();
+                    viewfinder_capture_preview.setVisibility(View.VISIBLE);
                     if (handler != null) {
-                        handler = new CaptureActivityHandler(CaptureActivity.this, decodeFormats, characterSet);
+                        handler = new CaptureActivityHandler(CaptureActivity.this, null, characterSet);
                     }
                 }
             }
         });
 
-        // 현재 바코드 스캔의 타입 설정 코드로
-        mScanStatusIndex = 4;
 
         // 블루투스
         initBluetoothDevice();
+        // 초기화
         initManualScanViews(mScanType);
-
-        if (mScanType.equals(BarcodeType.CONFIRM_MY_DELIVERY_ORDER) || mScanType.equals(BarcodeType.CHANGE_DELIVERY_DRIVER)
-                || mScanType.equals(BarcodeType.PICKUP_CNR)
-                || mScanType.equals(BarcodeType.PICKUP_SCAN_ALL) || mScanType.equals(BarcodeType.PICKUP_ADD_SCAN)
-                || mScanType.equals(BarcodeType.OUTLET_PICKUP_SCAN) || mScanType.equals(BarcodeType.PICKUP_TAKE_BACK)) {
-
-            getBarcodeListInstance();
-        }
-
 
         //
         checker = new PermissionChecker(this);
@@ -619,63 +559,13 @@ public final class CaptureActivity extends AppCompatActivity implements SurfaceH
     }
 
 
-    private void initManualScanViews(String scanType) {
-
-        layout_capture_scan_count.setVisibility(View.VISIBLE);
-        mManualScanPodUpload.setVisibility(View.GONE);
-
-        if (scanType.equals(BarcodeType.CONFIRM_MY_DELIVERY_ORDER)) {
-
-            btn_capture_barcode_confirm.setText(context.getResources().getString(R.string.button_update));      //onUpdateButtonClick
-
-        } else if (scanType.equals(BarcodeType.CHANGE_DELIVERY_DRIVER)) {
-
-            btn_capture_barcode_confirm.setText(context.getResources().getString(R.string.button_done));         //onUpdateButtonClick
-
-        } else if (scanType.equals(BarcodeType.DELIVERY_DONE)) {
-
-            layout_capture_scan_count.setVisibility(View.GONE);
-            btn_capture_barcode_confirm.setText(context.getResources().getString(R.string.button_confirm));         //onConfirmButtonClick
-
-        } else if (scanType.equals(BarcodeType.PICKUP_CNR)) {
-            // add added pickup C&R by 2016-08-30 eylee
-
-            btn_capture_barcode_confirm.setText(context.getResources().getString(R.string.button_next));            //onNextButtonClick
-
-        } else if (scanType.equals(BarcodeType.SELF_COLLECTION)) {
-
-            btn_capture_barcode_confirm.setText(context.getResources().getString(R.string.button_confirm));         // onCaptureConfirmButtonClick
-
-        } else if (scanType.equals(BarcodeType.TYPE_SCAN_CAPTURE)) {
-            // Scan capture Delivered
-            btn_capture_barcode_confirm.setText(context.getResources().getString(R.string.button_confirm));         // onCaptureConfirmButtonClick
-            mManualScanPodUpload.setVisibility(View.VISIBLE);
-
-        } else if (scanType.equals(BarcodeType.PICKUP_SCAN_ALL)) {
-            // 2016-09-26 pickup scan all
-            btn_capture_barcode_confirm.setText(context.getResources().getString(R.string.button_next));            //onNextButtonClick
-
-        } else if (scanType.equals(BarcodeType.PICKUP_ADD_SCAN)) {
-            // 2017-03-15 pickup  add scan list
-
-            btn_capture_barcode_confirm.setText(context.getResources().getString(R.string.button_next));            //onNextButtonClick
-
-        } else if (scanType.equals(BarcodeType.OUTLET_PICKUP_SCAN)) {
-            //krm0219
-            btn_capture_barcode_confirm.setText(context.getResources().getString(R.string.button_next));            //onNextButtonClick
-
-        } else if (scanType.equals(BarcodeType.PICKUP_TAKE_BACK)) {
-            // 2019.02 krm0219
-            btn_capture_barcode_confirm.setText(context.getResources().getString(R.string.button_next));            // onNextButtonClick
-        }
-    }
-
     private void initBluetoothDevice() {
         // Get local Bluetooth adapter
         mBluetoothAdapter = BluetoothAdapter.getDefaultAdapter();
 
         // If the adapter is null, then Bluetooth is not supported
         if (mBluetoothAdapter == null) {
+
             Toast.makeText(this, context.getResources().getString(R.string.msg_bluetooth_not_supported), Toast.LENGTH_LONG).show();
             finish();
             return;
@@ -683,29 +573,11 @@ public final class CaptureActivity extends AppCompatActivity implements SurfaceH
 
         KTSyncData.mKScan = new KScan(this, mHandler);
 
-        KTSyncData.BufferRead = 0;
-        KTSyncData.BufferWrite = 0;
-
         for (int i = 0; i < 10; i++) {
             KTSyncData.SerialNumber[i] = '0';
             KTSyncData.FWVersion[i] = '0';
         }
 
-        GetPreferences();
-
-        KTSyncData.bIsOver_222 = false;
-
-        StringBuffer buf = new StringBuffer();
-        buf.append(Build.VERSION.RELEASE);
-
-        String version = buf.toString();
-        String target = "2.2.2";
-        if (version.compareTo(target) > 0) {
-            KTSyncData.bIsOver_222 = true;
-        }
-    }
-
-    public void GetPreferences() {
 
         byte[] temp;
 
@@ -725,6 +597,68 @@ public final class CaptureActivity extends AppCompatActivity implements SurfaceH
         KTSyncData.AttachQuantity = app_preferences.getBoolean("AttachQuantity", false);
     }
 
+
+    private void initManualScanViews(String scanType) {
+
+        layout_capture_scan_count.setVisibility(View.VISIBLE);
+        mManualScanPodUpload.setVisibility(View.GONE);
+
+        switch (scanType) {
+            case BarcodeType.CONFIRM_MY_DELIVERY_ORDER:
+
+                btn_capture_barcode_confirm.setText(context.getResources().getString(R.string.button_update));      //onUpdateButtonClick
+                break;
+            case BarcodeType.CHANGE_DELIVERY_DRIVER:
+
+                btn_capture_barcode_confirm.setText(context.getResources().getString(R.string.button_done));         //onUpdateButtonClick
+                break;
+            case BarcodeType.DELIVERY_DONE:
+
+                layout_capture_scan_count.setVisibility(View.GONE);
+                btn_capture_barcode_confirm.setText(context.getResources().getString(R.string.button_confirm));         //onConfirmButtonClick
+                break;
+            case BarcodeType.PICKUP_CNR:
+
+                // add added pickup C&R by 2016-08-30 eylee
+                btn_capture_barcode_confirm.setText(context.getResources().getString(R.string.button_next));            //onNextButtonClick
+                break;
+            case BarcodeType.SELF_COLLECTION:
+
+                btn_capture_barcode_confirm.setText(context.getResources().getString(R.string.button_confirm));         // onCaptureConfirmButtonClick
+                break;
+            case BarcodeType.TYPE_SCAN_CAPTURE:
+
+                // Scan capture Delivered
+                btn_capture_barcode_confirm.setText(context.getResources().getString(R.string.button_confirm));         // onCaptureConfirmButtonClick
+                mManualScanPodUpload.setVisibility(View.VISIBLE);
+                break;
+            case BarcodeType.PICKUP_SCAN_ALL:
+
+                // 2016-09-26 pickup scan all
+                btn_capture_barcode_confirm.setText(context.getResources().getString(R.string.button_next));            //onNextButtonClick
+                break;
+            case BarcodeType.PICKUP_ADD_SCAN:
+
+                // 2017-03-15 pickup  add scan list
+                btn_capture_barcode_confirm.setText(context.getResources().getString(R.string.button_next));            //onNextButtonClick
+                break;
+            case BarcodeType.PICKUP_TAKE_BACK:
+
+                // 2019.02  Pickup Take back  by krm0219
+                btn_capture_barcode_confirm.setText(context.getResources().getString(R.string.button_next));            // onNextButtonClick
+                break;
+            case BarcodeType.OUTLET_PICKUP_SCAN:
+
+                // 2018.07  Outlet pickup  by krm0219
+                btn_capture_barcode_confirm.setText(context.getResources().getString(R.string.button_next));            //onNextButtonClick
+                break;
+        }
+    }
+
+
+    // TEST
+
+
     View.OnClickListener clickListener = new View.OnClickListener() {
         @Override
         public void onClick(View v) {
@@ -733,14 +667,14 @@ public final class CaptureActivity extends AppCompatActivity implements SurfaceH
 
                 case R.id.layout_top_back: {
 
-                    // 닫기 버튼으로 나갈  때 barcodeList 제거하기
+                    /*// 닫기 버튼으로 나갈  때 barcodeList 제거하기
                     if (mScanType.equals(BarcodeType.CONFIRM_MY_DELIVERY_ORDER) || mScanType.equals(BarcodeType.CHANGE_DELIVERY_DRIVER)
                             || mScanType.equals(BarcodeType.PICKUP_CNR)
                             || mScanType.equals(BarcodeType.PICKUP_SCAN_ALL) || mScanType.equals(BarcodeType.PICKUP_ADD_SCAN)
                             || mScanType.equals(BarcodeType.OUTLET_PICKUP_SCAN) || mScanType.equals(BarcodeType.PICKUP_TAKE_BACK)) {
 
                         removeBarcodeListInstance();
-                    }
+                    }*/
 
                     finish();
                 }
@@ -858,20 +792,29 @@ public final class CaptureActivity extends AppCompatActivity implements SurfaceH
 
                 case R.id.btn_capture_barcode_confirm: {
 
-                    if (mScanType.equals(BarcodeType.CONFIRM_MY_DELIVERY_ORDER) || mScanType.equals(BarcodeType.CHANGE_DELIVERY_DRIVER)) {
+                    switch (mScanType) {
+                        case BarcodeType.CONFIRM_MY_DELIVERY_ORDER:
+                        case BarcodeType.CHANGE_DELIVERY_DRIVER:
 
-                        onUpdateButtonClick();
-                    } else if (mScanType.equals(BarcodeType.TYPE_SCAN_CAPTURE) || mScanType.equals(BarcodeType.SELF_COLLECTION)) {
+                            onUpdateButtonClick();
+                            break;
+                        case BarcodeType.PICKUP_CNR:
+                        case BarcodeType.PICKUP_SCAN_ALL:
+                        case BarcodeType.PICKUP_ADD_SCAN:
+                        case BarcodeType.OUTLET_PICKUP_SCAN:
+                        case BarcodeType.PICKUP_TAKE_BACK:
 
-                        onCaptureConfirmButtonClick();
-                    } else if (mScanType.equals(BarcodeType.PICKUP_CNR)
-                            || mScanType.equals(BarcodeType.PICKUP_SCAN_ALL) || mScanType.equals(BarcodeType.PICKUP_ADD_SCAN)
-                            || mScanType.equals(BarcodeType.OUTLET_PICKUP_SCAN) || mScanType.equals(BarcodeType.PICKUP_TAKE_BACK)) {
+                            onNextButtonClick();
+                            break;
+                        case BarcodeType.DELIVERY_DONE:
 
-                        onNextButtonClick(null);
-                    } else if (mScanType.equals(BarcodeType.DELIVERY_DONE)) {
+                            onConfirmButtonClick();
+                            break;
+                        case BarcodeType.TYPE_SCAN_CAPTURE:
+                        case BarcodeType.SELF_COLLECTION:
 
-                        onConfirmButtonClick();
+                            onCaptureConfirmButtonClick();
+                            break;
                     }
                 }
                 break;
@@ -879,45 +822,43 @@ public final class CaptureActivity extends AppCompatActivity implements SurfaceH
         }
     };
 
+    // NOTIFICATION.  EditText 바코드 입력하고 'ADD' 버튼 클릭으로 인식
     public void onBarcodeAddButtonClick() {
 
-        // edit_capture_type_number 유효성 체크 해야함
         String inputBarcodeNumber = edit_capture_type_number.getText().toString().trim().toUpperCase();
 
-        if (inputBarcodeNumber.length() > 0) {
-            // 2017-04-13 eylee comment
-            // historyManager 객체에서 history 테이블이란 내부 저장소에서 addHistoryItem method 로
-            // scan no 가 저장되 있으면 지우고 다시 insert 하면서 isDuplicate 가 true 값으로 저장 됨
+        if (0 < inputBarcodeNumber.length()) {
+
             boolean isDuplicate = historyManager.addHistoryItem(new Result(inputBarcodeNumber, null, null, null), null);
 
             // Scan Sheet의 경우 송장번호스캔은 1건만 가능하다.
             if (mScanType.equals(BarcodeType.TYPE_SCAN_CAPTURE)) {       // POD SCAN
+
                 mScanCount = 0;
                 isDuplicate = false;
 
-                //bluetoothsounds 바코드 인식 bell 소리 변경 20150709 eylee add// 20150709 sound by eylee
-                beepManager.playBeepSoundAndVibrate(); // 소리추가
+                beepManager.playBeepSoundAndVibrate();
             } else if (mScanTitle.equals(BarcodeType.CONFIRM_MY_DELIVERY_ORDER) || mScanTitle.equals(BarcodeType.CHANGE_DELIVERY_DRIVER)) {
 
                 if (!isDuplicate) {
                     isDuplicate = false;
-                    beepManager.playBeepSoundAndVibrate(); // 소리추가
+                    beepManager.playBeepSoundAndVibrate();
                 }
             } else if (mScanType.equals(BarcodeType.SELF_COLLECTION)) {
 
-                // 2016-09-12
+                // 2016-09-12  eylee
 //				★★★★★★★★★★★★★★★★★★★★★★★★★★★★★★★★★★★
 //				현재 nonq10 QFS order ####NQ 의 모든 order 가 self collection 이
 //				되는데, 나중에 service 에서 delivery route 가 other 일 때만,
 //				self collection 되도록 막는 logic 필요함
 //				★★★★★★★★★★★★★★★★★★★★★★★★★★★★★★★★★★★
-                //bluetoothsounds 바코드 인식 bell 소리 변경 20150709 eylee add// 20150709 sound by eylee
-                beepManager.playBeepSoundAndVibrate(); // 소리추가
+                beepManager.playBeepSoundAndVibrate();
             }
 
             addBarcodeNo(inputBarcodeNumber, isDuplicate, "onBarcodeAddButtonClick");
         }
     }
+
 
     @Override
     public void onStart() {
@@ -945,6 +886,7 @@ public final class CaptureActivity extends AppCompatActivity implements SurfaceH
         mOutStringBuffer = new StringBuffer("");
     }
 
+
     private Runnable mUpdateTimeTask = new Runnable() {
         @Override
         public void run() {
@@ -954,6 +896,7 @@ public final class CaptureActivity extends AppCompatActivity implements SurfaceH
     };
 
     // The Handler that gets information back from the BluetoothChatService
+    @SuppressLint("HandlerLeak")
     private final Handler mHandler = new Handler() {
         @Override
         public void handleMessage(Message msg) {
@@ -1051,6 +994,7 @@ public final class CaptureActivity extends AppCompatActivity implements SurfaceH
         }
     };
 
+
     @Override
     public void onActivityResult(int requestCode, int resultCode, Intent data) {
         super.onActivityResult(requestCode, resultCode, data);
@@ -1092,7 +1036,7 @@ public final class CaptureActivity extends AppCompatActivity implements SurfaceH
                     finish();
                 }
                 break;
-            case REQUEST_SIGN_REQUEST: {
+            case REQUEST_DELIVERY_DONE: {
 
                 if (resultCode == Activity.RESULT_OK) {
 
@@ -1100,8 +1044,7 @@ public final class CaptureActivity extends AppCompatActivity implements SurfaceH
                 }
             }
             break;
-            //add Pickup C&R done
-            case REQUEST_PICKUP_CNR_REQUEST: {
+            case REQUEST_PICKUP_CNR: {
 
                 onResetButtonClick();
 
@@ -1174,6 +1117,7 @@ public final class CaptureActivity extends AppCompatActivity implements SurfaceH
         }
     }
 
+
     @Override
     public void onStop() {
         super.onStop();
@@ -1235,7 +1179,7 @@ public final class CaptureActivity extends AppCompatActivity implements SurfaceH
         if (KTSyncData.bIsRunning)
             return;
 
-        resetStatusView();
+        viewfinder_capture_preview.setVisibility(View.VISIBLE);
 
         m_sensor_manager.registerListener(this, m_light_sensor, SensorManager.SENSOR_DELAY_UI);
 
@@ -1253,64 +1197,8 @@ public final class CaptureActivity extends AppCompatActivity implements SurfaceH
             }
         }
 
-        Intent intent = getIntent();
-        String action = intent == null ? null : intent.getAction();
-        String dataString = intent == null ? null : intent.getDataString();
-        if (intent != null && action != null) {
-            if (action.equals(Intents.Scan.ACTION)) {
-                // Scan the formats the intent requested, and return the result
-                // to the calling activity.
-                source = Source.NATIVE_APP_INTENT;
-                decodeFormats = DecodeFormatManager.parseDecodeFormats(intent);
-                if (intent.hasExtra(Intents.Scan.WIDTH) && intent.hasExtra(Intents.Scan.HEIGHT)) {
-                    int width = intent.getIntExtra(Intents.Scan.WIDTH, 0);
-                    int height = intent.getIntExtra(Intents.Scan.HEIGHT, 0);
-                    if (width > 0 && height > 0) {
-                        CameraManager.get().setManualFramingRect(width, height);
-                    }
-                }
+        characterSet = null;
 
-                // pplante - intents can now enable flash if they want..
-                try {
-                    if (intent.hasExtra(Intents.Scan.FLASH_MODE)) {
-                        CameraManager.get().enableFlash(intent.getStringExtra(Intents.Scan.FLASH_MODE));
-                    }
-                } catch (IOException e) {
-                    Log.i("flash", e.toString());
-                }
-                Log.d("flash", "enabled = " + intent.getStringExtra(Intents.Scan.FLASH_MODE));
-
-            } else if (dataString != null && dataString.contains(PRODUCT_SEARCH_URL_PREFIX) && dataString.contains(PRODUCT_SEARCH_URL_SUFFIX)) {
-                // Scan only products and send the result to mobile Product
-                // Search.
-                source = Source.PRODUCT_SEARCH_LINK;
-                sourceUrl = dataString;
-                decodeFormats = DecodeFormatManager.PRODUCT_FORMATS;
-            } else if (dataString != null && dataString.startsWith(ZXING_URL)) {
-                // Scan formats requested in query string (all formats if none
-                // specified).
-                // If a return URL is specified, send the results there.
-                // Otherwise, handle it ourselves.
-                source = Source.ZXING_LINK;
-                sourceUrl = dataString;
-                Uri inputUri = Uri.parse(sourceUrl);
-                returnUrlTemplate = inputUri.getQueryParameter(RETURN_URL_PARAM);
-                decodeFormats = DecodeFormatManager.parseDecodeFormats(inputUri);
-            } else {
-                // Scan all formats and handle the results ourselves (launched
-                // from Home).
-                source = Source.NONE;
-                decodeFormats = null;
-            }
-            characterSet = intent.getStringExtra(Intents.Scan.CHARACTER_SET);
-        } else {
-            source = Source.NONE;
-            decodeFormats = null;
-            characterSet = null;
-        }
-
-        SharedPreferences prefs = PreferenceManager.getDefaultSharedPreferences(this);
-        copyToClipboard = prefs.getBoolean(PreferencesActivity.KEY_COPY_TO_CLIPBOARD, false) && (intent == null || intent.getBooleanExtra(Intents.Scan.SAVE_HISTORY, true));
 
         beepManager.updatePrefs();
 
@@ -1514,26 +1402,68 @@ public final class CaptureActivity extends AppCompatActivity implements SurfaceH
         }
     }
 
+
+    /**
+     * A valid barcode has been found, so give an indication of success and show the results.
+     *
+     * @param rawResult The contents of the barcode.
+     */
+    public void handleDecode(Result rawResult) {
+
+        inactivityTimer.onActivity();
+        ResultHandler resultHandler = ResultHandlerFactory.makeResultHandler(this, rawResult);
+
+        boolean isHistorySave = historyManager.addHistoryItem(rawResult, resultHandler);
+
+        Log.e("krm0219", "captureActivity > " + isHistorySave + " / " + rawResult.getText());
+
+        if (isHistorySave) {
+
+            viewfinder_capture_preview.setVisibility(View.VISIBLE);
+            if (handler != null) {
+                handler.sendEmptyMessage(R.id.restart_preview);
+            }
+            return;
+        }
+
+        beepManager.playBeepSoundAndVibrate();
+
+
+        addBarcodeNo(rawResult.getText(), false, "handleDecodeInternally");
+
+        viewfinder_capture_preview.setVisibility(View.VISIBLE);
+        if (handler != null) {
+            handler.sendEmptyMessage(R.id.restart_preview);
+        }
+    }
+
+
+    @Override
+    public void onBackPressed() {
+        Log.e("krm0219", TAG + "  onBackPressed");
+        removeBarcodeListInstance();
+        Intent intent = getIntent();
+        setResult(Activity.RESULT_CANCELED, intent);
+        finish();
+    }
+
     @Override
     public boolean onKeyDown(int keyCode, KeyEvent event) {
         if (keyCode == KeyEvent.KEYCODE_BACK) {
-            if (source == Source.NATIVE_APP_INTENT) {
-                setResult(RESULT_CANCELED);
-                finish();
-                return true;
-            } else if ((source == Source.NONE || source == Source.ZXING_LINK) && lastResult != null) {
-                resetStatusView();
-                if (handler != null) {
-                    handler.sendEmptyMessage(R.id.restart_preview);
-                }
-                return true;
+
+            Log.e("krm0219", TAG + "  KEYCODE_BACK");
+            viewfinder_capture_preview.setVisibility(View.VISIBLE);
+            if (handler != null) {
+                handler.sendEmptyMessage(R.id.restart_preview);
             }
+            return true;
         } else if (keyCode == KeyEvent.KEYCODE_FOCUS || keyCode == KeyEvent.KEYCODE_CAMERA) {
             // Handle these events so they don't launch the Camera app
             return true;
         }
         return super.onKeyDown(keyCode, event);
     }
+
 
     @Override
     public void surfaceCreated(SurfaceHolder holder) {
@@ -1551,166 +1481,8 @@ public final class CaptureActivity extends AppCompatActivity implements SurfaceH
 
     @Override
     public void surfaceChanged(SurfaceHolder holder, int format, int width, int height) {
-
     }
 
-    /**
-     * A valid barcode has been found, so give an indication of success and show
-     * the results.
-     *
-     * @param rawResult The contents of the barcode.
-     * @param barcode   A greyscale bitmap of the camera data which was decoded.
-     */
-    public void handleDecode(Result rawResult, Bitmap barcode) {
-
-        inactivityTimer.onActivity();
-        lastResult = rawResult;
-        ResultHandler resultHandler = ResultHandlerFactory.makeResultHandler(this, rawResult);
-        boolean isHistorySave = historyManager.addHistoryItem(rawResult, resultHandler);
-
-
-        if (barcode == null) {
-            // This is from history -- no saved barcode
-            handleDecodeInternally(resultHandler);
-        } else {
-            if (isHistorySave) {
-
-                resetStatusView();
-                if (handler != null) {
-                    handler.sendEmptyMessage(R.id.restart_preview);
-                }
-                return;
-            }
-
-            beepManager.playBeepSoundAndVibrate();
-            drawResultPoints(barcode, rawResult);
-            switch (source) {
-                case NATIVE_APP_INTENT:
-                case PRODUCT_SEARCH_LINK:
-                    handleDecodeExternally(rawResult, resultHandler, barcode);
-                    break;
-                case ZXING_LINK:
-                    if (returnUrlTemplate == null) {
-                        handleDecodeInternally(resultHandler);
-                    } else {
-                        handleDecodeExternally(rawResult, resultHandler, barcode);
-                    }
-                    break;
-                case NONE:
-                    handleDecodeInternally(resultHandler);
-                    break;
-            }
-        }
-    }
-
-    /**
-     * Superimpose a line for 1D or dots for 2D to highlight the key features of
-     * the barcode.
-     *
-     * @param barcode   A bitmap of the captured image.
-     * @param rawResult The decoded results which contains the points to draw.
-     */
-    private void drawResultPoints(Bitmap barcode, Result rawResult) {
-
-        ResultPoint[] points = rawResult.getResultPoints();
-        if (points != null && points.length > 0) {
-
-            Canvas canvas = new Canvas(barcode);
-            Paint paint = new Paint();
-            paint.setColor(getResources().getColor(R.color.result_image_border));
-            paint.setStrokeWidth(3.0f);
-            paint.setStyle(Paint.Style.STROKE);
-            Rect border = new Rect(2, 2, barcode.getWidth() - 2, barcode.getHeight() - 2);
-            canvas.drawRect(border, paint);
-
-            paint.setColor(getResources().getColor(R.color.result_points));
-            if (points.length == 2) {
-
-                paint.setStrokeWidth(4.0f);
-                drawLine(canvas, paint, points[0], points[1]);
-            } else if (points.length == 4
-                    && (rawResult.getBarcodeFormat()
-                    .equals(BarcodeFormat.UPC_A) || rawResult
-                    .getBarcodeFormat().equals(BarcodeFormat.EAN_13))) {
-
-                // Hacky special case -- draw two lines, for the barcode and
-                // metadata
-                drawLine(canvas, paint, points[0], points[1]);
-                drawLine(canvas, paint, points[2], points[3]);
-            } else {
-
-                paint.setStrokeWidth(10.0f);
-                for (ResultPoint point : points) {
-                    canvas.drawPoint(point.getX(), point.getY(), paint);
-                }
-            }
-        }
-    }
-
-    private static void drawLine(Canvas canvas, Paint paint, ResultPoint a, ResultPoint b) {
-        canvas.drawLine(a.getX(), a.getY(), b.getX(), b.getY(), paint);
-    }
-
-    // Put up our own UI for how to handle the decoded contents.
-    private void handleDecodeInternally(ResultHandler resultHandler) {
-        CharSequence displayContents = resultHandler.getDisplayContents();
-        // add barcode No validation 하는 부분 2016-08-23
-        addBarcodeNo(displayContents.toString(), false, "handleDecodeInternally");
-
-        resetStatusView();
-        if (handler != null) {
-            handler.sendEmptyMessage(R.id.restart_preview);
-        }
-    }
-
-
-    // Briefly show the contents of the barcode, then handle the result outside
-    // Barcode Scanner.
-    private void handleDecodeExternally(Result rawResult, ResultHandler resultHandler, Bitmap barcode) {
-
-        if (source != Source.NATIVE_APP_INTENT) {
-            viewfinder_capture_preview.drawResultBitmap(barcode);
-
-        }
-
-        if (copyToClipboard && !resultHandler.areContentsSecure()) {
-            ClipboardManager clipboard = (ClipboardManager) getSystemService(CLIPBOARD_SERVICE);
-            clipboard.setText(resultHandler.getDisplayContents());
-        }
-
-        if (source == Source.NATIVE_APP_INTENT) {
-            // Hand back whatever action they requested - this can be changed to
-            // Intents.Scan.ACTION when
-            // the deprecated intent is retired.
-            Intent intent = new Intent(getIntent().getAction());
-            intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_WHEN_TASK_RESET);
-            intent.putExtra(Intents.Scan.RESULT, rawResult.toString());
-            intent.putExtra(Intents.Scan.RESULT_FORMAT, rawResult.getBarcodeFormat().toString());
-            byte[] rawBytes = rawResult.getRawBytes();
-            if (rawBytes != null && rawBytes.length > 0) {
-                intent.putExtra(Intents.Scan.RESULT_BYTES, rawBytes);
-            }
-            Message message = Message.obtain(handler, R.id.return_scan_result);
-            message.obj = intent;
-            handler.sendMessage(message);
-        } else if (source == Source.PRODUCT_SEARCH_LINK) {
-            // Reformulate the URL which triggered us into a query, so that the
-            // request goes to the same
-            // TLD as the scan URL.
-            Message message = Message.obtain(handler, R.id.launch_product_query);
-            int end = sourceUrl.lastIndexOf("/scan");
-            message.obj = sourceUrl.substring(0, end) + "?q=" + resultHandler.getDisplayContents().toString() + "&source=zxing";
-            handler.sendMessageDelayed(message, INTENT_RESULT_DURATION);
-        } else if (source == Source.ZXING_LINK) {
-            // Replace each occurrence of RETURN_CODE_PLACEHOLDER in the
-            // returnUrlTemplate
-            // with the scanned code. This allows both queries and REST-style
-            // URLs to work.
-            Message message = Message.obtain(handler, R.id.launch_product_query);
-            message.obj = returnUrlTemplate.replace(RETURN_CODE_PLACEHOLDER, resultHandler.getDisplayContents().toString());
-            handler.sendMessageDelayed(message, INTENT_RESULT_DURATION);
-        }
-    }
 
     private void initCamera(SurfaceHolder surfaceHolder) {
         try {
@@ -1719,32 +1491,18 @@ public final class CaptureActivity extends AppCompatActivity implements SurfaceH
                 // Creating the handler starts the preview, which can also throw a
                 // RuntimeException.
                 if (handler == null) {
-                    handler = new CaptureActivityHandler(this, decodeFormats, characterSet);
+                    handler = new CaptureActivityHandler(this, null, characterSet);
                 }
             }
-        } catch (IOException ioe) {
-            Log.w(TAG, ioe);
-            displayFrameworkBugMessageAndExit(ioe.toString());
-        } catch (RuntimeException e) {
-            // Barcode Scanner has seen crashes in the wild of this variety:
-            // java.?lang.?RuntimeException: Fail to connect to camera service
-            Log.w(TAG, "Unexpected error initializating camera", e);
-            displayFrameworkBugMessageAndExit(e.toString());
+        } catch (Exception e) {
+
+            AlertDialog.Builder builder = new AlertDialog.Builder(this);
+            builder.setTitle(getString(R.string.app_name));
+            builder.setMessage(getString(R.string.msg_camera_framework_bug) + "\n" + e.toString());
+            builder.setPositiveButton(R.string.button_ok, new FinishListener(this));
+            builder.setOnCancelListener(new FinishListener(this));
+            builder.show();
         }
-    }
-
-    private void displayFrameworkBugMessageAndExit(String error_msg) {
-        AlertDialog.Builder builder = new AlertDialog.Builder(this);
-        builder.setTitle(getString(R.string.app_name));
-        builder.setMessage(getString(R.string.msg_camera_framework_bug) + "\n" + error_msg);
-        builder.setPositiveButton(R.string.button_ok, new FinishListener(this));
-        builder.setOnCancelListener(new FinishListener(this));
-        builder.show();
-    }
-
-    private void resetStatusView() {
-        viewfinder_capture_preview.setVisibility(View.VISIBLE);
-        lastResult = null;
     }
 
     public void drawViewfinder() {
@@ -1753,22 +1511,13 @@ public final class CaptureActivity extends AppCompatActivity implements SurfaceH
 
 
     @Override
-    public void onBackPressed() {
-        Log.e("krm0219", TAG + "  onBackPressed");
-        removeBarcodeListInstance();
-        Intent intent = getIntent();
-        setResult(Activity.RESULT_CANCELED, intent);
-        finish();
-    }
-
-    @Override
     public boolean onTouch(View v, MotionEvent event) {
 
         if (mScanType.equals(BarcodeType.PICKUP_CNR)
                 || mScanType.equals(BarcodeType.PICKUP_SCAN_ALL) || mScanType.equals(BarcodeType.PICKUP_ADD_SCAN)
                 || mScanType.equals(BarcodeType.OUTLET_PICKUP_SCAN) || mScanType.equals(BarcodeType.PICKUP_TAKE_BACK)) {
 
-          /*  // TODO TEST : 키보드 입력해서 다음으로 넘어가기
+          /*  // TEST.  키보드 입력해서 다음으로 넘어가기
             if (opID.equals("karam.kim")) {
 
                 inputMethodManager = (InputMethodManager) getSystemService(Context.INPUT_METHOD_SERVICE);
@@ -1831,44 +1580,118 @@ public final class CaptureActivity extends AppCompatActivity implements SurfaceH
 
         if (hasFocus) {
             currentFocusEditText = (EditText) v;
-//			InputMethodManager imm = (InputMethodManager) getSystemService(Context.INPUT_METHOD_SERVICE);
-//            imm.hideSoftInputFromWindow(edit_capture_type_number.getWindowToken(), 0);
         }
     }
 
-    int mScanStatusIndex = 4;
 
-    String getScanStatusType(int index) {
-        String[] arrStatusType = getResources().getStringArray(R.array.status_code);
-        return arrStatusType[index];
-    }
+    // TODO.  하단 버튼 클릭 이벤트
 
-
-    /*
-     * 바코드를 복수건 입력한후 확인버튼 클릭 이벤트메소드 2013-05-09 add by jmkang
-     * Delivery Done
-     */
-    public void onConfirmButtonClick() {
+    // NOTIFICATION.  Confirm my delivery order / Change Delivery Driver
+    public void onUpdateButtonClick() {
 
         if (scanBarcodeArrayList == null || scanBarcodeArrayList.size() < 1) {
+
             Toast toast = Toast.makeText(this, R.string.msg_tracking_number_manually, Toast.LENGTH_SHORT);
             toast.setGravity(Gravity.CENTER_HORIZONTAL, 0, 0);
             toast.show();
             return;
         }
 
-        // 넘기는 데이터 재정의 스캔성공된 것들만 보낸다.
-        DeliveryInfo info = null;
-        BarcodeListData ba;
+        if (!NetworkUtil.isNetworkAvailable(context)) {
+            AlertShow(context.getResources().getString(R.string.msg_network_connect_error));
+            return;
+        }
+
+        if (MemoryStatus.getAvailableInternalMemorySize() != MemoryStatus.ERROR && MemoryStatus.getAvailableInternalMemorySize() < MemoryStatus.PRESENT_BYTE) {
+            AlertShow(context.getResources().getString(R.string.msg_disk_size_error));
+            return;
+        }
+
+
+        if (mScanType.equals(BarcodeType.CONFIRM_MY_DELIVERY_ORDER)) {
+
+            new ConfirmMyOrderHelper.Builder(this, opID, officeCode, deviceID, scanBarcodeArrayList)
+                    .setOnDriverAssignEventListener(new ConfirmMyOrderHelper.OnDriverAssignEventListener() {
+
+                        @Override
+                        public void onPostAssignResult(DriverAssignResult stdResult) {
+
+                            if (stdResult.getResultCode() == 0) {
+
+                                onResetButtonClick();
+                            }
+
+                            AlertDialog.Builder builder = new AlertDialog.Builder(CaptureActivity.this);
+                            builder.setTitle(context.getResources().getString(R.string.text_driver_assign_result));
+                            builder.setMessage(stdResult.getResultMsg());
+                            builder.setPositiveButton(context.getResources().getString(R.string.button_ok), new DialogInterface.OnClickListener() {
+                                @Override
+                                public void onClick(DialogInterface dialog, int id) {
+                                    dialog.cancel();
+                                }
+                            });
+                            builder.show();
+                        }
+                    }).build().execute();
+        } else if (mScanType.equals(BarcodeType.CHANGE_DELIVERY_DRIVER)) {
+
+            if (gpsEnable && gpsTrackerManager != null) {
+
+                latitude = gpsTrackerManager.getLatitude();
+                longitude = gpsTrackerManager.getLongitude();
+                Log.e("Location", TAG + " onUpdateButtonClick GPSTrackerManager : " + latitude + "  " + longitude + "  ");
+            }
+
+            new ChangeDriverHelper.Builder(this, opID, officeCode, deviceID, barcodeContrNoList, latitude, longitude)
+                    .setOnChangeDelDriverEventListener(new OnChangeDelDriverEventListener() {
+
+                        @Override
+                        public void onPostAssignResult(DriverAssignResult stdResult) {
+
+                            if (stdResult.getResultCode() == 0) {
+
+                                onResetButtonClick();
+                            }
+
+                            AlertDialog.Builder builder = new AlertDialog.Builder(CaptureActivity.this);
+                            builder.setTitle(context.getResources().getString(R.string.text_driver_assign_result));
+                            builder.setMessage(stdResult.getResultMsg());
+                            builder.setPositiveButton(context.getResources().getString(R.string.button_ok), new DialogInterface.OnClickListener() {
+                                @Override
+                                public void onClick(DialogInterface dialog, int id) {
+                                    dialog.cancel();
+                                }
+                            });
+                            builder.show();
+                        }
+                    }).build().execute();
+        }
+    }
+
+
+    // NOTIFICATION.  Scan - Delivery Done
+    public void onConfirmButtonClick() {
+
+        if (scanBarcodeArrayList == null || scanBarcodeArrayList.size() < 1) {
+
+            Toast toast = Toast.makeText(this, R.string.msg_tracking_number_manually, Toast.LENGTH_SHORT);
+            toast.setGravity(Gravity.CENTER_HORIZONTAL, 0, 0);
+            toast.show();
+            return;
+        }
+
+        DeliveryInfo info;
         String receiverName = "";
         boolean diffReceiverName = false;
+        ArrayList<BarcodeListData> deliveryBarcodeList = new ArrayList<>();
 
-        ArrayList<BarcodeListData> newBarcodeNoList = new ArrayList<>();
         for (int i = 0; i < scanBarcodeArrayList.size(); i++) {
-            ba = (BarcodeListData) scanBarcodeArrayList.get(i);
 
-            if (ba.state.equals("SUCCESS")) {
-                info = getDeliveryInfo(ba.barcode);
+            BarcodeListData barcodeListData = scanBarcodeArrayList.get(i);
+
+            if (barcodeListData.state.equals("SUCCESS")) {
+
+                info = getDeliveryInfo(barcodeListData.getBarcode());
 
                 try {
                     // 수취인성명이 틀린경우
@@ -1883,39 +1706,169 @@ public final class CaptureActivity extends AppCompatActivity implements SurfaceH
                 }
 
                 receiverName = info.receiverName;
-                newBarcodeNoList.add(ba);
+                deliveryBarcodeList.add(barcodeListData);
             }
         }
 
         // 받는사람이 틀리다면 에러 메세지
         if (diffReceiverName) {
+
             Toast toast = Toast.makeText(this, R.string.msg_different_recipient_address, Toast.LENGTH_SHORT);
             toast.setGravity(Gravity.CENTER_HORIZONTAL, 0, 0);
             toast.show();
             return;
         }
 
-        Log.e("krm0219", "SCAN > Delivery Done onConfirmButtonClick ");
-        if (newBarcodeNoList.size() > 0) { // 사인화면으로 넘길데이터가 있다면
-            Gson gson = new Gson();
-            String jsonResult = gson.toJson(newBarcodeNoList);
-            // 사인입력화면으로 인텐트
+        if (0 < deliveryBarcodeList.size()) {
+
             Intent intentSign = new Intent(this, DeliveryDoneActivity.class);
             intentSign.putExtra("title", mScanTitle);
             intentSign.putExtra("type", BarcodeType.TYPE_DELIVERY);
-            intentSign.putExtra("result", jsonResult);
-            intentSign.putExtra("data", newBarcodeNoList);
-            //startActivity(intentSign);
-            this.startActivityForResult(intentSign, REQUEST_SIGN_REQUEST);
-            //finish();
+            intentSign.putExtra("data", deliveryBarcodeList);
+            this.startActivityForResult(intentSign, REQUEST_DELIVERY_DONE);
         } else {
 
             Toast toast = Toast.makeText(this, R.string.msg_tracking_number_manually, Toast.LENGTH_SHORT);
             toast.setGravity(Gravity.CENTER_HORIZONTAL, 0, 0);
             toast.show();
-            return;
         }
     }
+
+
+    // NOTIFICATION.  Pickup (CnR / Scan All / Add Scan / Take Back / Outlet)
+    public void onNextButtonClick() {
+
+        if (mScanType.equals(BarcodeType.OUTLET_PICKUP_SCAN)) {
+
+            boolean isScanned = false;
+
+            for (int i = 0; i < resultData.getTrackingNoList().size(); i++) {
+
+                if (resultData.getTrackingNoList().get(i).isScanned()) {
+                    isScanned = true;
+                }
+            }
+
+            if (!isScanned) {
+
+                Toast toast = Toast.makeText(this, R.string.msg_tracking_number_manually, Toast.LENGTH_SHORT);
+                toast.setGravity(Gravity.CENTER_HORIZONTAL, 0, 0);
+                toast.show();
+                return;
+            }
+        } else {
+
+            if (scanBarcodeArrayList == null || scanBarcodeArrayList.size() < 1) {
+
+                Toast toast = Toast.makeText(this, R.string.msg_tracking_number_manually, Toast.LENGTH_SHORT);
+                toast.setGravity(Gravity.CENTER_HORIZONTAL, 0, 0);
+                toast.show();
+                return;
+            }
+        }
+
+
+        String scannedQty = String.valueOf(scanBarcodeArrayList.size());
+        String scannedList = "";
+
+        for (int i = 0; i < scanBarcodeArrayList.size(); i++) {
+
+            scannedList += scanBarcodeArrayList.get(i).getBarcode();
+
+            if (i != (scanBarcodeArrayList.size() - 1)) {
+                scannedList += ",";
+            }
+        }
+
+        removeBarcodeListInstance();
+
+        switch (mScanType) {
+            case BarcodeType.PICKUP_CNR: {
+
+                Intent intent = new Intent(this, CnRPickupDoneActivity.class);
+                intent.putExtra("title", context.getResources().getString(R.string.text_cnr_pickup_done));
+                intent.putExtra("type", BarcodeType.PICKUP_CNR);
+                intent.putExtra("senderName", pickupCNRRequestor);
+                intent.putExtra("scannedList", scannedList);
+                intent.putExtra("scannedQty", scannedQty);
+                this.startActivityForResult(intent, REQUEST_PICKUP_CNR);
+                break;
+            }
+            case BarcodeType.PICKUP_SCAN_ALL: {
+
+                Intent intent = new Intent(this, PickupDoneActivity.class);
+                intent.putExtra("title", context.getResources().getString(R.string.text_start_to_scan));
+                intent.putExtra("pickup_no", pickupNo);
+                intent.putExtra("applicant", pickupApplicantName);
+                intent.putExtra("scannedList", scannedList);
+                intent.putExtra("scannedQty", scannedQty);
+                this.startActivityForResult(intent, CaptureActivity.REQUEST_PICKUP_SCAN_ALL);
+                break;
+            }
+            case BarcodeType.PICKUP_ADD_SCAN: {
+
+                Intent intent = new Intent(this, PickupAddScanActivity.class);
+                intent.putExtra("title", context.getResources().getString(R.string.text_title_add_pickup));
+                intent.putExtra("pickupNo", pickupNo);
+                intent.putExtra("senderName", pickupApplicantName);
+                intent.putExtra("scannedList", scannedList);
+                intent.putExtra("scannedQty", scannedQty);
+                this.startActivityForResult(intent, REQUEST_PICKUP_ADD_SCAN);
+                break;
+            }
+            case BarcodeType.PICKUP_TAKE_BACK: {
+
+                Intent intent = new Intent(this, PickupTakeBackActivity.class);
+                intent.putExtra("title", context.getResources().getString(R.string.button_take_back));
+                intent.putExtra("pickupNo", pickupNo);
+                intent.putExtra("applicant", pickupApplicantName);
+                intent.putExtra("scannedList", scannedList);
+                intent.putExtra("totalQty", mQty);
+                intent.putExtra("takeBackQty", scannedQty);
+                this.startActivityForResult(intent, REQUEST_PICKUP_TAKE_BACK);
+                break;
+            }
+            case BarcodeType.OUTLET_PICKUP_SCAN: {
+
+                int scanned_qty = 0;
+
+                for (int i = 0; i < resultData.getTrackingNoList().size(); i++) {
+                    if (resultData.getTrackingNoList().get(i).isScanned()) {
+
+                        scanned_qty++;
+                    }
+                }
+
+                String scanned_list = "";
+
+                for (int i = 0; i < resultData.getTrackingNoList().size(); i++) {
+
+                    if (resultData.getTrackingNoList().get(i).isScanned()) {
+
+                        if (!scanned_list.equals("")) {
+                            scanned_list += ",";
+                        }
+
+                        scanned_list += resultData.getTrackingNoList().get(i).getTrackingNo();
+                    }
+                }
+                Log.e(TAG, "Outlet Pickup Scanned List : " + scanned_list);
+
+                Intent intent = new Intent(this, OutletPickupDoneActivity.class);
+                intent.putExtra("title", mScanTitle);
+                intent.putExtra("pickupNo", pickupNo);
+                intent.putExtra("applicant", pickupApplicantName);
+                intent.putExtra("qty", mQty);
+                intent.putExtra("route", mRoute);
+                intent.putExtra("scannedQty", scanned_qty);
+                intent.putExtra("tracking_data", resultData);
+                intent.putExtra("scannedList", scanned_list);
+                startActivityForResult(intent, CaptureActivity.REQUEST_OUTLET_PICKUP_SCAN);
+                break;
+            }
+        }
+    }
+
 
     /*
      * 송장번호 규칙에 맞는지 체크한후 프리뷰영역에 이미지를 보여준다.
@@ -2055,7 +2008,7 @@ public final class CaptureActivity extends AppCompatActivity implements SurfaceH
                             }
                             Intent intent = getIntent();
                             intent.putExtra("result", result.toString());
-                            intent.putExtra("type", getScanStatusType(mScanStatusIndex));
+                            intent.putExtra("type", "D4");
                             setResult(Activity.RESULT_OK, intent);
                             finish();
                         }
@@ -2063,100 +2016,6 @@ public final class CaptureActivity extends AppCompatActivity implements SurfaceH
         }
     }
 
-
-    public void onUpdateButtonClick() {
-
-        if (scanBarcodeArrayList == null || scanBarcodeArrayList.size() < 1) {
-            Toast toast = Toast.makeText(this, R.string.msg_tracking_number_manually, Toast.LENGTH_SHORT);
-            toast.setGravity(Gravity.CENTER_HORIZONTAL, 0, 0);
-            toast.show();
-            return;
-        }
-
-        if (mScanType.equals(BarcodeType.CONFIRM_MY_DELIVERY_ORDER)) {
-
-            if (!NetworkUtil.isNetworkAvailable(context)) {
-                AlertShow(context.getResources().getString(R.string.msg_network_connect_error));
-                return;
-            }
-
-            if (MemoryStatus.getAvailableInternalMemorySize() != MemoryStatus.ERROR && MemoryStatus.getAvailableInternalMemorySize() < MemoryStatus.PRESENT_BYTE) {
-                AlertShow(context.getResources().getString(R.string.msg_disk_size_error));
-                return;
-            }
-
-
-            new ConfirmMyOrderHelper.Builder(this, opID, officeCode, deviceID, scanBarcodeArrayList)
-                    .setOnDriverAssignEventListener(new ConfirmMyOrderHelper.OnDriverAssignEventListener() {
-
-                        @Override
-                        public void onPostAssignResult(DriverAssignResult stdResult) {
-                            // fail 된 번호만 다시 화면에 설정
-                            if (stdResult.getResultCode() == 0) {
-                                onResetButtonClick();
-                            }
-
-                            AlertDialog.Builder builder = new AlertDialog.Builder(CaptureActivity.this);
-                            builder.setTitle(context.getResources().getString(R.string.text_driver_assign_result));
-                            builder.setMessage(stdResult.getResultMsg());
-                            builder.setPositiveButton(context.getResources().getString(R.string.button_ok), new DialogInterface.OnClickListener() {
-                                @Override
-                                public void onClick(DialogInterface dialog, int id) {
-                                    dialog.cancel();
-                                }
-                            });
-
-                            AlertDialog alertDialog = builder.create();
-                            alertDialog.show();
-                        }
-                    }).build().execute();
-
-        } else if (mScanType.equals(BarcodeType.CHANGE_DELIVERY_DRIVER)) {
-
-            if (!NetworkUtil.isNetworkAvailable(context)) {
-                AlertShow(context.getResources().getString(R.string.msg_network_connect_error));
-                return;
-            }
-
-            if (MemoryStatus.getAvailableInternalMemorySize() != MemoryStatus.ERROR && MemoryStatus.getAvailableInternalMemorySize() < MemoryStatus.PRESENT_BYTE) {
-                AlertShow(context.getResources().getString(R.string.msg_disk_size_error));
-                return;
-            }
-
-            if (gpsEnable && gpsTrackerManager != null) {
-
-                latitude = gpsTrackerManager.getLatitude();
-                longitude = gpsTrackerManager.getLongitude();
-                Log.e("Location", TAG + " onUpdateButtonClick GPSTrackerManager : " + latitude + "  " + longitude + "  ");
-            }
-
-            new ChangeDriverHelper.Builder(this, opID, officeCode, deviceID, barcodeContrNoList, latitude, longitude)
-                    .setOnChangeDelDriverEventListener(new OnChangeDelDriverEventListener() {
-
-                        @Override
-                        public void onPostAssignResult(DriverAssignResult stdResult) {
-                            //  fail된 번호만 다시 화면에 설정
-
-                            if (stdResult.getResultCode() == 0) {
-                                onResetButtonClick();
-                            }
-
-                            AlertDialog.Builder builder = new AlertDialog.Builder(CaptureActivity.this);
-                            builder.setTitle(context.getResources().getString(R.string.text_driver_assign_result));
-                            builder.setMessage(stdResult.getResultMsg());
-                            builder.setPositiveButton(context.getResources().getString(R.string.button_ok), new DialogInterface.OnClickListener() {
-                                @Override
-                                public void onClick(DialogInterface dialog, int id) {
-                                    dialog.cancel();
-                                }
-                            });
-
-                            AlertDialog alertDialog = builder.create();
-                            alertDialog.show();
-                        }
-                    }).build().execute();
-        }
-    }
 
     public void onResetButtonClick() {
 
@@ -3056,172 +2915,6 @@ public final class CaptureActivity extends AppCompatActivity implements SurfaceH
         }
     }
 
-
-    /**
-     * date : 2016-08-30  eylee
-     * desc : pickup C&R scan next 버튼 클릭했을 때  //  AND, Pickup 관련
-     */
-
-    public void onNextButtonClick(View sender) {
-
-        if (mScanType.equals(BarcodeType.OUTLET_PICKUP_SCAN)) {
-
-            boolean isScanned = false;
-
-            for (int i = 0; i < resultData.getTrackingNoList().size(); i++) {
-
-                if (resultData.getTrackingNoList().get(i).isScanned()) {
-                    isScanned = true;
-                }
-            }
-
-            if (!isScanned) {
-
-                Toast toast = Toast.makeText(this, R.string.msg_tracking_number_manually, Toast.LENGTH_SHORT);
-                toast.setGravity(Gravity.CENTER_HORIZONTAL, 0, 0);
-                toast.show();
-                return;
-            }
-        } else {
-
-            if (scanBarcodeArrayList == null || scanBarcodeArrayList.size() < 1) {
-                Toast toast = Toast.makeText(this, R.string.msg_tracking_number_manually, Toast.LENGTH_SHORT);
-                toast.setGravity(Gravity.CENTER_HORIZONTAL, 0, 0);
-                toast.show();
-                return;
-            }
-        }
-
-
-        boolean isConnect = NetworkUtil.isNetworkAvailable(context);
-
-        if (!isConnect) {
-            if (mScanType.equals(BarcodeType.PICKUP_CNR)) {
-                AlertShow(context.getResources().getString(R.string.msg_network_connect_error));
-            } else {
-                AlertShowNotCloseActivity(context.getResources().getString(R.string.msg_network_connect_error));
-            }
-            return;
-        }
-
-        //서버에 올리기전 용량체크  내장메모리가 10메가 안남은경우
-        if (MemoryStatus.getAvailableInternalMemorySize() != MemoryStatus.ERROR && MemoryStatus.getAvailableInternalMemorySize() < MemoryStatus.PRESENT_BYTE) {
-            if (mScanType.equals(BarcodeType.PICKUP_CNR)) {
-                AlertShow(context.getResources().getString(R.string.msg_disk_size_error));
-            } else {
-                AlertShowNotCloseActivity(context.getResources().getString(R.string.msg_disk_size_error));
-            }
-            return;
-        }
-
-
-        String tempAmount = String.valueOf(scanBarcodeArrayList.size());    // scanned count
-        String temp_WaybillNo_list = "";                                    // scanned barcode list
-
-        for (int i = 0; i < scanBarcodeArrayList.size(); i++) {
-            temp_WaybillNo_list += scanBarcodeArrayList.get(i).getBarcode();
-            if (i != (scanBarcodeArrayList.size() - 1)) {
-                temp_WaybillNo_list += ",";
-            }
-        }
-
-        if (mScanType.equals(BarcodeType.PICKUP_CNR)) {
-
-            removeBarcodeListInstance();
-
-            Intent intent = new Intent(this, CnRPickupDoneActivity.class);
-            intent.putExtra("title", context.getResources().getString(R.string.text_cnr_pickup_done));
-            intent.putExtra("type", BarcodeType.PICKUP_CNR);
-            intent.putExtra("receiverName", opName);
-            intent.putExtra("senderName", pickupCNRRequestor);
-            intent.putExtra("waybillNo", temp_WaybillNo_list);
-            intent.putExtra("reqQty", tempAmount);
-            this.startActivityForResult(intent, REQUEST_PICKUP_CNR_REQUEST);
-
-        } else if (mScanType.equals(BarcodeType.OUTLET_PICKUP_SCAN)) {
-
-            int scanned_qty = 0;
-
-            for (int i = 0; i < resultData.getTrackingNoList().size(); i++) {
-
-                if (resultData.getTrackingNoList().get(i).isScanned()) {
-                    scanned_qty++;
-                }
-            }
-
-            String scanned_list = "";
-
-            for (int i = 0; i < resultData.getTrackingNoList().size(); i++) {
-
-                if (resultData.getTrackingNoList().get(i).isScanned()) {
-
-                    if (!scanned_list.equals("")) {
-                        scanned_list += ",";
-                    }
-
-                    scanned_list += resultData.getTrackingNoList().get(i).getTrackingNo();
-                }
-            }
-
-            Log.e("krm0219", TAG + "  Scanned List : " + scanned_list);
-
-
-            Intent intent = new Intent(this, OutletPickupDoneActivity.class);
-            intent.putExtra("title", mTitle);
-            intent.putExtra("type", BarcodeType.OUTLET_PICKUP_SCAN);
-            intent.putExtra("pickup_no", mPickupNo);
-            intent.putExtra("applicant", mApplicant);
-            intent.putExtra("qty", mQty);
-            intent.putExtra("route", mRoute);
-            intent.putExtra("scanned_qty", scanned_qty);
-            intent.putExtra("tracking_data", resultData);
-            intent.putExtra("scanned_list", scanned_list);
-
-            removeBarcodeListInstance();
-            startActivityForResult(intent, CaptureActivity.REQUEST_OUTLET_PICKUP_SCAN);
-
-        } else if (mScanType.equals(BarcodeType.PICKUP_SCAN_ALL)) {
-
-            // 2017-03-27 eylee
-            Intent intent = new Intent(this, PickupDoneActivity.class);
-            intent.putExtra("title", context.getResources().getString(R.string.text_start_to_scan));
-            intent.putExtra("type", BarcodeType.PICKUP_SCAN_ALL);
-            intent.putExtra("receiverName", opName);
-            intent.putExtra("pickup_no", pickupNo);
-            intent.putExtra("applicant", pickupApplicantName);
-            intent.putExtra("waybillNo", temp_WaybillNo_list);
-            intent.putExtra("reqQty", tempAmount);
-
-            removeBarcodeListInstance();
-            this.startActivityForResult(intent, CaptureActivity.REQUEST_PICKUP_SCAN_ALL);
-
-        } else if (mScanType.equals(BarcodeType.PICKUP_ADD_SCAN)) {
-
-            Intent intent = new Intent(this, PickupAddScanActivity.class);
-            intent.putExtra("title", context.getResources().getString(R.string.text_title_add_pickup));
-            intent.putExtra("pickupNo", pickupNo);
-            intent.putExtra("scannedList", temp_WaybillNo_list);
-            intent.putExtra("scannedQty", tempAmount);
-            intent.putExtra("senderName", pickupApplicantName);
-            this.startActivityForResult(intent, REQUEST_PICKUP_ADD_SCAN);
-
-        } else if (mScanType.equals(BarcodeType.PICKUP_TAKE_BACK)) {
-
-            Intent intent = new Intent(this, PickupTakeBackActivity.class);
-
-            intent.putExtra("title", context.getResources().getString(R.string.button_take_back));
-            intent.putExtra("type", BarcodeType.PICKUP_TAKE_BACK);
-            intent.putExtra("pickup_no", pickupNo);
-            intent.putExtra("applicant", pickupApplicantName);
-            intent.putExtra("total_qty", mQty);
-            intent.putExtra("take_back_qty", tempAmount);
-            intent.putExtra("waybillNo", temp_WaybillNo_list);
-
-            removeBarcodeListInstance();
-            this.startActivityForResult(intent, REQUEST_PICKUP_TAKE_BACK);
-        }
-    }
-
     class CnRPickupValidationCheckHelper extends AsyncTask<String, Integer, PickupCNRResult> {
 
         String scanBarcodeNoStr = "";
@@ -3535,14 +3228,8 @@ public final class CaptureActivity extends AppCompatActivity implements SurfaceH
 
             } //  end of if(!tempStriScanNo.equals("")) scan null이 아니면
             return true;
-//	        edit_capture_type_number.setOnKeyListener(this);
-
         }
-//		else{
-//        	 Toast toast1 = Toast.makeText(getApplicationContext(),	"else hi "+keyCode, Toast.LENGTH_SHORT);
-//			toast1.setGravity(Gravity.CENTER_HORIZONTAL, 0, 0);
-//	       	toast1.show();
-//        }
+
         return false;
     }
 }

@@ -314,6 +314,11 @@
             android:screenOrientation="portrait"
             android:windowSoftInputMode="adjustNothing" />
 
+
+        <activity
+            android:name="com.giosis.util.qdrive.qdelivery.MyRouteActivity"
+            android:screenOrientation="portrait" />
+
         <activity
             android:name="com.giosis.util.qdrive.qdelivery.QDeliveryIntroActivity"
             android:screenOrientation="portrait" />

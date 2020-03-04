@@ -119,13 +119,13 @@ public class OutletPickupDoneActivity extends AppCompatActivity {
         deviceID = SharedPreferencesHelper.getSigninDeviceID(context);
 
         mTitle = getIntent().getStringExtra("title");
-        mPickupNo = getIntent().getStringExtra("pickup_no");
+        mPickupNo = getIntent().getStringExtra("pickupNo");
         mApplicant = getIntent().getStringExtra("applicant");
         mQty = getIntent().getStringExtra("qty");
         mRoute = getIntent().getStringExtra("route");
-        mScannedQty = getIntent().getIntExtra("scanned_qty", 1);
+        mScannedQty = getIntent().getIntExtra("scannedQty", 1);
         resultData = (OutletPickupDoneResult) getIntent().getSerializableExtra("tracking_data");
-        scanned_list = getIntent().getStringExtra("scanned_list");
+        scanned_list = getIntent().getStringExtra("scannedList");
 
 
         outletPickupDoneTrackingNoAdapter = new OutletPickupDoneTrackingNoAdapter(context, resultData, mRoute);

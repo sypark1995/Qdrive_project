@@ -9,15 +9,6 @@
         <item>Delivery Failed</item>
     </string-array>
 
-    <string-array name="status_code">
-        <item>P2</item>
-        <item>PX</item>
-        <item>D2</item>
-        <item>D3</item>
-        <item>D4</item>
-        <item>DX</item>
-    </string-array>
-
     <string-array name="outlet_company_code">
         <item>ALL</item>
         <item>7E</item>

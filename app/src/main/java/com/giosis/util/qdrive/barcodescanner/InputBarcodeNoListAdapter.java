@@ -21,19 +21,12 @@ public class InputBarcodeNoListAdapter extends BaseAdapter {
     String TAG = "InputBarcodeNoListAdapter";
 
     Context context;
-    String scanType;
-    String barcodeNumber;
-    String barcodeState;
 
-    LinearLayout layout_caption_list_item;
-    ImageView img_capture_list_item_barcode;
-    TextView text_capture_list_item_barcode;
-    Button btn_capture_list_item_state;
-
-    ArrayList<CaptureActivity.BarcodeListData> items;
+    private String scanType;
+    private ArrayList<CaptureActivity.BarcodeListData> items;
 
 
-    public InputBarcodeNoListAdapter(Context context, ArrayList<CaptureActivity.BarcodeListData> objects, String mScanType) {
+    InputBarcodeNoListAdapter(Context context, ArrayList<CaptureActivity.BarcodeListData> objects, String mScanType) {
 
         this.context = context;
         this.scanType = mScanType;
@@ -75,14 +68,14 @@ public class InputBarcodeNoListAdapter extends BaseAdapter {
             view = convertView;
         }
 
-        layout_caption_list_item = view.findViewById(R.id.layout_caption_list_item);
-        img_capture_list_item_barcode = view.findViewById(R.id.img_capture_list_item_barcode);
-        text_capture_list_item_barcode = view.findViewById(R.id.text_capture_list_item_barcode);
-        btn_capture_list_item_state = view.findViewById(R.id.btn_capture_list_item_state);
+        LinearLayout layout_caption_list_item = view.findViewById(R.id.layout_caption_list_item);
+        ImageView img_capture_list_item_barcode = view.findViewById(R.id.img_capture_list_item_barcode);
+        TextView text_capture_list_item_barcode = view.findViewById(R.id.text_capture_list_item_barcode);
+        Button btn_capture_list_item_state = view.findViewById(R.id.btn_capture_list_item_state);
 
 
-        barcodeNumber = items.get(position).getBarcode();
-        barcodeState = items.get(position).getState();
+        String barcodeNumber = items.get(position).getBarcode();
+        String barcodeState = items.get(position).getState();
 
 
         if (barcodeNumber != null) {
