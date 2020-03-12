@@ -9,6 +9,7 @@ import android.util.Log;
 import com.giosis.util.qdrive.singapore.R;
 import com.giosis.util.qdrive.util.Custom_JsonParser;
 import com.giosis.util.qdrive.util.DataUtil;
+import com.giosis.util.qdrive.util.DisplayUtil;
 import com.giosis.util.qdrive.util.NetworkUtil;
 
 import org.json.JSONArray;
@@ -113,16 +114,7 @@ public class GetRouteMasterAsyncTask extends AsyncTask<Void, Void, SmartRouteRes
     protected void onPostExecute(SmartRouteResult result) {
         super.onPostExecute(result);
 
-        try {
-
-            if (progressDialog != null && progressDialog.isShowing()) {
-
-                progressDialog.dismiss();
-            }
-        } catch (Exception e) {
-
-            // !((Activity)context).isFinishing()
-        }
+        DisplayUtil.dismissProgressDialog(progressDialog);
 
         if (callback != null) {
 

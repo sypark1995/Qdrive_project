@@ -169,17 +169,7 @@ public class StatisticsDownloadHelper extends ManualHelper {
         protected void onPostExecute(Integer result) {
             super.onPostExecute(result);
 
-            try {
-
-                if (progressDialog != null && progressDialog.isShowing()) {
-
-                    DisplayUtil.dismissProgressDialog(progressDialog);
-                }
-
-            } catch (Exception e) {
-
-                Log.e("Exception", TAG + "  onPostExecute Exception : " + e.toString());
-            }
+            DisplayUtil.dismissProgressDialog(progressDialog);
 
             if (eventListener != null) {
                 eventListener.onDownloadResult(searchType, statisticsResult);

@@ -23,6 +23,7 @@ import androidx.fragment.app.Fragment;
 import com.giosis.util.qdrive.singapore.R;
 import com.giosis.util.qdrive.util.Custom_XmlPullParser;
 import com.giosis.util.qdrive.util.DataUtil;
+import com.giosis.util.qdrive.util.DisplayUtil;
 import com.giosis.util.qdrive.util.NetworkUtil;
 import com.giosis.util.qdrive.util.SharedPreferencesHelper;
 
@@ -265,16 +266,7 @@ public class CustomerMessageListFragment extends Fragment {
         protected void onPostExecute(String resultString) {
             super.onPostExecute(resultString);
 
-            try {
-
-                if (progressDialog != null && progressDialog.isShowing()) {
-
-                    progressDialog.dismiss();
-                }
-            } catch (Exception e) {
-
-                // !((Activity)context).isFinishing()
-            }
+            DisplayUtil.dismissProgressDialog(progressDialog);
 
             try {
 

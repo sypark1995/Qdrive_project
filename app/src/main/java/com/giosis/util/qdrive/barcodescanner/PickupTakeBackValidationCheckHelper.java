@@ -12,6 +12,7 @@ import android.widget.Toast;
 import com.giosis.util.qdrive.singapore.R;
 import com.giosis.util.qdrive.util.Custom_JsonParser;
 import com.giosis.util.qdrive.util.DataUtil;
+import com.giosis.util.qdrive.util.DisplayUtil;
 
 import org.json.JSONObject;
 
@@ -115,8 +116,7 @@ public class PickupTakeBackValidationCheckHelper extends ManualHelper {
         protected void onPostExecute(StdResult result) {
             try {
 
-                if (progressDialog != null)
-                    progressDialog.dismiss();
+                DisplayUtil.dismissProgressDialog(progressDialog);
 
                 if (result.getResultCode() < 0) {
                     showResultDialog(result.getResultMsg());

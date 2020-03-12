@@ -16,6 +16,7 @@ import com.giosis.util.qdrive.list.SigningView;
 import com.giosis.util.qdrive.singapore.R;
 import com.giosis.util.qdrive.util.Custom_JsonParser;
 import com.giosis.util.qdrive.util.DataUtil;
+import com.giosis.util.qdrive.util.DisplayUtil;
 import com.giosis.util.qdrive.util.NetworkUtil;
 
 import org.json.JSONObject;
@@ -211,8 +212,7 @@ public class ManualSelfCollectorHelper extends ManualHelper {
         protected void onPostExecute(ArrayList resultList) {
             super.onPostExecute(resultList);
 
-            if (progressDialog != null)
-                progressDialog.dismiss();
+            DisplayUtil.dismissProgressDialog(progressDialog);
 
             int successCount = 0;
             int failCount = 0;

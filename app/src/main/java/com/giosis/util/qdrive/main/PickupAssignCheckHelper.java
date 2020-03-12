@@ -16,6 +16,7 @@ import com.giosis.util.qdrive.util.BarcodeType;
 import com.giosis.util.qdrive.util.Custom_JsonParser;
 import com.giosis.util.qdrive.util.DataUtil;
 import com.giosis.util.qdrive.util.DatabaseHelper;
+import com.giosis.util.qdrive.util.DisplayUtil;
 import com.giosis.util.qdrive.util.NetworkUtil;
 
 import org.json.JSONObject;
@@ -160,11 +161,7 @@ public class PickupAssignCheckHelper extends ManualHelper {
 
             try {
 
-                if (progressDialog != null && progressDialog.isShowing()) {
-
-                    progressDialog.dismiss();
-                }
-
+                DisplayUtil.dismissProgressDialog(progressDialog);
 
                 if (0 < result) {    // RPC 다운로드 성공
 

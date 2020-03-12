@@ -20,6 +20,7 @@ import android.widget.Toast;
 import com.giosis.util.qdrive.singapore.R;
 import com.giosis.util.qdrive.util.Custom_JsonParser;
 import com.giosis.util.qdrive.util.DataUtil;
+import com.giosis.util.qdrive.util.DisplayUtil;
 import com.giosis.util.qdrive.util.NetworkUtil;
 
 import org.json.JSONObject;
@@ -241,7 +242,7 @@ public class SearchAddressDialog extends Dialog {
         protected void onPostExecute(SearchAddressResult result) {
             super.onPostExecute(result);
 
-            progressDialog.dismiss();
+            DisplayUtil.dismissProgressDialog(progressDialog);
 
             if (result.getResultCode() == 0) {
 

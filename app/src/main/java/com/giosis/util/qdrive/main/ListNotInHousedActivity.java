@@ -4,7 +4,6 @@ import android.app.ProgressDialog;
 import android.content.Context;
 import android.os.AsyncTask;
 import android.os.Bundle;
-import androidx.appcompat.app.AppCompatActivity;
 import android.util.Log;
 import android.view.View;
 import android.widget.ExpandableListView;
@@ -12,9 +11,12 @@ import android.widget.FrameLayout;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import androidx.appcompat.app.AppCompatActivity;
+
 import com.giosis.util.qdrive.singapore.R;
 import com.giosis.util.qdrive.util.Custom_XmlPullParser;
 import com.giosis.util.qdrive.util.DataUtil;
+import com.giosis.util.qdrive.util.DisplayUtil;
 import com.giosis.util.qdrive.util.NetworkUtil;
 import com.giosis.util.qdrive.util.SharedPreferencesHelper;
 
@@ -162,16 +164,7 @@ public class ListNotInHousedActivity extends AppCompatActivity {
         protected void onPostExecute(String resultString) {
             super.onPostExecute(resultString);
 
-            try {
-
-                if (progressDialog != null && progressDialog.isShowing()) {
-
-                    progressDialog.dismiss();
-                }
-            } catch (Exception e) {
-
-                // !((Activity)context).isFinishing()
-            }
+            DisplayUtil.dismissProgressDialog(progressDialog);
 
             try {
 

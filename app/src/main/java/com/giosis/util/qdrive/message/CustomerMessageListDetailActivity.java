@@ -28,6 +28,7 @@ import androidx.appcompat.app.AppCompatActivity;
 import com.giosis.util.qdrive.singapore.R;
 import com.giosis.util.qdrive.util.Custom_XmlPullParser;
 import com.giosis.util.qdrive.util.DataUtil;
+import com.giosis.util.qdrive.util.DisplayUtil;
 import com.giosis.util.qdrive.util.NetworkUtil;
 import com.giosis.util.qdrive.util.SharedPreferencesHelper;
 
@@ -275,16 +276,7 @@ public class CustomerMessageListDetailActivity extends AppCompatActivity {
         protected void onPostExecute(String resultString) {
             super.onPostExecute(resultString);
 
-            try {
-
-                if (progressDialog != null && progressDialog.isShowing()) {
-
-                    progressDialog.dismiss();
-                }
-            } catch (Exception e) {
-
-                // !((Activity)context).isFinishing()
-            }
+            DisplayUtil.dismissProgressDialog(progressDialog);
 
             try {
 
@@ -366,16 +358,7 @@ public class CustomerMessageListDetailActivity extends AppCompatActivity {
         protected void onPostExecute(String resultString) {
             super.onPostExecute(resultString);
 
-            try {
-
-                if (progressDialog != null && progressDialog.isShowing()) {
-
-                    progressDialog.dismiss();
-                }
-            } catch (Exception e) {
-
-                // !((Activity)context).isFinishing()
-            }
+            DisplayUtil.dismissProgressDialog(progressDialog);
 
             try {
                 if (old_resultString != null && old_resultString.equalsIgnoreCase(new_resultString)) {
@@ -502,16 +485,7 @@ public class CustomerMessageListDetailActivity extends AppCompatActivity {
         protected void onPostExecute(String resultString) {
             super.onPostExecute(resultString);
 
-            try {
-
-                if (progressDialog != null && progressDialog.isShowing()) {
-
-                    progressDialog.dismiss();
-                }
-            } catch (Exception e) {
-
-                // !((Activity)context).isFinishing()
-            }
+            DisplayUtil.dismissProgressDialog(progressDialog);
 
             try {
                 MessageSendResult result = Custom_XmlPullParser.sendMessageResult(resultString);

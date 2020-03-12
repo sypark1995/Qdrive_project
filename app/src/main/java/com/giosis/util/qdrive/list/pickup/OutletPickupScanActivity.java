@@ -30,6 +30,7 @@ import com.giosis.util.qdrive.util.BarcodeType;
 import com.giosis.util.qdrive.util.Custom_XmlPullParser;
 import com.giosis.util.qdrive.util.DataUtil;
 import com.giosis.util.qdrive.util.DatabaseHelper;
+import com.giosis.util.qdrive.util.DisplayUtil;
 import com.giosis.util.qdrive.util.SharedPreferencesHelper;
 
 import org.json.JSONObject;
@@ -416,8 +417,7 @@ public class OutletPickupScanActivity extends AppCompatActivity {
                         qrCodeAsyncTask.execute();
                     } else if (outlet_type.equals("FL")) {
 
-                        if (progressDialog.isShowing())
-                            progressDialog.dismiss();
+                        DisplayUtil.dismissProgressDialog(progressDialog);
 
                         showQRCode = true;
                         /*
@@ -437,8 +437,7 @@ public class OutletPickupScanActivity extends AppCompatActivity {
                     setListViewHeightBasedOnChildren(list_sign_p_outlet_tracking_no);
                 } else {
 
-                    if (progressDialog.isShowing())
-                        progressDialog.dismiss();
+                    DisplayUtil.dismissProgressDialog(progressDialog);
 
                     showQRCode = false;
 
@@ -454,8 +453,7 @@ public class OutletPickupScanActivity extends AppCompatActivity {
             } catch (Exception e) {
 
                 Log.e("Exception", TAG + "  onPostExecute Exception : " + e.toString());
-                if (progressDialog.isShowing())
-                    progressDialog.dismiss();
+                DisplayUtil.dismissProgressDialog(progressDialog);
 
                 showQRCode = false;
 
@@ -512,8 +510,7 @@ public class OutletPickupScanActivity extends AppCompatActivity {
         protected void onPostExecute(Bitmap bitmap) {
             super.onPostExecute(bitmap);
 
-            if (progressDialog.isShowing())
-                progressDialog.dismiss();
+            DisplayUtil.dismissProgressDialog(progressDialog);
 
             if (bitmap != null) {
 

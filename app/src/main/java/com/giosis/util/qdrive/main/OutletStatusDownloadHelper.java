@@ -11,8 +11,8 @@ import android.util.Log;
 
 import com.giosis.util.qdrive.barcodescanner.DriverAssignResult;
 import com.giosis.util.qdrive.barcodescanner.ManualHelper;
-import com.giosis.util.qdrive.list.PickupAssignResult;
 import com.giosis.util.qdrive.list.ChildItem;
+import com.giosis.util.qdrive.list.PickupAssignResult;
 import com.giosis.util.qdrive.list.RowItem;
 import com.giosis.util.qdrive.util.BarcodeType;
 import com.giosis.util.qdrive.util.DataUtil;
@@ -179,17 +179,7 @@ public class OutletStatusDownloadHelper extends ManualHelper {
         protected void onPostExecute(Long result) {
             super.onPostExecute(result);
 
-            try {
-
-                if (progressDialog != null && progressDialog.isShowing()) {
-
-                    DisplayUtil.dismissProgressDialog(progressDialog);
-                }
-
-            } catch (Exception e) {
-
-                Log.e("Exception", TAG + "  onPostExecute Exception : " + e.toString());
-            }
+            DisplayUtil.dismissProgressDialog(progressDialog);
 
             if (eventListener != null) {
                 eventListener.onDownloadResult(outletDataArrayList);

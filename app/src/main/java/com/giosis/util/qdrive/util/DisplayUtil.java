@@ -6,12 +6,13 @@ import android.app.ProgressDialog;
 import android.content.Context;
 import android.content.ContextWrapper;
 import android.content.DialogInterface;
-import android.os.Build;
+import android.util.Log;
 import android.util.TypedValue;
 
 import com.giosis.util.qdrive.singapore.R;
 
 public class DisplayUtil {
+    static String TAG = "DisplayUtil";
     private static final float DEFAULT_HDIP_DENSITY_SCALE = 1.5f;
 
     /**
@@ -46,6 +47,8 @@ public class DisplayUtil {
 
 
     public static void dismissProgressDialog(ProgressDialog progressDialog) {
+        Log.e(TAG, "dismissProgressDialog");
+
         if (progressDialog != null) {
             if (progressDialog.isShowing()) {
 
@@ -56,36 +59,23 @@ public class DisplayUtil {
                 // then dismiss it
                 if (context instanceof Activity) {
 
-                    // Api >=17
-                    if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.JELLY_BEAN_MR1) {
-                        if (!((Activity) context).isFinishing() && !((Activity) context).isDestroyed()) {
-                            dismissWithExceptionHandling(progressDialog);
-                        }
-                    } else {
-
-                        // Api < 17. Unfortunately cannot check for isDestroyed()
-                        if (!((Activity) context).isFinishing()) {
-                            dismissWithExceptionHandling(progressDialog);
-                        }
+                    if (!((Activity) context).isFinishing() && !((Activity) context).isDestroyed()) {
+                        dismissWithExceptionHandling(progressDialog);
                     }
                 } else
                     // if the Context used wasn't an Activity, then dismiss it too
                     dismissWithExceptionHandling(progressDialog);
             }
-            progressDialog = null;
         }
     }
 
-
-    public static void dismissWithExceptionHandling(ProgressDialog dialog) {
+    private static void dismissWithExceptionHandling(ProgressDialog dialog) {
         try {
             dialog.dismiss();
         } catch (final IllegalArgumentException e) {
             // Do nothing.
         } catch (final Exception e) {
             // Do nothing.
-        } finally {
-            dialog = null;
         }
     }
 

@@ -18,6 +18,7 @@ import com.giosis.util.qdrive.singapore.UploadData;
 import com.giosis.util.qdrive.util.Custom_JsonParser;
 import com.giosis.util.qdrive.util.DataUtil;
 import com.giosis.util.qdrive.util.DatabaseHelper;
+import com.giosis.util.qdrive.util.DisplayUtil;
 import com.giosis.util.qdrive.util.NetworkUtil;
 
 import org.json.JSONObject;
@@ -201,8 +202,7 @@ public class ManualPodUploadHelper extends ManualHelper {
         protected void onPostExecute(ArrayList<Integer> resultList) {
             super.onPostExecute(resultList);
 
-            if (progressDialog != null)
-                progressDialog.dismiss();
+            DisplayUtil.dismissProgressDialog(progressDialog);
 
             int successCount = 0;
             int failCount = 0;

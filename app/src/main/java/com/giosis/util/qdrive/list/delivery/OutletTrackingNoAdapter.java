@@ -19,6 +19,7 @@ import android.widget.RelativeLayout;
 import android.widget.TextView;
 
 import com.giosis.util.qdrive.singapore.R;
+import com.giosis.util.qdrive.util.DisplayUtil;
 
 import java.io.InputStream;
 import java.net.HttpURLConnection;
@@ -284,8 +285,7 @@ public class OutletTrackingNoAdapter extends BaseAdapter {
         protected void onPostExecute(Bitmap bitmap) {
             super.onPostExecute(bitmap);
 
-            if (progressDialog.isShowing())
-                progressDialog.dismiss();
+            DisplayUtil.dismissProgressDialog(progressDialog);
 
             if (bitmap != null) {
 

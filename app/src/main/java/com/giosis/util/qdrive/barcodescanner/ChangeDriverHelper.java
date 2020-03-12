@@ -14,6 +14,7 @@ import com.giosis.util.qdrive.util.BarcodeType;
 import com.giosis.util.qdrive.util.Custom_JsonParser;
 import com.giosis.util.qdrive.util.DataUtil;
 import com.giosis.util.qdrive.util.DatabaseHelper;
+import com.giosis.util.qdrive.util.DisplayUtil;
 import com.giosis.util.qdrive.util.NetworkUtil;
 import com.giosis.util.qdrive.util.SharedPreferencesHelper;
 
@@ -166,9 +167,7 @@ public class ChangeDriverHelper extends ManualHelper {
         protected void onPostExecute(DriverAssignResult resultList) {
             super.onPostExecute(resultList);
 
-            if (progressDialog != null)
-                progressDialog.dismiss();
-
+            DisplayUtil.dismissProgressDialog(progressDialog);
 
             if (resultList.getResultCode() == 0) {
 

@@ -26,6 +26,7 @@ import androidx.appcompat.app.AppCompatActivity;
 import com.giosis.util.qdrive.singapore.R;
 import com.giosis.util.qdrive.util.Custom_XmlPullParser;
 import com.giosis.util.qdrive.util.DataUtil;
+import com.giosis.util.qdrive.util.DisplayUtil;
 import com.giosis.util.qdrive.util.NetworkUtil;
 import com.giosis.util.qdrive.util.SharedPreferencesHelper;
 
@@ -239,48 +240,23 @@ public class LockerUserInfoActivity extends AppCompatActivity {
                         barcodeAsyncTask.execute();
                     } else {
 
-                        try {
+                        DisplayUtil.dismissProgressDialog(progressDialog);
 
-                            if (progressDialog != null && progressDialog.isShowing()) {
-
-                                progressDialog.dismiss();
-                            }
-                        } catch (Exception e) {
-
-                            // !((Activity)context).isFinishing()
-                        }
                         Toast.makeText(LockerUserInfoActivity.this, getResources().getString(R.string.msg_download_locker_info_error)
                                 + " - " + result.getResult_msg(), Toast.LENGTH_SHORT).show();
                         Log.e("krm0219", "LockerUserInfoAsyncTask  ResultCode : " + result.getResult_code() + " / " + result.getResult_msg());
                     }
                 } else {
 
-                    try {
+                    DisplayUtil.dismissProgressDialog(progressDialog);
 
-                        if (progressDialog != null && progressDialog.isShowing()) {
-
-                            progressDialog.dismiss();
-                        }
-                    } catch (Exception e) {
-
-                        // !((Activity)context).isFinishing()
-                    }
                     Toast.makeText(LockerUserInfoActivity.this, getResources().getString(R.string.msg_download_locker_info_error)
                             + "\n " + getResources().getString(R.string.msg_please_try_again), Toast.LENGTH_SHORT).show();
                     Log.e("krm0219", "LockerUserInfoAsyncTask  result null");
                 }
             } catch (Exception e) {
 
-                try {
-
-                    if (progressDialog != null && progressDialog.isShowing()) {
-
-                        progressDialog.dismiss();
-                    }
-                } catch (Exception ee) {
-
-                    // !((Activity)context).isFinishing()
-                }
+                DisplayUtil.dismissProgressDialog(progressDialog);
 
                 Toast.makeText(LockerUserInfoActivity.this, getResources().getString(R.string.msg_download_locker_info_error)
                         + "\n" + e.toString(), Toast.LENGTH_SHORT).show();
@@ -331,8 +307,7 @@ public class LockerUserInfoActivity extends AppCompatActivity {
         protected void onPostExecute(Bitmap bitmap) {
             super.onPostExecute(bitmap);
 
-            if (progressDialog.isShowing())
-                progressDialog.dismiss();
+            DisplayUtil.dismissProgressDialog(progressDialog);
 
             if (bitmap != null) {
 

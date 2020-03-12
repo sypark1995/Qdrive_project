@@ -18,6 +18,7 @@ import com.giosis.util.qdrive.singapore.R;
 import com.giosis.util.qdrive.util.Custom_JsonParser;
 import com.giosis.util.qdrive.util.DataUtil;
 import com.giosis.util.qdrive.util.DatabaseHelper;
+import com.giosis.util.qdrive.util.DisplayUtil;
 import com.giosis.util.qdrive.util.NetworkUtil;
 import com.giosis.util.qdrive.util.SharedPreferencesHelper;
 
@@ -186,9 +187,7 @@ public class QuickReturnFailedUploadHelper extends ManualHelper {
         protected void onPostExecute(StdResult result) {
             super.onPostExecute(result);
 
-            if (progressDialog != null)
-                progressDialog.dismiss();
-
+            DisplayUtil.dismissProgressDialog(progressDialog);
 
             int resultCode = result.getResultCode();
             String resultMsg = result.getResultMsg();
