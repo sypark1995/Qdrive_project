@@ -111,6 +111,7 @@ public class NoticeDetailActivity extends AppCompatActivity {
 
             progressDialog.setProgressStyle(ProgressDialog.STYLE_SPINNER);
             progressDialog.setMessage(context.getResources().getString(R.string.text_please_wait));
+            progressDialog.setCancelable(false);
             progressDialog.show();
         }
 

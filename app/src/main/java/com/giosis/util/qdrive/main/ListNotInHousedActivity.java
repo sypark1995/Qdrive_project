@@ -135,6 +135,7 @@ public class ListNotInHousedActivity extends AppCompatActivity {
 
             progressDialog.setProgressStyle(ProgressDialog.STYLE_SPINNER);
             progressDialog.setMessage("Please wait...");
+            progressDialog.setCancelable(false);
             progressDialog.show();
         }
 

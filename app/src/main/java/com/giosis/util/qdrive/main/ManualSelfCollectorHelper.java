@@ -110,7 +110,6 @@ public class ManualSelfCollectorHelper extends ManualHelper {
         progressDialog.setProgressStyle(ProgressDialog.STYLE_HORIZONTAL);
         progressDialog.setMessage(context.getResources().getString(R.string.text_self_collector));
         progressDialog.setCancelable(false);
-
         return progressDialog;
     }
 

@@ -8,7 +8,6 @@ import android.os.AsyncTask;
 import android.os.Bundle;
 import android.os.Handler;
 import android.os.Message;
-import androidx.appcompat.app.AppCompatActivity;
 import android.text.Editable;
 import android.text.TextWatcher;
 import android.util.Log;
@@ -23,6 +22,8 @@ import android.widget.LinearLayout;
 import android.widget.ListView;
 import android.widget.TextView;
 import android.widget.Toast;
+
+import androidx.appcompat.app.AppCompatActivity;
 
 import com.giosis.util.qdrive.singapore.R;
 import com.giosis.util.qdrive.util.Custom_XmlPullParser;
@@ -245,6 +246,7 @@ public class AdminMessageListDetailActivity extends AppCompatActivity {
 
                 progressDialog.setProgressStyle(ProgressDialog.STYLE_SPINNER);
                 progressDialog.setMessage(getResources().getString(R.string.text_please_wait));
+                progressDialog.setCancelable(false);
                 progressDialog.show();
             }
         }
@@ -357,6 +359,7 @@ public class AdminMessageListDetailActivity extends AppCompatActivity {
 
             progressDialog.setProgressStyle(ProgressDialog.STYLE_SPINNER);
             progressDialog.setMessage(getResources().getString(R.string.text_send_message));
+            progressDialog.setCancelable(false);
             progressDialog.show();
         }
 

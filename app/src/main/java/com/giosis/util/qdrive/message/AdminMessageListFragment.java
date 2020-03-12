@@ -188,6 +188,7 @@ public class AdminMessageListFragment extends Fragment {
 
                 progressDialog.setProgressStyle(ProgressDialog.STYLE_SPINNER);
                 progressDialog.setMessage(getResources().getString(R.string.text_please_wait));
+                progressDialog.setCancelable(false);
                 progressDialog.show();
             }
         }

@@ -249,6 +249,7 @@ public class CustomerMessageListDetailActivity extends AppCompatActivity {
 
             progressDialog.setProgressStyle(ProgressDialog.STYLE_SPINNER);
             progressDialog.setMessage(getResources().getString(R.string.text_please_wait));
+            progressDialog.setCancelable(false);
             progressDialog.show();
         }
 
@@ -329,6 +330,7 @@ public class CustomerMessageListDetailActivity extends AppCompatActivity {
 
                 progressDialog.setProgressStyle(ProgressDialog.STYLE_SPINNER);
                 progressDialog.setMessage(getResources().getString(R.string.text_please_wait));
+                progressDialog.setCancelable(false);
                 progressDialog.show();
             }
         }
