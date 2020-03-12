@@ -1,6 +1,5 @@
 package com.giosis.util.qdrive.list.pickup;
 
-import android.app.Activity;
 import android.app.AlertDialog;
 import android.content.Context;
 import android.content.DialogInterface;
@@ -218,7 +217,7 @@ public class PickupDoneActivity extends AppCompatActivity {
                     @Override
                     public void onClick(DialogInterface dialog, int which) {
 
-                        setResult(Activity.RESULT_CANCELED);
+                        //  setResult(Activity.RESULT_CANCELED);
                         finish();
                     }
                 })
@@ -300,7 +299,7 @@ public class PickupDoneActivity extends AppCompatActivity {
 
                             DataUtil.inProgressListPosition = 0;
 
-                            setResult(Activity.RESULT_OK);
+                            //    setResult(Activity.RESULT_OK);
                             finish();
                         }
 

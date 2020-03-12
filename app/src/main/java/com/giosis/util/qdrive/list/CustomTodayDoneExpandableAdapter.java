@@ -49,9 +49,6 @@ import java.util.Vector;
 public class CustomTodayDoneExpandableAdapter extends BaseExpandableListAdapter implements GPrinterHandler.OnGPrinterReadyListener {
     String TAG = "CustomTodayDoneExpandableAdapter";
 
-    private static final int REQUEST_SCAN_ADD_LIST = 32;
-    private static final int REQUEST_TAKE_BACK = 33;
-
     Context context;
 
     private ArrayList<RowItem> rowItem;
@@ -324,7 +321,7 @@ public class CustomTodayDoneExpandableAdapter extends BaseExpandableListAdapter 
                 intent.putExtra("pickup_no", tracking_no);
                 intent.putExtra("applicant", applicant);
                 intent.putExtra("button_type", "Add Scan");
-                ((Activity) context).startActivityForResult(intent, REQUEST_SCAN_ADD_LIST);
+                ((Activity) context).startActivityForResult(intent, List_TodayDoneFragment.REQUEST_ADD_SCAN);
             }
 
         });
@@ -350,7 +347,7 @@ public class CustomTodayDoneExpandableAdapter extends BaseExpandableListAdapter 
                 intent.putExtra("pickup_no", tracking_no);
                 intent.putExtra("applicant", applicant);
                 intent.putExtra("button_type", "Take Back");
-                ((Activity) context).startActivityForResult(intent, REQUEST_TAKE_BACK);
+                ((Activity) context).startActivityForResult(intent, List_TodayDoneFragment.REQUEST_TAKE_BACK);
             }
         });
 

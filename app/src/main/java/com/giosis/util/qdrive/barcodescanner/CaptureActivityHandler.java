@@ -26,10 +26,7 @@ import android.util.Log;
 
 import com.giosis.util.qdrive.barcodescanner.camera.CameraManager;
 import com.giosis.util.qdrive.singapore.R;
-import com.google.zxing.BarcodeFormat;
 import com.google.zxing.Result;
-
-import java.util.Vector;
 
 /**
  * This class handles all the messaging which comprises the state machine for capture.
@@ -50,10 +47,10 @@ public final class CaptureActivityHandler extends Handler {
         DONE
     }
 
-    CaptureActivityHandler(CaptureActivity activity, Vector<BarcodeFormat> decodeFormats, String characterSet) {
+    CaptureActivityHandler(CaptureActivity activity) {
 
         this.activity = activity;
-        decodeThread = new DecodeThread(activity, decodeFormats, characterSet, new ViewfinderResultPointCallback(activity.getViewfinderView()));
+        decodeThread = new DecodeThread(activity, new ViewfinderResultPointCallback(activity.getViewfinderView()));
         decodeThread.start();
         state = State.SUCCESS;
 

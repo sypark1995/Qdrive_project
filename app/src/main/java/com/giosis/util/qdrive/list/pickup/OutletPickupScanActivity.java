@@ -305,15 +305,15 @@ public class OutletPickupScanActivity extends AppCompatActivity {
 
                         if (0 < result.getTrackingNoList().size()) {
 
-                            Intent intentScan = new Intent(OutletPickupScanActivity.this, CaptureActivity.class);
-                            intentScan.putExtra("title", mTitle);
-                            intentScan.putExtra("type", BarcodeType.OUTLET_PICKUP_SCAN);
-                            intentScan.putExtra("pickup_no", mPickupNo);
-                            intentScan.putExtra("applicant", mApplicant);
-                            intentScan.putExtra("qty", mQty);
-                            intentScan.putExtra("tracking_data", result);
-                            intentScan.putExtra("route", mRoute);
-                            startActivityForResult(intentScan, 13);
+                            Intent intent = new Intent(OutletPickupScanActivity.this, CaptureActivity.class);
+                            intent.putExtra("title", mTitle);
+                            intent.putExtra("type", BarcodeType.OUTLET_PICKUP_SCAN);
+                            intent.putExtra("pickup_no", mPickupNo);
+                            intent.putExtra("applicant", mApplicant);
+                            intent.putExtra("qty", mQty);
+                            intent.putExtra("tracking_data", result);
+                            intent.putExtra("route", mRoute);
+                            startActivity(intent);
                         } else {
 
                             Toast.makeText(OutletPickupScanActivity.this, "Not Exist Tracking No.", Toast.LENGTH_SHORT).show();

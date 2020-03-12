@@ -53,7 +53,7 @@ class PickupAddScanActivity : AppCompatActivity() {
         val qtyFormat = String.format(context.resources.getString(R.string.text_total_qty_count), scannedItems.size)
         text_sign_p_tracking_no.text = qtyFormat
         text_sign_p_tracking_no_more.text = scannedList
-        text_sign_p_requestor.text = intent.getStringExtra("senderName")
+        text_sign_p_requestor.text = intent.getStringExtra("applicant")
         text_sign_p_request_qty.text = scannedQty
 
 

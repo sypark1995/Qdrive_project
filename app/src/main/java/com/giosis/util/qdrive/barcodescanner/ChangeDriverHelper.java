@@ -24,9 +24,7 @@ import org.simpleframework.xml.core.Persister;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Date;
-import java.util.Enumeration;
 import java.util.HashMap;
-import java.util.Hashtable;
 import java.util.List;
 import java.util.TimeZone;
 
@@ -40,7 +38,7 @@ public class ChangeDriverHelper extends ManualHelper {
     private final String opID;
     private final String officeCode;
     private final String deviceID;
-    private final Hashtable<String, String> assignBarcodeList;
+    private final ArrayList<ChangeDriverResult.ResultObject> changeDriverObjectArrayList;
     private final double lat;
     private final double lon;
 
@@ -54,7 +52,7 @@ public class ChangeDriverHelper extends ManualHelper {
         private final String opID;
         private final String officeCode;
         private final String deviceID;
-        private final Hashtable<String, String> assignBarcodeList;
+        private final ArrayList<ChangeDriverResult.ResultObject> changeDriverObjectArrayList;
         private final double lat;
         private final double lon;
 
@@ -62,17 +60,17 @@ public class ChangeDriverHelper extends ManualHelper {
         private OnChangeDelDriverEventListener eventListener;
 
         public Builder(Context context, String opID, String officeCode, String deviceID,
-                       Hashtable<String, String> assignBarcodeList, double lat, double lon) {
+                       ArrayList<ChangeDriverResult.ResultObject> list, double lat, double lon) {
 
             this.context = context;
             this.opID = opID;
             this.officeCode = officeCode;
             this.deviceID = deviceID;
-            this.assignBarcodeList = assignBarcodeList;
+            this.networkType = NetworkUtil.getNetworkType(context);
+
+            this.changeDriverObjectArrayList = list;
             this.lat = lat;
             this.lon = lon;
-
-            this.networkType = NetworkUtil.getNetworkType(context);
         }
 
         public ChangeDriverHelper build() {
@@ -92,7 +90,7 @@ public class ChangeDriverHelper extends ManualHelper {
         this.opID = builder.opID;
         this.officeCode = builder.officeCode;
         this.deviceID = builder.deviceID;
-        this.assignBarcodeList = builder.assignBarcodeList;
+        this.changeDriverObjectArrayList = builder.changeDriverObjectArrayList;
         this.lat = builder.lat;
         this.lon = builder.lon;
 
@@ -100,7 +98,6 @@ public class ChangeDriverHelper extends ManualHelper {
         this.eventListener = builder.eventListener;
         this.progressDialog = getProgressDialog(this.context);
     }
-
 
     private ProgressDialog getProgressDialog(Context context) {
         ProgressDialog progressDialog = new ProgressDialog(context);
@@ -113,6 +110,7 @@ public class ChangeDriverHelper extends ManualHelper {
 
 
     class ChangeDriverAsyncTask extends AsyncTask<Void, Integer, DriverAssignResult> {
+
         int progress = 0;
 
         @Override
@@ -120,39 +118,37 @@ public class ChangeDriverHelper extends ManualHelper {
             super.onPreExecute();
 
             if (progressDialog != null) {
-                int maxCount = assignBarcodeList.size();
+
+                int maxCount = changeDriverObjectArrayList.size();
                 progressDialog.setMax(maxCount);
                 progressDialog.show();
             }
         }
 
-
-        @SuppressWarnings("rawtypes")
         @Override
         protected DriverAssignResult doInBackground(Void... params) {
+
             DriverAssignResult result = null;
 
-            if (assignBarcodeList != null && assignBarcodeList.size() > 0) {
+            if (changeDriverObjectArrayList != null && 0 < changeDriverObjectArrayList.size()) {
 
-                String str = null;
-                Enumeration names;
-                String strBarcodeNo;
-                String contrNo;
-                names = assignBarcodeList.keys();
+                String ContrNoStr = null;
 
-                while (names.hasMoreElements()) {
-                    strBarcodeNo = (String) names.nextElement();
-                    contrNo = assignBarcodeList.get(strBarcodeNo);
-                    if (!TextUtils.isEmpty(contrNo)) {
-                        if (str == null) {
-                            str = contrNo;
+                for (ChangeDriverResult.ResultObject item : changeDriverObjectArrayList) {
+
+                    if (!TextUtils.isEmpty(item.getContrNo())) {
+
+                        if (ContrNoStr == null) {
+
+                            ContrNoStr = item.getContrNo();
                         } else {
-                            str = str + "," + contrNo;
+
+                            ContrNoStr = ContrNoStr + "," + item.getContrNo();
                         }
                     }
                 }
 
-                result = changeDriver(str);
+                result = changeDriver(ContrNoStr);
                 publishProgress(1);
             }
 
@@ -173,9 +169,9 @@ public class ChangeDriverHelper extends ManualHelper {
             if (progressDialog != null)
                 progressDialog.dismiss();
 
-            int resultCode = resultList.getResultCode();
 
-            if (resultCode == 0) {
+            if (resultList.getResultCode() == 0) {
+
                 List<DriverAssignResult.QSignDeliveryList> resultObject = resultList.getResultObject();
 
                 for (DriverAssignResult.QSignDeliveryList qSignDeliveryList : resultObject) {
@@ -184,7 +180,7 @@ public class ChangeDriverHelper extends ManualHelper {
                         boolean success_insert = insertDriverAssignInfo(qSignDeliveryList);
 
                         if (success_insert) {
-                            ChangeMessageAsyncTask changeMessageAsyncTask = new ChangeMessageAsyncTask(qSignDeliveryList.getInvoiceNo(), "SG", opID);
+                            ChangeMessageAsyncTask changeMessageAsyncTask = new ChangeMessageAsyncTask(opID, qSignDeliveryList.getInvoiceNo());
                             changeMessageAsyncTask.execute();
                         }
                     }
@@ -255,15 +251,12 @@ public class ChangeDriverHelper extends ManualHelper {
         dateFormat.setTimeZone(TimeZone.getTimeZone("GMT"));
         String regDataString = dateFormat.format(new Date());
 
-        DatabaseHelper dbHelper = DatabaseHelper.getInstance();
-
         // eylee 2015.08.26 add nonqoo10 - contr_no 로 sqlite 체크 후 있다면 삭제하는 로직 add start
-        String contry_no = assignInfo.getContrNo();
-        int cnt = getContrNoCount(contry_no);
-        if (cnt > 0) {
-            delSelectedContrNo(contry_no);
+        String contr_no = assignInfo.getContrNo();
+        int cnt = getContrNoCount(contr_no);
+        if (0 < cnt) {
+            delSelectedContrNo(contr_no);
         }
-
 
         // eylee 2015.08.26 add end
         //성공 시 통합리스트 테이블 저장
@@ -290,37 +283,30 @@ public class ChangeDriverHelper extends ManualHelper {
         contentVal2.put("fail_reason", assignInfo.getFailReason());
         contentVal2.put("secret_no_type", assignInfo.getSecretNoType());
         contentVal2.put("secret_no", assignInfo.getSecretNo());
-
         // 2018-03-09 eylee bug fix
         contentVal2.put("secure_delivery_yn", assignInfo.getSecureDeliveryYN());
         contentVal2.put("parcel_amount", assignInfo.getParcelAmount());
         contentVal2.put("currency", assignInfo.getCurrency());
-
         // krm0219
         contentVal2.put("order_type_etc", assignInfo.getOrder_type_etc());
 
-        long insertCount = dbHelper.insert(DatabaseHelper.DB_TABLE_INTEGRATION_LIST, contentVal2);
 
-        if (insertCount < 0) {
-            return false;
-        }
+        long insertCount = DatabaseHelper.getInstance().insert(DatabaseHelper.DB_TABLE_INTEGRATION_LIST, contentVal2);
 
-        return true;
+        return insertCount >= 0;
     }
 
     // krm0219
     class ChangeMessageAsyncTask extends AsyncTask<Void, Void, StdResult> {
 
-        String tracking_no;
-        String svc_nation_cd;
-        String qdriver_id;
+        String driverId;
+        String trackingNo;
 
 
-        public ChangeMessageAsyncTask(String TrackingNo, String NationCode, String DriverID) {
+        ChangeMessageAsyncTask(String DriverID, String TrackingNo) {
 
-            tracking_no = TrackingNo;
-            svc_nation_cd = NationCode;
-            qdriver_id = DriverID;
+            driverId = DriverID;
+            trackingNo = TrackingNo;
         }
 
         @Override
@@ -331,9 +317,9 @@ public class ChangeDriverHelper extends ManualHelper {
             try {
 
                 JSONObject job = new JSONObject();
-                job.accumulate("tracking_no", tracking_no);
-                job.accumulate("svc_nation_cd", svc_nation_cd);
-                job.accumulate("qdriver_id", qdriver_id);
+                job.accumulate("tracking_no", trackingNo);
+                job.accumulate("svc_nation_cd", "SG");
+                job.accumulate("qdriver_id", driverId);
                 job.accumulate("app_id", DataUtil.appID);
                 job.accumulate("nation_cd", DataUtil.nationCode);
 
@@ -361,25 +347,24 @@ public class ChangeDriverHelper extends ManualHelper {
 
             if (result.getResultCode() == 0) {
 
-                Log.e("krm0219", TAG + "  ChangeMessageAsyncTask Success");
+                Log.e(TAG, "  ChangeMessageAsyncTask Success");
             } else {
 
                 Toast.makeText(context, context.getResources().getString(R.string.msg_message_change_error), Toast.LENGTH_SHORT).show();
             }
-
         }
     }
 
 
     private int getContrNoCount(String contr_no) {
         DatabaseHelper dbHelper = DatabaseHelper.getInstance();
-        String sql = "SELECT count(*) as contryno_cnt FROM " + DatabaseHelper.DB_TABLE_INTEGRATION_LIST + " WHERE contr_no='" + contr_no + "' COLLATE NOCASE";
+        String sql = "SELECT count(*) as contrno_cnt FROM " + DatabaseHelper.DB_TABLE_INTEGRATION_LIST + " WHERE contr_no='" + contr_no + "' COLLATE NOCASE";
         Cursor cursor = dbHelper.get(sql);
 
         int count = 0;
 
         if (cursor.moveToFirst()) {
-            count = cursor.getInt(cursor.getColumnIndexOrThrow("contryno_cnt"));
+            count = cursor.getInt(cursor.getColumnIndexOrThrow("contrno_cnt"));
         }
 
         cursor.close();

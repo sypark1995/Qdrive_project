@@ -680,6 +680,9 @@ public class List_InProgressFragment extends Fragment implements OnQueryTextList
     @Override
     public void onActivityResult(int requestCode, int resultCode, Intent data) {
         super.onActivityResult(requestCode, resultCode, data);
+
+        Log.e("krm0219", TAG + "  onActivityResult " + resultCode + " / " + requestCode);
+
         if (requestCode == PERMISSION_REQUEST_CODE) {   // permission
             if (resultCode == PermissionActivity.PERMISSIONS_GRANTED) {
 

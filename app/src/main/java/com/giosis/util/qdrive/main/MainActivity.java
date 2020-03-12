@@ -34,7 +34,6 @@ import androidx.core.graphics.drawable.RoundedBitmapDrawableFactory;
 
 import com.giosis.util.qdrive.barcodescanner.CaptureActivity;
 import com.giosis.util.qdrive.barcodescanner.FailListActivity;
-import com.giosis.util.qdrive.barcodescanner.ManualHelper;
 import com.giosis.util.qdrive.gps.FusedProviderService;
 import com.giosis.util.qdrive.gps.GPSTrackerManager;
 import com.giosis.util.qdrive.gps.LocationManagerService;
@@ -176,9 +175,12 @@ public class MainActivity extends AppBaseActivity {
         View contentView = inflater.inflate(R.layout.activity_main_home, container, false);
         drawerLayout.addView(contentView, 0);
 
-        if (ManualHelper.MOBILE_SERVER_URL.contains("test")) {
+        if (MOBILE_SERVER_URL.contains("test")) {
 
             setTopTitle("test - " + mContext.getResources().getString(R.string.navi_home));
+        } else if (MOBILE_SERVER_URL.contains("staging")) {
+
+            setTopTitle("staging - " + mContext.getResources().getString(R.string.navi_home));
         } else {
 
             setTopTitle(mContext.getResources().getString(R.string.navi_home));
@@ -877,10 +879,10 @@ public class MainActivity extends AppBaseActivity {
 
                 case R.id.btn_home_confirm_my_delivery_order: {
 
-                    Intent intentScan = new Intent(MainActivity.this, CaptureActivity.class);
-                    intentScan.putExtra("title", mContext.getResources().getString(R.string.text_title_driver_assign));
-                    intentScan.putExtra("type", BarcodeType.CONFIRM_MY_DELIVERY_ORDER);
-                    startActivityForResult(intentScan, 1);
+                    Intent intent = new Intent(MainActivity.this, CaptureActivity.class);
+                    intent.putExtra("title", mContext.getResources().getString(R.string.text_title_driver_assign));
+                    intent.putExtra("type", BarcodeType.CONFIRM_MY_DELIVERY_ORDER);
+                    startActivityForResult(intent, 1);
                 }
                 break;
 
@@ -893,10 +895,10 @@ public class MainActivity extends AppBaseActivity {
 
                 case R.id.btn_home_scan_delivery_sheet: {
 
-                    Intent intentScan = new Intent(MainActivity.this, CaptureActivity.class);
-                    intentScan.putExtra("title", "(Step1) Scan Tracking No");
-                    intentScan.putExtra("type", BarcodeType.TYPE_SCAN_CAPTURE);
-                    startActivityForResult(intentScan, 2);
+                    Intent intent = new Intent(MainActivity.this, CaptureActivity.class);
+                    intent.putExtra("title", "(Step1) Scan Tracking No");
+                    intent.putExtra("type", BarcodeType.TYPE_SCAN_CAPTURE);
+                    startActivityForResult(intent, 2);
                 }
                 break;
 
@@ -904,10 +906,10 @@ public class MainActivity extends AppBaseActivity {
 
                     if (gpsOnceEnable && gpsTrackerManager != null) {
 
-                        Intent intentScan = new Intent(MainActivity.this, CaptureActivity.class);
-                        intentScan.putExtra("title", mContext.getResources().getString(R.string.button_change_delivery_driver));
-                        intentScan.putExtra("type", BarcodeType.CHANGE_DELIVERY_DRIVER);
-                        startActivity(intentScan);
+                        Intent intent = new Intent(MainActivity.this, CaptureActivity.class);
+                        intent.putExtra("title", mContext.getResources().getString(R.string.button_change_delivery_driver));
+                        intent.putExtra("type", BarcodeType.CHANGE_DELIVERY_DRIVER);
+                        startActivity(intent);
                     } else {
 
                         DataUtil.enableLocationSettings(MainActivity.this, mContext);

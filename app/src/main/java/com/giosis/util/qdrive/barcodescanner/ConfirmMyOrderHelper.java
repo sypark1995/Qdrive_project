@@ -12,7 +12,6 @@ import com.giosis.util.qdrive.singapore.R;
 import com.giosis.util.qdrive.util.BarcodeType;
 import com.giosis.util.qdrive.util.DataUtil;
 import com.giosis.util.qdrive.util.DatabaseHelper;
-import com.giosis.util.qdrive.util.NetworkUtil;
 import com.giosis.util.qdrive.util.SharedPreferencesHelper;
 
 import org.simpleframework.xml.Serializer;
@@ -37,7 +36,6 @@ public class ConfirmMyOrderHelper extends ManualHelper {
     private final String deviceID;
     private final ArrayList<CaptureActivity.BarcodeListData> assignBarcodeList;
 
-    private final String networkType;
     private final OnDriverAssignEventListener eventListener;
     private final ProgressDialog progressDialog;
 
@@ -48,8 +46,6 @@ public class ConfirmMyOrderHelper extends ManualHelper {
         private final String officeCode;
         private final String deviceID;
         private final ArrayList<CaptureActivity.BarcodeListData> assignBarcodeList;
-
-        private String networkType;
         private OnDriverAssignEventListener eventListener;
 
         public Builder(Context context, String opID, String officeCode, String deviceID, ArrayList<CaptureActivity.BarcodeListData> assignBarcodeList) {
@@ -59,15 +55,13 @@ public class ConfirmMyOrderHelper extends ManualHelper {
             this.officeCode = officeCode;
             this.deviceID = deviceID;
             this.assignBarcodeList = assignBarcodeList;
-
-            this.networkType = NetworkUtil.getNetworkType(context);
         }
 
         public ConfirmMyOrderHelper build() {
             return new ConfirmMyOrderHelper(this);
         }
 
-        public Builder setOnDriverAssignEventListener(OnDriverAssignEventListener eventListener) {
+        Builder setOnDriverAssignEventListener(OnDriverAssignEventListener eventListener) {
             this.eventListener = eventListener;
 
             return this;
@@ -82,11 +76,9 @@ public class ConfirmMyOrderHelper extends ManualHelper {
         this.deviceID = builder.deviceID;
         this.assignBarcodeList = builder.assignBarcodeList;
 
-        this.networkType = builder.networkType;
         this.eventListener = builder.eventListener;
         this.progressDialog = getProgressDialog(this.context);
     }
-
 
     private ProgressDialog getProgressDialog(Context context) {
         ProgressDialog progressDialog = new ProgressDialog(context);
@@ -99,6 +91,7 @@ public class ConfirmMyOrderHelper extends ManualHelper {
 
 
     class DriverAssignTask extends AsyncTask<Void, Integer, DriverAssignResult> {
+
         int progress = 0;
 
         @Override
@@ -106,6 +99,7 @@ public class ConfirmMyOrderHelper extends ManualHelper {
             super.onPreExecute();
 
             if (progressDialog != null) {
+
                 int maxCount = assignBarcodeList.size();
                 progressDialog.setMax(maxCount);
                 progressDialog.show();
@@ -115,25 +109,24 @@ public class ConfirmMyOrderHelper extends ManualHelper {
         @Override
         protected DriverAssignResult doInBackground(Void... params) {
 
-            DriverAssignResult result = null;
+            String str = null;
 
-            if (assignBarcodeList != null && assignBarcodeList.size() > 0) {
+            for (CaptureActivity.BarcodeListData assignData : assignBarcodeList) {
 
-                String str = null;
+                if (!TextUtils.isEmpty(assignData.getBarcode())) {
 
-                for (CaptureActivity.BarcodeListData assignData : assignBarcodeList) {
-                    if (!TextUtils.isEmpty(assignData.getBarcode())) {
-                        if (str == null) {
-                            str = assignData.getBarcode();
-                        } else {
-                            str = str + "," + assignData.getBarcode();
-                        }
+                    if (str == null) {
+
+                        str = assignData.getBarcode();
+                    } else {
+
+                        str = str + "," + assignData.getBarcode();
                     }
                 }
-
-                result = requestDriverAssign(str);
-                publishProgress(1);
             }
+
+            DriverAssignResult result = requestDriverAssign(str);
+            publishProgress(1);
 
             return result;
         }
@@ -160,9 +153,8 @@ public class ConfirmMyOrderHelper extends ManualHelper {
                 // !((Activity)context).isFinishing()
             }
 
-            int resultCode = resultList.getResultCode();
 
-            if (resultCode == 0) {
+            if (resultList.getResultCode() == 0) {
 
                 List<DriverAssignResult.QSignDeliveryList> resultObject = resultList.getResultObject();
 
@@ -233,13 +225,11 @@ public class ConfirmMyOrderHelper extends ManualHelper {
         dateFormat.setTimeZone(TimeZone.getTimeZone("GMT"));
         String regDataString = dateFormat.format(new Date());
 
-        DatabaseHelper dbHelper = DatabaseHelper.getInstance();
-
-        // eylee 2015.08.26 add nonqoo10 - contr_no 로 sqlite 체크 후 있다면 삭제하는 로직 add start
-        String contry_no = assignInfo.getContrNo();
-        int cnt = getContrNoCount(contry_no);
+        // eylee 2015.08.26 add non q10 - contr_no 로 sqlite 체크 후 있다면 삭제하는 로직 add start
+        String contr_no = assignInfo.getContrNo();
+        int cnt = getContrNoCount(contr_no);
         if (0 < cnt) {
-            deleteContrNo(contry_no);
+            deleteContrNo(contr_no);
         }
 
         // eylee 2015.08.26 add end
@@ -267,28 +257,27 @@ public class ConfirmMyOrderHelper extends ManualHelper {
         contentVal2.put("fail_reason", assignInfo.getFailReason());
         contentVal2.put("secret_no_type", assignInfo.getSecretNoType());
         contentVal2.put("secret_no", assignInfo.getSecretNo());
-
         // 2018-03-09 eylee bug fix
         contentVal2.put("secure_delivery_yn", assignInfo.getSecureDeliveryYN());
         contentVal2.put("parcel_amount", assignInfo.getParcelAmount());
         contentVal2.put("currency", assignInfo.getCurrency());
-
         // krm0219
         contentVal2.put("order_type_etc", assignInfo.getOrder_type_etc());
 
-        dbHelper.insert(DatabaseHelper.DB_TABLE_INTEGRATION_LIST, contentVal2);
+
+        DatabaseHelper.getInstance().insert(DatabaseHelper.DB_TABLE_INTEGRATION_LIST, contentVal2);
     }
 
     private int getContrNoCount(String contr_no) {
 
         DatabaseHelper dbHelper = DatabaseHelper.getInstance();
-        String sql = "SELECT count(*) as contryno_cnt FROM " + DatabaseHelper.DB_TABLE_INTEGRATION_LIST + " WHERE contr_no='" + contr_no + "' COLLATE NOCASE";
+        String sql = "SELECT count(*) as contrno_cnt FROM " + DatabaseHelper.DB_TABLE_INTEGRATION_LIST + " WHERE contr_no='" + contr_no + "' COLLATE NOCASE";
         Cursor cursor = dbHelper.get(sql);
 
         int count = 0;
 
         if (cursor.moveToFirst()) {
-            count = cursor.getInt(cursor.getColumnIndexOrThrow("contryno_cnt"));
+            count = cursor.getInt(cursor.getColumnIndexOrThrow("contrno_cnt"));
         }
 
         cursor.close();

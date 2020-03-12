@@ -10,6 +10,7 @@ import android.graphics.Bitmap;
 import android.os.AsyncTask;
 import android.util.Log;
 import android.widget.ImageView;
+import android.widget.Toast;
 
 import com.giosis.util.qdrive.barcodescanner.ManualHelper;
 import com.giosis.util.qdrive.barcodescanner.StdResult;
@@ -219,7 +220,7 @@ public class DeliveryFailedUploadHelper extends ManualHelper {
                 Log.e("Exception", TAG + "  onPostExecute Exception : " + e.toString());
 
                 String msg = String.format(context.getResources().getString(R.string.text_upload_fail_count1), 1, e.toString());
-                showResultDialog(msg);
+                Toast.makeText(context, msg, Toast.LENGTH_SHORT).show();
             }
         }
 

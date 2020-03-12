@@ -17,17 +17,11 @@
 package com.giosis.util.qdrive.barcodescanner.history;
 
 import android.content.ContentValues;
-import android.content.SharedPreferences;
 import android.database.sqlite.SQLiteDatabase;
-import android.database.sqlite.SQLiteException;
 import android.database.sqlite.SQLiteOpenHelper;
-import android.preference.PreferenceManager;
 import android.util.Log;
 
 import com.giosis.util.qdrive.barcodescanner.CaptureActivity;
-import com.giosis.util.qdrive.barcodescanner.Intents;
-import com.giosis.util.qdrive.barcodescanner.PreferencesActivity;
-import com.giosis.util.qdrive.barcodescanner.result.ResultHandler;
 import com.google.zxing.Result;
 
 /**
@@ -36,53 +30,42 @@ import com.google.zxing.Result;
  * @author Sean Owen
  */
 public final class HistoryManager {
-    private static final String TAG = HistoryManager.class.getSimpleName();
 
+    private static final String TAG = HistoryManager.class.getSimpleName();
     private final CaptureActivity activity;
 
+
     public HistoryManager(CaptureActivity activity) {
+
         this.activity = activity;
     }
 
 
-    public boolean addHistoryItem(Result result, ResultHandler handler) {
-        // Do not save this item to the history if the preference is turned off, or the contents are
-        // considered secure.
-        if (handler != null) {
-            if (!activity.getIntent().getBooleanExtra(Intents.Scan.SAVE_HISTORY, true) ||
-                    handler.areContentsSecure()) {
-                return false;
-            }
-        }
+    public boolean addHistoryItem(Result result) {
 
-        boolean isDuplicate = false;
-        SharedPreferences prefs = PreferenceManager.getDefaultSharedPreferences(activity);
-        if (!prefs.getBoolean(PreferencesActivity.KEY_REMEMBER_DUPLICATES, false)) {
-            isDuplicate = deletePrevious(result.getText());
-        }
+        boolean isDuplicate = deletePrevious(result.getText());
 
         SQLiteOpenHelper helper = new DBHelper(activity);
         SQLiteDatabase db;
+
         try {
+
             db = helper.getWritableDatabase();
-        } catch (SQLiteException sqle) {
-            Log.w(TAG, "Error while opening database", sqle);
+        } catch (Exception e) {
+
+            Log.w(TAG, "Error while opening database", e);
             return false;
         }
+
         try {
+
             // Insert the new entry into the DB.
             ContentValues values = new ContentValues();
             values.put(DBHelper.TEXT_COL, result.getText());
-
-            if (null != result.getBarcodeFormat())
-                values.put(DBHelper.FORMAT_COL, result.getBarcodeFormat().toString());
-
-            if (null != handler)
-                values.put(DBHelper.DISPLAY_COL, handler.getDisplayContents().toString());
-
             values.put(DBHelper.TIMESTAMP_COL, System.currentTimeMillis());
             db.insert(DBHelper.TABLE_NAME, DBHelper.TIMESTAMP_COL, values);
         } finally {
+
             db.close();
         }
 
@@ -90,41 +73,51 @@ public final class HistoryManager {
     }
 
     public boolean deletePrevious(String text) {
+
         SQLiteOpenHelper helper = new DBHelper(activity);
         SQLiteDatabase db;
+
         try {
+
             db = helper.getWritableDatabase();
-        } catch (SQLiteException sqle) {
-            Log.w(TAG, "Error while opening database", sqle);
+        } catch (Exception e) {
+
+            Log.w(TAG, "Error while opening database", e);
             return false;
         }
 
-        int iRes = 0;
-        try {
-            iRes = db.delete(DBHelper.TABLE_NAME, DBHelper.TEXT_COL + "=? COLLATE NOCASE ", new String[]{text});
 
+        int deleteCount;
+        try {
+
+            deleteCount = db.delete(DBHelper.TABLE_NAME, DBHelper.TEXT_COL + "=? COLLATE NOCASE ", new String[]{text});
         } finally {
+
             db.close();
         }
-        if (iRes > 0) {
-            return true;
-        } else {
-            return false;
-        }
+
+        return 0 < deleteCount;
     }
 
     public void clearHistory() {
+
         SQLiteOpenHelper helper = new DBHelper(activity);
         SQLiteDatabase db;
+
         try {
+
             db = helper.getWritableDatabase();
-        } catch (SQLiteException sqle) {
-            Log.w(TAG, "Error while opening database", sqle);
+        } catch (Exception e) {
+
+            Log.w(TAG, "Error while opening database", e);
             return;
         }
+
         try {
+
             db.delete(DBHelper.TABLE_NAME, null, null);
         } finally {
+
             db.close();
         }
     }

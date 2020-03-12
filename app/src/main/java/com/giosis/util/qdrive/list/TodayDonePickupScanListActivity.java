@@ -5,7 +5,6 @@ import android.app.Activity;
 import android.content.Context;
 import android.content.Intent;
 import android.os.Bundle;
-import androidx.appcompat.app.AppCompatActivity;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
@@ -13,6 +12,8 @@ import android.widget.FrameLayout;
 import android.widget.ListAdapter;
 import android.widget.ListView;
 import android.widget.TextView;
+
+import androidx.appcompat.app.AppCompatActivity;
 
 import com.giosis.util.qdrive.barcodescanner.CaptureActivity;
 import com.giosis.util.qdrive.singapore.R;
@@ -28,10 +29,6 @@ import java.util.ArrayList;
  */
 public class TodayDonePickupScanListActivity extends AppCompatActivity {
     String TAG = "TodayDonePickupScanListActivity";
-
-    private static final int REQUEST_CAPTURE_FOR_ADD_SCAN = 31;
-    private static final int REQUEST_CAPTURE_FOR_TAKE_BACK = 33;
-
 
     FrameLayout layout_top_back;
     TextView text_top_title;
@@ -177,12 +174,12 @@ public class TodayDonePickupScanListActivity extends AppCompatActivity {
     // packing list 추가
     public void click_add_scan() {
 
-        Intent intentScan = new Intent(this, CaptureActivity.class);
-        intentScan.putExtra("title", "ADD Scan List");
-        intentScan.putExtra("type", BarcodeType.PICKUP_ADD_SCAN);
-        intentScan.putExtra("pickup_no", pickup_no);
-        intentScan.putExtra("applicant", applicant);
-        startActivityForResult(intentScan, REQUEST_CAPTURE_FOR_ADD_SCAN);
+        Intent intent = new Intent(this, CaptureActivity.class);
+        intent.putExtra("title", "ADD Scan List");
+        intent.putExtra("type", BarcodeType.PICKUP_ADD_SCAN);
+        intent.putExtra("pickup_no", pickup_no);
+        intent.putExtra("applicant", applicant);
+        startActivityForResult(intent, List_TodayDoneFragment.REQUEST_ADD_SCAN);
     }
 
     public void click_take_back() {
@@ -193,7 +190,7 @@ public class TodayDonePickupScanListActivity extends AppCompatActivity {
         intent.putExtra("pickup_no", pickup_no);
         intent.putExtra("applicant", applicant);
         intent.putExtra("scanned_qty", scanned_qty);
-        startActivityForResult(intent, REQUEST_CAPTURE_FOR_TAKE_BACK);
+        startActivityForResult(intent, List_TodayDoneFragment.REQUEST_TAKE_BACK);
     }
 
 
@@ -201,22 +198,12 @@ public class TodayDonePickupScanListActivity extends AppCompatActivity {
     protected void onActivityResult(int requestCode, int resultCode, Intent data) {
         super.onActivityResult(requestCode, resultCode, data);
 
-        switch (requestCode) {
-            case REQUEST_CAPTURE_FOR_ADD_SCAN:
 
-                Intent i = getIntent(); //gets the intent that called this intent
-                setResult(Activity.RESULT_OK, i);
-                finish();
+        if (requestCode == List_TodayDoneFragment.REQUEST_ADD_SCAN
+                || requestCode == List_TodayDoneFragment.REQUEST_TAKE_BACK) {
 
-                break;
-
-            case REQUEST_CAPTURE_FOR_TAKE_BACK: {
-
-                Intent intent = getIntent();
-                setResult(Activity.RESULT_OK, intent);
-                finish();
-            }
-            break;
+            setResult(Activity.RESULT_OK);
+            finish();
         }
     }
 

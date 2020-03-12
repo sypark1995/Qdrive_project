@@ -58,8 +58,8 @@ public class List_TodayDoneFragment extends Fragment implements OnQueryTextListe
     private String opID;
 
     private OnTodayDoneCountListener mCountCallback;
-    private static final int REQUEST_SCAN_ADD_LIST = 32;
-    private static final int REQUEST_TAKE_BACK = 33;
+    static final int REQUEST_ADD_SCAN = 30;
+    static final int REQUEST_TAKE_BACK = 31;
 
     private ArrayList<RowItem> rowItems;
     private ArrayList<ChildItem> childItems;
@@ -265,10 +265,7 @@ public class List_TodayDoneFragment extends Fragment implements OnQueryTextListe
 
         Log.e(TAG, "  onActivityResult > " + resultCode + " / " + requestCode);
 
-        if (requestCode == REQUEST_SCAN_ADD_LIST) {
-
-            onResume();
-        } else if (requestCode == REQUEST_TAKE_BACK) {
+        if (requestCode == REQUEST_ADD_SCAN || requestCode == REQUEST_TAKE_BACK) {
 
             onResume();
         } else if (requestCode == PERMISSION_REQUEST_CODE) {   // permission

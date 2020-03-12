@@ -102,7 +102,7 @@
     <string name="text_p_done">P. Done</string>
     <string name="text_reason">Reason&#160;:&#160;</string>
     <string name="text_memo1">Memo&#160;:&#160;</string>
-    <string name="text_requestor">Requestor</string>
+    <string name="text_requestor">Requester</string>
     <string name="text_driver">Driver</string>
     <string name="text_qpost_message">QTalk Message</string>
     <string name="text_data_error">Data error</string>

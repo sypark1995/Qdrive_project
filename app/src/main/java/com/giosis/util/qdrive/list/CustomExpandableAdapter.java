@@ -842,9 +842,6 @@ public class CustomExpandableAdapter extends BaseExpandableListAdapter implement
             @Override
             public void onClick(View v) {
 
-                // TEST.
-                //isConnectPortablePrint(tracking_no);
-
                 Intent intent = new Intent(context, DeliveryDoneActivity.class);
                 intent.putExtra("title", context.getResources().getString(R.string.text_signature));
                 intent.putExtra("type", BarcodeType.TYPE_DELIVERY);
@@ -852,7 +849,7 @@ public class CustomExpandableAdapter extends BaseExpandableListAdapter implement
                 intent.putExtra("senderName", sender);
                 intent.putExtra("waybillNo", tracking_no);
                 intent.putExtra("route", route);
-                ((Activity) context).startActivityForResult(intent, 1);
+                context.startActivity(intent);
             }
         });
 
@@ -876,12 +873,12 @@ public class CustomExpandableAdapter extends BaseExpandableListAdapter implement
             @Override
             public void onClick(View v) {
 
-                Intent intentScan = new Intent(context, CaptureActivity.class);
-                intentScan.putExtra("title", context.getResources().getString(R.string.text_start_to_scan));
-                intentScan.putExtra("type", BarcodeType.PICKUP_SCAN_ALL);
-                intentScan.putExtra("pickup_no", tracking_no);
-                intentScan.putExtra("applicant", requestor);
-                ((Activity) context).startActivityForResult(intentScan, 11);
+                Intent intent = new Intent(context, CaptureActivity.class);
+                intent.putExtra("title", context.getResources().getString(R.string.text_start_to_scan));
+                intent.putExtra("type", BarcodeType.PICKUP_SCAN_ALL);
+                intent.putExtra("pickup_no", tracking_no);
+                intent.putExtra("applicant", requestor);
+                context.startActivity(intent);
             }
         });
 
@@ -923,7 +920,7 @@ public class CustomExpandableAdapter extends BaseExpandableListAdapter implement
                 intent.putExtra("applicant", requestor);
                 intent.putExtra("qty", qty);
                 intent.putExtra("route", route);
-                ((Activity) context).startActivityForResult(intent, 100);
+                context.startActivity(intent);
             }
         });
 
