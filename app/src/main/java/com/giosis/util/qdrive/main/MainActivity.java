@@ -1,5 +1,6 @@
 package com.giosis.util.qdrive.main;
 
+import android.annotation.SuppressLint;
 import android.app.Activity;
 import android.app.AlertDialog;
 import android.content.Context;
@@ -16,6 +17,7 @@ import android.graphics.Color;
 import android.graphics.Paint;
 import android.location.LocationManager;
 import android.os.AsyncTask;
+import android.os.Build;
 import android.os.Bundle;
 import android.os.Environment;
 import android.util.Log;
@@ -124,7 +126,6 @@ public class MainActivity extends AppBaseActivity {
 
     String pickup_driver_yn = "";
     Context mContext = null;
-    private LocationManager locationManager;
 
     Intent fusedProviderService = null;
     Intent locationManagerService = null;
@@ -139,7 +140,6 @@ public class MainActivity extends AppBaseActivity {
     static Boolean isHomeBtnClick = false;
 
     //
-    private PermissionChecker checker;
     boolean isPermissionTrue = false;
     private static final int PERMISSION_REQUEST_CODE = 1000;
     private static final String[] PERMISSIONS = new String[]{PermissionChecker.ACCESS_FINE_LOCATION, PermissionChecker.ACCESS_COARSE_LOCATION,
@@ -194,7 +194,6 @@ public class MainActivity extends AppBaseActivity {
         String filePath = dirPath + "/" + signName + ".png";
         String saveAbsolutePath = "file://" + Environment.getExternalStorageDirectory().getAbsolutePath() + "/" +
                 imgDirName + "/" + signName + ".png";
-
         Log.e("krm0219", "PATH 1 : " + dirPath + " / " + filePath + " / " + saveAbsolutePath);
 
 
@@ -217,7 +216,7 @@ public class MainActivity extends AppBaseActivity {
         setNaviHeader(opName, officeName);
 
         // krm0219 Outlet
-        String outletDriverYN = "N";
+        String outletDriverYN;
         try {
 
             outletDriverYN = SharedPreferencesHelper.getPrefSignInOutletDriver(getApplicationContext());
@@ -294,7 +293,7 @@ public class MainActivity extends AppBaseActivity {
         }
 
         //POD Scan 권한 : 파트너 사장 또는 Auth:91
-        if (opDefault.equals("Y") || authNo.contains("91")) {
+        if (opDefault.equals("Y") || authNo.contains("91")) { // || opID.equals("karam.kim")) {
             btn_home_scan_delivery_sheet.setVisibility(View.VISIBLE);
             btn_home_scan_delivery_sheet.setOnClickListener(clickListener);
         }
@@ -308,7 +307,8 @@ public class MainActivity extends AppBaseActivity {
 
 
         //
-        checker = new PermissionChecker(this);
+        //
+        PermissionChecker checker = new PermissionChecker(this);
 
         // 권한 여부 체크 (없으면 true, 있으면 false)
         if (checker.lacksPermissions(PERMISSIONS)) {
@@ -409,7 +409,7 @@ public class MainActivity extends AppBaseActivity {
             if (resultCode == Activity.RESULT_OK) {
 
                 String failList = intent.getStringExtra("result");
-                if (failList.length() > 0) {
+                if (failList != null && 0 < failList.length()) {
                     Intent failIntent = new Intent(MainActivity.this, FailListActivity.class);
                     failIntent.putExtra("failList", failList);
                     startActivity(failIntent);
@@ -569,7 +569,7 @@ public class MainActivity extends AppBaseActivity {
                 params.putString("Activity", TAG);
                 params.putString("method", "SetDeliveryUploadData/SetPickupUploadData");
                 DataUtil.mFirebaseAnalytics.logEvent("button_click", params);
-            } catch (Exception e) {
+            } catch (Exception ignored) {
 
             }
 
@@ -603,6 +603,7 @@ public class MainActivity extends AppBaseActivity {
         }
     }
 
+    @SuppressLint("SimpleDateFormat")
     private Boolean DownloadChk() {
         SimpleDateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd");
         dateFormat.setTimeZone(TimeZone.getTimeZone("GMT"));
@@ -688,7 +689,7 @@ public class MainActivity extends AppBaseActivity {
                 params.putString("message", "" + " DB.delete > " + e.toString());
                 DataUtil.mFirebaseAnalytics.logEvent("error_exception", params);
                 Log.e("krm0219", "dbHelper.delete Exception : " + e.toString());
-            } catch (Exception e1) {
+            } catch (Exception ignored) {
 
             }
         }
@@ -710,7 +711,7 @@ public class MainActivity extends AppBaseActivity {
         if (pickup_driver_yn != null && pickup_driver_yn.equals("Y")) {
 
             // gps 켜는 alert 창  -> 객체 하나에만 호출해도 GPS 설정창 문제 없음(기기는 하나)
-            locationManager = (LocationManager) mContext.getSystemService(Context.LOCATION_SERVICE);
+            LocationManager locationManager = (LocationManager) mContext.getSystemService(Context.LOCATION_SERVICE);
             enableGPSSetting(locationManager);
 
             int status = GoogleApiAvailability.getInstance().isGooglePlayServicesAvailable(this);
@@ -805,11 +806,11 @@ public class MainActivity extends AppBaseActivity {
 
     public void setDestroyUserInfo() {
 
-        String api_level = android.os.Build.VERSION.SDK;   // API Level
-        String device_info = android.os.Build.DEVICE;           // Device
-        String device_model = android.os.Build.MODEL;            // Model
-        String device_product = android.os.Build.PRODUCT;          // Product
-        String device_os_version = System.getProperty("os.version"); // OS version
+        String api_level = Integer.toString(Build.VERSION.SDK_INT);     // API Level
+        String device_info = android.os.Build.DEVICE;                   // Device
+        String device_model = android.os.Build.MODEL;                   // Model
+        String device_product = android.os.Build.PRODUCT;               // Product
+        String device_os_version = System.getProperty("os.version");    // OS version
 
         new QuickAppUserInfoUploadHelper.Builder(mContext, opID, "", api_level, device_info,
                 device_model, device_product, device_os_version, "killapp")
@@ -964,6 +965,7 @@ public class MainActivity extends AppBaseActivity {
     }
 
 
+    @SuppressLint("StaticFieldLeak")
     private class saveFCMTokenTask extends AsyncTask<String, Void, Void> {
 
         @Override
@@ -990,7 +992,7 @@ public class MainActivity extends AppBaseActivity {
             http.setRequestMethod("POST");
 
             http.setRequestProperty("content-type", "application/x-www-form-urlencoded");
-            StringBuffer buffer = new StringBuffer();
+            StringBuilder buffer = new StringBuilder();
             buffer.append("user_key").append("=").append(token).append("&");
             buffer.append("op_id").append("=").append(op_id).append("&");
             buffer.append("app_cd").append("=").append("01").append("&");   // 01.Qdrive / 02.QxQuick
@@ -1012,7 +1014,7 @@ public class MainActivity extends AppBaseActivity {
             String str;
 
             while ((str = reader.readLine()) != null) {
-                builder.append(str + "\n");
+                builder.append(str).append("\n");
             }
 
             myResult = builder.toString();
@@ -1037,13 +1039,14 @@ public class MainActivity extends AppBaseActivity {
     }
 
     // NOTIFICATION.  MessageCountAsyncTask
+    @SuppressLint("StaticFieldLeak")
     private class MessageCountAsyncTask extends AsyncTask<Void, Void, ArrayList<Integer>> {
 
-        String qdriver_id;
+        String driverId;
 
-        public MessageCountAsyncTask(String driverID) {
+        MessageCountAsyncTask(String driverID) {
 
-            qdriver_id = driverID;
+            driverId = driverID;
         }
 
         @Override
@@ -1088,7 +1091,7 @@ public class MainActivity extends AppBaseActivity {
                 String yesterday = dateFormat.format(yDate) + " 00:00:00";
 
                 JSONObject job = new JSONObject();
-                job.accumulate("qdriver_id", qdriver_id);
+                job.accumulate("qdriver_id", driverId);
                 job.accumulate("start_date", URLEncoder.encode(yesterday, "UTF-8"));
                 job.accumulate("app_id", DataUtil.appID);
                 job.accumulate("nation_cd", DataUtil.nationCode);
@@ -1115,7 +1118,7 @@ public class MainActivity extends AppBaseActivity {
             try {
 
                 JSONObject job = new JSONObject();
-                job.accumulate("qdriver_id", qdriver_id);
+                job.accumulate("qdriver_id", driverId);
                 job.accumulate("app_id", DataUtil.appID);
                 job.accumulate("nation_cd", DataUtil.nationCode);
 
@@ -1134,11 +1137,6 @@ public class MainActivity extends AppBaseActivity {
         }
     }
 
-    public void refreshMessageData() {
-
-        opID = SharedPreferencesHelper.getSigninOpID(getApplicationContext());
-        initMessageCount(opID);
-    }
 
     private RoundedBitmapDrawable createRoundedBitmapImageDrawableWithBorder(Bitmap bitmap) {
         int bitmapWidthImage = bitmap.getWidth();

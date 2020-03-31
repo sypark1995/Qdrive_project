@@ -62,8 +62,6 @@ public class CustomNotUploadAdapter extends BaseExpandableListAdapter {
 
     private ArrayList<RowItemNotUpload> rowItem;
     private ArrayList<RowItemNotUpload> originalRowItem;
-    private Bitmap myBitmap = null;
-    private Bitmap myBitmap2 = null;
 
     private String[] dx_array = {"NH", "IA", "CR", "MR", "ET"};
     private String[] px_array = {"WA", "RC", "ET"};
@@ -159,16 +157,23 @@ public class CustomNotUploadAdapter extends BaseExpandableListAdapter {
         final RowItemNotUpload row_pos = rowItem.get(groupPosition);
 
         String status = "";
-        if (row_pos.getStat().equals(DELIVERY_FAIL)) {
-            status = context.getResources().getString(R.string.text_d_failed);
-        } else if (row_pos.getStat().equals(DELIVERY_DONE)) {
-            status = context.getResources().getString(R.string.text_delivered);
-        } else if (row_pos.getStat().equals(PICKUP_FAIL)) {
-            status = context.getResources().getString(R.string.text_p_failed);
-        } else if (row_pos.getStat().equals(PICKUP_CANCEL)) {
-            status = context.getResources().getString(R.string.text_p_cancelled);
-        } else if (row_pos.getStat().equals(PICKUP_DONE)) {
-            status = context.getResources().getString(R.string.text_p_done);
+
+        switch (row_pos.getStat()) {
+            case DELIVERY_FAIL:
+                status = context.getResources().getString(R.string.text_d_failed);
+                break;
+            case DELIVERY_DONE:
+                status = context.getResources().getString(R.string.text_delivered);
+                break;
+            case PICKUP_FAIL:
+                status = context.getResources().getString(R.string.text_p_failed);
+                break;
+            case PICKUP_CANCEL:
+                status = context.getResources().getString(R.string.text_p_cancelled);
+                break;
+            case PICKUP_DONE:
+                status = context.getResources().getString(R.string.text_p_done);
+                break;
         }
 
         text_list_item_d_day.setVisibility(View.GONE);
@@ -211,9 +216,10 @@ public class CustomNotUploadAdapter extends BaseExpandableListAdapter {
 
                         Cursor cs3 = dbHelper.get("SELECT address FROM " + DatabaseHelper.DB_TABLE_INTEGRATION_LIST + " WHERE invoice_no='" + layout_list_item_menu_icon.getTag().toString() + "' LIMIT 1");
                         if (cs3 != null) {
+
                             cs3.moveToFirst();
-                            String addr = cs3.getString(cs3.getColumnIndex("address"));
-                            Uri uri = Uri.parse("http://maps.google.co.in/maps?q=" + addr);
+                            String address = cs3.getString(cs3.getColumnIndex("address"));
+                            Uri uri = Uri.parse("http://maps.google.co.in/maps?q=" + address);
                             Intent it = new Intent(Intent.ACTION_VIEW, uri);
                             context.startActivity(it);
                         }
@@ -234,7 +240,8 @@ public class CustomNotUploadAdapter extends BaseExpandableListAdapter {
     public View getChildView(final int groupPosition, int childPosition, boolean isLastChild, View convertView, ViewGroup parent) {
 
         if (convertView == null) {
-            LayoutInflater inflater = (LayoutInflater) context.getSystemService(context.LAYOUT_INFLATER_SERVICE);
+
+            LayoutInflater inflater = (LayoutInflater) context.getSystemService(Activity.LAYOUT_INFLATER_SERVICE);
             convertView = inflater.inflate(R.layout.item_list_upload_failed_child, null);
         }
 
@@ -252,9 +259,9 @@ public class CustomNotUploadAdapter extends BaseExpandableListAdapter {
         TextView text_list_item_child_memo = convertView.findViewById(R.id.text_list_item_child_memo);
 
 
-        LinearLayout layout_list_item_child_requestor = convertView.findViewById(R.id.layout_list_item_child_requestor);
-        TextView text_list_item_child_requestor = convertView.findViewById(R.id.text_list_item_child_requestor);
-        ImageView img_list_item_child_requestor_sign = convertView.findViewById(R.id.img_list_item_child_requestor_sign);
+        LinearLayout layout_list_item_child_requester = convertView.findViewById(R.id.layout_list_item_child_requester);
+        TextView text_list_item_child_requester = convertView.findViewById(R.id.text_list_item_child_requester);
+        ImageView img_list_item_child_requester_sign = convertView.findViewById(R.id.img_list_item_child_requester_sign);
 
         LinearLayout layout_list_item_child_driver = convertView.findViewById(R.id.layout_list_item_child_driver);
         ImageView img_list_item_child_driver_sign = convertView.findViewById(R.id.img_list_item_child_driver_sign);
@@ -270,7 +277,6 @@ public class CustomNotUploadAdapter extends BaseExpandableListAdapter {
 
         final String tracking_no = rowItem.get(groupPosition).getShipping();
         final String receiver = rowItem.get(groupPosition).getName();
-        final String sender = rowItem.get(groupPosition).getSender();
 
 
         if (child.getSecretNoType().equals("T")) {     // Qtalk 안심번호 타입 T - Qnumber 사용
@@ -319,33 +325,37 @@ public class CustomNotUploadAdapter extends BaseExpandableListAdapter {
             String reasonCode = child.getStatReason();
             layout_list_item_child_failed_reason.setVisibility(View.VISIBLE);
 
-            if (child.getStat().equals(DELIVERY_FAIL)) {
+            switch (child.getStat()) {
+                case DELIVERY_FAIL:
 
-                String[] dxStringArray = context.getResources().getStringArray(R.array.delivery_fail_reason_array);
-                for (int i = 0; i < dx_array.length; i++) {
-                    if (dx_array[i].equals(reasonCode)) {
-                        reasonText = dxStringArray[i];
+                    String[] dxStringArray = context.getResources().getStringArray(R.array.delivery_fail_reason_array);
+                    for (int i = 0; i < dx_array.length; i++) {
+                        if (dx_array[i].equals(reasonCode)) {
+                            reasonText = dxStringArray[i];
+                        }
                     }
-                }
-                text_list_item_child_failed_reason.setText(reasonText);
-            } else if (child.getStat().equals(PICKUP_CANCEL)) {
+                    text_list_item_child_failed_reason.setText(reasonText);
+                    break;
+                case PICKUP_CANCEL:
 
-                String[] pxStringArray = context.getResources().getStringArray(R.array.cancel_reason_array);
-                for (int i = 0; i < px_array.length; i++) {
-                    if (px_array[i].equals(reasonCode)) {
-                        reasonText = pxStringArray[i];
+                    String[] pxStringArray = context.getResources().getStringArray(R.array.cancel_reason_array);
+                    for (int i = 0; i < px_array.length; i++) {
+                        if (px_array[i].equals(reasonCode)) {
+                            reasonText = pxStringArray[i];
+                        }
                     }
-                }
-                text_list_item_child_failed_reason.setText(reasonText);
-            } else if (child.getStat().equals(PICKUP_FAIL)) {
+                    text_list_item_child_failed_reason.setText(reasonText);
+                    break;
+                case PICKUP_FAIL:
 
-                String[] pfStringArray = context.getResources().getStringArray(R.array.fail_reason_array);
-                for (int i = 0; i < pf_array.length; i++) {
-                    if (pf_array[i].equals(reasonCode)) {
-                        reasonText = pfStringArray[i];
+                    String[] pfStringArray = context.getResources().getStringArray(R.array.fail_reason_array);
+                    for (int i = 0; i < pf_array.length; i++) {
+                        if (pf_array[i].equals(reasonCode)) {
+                            reasonText = pfStringArray[i];
+                        }
                     }
-                }
-                text_list_item_child_failed_reason.setText(reasonText);
+                    text_list_item_child_failed_reason.setText(reasonText);
+                    break;
             }
         } else {
 
@@ -373,6 +383,7 @@ public class CustomNotUploadAdapter extends BaseExpandableListAdapter {
         String pickupDriverSign = "/QdriveCollector";
         String deliverySign = "/Qdrive";
 
+        Bitmap myBitmap;
         switch (child.getStat()) {
             case DELIVERY_DONE: {        // Delivery   sign 1개
 
@@ -384,8 +395,8 @@ public class CustomNotUploadAdapter extends BaseExpandableListAdapter {
 
                     myBitmap = BitmapFactory.decodeFile(imgFile.getAbsolutePath());
 
-                    text_list_item_child_requestor.setText(context.getResources().getString(R.string.text_receiver));
-                    img_list_item_child_requestor_sign.setImageBitmap(myBitmap);
+                    text_list_item_child_requester.setText(context.getResources().getString(R.string.text_receiver));
+                    img_list_item_child_requester_sign.setImageBitmap(myBitmap);
                     layout_list_item_child_driver.setVisibility(View.GONE);
                 }
                 break;
@@ -408,19 +419,19 @@ public class CustomNotUploadAdapter extends BaseExpandableListAdapter {
 
                     myBitmap = BitmapFactory.decodeFile(imgFile.getAbsolutePath());
 
-                    text_list_item_child_requestor.setText(context.getResources().getString(R.string.text_requestor));
-                    img_list_item_child_requestor_sign.setImageBitmap(myBitmap);
+                    text_list_item_child_requester.setText(context.getResources().getString(R.string.text_requestor));
+                    img_list_item_child_requester_sign.setImageBitmap(myBitmap);
                 }
                 if (imgFile2.exists()) {
 
-                    myBitmap2 = BitmapFactory.decodeFile(imgFile2.getAbsolutePath());
+                    Bitmap myBitmap2 = BitmapFactory.decodeFile(imgFile2.getAbsolutePath());
                     img_list_item_child_driver_sign.setImageBitmap(myBitmap2);
                 }
                 break;
             }
             default:
 
-                layout_list_item_child_requestor.setVisibility(View.GONE);
+                layout_list_item_child_requester.setVisibility(View.GONE);
                 layout_list_item_child_driver.setVisibility(View.GONE);
                 break;
         }
@@ -508,7 +519,6 @@ public class CustomNotUploadAdapter extends BaseExpandableListAdapter {
 
                 ArrayList<UploadData> songjanglist = new ArrayList<>();
                 // 업로드 대상건 로컬 DB 조회
-                DatabaseHelper dbHelper = DatabaseHelper.getInstance();
                 String selectQuery = "SELECT invoice_no" +
                         " , stat " +
                         " , ifnull(rcv_type, '')  as rcv_type" +
@@ -553,11 +563,12 @@ public class CustomNotUploadAdapter extends BaseExpandableListAdapter {
                 if (songjanglist.size() > 0) {
 
                     try {
+
                         Bundle params = new Bundle();
                         params.putString("Activity", TAG);
                         params.putString("method", "SetDeliveryUploadData/SetPickupUploadData");
                         DataUtil.mFirebaseAnalytics.logEvent("button_click", params);
-                    } catch (Exception e) {
+                    } catch (Exception ignored) {
 
                     }
 
@@ -569,7 +580,7 @@ public class CustomNotUploadAdapter extends BaseExpandableListAdapter {
 
                                     try {
                                         rowItem.remove(groupPosition);
-                                    } catch (Exception e) {
+                                    } catch (Exception ignored) {
 
                                     }
 
@@ -659,11 +670,11 @@ public class CustomNotUploadAdapter extends BaseExpandableListAdapter {
         if (query.isEmpty()) {
             rowItem.addAll(originalRowItem);
         } else {
-            ArrayList<RowItemNotUpload> newList = new ArrayList<RowItemNotUpload>();
-            for (RowItemNotUpload rowitem : originalRowItem) {
+            ArrayList<RowItemNotUpload> newList = new ArrayList<>();
+            for (RowItemNotUpload rowItem : originalRowItem) {
                 //이름 or 송장번호 조회
-                if (rowitem.getName().toUpperCase().contains(query) || rowitem.getShipping().toUpperCase().contains(query)) {
-                    newList.add(rowitem);
+                if (rowItem.getName().toUpperCase().contains(query) || rowItem.getShipping().toUpperCase().contains(query)) {
+                    newList.add(rowItem);
                 }
             }
             if (newList.size() > 0) {
@@ -675,7 +686,8 @@ public class CustomNotUploadAdapter extends BaseExpandableListAdapter {
 
     }
 
-    public void setSorting(ArrayList<RowItemNotUpload> sortedItems) {
+    void setSorting(ArrayList<RowItemNotUpload> sortedItems) {
+
         rowItem.clear();
         rowItem.addAll(sortedItems);
         originalRowItem = sortedItems;

@@ -111,10 +111,10 @@ public class AppBaseActivity extends AppCompatActivity {
         nav_list.addHeaderView(header);
         nav_list.setAdapter(adapter);
 
-        // TODO.  QDelivery
+      /*  // TODO.  QDelivery
         if (SharedPreferencesHelper.getSigninOpID(getApplicationContext()).equals("karam.kim")) {
-            //  nav_list.addFooterView(footer);
-        }
+             nav_list.addFooterView(footer);
+        }*/
 
         // sub divider 칼라 없앰
         nav_list.setChildDivider(getResources().getDrawable(R.color.transparent));

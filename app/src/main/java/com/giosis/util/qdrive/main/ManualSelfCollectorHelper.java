@@ -174,6 +174,7 @@ public class ManualSelfCollectorHelper extends ManualHelper {
             super.onPreExecute();
 
             if (progressDialog != null) {
+
                 int maxCount = assignBarcodeList.size();
                 progressDialog.setMax(maxCount);
                 progressDialog.show();
@@ -185,11 +186,12 @@ public class ManualSelfCollectorHelper extends ManualHelper {
 
             ArrayList<String> resultList = new ArrayList<>();
 
-            if (assignBarcodeList != null && assignBarcodeList.size() > 0) {
+            if (assignBarcodeList != null && 0 < assignBarcodeList.size()) {
 
                 String result = null;
                 for (BarcodeData assignData : assignBarcodeList) {
                     if (!TextUtils.isEmpty(assignData.getBarcode())) {
+
                         result = requestSelfCollection(assignData.getBarcode());
                     }
 
@@ -229,6 +231,7 @@ public class ManualSelfCollectorHelper extends ManualHelper {
                     resultMsg = jsonObject.getString("ResultMsg");
 
                     if (resultCode < 0) {
+
                         failCount++;
 
                         if (!resultMsg.equals("")) { //웹서비스에서 Msg 리턴

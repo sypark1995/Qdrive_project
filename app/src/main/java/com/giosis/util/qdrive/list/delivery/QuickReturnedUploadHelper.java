@@ -328,8 +328,7 @@ public class QuickReturnedUploadHelper extends ManualHelper {
         contentVal.put("retry_dt", "");
         contentVal.put("punchOut_stat", "S");
 
-        DatabaseHelper dbHelper = DatabaseHelper.getInstance();
-        dbHelper.update(DatabaseHelper.DB_TABLE_INTEGRATION_LIST, contentVal,
+        DatabaseHelper.getInstance().update(DatabaseHelper.DB_TABLE_INTEGRATION_LIST, contentVal,
                 "partner_ref_no=? COLLATE NOCASE " + "and punchOut_stat <> 'S' " + "and reg_id = ?", new String[]{invoiceNo, opId});
     }
 }

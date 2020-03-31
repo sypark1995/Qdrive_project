@@ -40,9 +40,8 @@ public class ManualShippingInfoHelper extends ManualHelper {
         public Builder(Context context, ArrayList<BarcodeData> assignBarcodeList) {
 
             this.context = context;
-            this.assignBarcodeList = assignBarcodeList;
-
             this.networkType = NetworkUtil.getNetworkType(context);
+            this.assignBarcodeList = assignBarcodeList;
         }
 
         public ManualShippingInfoHelper build() {
@@ -66,18 +65,19 @@ public class ManualShippingInfoHelper extends ManualHelper {
 
 
     class ShippingInfoAsyncTask extends AsyncTask<Void, Integer, ArrayList<ShippingInfoResult>> {
-        int progress = 0;
 
         @Override
         protected ArrayList<ShippingInfoResult> doInBackground(Void... params) {
 
             ArrayList<ShippingInfoResult> resultList = new ArrayList<>();
 
-            if (assignBarcodeList != null && assignBarcodeList.size() > 0) {
+            if (assignBarcodeList != null && 0 < assignBarcodeList.size()) {
 
                 ShippingInfoResult result = null;
+
                 for (BarcodeData assignData : assignBarcodeList) {
                     if (!TextUtils.isEmpty(assignData.getBarcode())) {
+
                         result = requestShippingInfo(assignData.getBarcode());
                     }
 
@@ -91,7 +91,6 @@ public class ManualShippingInfoHelper extends ManualHelper {
 
         @Override
         protected void onProgressUpdate(Integer... values) {
-
             super.onProgressUpdate(values);
         }
 

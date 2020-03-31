@@ -248,8 +248,7 @@ public class SettingActivity extends AppCompatActivity {
 
                 try {
 
-                    DatabaseHelper dbHelper = DatabaseHelper.getInstance();
-                    int delete = dbHelper.delete(DatabaseHelper.DB_TABLE_INTEGRATION_LIST, "");
+                    int delete = DatabaseHelper.getInstance().delete(DatabaseHelper.DB_TABLE_INTEGRATION_LIST, "");
 
                     Log.e("krm0219", "Delete : " + delete);
 

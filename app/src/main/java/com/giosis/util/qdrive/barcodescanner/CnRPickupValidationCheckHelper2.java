@@ -1,5 +1,6 @@
 package com.giosis.util.qdrive.barcodescanner;
 
+import android.annotation.SuppressLint;
 import android.app.AlertDialog;
 import android.content.ContentValues;
 import android.content.Context;
@@ -96,6 +97,7 @@ public class CnRPickupValidationCheckHelper2 extends ManualHelper {
         resultDialog.show();
     }
 
+    @SuppressLint("StaticFieldLeak")
     class CnRPickupValidationTask extends AsyncTask<Void, Void, CnRPickupResult> {
 
         @Override
@@ -114,18 +116,17 @@ public class CnRPickupValidationCheckHelper2 extends ManualHelper {
 
                     boolean isDBDuplicate = checkDBDuplicate(result.getResultObject().getContrNo(), result.getResultObject().getInvoiceNo());
 
-                    String requestor = "";
+                    String requester;
                     Log.e("krm0219", "  DB Duplicate  > " + isDBDuplicate);
 
                     if (isDBDuplicate) {
 
-                        requestor = getCnrRequestor(result.getResultObject().getInvoiceNo());
+                        requester = getCnrRequester(result.getResultObject().getInvoiceNo());
                     } else {
 
-                        requestor = insertCnRData(result.getResultObject());
+                        requester = insertCnRData(result.getResultObject());
                     }
-
-                    Log.e("krm0219", "requestor  > " + requestor);
+                    Log.e("krm0219", "requester  > " + requester);
 
                     if (eventListener != null)
                         eventListener.OnCnRPickupValidationCheckResult(result);
@@ -213,33 +214,30 @@ public class CnRPickupValidationCheckHelper2 extends ManualHelper {
 
         private boolean checkDBDuplicate(String contrNo, String invoiceNo) {
 
-            DatabaseHelper dbHelper = DatabaseHelper.getInstance();
-
             String selectQuery = "SELECT  partner_ref_no, invoice_no, stat, rcv_nm, sender_nm "
                     + " FROM " + DatabaseHelper.DB_TABLE_INTEGRATION_LIST + " WHERE invoice_no= '" + invoiceNo + "'" + " and contr_no= '" + contrNo + "'";
-            Cursor cs = dbHelper.get(selectQuery);
+            Cursor cs = DatabaseHelper.getInstance().get(selectQuery);
             return 0 < cs.getCount();
         }
 
 
-        private String getCnrRequestor(String invoiceNo) {
+        private String getCnrRequester(String invoiceNo) {
 
-            String requestor = "";
+            String requester = "";
             String barcodeNo = invoiceNo.trim().toUpperCase();
 
-            DatabaseHelper dbHelper = DatabaseHelper.getInstance();
             String selectQuery = "SELECT * FROM " + DatabaseHelper.DB_TABLE_INTEGRATION_LIST + " WHERE invoice_no = '" + barcodeNo + "'";
-            Cursor cursor = dbHelper.get(selectQuery);
+            Cursor cursor = DatabaseHelper.getInstance().get(selectQuery);
 
             if (0 < cursor.getCount()) {
                 if (cursor.moveToFirst()) {
                     do {
-                        requestor = cursor.getString(cursor.getColumnIndex("req_nm"));
+                        requester = cursor.getString(cursor.getColumnIndex("req_nm"));
                     } while (cursor.moveToNext());
                 }
             }
 
-            return requestor;
+            return requester;
         }
 
 
@@ -276,9 +274,8 @@ public class CnRPickupValidationCheckHelper2 extends ManualHelper {
                 contentVal.put("secret_no_type", "");
                 contentVal.put("secret_no", "");
 
-                DatabaseHelper dbHelper = DatabaseHelper.getInstance();
-                dbHelper.insert(DatabaseHelper.DB_TABLE_INTEGRATION_LIST, contentVal);
-            } catch (Exception e) {
+                DatabaseHelper.getInstance().insert(DatabaseHelper.DB_TABLE_INTEGRATION_LIST, contentVal);
+            } catch (Exception ignored) {
 
             }
 

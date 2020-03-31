@@ -195,7 +195,7 @@
             android:screenOrientation="portrait"
             android:windowSoftInputMode="adjustNothing" />
         <activity
-            android:name="com.giosis.util.qdrive.main.SigningActivity"
+            android:name="com.giosis.util.qdrive.main.SelfCollectionDoneActivity"
             android:configChanges="orientation|keyboardHidden"
             android:screenOrientation="portrait"
             android:windowSoftInputMode="stateAlwaysHidden|adjustPan" />

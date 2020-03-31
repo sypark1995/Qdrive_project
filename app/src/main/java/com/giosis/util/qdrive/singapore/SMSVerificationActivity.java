@@ -416,8 +416,11 @@ public class SMSVerificationActivity extends AppCompatActivity {
                     }
                 });
 
-                AlertDialog alertDialog = builder.create();
-                alertDialog.show();
+                try {
+
+                    builder.show();
+                } catch (Exception ignored) {
+                }
             } else {
 
                 edit_verify_4_digit.requestFocus();

@@ -285,8 +285,7 @@ public class List_UploadFailedFragment extends Fragment implements OnQueryTextLi
 
         opID = SharedPreferencesHelper.getSigninOpID(getActivity());
 
-        DatabaseHelper dbHelper = DatabaseHelper.getInstance();
-        Cursor cs2 = dbHelper.get("SELECT * FROM " + DatabaseHelper.DB_TABLE_INTEGRATION_LIST + " WHERE punchOut_stat <> 'S' and chg_dt is not null and reg_id='" + opID + "' order by " + orderby);
+        Cursor cs2 = DatabaseHelper.getInstance().get("SELECT * FROM " + DatabaseHelper.DB_TABLE_INTEGRATION_LIST + " WHERE punchOut_stat <> 'S' and chg_dt is not null and reg_id='" + opID + "' order by " + orderby);
 
         rowItems = new ArrayList<>();
 

@@ -119,8 +119,8 @@ public class DeliveryFailedUploadHelper extends ManualHelper {
 
         this.networkType = builder.networkType;
         this.eventListener = builder.eventListener;
-        this.progressDialog = getProgressDialog(this.context);
-        this.resultDialog = getResultAlertDialog(this.context);
+        this.progressDialog = getProgressDialog(context);
+        this.resultDialog = getResultAlertDialog(context);
     }
 
     private ProgressDialog getProgressDialog(Context context) {
@@ -210,9 +210,7 @@ public class DeliveryFailedUploadHelper extends ManualHelper {
             } catch (Exception e) {
 
                 Log.e("Exception", TAG + "  onPostExecute Exception : " + e.toString());
-
-                String msg = String.format(context.getResources().getString(R.string.text_upload_fail_count1), 1, e.toString());
-                Toast.makeText(context, msg, Toast.LENGTH_SHORT).show();
+                Toast.makeText(context, "Error.\n" + e.toString(), Toast.LENGTH_SHORT).show();
             }
         }
 
@@ -342,8 +340,7 @@ public class DeliveryFailedUploadHelper extends ManualHelper {
         contentVal.put("rev_type", "VL");
         contentVal.put("punchOut_stat", "S");
 
-        DatabaseHelper dbHelper = DatabaseHelper.getInstance();
-        dbHelper.update(DatabaseHelper.DB_TABLE_INTEGRATION_LIST, contentVal,
+        DatabaseHelper.getInstance().update(DatabaseHelper.DB_TABLE_INTEGRATION_LIST, contentVal,
                 "partner_ref_no=? COLLATE NOCASE " + "and punchOut_stat <> 'S' " + "and reg_id = ?", new String[]{invoiceNo, opId});
     }
 }

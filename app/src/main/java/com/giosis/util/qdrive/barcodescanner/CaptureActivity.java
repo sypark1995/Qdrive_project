@@ -84,7 +84,7 @@ import com.giosis.util.qdrive.list.pickup.PickupAddScanActivity;
 import com.giosis.util.qdrive.list.pickup.PickupDoneActivity;
 import com.giosis.util.qdrive.list.pickup.PickupTakeBackActivity;
 import com.giosis.util.qdrive.main.ManualPodUploadHelper;
-import com.giosis.util.qdrive.main.SigningActivity;
+import com.giosis.util.qdrive.main.SelfCollectionDoneActivity;
 import com.giosis.util.qdrive.singapore.R;
 import com.giosis.util.qdrive.singapore.UploadData;
 import com.giosis.util.qdrive.util.BarcodeType;
@@ -132,7 +132,6 @@ public final class CaptureActivity extends AppCompatActivity implements SurfaceH
     private static final int REQUEST_PICKUP_CNR = 11;
     private static final int REQUEST_PICKUP_ADD_SCAN = 12;
     private static final int REQUEST_PICKUP_TAKE_BACK = 13;
-
     private static final int REQUEST_SELF_COLLECTION = 20;           //2016-09-09 eylee
     private static final int REQUEST_POD_SCAN = 21;
 
@@ -151,7 +150,7 @@ public final class CaptureActivity extends AppCompatActivity implements SurfaceH
     public static final String TOAST = "toast";
 
 
-    // krm0219
+    // View
     FrameLayout layout_top_back;
     TextView text_top_title;
 
@@ -206,7 +205,7 @@ public final class CaptureActivity extends AppCompatActivity implements SurfaceH
 
     int mScanCount = 0;
     private ArrayList<BarcodeListData> scanBarcodeArrayList = null;
-    private InputBarcodeNoListAdapter inputBarcodeNoListAdapter;
+    private InputBarcodeNoListAdapter scanBarcodeNoListAdapter;
     // resume 시 recreate 할 data list
     private ArrayList<String> barcodeList = new ArrayList<>();
     private ArrayList<ChangeDriverResult.ResultObject> changeDriverObjectArrayList = new ArrayList<>();
@@ -384,37 +383,17 @@ public final class CaptureActivity extends AppCompatActivity implements SurfaceH
                 }
             }
             break;
-            case BarcodeType.TYPE_SCAN_CAPTURE:
-            case BarcodeType.SELF_COLLECTION: {
-
-                text_top_title.setText(context.getResources().getString(R.string.text_title_scan_barcode));
-                btn_capture_barcode_confirm.setText(context.getResources().getString(R.string.button_next_step2));
-
-                String podCount = getScanDeliveryCount();
-                text_capture_scan_count.setText(podCount);
-
-                if (0 < Integer.parseInt(podCount)) {
-
-                    barcode_pod_upload.setVisibility(View.VISIBLE);
-                } else {
-
-                    barcode_pod_upload.setVisibility(View.GONE);
-                }
-            }
-            break;
         }
 
 
-        inputBarcodeNoListAdapter = new InputBarcodeNoListAdapter(this, scanBarcodeArrayList, mScanType);
-        list_capture_scan_barcode.setAdapter(inputBarcodeNoListAdapter);
+        scanBarcodeNoListAdapter = new InputBarcodeNoListAdapter(this, scanBarcodeArrayList, mScanType);
+        list_capture_scan_barcode.setAdapter(scanBarcodeNoListAdapter);
 
         if (0 < scanBarcodeArrayList.size()) {
 
             list_capture_scan_barcode.setSelection(scanBarcodeArrayList.size() - 1);
         }
 
-
-        handler = null;
 
         historyManager = new HistoryManager(this);
         historyManager.clearHistory();
@@ -425,6 +404,7 @@ public final class CaptureActivity extends AppCompatActivity implements SurfaceH
         beepManagerDuple = new BeepManager(this, 3);    // 삐비~
 
 
+        handler = null;
         m_sensor_manager = (SensorManager) getSystemService(SENSOR_SERVICE);
         m_light_sensor = m_sensor_manager.getDefaultSensor(Sensor.TYPE_LIGHT);
 
@@ -459,7 +439,6 @@ public final class CaptureActivity extends AppCompatActivity implements SurfaceH
 
         // 블루투스 초기화
         initBluetoothDevice();
-
         // 초기화
         initManualScanViews(mScanType);
 
@@ -480,10 +459,10 @@ public final class CaptureActivity extends AppCompatActivity implements SurfaceH
 
 
     private void initBluetoothDevice() {
-        // Get local Bluetooth adapter
+        // Get local Bluetooth adapter        // Bluetooth 지원 여부 확인
         mBluetoothAdapter = BluetoothAdapter.getDefaultAdapter();
 
-        // If the adapter is null, then Bluetooth is not supported
+        // If the adapter is null, then Bluetooth is not supported          // Bluetooth 지원하지 않음
         if (mBluetoothAdapter == null) {
 
             Toast.makeText(this, context.getResources().getString(R.string.msg_bluetooth_not_supported), Toast.LENGTH_LONG).show();
@@ -502,7 +481,6 @@ public final class CaptureActivity extends AppCompatActivity implements SurfaceH
         byte[] temp;
 
         SharedPreferences app_preferences = PreferenceManager.getDefaultSharedPreferences(this);
-
         KTSyncData.AutoConnect = app_preferences.getBoolean("Auto Connect", false);
         KTSyncData.AttachTimestamp = app_preferences.getBoolean("AttachTimeStamp", false);
         KTSyncData.AttachType = app_preferences.getBoolean("AttachBarcodeType", false);
@@ -511,7 +489,6 @@ public final class CaptureActivity extends AppCompatActivity implements SurfaceH
         KTSyncData.DataDelimiter = temp[0] - '0';
         temp = app_preferences.getString("Record Delimiter", "1").getBytes();
         KTSyncData.RecordDelimiter = temp[0] - '0';
-
         KTSyncData.AttachLocation = app_preferences.getBoolean("AttachLocationData", false);
         KTSyncData.SyncNonCompliant = app_preferences.getBoolean("SyncNonCompliant", false);
         KTSyncData.AttachQuantity = app_preferences.getBoolean("AttachQuantity", false);
@@ -654,7 +631,7 @@ public final class CaptureActivity extends AppCompatActivity implements SurfaceH
             try {
 
                 scanBarcodeArrayList.clear();
-                inputBarcodeNoListAdapter.notifyDataSetChanged();
+                scanBarcodeNoListAdapter.notifyDataSetChanged();
 
                 if (mScanType.equals(BarcodeType.CONFIRM_MY_DELIVERY_ORDER) || mScanType.equals(BarcodeType.CHANGE_DELIVERY_DRIVER)
                         || mScanType.equals(BarcodeType.PICKUP_CNR) || mScanType.equals(BarcodeType.PICKUP_SCAN_ALL)
@@ -674,7 +651,7 @@ public final class CaptureActivity extends AppCompatActivity implements SurfaceH
                         mScanCount = scanBarcodeArrayList.size();
                         text_capture_scan_count.setText(String.valueOf(mScanCount));
 
-                        inputBarcodeNoListAdapter.notifyDataSetChanged();
+                        scanBarcodeNoListAdapter.notifyDataSetChanged();
                         list_capture_scan_barcode.setSelection(0);
                         list_capture_scan_barcode.smoothScrollToPosition(0);
                     }
@@ -710,7 +687,7 @@ public final class CaptureActivity extends AppCompatActivity implements SurfaceH
 
                     text_capture_scan_count.setText(String.valueOf(mScanCount));
 
-                    inputBarcodeNoListAdapter.notifyDataSetChanged();
+                    scanBarcodeNoListAdapter.notifyDataSetChanged();
                     list_capture_scan_barcode.setSelection(0);
                     list_capture_scan_barcode.smoothScrollToPosition(0);
                 }
@@ -721,14 +698,22 @@ public final class CaptureActivity extends AppCompatActivity implements SurfaceH
                 Toast.makeText(CaptureActivity.this, context.getResources().getString(R.string.text_data_error), Toast.LENGTH_SHORT).show();
 
                 scanBarcodeArrayList.clear();
-                inputBarcodeNoListAdapter.notifyDataSetChanged();
+                scanBarcodeNoListAdapter.notifyDataSetChanged();
                 removeBarcodeListInstance();
             }
         } else if (mScanType.equals(BarcodeType.TYPE_SCAN_CAPTURE) || mScanType.equals(BarcodeType.SELF_COLLECTION)) {
             // Scan Sheet Delivery 경우 데이터초기화 CameraActivity 에서 돌아오는경우 아답터초기화
 
+            text_top_title.setText(context.getResources().getString(R.string.text_title_scan_barcode));
+            btn_capture_barcode_confirm.setText(context.getResources().getString(R.string.button_next_step2));
+
+            if (mScanType.equals(BarcodeType.SELF_COLLECTION)) {
+
+                btn_capture_barcode_confirm.setText(context.getResources().getString(R.string.button_next));
+            }
+
             scanBarcodeArrayList.clear();
-            inputBarcodeNoListAdapter.notifyDataSetChanged();
+            scanBarcodeNoListAdapter.notifyDataSetChanged();
 
             String podCount = getScanDeliveryCount();
             text_capture_scan_count.setText(podCount);
@@ -738,7 +723,6 @@ public final class CaptureActivity extends AppCompatActivity implements SurfaceH
             } else {
                 barcode_pod_upload.setVisibility(View.GONE);
             }
-            btn_capture_barcode_confirm.setText(context.getResources().getString(R.string.button_next_step2));
         }
 
         inactivityTimer.onResume();
@@ -754,6 +738,7 @@ public final class CaptureActivity extends AppCompatActivity implements SurfaceH
 
                 case R.id.layout_top_back: {
 
+                    onResetButtonClick();
                     finish();
                 }
                 break;
@@ -837,6 +822,7 @@ public final class CaptureActivity extends AppCompatActivity implements SurfaceH
 
                     // Bluetooth 지원 && 비활성화 상태
                     if (!mBluetoothAdapter.isEnabled()) {
+
                         Intent intent = new Intent(BluetoothAdapter.ACTION_REQUEST_ENABLE);
                         startActivityForResult(intent, REQUEST_ENABLE_BT);
                     }
@@ -1484,7 +1470,7 @@ public final class CaptureActivity extends AppCompatActivity implements SurfaceH
 
                 beepManager.playBeepSoundAndVibrate();*/
 
-
+                //TODO
                 // edit.  2020.03  배포 후 이상없으면 위에 내용 삭제하기     by krm0219
                 final String scanNo = strBarcodeNo;
 
@@ -1609,17 +1595,18 @@ public final class CaptureActivity extends AppCompatActivity implements SurfaceH
 
                 break;
             }
-            case BarcodeType.SELF_COLLECTION:       // 2016-09-20 eylee
-
-                beepManager.playBeepSoundAndVibrate();
+            case BarcodeType.SELF_COLLECTION: {     // 2016-09-20 eylee
 
                 if (!isInvoiceCodeRule(strBarcodeNo, mScanType)) {
 
+                    beepManagerError.playBeepSoundAndVibrate();
                     Toast toast = Toast.makeText(this, context.getResources().getString(R.string.msg_invalid_scan), Toast.LENGTH_SHORT);
                     toast.setGravity(Gravity.CENTER_HORIZONTAL, 0, 0);
                     toast.show();
                     return;
                 }
+
+                beepManager.playBeepSoundAndVibrate();
 
                 //2016-09-12 eylee nq 끼리만 self collector 가능하게 수정하기
                 if (!scanBarcodeArrayList.isEmpty()) {
@@ -1638,7 +1625,10 @@ public final class CaptureActivity extends AppCompatActivity implements SurfaceH
                 } else {
                     isNonQ10QFSOrder = isNonQ10QFSOrderForSelfCollection(strBarcodeNo);
                 }
+
+                addScannedBarcode(strBarcodeNo, "checkValidation - SELF_COLLECTION");
                 break;
+            }
             default: {
 
                 beepManager.playBeepSoundAndVibrate();
@@ -1657,15 +1647,13 @@ public final class CaptureActivity extends AppCompatActivity implements SurfaceH
 
 
         BarcodeListData data = new BarcodeListData();
+        data.setBarcode(barcodeNo.toUpperCase());
+        data.setState("NONE");
 
         if (mScanType.equals(BarcodeType.CHANGE_DELIVERY_DRIVER)) {
 
             data.setBarcode(changeDriverResult.getTrackingNo() + "  |  " + changeDriverResult.getStatus() + "  |  " + changeDriverResult.getCurrentDriver());
-        } else {
-
-            data.setBarcode(barcodeNo.toUpperCase());
         }
-        data.setState("NONE");
 
 
         switch (mScanType) {
@@ -1688,7 +1676,7 @@ public final class CaptureActivity extends AppCompatActivity implements SurfaceH
                 }
 
                 scanBarcodeArrayList.add(0, data);
-                inputBarcodeNoListAdapter.notifyDataSetChanged();
+                scanBarcodeNoListAdapter.notifyDataSetChanged();
                 list_capture_scan_barcode.setSelection(0);
                 list_capture_scan_barcode.smoothScrollToPosition(0);
 
@@ -1717,7 +1705,7 @@ public final class CaptureActivity extends AppCompatActivity implements SurfaceH
                     barcodeList.add(barcodeNo);
 
                     scanBarcodeArrayList.set(position, data);
-                    inputBarcodeNoListAdapter.notifyDataSetChanged();
+                    scanBarcodeNoListAdapter.notifyDataSetChanged();
                     list_capture_scan_barcode.setSelection(0);
                     list_capture_scan_barcode.smoothScrollToPosition(0);
                 } else {
@@ -1725,7 +1713,7 @@ public final class CaptureActivity extends AppCompatActivity implements SurfaceH
                     mScanCount--;
                     text_capture_scan_count.setText(String.valueOf(mScanCount));
 
-                    inputBarcodeNoListAdapter.notifyDataSetChanged();
+                    scanBarcodeNoListAdapter.notifyDataSetChanged();
 
                     AlertDialog.Builder alertDialog = new AlertDialog.Builder(this);
                     alertDialog.setTitle(context.getResources().getString(R.string.text_warning));
@@ -1760,9 +1748,9 @@ public final class CaptureActivity extends AppCompatActivity implements SurfaceH
                 break;
             default:
                 //스캔 시 최근 스캔한 바코드가 아래로 추가됨.
-                // maybe.. DELIVERY DONE
+                // maybe.. DELIVERY DONE, SELF COLLECTION
                 scanBarcodeArrayList.add(data);
-                inputBarcodeNoListAdapter.notifyDataSetChanged();
+                scanBarcodeNoListAdapter.notifyDataSetChanged();
                 break;
         }
 
@@ -1825,7 +1813,7 @@ public final class CaptureActivity extends AppCompatActivity implements SurfaceH
             data.setState(result);
 
             scanBarcodeArrayList.set(scanBarcodeArrayList.size() - 1, data);
-            inputBarcodeNoListAdapter.notifyDataSetChanged();
+            scanBarcodeNoListAdapter.notifyDataSetChanged();
         }
 
         // 교체 후 Adapter.notifyDataSetChanged() 메서드로 listview  변경 add comment by eylee 2016-09-08
@@ -1951,7 +1939,6 @@ public final class CaptureActivity extends AppCompatActivity implements SurfaceH
         String receiverName = "";
         boolean diffReceiverName = false;
         ArrayList<BarcodeListData> deliveryBarcodeList = new ArrayList<>();
-
 
         for (int i = 0; i < scanBarcodeArrayList.size(); i++) {
 
@@ -2148,7 +2135,7 @@ public final class CaptureActivity extends AppCompatActivity implements SurfaceH
             text_capture_scan_count.setText(String.valueOf(mScanCount));
 
             scanBarcodeArrayList.clear();
-            inputBarcodeNoListAdapter.notifyDataSetChanged();
+            scanBarcodeNoListAdapter.notifyDataSetChanged();
             historyManager.clearHistory();
 
 
@@ -2163,7 +2150,7 @@ public final class CaptureActivity extends AppCompatActivity implements SurfaceH
                     data.setState("FAIL");
                     scanBarcodeArrayList.add(i, data);
                 }
-                inputBarcodeNoListAdapter.notifyDataSetChanged();
+                scanBarcodeNoListAdapter.notifyDataSetChanged();
             }
         }
 
@@ -2299,7 +2286,7 @@ public final class CaptureActivity extends AppCompatActivity implements SurfaceH
     }
 
 
-    // NOTIFICATION.  Self-collection  /  Scan delivery sheet
+    // NOTIFICATION.  SELF_COLLECTION  /  Scan delivery sheet
     /*
      * 송장번호 규칙에 맞는지 체크한후 프리뷰영역에 이미지를 보여준다.
      * modified : 2016-09-09 eylee self-collection 복수 건 처리 add
@@ -2328,7 +2315,7 @@ public final class CaptureActivity extends AppCompatActivity implements SurfaceH
             Intent intentCamera = new Intent(this, CameraActivity.class);
             intentCamera.putExtra("barcode", scanBarcodeArrayList.get(0).getBarcode());
             this.startActivityForResult(intentCamera, REQUEST_POD_SCAN);
-        } else {    // SELF COLLECTOR            //복수건 가져다가 self-collection by 2016-09-09
+        } else {    // SELF_COLLECTION            //복수건 가져다가 self-collection by 2016-09-09
 
             // 넘기는 데이터 재정의 스캔성공된 것들만 보낸다.
             ArrayList<BarcodeListData> newBarcodeNoList = new ArrayList<>();
@@ -2351,7 +2338,7 @@ public final class CaptureActivity extends AppCompatActivity implements SurfaceH
 
             if (0 < newBarcodeNoList.size()) {
 
-                Intent intentSign = new Intent(this, SigningActivity.class);
+                Intent intentSign = new Intent(this, SelfCollectionDoneActivity.class);
                 intentSign.putExtra("title", title);
                 intentSign.putExtra("data", newBarcodeNoList);
                 intentSign.putExtra("nonq10qfs", String.valueOf(isNonQ10QFSOrder));    //09-12 add isNonQ10QFSOrder

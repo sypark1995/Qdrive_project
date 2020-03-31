@@ -1,5 +1,6 @@
 package com.giosis.util.qdrive.util;
 
+import android.annotation.SuppressLint;
 import android.content.ContentValues;
 import android.content.Context;
 import android.database.Cursor;
@@ -9,14 +10,12 @@ import android.util.Log;
 
 import com.giosis.util.qdrive.singapore.MyApplication;
 
-import java.io.File;
-
+@SuppressLint("StaticFieldLeak")
 public class DatabaseHelper extends SQLiteOpenHelper {
     private static String TAG = "DatabaseHelper";
 
     private static DatabaseHelper mInstance = null;
     private static SQLiteDatabase sqLiteDatabase;
-    private final Context mContext;
 
     private static final int DB_VERSION = 1;
     private static final String DB_NAME = "QdriveDB.db";
@@ -44,7 +43,7 @@ public class DatabaseHelper extends SQLiteOpenHelper {
 
 
     // 삭제 예정 (login.js 네이티브로 수정)
-    public static final String DB_TABLE_USER_INFO = "USER_INFO";
+    private static final String DB_TABLE_USER_INFO = "USER_INFO";
 
     private static final String CREATE_TABLE_USER_INFO = "CREATE TABLE IF NOT EXISTS " +
             DB_TABLE_USER_INFO + "(opId unique, sort_idx)";
@@ -57,7 +56,6 @@ public class DatabaseHelper extends SQLiteOpenHelper {
 
             Log.e(TAG, "DB getInstance");
             mInstance = LazyHolder.INSTANCE;
-            //  sqLiteDatabase = mInstance.openDatabase();
             sqLiteDatabase = mInstance.getWritableDatabase();
         }
 
@@ -72,8 +70,6 @@ public class DatabaseHelper extends SQLiteOpenHelper {
 
     private DatabaseHelper(final Context context) {
         super(context, DB_NAME, null, DB_VERSION);
-
-        this.mContext = context;
     }
 
     // 최초 DB를 만들 때 한번만 호출!
@@ -159,26 +155,5 @@ public class DatabaseHelper extends SQLiteOpenHelper {
             sqLiteDatabase.close();
             mInstance = null;
         }
-    }
-
-
-    private SQLiteDatabase openDatabase() {
-
-        if (sqLiteDatabase != null) {
-            sqLiteDatabase.close();
-        }
-
-        String DB_PATH = mContext.getApplicationInfo().dataDir + "/databases/" + DB_NAME + ".db";
-        Log.e("DB", "DB PATH : " + DB_PATH);
-
-       /* String getPackageName = mContext.getApplicationContext().getPackageName();
-        String dbFullPathName = "/data/data/" + getPackageName + "/databases/" + DB_NAME + ".db";
-        SQLiteDatabase db = SQLiteDatabase.openDatabase(dbFullPathName, null, SQLiteDatabase.OPEN_READWRITE);*/
-
-        File dbFile = new File(DB_PATH);
-        boolean hasDB = dbFile.exists();
-        Log.e("DB", "Has DB : " + hasDB);
-
-        return SQLiteDatabase.openDatabase(DB_PATH, null, SQLiteDatabase.OPEN_READWRITE);
     }
 }

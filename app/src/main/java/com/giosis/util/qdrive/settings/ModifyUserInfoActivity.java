@@ -219,6 +219,7 @@ public class ModifyUserInfoActivity extends AppCompatActivity {
 
             if (resultCode != 0) {
 
+
                 AlertDialog.Builder builder = new AlertDialog.Builder(ModifyUserInfoActivity.this);
                 builder.setTitle(getResources().getString(R.string.text_alert));
                 builder.setMessage(resultMsg);
@@ -230,8 +231,11 @@ public class ModifyUserInfoActivity extends AppCompatActivity {
                     }
                 });
 
-                AlertDialog alertDialog = builder.create();
-                alertDialog.show();
+                try {
+
+                    builder.show();
+                } catch (Exception ignored) {
+                }
             } else {
 
                 AlertDialog.Builder builder = new AlertDialog.Builder(ModifyUserInfoActivity.this);
@@ -247,8 +251,11 @@ public class ModifyUserInfoActivity extends AppCompatActivity {
                     }
                 });
 
-                AlertDialog alertDialog = builder.create();
-                alertDialog.show();
+                try {
+
+                    builder.show();
+                } catch (Exception ignored) {
+                }
             }
         }
 

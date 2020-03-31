@@ -281,7 +281,7 @@ public class PickupDoneActivity extends AppCompatActivity {
             try {
 
                 Bundle params = new Bundle();
-                params.putString("Activity", TAG + "- SCAN ALL");
+                params.putString("Activity", TAG);
                 params.putString("method", "SetPickupUploadData_ScanAll");
                 DataUtil.mFirebaseAnalytics.logEvent("button_click", params);
             } catch (Exception e) {

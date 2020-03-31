@@ -373,7 +373,7 @@ public class DeliveryFailedActivity extends AppCompatActivity implements Camera2
                 Log.e("Firebase", "mFirebaseAnalytics error : " + e.toString());
             }
 
-            new DeliveryFailedUploadHelper.Builder(this, opID, officeCode, deviceID,
+            new DeliveryFailedUploadHelper.Builder(DeliveryFailedActivity.this, opID, officeCode, deviceID,
                     mStrWaybillNo, driverMemo, img_sign_d_f_visit_log,
                     MemoryStatus.getAvailableInternalMemorySize(), latitude, longitude)
                     .setOnServerEventListener(new OnServerEventListener() {

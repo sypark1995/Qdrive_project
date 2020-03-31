@@ -564,8 +564,8 @@ public class PickupFailedActivity extends AppCompatActivity implements Camera2AP
             s_day = "0" + s_day;
         }
         rest_dt = s_year + "-" + s_month + "-" + s_day;
-        DatabaseHelper dbHelper = DatabaseHelper.getInstance();
-        Cursor cs = dbHelper.get("SELECT title FROM " + DatabaseHelper.DB_TABLE_REST_DAYS + " WHERE rest_dt = '" + rest_dt + "'");
+
+        Cursor cs = DatabaseHelper.getInstance().get("SELECT title FROM " + DatabaseHelper.DB_TABLE_REST_DAYS + " WHERE rest_dt = '" + rest_dt + "'");
 
         if (cs != null && cs.moveToFirst()) {
             rtn = cs.getString(cs.getColumnIndex("title"));

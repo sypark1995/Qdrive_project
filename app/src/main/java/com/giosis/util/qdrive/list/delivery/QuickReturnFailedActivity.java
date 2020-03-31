@@ -407,8 +407,8 @@ public class QuickReturnFailedActivity extends AppCompatActivity implements Came
 
 
     public void getDeliveryInfo(String barcodeNo) {
-        DatabaseHelper dbHelper = DatabaseHelper.getInstance();
-        Cursor cursor = dbHelper.get("SELECT rcv_nm, sender_nm FROM " + DatabaseHelper.DB_TABLE_INTEGRATION_LIST + " WHERE invoice_no='" + barcodeNo + "' COLLATE NOCASE");
+
+        Cursor cursor = DatabaseHelper.getInstance().get("SELECT rcv_nm, sender_nm FROM " + DatabaseHelper.DB_TABLE_INTEGRATION_LIST + " WHERE invoice_no='" + barcodeNo + "' COLLATE NOCASE");
 
 
         if (cursor.moveToFirst()) {

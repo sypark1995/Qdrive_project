@@ -144,13 +144,13 @@
         android:orientation="horizontal">
 
         <LinearLayout
-            android:id="@+id/layout_list_item_child_requestor"
+            android:id="@+id/layout_list_item_child_requester"
             android:layout_width="145dp"
             android:layout_height="match_parent"
             android:orientation="vertical">
 
             <TextView
-                android:id="@+id/text_list_item_child_requestor"
+                android:id="@+id/text_list_item_child_requester"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_marginBottom="8dp"
@@ -165,7 +165,7 @@
                 android:padding="3dp">
 
                 <ImageView
-                    android:id="@+id/img_list_item_child_requestor_sign"
+                    android:id="@+id/img_list_item_child_requester_sign"
                     android:layout_width="match_parent"
                     android:layout_height="match_parent" />
             </FrameLayout>

@@ -45,6 +45,8 @@ import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
 import com.google.gson.reflect.TypeToken;
 
+import org.jetbrains.annotations.NotNull;
+
 import java.lang.reflect.Type;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
@@ -115,9 +117,9 @@ public class List_InProgressFragment extends Fragment implements OnQueryTextList
         spinner_list_sort.setSelection(0);
     }
 
-    //부모 Activity와 통신을 하기 위한 연결
+    //부모 Activity 와 통신을 하기 위한 연결
     @Override
-    public void onAttach(Context context) {
+    public void onAttach(@NotNull Context context) {
         super.onAttach(context);
 
         Activity activity = null;
@@ -445,8 +447,7 @@ public class List_InProgressFragment extends Fragment implements OnQueryTextList
 
 
             // Data Porting
-            dbHelper = DatabaseHelper.getInstance();
-            Cursor cs = dbHelper.get("SELECT * FROM " + DatabaseHelper.DB_TABLE_INTEGRATION_LIST + " WHERE punchOut_stat = 'N' and chg_dt is null and reg_id='" + opID + "' order by " + selectedSort);
+            Cursor cs = DatabaseHelper.getInstance().get("SELECT * FROM " + DatabaseHelper.DB_TABLE_INTEGRATION_LIST + " WHERE punchOut_stat = 'N' and chg_dt is null and reg_id='" + opID + "' order by " + selectedSort);
 
             rowItems = new ArrayList<>();
 
@@ -761,7 +762,7 @@ public class List_InProgressFragment extends Fragment implements OnQueryTextList
         }
     }
 
-    public static long diffOfDate(String begin) throws Exception {
+    private static long diffOfDate(String begin) throws Exception {
         SimpleDateFormat formatter = new SimpleDateFormat("yyyy-MM-dd");
 
         Date beginDate = formatter.parse(begin);
@@ -804,14 +805,13 @@ public class List_InProgressFragment extends Fragment implements OnQueryTextList
 
 
     // NOTIFICATION
-    public ArrayList<RowItem> getRouteList(ArrayList<SmartRouteResult.RouteMaster.RouteDetail> list) {
+    private ArrayList<RowItem> getRouteList(ArrayList<SmartRouteResult.RouteMaster.RouteDetail> list) {
 
         ArrayList<RowItem> resultArrayList = new ArrayList<>();
 
         for (int i = 0; i < list.size(); i++) {
 
-            dbHelper = DatabaseHelper.getInstance();
-            Cursor cs = dbHelper.get("SELECT * FROM " + DatabaseHelper.DB_TABLE_INTEGRATION_LIST + " WHERE punchOut_stat='N' and chg_dt is null and invoice_no='" + list.get(i).getTrackingNo() + "'");
+            Cursor cs = DatabaseHelper.getInstance().get("SELECT * FROM " + DatabaseHelper.DB_TABLE_INTEGRATION_LIST + " WHERE punchOut_stat='N' and chg_dt is null and invoice_no='" + list.get(i).getTrackingNo() + "'");
 
             if (cs.moveToFirst()) {
                 do {

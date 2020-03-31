@@ -298,7 +298,7 @@ public class CnRPickupDoneActivity extends AppCompatActivity {
             try {
 
                 Bundle params = new Bundle();
-                params.putString("Activity", TAG + " - CNR pickup done");
+                params.putString("Activity", TAG);
                 params.putString("method", "SetPickupUploadData");
                 DataUtil.mFirebaseAnalytics.logEvent("button_click", params);
             } catch (Exception e) {

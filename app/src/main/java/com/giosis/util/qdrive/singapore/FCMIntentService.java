@@ -15,8 +15,9 @@ import android.net.Uri;
 import android.os.Build;
 import android.os.Bundle;
 import android.os.Vibrator;
-import androidx.core.app.NotificationCompat;
 import android.util.Log;
+
+import androidx.core.app.NotificationCompat;
 
 import com.giosis.util.qdrive.list.ListActivity;
 import com.giosis.util.qdrive.main.MainActivity;
@@ -36,7 +37,6 @@ public class FCMIntentService extends FirebaseMessagingService {
     String TAG = "FCMIntentService";
 
     Context context;
-    DatabaseHelper dbHelper;
 
     // 앱이 처음 설치(재설치)되거나 유효기간이 만료되면 자동으로 토큰을 새로 생성해 준다.
     @Override
@@ -66,12 +66,11 @@ public class FCMIntentService extends FirebaseMessagingService {
         Intent intent = new Intent(Intent.ACTION_MAIN);
         intent.addCategory(Intent.CATEGORY_LAUNCHER);
 
-        List<ResolveInfo> resolveInfos = pm.queryIntentActivities(intent, 0);
-        for (ResolveInfo resolveInfo : resolveInfos) {
+        List<ResolveInfo> resolveInfoList = pm.queryIntentActivities(intent, 0);
+        for (ResolveInfo resolveInfo : resolveInfoList) {
             String pkgName = resolveInfo.activityInfo.applicationInfo.packageName;
             if (pkgName.equalsIgnoreCase(context.getPackageName())) {
-                String className = resolveInfo.activityInfo.name;
-                return className;
+                return resolveInfo.activityInfo.name;
             }
         }
         return null;
@@ -139,9 +138,8 @@ public class FCMIntentService extends FirebaseMessagingService {
             if (action_key.equals("PX")) {
                 int delVal = -10;
                 try {
-                    dbHelper = DatabaseHelper.getInstance();
                     //DB 삭제
-                    delVal = dbHelper.delete(DatabaseHelper.DB_TABLE_INTEGRATION_LIST, "invoice_no='" + action_value + "' COLLATE NOCASE");
+                    delVal = DatabaseHelper.getInstance().delete(DatabaseHelper.DB_TABLE_INTEGRATION_LIST, "invoice_no='" + action_value + "' COLLATE NOCASE");
                 } catch (Exception e) {
 
                 }
@@ -150,8 +148,7 @@ public class FCMIntentService extends FirebaseMessagingService {
                 // AlertDialog에서 'OK' 버튼을 누르지 않을 수 있어서(Dialog 바깥부분. 막기는 했지만...) 추가!
                 try {
 
-                    dbHelper = DatabaseHelper.getInstance();
-                    dbHelper.delete(DatabaseHelper.DB_TABLE_INTEGRATION_LIST, "invoice_no='" + action_value + "' COLLATE NOCASE");
+                    DatabaseHelper.getInstance().delete(DatabaseHelper.DB_TABLE_INTEGRATION_LIST, "invoice_no='" + action_value + "' COLLATE NOCASE");
                 } catch (Exception e) {
                 }
             } else if (action_key.equals("FLTB")) {
@@ -159,8 +156,7 @@ public class FCMIntentService extends FirebaseMessagingService {
                 // AlertDialog에서 'OK' 버튼을 누르지 않을 수 있어서(Dialog 바깥부분. 막기는 했지만...) 추가!
                 try {
 
-                    dbHelper = DatabaseHelper.getInstance();
-                    dbHelper.delete(DatabaseHelper.DB_TABLE_INTEGRATION_LIST, "invoice_no='" + action_value + "' COLLATE NOCASE");
+                    DatabaseHelper.getInstance().delete(DatabaseHelper.DB_TABLE_INTEGRATION_LIST, "invoice_no='" + action_value + "' COLLATE NOCASE");
                 } catch (Exception e) {
                 }
             } else if (action_key.equals("LAE")) {

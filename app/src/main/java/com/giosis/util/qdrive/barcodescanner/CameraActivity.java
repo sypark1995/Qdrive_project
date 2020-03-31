@@ -227,6 +227,7 @@ public final class CameraActivity extends AppCompatActivity implements Camera2AP
 
         String saveSignImageFilePath = captureSign("SC_" + mBarcode, img_camera_take_photo);
 
+
         if (saveSignImageFilePath == null) {
             //SD외장카드가 USB와 컴퓨터와 연결중 또는 SD외장카드가 없는경우
             Toast.makeText(this.getApplicationContext(), " 외장메모리 체크후 다시시도해 주세요. ", Toast.LENGTH_SHORT).show();
@@ -313,8 +314,7 @@ public final class CameraActivity extends AppCompatActivity implements Camera2AP
 
     public String getDeliveryInfo(String barcodeNo) {
 
-        DatabaseHelper dbHelper = DatabaseHelper.getInstance();
-        Cursor cursor = dbHelper.get("SELECT invoice_no FROM " + DatabaseHelper.DB_TABLE_SCAN_DELIVERY + " WHERE invoice_no='" + barcodeNo + "' COLLATE NOCASE");
+        Cursor cursor = DatabaseHelper.getInstance().get("SELECT invoice_no FROM " + DatabaseHelper.DB_TABLE_SCAN_DELIVERY + " WHERE invoice_no='" + barcodeNo + "' COLLATE NOCASE");
 
         String info = null;
         if (cursor.moveToFirst()) {
@@ -331,8 +331,7 @@ public final class CameraActivity extends AppCompatActivity implements Camera2AP
     public String getScanDeliveryCount() {
 
         String opID = SharedPreferencesHelper.getSigninOpID(getApplicationContext());
-        DatabaseHelper dbHelper = DatabaseHelper.getInstance();
-        Cursor cursor = dbHelper.get("SELECT count(*) as scan_cnt FROM " + DatabaseHelper.DB_TABLE_SCAN_DELIVERY + " WHERE reg_id='" + opID + "'");
+        Cursor cursor = DatabaseHelper.getInstance().get("SELECT count(*) as scan_cnt FROM " + DatabaseHelper.DB_TABLE_SCAN_DELIVERY + " WHERE reg_id='" + opID + "'");
 
         int count = 0;
 

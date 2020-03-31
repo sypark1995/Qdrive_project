@@ -250,8 +250,8 @@ public class OutletPickupScanActivity extends AppCompatActivity {
     }
 
     public OutletInfo getOutletInfo(String barcodeNo) {
-        DatabaseHelper dbHelper = DatabaseHelper.getInstance();
-        Cursor cursor = dbHelper.get("SELECT route, zip_code, address FROM " + DatabaseHelper.DB_TABLE_INTEGRATION_LIST + " WHERE invoice_no='" + barcodeNo + "' COLLATE NOCASE");
+
+        Cursor cursor = DatabaseHelper.getInstance().get("SELECT route, zip_code, address FROM " + DatabaseHelper.DB_TABLE_INTEGRATION_LIST + " WHERE invoice_no='" + barcodeNo + "' COLLATE NOCASE");
 
         OutletInfo outletInfo = new OutletInfo();
 

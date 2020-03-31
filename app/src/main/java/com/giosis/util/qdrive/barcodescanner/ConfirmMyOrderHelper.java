@@ -1,5 +1,6 @@
 package com.giosis.util.qdrive.barcodescanner;
 
+import android.annotation.SuppressLint;
 import android.app.ProgressDialog;
 import android.content.ContentValues;
 import android.content.Context;
@@ -91,6 +92,7 @@ public class ConfirmMyOrderHelper extends ManualHelper {
     }
 
 
+    @SuppressLint("StaticFieldLeak")
     class DriverAssignTask extends AsyncTask<Void, Integer, DriverAssignResult> {
 
         int progress = 0;
@@ -261,9 +263,8 @@ public class ConfirmMyOrderHelper extends ManualHelper {
 
     private int getContrNoCount(String contr_no) {
 
-        DatabaseHelper dbHelper = DatabaseHelper.getInstance();
         String sql = "SELECT count(*) as contrno_cnt FROM " + DatabaseHelper.DB_TABLE_INTEGRATION_LIST + " WHERE contr_no='" + contr_no + "' COLLATE NOCASE";
-        Cursor cursor = dbHelper.get(sql);
+        Cursor cursor = DatabaseHelper.getInstance().get(sql);
 
         int count = 0;
 
@@ -278,8 +279,7 @@ public class ConfirmMyOrderHelper extends ManualHelper {
 
     private void deleteContrNo(String contr_no) {
 
-        DatabaseHelper dbHelper = DatabaseHelper.getInstance();
-        dbHelper.delete(DatabaseHelper.DB_TABLE_INTEGRATION_LIST, "contr_no='" + contr_no + "' COLLATE NOCASE");
+        DatabaseHelper.getInstance().delete(DatabaseHelper.DB_TABLE_INTEGRATION_LIST, "contr_no='" + contr_no + "' COLLATE NOCASE");
     }
 
     public ConfirmMyOrderHelper execute() {

@@ -211,7 +211,7 @@ public class DeliveryDoneActivity extends AppCompatActivity {
 
         // 단건 다수건 바코드정보에 대한 바코드정보 리스트 재정의 songjanglist
         songjanglist = new ArrayList<>();
-        BarcodeData songData = null;
+        BarcodeData songData;
 
         if (barcodeList == null) {
 
@@ -329,7 +329,7 @@ public class DeliveryDoneActivity extends AppCompatActivity {
             } else {    // LIST > In Progress
 
                 songjanglist = new ArrayList<>();
-                BarcodeData barcodeData = null;
+                BarcodeData barcodeData;
 
                 Cursor cs = dbHelper.get("SELECT invoice_no, rcv_nm FROM " + DatabaseHelper.DB_TABLE_INTEGRATION_LIST + " WHERE punchOut_stat = 'N' and chg_dt is null and type = 'D' and reg_id='" + opID + "' and route LIKE '%" + routeNumber + "%'");
 
@@ -418,7 +418,6 @@ public class DeliveryDoneActivity extends AppCompatActivity {
         });
 
 
-        //
         //
         PermissionChecker checker = new PermissionChecker(this);
 
@@ -527,8 +526,7 @@ public class DeliveryDoneActivity extends AppCompatActivity {
 
     public void getDeliveryInfo(String barcodeNo) {
 
-        DatabaseHelper dbHelper = DatabaseHelper.getInstance();
-        Cursor cursor = dbHelper.get("SELECT rcv_nm, sender_nm FROM " + DatabaseHelper.DB_TABLE_INTEGRATION_LIST + " WHERE invoice_no='" + barcodeNo + "' COLLATE NOCASE");
+        Cursor cursor = DatabaseHelper.getInstance().get("SELECT rcv_nm, sender_nm FROM " + DatabaseHelper.DB_TABLE_INTEGRATION_LIST + " WHERE invoice_no='" + barcodeNo + "' COLLATE NOCASE");
 
         if (cursor.moveToFirst()) {
             receiverName = cursor.getString(cursor.getColumnIndexOrThrow("rcv_nm"));
@@ -539,8 +537,8 @@ public class DeliveryDoneActivity extends AppCompatActivity {
     }
 
     public OutletInfo getOutletInfo(String barcodeNo) {
-        DatabaseHelper dbHelper = DatabaseHelper.getInstance();
-        Cursor cursor = dbHelper.get("SELECT route, zip_code, address FROM " + DatabaseHelper.DB_TABLE_INTEGRATION_LIST + " WHERE invoice_no='" + barcodeNo + "' COLLATE NOCASE");
+
+        Cursor cursor = DatabaseHelper.getInstance().get("SELECT route, zip_code, address FROM " + DatabaseHelper.DB_TABLE_INTEGRATION_LIST + " WHERE invoice_no='" + barcodeNo + "' COLLATE NOCASE");
 
         OutletInfo outletInfo = new OutletInfo();
 

@@ -1,5 +1,6 @@
 package com.giosis.util.qdrive.barcodescanner;
 
+import android.annotation.SuppressLint;
 import android.app.ProgressDialog;
 import android.content.ContentValues;
 import android.content.Context;
@@ -233,7 +234,7 @@ public class ChangeDriverHelper extends ManualHelper {
                 result.setPartnerRefNoFailAssign(assignNo);
                 result.setReasonFailAssign(context.getResources().getString(R.string.text_http_request_error));
 
-                ArrayList<DriverAssignResult.QSignDeliveryList> resultList = new ArrayList<DriverAssignResult.QSignDeliveryList>();
+                ArrayList<DriverAssignResult.QSignDeliveryList> resultList = new ArrayList<>();
                 resultList.add(result);
                 resultObj.setResultObject(resultList);
             }
@@ -296,6 +297,7 @@ public class ChangeDriverHelper extends ManualHelper {
     }
 
     // krm0219
+    @SuppressLint("StaticFieldLeak")
     class ChangeMessageAsyncTask extends AsyncTask<Void, Void, StdResult> {
 
         String driverId;
@@ -356,9 +358,9 @@ public class ChangeDriverHelper extends ManualHelper {
 
 
     private int getContrNoCount(String contr_no) {
-        DatabaseHelper dbHelper = DatabaseHelper.getInstance();
+
         String sql = "SELECT count(*) as contrno_cnt FROM " + DatabaseHelper.DB_TABLE_INTEGRATION_LIST + " WHERE contr_no='" + contr_no + "' COLLATE NOCASE";
-        Cursor cursor = dbHelper.get(sql);
+        Cursor cursor = DatabaseHelper.getInstance().get(sql);
 
         int count = 0;
 
@@ -374,8 +376,7 @@ public class ChangeDriverHelper extends ManualHelper {
 
     private void delSelectedContrNo(String contr_no) {
 
-        DatabaseHelper dbHelper = DatabaseHelper.getInstance();
-        dbHelper.delete(DatabaseHelper.DB_TABLE_INTEGRATION_LIST, "contr_no='" + contr_no + "' COLLATE NOCASE");
+        DatabaseHelper.getInstance().delete(DatabaseHelper.DB_TABLE_INTEGRATION_LIST, "contr_no='" + contr_no + "' COLLATE NOCASE");
     }
 
     public ChangeDriverHelper execute() {

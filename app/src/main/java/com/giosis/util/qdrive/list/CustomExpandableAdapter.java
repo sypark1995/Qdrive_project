@@ -1,5 +1,6 @@
 package com.giosis.util.qdrive.list;
 
+import android.annotation.SuppressLint;
 import android.app.Activity;
 import android.app.AlertDialog;
 import android.bluetooth.BluetoothAdapter;
@@ -16,13 +17,10 @@ import android.os.AsyncTask;
 import android.text.SpannableString;
 import android.text.style.UnderlineSpan;
 import android.util.Log;
-import android.view.ContextMenu;
-import android.view.ContextMenu.ContextMenuInfo;
 import android.view.LayoutInflater;
 import android.view.MenuItem;
 import android.view.View;
 import android.view.View.OnClickListener;
-import android.view.View.OnCreateContextMenuListener;
 import android.view.ViewGroup;
 import android.widget.BaseExpandableListAdapter;
 import android.widget.Button;
@@ -72,57 +70,48 @@ import java.util.Vector;
 import static com.giosis.util.qdrive.barcodescanner.ManualHelper.MOBILE_SERVER_URL;
 
 /***********************
- * @author jtpark_eurasia
- *
- *  Child View 를 갖는 Adapter
- *  List 클릭 시 확장 
+ * @author jtpark_eurasia *
+ *  Child View 를 갖는 Adapter  *  List 클릭 시 확장
+ * @editor krm0219
  */
-public class CustomExpandableAdapter extends BaseExpandableListAdapter implements OnCreateContextMenuListener, GPrinterHandler.OnGPrinterReadyListener {
+public class CustomExpandableAdapter extends BaseExpandableListAdapter implements GPrinterHandler.OnGPrinterReadyListener {
     String TAG = "CustomExpandableAdapter";
 
     Context context;
-    DatabaseHelper dbHelper = DatabaseHelper.getInstance();
+    private DatabaseHelper dbHelper = DatabaseHelper.getInstance();
 
     private OnMoveUpListener onMoveUpListener;
 
     private ArrayList<RowItem> rowItem;
-    private ArrayList<RowItem> originalrowItem;
-
-    private String[] devliery_failed_reason_array = {"NH", "IA", "CR", "MR", "ET"};
-    private String[] pikcup_failed_reason_array = {"WA", "WP", "NA", "NO", "NR", "NQ", "ET"};
+    private ArrayList<RowItem> originalRowItem;
+    private String[] pickup_failed_reason_array = {"WA", "WP", "NA", "NO", "NR", "NQ", "ET"};
 
 
     public CustomExpandableAdapter(Context context, ArrayList<RowItem> rowItem) {
 
         this.context = context;             // getActivity
         this.rowItem = new ArrayList<>();
-        this.originalrowItem = new ArrayList<>();
+        this.originalRowItem = new ArrayList<>();
 
 
         if (rowItem != null) {
             this.rowItem.addAll(rowItem);
-            this.originalrowItem.addAll(rowItem);
+            this.originalRowItem.addAll(rowItem);
         } else {
             this.rowItem = null;
         }
     }
 
-    // 인터페이스
+
     public interface OnMoveUpListener {
-        public void onMoveUp(int pos);
+        void onMoveUp(int pos);
     }
 
     public void setOnMoveUpListener(OnMoveUpListener listener) {
         this.onMoveUpListener = listener;
     }
 
-    @Override
-    public void onCreateContextMenu(ContextMenu menu, View v, ContextMenuInfo menuInfo) {
-
-        menu.add(0, 1, 0, "Google");
-    }
-
-
+    @SuppressLint({"SetTextI18n", "DefaultLocale"})
     @Override
     public View getGroupView(int groupPosition, boolean isExpanded, View convertView, ViewGroup parent) {
         final int position = groupPosition;
@@ -151,7 +140,6 @@ public class CustomExpandableAdapter extends BaseExpandableListAdapter implement
         TextView text_list_item_parcel_qty = convertView.findViewById(R.id.text_list_item_parcel_qty);
         RelativeLayout layout_list_item_pickup_info = convertView.findViewById(R.id.layout_list_item_pickup_info);
         TextView text_list_item_desired_date = convertView.findViewById(R.id.text_list_item_desired_date);
-        LinearLayout layout_list_item_pickup_info_qty = convertView.findViewById(R.id.layout_list_item_pickup_info_qty);
         TextView text_list_item_qty = convertView.findViewById(R.id.text_list_item_qty);
 
         LinearLayout layout_list_item_request = convertView.findViewById(R.id.layout_list_item_request);
@@ -210,7 +198,7 @@ public class CustomExpandableAdapter extends BaseExpandableListAdapter implement
             img_list_item_station_icon.setVisibility(View.GONE);
         }
 
-        //NOTIFICATION.  19/10 - 참조 픽업번호가 있으면 해당 번호로 표시, 없으면 기존 픽업번호 (Ref. Pickup No)
+        // 2019.10 - 참조 픽업번호가 있으면 해당 번호로 표시, 없으면 기존 픽업번호 (Ref. Pickup No)
         if (row_pos.getType().equals("P")) {        // Pickup
             if (!row_pos.getRef_pickup_no().equals("")) {
 
@@ -334,7 +322,7 @@ public class CustomExpandableAdapter extends BaseExpandableListAdapter implement
             text_list_item_driver_memo.setText(row_pos.getSelfMemo());
         }
 
-        //TODO
+
         //  2019.04 Outlet
         if (row_pos.getOutlet_company().equals("7E") || row_pos.getOutlet_company().equals("FL")) {
             if (row_pos.getType().equals("P")) {
@@ -367,27 +355,28 @@ public class CustomExpandableAdapter extends BaseExpandableListAdapter implement
                         //
                         switch (item.getItemId()) {
                             case R.id.menu_one:
-                                //DatabaseHelper dbHelper = DatabaseHelper.getInstance(context);
+
                                 Cursor cs = dbHelper.get("SELECT address FROM " + DatabaseHelper.DB_TABLE_INTEGRATION_LIST + " WHERE invoice_no='" + layout_list_item_menu_icon.getTag().toString() + "' LIMIT 1");
                                 if (cs != null) {
+
                                     cs.moveToFirst();
 
-                                    // 구글맵 이동
-                                    String addr = cs.getString(cs.getColumnIndex("address"));
-                                    Uri uri = Uri.parse("http://maps.google.co.in/maps?q=" + addr);
+                                    String address = cs.getString(cs.getColumnIndex("address"));
+                                    Uri uri = Uri.parse("http://maps.google.co.in/maps?q=" + address);
                                     Intent it = new Intent(Intent.ACTION_VIEW, uri);
                                     context.startActivity(it);
                                 }
                                 break;
                             case R.id.menu_up:
-                                if (position > 0) {
+                                if (0 < position) {
+
                                     RowItem upItem = rowItem.remove(position);
                                     rowItem.add(position - 1, upItem);
-                                    originalrowItem.clear();
-                                    originalrowItem.addAll(rowItem);
+                                    originalRowItem.clear();
+                                    originalRowItem.addAll(rowItem);
                                     notifyDataSetChanged();
 
-                                    for (int i = 0; i < originalrowItem.size(); i++) {
+                                    for (int i = 0; i < originalRowItem.size(); i++) {
                                         String val = String.valueOf(i);
                                         if (i < 10) {
                                             val = "00" + val;
@@ -398,7 +387,7 @@ public class CustomExpandableAdapter extends BaseExpandableListAdapter implement
                                         ContentVal.put("seq_orderby", val);
 
                                         dbHelper.update(DatabaseHelper.DB_TABLE_INTEGRATION_LIST, ContentVal,
-                                                "invoice_no=? COLLATE NOCASE ", new String[]{originalrowItem.get(i).getShipping()});
+                                                "invoice_no=? COLLATE NOCASE ", new String[]{originalRowItem.get(i).getShipping()});
                                     }
 
                                     if (onMoveUpListener != null) {
@@ -408,25 +397,27 @@ public class CustomExpandableAdapter extends BaseExpandableListAdapter implement
                                 break;
 
                             case R.id.menu_down:
+
                                 if (position < rowItem.size() - 1) {
                                     RowItem downItem = rowItem.remove(position);
                                     rowItem.add(position + 1, downItem);
-                                    originalrowItem.clear();
-                                    originalrowItem.addAll(rowItem);
+                                    originalRowItem.clear();
+                                    originalRowItem.addAll(rowItem);
                                     notifyDataSetChanged();
 
-                                    for (int i = 0; i < originalrowItem.size(); i++) {
+                                    for (int i = 0; i < originalRowItem.size(); i++) {
                                         String val = String.valueOf(i);
                                         if (i < 10) {
                                             val = "00" + val;
                                         } else if (i < 100) {
                                             val = "0" + val;
                                         }
+
                                         ContentValues ContentVal = new ContentValues();
                                         ContentVal.put("seq_orderby", val);
 
                                         dbHelper.update(DatabaseHelper.DB_TABLE_INTEGRATION_LIST, ContentVal,
-                                                "invoice_no=? COLLATE NOCASE ", new String[]{originalrowItem.get(i).getShipping()});
+                                                "invoice_no=? COLLATE NOCASE ", new String[]{originalRowItem.get(i).getShipping()});
                                     }
 
                                     if (onMoveUpListener != null) {
@@ -439,13 +430,7 @@ public class CustomExpandableAdapter extends BaseExpandableListAdapter implement
                     }
                 });
             }
-
         });
-
-       /* int desiredWidth = View.MeasureSpec.makeMeasureSpec(parent.getWidth(), View.MeasureSpec.AT_MOST);
-        convertView.measure(desiredWidth, View.MeasureSpec.UNSPECIFIED);
-        Log.e("krm0219", "SmartRoute  CustomAdapter size : " + convertView.getMeasuredWidth() + " / " + convertView.getMeasuredHeight() + " / " + row_pos.getShipping());
-        */
 
         return convertView;
     }
@@ -456,8 +441,8 @@ public class CustomExpandableAdapter extends BaseExpandableListAdapter implement
 
         if (convertView == null) {
 
-            LayoutInflater infalInflater = (LayoutInflater) context.getSystemService(context.LAYOUT_INFLATER_SERVICE);
-            convertView = infalInflater.inflate(R.layout.item_list_child, null);
+            LayoutInflater layoutInflater = (LayoutInflater) context.getSystemService(Activity.LAYOUT_INFLATER_SERVICE);
+            convertView = layoutInflater.inflate(R.layout.item_list_child, null);
         }
 
         LinearLayout layout_list_item_child_failed = convertView.findViewById(R.id.layout_list_item_child_failed);
@@ -493,7 +478,6 @@ public class CustomExpandableAdapter extends BaseExpandableListAdapter implement
         Button btn_list_item_child_pickup_visit_log = convertView.findViewById(R.id.btn_list_item_child_pickup_visit_log);
 
         LinearLayout layout_list_item_child_cnr_buttons = convertView.findViewById(R.id.layout_list_item_child_cnr_buttons);
-        //Button btn_list_item_child_cnr_cancelled = convertView.findViewById(R.id.btn_list_item_child_cnr_cancelled);
         Button btn_list_item_child_cnr_failed = convertView.findViewById(R.id.btn_list_item_child_cnr_failed);
         Button btn_list_item_child_cnr_print = convertView.findViewById(R.id.btn_list_item_child_cnr_print);
 
@@ -510,20 +494,17 @@ public class CustomExpandableAdapter extends BaseExpandableListAdapter implement
         final String tracking_no = rowItem.get(groupPosition).getShipping();
         final String receiver = rowItem.get(groupPosition).getName();
         final String sender = rowItem.get(groupPosition).getSender();
-        final String requestor = rowItem.get(groupPosition).getName();
+        final String requester = rowItem.get(groupPosition).getName();
         final String route = rowItem.get(groupPosition).getRoute();
         final String qty = rowItem.get(groupPosition).getQty();
 
 
-        // Qtalk 안심번호 타입 T - Qnumber 사용
-        if (child.getSecretNoType().equals("T")) {
+        if (child.getSecretNoType().equals("T")) {    // Qtalk 안심번호 타입 T - Qnumber 사용
 
             layout_list_item_child_telephone.setVisibility(View.GONE);
             layout_list_item_child_mobile.setVisibility(View.GONE);
             img_list_item_child_live10.setVisibility(View.VISIBLE);
-        }
-        // Phone 안심번호 - 핸드폰만 활성화
-        else if (child.getSecretNoType().equals("P")) {
+        } else if (child.getSecretNoType().equals("P")) {  // Phone 안심번호 - 핸드폰만 활성화
 
             layout_list_item_child_telephone.setVisibility(View.GONE);
             layout_list_item_child_mobile.setVisibility(View.VISIBLE);
@@ -568,8 +549,8 @@ public class CustomExpandableAdapter extends BaseExpandableListAdapter implement
         try {
 
             String orderType = rowItem.get(groupPosition).getOrder_type_etc();
-
             Log.e("krm0219", "Order Type ETC : " + rowItem.get(groupPosition).getOrder_type_etc());
+
             if (orderType != null && orderType.equalsIgnoreCase("DPC")) {
 
                 img_list_item_child_qpost.setVisibility(View.VISIBLE);
@@ -596,8 +577,8 @@ public class CustomExpandableAdapter extends BaseExpandableListAdapter implement
             } else if (child.getStat().equals("PF")) {
 
                 String[] pfStringArray = context.getResources().getStringArray(R.array.fail_reason_array);
-                for (int i = 0; i < pikcup_failed_reason_array.length; i++) {
-                    if (pikcup_failed_reason_array[i].equals(reasonCode)) {
+                for (int i = 0; i < pickup_failed_reason_array.length; i++) {
+                    if (pickup_failed_reason_array[i].equals(reasonCode)) {
                         reasonText = pfStringArray[i];
                     }
                 }
@@ -630,7 +611,7 @@ public class CustomExpandableAdapter extends BaseExpandableListAdapter implement
             text_list_item_child_parcel_amount.setText(parcelAmount);
 
             String parcelAmountUnit = rowItem.get(groupPosition).getCurrency();
-            String currencyUnit = "S$";
+            String currencyUnit;
 
             if (parcelAmountUnit == null) {
                 parcelAmountUnit = "SGD";
@@ -772,7 +753,7 @@ public class CustomExpandableAdapter extends BaseExpandableListAdapter implement
                 final String p_svc_nation_cd = "SG";
                 final String p_seller_id = group_item.getPartnerID();
 
-                DialogSelectOption(p_qlps_cust_no, p_delivery_type, p_order_type, p_tracking_no, p_svc_nation_cd, p_seller_id);
+                DialogSelectOption(p_qlps_cust_no, p_delivery_type, p_order_type, p_tracking_no, p_seller_id);
             }
         });
 
@@ -809,26 +790,21 @@ public class CustomExpandableAdapter extends BaseExpandableListAdapter implement
                 alert.setPositiveButton(context.getResources().getString(R.string.button_ok), new DialogInterface.OnClickListener() {
                     public void onClick(DialogInterface dialog, int whichButton) {
 
-                        String value = input.getText().toString();
-
-                        DatabaseHelper dbHelper = DatabaseHelper.getInstance();
+                        String selfMemo = input.getText().toString();
 
                         ContentValues contentVal = new ContentValues();
-                        contentVal.put("self_memo", value.toString());
+                        contentVal.put("self_memo", selfMemo);
 
-                        int updateVal = dbHelper.update(DatabaseHelper.DB_TABLE_INTEGRATION_LIST, contentVal,
+                        DatabaseHelper.getInstance().update(DatabaseHelper.DB_TABLE_INTEGRATION_LIST, contentVal,
                                 "invoice_no= ? COLLATE NOCASE ", new String[]{tracking_no});
 
-                        group_item.setSelfMemo(value.toString());
+                        group_item.setSelfMemo(selfMemo);
                         notifyDataSetChanged();
-
                     }
-                });
-
-                alert.setNegativeButton(context.getResources().getString(R.string.button_cancel),
+                }).setNegativeButton(context.getResources().getString(R.string.button_cancel),
                         new DialogInterface.OnClickListener() {
                             public void onClick(DialogInterface dialog, int whichButton) {
-                                // Canceled.
+
                             }
                         });
 
@@ -877,7 +853,7 @@ public class CustomExpandableAdapter extends BaseExpandableListAdapter implement
                 intent.putExtra("title", context.getResources().getString(R.string.text_start_to_scan));
                 intent.putExtra("type", BarcodeType.PICKUP_SCAN_ALL);
                 intent.putExtra("pickup_no", tracking_no);
-                intent.putExtra("applicant", requestor);
+                intent.putExtra("applicant", requester);
                 context.startActivity(intent);
             }
         });
@@ -890,7 +866,7 @@ public class CustomExpandableAdapter extends BaseExpandableListAdapter implement
                 Intent intent = new Intent(context, PickupZeroQtyActivity.class);
                 intent.putExtra("title", context.getResources().getString(R.string.text_zero_qty));
                 intent.putExtra("pickupNo", tracking_no);
-                intent.putExtra("applicant", requestor);
+                intent.putExtra("applicant", requester);
                 context.startActivity(intent);
             }
         });
@@ -903,7 +879,7 @@ public class CustomExpandableAdapter extends BaseExpandableListAdapter implement
                 Intent intent = new Intent(context, PickupFailedActivity.class);
                 intent.putExtra("title", context.getResources().getString(R.string.text_visit_log));
                 intent.putExtra("reqQty", qty);
-                intent.putExtra("applicant", requestor);
+                intent.putExtra("applicant", requester);
                 intent.putExtra("pickupNo", tracking_no);
                 context.startActivity(intent);
             }
@@ -917,7 +893,7 @@ public class CustomExpandableAdapter extends BaseExpandableListAdapter implement
                 Intent intent = new Intent(context, OutletPickupScanActivity.class);
                 intent.putExtra("title", context.getResources().getString(R.string.text_outlet_pickup_done));
                 intent.putExtra("pickup_no", tracking_no);
-                intent.putExtra("applicant", requestor);
+                intent.putExtra("applicant", requester);
                 intent.putExtra("qty", qty);
                 intent.putExtra("route", route);
                 context.startActivity(intent);
@@ -956,7 +932,7 @@ public class CustomExpandableAdapter extends BaseExpandableListAdapter implement
                 Intent intent = new Intent(context, CnRPickupFailedActivity.class);
                 intent.putExtra("title", context.getResources().getString(R.string.text_pickup_fail));
                 intent.putExtra("type", BarcodeType.TYPE_PICKUP);
-                intent.putExtra("senderName", requestor);
+                intent.putExtra("senderName", requester);
                 intent.putExtra("waybillNo", tracking_no);
                 intent.putExtra("reqQty", qty);
                 context.startActivity(intent);
@@ -967,6 +943,34 @@ public class CustomExpandableAdapter extends BaseExpandableListAdapter implement
 
             @Override
             public void onClick(View v) {
+
+                /*// TEST.  krm0219
+                new CnRPickupInfoGetHelper.Builder(context, "karam.kim", tracking_no)
+                        .setOnCnRPrintDataEventListener(new CnRPickupInfoGetHelper.OnCnRPrintDataEventListener() {
+
+                            @Override
+                            public void onPostAssignResult(PrintDataResult stdResult) {
+                                try {
+                                    if (stdResult != null) {
+                                        if (stdResult.getResultCode() == 0) {
+
+                                            Log.e("print", TAG + "  sendLabel");
+                                            sendLabel(stdResult);
+                                        } else {
+
+                                            Toast.makeText(context, stdResult.getResultMsg(), Toast.LENGTH_SHORT).show();
+                                        }
+                                    } else {
+
+                                        Toast.makeText(context, "GetCnRPrintData Error..", Toast.LENGTH_SHORT).show();
+                                    }
+                                } catch (Exception e) {
+
+                                    Toast.makeText(context, "GetCnRPrintData Exception : " + e.toString(), Toast.LENGTH_SHORT).show();
+                                    Log.e("Exception", TAG + "  GetCnRPrintData Exception : " + e.toString());
+                                }
+                            }
+                        }).build().execute();*/
 
                 isConnectPortablePrint(tracking_no);
             }
@@ -1038,23 +1042,22 @@ public class CustomExpandableAdapter extends BaseExpandableListAdapter implement
     //Search
     public void filterData(String query) {
 
-        Log.e("krm0219", "filterData ");
-
         try {
+
             query = query.toUpperCase();
             rowItem.clear();
 
             if (query.isEmpty()) {
-                rowItem.addAll(originalrowItem);
+                rowItem.addAll(originalRowItem);
             } else {
                 ArrayList<RowItem> newList = new ArrayList<>();
-                for (RowItem rowitem : originalrowItem) {
+                for (RowItem rowitem : originalRowItem) {
                     //이름 or 송장번호 조회
                     if (rowitem.getName().toUpperCase().contains(query) || rowitem.getShipping().toUpperCase().contains(query)) {
                         newList.add(rowitem);
                     }
                 }
-                if (newList.size() > 0) {
+                if (0 < newList.size()) {
                     //RowItem nRowItem = new RowItem(continent.getName(), newList);
                     rowItem.addAll(newList);
                 }
@@ -1067,14 +1070,16 @@ public class CustomExpandableAdapter extends BaseExpandableListAdapter implement
     }
 
     public void setSorting(ArrayList<RowItem> sortedItems) {
+
         rowItem.clear();
         rowItem.addAll(sortedItems);
-        originalrowItem.clear();
-        originalrowItem.addAll(sortedItems);
+        originalRowItem.clear();
+        originalRowItem.addAll(sortedItems);
         notifyDataSetChanged();
     }
 
 
+    @SuppressLint("StaticFieldLeak")
     public class SendLive10MessageTask extends AsyncTask<String, Void, StdResult> {
 
         @Override
@@ -1109,22 +1114,22 @@ public class CustomExpandableAdapter extends BaseExpandableListAdapter implement
     }
 
     // Qtalk 메시지 선택 창
-    private void DialogSelectOption(String qlps_cust_no, String delivery_type, String order_type, String tracking_no, String svc_nation_cd, String seller_id) {
+    private void DialogSelectOption(String qlps_cust_no, String delivery_type, String order_type, String tracking_no, String seller_id) {
 
         final String _qlps_cust_no = qlps_cust_no;
         final String _delivery_type = delivery_type;
         final String _order_type = order_type;
         final String _tracking_no = tracking_no;
-        final String _svc_nation_cd = svc_nation_cd;
+        final String _svc_nation_cd = "SG";
         final String _qsign_id = SharedPreferencesHelper.getSigninOpID(context);
         final String _qsign_name = SharedPreferencesHelper.getSigninOpName(context);
         final String _seller_id = seller_id;
 
-        final String Pickup_items[] = {
+        final String[] Pickup_items = {
                 context.getResources().getString(R.string.msg_qpost_pickup1),
                 context.getResources().getString(R.string.msg_qpost_pickup2)
         };
-        final String Delivery_items[] = {
+        final String[] Delivery_items = {
                 context.getResources().getString(R.string.msg_qpost_delivery1),
                 context.getResources().getString(R.string.msg_qpost_delivery2)
         };
@@ -1232,14 +1237,13 @@ public class CustomExpandableAdapter extends BaseExpandableListAdapter implement
 
             if (ScanNoTwo.equals("FL")) {
 
-                isCNR = false;
+                return false;
+            } else if (ScanNoFirst.equals("7")) {
+
+                return false;
             } else if (!ScanNoFirst.equals("P")) { // cnr 일 때, true
 
                 isCNR = true;
-
-                if (ScanNoFirst.equals("7")) {
-                    isCNR = false;
-                }
             }
         }
 
@@ -1247,7 +1251,7 @@ public class CustomExpandableAdapter extends BaseExpandableListAdapter implement
     }
 
 
-    // NOTIFICATION.  Print
+    // NOTIFICATION.  CNR Print
     private void isConnectPortablePrint(String tracking_no) {
 
         // 연결된 print 없으면..
@@ -1266,7 +1270,7 @@ public class CustomExpandableAdapter extends BaseExpandableListAdapter implement
         if (!deviceAddress.equals("")) {  // 프린터 연결됨     // 출력시작
 
             Toast.makeText(context, context.getResources().getString(R.string.msg_wait_while_print_job), Toast.LENGTH_SHORT).show();
-            printLabel(deviceAddress, tracking_no, "isConnectPortablePrint");
+            printLabel(deviceAddress, tracking_no);
         } else {
 
             checkBluetoothState(tracking_no);
@@ -1349,7 +1353,7 @@ public class CustomExpandableAdapter extends BaseExpandableListAdapter implement
         GPrinterData.mBluetoothAdapter.startDiscovery();
     }
 
-    private void printLabel(String address, String tracking_no, String where) {
+    private void printLabel(String address, String tracking_no) {
 
         if (GPrinterData.printerConnManagerList == null || GPrinterData.printerConnManagerList.size() == 0 || !GPrinterData.printerConnManagerList.get(0).getConnState()) {
 
@@ -1357,7 +1361,7 @@ public class CustomExpandableAdapter extends BaseExpandableListAdapter implement
         }
 
         // 위에 if 문은 아마 그냥 통과 될 것 왜냐면 커넥션을 자동으로 하고 바로 프린터 버튼 누른 것처럼 trigger 보완 소스 넣고 있음
-        //  handler 에서 메시지 받으면 다시 버튼 클릭을 interface 함수로 호getTodayPickupDone출 하고 있음 - onStartGprinter
+        //  handler 에서 메시지 받으면 다시 버튼 클릭을 interface 함수로 getTodayPickupDone호출 하고 있음 - onStartGprinter
         if (GPrinterData.printerConnManagerList.get(0).getCurrentPrinterCommand() == PrinterConnManager.PrinterCommand.TSC) {
 
             String opId = SharedPreferencesHelper.getSigninOpID(context);
@@ -1373,7 +1377,6 @@ public class CustomExpandableAdapter extends BaseExpandableListAdapter implement
                                     if (stdResult.getResultCode() == 0) {
 
                                         Log.e("print", TAG + "  sendLabel");
-                                        // TEST.
                                         sendLabel(stdResult);
                                     } else {
 
@@ -1504,14 +1507,14 @@ public class CustomExpandableAdapter extends BaseExpandableListAdapter implement
     }
 
 
-    public ArrayList<String> cutString(String originStr, int lineNum) {
+    private ArrayList<String> cutString(String originStr, int lineNum) {
 
-        ArrayList<String> arrayList = new ArrayList();
+        ArrayList<String> arrayList = new ArrayList<>();
         if (originStr == null) {
             originStr = "";
         }
         String oriStr = originStr.trim();
-        String str1 = "", str2 = "", str3 = "", temp = "";
+        String str1 = "", str2 = "", str3 = "", temp;
 
         if (lineNum == 1) {
             if (oriStr.length() > 27) {
@@ -1544,8 +1547,10 @@ public class CustomExpandableAdapter extends BaseExpandableListAdapter implement
         if (!str3.equals("")) {
             arrayList.add(str3);
         }
+
+        Log.e("krm0219", TAG + "  cutString " + arrayList.toString());
         return arrayList;
-    } // end of cutString
+    }
 
     @Override
     public void onStartGprinter(String tracking_no, String mac_addr) {
@@ -1558,7 +1563,7 @@ public class CustomExpandableAdapter extends BaseExpandableListAdapter implement
             isConnectPortablePrint(tracking_no);
         } else {
 
-            printLabel(mac_addr, tracking_no, "onStartGprinter");
+            printLabel(mac_addr, tracking_no);
         }
     }
 }

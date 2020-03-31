@@ -27,7 +27,6 @@ import com.giosis.util.qdrive.barcodescanner.CaptureActivity;
 import com.giosis.util.qdrive.list.BarcodeData;
 import com.giosis.util.qdrive.list.SigningView;
 import com.giosis.util.qdrive.singapore.R;
-import com.giosis.util.qdrive.util.BarcodeType;
 import com.giosis.util.qdrive.util.DataUtil;
 import com.giosis.util.qdrive.util.DatabaseHelper;
 import com.giosis.util.qdrive.util.MemoryStatus;
@@ -40,11 +39,8 @@ import java.util.ArrayList;
 import java.util.List;
 
 
-// type "S"
-public class SigningActivity extends AppCompatActivity {
-    String TAG = "SigningActivity";
-
-    private static String RECEIVE_TYPE_SELF = "RC";
+public class SelfCollectionDoneActivity extends AppCompatActivity {
+    String TAG = "SelfCollectionDoneActivity";
 
 
     // krm0219
@@ -76,13 +72,11 @@ public class SigningActivity extends AppCompatActivity {
 
 
     Context context;
-    String opID = "";
-    String officeCode = "";
-    String deviceID = "";
+    String opID;
+    String officeCode;
+    String deviceID;
 
-    String mStrWaybillNo = "";
-    String mReceiveType = RECEIVE_TYPE_SELF;
-    String mType = "";
+    String mReceiveType = "RC";
     ArrayList<CaptureActivity.BarcodeListData> barcodeList;
     ArrayList<BarcodeData> songjanglist;
 
@@ -93,15 +87,13 @@ public class SigningActivity extends AppCompatActivity {
     int tempSize = 0;
     String tempList = "";
 
-
+    //
     boolean isPermissionTrue = false;
     private static final int PERMISSION_REQUEST_CODE = 1000;
     private static final String[] PERMISSIONS = new String[]{PermissionChecker.READ_EXTERNAL_STORAGE, PermissionChecker.WRITE_EXTERNAL_STORAGE,
             PermissionChecker.ACCESS_COARSE_LOCATION, PermissionChecker.ACCESS_FINE_LOCATION};
 
-    //--------------------------
 
-    @SuppressWarnings("unchecked")
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -145,7 +137,6 @@ public class SigningActivity extends AppCompatActivity {
 
 
         //---------
-
         context = getApplicationContext();
         opID = SharedPreferencesHelper.getSigninOpID(getApplicationContext());
         officeCode = SharedPreferencesHelper.getSigninOfficeCode(getApplicationContext());
@@ -153,36 +144,23 @@ public class SigningActivity extends AppCompatActivity {
 
 
         String strTitle = getIntent().getStringExtra("title");
-        String strReceiverName = getIntent().getStringExtra("receiverName");
-        String strSenderName = getIntent().getStringExtra("senderName");
-        mStrWaybillNo = getIntent().getStringExtra("waybillNo");
-        mType = getIntent().getStringExtra("type");
         String temp_qfs_order = getIntent().getStringExtra("nonq10qfs");
         //바코드 정보리스트 인텐트로 받음 ArrayList 시리얼라이즈화  add by jmkang 2013-05-09
         barcodeList = (ArrayList<CaptureActivity.BarcodeListData>) getIntent().getSerializableExtra("data");
+        Log.e(TAG, "  QFS Order : " + temp_qfs_order);
 
 
         // 단건 다수건 바코드정보에 대한 바코드정보 리스트 재정의 songjanglist
         songjanglist = new ArrayList<>();
-        BarcodeData songData;
 
-        if (barcodeList == null) {
+        for (int i = 0; i < barcodeList.size(); i++) {
 
-            songData = new BarcodeData();
-            songData.setBarcode(mStrWaybillNo);
-            songData.setState(mType);
+            BarcodeData songData = new BarcodeData();
+            songData.setBarcode(barcodeList.get(i).getBarcode());
+            songData.setState(barcodeList.get(i).getState());
             songjanglist.add(songData);
-        } else {
-
-            int size = barcodeList.size();
-
-            for (int i = 0; i < size; i++) {
-                songData = new BarcodeData();
-                songData.setBarcode(barcodeList.get(i).getBarcode());
-                songData.setState(barcodeList.get(i).getState());
-                songjanglist.add(songData);
-            }
         }
+
 
         String barcodeMsg = "";
         int songJangListSize = songjanglist.size();
@@ -195,65 +173,30 @@ public class SigningActivity extends AppCompatActivity {
 
         isNonQ10QFSOrder = Boolean.valueOf(temp_qfs_order);
 
-        if (!isNonQ10QFSOrder) {
+        if (isNonQ10QFSOrder) {
 
-            text_sign_tracking_no_title.setText(R.string.text_tracking_no);
-            text_sign_receiver_title.setText(R.string.text_receiver);
-            text_sign_sender_title.setText(R.string.text_sender);
-        }
+            text_sign_tracking_no_title.setText(R.string.text_receiver);
+            text_sign_receiver_title.setText(R.string.text_parcels);
+            text_sign_sender_title.setText(R.string.text_detail_list);
 
-        if (songJangListSize > 1) {
+            layout_sign_receiver_check.setVisibility(View.GONE);
+            layout_sign_sender.setVisibility(View.VISIBLE);
 
-            layout_sign_sender.setVisibility(View.GONE);
+            tempSize = songJangListSize;
+            tempList = barcodeMsg;
+
+            text_sign_tracking_no.setText(context.getResources().getString(R.string.text_non_q10_qfs));
+            String qtyFormat = String.format(context.getResources().getString(R.string.text_total_qty_count), songJangListSize);
+            text_sign_receiver.setText(qtyFormat);
+            text_sign_sender.setText(barcodeMsg);
         } else {
-            text_sign_tracking_no_title.setText(R.string.text_tracking_no);
-            text_sign_receiver_title.setText(R.string.text_receiver);
-            text_sign_sender_title.setText(R.string.text_sender);
-        }
+            if (1 < songJangListSize) {
 
-
-        if (songJangListSize > 1) {  //다수건
-
-            if (mType.equals(BarcodeType.SELF_COLLECTION) && isNonQ10QFSOrder) {
-
-                text_sign_tracking_no_title.setText(R.string.text_receiver);
-                text_sign_receiver_title.setText(R.string.text_parcels);
-                text_sign_sender_title.setText(R.string.text_detail_list);
-
-                layout_sign_receiver_check.setVisibility(View.GONE);
-                layout_sign_sender.setVisibility(View.VISIBLE);
-
-                tempSize = songJangListSize;
-                tempList = barcodeMsg;
-
-                text_sign_tracking_no.setText(context.getResources().getString(R.string.text_non_q10_qfs));
-                String qtyFormat = String.format(context.getResources().getString(R.string.text_total_qty_count), songJangListSize);
-                text_sign_receiver.setText(qtyFormat);
-                text_sign_sender.setText(barcodeMsg);
-            } else {
-
+                layout_sign_sender.setVisibility(View.GONE);
                 String qtyFormat = String.format(context.getResources().getString(R.string.text_total_qty_count), songJangListSize);
                 text_sign_tracking_no.setText(qtyFormat);
                 text_sign_tracking_no_more.setVisibility(View.VISIBLE);
                 text_sign_tracking_no_more.setText(barcodeMsg);
-            }
-        } else {  //1건
-            if (mType.equals(BarcodeType.SELF_COLLECTION) && isNonQ10QFSOrder) {
-
-                text_sign_tracking_no_title.setText(R.string.text_receiver);
-                text_sign_receiver_title.setText(R.string.text_parcels);
-                text_sign_sender_title.setText(R.string.text_detail_list);
-
-                layout_sign_receiver_check.setVisibility(View.GONE);
-                layout_sign_sender.setVisibility(View.VISIBLE);
-
-                tempSize = songJangListSize;
-                tempList = barcodeMsg;
-
-                text_sign_tracking_no.setText(context.getResources().getString(R.string.text_non_q10_qfs));
-                String qtyFormat = String.format(context.getResources().getString(R.string.text_total_qty_count), songJangListSize);
-                text_sign_receiver.setText(qtyFormat);
-                text_sign_sender.setText(barcodeMsg);
             } else {
 
                 text_sign_tracking_no.setText(barcodeMsg);
@@ -264,6 +207,7 @@ public class SigningActivity extends AppCompatActivity {
         text_top_title.setText(strTitle);
         text_sign_receiver.setText(receiverName);
         text_sign_sender.setText(senderName);
+
 
         // Memo 입력제한
         edit_sign_memo.addTextChangedListener(new TextWatcher() {
@@ -301,8 +245,6 @@ public class SigningActivity extends AppCompatActivity {
             isPermissionTrue = true;
         }
 
-        //--------------------
-
         // Self-Collector 경우 서버로부터 수취인, 셀러명을 가지고 온다. (비동기)
         try {
 
@@ -311,11 +253,11 @@ public class SigningActivity extends AppCompatActivity {
             params.putString("method", "GetContrInfo");
             DataUtil.mFirebaseAnalytics.logEvent("button_click", params);
         } catch (Exception e) {
+
             Log.e("Firebase", "mFirebaseAnalytics error : " + e.toString());
         }
 
-        //2016-09-12 eylee
-        // 배송정보 Self_Collector의 경우  배송상태값에 따른 정보 습득
+        //2016-09-12 eylee        // 배송상태값에 따른 정보 습득
         new ManualShippingInfoHelper.Builder(this, songjanglist)
                 .setOnShippingInfoEventListener(new ManualShippingInfoHelper.OnShippingInfoEventListener() {
 
@@ -326,10 +268,11 @@ public class SigningActivity extends AppCompatActivity {
                         runOnUiThread(new Runnable() {
                             public void run() {
                                 try {
+
                                     ShippingInfoResult list = resultList.get(0);
                                     List<String> alist = list.getResultObject();
 
-//			                    		  바코드스캔한 번호가 전부 NQ 이면 "Non-Q10 QFS (Route: Other)"
+                                    // 바코드스캔한 번호가 전부 NQ 이면 "Non-Q10 QFS (Route: Other)"
                                     if (isNonQ10QFSOrder) {
 
                                         String qtyFormat = String.format(context.getResources().getString(R.string.text_total_qty_count), tempSize);
@@ -391,22 +334,8 @@ public class SigningActivity extends AppCompatActivity {
                 }).show();
     }
 
-    public void getDeliveryInfo(String barcodeNo) {
-        DatabaseHelper dbHelper = DatabaseHelper.getInstance();
-        Cursor cursor = dbHelper.get("SELECT rcv_nm, sender_nm FROM " + DatabaseHelper.DB_TABLE_INTEGRATION_LIST + " WHERE invoice_no='" + barcodeNo + "' COLLATE NOCASE");
-
-
-        if (cursor.moveToFirst()) {
-            receiverName = cursor.getString(cursor.getColumnIndexOrThrow("rcv_nm"));
-            senderName = cursor.getString(cursor.getColumnIndexOrThrow("sender_nm"));
-        }
-
-        cursor.close();
-    }
-
-
     /*
-     * Self-Collector CS 처리
+     * Self-Collection 처리
      * add by jmkang 2013-12-31
      */
     public void saveServerUploadSign() {
@@ -419,13 +348,11 @@ public class SigningActivity extends AppCompatActivity {
                 return;
             }
 
-            //사인이미지를 그리지 않았다면
             if (!sign_view_sign_signature.getIsTouche()) {
                 Toast.makeText(this.getApplicationContext(), context.getResources().getString(R.string.msg_signature_require), Toast.LENGTH_SHORT).show();
                 return;
             }
 
-            //서버에 올리기전 용량체크  내장메모리가 100Kyte 안남은경우
             if (MemoryStatus.getAvailableInternalMemorySize() != MemoryStatus.ERROR && MemoryStatus.getAvailableInternalMemorySize() < MemoryStatus.PRESENT_BYTE) {
                 AlertShow(context.getResources().getString(R.string.msg_disk_size_error));
                 return;
@@ -480,6 +407,19 @@ public class SigningActivity extends AppCompatActivity {
         alert_internet_status.show();
     }
 
+    public void getDeliveryInfo(String barcodeNo) {
+
+        Cursor cursor = DatabaseHelper.getInstance().get("SELECT rcv_nm, sender_nm FROM " + DatabaseHelper.DB_TABLE_INTEGRATION_LIST
+                + " WHERE invoice_no='" + barcodeNo + "' COLLATE NOCASE");
+
+        if (cursor.moveToFirst()) {
+            receiverName = cursor.getString(cursor.getColumnIndexOrThrow("rcv_nm"));
+            senderName = cursor.getString(cursor.getColumnIndexOrThrow("sender_nm"));
+        }
+
+        cursor.close();
+    }
+
 
     View.OnClickListener clickListener = new View.OnClickListener() {
         @Override
@@ -500,7 +440,7 @@ public class SigningActivity extends AppCompatActivity {
                     img_sign_receiver_substitute.setBackgroundResource(R.drawable.qdrive_btn_icon_check_off);
                     img_sign_receiver_other.setBackgroundResource(R.drawable.qdrive_btn_icon_check_off);
 
-                    mReceiveType = RECEIVE_TYPE_SELF;
+                    mReceiveType = "RC";
                 }
                 break;
 
