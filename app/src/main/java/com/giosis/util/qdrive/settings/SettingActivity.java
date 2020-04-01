@@ -1,5 +1,6 @@
 package com.giosis.util.qdrive.settings;
 
+import android.annotation.SuppressLint;
 import android.app.AlertDialog;
 import android.content.Context;
 import android.content.DialogInterface;
@@ -22,6 +23,7 @@ import androidx.appcompat.app.AppCompatActivity;
 import androidx.core.graphics.drawable.RoundedBitmapDrawable;
 import androidx.core.graphics.drawable.RoundedBitmapDrawableFactory;
 
+import com.giosis.util.qdrive.barcodescanner.ManualHelper;
 import com.giosis.util.qdrive.singapore.LoginActivity;
 import com.giosis.util.qdrive.singapore.R;
 import com.giosis.util.qdrive.util.DatabaseHelper;
@@ -109,6 +111,7 @@ public class SettingActivity extends AppCompatActivity {
         img_setting_profile.setImageDrawable(roundedImageDrawable);
     }
 
+    @SuppressLint("SetTextI18n")
     @Override
     protected void onResume() {
         super.onResume();
@@ -126,7 +129,18 @@ public class SettingActivity extends AppCompatActivity {
         text_setting_driver_id.setText(opId);
         text_setting_driver_email.setText(driverEmail);
         text_setting_driver_branch.setText(officeName);
-        text_setting_app_version.setText(version);
+
+
+        if (ManualHelper.MOBILE_SERVER_URL.contains("test")) {
+
+            text_setting_app_version.setText(version + "_ test");
+        } else if (ManualHelper.MOBILE_SERVER_URL.contains("staging")) {
+
+            text_setting_app_version.setText(version + " _ staging");
+        } else {
+
+            text_setting_app_version.setText(version);
+        }
 
 
         if (outletDriverYN.equals("Y")) {

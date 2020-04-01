@@ -139,7 +139,7 @@ public class OutletDeliveryDoneHelper extends ManualHelper {
 
         AlertDialog dialog = new AlertDialog.Builder(context)
                 .setTitle(context.getResources().getString(R.string.text_upload_result))
-                .setCancelable(true).setPositiveButton(context.getResources().getString(R.string.button_ok), new OnClickListener() {
+                .setCancelable(false).setPositiveButton(context.getResources().getString(R.string.button_ok), new OnClickListener() {
 
                     @Override
                     public void onClick(DialogInterface dialog, int which) {

@@ -1865,6 +1865,16 @@ public final class CaptureActivity extends AppCompatActivity implements SurfaceH
 
         if (mScanType.equals(BarcodeType.CONFIRM_MY_DELIVERY_ORDER)) {
 
+            try {
+
+                Bundle params = new Bundle();
+                params.putString("Activity", TAG);
+                params.putString("method", "SetShippingStatDpc3out");
+                DataUtil.mFirebaseAnalytics.logEvent("button_click", params);
+            } catch (Exception ignored) {
+
+            }
+
             new ConfirmMyOrderHelper.Builder(this, opID, officeCode, deviceID, scanBarcodeArrayList)
                     .setOnDriverAssignEventListener(new ConfirmMyOrderHelper.OnDriverAssignEventListener() {
 
@@ -1889,6 +1899,16 @@ public final class CaptureActivity extends AppCompatActivity implements SurfaceH
                         }
                     }).build().execute();
         } else if (mScanType.equals(BarcodeType.CHANGE_DELIVERY_DRIVER)) {
+
+            try {
+
+                Bundle params = new Bundle();
+                params.putString("Activity", TAG);
+                params.putString("method", "SetChangeDeliveryDriver");
+                DataUtil.mFirebaseAnalytics.logEvent("button_click", params);
+            } catch (Exception ignored) {
+
+            }
 
             if (gpsEnable && gpsTrackerManager != null) {
 

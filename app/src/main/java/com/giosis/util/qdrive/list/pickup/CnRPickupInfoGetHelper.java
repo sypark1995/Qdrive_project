@@ -106,8 +106,10 @@ public class CnRPickupInfoGetHelper extends ManualHelper {
                 GMKT_SyncHttpTask httpTask = new GMKT_SyncHttpTask("QSign");
                 HashMap<String, String> hmActionParam = new HashMap<>();
 
-                // TODO.  TEST
-                //   tracking_no = "C2859SGSG";
+                // TEST.
+               /* tracking_no = "C1133851SGSG";
+                String opID = "Ram.RE";
+                String MOBILE_SERVER_URL = "https://qxapi.qxpress.asia/GMKT.INC.GLPS.MobileApiService/GlobalMobileService.qapi";*/
 
                 hmActionParam.put("pickup_no", tracking_no);
                 hmActionParam.put("driver_id", opID);

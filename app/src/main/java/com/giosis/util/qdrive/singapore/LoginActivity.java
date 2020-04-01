@@ -2,7 +2,6 @@ package com.giosis.util.qdrive.singapore;
 
 import android.os.Bundle;
 import android.os.Handler;
-import android.webkit.WebView;
 
 import org.apache.cordova.CordovaActivity;
 
@@ -12,7 +11,7 @@ public class LoginActivity extends CordovaActivity {
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
 
-        WebView.setWebContentsDebuggingEnabled(true);
+        //WebView.setWebContentsDebuggingEnabled(true);
 
         super.loadUrl("file:///android_asset/www/My/index.html");
 

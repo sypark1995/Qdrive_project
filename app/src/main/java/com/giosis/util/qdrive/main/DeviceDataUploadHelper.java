@@ -126,7 +126,7 @@ public class DeviceDataUploadHelper extends ManualHelper {
 
         AlertDialog dialog = new AlertDialog.Builder(context)
                 .setTitle(context.getResources().getString(R.string.text_upload_result))
-                .setCancelable(true)
+                .setCancelable(false)
                 .setPositiveButton(context.getResources().getString(R.string.button_ok), new OnClickListener() {
 
                     @Override
