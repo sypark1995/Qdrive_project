@@ -23,13 +23,14 @@ import android.hardware.camera2.params.StreamConfigurationMap;
 import android.media.Image;
 import android.media.ImageReader;
 import android.media.MediaActionSound;
-import androidx.annotation.NonNull;
 import android.util.Log;
 import android.util.Size;
 import android.view.Surface;
 import android.view.TextureView;
 import android.widget.ImageView;
 import android.widget.Toast;
+
+import androidx.annotation.NonNull;
 
 import org.jetbrains.annotations.NotNull;
 
@@ -40,7 +41,7 @@ import java.util.List;
 
 public class Camera2APIs {
 
-    String TAG = "Camera2APIs";
+    private String TAG = "Camera2APIs";
 
     public interface Camera2Interface {
         void onCameraDeviceOpened(CameraDevice cameraDevice, Size cameraSize, int rotation);
@@ -50,7 +51,6 @@ public class Camera2APIs {
     private Size mCameraSize;
     private int mRotation = 0;
 
-    private CameraManager cameraManager;
     private CameraCaptureSession mCaptureSession = null;
     private CameraDevice mCameraDevice = null;
     private CaptureRequest.Builder mPreviewRequestBuilder;
@@ -67,8 +67,7 @@ public class Camera2APIs {
     public CameraManager getCameraManager(Activity activity) {
 
         mActivity = activity;
-        cameraManager = (CameraManager) activity.getSystemService(Context.CAMERA_SERVICE);
-        return cameraManager;
+        return (CameraManager) activity.getSystemService(Context.CAMERA_SERVICE);
     }
 
     public String getCameraCharacteristics(CameraManager cameraManager) {

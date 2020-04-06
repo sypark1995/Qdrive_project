@@ -1465,7 +1465,7 @@ public final class CaptureActivity extends AppCompatActivity implements SurfaceH
                 // sqlite 에 cnr barcode scan no 가 있는지 확인하고 insert 하는 sqlite validation 부분 필요
                 // validation 성공했을 때, editext 에 넣고 실패하면, alert 띄우고 editText 에 들어가지 않음
                 // 성공하면 sqlite 에 insert
-               /* CnRPickupValidationCheckHelper cnRPickupValidationCheckHelper = new CnRPickupValidationCheckHelper();
+             /*   CnRPickupValidationCheckHelper cnRPickupValidationCheckHelper = new CnRPickupValidationCheckHelper();
                 cnRPickupValidationCheckHelper.execute(strBarcodeNo);
 
                 beepManager.playBeepSoundAndVibrate();*/
@@ -1492,9 +1492,8 @@ public final class CaptureActivity extends AppCompatActivity implements SurfaceH
                                 edit_capture_type_number.setText("");
                             }
                         }).build().execute();
-
-                break;
             }
+            break;
             case BarcodeType.PICKUP_SCAN_ALL: {
 
                 final String scanNo = strBarcodeNo;
