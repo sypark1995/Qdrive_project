@@ -54,11 +54,13 @@ public class DatabaseHelper extends SQLiteOpenHelper {
 
         if (mInstance == null) {
 
-            Log.e(TAG, "DB getInstance");
+            Log.e(TAG, "DB getInstance  Null");
             mInstance = LazyHolder.INSTANCE;
             sqLiteDatabase = mInstance.getWritableDatabase();
         }
 
+
+        Log.e(TAG, "DB getInstance   not null");
         return mInstance;
     }
 

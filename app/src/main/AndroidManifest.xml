@@ -56,7 +56,7 @@
         android:required="true" />
 
     <application
-        android:name=".MyApplication"
+        android:name="com.giosis.util.qdrive.singapore.MyApplication"
         android:allowBackup="false"
         android:fullBackupContent="false"
         android:icon="@drawable/qdrive_icon"

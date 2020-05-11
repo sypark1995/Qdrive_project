@@ -174,17 +174,7 @@ public class MainActivity extends AppBaseActivity {
         LayoutInflater inflater = (LayoutInflater) getSystemService(Context.LAYOUT_INFLATER_SERVICE);
         View contentView = inflater.inflate(R.layout.activity_main_home, container, false);
         drawerLayout.addView(contentView, 0);
-
-        if (MOBILE_SERVER_URL.contains("test")) {
-
-            setTopTitle("test - " + mContext.getResources().getString(R.string.navi_home));
-        } else if (MOBILE_SERVER_URL.contains("staging")) {
-
-            setTopTitle("staging - " + mContext.getResources().getString(R.string.navi_home));
-        } else {
-
-            setTopTitle(mContext.getResources().getString(R.string.navi_home));
-        }
+        setTopTitle(mContext.getResources().getString(R.string.navi_home));
 
 
         String imgDirName = "/QdrivePickup";

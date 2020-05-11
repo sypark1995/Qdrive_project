@@ -40,6 +40,7 @@ function successCallback(tx, results) {
     console.log("★★★★★★★ ::  DB Success ");
 }
 
+
 function getLoginLocation() {
 
     console.log("★★★★★★★ ::  getLoginLocation ");
@@ -81,6 +82,9 @@ function onLocationError(error) {
     // console.log("★★★★★★★ :: getLoginLocation failed  > " + error.code + '  message : ' + error.message);
     checkAuth(Latitude, Longitude);
 }
+
+
+
 
 
 function checkAuth(Latitude, Longitude) {

@@ -175,7 +175,9 @@ cordova.define("cordova-sqlite-storage.SQLitePlugin", function(require, exports,
         };
       })(this));
     } else {
+
       console.log('OPEN database: ' + this.dbname);
+
       opensuccesscb = (function(_this) {
         return function() {
           var txLock;
@@ -196,6 +198,7 @@ cordova.define("cordova-sqlite-storage.SQLitePlugin", function(require, exports,
           }
         };
       })(this);
+
       openerrorcb = (function(_this) {
         return function() {
           console.log('OPEN database: ' + _this.dbname + ' FAILED, aborting any pending transactions');
@@ -206,12 +209,14 @@ cordova.define("cordova-sqlite-storage.SQLitePlugin", function(require, exports,
           _this.abortAllPendingTransactions();
         };
       })(this);
+
       this.openDBs[this.dbname] = DB_STATE_INIT;
       step2 = (function(_this) {
         return function() {
           cordova.exec(opensuccesscb, openerrorcb, "SQLitePlugin", "open", [_this.openargs]);
         };
       })(this);
+
       cordova.exec(step2, step2, 'SQLitePlugin', 'close', [
         {
           path: this.dbname

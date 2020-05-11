@@ -36,7 +36,7 @@ import java.io.IOException;
 /**
  * Manages beeps and vibrations for {@link CaptureActivity}.
  */
-public final class BeepManager {
+final class BeepManager {
 
     private static final String TAG = BeepManager.class.getSimpleName();
 
@@ -48,8 +48,6 @@ public final class BeepManager {
     private boolean playBeep;
     private boolean vibrate;
     private int sound;
-
-    String vibrationString;
 
     BeepManager(Activity activity, int sound) {
 
@@ -67,16 +65,8 @@ public final class BeepManager {
         // vibrate = prefs.getBoolean(PreferencesActivity.KEY_VIBRATE, true);
 
         SharedPreferences sharedPreferences = activity.getSharedPreferences("PREF_SCAN_SETTING", Activity.MODE_PRIVATE);
-        vibrationString = sharedPreferences.getString("vibration", "0");
-
-        if (vibrationString.equals("ON")) {
-
-            vibrate = true;
-        } else {
-
-            vibrate = false;
-        }
-
+        String vibrationString = sharedPreferences.getString("vibration", "0");
+        vibrate = vibrationString.equals("ON");
 
         if (playBeep && mediaPlayer == null) {
             // The volume on STREAM_SYSTEM is not adjustable, and users found it
@@ -111,14 +101,13 @@ public final class BeepManager {
         mediaPlayer.setOnCompletionListener(new MediaPlayer.OnCompletionListener() {
             @Override
             public void onCompletion(MediaPlayer player) {
+
                 player.seekTo(0);
             }
         });
 
-        AssetFileDescriptor file = null;
-        if (sound == 0) {
-            file = activity.getResources().openRawResourceFd(R.raw.beep);
-        } else if (sound == 1) {
+        AssetFileDescriptor file;
+        if (sound == 1) {
             file = activity.getResources().openRawResourceFd(R.raw.bell);
         } else if (sound == 2) {
             file = activity.getResources().openRawResourceFd(R.raw.beep_error);
@@ -135,7 +124,8 @@ public final class BeepManager {
             mediaPlayer.setVolume(BEEP_VOLUME, BEEP_VOLUME);
             mediaPlayer.prepare();
         } catch (IOException ioe) {
-            Log.w(TAG, ioe);
+
+            Log.e(TAG, TAG + "  buildMediaPlayer Exception : " + ioe.toString());
             mediaPlayer = null;
         }
 

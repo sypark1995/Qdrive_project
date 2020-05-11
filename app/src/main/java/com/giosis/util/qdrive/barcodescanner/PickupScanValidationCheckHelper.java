@@ -143,6 +143,7 @@ public class PickupScanValidationCheckHelper extends ManualHelper {
                 String methodName = "SetPickupScanNo";
                 String jsonString = Custom_JsonParser.requestServerDataReturnJSON(MOBILE_SERVER_URL, methodName, job);
                 // {"ResultCode":0,"ResultMsg":"STD"}
+                // {"ResultCode":-99,"ResultMsg":"There is no Default Route."}
 
                 JSONObject jsonObject = new JSONObject(jsonString);
                 resultObj.setResultCode(jsonObject.getInt("ResultCode"));

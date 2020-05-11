@@ -20,6 +20,20 @@ public class IntroActivity extends Activity {
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
+
+       /* if (!isTaskRoot()) {
+            finish();
+            return;
+        }*/
+       /* if (!isTaskRoot()
+                && getIntent().hasCategory(Intent.CATEGORY_LAUNCHER)
+                && getIntent().getAction() != null
+                && getIntent().getAction().equals(Intent.ACTION_MAIN)) {
+
+            finish();
+            return;
+        }*/
+
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_intro);
         context = getApplicationContext();

@@ -64,8 +64,8 @@ public class ConfirmMyOrderHelper extends ManualHelper {
         }
 
         Builder setOnDriverAssignEventListener(OnDriverAssignEventListener eventListener) {
-            this.eventListener = eventListener;
 
+            this.eventListener = eventListener;
             return this;
         }
     }

@@ -93,6 +93,7 @@ public class ServerDownloadHelper extends ManualHelper {
 
     class DownloadTask extends AsyncTask<Void, Integer, Long> {
         int progress = 0;
+        String resultMsg = "";
 
         @Override
         protected void onPreExecute() {
@@ -106,58 +107,98 @@ public class ServerDownloadHelper extends ManualHelper {
         @Override
         protected Long doInBackground(Void... params) {
 
-            DriverAssignResult DeliveryServerList = getDeliveryServerData();
-            DriverAssignResult OutletDeliveryServerList = getOutletDeliveryServerData();
-            PickupAssignResult PickupServerList = getPickupServerData();
+            try {
+                DriverAssignResult DeliveryServerList = getDeliveryServerData();
+                DriverAssignResult OutletDeliveryServerList = getOutletDeliveryServerData();
+                PickupAssignResult PickupServerList = getPickupServerData();
 
-            long maxCount = 0;
-            long successCount = 0;
+                long maxCount = 0;
+                long resultCode = 0;
+                long successCount = 0;
 
-            if (DeliveryServerList != null && DeliveryServerList.getResultObject() != null) {
-                maxCount += DeliveryServerList.getResultObject().size();
-            }
+                if (DeliveryServerList != null) {
 
-            if (OutletDeliveryServerList != null && OutletDeliveryServerList.getResultObject() != null) {
-                maxCount += OutletDeliveryServerList.getResultObject().size();
-            }
-
-            if (PickupServerList != null && PickupServerList.getResultObject() != null) {
-                maxCount += PickupServerList.getResultObject().size();
-            }
-
-            progressDialog.setMax((int) maxCount);
-
-            if (maxCount < 1) {
-
-                return maxCount;
-            }
-
-            if (DeliveryServerList != null) {
-                for (DriverAssignResult.QSignDeliveryList shippingInfo : DeliveryServerList.getResultObject()) {
-                    successCount = insertDeviceDeliveryData(shippingInfo);
-                    publishProgress(1);
+                    resultCode += DeliveryServerList.getResultCode();
+                    if (resultCode < 0)
+                        resultMsg += DeliveryServerList.getResultMsg();
                 }
-            }
-
-            if (OutletDeliveryServerList != null && OutletDeliveryServerList.getResultObject() != null) {
-                for (DriverAssignResult.QSignDeliveryList outlet_shippingInfo : OutletDeliveryServerList.getResultObject()) {
-                    successCount = insertDeviceOutletDeliveryData(outlet_shippingInfo);
-                    publishProgress(1);
+                if (DeliveryServerList != null && DeliveryServerList.getResultObject() != null) {
+                    maxCount += DeliveryServerList.getResultObject().size();
                 }
+
+                if (OutletDeliveryServerList != null) {
+
+                    resultCode += OutletDeliveryServerList.getResultCode();
+                    if (resultCode < 0)
+                        resultMsg += OutletDeliveryServerList.getResultMsg();
+                }
+                if (OutletDeliveryServerList != null && OutletDeliveryServerList.getResultObject() != null) {
+                    maxCount += OutletDeliveryServerList.getResultObject().size();
+                }
+
+                if (PickupServerList != null) {
+
+                    resultCode += PickupServerList.getResultCode();
+                    if (resultCode < 0)
+                        resultMsg += PickupServerList.getResultMsg();
+                }
+                if (PickupServerList != null && PickupServerList.getResultObject() != null) {
+                    maxCount += PickupServerList.getResultObject().size();
+                }
+
+                progressDialog.setMax((int) maxCount);
+
+                // FIXME.  서버에서 (-) Result 값이 내려왔을 때의 처리방법 바꾸기
+                    /*
+                Log.e("Server", "Download Result Code : " + resultCode + " / " + resultMsg);
+
+
+                if (resultCode < 0) {
+
+                    return resultCode;
+                }*/
+
+                if (maxCount < 1) {
+
+                    return maxCount;
+                }
+
+                if (DeliveryServerList != null) {
+
+                    for (DriverAssignResult.QSignDeliveryList shippingInfo : DeliveryServerList.getResultObject()) {
+
+                        successCount = insertDeviceDeliveryData(shippingInfo);
+                        publishProgress(1);
+                    }
+                }
+
+                if (OutletDeliveryServerList != null && OutletDeliveryServerList.getResultObject() != null) {
+                    for (DriverAssignResult.QSignDeliveryList outlet_shippingInfo : OutletDeliveryServerList.getResultObject()) {
+                        successCount = insertDeviceOutletDeliveryData(outlet_shippingInfo);
+                        publishProgress(1);
+                    }
 
               /*  // TODO
                 testOutletDeliveryData("1", "SG19611661", "7E 014 The Clementi Mall");
                 testOutletDeliveryData("2", "SG19611662", "7E 775 UE Square");*/
-            }
-
-            if (PickupServerList != null) {
-                for (PickupAssignResult.QSignPickupList pickupInfo : PickupServerList.getResultObject()) {
-                    successCount = insertDevicePickupData(pickupInfo);
-                    publishProgress(1);
                 }
-            }
 
-            return successCount;
+                if (PickupServerList != null) {
+                    for (PickupAssignResult.QSignPickupList pickupInfo : PickupServerList.getResultObject()) {
+                        successCount = insertDevicePickupData(pickupInfo);
+                        publishProgress(1);
+                    }
+                }
+
+                return successCount;
+            } catch (Exception e) {
+
+                Log.e("Exception", "ServerDownloadHelper Exception : " + e.toString());
+
+
+                long successCount = 0;
+                return successCount;
+            }
         }
 
         @Override
@@ -174,7 +215,10 @@ public class ServerDownloadHelper extends ManualHelper {
 
             DisplayUtil.dismissProgressDialog(progressDialog);
 
-            if (result < 1) {
+            if (result < 0) {
+
+                showResultDialog(resultMsg);
+            } else if (result == 0) {
 
                 showResultDialog(context.getResources().getString(R.string.msg_no_data_to_download));
             } else {
@@ -194,6 +238,10 @@ public class ServerDownloadHelper extends ManualHelper {
 
         try {
 
+            // TEST.
+        /*    String MOBILE_SERVER_URL = "https://qxapi.qxpress.asia/GMKT.INC.GLPS.MobileApiService/GlobalMobileService.qapi";
+            String opID = "hdsg_sallehudin";*/
+
             GMKT_SyncHttpTask httpTask = new GMKT_SyncHttpTask("QSign");
             HashMap<String, String> hmActionParam = new HashMap<>();
             hmActionParam.put("opId", opID);
@@ -207,6 +255,7 @@ public class ServerDownloadHelper extends ManualHelper {
 
             String methodName = "GetDeliveryList";
             Serializer serializer = new Persister();
+
 
             GMKT_HTTPResponseMessage response = httpTask.requestServerDataReturnString(MOBILE_SERVER_URL, methodName, hmActionParam);
             String resultString = response.getResultString();
