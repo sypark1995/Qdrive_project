@@ -71,6 +71,7 @@ public class ListActivity extends FragmentActivity implements OnClickListener, L
     DatabaseHelper dbHelper;
     String opID;
 
+
     //In Progress 리스트 카운트
     @Override
     public void onCountRefresh(int count) {

@@ -108,7 +108,9 @@ public class PickupAssignCheckHelper extends ManualHelper {
 
             int assignCount = getManualAssignCount();
 
-            if (0 < assignCount) {
+            // result 0보다 큰 경우 있나 실제 드라이버 체크
+            // FIXME.  2020.05  문제 있으면 주석 풀기
+            /*if (0 < assignCount) {
 
                 if (progressDialog != null) {
                     progressDialog.setProgressStyle(ProgressDialog.STYLE_HORIZONTAL);
@@ -142,7 +144,7 @@ public class PickupAssignCheckHelper extends ManualHelper {
                         return req;
                     }
                 }
-            }
+            }*/
 
             return assignCount;
         }

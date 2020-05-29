@@ -7,8 +7,9 @@ import android.location.Location;
 import android.location.LocationListener;
 import android.location.LocationManager;
 import android.os.Bundle;
-import androidx.core.app.ActivityCompat;
 import android.util.Log;
+
+import androidx.core.app.ActivityCompat;
 
 public class LocationManagerOnceListener implements LocationListener {
     private String TAG = "LocationManagerOnceListener";
@@ -72,8 +73,8 @@ public class LocationManagerOnceListener implements LocationListener {
 
         if (location != null) {
 
-            this.latitude = location.getLatitude();
-            this.longitude = location.getLongitude();
+            this.latitude = Double.parseDouble(String.format("%.7f", location.getLatitude()));
+            this.longitude = Double.parseDouble(String.format("%.7f", location.getLongitude()));
             this.accuracy = location.getAccuracy();
 
             if (count < 5) {

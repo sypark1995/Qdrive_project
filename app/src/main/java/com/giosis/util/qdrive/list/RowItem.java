@@ -1,7 +1,5 @@
 package com.giosis.util.qdrive.list;
 
-import com.giosis.util.qdrive.list.ChildItem;
-
 import java.util.ArrayList;
 
 public class RowItem {
@@ -42,6 +40,8 @@ public class RowItem {
     private String desired_time;
     private String zip_code;
     private String ref_pickup_no;
+
+    float distance;
 
 
     public RowItem(String contr_no, String delay, String shipping, String name, String address, String request, String type, String route, String sender, String desired_date, String qty, String self_memo, double lat, double lng, String stat, String cust_no, String partner_id
@@ -302,5 +302,15 @@ public class RowItem {
 
     public void setRef_pickup_no(String ref_pickup_no) {
         this.ref_pickup_no = ref_pickup_no;
+    }
+
+
+    // 드라이버 위치와의 거리
+    public float getDistance() {
+        return distance;
+    }
+
+    public void setDistance(float distance) {
+        this.distance = distance;
     }
 }

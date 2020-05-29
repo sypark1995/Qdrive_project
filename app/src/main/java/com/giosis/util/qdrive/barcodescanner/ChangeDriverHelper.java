@@ -16,6 +16,7 @@ import com.giosis.util.qdrive.util.Custom_JsonParser;
 import com.giosis.util.qdrive.util.DataUtil;
 import com.giosis.util.qdrive.util.DatabaseHelper;
 import com.giosis.util.qdrive.util.DisplayUtil;
+import com.giosis.util.qdrive.util.GeocoderUtil;
 import com.giosis.util.qdrive.util.NetworkUtil;
 import com.giosis.util.qdrive.util.SharedPreferencesHelper;
 
@@ -260,39 +261,40 @@ public class ChangeDriverHelper extends ManualHelper {
 
         // eylee 2015.08.26 add end
         //성공 시 통합리스트 테이블 저장
-        ContentValues contentVal2 = new ContentValues();
-        contentVal2.put("contr_no", assignInfo.getContrNo());
-        contentVal2.put("partner_ref_no", assignInfo.getPartnerRefNo());
-        contentVal2.put("invoice_no", assignInfo.getInvoiceNo());
-        contentVal2.put("stat", assignInfo.getStat());
-        contentVal2.put("rcv_nm", assignInfo.getRcvName());
-        contentVal2.put("sender_nm", assignInfo.getSenderName());
-        contentVal2.put("tel_no", assignInfo.getTelNo());
-        contentVal2.put("hp_no", assignInfo.getHpNo());
-        contentVal2.put("zip_code", assignInfo.getZipCode());
-        contentVal2.put("address", assignInfo.getAddress());
-        contentVal2.put("rcv_request", assignInfo.getDelMemo());
-        contentVal2.put("delivery_dt", assignInfo.getDeliveryFirstDate());
-        contentVal2.put("delivery_cnt", assignInfo.getDeliveryCount());
-        contentVal2.put("type", BarcodeType.TYPE_DELIVERY);
-        contentVal2.put("route", assignInfo.getRoute());
-        contentVal2.put("reg_id", opId);
-        contentVal2.put("reg_dt", regDataString);
-        contentVal2.put("punchOut_stat", "N");
-        contentVal2.put("driver_memo", assignInfo.getDriverMemo());
-        contentVal2.put("fail_reason", assignInfo.getFailReason());
-        contentVal2.put("secret_no_type", assignInfo.getSecretNoType());
-        contentVal2.put("secret_no", assignInfo.getSecretNo());
-        // 2018-03-09 eylee bug fix
-        contentVal2.put("secure_delivery_yn", assignInfo.getSecureDeliveryYN());
-        contentVal2.put("parcel_amount", assignInfo.getParcelAmount());
-        contentVal2.put("currency", assignInfo.getCurrency());
-        // krm0219
-        contentVal2.put("order_type_etc", assignInfo.getOrder_type_etc());
+        ContentValues contentVal = new ContentValues();
+        contentVal.put("contr_no", assignInfo.getContrNo());
+        contentVal.put("partner_ref_no", assignInfo.getPartnerRefNo());
+        contentVal.put("invoice_no", assignInfo.getInvoiceNo());
+        contentVal.put("stat", assignInfo.getStat());
+        contentVal.put("rcv_nm", assignInfo.getRcvName());
+        contentVal.put("sender_nm", assignInfo.getSenderName());
+        contentVal.put("tel_no", assignInfo.getTelNo());
+        contentVal.put("hp_no", assignInfo.getHpNo());
+        contentVal.put("zip_code", assignInfo.getZipCode());
+        contentVal.put("address", assignInfo.getAddress());
+        contentVal.put("rcv_request", assignInfo.getDelMemo());
+        contentVal.put("delivery_dt", assignInfo.getDeliveryFirstDate());
+        contentVal.put("delivery_cnt", assignInfo.getDeliveryCount());
+        contentVal.put("type", BarcodeType.TYPE_DELIVERY);
+        contentVal.put("route", assignInfo.getRoute());
+        contentVal.put("reg_id", opId);
+        contentVal.put("reg_dt", regDataString);
+        contentVal.put("punchOut_stat", "N");
+        contentVal.put("driver_memo", assignInfo.getDriverMemo());
+        contentVal.put("fail_reason", assignInfo.getFailReason());
+        contentVal.put("secret_no_type", assignInfo.getSecretNoType());
+        contentVal.put("secret_no", assignInfo.getSecretNo());
+        contentVal.put("secure_delivery_yn", assignInfo.getSecureDeliveryYN());
+        contentVal.put("parcel_amount", assignInfo.getParcelAmount());
+        contentVal.put("currency", assignInfo.getCurrency());
+        contentVal.put("order_type_etc", assignInfo.getOrder_type_etc());   // krm0219
 
+        // 2020.06 위, 경도 저장
+        String[] latLng = GeocoderUtil.getLatLng(assignInfo.getLat_lng());
+        contentVal.put("lat", latLng[0]);
+        contentVal.put("lng", latLng[1]);
 
-        long insertCount = DatabaseHelper.getInstance().insert(DatabaseHelper.DB_TABLE_INTEGRATION_LIST, contentVal2);
-
+        long insertCount = DatabaseHelper.getInstance().insert(DatabaseHelper.DB_TABLE_INTEGRATION_LIST, contentVal);
         return insertCount >= 0;
     }
 

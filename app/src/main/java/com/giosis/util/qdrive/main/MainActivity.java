@@ -684,7 +684,7 @@ public class MainActivity extends AppBaseActivity {
             }
         }
 
-        new ServerDownloadHelper.Builder(this, opID, officeCode, deviceID)
+        new ServerDownloadHelper.Builder(MainActivity.this, this, opID, officeCode, deviceID)
                 .setOnServerDownloadEventListener(new ServerDownloadHelper.OnServerDownloadEventListener() {
 
                     @Override
@@ -707,6 +707,10 @@ public class MainActivity extends AppBaseActivity {
             int status = GoogleApiAvailability.getInstance().isGooglePlayServicesAvailable(this);
             isGooglePlayService = ConnectionResult.SUCCESS == status;
 
+            /*Log.e("krm0219", TAG + "   MANUFACTURER = " + Build.MANUFACTURER); //제조사
+            if (Build.MANUFACTURER.equals("HUAWEI")) {  // 화웨이 - google 위치정보 못가져옴
+                isGooglePlayService = false;
+            }*/
             /*// TEST.
             isGooglePlayService = false;*/
 
@@ -757,7 +761,20 @@ public class MainActivity extends AppBaseActivity {
     }
 
     @Override
+    protected void onStop() {
+        super.onStop();
+        String api_level = Integer.toString(Build.VERSION.SDK_INT);     // API Level
+        String device_info = android.os.Build.DEVICE;                   // Device
+        String device_model = android.os.Build.MODEL;                   // Model
+        String device_product = android.os.Build.PRODUCT;               // Product
+        String device_os_version = System.getProperty("os.version");    // OS version
+
+        Log.e("krm0219", TAG + "  DATA " + api_level + " / " + device_info + " / " + device_model + " / " + device_product + " / " + device_os_version);
+    }
+
+    @Override
     protected void onDestroy() {
+        Log.e("krm0219", TAG + "  onDestroy");
         super.onDestroy();
 
         if (!isHomeBtnClick) {  // home btn 누른게 아닐 때 작동해야 할 destroy method
@@ -801,6 +818,8 @@ public class MainActivity extends AppBaseActivity {
         String device_model = android.os.Build.MODEL;                   // Model
         String device_product = android.os.Build.PRODUCT;               // Product
         String device_os_version = System.getProperty("os.version");    // OS version
+
+        Log.e("krm0219", "DATA " + api_level + " / " + device_info + " / " + device_model + " / " + device_product + " / " + device_os_version);
 
         new QuickAppUserInfoUploadHelper.Builder(mContext, opID, "", api_level, device_info,
                 device_model, device_product, device_os_version, "killapp")

@@ -274,6 +274,10 @@ public class CnRPickupValidationCheckHelper2 extends ManualHelper {
                 contentVal.put("secret_no_type", "");
                 contentVal.put("secret_no", "");
 
+                //TODO
+                contentVal.put("lat", "0");
+                contentVal.put("lng", "0");
+
                 DatabaseHelper.getInstance().insert(DatabaseHelper.DB_TABLE_INTEGRATION_LIST, contentVal);
             } catch (Exception ignored) {
 

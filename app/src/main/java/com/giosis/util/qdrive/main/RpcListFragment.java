@@ -184,7 +184,7 @@ public class RpcListFragment extends Fragment implements OnQueryTextListener, On
                 "rcv_nm desc"
         };
 
-        if (OrderBySeq == 6) {
+        if (OrderBySeq <= 6) {
 
             MyApplication.preferences.setSortIndex(0);
             OrderBySeq = 0;

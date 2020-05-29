@@ -1,5 +1,6 @@
 package com.giosis.util.qdrive.main;
 
+import android.app.Activity;
 import android.app.AlertDialog;
 import android.app.ProgressDialog;
 import android.content.ContentValues;
@@ -18,6 +19,7 @@ import com.giosis.util.qdrive.util.BarcodeType;
 import com.giosis.util.qdrive.util.DataUtil;
 import com.giosis.util.qdrive.util.DatabaseHelper;
 import com.giosis.util.qdrive.util.DisplayUtil;
+import com.giosis.util.qdrive.util.GeocoderUtil;
 import com.giosis.util.qdrive.util.NetworkUtil;
 
 import org.simpleframework.xml.Serializer;
@@ -35,6 +37,7 @@ import gmkt.inc.android.common.network.http.GMKT_HTTPResponseMessage;
 public class ServerDownloadHelper extends ManualHelper {
     String TAG = "ServerDownloadHelper";
 
+    private final Activity activity;
     private final Context context;
     private final String opID;
     private final String officeCode;
@@ -47,6 +50,7 @@ public class ServerDownloadHelper extends ManualHelper {
 
     public static class Builder {
 
+        private final Activity activity;
         private final Context context;
         private final String opID;
         private final String officeCode;
@@ -55,8 +59,9 @@ public class ServerDownloadHelper extends ManualHelper {
         private String networkType;
         private OnServerDownloadEventListener eventListener;
 
-        public Builder(Context context, String opID, String officeCode, String deviceID) {
+        public Builder(Activity activity, Context context, String opID, String officeCode, String deviceID) {
 
+            this.activity = activity;
             this.context = context;
             this.opID = opID;
             this.officeCode = officeCode;
@@ -79,6 +84,7 @@ public class ServerDownloadHelper extends ManualHelper {
 
     private ServerDownloadHelper(Builder builder) {
 
+        this.activity = builder.activity;
         this.context = builder.context;
         this.opID = builder.opID;
         this.officeCode = builder.officeCode;
@@ -177,17 +183,17 @@ public class ServerDownloadHelper extends ManualHelper {
                         successCount = insertDeviceOutletDeliveryData(outlet_shippingInfo);
                         publishProgress(1);
                     }
-
-              /*  // TODO
-                testOutletDeliveryData("1", "SG19611661", "7E 014 The Clementi Mall");
-                testOutletDeliveryData("2", "SG19611662", "7E 775 UE Square");*/
                 }
 
                 if (PickupServerList != null) {
+
+                    Log.e("krm0219", " get Geocode");
                     for (PickupAssignResult.QSignPickupList pickupInfo : PickupServerList.getResultObject()) {
                         successCount = insertDevicePickupData(pickupInfo);
                         publishProgress(1);
                     }
+
+                    Log.e("krm0219", " finish Geocode");
                 }
 
                 return successCount;
@@ -238,10 +244,6 @@ public class ServerDownloadHelper extends ManualHelper {
 
         try {
 
-            // TEST.
-        /*    String MOBILE_SERVER_URL = "https://qxapi.qxpress.asia/GMKT.INC.GLPS.MobileApiService/GlobalMobileService.qapi";
-            String opID = "hdsg_sallehudin";*/
-
             GMKT_SyncHttpTask httpTask = new GMKT_SyncHttpTask("QSign");
             HashMap<String, String> hmActionParam = new HashMap<>();
             hmActionParam.put("opId", opID);
@@ -260,7 +262,7 @@ public class ServerDownloadHelper extends ManualHelper {
             GMKT_HTTPResponseMessage response = httpTask.requestServerDataReturnString(MOBILE_SERVER_URL, methodName, hmActionParam);
             String resultString = response.getResultString();
             Log.e("Server", methodName + "  Result : " + resultString);
-            // <ResultCode>0</ResultCode><ResultMsg>SUCCESS</ResultMsg><ResultObject><QSignDeliveryList><contr_no>55003828</contr_no><partner_ref_no>SGSG105652</partner_ref_no><invoice_no>SG19611818</invoice_no><stat>D3</stat><rcv_nm>Eunyoung Lee</rcv_nm><tel_no>+65--</tel_no><hp_no>+65-8888-8888</hp_no><zip_code>408601</zip_code><address>LIFELONG LEARNING INSTITUTE 11 EUNOS ROAD 8 test bbb</address><sender_nm>eeee</sender_nm><del_memo /><driver_memo /><fail_reason>  </fail_reason><delivery_count>0</delivery_count><delivery_first_date>2019-08-20</delivery_first_date><route>GIO</route><secret_no_type> </secret_no_type><secret_no /><del_hopeday /><secure_delivery_yn>N</secure_delivery_yn><parcel_amount>25.00</parcel_amount><currency>SGD</currency><order_type_etc>ETC</order_type_etc></QSignDeliveryList><QSignDeliveryList><contr_no>55003829</contr_no><partner_ref_no>SGSG105653</partner_ref_no><invoice_no>SG19611819</invoice_no><stat>D3</stat><rcv_nm>Eunyoung Lee</rcv_nm><tel_no>+65--</tel_no><hp_no>+65-8888-8888</hp_no><zip_code>408601</zip_code><address>LIFELONG LEARNING INSTITUTE 11 EUNOS ROAD 8 test bbb</address><sender_nm>eeee</sender_nm><del_memo /><driver_memo /><fail_reason>  </fail_reason><delivery_count>0</delivery_count><delivery_first_date>2019-08-20</delivery_first_date><route>GIO</route><secret_no_type> </secret_no_type><secret_no /><del_hopeday /><secure_delivery_yn>N</secure_delivery_yn><parcel_amount>25.00</parcel_amount><currency>SGD</currency><order_type_etc>ETC</order_type_etc></QSignDeliveryList></ResultObject>
+            // <ResultCode>0</ResultCode><ResultMsg>SUCCESS</ResultMsg><ResultObject><QSignDeliveryList><contr_no>55003828</contr_no><partner_ref_no>SGSG105652</partner_ref_no><invoice_no>SG19611818</invoice_no><stat>D3</stat><rcv_nm>Eunyoung Lee</rcv_nm><tel_no>+65--</tel_no><hp_no>+65-8888-8888</hp_no><zip_code>408601</zip_code><address>LIFELONG LEARNING INSTITUTE 11 EUNOS ROAD 8  bbb</address><sender_nm>eeee</sender_nm><del_memo /><driver_memo /><fail_reason>  </fail_reason><delivery_count>0</delivery_count><delivery_first_date>2019-08-20</delivery_first_date><route>GIO</route><secret_no_type> </secret_no_type><secret_no /><del_hopeday /><secure_delivery_yn>N</secure_delivery_yn><parcel_amount>25.00</parcel_amount><currency>SGD</currency><order_type_etc>ETC</order_type_etc></QSignDeliveryList><QSignDeliveryList><contr_no>55003829</contr_no><partner_ref_no>SGSG105653</partner_ref_no><invoice_no>SG19611819</invoice_no><stat>D3</stat><rcv_nm>Eunyoung Lee</rcv_nm><tel_no>+65--</tel_no><hp_no>+65-8888-8888</hp_no><zip_code>408601</zip_code><address>LIFELONG LEARNING INSTITUTE 11 EUNOS ROAD 8 bbb</address><sender_nm>eeee</sender_nm><del_memo /><driver_memo /><fail_reason>  </fail_reason><delivery_count>0</delivery_count><delivery_first_date>2019-08-20</delivery_first_date><route>GIO</route><secret_no_type> </secret_no_type><secret_no /><del_hopeday /><secure_delivery_yn>N</secure_delivery_yn><parcel_amount>25.00</parcel_amount><currency>SGD</currency><order_type_etc>ETC</order_type_etc></QSignDeliveryList></ResultObject>
 
             resultObj = serializer.read(DriverAssignResult.class, resultString);
         } catch (Exception e) {
@@ -331,9 +333,9 @@ public class ServerDownloadHelper extends ManualHelper {
             hmActionParam.put("app_id", DataUtil.appID);
             hmActionParam.put("nation_cd", DataUtil.nationCode);
 
-     /*       // TODO.  TEST
+          /*  // TEST
             String MOBILE_SERVER_URL = "https://qxapi.qxpress.asia/GMKT.INC.GLPS.MobileApiService/GlobalMobileService.qapi";
-            hmActionParam.put("opId", "Taufik.FSA");*/
+            hmActionParam.put("opId", "Yak.PUCC");*/
 
             String methodName = "GetPickupList";
             Serializer serializer = new Persister();
@@ -341,7 +343,7 @@ public class ServerDownloadHelper extends ManualHelper {
             GMKT_HTTPResponseMessage response = httpTask.requestServerDataReturnString(MOBILE_SERVER_URL, methodName, hmActionParam);
             String resultString = response.getResultString();
             Log.e("Server", methodName + "  Result : " + resultString);
-            // <ResultCode>0</ResultCode><ResultMsg>SUCCESS</ResultMsg><ResultObject><QSignPickupList><contr_no>55003355</contr_no><partner_ref_no>C2859SGSG</partner_ref_no><invoice_no>C2859SGSG</invoice_no><stat>P2</stat><req_nm>normal order</req_nm><req_dt>2019-08-2010:00-19:00</req_dt><tel_no>+65--</tel_no><hp_no>+65-8424-2354</hp_no><zip_code>048741</zip_code><address>11 PEKIN STREEThyemi3333</address><pickup_hopeday>2019-08-20</pickup_hopeday><pickup_hopetime>10:00-19:00</pickup_hopetime><sender_nm>normal order</sender_nm><del_memo /><driver_memo /><fail_reason>WA</fail_reason><qty>1</qty><cust_nm>test191919</cust_nm><partner_id>hyemi223</partner_id><dr_assign_requestor /><dr_assign_req_dt /><dr_assign_stat /><dr_req_no /><failed_count>0</failed_count><route>C2C</route><cust_no>100054639</cust_no></QSignPickupList></ResultObject>
+            // <ResultCode>0</ResultCode><ResultMsg>SUCCESS</ResultMsg><ResultObject><QSignPickupList><contr_no>55003355</contr_no><partner_ref_no>C2859SGSG</partner_ref_no><invoice_no>C2859SGSG</invoice_no><stat>P2</stat><req_nm>normal order</req_nm><req_dt>2019-08-2010:00-19:00</req_dt><tel_no>+65--</tel_no><hp_no>+65-8424-2354</hp_no><zip_code>048741</zip_code><address>11 PEKIN STREEThyemi3333</address><pickup_hopeday>2019-08-20</pickup_hopeday><pickup_hopetime>10:00-19:00</pickup_hopetime><sender_nm>normal order</sender_nm><del_memo /><driver_memo /><fail_reason>WA</fail_reason><qty>1</qty><cust_nm></cust_nm><partner_id>hyemi223</partner_id><dr_assign_requestor /><dr_assign_req_dt /><dr_assign_stat /><dr_req_no /><failed_count>0</failed_count><route>C2C</route><cust_no>100054639</cust_no></QSignPickupList></ResultObject>
 
             resultObj = serializer.read(PickupAssignResult.class, resultString);
         } catch (Exception e) {
@@ -388,8 +390,12 @@ public class ServerDownloadHelper extends ManualHelper {
         contentVal.put("secure_delivery_yn", data.getSecureDeliveryYN());
         contentVal.put("parcel_amount", data.getParcelAmount());
         contentVal.put("currency", data.getCurrency());
-        // krm0219
-        contentVal.put("order_type_etc", data.getOrder_type_etc());
+        contentVal.put("order_type_etc", data.getOrder_type_etc());  // krm0219
+
+        // 2020.06 위, 경도 저장
+        String[] latLng = GeocoderUtil.getLatLng(data.getLat_lng());
+        contentVal.put("lat", latLng[0]);
+        contentVal.put("lng", latLng[1]);
 
         return dbHelper.insert(DatabaseHelper.DB_TABLE_INTEGRATION_LIST, contentVal);
     }
@@ -428,8 +434,12 @@ public class ServerDownloadHelper extends ManualHelper {
         contentVal.put("secure_delivery_yn", data.getSecureDeliveryYN());
         contentVal.put("parcel_amount", data.getParcelAmount());
         contentVal.put("currency", data.getCurrency());
-        // krm0219
-        contentVal.put("order_type_etc", data.getOrder_type_etc());
+        contentVal.put("order_type_etc", data.getOrder_type_etc());  // krm0219
+
+        // 2020.06 위, 경도 저장
+        String[] latLng = GeocoderUtil.getLatLng(data.getLat_lng());
+        contentVal.put("lat", latLng[0]);
+        contentVal.put("lng", latLng[1]);
 
         return dbHelper.insert(DatabaseHelper.DB_TABLE_INTEGRATION_LIST, contentVal);
     }
@@ -479,6 +489,11 @@ public class ServerDownloadHelper extends ManualHelper {
         if (data.getRoute().equals("RPC")) {
             contentVal.put("desired_time", data.getPickupHopeTime());
         }
+
+        // 2020.06 위, 경도 저장
+        String[] latLng = GeocoderUtil.getLatLng(data.getLat_lng());
+        contentVal.put("lat", latLng[0]);
+        contentVal.put("lng", latLng[1]);
 
         return dbHelper.insert(DatabaseHelper.DB_TABLE_INTEGRATION_LIST, contentVal);
     }
@@ -530,45 +545,5 @@ public class ServerDownloadHelper extends ManualHelper {
 
     public interface OnServerDownloadEventListener {
         void onDownloadResult();
-    }
-
-
-    // TODO.  Outlet TEST
-    private long testOutletDeliveryData(String contrNo, String trackingNo, String route) {
-
-        SimpleDateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
-        dateFormat.setTimeZone(TimeZone.getTimeZone("GMT"));
-        String regDataString = dateFormat.format(new Date());
-
-        DatabaseHelper dbHelper = DatabaseHelper.getInstance();
-        ContentValues contentVal = new ContentValues();
-        contentVal.put("contr_no", contrNo);
-        contentVal.put("partner_ref_no", trackingNo);
-        contentVal.put("invoice_no", trackingNo);
-        contentVal.put("stat", "D3");
-        contentVal.put("rcv_nm", "karam");
-        contentVal.put("sender_nm", "KARAM");
-        contentVal.put("tel_no", "01012345678");
-        contentVal.put("hp_no", "01012345678");
-        contentVal.put("zip_code", "129588");
-        contentVal.put("address", "THE CLEMENTI MALL 3155 COMMONWEALTH AVENUE WEST #01-03 (Operation hours: 24 hours)");
-        contentVal.put("rcv_request", "");
-        contentVal.put("delivery_dt", "2019-08-17 오후 2:49:29");
-        contentVal.put("delivery_cnt", "0");
-        contentVal.put("type", BarcodeType.TYPE_DELIVERY);
-        contentVal.put("route", route);
-        contentVal.put("reg_id", opID);
-        contentVal.put("reg_dt", regDataString);
-        contentVal.put("punchOut_stat", "N");
-        contentVal.put("driver_memo", "");
-        contentVal.put("fail_reason", "");
-        contentVal.put("secret_no_type", "");
-        contentVal.put("secret_no", "");
-        contentVal.put("secure_delivery_yn", "N");
-        contentVal.put("parcel_amount", "32.6");
-        contentVal.put("currency", "SGD");
-        contentVal.put("order_type_etc", "DPC");
-
-        return dbHelper.insert(DatabaseHelper.DB_TABLE_INTEGRATION_LIST, contentVal);
     }
 }

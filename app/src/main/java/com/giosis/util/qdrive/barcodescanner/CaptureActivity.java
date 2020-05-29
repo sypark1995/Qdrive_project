@@ -34,7 +34,6 @@ import android.hardware.Sensor;
 import android.hardware.SensorEvent;
 import android.hardware.SensorEventListener;
 import android.hardware.SensorManager;
-import android.os.AsyncTask;
 import android.os.Bundle;
 import android.os.Handler;
 import android.os.Message;
@@ -97,21 +96,9 @@ import com.giosis.util.qdrive.util.PermissionChecker;
 import com.giosis.util.qdrive.util.SharedPreferencesHelper;
 import com.google.zxing.Result;
 
-import org.simpleframework.xml.Serializer;
-import org.simpleframework.xml.core.Persister;
-
 import java.io.Serializable;
-import java.text.SimpleDateFormat;
 import java.util.ArrayList;
-import java.util.Date;
-import java.util.HashMap;
-import java.util.TimeZone;
 import java.util.regex.Pattern;
-
-import gmkt.inc.android.common.GMKT_SyncHttpTask;
-import gmkt.inc.android.common.network.http.GMKT_HTTPResponseMessage;
-
-import static com.giosis.util.qdrive.barcodescanner.ManualHelper.MOBILE_SERVER_URL;
 
 /**
  * The barcode reader activity itself. This is loosely based on the
@@ -1465,13 +1452,8 @@ public final class CaptureActivity extends AppCompatActivity implements SurfaceH
                 // sqlite 에 cnr barcode scan no 가 있는지 확인하고 insert 하는 sqlite validation 부분 필요
                 // validation 성공했을 때, editext 에 넣고 실패하면, alert 띄우고 editText 에 들어가지 않음
                 // 성공하면 sqlite 에 insert
-             /*   CnRPickupValidationCheckHelper cnRPickupValidationCheckHelper = new CnRPickupValidationCheckHelper();
-                cnRPickupValidationCheckHelper.execute(strBarcodeNo);
 
-                beepManager.playBeepSoundAndVibrate();*/
-
-                //TODO
-                // edit.  2020.03  배포 후 이상없으면 위에 내용 삭제하기     by krm0219
+                // Edit.  2020.03  배포 (기존 CNR 중복 허용됨 > 중복 허용X 수정)    by krm0219
                 final String scanNo = strBarcodeNo;
 
                 new CnRPickupValidationCheckHelper2.Builder(this, opID, strBarcodeNo)
@@ -1885,16 +1867,20 @@ public final class CaptureActivity extends AppCompatActivity implements SurfaceH
                                 onResetButtonClick();
                             }
 
-                            AlertDialog.Builder builder = new AlertDialog.Builder(CaptureActivity.this);
-                            builder.setTitle(context.getResources().getString(R.string.text_driver_assign_result));
-                            builder.setMessage(stdResult.getResultMsg());
-                            builder.setPositiveButton(context.getResources().getString(R.string.button_ok), new DialogInterface.OnClickListener() {
-                                @Override
-                                public void onClick(DialogInterface dialog, int id) {
-                                    dialog.cancel();
-                                }
-                            });
-                            builder.show();
+                            // BadTokenException 예방
+                            if (!CaptureActivity.this.isFinishing()) {
+
+                                AlertDialog.Builder builder = new AlertDialog.Builder(CaptureActivity.this);
+                                builder.setTitle(context.getResources().getString(R.string.text_driver_assign_result));
+                                builder.setMessage(stdResult.getResultMsg());
+                                builder.setPositiveButton(context.getResources().getString(R.string.button_ok), new DialogInterface.OnClickListener() {
+                                    @Override
+                                    public void onClick(DialogInterface dialog, int id) {
+                                        dialog.cancel();
+                                    }
+                                });
+                                builder.show();
+                            }
                         }
                     }).build().execute();
         } else if (mScanType.equals(BarcodeType.CHANGE_DELIVERY_DRIVER)) {
@@ -2475,194 +2461,5 @@ public final class CaptureActivity extends AppCompatActivity implements SurfaceH
         } catch (NumberFormatException e) {
             return false;
         }
-    }
-
-
-    // TODO.        새로 짠 코드(CnRPickupValidationCheckHelper2) 이상없으면 지우기.
-    class CnRPickupValidationCheckHelper extends AsyncTask<String, Integer, PickupCNRResult> {
-
-        String scanBarcodeNoStr = "";
-        String tempBarcodeNo = "";
-
-        @Override
-        protected PickupCNRResult doInBackground(String... params) {
-
-            scanBarcodeNoStr = params[0];
-            tempBarcodeNo = params[0];
-
-            return requestGetPickupCNRInfo(scanBarcodeNoStr);
-        }
-
-        @Override
-        protected void onPostExecute(PickupCNRResult result) {
-
-            if (result != null) {
-
-                int resultCode = result.getResultCode();
-                String resultMsg = result.getResultMsg();
-                PickupCNRResult.ResultObject resultObject = result.getResultObject();
-
-
-                String temp_cnr_pickup_no = "";
-                if (resultObject != null) {
-
-                    temp_cnr_pickup_no = resultObject.getInvoiceNo();
-                }
-
-                if (resultCode == 0) { // 성공  pickup cnr barcode 가 유효한 값 객체도 가져오는
-
-                    // 2016-09-03 eylee
-                    // DB 에 pickup cnr no 가 있는지 먼저 확인 하고,
-                    boolean isSQliteDuplicate = CNRDownloadDuplicateChk(resultObject.getContrNo(), resultObject.getInvoiceNo());
-                    Log.e("krm0219", TAG + "  CnR DB Duplicate : " + isSQliteDuplicate);
-
-                    if (!isSQliteDuplicate) {   //없으면 DB 저장
-
-                        insertDevicePickupCNRData(resultObject);
-                        pickupCNRRequester = resultObject.getReqName();
-                        addScannedBarcode(scanBarcodeNoStr, "ValidationPickupCNRRequestTask1");
-                    } else { // DB 에 있을 때
-
-                        pickupCNRRequester = selectDevicePickupCNRData(scanBarcodeNoStr);
-                        //bug 수정 2016-09-08 added by eylee
-                        deletePrevious(temp_cnr_pickup_no);
-                        addScannedBarcode(scanBarcodeNoStr, "ValidationPickupCNRRequestTask2");
-                    }
-                } else { // 실패  service 에서 메시지 떨굼  -> GetCnROrderCheck 받아다가 메시지 alert 띄워주기
-
-                    edit_capture_type_number.setText("");
-                    if (resultCode != -100) {
-                        if (!temp_cnr_pickup_no.equals("")) {
-                            deletePrevious(temp_cnr_pickup_no);
-                        } else {
-                            String CNR_PICKUP_NO2 = tempBarcodeNo;
-                            deletePrevious(CNR_PICKUP_NO2);
-                        }
-                    }
-
-                    if (!CaptureActivity.this.isFinishing()) {
-
-                        AlertDialog.Builder builder = new AlertDialog.Builder(CaptureActivity.this);
-                        builder.setTitle(context.getResources().getString(R.string.text_alert));
-                        builder.setMessage(resultMsg);
-                        builder.setPositiveButton(context.getResources().getString(R.string.button_ok), new DialogInterface.OnClickListener() {
-                            @Override
-                            public void onClick(DialogInterface dialog, int id) {
-                                try {
-                                    dialog.cancel();
-                                } catch (Exception ignored) {
-
-                                }
-                            }
-                        });
-
-                        AlertDialog alertDialog = builder.create();
-                        alertDialog.show();
-                    }
-                }
-            }
-        }
-    }
-
-    private PickupCNRResult requestGetPickupCNRInfo(String scanBarcodeNoStr) {
-
-        PickupCNRResult resultObj = null;
-
-        try {
-
-            GMKT_SyncHttpTask httpTask = new GMKT_SyncHttpTask("QSign");
-            HashMap<String, String> hmActionParam = new HashMap<>();
-
-            hmActionParam.put("pickup_no", scanBarcodeNoStr);
-            hmActionParam.put("opId", opID);
-            hmActionParam.put("network_type", NetworkUtil.getNetworkType(getApplicationContext()));
-            hmActionParam.put("app_id", DataUtil.appID);
-            hmActionParam.put("nation_cd", DataUtil.nationCode);
-
-            String methodName = "GetCnROrderCheck";
-            Serializer serializer = new Persister();
-
-            GMKT_HTTPResponseMessage response2 = httpTask.requestServerDataReturnString(MOBILE_SERVER_URL, methodName, hmActionParam);
-            String resultString = response2.getResultString();
-            Log.e("Server", methodName + "  Result : " + resultString);
-            // {"ResultObject":{"contr_no":"55003355","partner_ref_no":"C2859SGSG","invoice_no":"C2859SGSG","stat":"P2","req_nm":"normal order","req_dt":"2019-08-2010:00-19:00","tel_no":"+65--","hp_no":"+65-8424-2354","zip_code":"048741","address":"11 PEKIN STREEThyemi3333","pickup_hopeday":"2019-08-20","pickup_hopetime":"10:00-19:00","sender_nm":"normal order","del_memo":"","driver_memo":"","fail_reason":"WA","qty":"1","cust_nm":"test191919","partner_id":"hyemi223","dr_assign_requestor":"","dr_assign_req_dt":"","dr_assign_stat":"","dr_req_no":"","failed_count":"0","route":"C2C","del_driver_id":null,"cust_no":"100054639"},"ResultCode":0,"ResultMsg":"Success"}
-
-            resultObj = serializer.read(PickupCNRResult.class, resultString);
-        } catch (Exception e) {
-
-            Log.e("Exception", TAG + "  GetCnROrderCheck Exception : " + e.toString());
-        }
-
-        return resultObj;
-    }
-
-    private boolean CNRDownloadDuplicateChk(String contr_no, String invoice_no) {
-
-        DatabaseHelper dbHelper = DatabaseHelper.getInstance();
-        // 날짜기준 UTC
-        String selectQuery = "SELECT  partner_ref_no, invoice_no, stat, rcv_nm, sender_nm "
-                + " FROM " + DatabaseHelper.DB_TABLE_INTEGRATION_LIST + " WHERE invoice_no= '" + invoice_no + "'" + " and contr_no= '" + contr_no + "'";
-
-        Cursor cs = dbHelper.get(selectQuery);
-        return cs.getCount() > 0;
-    }
-
-    //픽업 데이타  DB 저장 by 2016-09-03 eylee
-    private void insertDevicePickupCNRData(PickupCNRResult.ResultObject data) {
-
-        SimpleDateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
-        dateFormat.setTimeZone(TimeZone.getTimeZone("GMT"));
-        String regDataString = dateFormat.format(new Date());
-
-        DatabaseHelper dbHelper = DatabaseHelper.getInstance();
-        try {
-            ContentValues contentVal = new ContentValues();
-            contentVal.put("contr_no", data.getContrNo());
-            contentVal.put("partner_ref_no", data.getPartnerRefNo());
-            contentVal.put("invoice_no", data.getPartnerRefNo());  //invoice_no = partnerRefNo 사용
-            contentVal.put("stat", data.getStat());
-            contentVal.put("tel_no", data.getTelNo());
-            contentVal.put("hp_no", data.getHpNo());
-            contentVal.put("zip_code", data.getZipCode());
-            contentVal.put("address", data.getAddress());
-            contentVal.put("route", data.getRoute());
-            contentVal.put("type", BarcodeType.TYPE_PICKUP);
-            contentVal.put("desired_date", data.getPickupHopeDay());
-            contentVal.put("req_qty", data.getQty());
-            contentVal.put("req_nm", data.getReqName());
-            contentVal.put("failed_count", data.getFailedCount());
-            contentVal.put("rcv_request", data.getDelMemo());
-            contentVal.put("sender_nm", "");
-            contentVal.put("punchOut_stat", "N");
-            contentVal.put("reg_id", "");
-            contentVal.put("reg_dt", regDataString);
-            contentVal.put("fail_reason", data.getFailReason());
-            contentVal.put("secret_no_type", "");
-            contentVal.put("secret_no", "");
-
-            dbHelper.insert(DatabaseHelper.DB_TABLE_INTEGRATION_LIST, contentVal);
-        } catch (Exception ignored) {
-        }
-
-    }
-
-    public String selectDevicePickupCNRData(String scanBarcodeNoStr) {
-
-        DatabaseHelper dbHelper = DatabaseHelper.getInstance();
-        String requestor = "";
-        // 날짜기준 UTC
-        String scanCNRNo = scanBarcodeNoStr.trim().toUpperCase();
-        String selectQuery = "SELECT * FROM " + DatabaseHelper.DB_TABLE_INTEGRATION_LIST + " WHERE invoice_no = '" + scanCNRNo + "'";
-
-        Cursor cs = dbHelper.get(selectQuery);
-        if (cs.getCount() > 0) {
-            if (cs.moveToFirst()) {
-                do {
-                    requestor = cs.getString(cs.getColumnIndex("req_nm"));
-                } while (cs.moveToNext());
-            }
-        }
-
-        return requestor;
     }
 }

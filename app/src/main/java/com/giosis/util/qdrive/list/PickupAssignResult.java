@@ -115,6 +115,9 @@ public class PickupAssignResult {
         @Element(name = "ref_pickup_no", required = false)
         private String ref_pickup_no = "";
 
+        @Element(name = "lat_lng", required = false)
+        private String lat_lng = "";
+
 
         public String getCustNo() {
             return cust_no;
@@ -214,6 +217,10 @@ public class PickupAssignResult {
 
         public String getRef_pickup_no() {
             return ref_pickup_no;
+        }
+
+        public String getLat_lng() {
+            return lat_lng;
         }
     }
 }
