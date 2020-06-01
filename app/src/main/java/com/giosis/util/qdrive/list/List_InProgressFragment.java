@@ -117,6 +117,17 @@ public class List_InProgressFragment extends Fragment implements OnQueryTextList
 
     private ProgressBar progress_in_progress;
 
+    private String[] orderbyQuery = {
+            "zip_code asc",
+            "zip_code desc",
+            "invoice_no asc",
+            "invoice_no desc",
+            "rcv_nm asc",
+            "rcv_nm desc"
+            , "Smart Route"
+            , "Nearer"
+    };
+
 
     public List_InProgressFragment() {
         super();
@@ -235,11 +246,6 @@ public class List_InProgressFragment extends Fragment implements OnQueryTextList
         });
 
 
-        // 스피너  sort by 초기화
-        int OrderBySeq = MyApplication.preferences.getSortIndex();
-        Log.e(TAG, "  Order BY : " + OrderBySeq);
-
-        // TEST
         ArrayList<String> sortArrayList = new ArrayList<>(Arrays.asList(
                 getResources().getString(R.string.text_sort_postal_code_asc),
                 getResources().getString(R.string.text_sort_postal_code_desc),
@@ -252,32 +258,19 @@ public class List_InProgressFragment extends Fragment implements OnQueryTextList
         ));
 
 
-        final String[] orderbyQuery = {
-                "zip_code asc",
-                "zip_code desc",
-                "invoice_no asc",
-                "invoice_no desc",
-                "rcv_nm asc",
-                "rcv_nm desc"
-                , getResources().getString(R.string.text_smart_route)
-                , getResources().getString(R.string.text_nearer)
-        };
-
-
         ArrayAdapter<String> sortArrayAdapter = new ArrayAdapter<>(getActivity(), android.R.layout.simple_spinner_dropdown_item, sortArrayList);
         spinner_list_sort.setAdapter(sortArrayAdapter);
 
         try {
 
-            spinner_list_sort.setSelection(OrderBySeq);
-            selectedSort = orderbyQuery[OrderBySeq];
+            spinner_list_sort.setSelection(MyApplication.preferences.getSortIndex());
+            selectedSort = orderbyQuery[MyApplication.preferences.getSortIndex()];
         } catch (Exception e) {
 
             Log.e("Exception", TAG + "  Spinner Exception : " + e.toString());
             MyApplication.preferences.setSortIndex(0);
-            OrderBySeq = 0;
-            spinner_list_sort.setSelection(OrderBySeq);
-            selectedSort = orderbyQuery[OrderBySeq];
+            spinner_list_sort.setSelection(0);
+            selectedSort = orderbyQuery[0];
         }
 
 
@@ -293,7 +286,7 @@ public class List_InProgressFragment extends Fragment implements OnQueryTextList
                     MyApplication.preferences.setSortIndex(position);
                     selectedSort = orderbyQuery[position];
                     Log.e("krm0219", TAG + "  spinner position : " + position + " / " + selectedSort);
-
+                    getGPSCount = 0;
                     onResume();
                 }
             }
@@ -506,7 +499,7 @@ public class List_InProgressFragment extends Fragment implements OnQueryTextList
                 Cursor cs;
                 if (selectedSort.equals(context.getResources().getString(R.string.text_nearer))) {
 
-                    cs = DatabaseHelper.getInstance().get("SELECT * FROM " + DatabaseHelper.DB_TABLE_INTEGRATION_LIST + " WHERE punchOut_stat = 'N' and chg_dt is null and reg_id='" + opID + "' order by zip_code desc");
+                    cs = DatabaseHelper.getInstance().get("SELECT * FROM " + DatabaseHelper.DB_TABLE_INTEGRATION_LIST + " WHERE punchOut_stat = 'N' and chg_dt is null and reg_id='" + opID + "' order by zip_code asc");
                 } else {
 
                     cs = DatabaseHelper.getInstance().get("SELECT * FROM " + DatabaseHelper.DB_TABLE_INTEGRATION_LIST + " WHERE punchOut_stat = 'N' and chg_dt is null and reg_id='" + opID + "' order by " + selectedSort);
@@ -712,12 +705,11 @@ public class List_InProgressFragment extends Fragment implements OnQueryTextList
                     Log.e("Exception", TAG + "  setSelectedGroup Exception : " + e.toString());
                 }
 
-                //카운트 전달
                 mCountCallback.onCountRefresh(groupCount);
 
-                //TEST.
-                if (selectedSort.equals(context.getResources().getString(R.string.text_nearer))) {
 
+                if (selectedSort.equals(context.getResources().getString(R.string.text_nearer))) {
+                    // Driver 현재 위치 기준 가까운 위치 순으로 정렬
                     getDriverGPSLocation();
                 } else {
 
@@ -1048,10 +1040,12 @@ public class List_InProgressFragment extends Fragment implements OnQueryTextList
 
 
     private ArrayList<RowItem> resultItems;
+    private int getGPSCount = 0;
 
     // NOTIFICATION.  Sort - Nearer
     private void getDriverGPSLocation() {
 
+        getGPSCount++;
         progress_in_progress.setVisibility(View.VISIBLE);
         latitude = gpsTrackerManager.getLatitude();
         longitude = gpsTrackerManager.getLongitude();
@@ -1059,19 +1053,29 @@ public class List_InProgressFragment extends Fragment implements OnQueryTextList
         Log.e(TAG, " setSortNearer : " + latitude + "  " + longitude + "  ");
         if (latitude == 0 && longitude == 0) {
 
-            // 위치를 가져오는데 시간이 살짝 소요되므로 0.5초 이후에 다시 시도
-            new Handler().postDelayed(new Runnable() {
-                @Override
-                public void run() {
+            if (getGPSCount < 10) {
+                // 위치를 가져오는데 시간이 살짝 소요되므로 0.5초 이후에 다시 시도
+                new Handler().postDelayed(new Runnable() {
+                    @Override
+                    public void run() {
 
-                    getDriverGPSLocation();
-                }
-            }, 500);
+                        getDriverGPSLocation();
+                    }
+                }, 500);
+            } else {
+                // 무한반복 방지를 위해 최대 10번만 시도
+
+                progress_in_progress.setVisibility(View.GONE);
+                Toast.makeText(getActivity(), context.getResources().getString(R.string.msg_error_get_gps), Toast.LENGTH_SHORT).show();
+                MyApplication.preferences.setSortIndex(0);
+                spinner_list_sort.setSelection(0);
+                selectedSort = orderbyQuery[0];
+            }
         } else {
 
-            // TEST         1.356619,103.8632591     // 3.063302,101.6951980
-            latitude = 1.3395278;
-            longitude = 103.7514807;
+         /*   // TEST         1.356619,103.8632591     // 3.063302,101.6951980
+            latitude = 1.3649634;
+            longitude = 103.7650991;*/
             resultItems = new ArrayList<>();
 
             for (int i = 0; i < rowItems.size(); i++) {
@@ -1118,7 +1122,7 @@ public class List_InProgressFragment extends Fragment implements OnQueryTextList
 
         Collections.sort(tempItems, new CompareDistanceAsc());
 
-    /*    for (int i = 0; i < tempItems.size(); i++) {
+        /*for (int i = 0; i < tempItems.size(); i++) {
 
             Log.e("krm0219", " ** " + tempItems.get(i).getShipping() + " - " + tempItems.get(i).getDistance() + "");
         }*/
@@ -1133,7 +1137,7 @@ public class List_InProgressFragment extends Fragment implements OnQueryTextList
             }
         }
 
-        //     Log.e("krm0219", "PICK DATA : " + item.getShipping() + " / " + item.getDistance());
+        Log.e("krm0219", "PICK DATA : " + item.getShipping() + " / " + item.getDistance());
 
         return item;
     }

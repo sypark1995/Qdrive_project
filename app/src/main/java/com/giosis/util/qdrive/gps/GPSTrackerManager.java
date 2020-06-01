@@ -2,10 +2,14 @@ package com.giosis.util.qdrive.gps;
 
 import android.content.Context;
 import android.location.LocationManager;
+import android.os.Build;
+import android.util.Log;
 
 import com.google.android.gms.common.ConnectionResult;
 import com.google.android.gms.common.GoogleApiAvailability;
 import com.google.android.gms.common.api.GoogleApiClient;
+
+import static com.giosis.util.qdrive.barcodescanner.ManualHelper.MOBILE_SERVER_URL;
 
 // 일회성으로 위/경도 필요
 public class GPSTrackerManager {
@@ -52,10 +56,11 @@ public class GPSTrackerManager {
         int status = GoogleApiAvailability.getInstance().isGooglePlayServicesAvailable(context);
         isGooglePlayService = ConnectionResult.SUCCESS == status;
 
-       /* Log.e("krm0219", TAG + "   MANUFACTURER = " + Build.MANUFACTURER); //제조사
-        if (Build.MANUFACTURER.equals("HUAWEI")) {  // 화웨이 - google 위치정보 못가져옴
+        if (Build.MANUFACTURER.equals("HUAWEI") && MOBILE_SERVER_URL.contains("staging")) {  // KR 화웨이폰 - google 위치정보 못가져옴
+
+            Log.e("krm0219", TAG + "   MANUFACTURER = " + Build.MANUFACTURER); //제조사
             isGooglePlayService = false;
-        }*/
+        }
 
         // TEST
         // isGooglePlayService = true;

@@ -526,8 +526,7 @@
 
     <!-- 2020 Sort -->
     <string name="text_nearer">Nearer</string>
-
-
+    <string name="msg_error_get_gps">Error. Failed to get GPS.</string>
 
 
     <!-- -->
