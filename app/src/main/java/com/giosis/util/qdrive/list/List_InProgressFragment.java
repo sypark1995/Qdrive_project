@@ -1054,14 +1054,14 @@ public class List_InProgressFragment extends Fragment implements OnQueryTextList
         if (latitude == 0 && longitude == 0) {
 
             if (getGPSCount < 10) {
-                // 위치를 가져오는데 시간이 살짝 소요되므로 0.5초 이후에 다시 시도
+                // 위치를 가져오는데 시간이 살짝 소요되므로 1초 이후에 다시 시도
                 new Handler().postDelayed(new Runnable() {
                     @Override
                     public void run() {
 
                         getDriverGPSLocation();
                     }
-                }, 500);
+                }, 1000);
             } else {
                 // 무한반복 방지를 위해 최대 10번만 시도
 
