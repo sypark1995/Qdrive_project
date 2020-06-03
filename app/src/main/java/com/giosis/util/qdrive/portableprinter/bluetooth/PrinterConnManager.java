@@ -12,7 +12,6 @@ import com.giosis.util.qdrive.singapore.MyApplication;
 import com.gprinter.io.BluetoothPort;
 import com.gprinter.io.PortManager;
 
-import java.io.IOException;
 import java.util.Vector;
 
 /**
@@ -88,6 +87,8 @@ public class PrinterConnManager {
 
         try {
 
+            Log.e("print", TAG + "  DATA > " + connMethod + " / " + macAddress);
+
             if (connMethod == CONN_METHOD.BLUETOOTH) {
 
                 mPort = new BluetoothPort(macAddress);
@@ -117,7 +118,7 @@ public class PrinterConnManager {
 
         //查询打印机所使用指令
         queryPrinterCommand();
-    }
+    }//
 
     private void queryPrinterCommand() {
 
@@ -156,13 +157,16 @@ public class PrinterConnManager {
                 //자동 트리거하는 함수 없앤것
                 GPrinterData.TEMP_TRACKING_NO = "";
             }
-        } catch (IOException e) {
+        } catch (Exception e) {
+
+            Log.e("print", TAG + "  sendDataImmediately  Exception : " + e.toString());
             e.printStackTrace();
         }
     }
 
 
     public synchronized void closePort() {
+        Log.e("print", TAG + "  closePort");
 
         if (this.mPort != null) {
 
@@ -208,15 +212,16 @@ public class PrinterConnManager {
 
         @Override
         public void run() {
-            try {
 
+            try {
                 while (isRun) {
 
+                //    Log.e("print", TAG + "  PrinterReader run");
                     int len = readDataImmediately(buffer);
-                    Log.e("print", TAG + "  PrinterReader length : " + len);
 
                     if (0 < len) {
 
+                        Log.e("print", TAG + "  PrinterReader length : " + len);
                         Message msg = Message.obtain();
                         msg.what = READ_DATA;
                         Bundle bundle = new Bundle();
@@ -234,8 +239,23 @@ public class PrinterConnManager {
         }
     }
 
-    private int readDataImmediately(byte[] buffer) throws IOException {
-        return this.mPort.readData(buffer);
+    private int readDataImmediately(byte[] buffer) {//lthrows IOException {
+
+      //  Log.e("print", TAG + "  readDataImmediately  1");
+        int aa = 0;
+
+        try {
+            aa = this.mPort.readData(buffer);
+       //     Log.e("print", TAG + "  readDataImmediately  2  " + aa);
+        } catch (Exception e) {
+
+            Log.e("print", TAG + "  Exception : " + e.toString());
+        }
+
+        return aa;
+
+
+        //    return this.mPort.readData(buffer);
     }
 
     @SuppressLint("HandlerLeak")
@@ -246,6 +266,7 @@ public class PrinterConnManager {
 
             if (msg.what == READ_DATA) {
 
+                Log.e("print", TAG + "  mHandler");
                 int cnt = msg.getData().getInt(READ_DATA_CNT);
                 byte[] buffer = msg.getData().getByteArray(READ_BUFFER_ARRAY);
                 //这里只对查询状态返回值做处理，其它返回值可参考编程手册来解析

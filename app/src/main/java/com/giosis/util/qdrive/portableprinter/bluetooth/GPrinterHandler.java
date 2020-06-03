@@ -35,11 +35,11 @@ public class GPrinterHandler extends Handler {
         super.handleMessage(msg);
 
         // 제일처음은 983 / 그 다음부터는 333 (currentPrinterCommand 셋팅될때까지...)
-        // Log.e("print", TAG + "  handleMessage : " + msg.what);
+        Log.e("print", TAG + "  handleMessage : " + msg.what);
 
         switch (msg.what) {
 
-            case GPrinterData.PRINTER_COMMAND_ERROR:
+            case GPrinterData.PRINTER_COMMAND_ERROR:    // 333
                 if (!GPrinterData.TEMP_TRACKING_NO.equals("")) {
                     listener.onStartGprinter(GPrinterData.TEMP_TRACKING_NO, "");
                     break;
@@ -48,7 +48,7 @@ public class GPrinterHandler extends Handler {
                 Toast.makeText(context, "Please select the correct printer instructions", Toast.LENGTH_SHORT).show();
                 break;
 
-            case GPrinterData.DOUBLE_PRINTER:
+            case GPrinterData.DOUBLE_PRINTER:   // 983
 
                 Bundle bundle = msg.getData();
                 String tracking_no = bundle.getString("tracking_no");
@@ -60,7 +60,7 @@ public class GPrinterHandler extends Handler {
                 }
                 break;
 
-            case GPrinterData.NONE_PRINTER:
+            case GPrinterData.NONE_PRINTER: // 987
 
                 Toast.makeText(context, "Please print it again.", Toast.LENGTH_SHORT).show();
 

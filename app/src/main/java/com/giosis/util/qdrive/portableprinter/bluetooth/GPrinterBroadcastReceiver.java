@@ -4,7 +4,6 @@ package com.giosis.util.qdrive.portableprinter.bluetooth;
 import android.annotation.SuppressLint;
 import android.app.Activity;
 import android.bluetooth.BluetoothAdapter;
-import android.bluetooth.BluetoothClass;
 import android.bluetooth.BluetoothDevice;
 import android.content.BroadcastReceiver;
 import android.content.Context;
@@ -49,11 +48,11 @@ public class GPrinterBroadcastReceiver extends BroadcastReceiver {
         switch (action) {
             case BluetoothDevice.ACTION_FOUND:  // 불루트스 기기 검색됨.
 
-                if (device != null && device.getBluetoothClass().getMajorDeviceClass() == BluetoothClass.Device.Major.IMAGING) {
+               /* if (device != null && device.getBluetoothClass().getMajorDeviceClass() == BluetoothClass.Device.Major.IMAGING) {
 
                     Log.e("print", TAG + "  ACTION_FOUND   " + device.getName() + "  " + device.getAddress() +
                             " / " + device.getBluetoothClass().getDeviceClass() + " / " + device.getBluetoothClass().getMajorDeviceClass());
-                }
+                }*/
 
                 if (device != null && device.getBondState() == BluetoothDevice.BOND_BONDED) {
                     if (BluetoothDeviceData.connectedPrinterAddress.equals(device.getAddress())) {
@@ -65,7 +64,6 @@ public class GPrinterBroadcastReceiver extends BroadcastReceiver {
                         if (GPrinterData.printerConnManagerList != null) {
 
                             GPrinterData.printerConnManagerList.add(new PrinterConnManager(PrinterConnManager.CONN_METHOD.BLUETOOTH, device.getAddress()));
-
                             int size = GPrinterData.printerConnManagerList.size();
 
                             if (0 < size) {
@@ -74,6 +72,7 @@ public class GPrinterBroadcastReceiver extends BroadcastReceiver {
 
                                 if (!GPrinterData.printerConnManagerList.get(size - 1).getConnState()) {  // 포트가  열리지 않았다면
 
+                                    Log.e("print", TAG + "  connState  " + size);
                                     GPrinterData.printerConnManagerList.remove((size - 1));
                                 }
                             }
@@ -85,7 +84,7 @@ public class GPrinterBroadcastReceiver extends BroadcastReceiver {
 
             case BluetoothAdapter.ACTION_DISCOVERY_FINISHED:        // 블루투스 기기 검색 종료
 
-                Log.e("print", TAG + "  ACTION_DISCOVERY_FINISHED");
+                Log.e("print", TAG + "  ACTION_DISCOVERY_FINISHED  " + GPrinterData.printerConnManagerList.size());
                 if (GPrinterData.printerConnManagerList != null && 0 < GPrinterData.printerConnManagerList.size()) {
 
                     PrinterConnManager connManager = GPrinterData.printerConnManagerList.get(0);

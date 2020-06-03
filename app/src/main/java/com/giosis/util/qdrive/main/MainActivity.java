@@ -707,7 +707,7 @@ public class MainActivity extends AppBaseActivity {
             int status = GoogleApiAvailability.getInstance().isGooglePlayServicesAvailable(this);
             isGooglePlayService = ConnectionResult.SUCCESS == status;
 
-        //    Log.e("krm0219", TAG + "   MANUFACTURER = " + Build.MANUFACTURER); //제조사
+            //    Log.e("krm0219", TAG + "   MANUFACTURER = " + Build.MANUFACTURER); //제조사
             if (Build.MANUFACTURER.equals("HUAWEI") && MOBILE_SERVER_URL.contains("staging")) {  // KR 화웨이폰 - google 위치정보 못가져옴
                 isGooglePlayService = false;
             }

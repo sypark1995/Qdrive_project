@@ -11,6 +11,7 @@ import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.IntentFilter;
 import android.database.Cursor;
+import android.graphics.Bitmap;
 import android.graphics.Color;
 import android.net.Uri;
 import android.os.AsyncTask;
@@ -944,34 +945,7 @@ public class CustomExpandableAdapter extends BaseExpandableListAdapter implement
             @Override
             public void onClick(View v) {
 
-                /*// TEST.  krm0219
-                new CnRPickupInfoGetHelper.Builder(context, "karam.kim", tracking_no)
-                        .setOnCnRPrintDataEventListener(new CnRPickupInfoGetHelper.OnCnRPrintDataEventListener() {
-
-                            @Override
-                            public void onPostAssignResult(PrintDataResult stdResult) {
-                                try {
-                                    if (stdResult != null) {
-                                        if (stdResult.getResultCode() == 0) {
-
-                                            Log.e("print", TAG + "  sendLabel");
-                                            sendLabel(stdResult);
-                                        } else {
-
-                                            Toast.makeText(context, stdResult.getResultMsg(), Toast.LENGTH_SHORT).show();
-                                        }
-                                    } else {
-
-                                        Toast.makeText(context, "GetCnRPrintData Error..", Toast.LENGTH_SHORT).show();
-                                    }
-                                } catch (Exception e) {
-
-                                    Toast.makeText(context, "GetCnRPrintData Exception : " + e.toString(), Toast.LENGTH_SHORT).show();
-                                    Log.e("Exception", TAG + "  GetCnRPrintData Exception : " + e.toString());
-                                }
-                            }
-                        }).build().execute();*/
-
+                count = 0;
                 isConnectPortablePrint(tracking_no);
             }
         });
@@ -979,7 +953,6 @@ public class CustomExpandableAdapter extends BaseExpandableListAdapter implement
 
         return convertView;
     }
-
 
     @Override
     public int getGroupCount() {
@@ -1250,9 +1223,14 @@ public class CustomExpandableAdapter extends BaseExpandableListAdapter implement
         return isCNR;
     }
 
+    int count = 0;
 
     // NOTIFICATION.  CNR Print
     private void isConnectPortablePrint(String tracking_no) {
+
+        count++;
+        //   BluetoothDeviceData.connectedPrinterAddress = "DC:1D:30:92:0A:5C";
+
 
         // 연결된 print 없으면..
         if (BluetoothDeviceData.connectedPrinterAddress == null) {
@@ -1270,7 +1248,7 @@ public class CustomExpandableAdapter extends BaseExpandableListAdapter implement
         if (!deviceAddress.equals("")) {  // 프린터 연결됨     // 출력시작
 
             Toast.makeText(context, context.getResources().getString(R.string.msg_wait_while_print_job), Toast.LENGTH_SHORT).show();
-            printLabel(deviceAddress, tracking_no);
+            printLabel(deviceAddress, tracking_no, "isConnectPortablePrint");
         } else {
 
             checkBluetoothState(tracking_no);
@@ -1353,8 +1331,9 @@ public class CustomExpandableAdapter extends BaseExpandableListAdapter implement
         GPrinterData.mBluetoothAdapter.startDiscovery();
     }
 
-    private void printLabel(String address, String tracking_no) {
+    private void printLabel(String address, String tracking_no, String where) {
 
+        Log.e("print", where + " printLabel Size : " + GPrinterData.printerConnManagerList.size());
         if (GPrinterData.printerConnManagerList == null || GPrinterData.printerConnManagerList.size() == 0 || !GPrinterData.printerConnManagerList.get(0).getConnState()) {
 
             return;
@@ -1376,7 +1355,9 @@ public class CustomExpandableAdapter extends BaseExpandableListAdapter implement
                                 if (stdResult != null) {
                                     if (stdResult.getResultCode() == 0) {
 
+                                        // NOTIFICATION.  Send Label DATA
                                         Log.e("print", TAG + "  sendLabel");
+                                        //    sendBitmap();
                                         sendLabel(stdResult);
                                     } else {
 
@@ -1414,6 +1395,49 @@ public class CustomExpandableAdapter extends BaseExpandableListAdapter implement
 
         return address;
     }
+
+
+    private void sendBitmap() {
+
+        LabelCommand tsc = new LabelCommand();
+
+        tsc.addSize(80, 52); // label 크기 설정 -- mm
+        tsc.addGap(0);
+        // 인쇄방향 설정
+//        tsc.addDirection(LabelCommand.DIRECTION.BACKWARD, LabelCommand.MIRROR.MIRROR);
+//        tsc.addDirection(LabelCommand.DIRECTION.BACKWARD, LabelCommand.MIRROR.NORMAL);  마지막 버전
+        tsc.addDirection(LabelCommand.DIRECTION.FORWARD, LabelCommand.MIRROR.NORMAL);
+        //연속인쇄용?
+        tsc.addQueryPrinterStatus(LabelCommand.RESPONSE_MODE.ON);
+        //원점좌표설정(인쇄방향하고 같이)
+        tsc.addReference(0, 0);
+//        tsc.addTear(EscCommand.ENABLE.ON);
+        tsc.addTear(EscCommand.ENABLE.OFF);
+//        tsc.addPeel(EscCommand.ENABLE.ON); //방법 설명 : 프린터 스트립 모드 설정
+        // 인쇄 버퍼 데이터 지우기
+        tsc.addCls();
+
+        //tsc.addQRCode(450, 0, LabelCommand.EEC.LEVEL_L, 5, LabelCommand.ROTATION.ROTATION_0, result.getInvoiceNo());
+
+
+        Bitmap bitmap = null;
+        tsc.addBitmap(20, 0, 150, bitmap);
+
+
+        // 라벨인쇄
+        tsc.addPrint(1, 1);
+        tsc.addSound(1, 100);
+        tsc.addCashdrwer(LabelCommand.FOOT.F5, 255, 255);
+        Vector<Byte> datas = tsc.getCommand();
+
+        if (GPrinterData.printerConnManagerList.get(0) == null) {
+            return;
+        }
+
+        // 여기서 Gprinter 함수 콜
+        GPrinterData.printerConnManagerList.get(0).sendDataImmediately(datas);
+    }
+
 
     private void sendLabel(PrintDataResult stdResult) {
         // tsc.addUserCommand("BARCODE 10, 0, \"39\", 80, 0, 0, 2, 5, \"C828996SGSG\"");  - Custom
@@ -1554,7 +1578,7 @@ public class CustomExpandableAdapter extends BaseExpandableListAdapter implement
 
     @Override
     public void onStartGprinter(String tracking_no, String mac_addr) {
-        //   Log.e("print", TAG + "  onStartGprinter > " + mac_addr);
+        Log.e("print", TAG + "  onStartGprinter > " + mac_addr);
 
         GPrinterData.TEMP_TRACKING_NO = tracking_no;
 
@@ -1563,7 +1587,7 @@ public class CustomExpandableAdapter extends BaseExpandableListAdapter implement
             isConnectPortablePrint(tracking_no);
         } else {
 
-            printLabel(mac_addr, tracking_no);
+            printLabel(mac_addr, tracking_no, "onStartGprinter");
         }
     }
 }
