@@ -171,7 +171,6 @@ public class PickupFailedActivity extends AppCompatActivity implements Camera2AP
 
         //
         mCalendar = Calendar.getInstance();
-        mCalendar.add(Calendar.DATE, 1);
 
         dateListener = new DatePickerDialog.OnDateSetListener() {
 
@@ -185,13 +184,16 @@ public class PickupFailedActivity extends AppCompatActivity implements Camera2AP
 
                 String restDay = getRestDay(year, monthOfYear + 1, dayOfMonth);
 
-                if (mCalendar.get(Calendar.DAY_OF_WEEK) == Calendar.SUNDAY) {
+                // NOTIFICATION.
+                // 2020.06  SG 일요일도 픽업 업무 시작  --> 일요일도 재시도 날짜에 포함 및 재시도 날짜선택 D+3일로 수정
+               /* if (mCalendar.get(Calendar.DAY_OF_WEEK) == Calendar.SUNDAY) {
 
                     Toast calToast = Toast.makeText(PickupFailedActivity.this, context.getResources().getString(R.string.msg_choose_sunday_error), Toast.LENGTH_SHORT);
                     calToast.setGravity(Gravity.CENTER, 0, 10);
                     calToast.show();
                     text_sign_p_f_retry_date.setText(getString(R.string.text_select));
-                } else if (!restDay.isEmpty()) {    //휴무일 선택 시
+                } else*/
+                if (!restDay.isEmpty()) {    //휴무일 선택 시
 
                     Toast calToast = Toast.makeText(PickupFailedActivity.this, restDay + context.getResources().getString(R.string.msg_choose_another_day), Toast.LENGTH_SHORT);
                     calToast.setGravity(Gravity.CENTER, 0, 10);
@@ -213,10 +215,16 @@ public class PickupFailedActivity extends AppCompatActivity implements Camera2AP
                 mCalendar.get(Calendar.MONTH),
                 mCalendar.get(Calendar.DAY_OF_MONTH));
 
+
         Calendar minDate = Calendar.getInstance();
         minDate.add(Calendar.DAY_OF_YEAR, 1);
         Calendar maxDate = Calendar.getInstance();
-        maxDate.add(Calendar.DAY_OF_YEAR, 8);
+        //   maxDate.add(Calendar.DAY_OF_YEAR, 8);
+        maxDate.add(Calendar.DAY_OF_YEAR, 3);       // 2020.06  재시도 날짜 D+3일로 수정
+
+        /* //TEST
+        minDate.set(2020, 6-1, 5);
+        maxDate.set(2020, 6-1, 7);*/
 
         datePickerDialog.getDatePicker().setMinDate(minDate.getTimeInMillis());
         datePickerDialog.getDatePicker().setMaxDate(maxDate.getTimeInMillis());
@@ -564,12 +572,15 @@ public class PickupFailedActivity extends AppCompatActivity implements Camera2AP
             s_day = "0" + s_day;
         }
         rest_dt = s_year + "-" + s_month + "-" + s_day;
+        Log.e("krm0219", TAG + "  RestDay 1 : " + rest_dt);
 
         Cursor cs = DatabaseHelper.getInstance().get("SELECT title FROM " + DatabaseHelper.DB_TABLE_REST_DAYS + " WHERE rest_dt = '" + rest_dt + "'");
 
         if (cs != null && cs.moveToFirst()) {
             rtn = cs.getString(cs.getColumnIndex("title"));
         }
+
+        Log.e("krm0219", TAG + "  RestDay 2 : " + rtn);
 
         return rtn;
     }

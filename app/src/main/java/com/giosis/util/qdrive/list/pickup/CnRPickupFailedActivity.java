@@ -150,13 +150,16 @@ public class CnRPickupFailedActivity extends AppCompatActivity {
 
                 String restDay = getRestDay(year, monthOfYear + 1, dayOfMonth);
 
-                if (myCalendar.get(Calendar.DAY_OF_WEEK) == Calendar.SUNDAY) {
+                // NOTIFICATION.
+                // 2020.06  SG 일요일도 픽업 업무 시작  --> 일요일도 재시도 날짜에 포함 및 재시도 날짜선택 D+3일로 수정
+               /* if (myCalendar.get(Calendar.DAY_OF_WEEK) == Calendar.SUNDAY) {
 
                     Toast calToast = Toast.makeText(CnRPickupFailedActivity.this, context.getResources().getString(R.string.msg_choose_sunday_error), Toast.LENGTH_SHORT);
                     calToast.setGravity(Gravity.CENTER, 0, 10);
                     calToast.show();
                     text_sign_cnr_f_retry_date.setText(getString(R.string.text_select));
-                } else if (!restDay.isEmpty()) {    //휴무일 선택 시
+                } else*/
+                if (!restDay.isEmpty()) {    //휴무일 선택 시
 
                     Toast calToast = Toast.makeText(CnRPickupFailedActivity.this, restDay + context.getResources().getString(R.string.msg_choose_another_day), Toast.LENGTH_SHORT);
                     calToast.setGravity(Gravity.CENTER, 0, 10);
@@ -181,7 +184,8 @@ public class CnRPickupFailedActivity extends AppCompatActivity {
         Calendar minDate = Calendar.getInstance();
         minDate.add(Calendar.DAY_OF_YEAR, 1);
         Calendar maxDate = Calendar.getInstance();
-        maxDate.add(Calendar.DAY_OF_YEAR, 8);
+        //   maxDate.add(Calendar.DAY_OF_YEAR, 8);
+        maxDate.add(Calendar.DAY_OF_YEAR, 3);       // 2020.06  재시도 날짜 D+3일로 수정
 
         datePickerDialog.getDatePicker().setMinDate(minDate.getTimeInMillis());
         datePickerDialog.getDatePicker().setMaxDate(maxDate.getTimeInMillis());

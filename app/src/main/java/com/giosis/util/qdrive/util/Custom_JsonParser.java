@@ -53,7 +53,6 @@ public class Custom_JsonParser {
             conn.setUseCaches(false);
             conn.setAllowUserInteraction(false);
 
-
             // Request Data를 담기 위해 객체 생성
             os = conn.getOutputStream();
             // Request Data 셋팅
@@ -78,9 +77,7 @@ public class Custom_JsonParser {
 
                 response = new String(byteData);
 
-
-                String[] URLStrings = serverURL.split("/");
-                Log.e("Server", URLStrings[URLStrings.length - 1] + " > " + method + "  Result : " + response);
+                Log.e("Server", method + "  Result : " + response);
             }
         } catch (Exception e) {
 
