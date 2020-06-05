@@ -312,19 +312,6 @@
                 android:textColor="@color/white"
                 android:textSize="@dimen/text_size_36px"
                 android:visibility="visible" />
-
-            <Button
-                android:id="@+id/barcode_pod_upload"
-                android:layout_width="131dp"
-                android:layout_height="40dp"
-                android:layout_marginStart="20dp"
-                android:background="@drawable/custom_button_pressed_30"
-                android:onClick="onPodUpdateButtonClick"
-                android:text="@string/button_upload"
-                android:textAllCaps="false"
-                android:textColor="@color/white"
-                android:textSize="@dimen/text_size_36px"
-                android:visibility="gone" />
         </LinearLayout>
     </RelativeLayout>
 </LinearLayout>

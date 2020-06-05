@@ -22,7 +22,6 @@ public class DatabaseHelper extends SQLiteOpenHelper {
 
     public static final String DB_TABLE_INTEGRATION_LIST = "INTEGRATION_LIST";
     public static final String DB_TABLE_REST_DAYS = "REST_DAYS";
-    public static final String DB_TABLE_SCAN_DELIVERY = "SCAN_DELIVERY";
 
     private static final String CREATE_TABLE_INTEGRATION_LIST = "CREATE TABLE IF NOT EXISTS " +
             DB_TABLE_INTEGRATION_LIST + "(contr_no unique, seq_orderby, partner_ref_no, " +
@@ -35,11 +34,6 @@ public class DatabaseHelper extends SQLiteOpenHelper {
 
     private static final String CREATE_TABLE_REST_DAYS = "CREATE TABLE IF NOT EXISTS " +
             DB_TABLE_REST_DAYS + "(rest_dt, title)";
-
-    private static final String CREATE_TABLE_SCAN_DELIVERY = "CREATE TABLE IF NOT EXISTS " +
-            DB_TABLE_SCAN_DELIVERY + "(contr_no, invoice_no, stat, punchOut_stat, chg_id, chg_dt, reg_id, reg_dt, " +
-            "partner_ref_no,  rcv_nm, sender_nm, tel_no, hp_no, zip_code, address, fail_reason, del_memo, " +
-            "rcv_type, driver_memo, delivery_dt, delivery_cnt)";
 
 
     // 삭제 예정 (login.js 네이티브로 수정)
@@ -83,7 +77,6 @@ public class DatabaseHelper extends SQLiteOpenHelper {
         db.execSQL(CREATE_TABLE_INTEGRATION_LIST);
         db.execSQL(CREATE_TABLE_USER_INFO);
         db.execSQL(CREATE_TABLE_REST_DAYS);
-        db.execSQL(CREATE_TABLE_SCAN_DELIVERY);
     }
 
     // 버전이 업데이트 되었을 때 DB 재생성
@@ -94,7 +87,6 @@ public class DatabaseHelper extends SQLiteOpenHelper {
         db.execSQL("DROP TABLE IF EXISTS " + DB_TABLE_INTEGRATION_LIST);
         db.execSQL("DROP TABLE IF EXISTS " + DB_TABLE_USER_INFO);
         db.execSQL("DROP TABLE IF EXISTS " + DB_TABLE_REST_DAYS);
-        db.execSQL("DROP TABLE IF EXISTS " + DB_TABLE_SCAN_DELIVERY);
 
         onCreate(db);
     }

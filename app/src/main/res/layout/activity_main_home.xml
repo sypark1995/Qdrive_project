@@ -339,18 +339,6 @@
                 android:visibility="gone" />
 
             <Button
-                android:id="@+id/btn_home_scan_delivery_sheet"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:layout_marginTop="15dp"
-                android:background="@drawable/custom_button_normal_30"
-                android:text="@string/button_scan_delivery_sheet"
-                android:textAllCaps="false"
-                android:textColor="@color/color_4fb648"
-                android:textSize="@dimen/text_size_32px"
-                android:visibility="gone" />
-
-            <Button
                 android:id="@+id/btn_home_change_delivery_driver"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"

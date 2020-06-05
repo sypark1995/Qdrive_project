@@ -82,10 +82,8 @@ import com.giosis.util.qdrive.list.pickup.OutletPickupDoneResult;
 import com.giosis.util.qdrive.list.pickup.PickupAddScanActivity;
 import com.giosis.util.qdrive.list.pickup.PickupDoneActivity;
 import com.giosis.util.qdrive.list.pickup.PickupTakeBackActivity;
-import com.giosis.util.qdrive.main.ManualPodUploadHelper;
 import com.giosis.util.qdrive.main.SelfCollectionDoneActivity;
 import com.giosis.util.qdrive.singapore.R;
-import com.giosis.util.qdrive.singapore.UploadData;
 import com.giosis.util.qdrive.util.BarcodeType;
 import com.giosis.util.qdrive.util.DataUtil;
 import com.giosis.util.qdrive.util.DatabaseHelper;
@@ -120,7 +118,6 @@ public final class CaptureActivity extends AppCompatActivity implements SurfaceH
     private static final int REQUEST_PICKUP_ADD_SCAN = 12;
     private static final int REQUEST_PICKUP_TAKE_BACK = 13;
     private static final int REQUEST_SELF_COLLECTION = 20;           //2016-09-09 eylee
-    private static final int REQUEST_POD_SCAN = 21;
 
 
     // Message types sent from the BluetoothChatService Handler
@@ -167,7 +164,6 @@ public final class CaptureActivity extends AppCompatActivity implements SurfaceH
 
     Button btn_capture_barcode_reset;
     Button btn_capture_barcode_confirm;
-    Button barcode_pod_upload;
 
     Drawable editTextDelButtonDrawable;
     EditText currentFocusEditText;
@@ -281,8 +277,6 @@ public final class CaptureActivity extends AppCompatActivity implements SurfaceH
 
         btn_capture_barcode_reset = findViewById(R.id.btn_capture_barcode_reset);
         btn_capture_barcode_confirm = findViewById(R.id.btn_capture_barcode_confirm);
-        //
-        barcode_pod_upload = findViewById(R.id.barcode_pod_upload); //Pod 업로드 버튼
 
 
         layout_top_back.setOnClickListener(clickListener);
@@ -484,7 +478,6 @@ public final class CaptureActivity extends AppCompatActivity implements SurfaceH
     private void initManualScanViews(String scanType) {
 
         layout_capture_scan_count.setVisibility(View.VISIBLE);
-        barcode_pod_upload.setVisibility(View.GONE);
 
         switch (scanType) {
             case BarcodeType.CONFIRM_MY_DELIVERY_ORDER:
@@ -513,12 +506,6 @@ public final class CaptureActivity extends AppCompatActivity implements SurfaceH
 
                 btn_capture_barcode_confirm.setText(context.getResources().getString(R.string.button_confirm));         // onCaptureConfirmButtonClick
                 break;
-            case BarcodeType.TYPE_SCAN_CAPTURE: {
-
-                btn_capture_barcode_confirm.setText(context.getResources().getString(R.string.button_confirm));         // onCaptureConfirmButtonClick
-                barcode_pod_upload.setVisibility(View.VISIBLE);
-            }
-            break;
         }
     }
 
@@ -688,28 +675,13 @@ public final class CaptureActivity extends AppCompatActivity implements SurfaceH
                 scanBarcodeNoListAdapter.notifyDataSetChanged();
                 removeBarcodeListInstance();
             }
-        } else if (mScanType.equals(BarcodeType.TYPE_SCAN_CAPTURE) || mScanType.equals(BarcodeType.SELF_COLLECTION)) {
-            // Scan Sheet Delivery 경우 데이터초기화 CameraActivity 에서 돌아오는경우 아답터초기화
+        } else if (mScanType.equals(BarcodeType.SELF_COLLECTION)) {
 
             text_top_title.setText(context.getResources().getString(R.string.text_title_scan_barcode));
-            btn_capture_barcode_confirm.setText(context.getResources().getString(R.string.button_next_step2));
-
-            if (mScanType.equals(BarcodeType.SELF_COLLECTION)) {
-
-                btn_capture_barcode_confirm.setText(context.getResources().getString(R.string.button_next));
-            }
+            btn_capture_barcode_confirm.setText(context.getResources().getString(R.string.button_next));
 
             scanBarcodeArrayList.clear();
             scanBarcodeNoListAdapter.notifyDataSetChanged();
-
-            String podCount = getScanDeliveryCount();
-            text_capture_scan_count.setText(podCount);
-
-            if (0 < Integer.parseInt(podCount)) {
-                barcode_pod_upload.setVisibility(View.VISIBLE);
-            } else {
-                barcode_pod_upload.setVisibility(View.GONE);
-            }
         }
 
         inactivityTimer.onResume();
@@ -857,7 +829,6 @@ public final class CaptureActivity extends AppCompatActivity implements SurfaceH
 
                             onConfirmButtonClick();
                             break;
-                        case BarcodeType.TYPE_SCAN_CAPTURE:
                         case BarcodeType.SELF_COLLECTION:
 
                             onCaptureConfirmButtonClick();
@@ -969,18 +940,6 @@ public final class CaptureActivity extends AppCompatActivity implements SurfaceH
             case REQUEST_SELF_COLLECTION: {
 
                 onResetButtonClick();
-            }
-            break;
-
-            case REQUEST_POD_SCAN: {
-                if (resultCode == Activity.RESULT_OK) {
-                    if (data.getExtras().getString("data").equals("2")) {
-                        finish();
-                    }
-                } else {
-
-                    finish();
-                }
             }
             break;
 
@@ -1290,14 +1249,6 @@ public final class CaptureActivity extends AppCompatActivity implements SurfaceH
                 boolean isDuplicate = historyManager.addHistoryItem(new Result(tempStrScanNo, null, null, null));
                 Log.i(TAG, "  onKey  KEYCODE_ENTER : " + tempStrScanNo + " / " + isDuplicate + "  //  " + event.getAction());
 
-                // Scan Sheet 경우 송장번호스캔은 1건만 가능하다.
-                if (mScanType.equals(BarcodeType.TYPE_SCAN_CAPTURE)) {
-
-                    mScanCount = 0;
-                    isDuplicate = false;
-                }
-
-
                 if (mScanType.equals(BarcodeType.CONFIRM_MY_DELIVERY_ORDER) || mScanType.equals(BarcodeType.CHANGE_DELIVERY_DRIVER) ||
                         mScanType.equals(BarcodeType.PICKUP_CNR)
                         || mScanType.equals(BarcodeType.PICKUP_SCAN_ALL) || mScanType.equals(BarcodeType.PICKUP_ADD_SCAN)
@@ -1341,13 +1292,6 @@ public final class CaptureActivity extends AppCompatActivity implements SurfaceH
 
             boolean isDuplicate = historyManager.addHistoryItem(new Result(inputBarcodeNumber, null, null, null));
             Log.i(TAG, "  onAddButtonClick > " + inputBarcodeNumber + " / " + isDuplicate);
-
-
-            if (mScanType.equals(BarcodeType.TYPE_SCAN_CAPTURE)) {       // POD SCAN 의 경우 송장번호스캔은 1건만 가능하다.
-
-                mScanCount = 0;
-                isDuplicate = false;
-            }
 
             checkValidation(inputBarcodeNumber, isDuplicate, "onAddButtonClick");
         }
@@ -1709,24 +1653,6 @@ public final class CaptureActivity extends AppCompatActivity implements SurfaceH
                     alertDialog.show();
                 }
                 break;
-            case BarcodeType.TYPE_SCAN_CAPTURE:
-
-                if (isScanBarcode(barcodeNo)) {
-
-                    Toast toast = Toast.makeText(getApplicationContext(), R.string.msg_tracking_number_already_entered, Toast.LENGTH_SHORT);
-                    toast.setGravity(Gravity.CENTER, 0, 20);
-                    toast.show();
-
-                    scanBarcodeArrayList.clear();
-                    edit_capture_type_number.setText("");
-                    inputMethodManager.hideSoftInputFromWindow(edit_capture_type_number.getWindowToken(), 0);
-                    return;
-                } else {
-
-                    scanBarcodeArrayList.clear();
-                    scanBarcodeArrayList.add(data);
-                }
-                break;
             default:
                 //스캔 시 최근 스캔한 바코드가 아래로 추가됨.
                 // maybe.. DELIVERY DONE, SELF COLLECTION
@@ -1765,7 +1691,7 @@ public final class CaptureActivity extends AppCompatActivity implements SurfaceH
             contentVal.put("reg_id", opID); // 해당 배송번호를 가지고 자신의아이디만 없데이트
             updateCount = DatabaseHelper.getInstance().update(DatabaseHelper.DB_TABLE_INTEGRATION_LIST, contentVal,
                     "invoice_no=? COLLATE NOCASE " + "and punchOut_stat <> 'S' " + "and reg_id = ?", new String[]{invoiceNo, opID});
-        } else if (mScanType.equals(BarcodeType.TYPE_SCAN_CAPTURE) || mScanType.equals(BarcodeType.SELF_COLLECTION)) {
+        } else if (mScanType.equals(BarcodeType.SELF_COLLECTION)) {
 
             if (isInvoiceCodeRule(invoiceNo, mScanType)) {
                 updateCount = 1;
@@ -2233,26 +2159,6 @@ public final class CaptureActivity extends AppCompatActivity implements SurfaceH
         }
     }
 
-
-    // TODO.    자세히 모름..  self-collection / POD
-    public String getScanDeliveryCount() {
-
-        String opID = SharedPreferencesHelper.getSigninOpID(getApplicationContext());
-
-        DatabaseHelper dbHelper = DatabaseHelper.getInstance();
-        Cursor cursor = dbHelper.get("SELECT count(*) as scan_cnt FROM " + DatabaseHelper.DB_TABLE_SCAN_DELIVERY + " WHERE reg_id='" + opID + "'");
-
-        int count = 0;
-
-        if (cursor.moveToFirst()) {
-            count = cursor.getInt(cursor.getColumnIndexOrThrow("scan_cnt"));
-        }
-
-        cursor.close();
-
-        return String.valueOf(count);
-    }
-
     //2016-09-12 eylee  self-collection nq 인지 아닌지 판단하는
     public boolean isNonQ10QFSOrderForSelfCollection(String barcodeNo) {
         boolean isNQ = false;
@@ -2266,32 +2172,7 @@ public final class CaptureActivity extends AppCompatActivity implements SurfaceH
         return isNQ;
     }
 
-    // 이미 바코드스캔조회 (Scan Barcode)
-    public boolean isScanBarcode(String barcodeNo) {
-
-        boolean status = false;
-        String opID = SharedPreferencesHelper.getSigninOpID(getApplicationContext());
-
-        DatabaseHelper dbHelper = DatabaseHelper.getInstance();
-        Cursor cursor = dbHelper.get("SELECT count(*) as scan_cnt FROM " + DatabaseHelper.DB_TABLE_SCAN_DELIVERY
-                + " WHERE invoice_no = '" + barcodeNo + "' and reg_id='" + opID + "'");
-
-        if (cursor.moveToFirst()) {
-
-            int count = cursor.getInt(cursor.getColumnIndexOrThrow("scan_cnt"));
-            if (0 < count) {
-
-                status = true;
-            }
-        }
-
-        cursor.close();
-
-        return status;
-    }
-
-
-    // NOTIFICATION.  SELF_COLLECTION  /  Scan delivery sheet
+    // NOTIFICATION.  SELF_COLLECTION
     /*
      * 송장번호 규칙에 맞는지 체크한후 프리뷰영역에 이미지를 보여준다.
      * modified : 2016-09-09 eylee self-collection 복수 건 처리 add
@@ -2314,115 +2195,38 @@ public final class CaptureActivity extends AppCompatActivity implements SurfaceH
             return;
         }
 
-        // POD 스캔 Step2
-        if (mScanType.equals(BarcodeType.TYPE_SCAN_CAPTURE)) {
+        // SELF_COLLECTION            //복수건 가져다가 self-collection by 2016-09-09
+        // 넘기는 데이터 재정의 스캔성공된 것들만 보낸다.
+        ArrayList<BarcodeListData> newBarcodeNoList = new ArrayList<>();
+        for (int i = 0; i < scanBarcodeArrayList.size(); i++) {
 
-            Intent intentCamera = new Intent(this, CameraActivity.class);
-            intentCamera.putExtra("barcode", scanBarcodeArrayList.get(0).getBarcode());
-            this.startActivityForResult(intentCamera, REQUEST_POD_SCAN);
-        } else {    // SELF_COLLECTION            //복수건 가져다가 self-collection by 2016-09-09
+            BarcodeListData barcodeListData = scanBarcodeArrayList.get(i);
 
-            // 넘기는 데이터 재정의 스캔성공된 것들만 보낸다.
-            ArrayList<BarcodeListData> newBarcodeNoList = new ArrayList<>();
-            for (int i = 0; i < scanBarcodeArrayList.size(); i++) {
+            if (barcodeListData.state.equals("FAIL")) {
 
-                BarcodeListData barcodeListData = scanBarcodeArrayList.get(i);
-
-                if (barcodeListData.state.equals("FAIL")) {
-
-                    Toast toast = Toast.makeText(this, R.string.msg_invalid_scan, Toast.LENGTH_SHORT);
-                    toast.setGravity(Gravity.CENTER_HORIZONTAL, 0, 0);
-                    toast.show();
-                    return;
-                } else {
-
-                    newBarcodeNoList.add(barcodeListData);
-                }
-            }
-
-
-            if (0 < newBarcodeNoList.size()) {
-
-                Intent intentSign = new Intent(this, SelfCollectionDoneActivity.class);
-                intentSign.putExtra("title", title);
-                intentSign.putExtra("data", newBarcodeNoList);
-                intentSign.putExtra("nonq10qfs", String.valueOf(isNonQ10QFSOrder));    //09-12 add isNonQ10QFSOrder
-                this.startActivityForResult(intentSign, REQUEST_SELF_COLLECTION);
-            } else {
-
-                Toast toast = Toast.makeText(this, R.string.msg_tracking_number_manually, Toast.LENGTH_SHORT);
+                Toast toast = Toast.makeText(this, R.string.msg_invalid_scan, Toast.LENGTH_SHORT);
                 toast.setGravity(Gravity.CENTER_HORIZONTAL, 0, 0);
                 toast.show();
+                return;
+            } else {
+
+                newBarcodeNoList.add(barcodeListData);
             }
         }
-    }
 
-    public void onPodUpdateButtonClick(View sender) {
 
-        //스캔한 건이 있으면  2단계 진행 후 업로드
-        if (scanBarcodeArrayList != null && 0 < scanBarcodeArrayList.size()) {
+        if (0 < newBarcodeNoList.size()) {
 
-            Toast toast = Toast.makeText(this, context.getResources().getString(R.string.msg_click_next_before_upload), Toast.LENGTH_SHORT);
+            Intent intentSign = new Intent(this, SelfCollectionDoneActivity.class);
+            intentSign.putExtra("title", title);
+            intentSign.putExtra("data", newBarcodeNoList);
+            intentSign.putExtra("nonq10qfs", String.valueOf(isNonQ10QFSOrder));    //09-12 add isNonQ10QFSOrder
+            this.startActivityForResult(intentSign, REQUEST_SELF_COLLECTION);
+        } else {
+
+            Toast toast = Toast.makeText(this, R.string.msg_tracking_number_manually, Toast.LENGTH_SHORT);
             toast.setGravity(Gravity.CENTER_HORIZONTAL, 0, 0);
             toast.show();
-            return;
-        }
-
-        if (!NetworkUtil.isNetworkAvailable(context)) {
-            AlertShow(context.getResources().getString(R.string.msg_network_connect_error));
-            return;
-        }
-
-        if (MemoryStatus.getAvailableInternalMemorySize() != MemoryStatus.ERROR && MemoryStatus.getAvailableInternalMemorySize() < MemoryStatus.PRESENT_BYTE) {
-            AlertShow(context.getResources().getString(R.string.msg_disk_size_error));
-            return;
-        }
-
-        ArrayList<UploadData> songjanglist = new ArrayList<>();
-
-        // 업로드 대상건 로컬 DB 조회
-        String selectQuery = "SELECT invoice_no, stat FROM " + DatabaseHelper.DB_TABLE_SCAN_DELIVERY + " WHERE reg_id= '" + opID + "'" + " and punchOut_stat <> 'S' ";
-        Cursor cs = DatabaseHelper.getInstance().get(selectQuery);
-
-        if (cs.moveToFirst()) {
-            do {
-                UploadData data = new UploadData();
-                data.setNoSongjang(cs.getString(cs.getColumnIndex("invoice_no")));
-                data.setStat(cs.getString(cs.getColumnIndex("stat")));
-                data.setType("D");
-                songjanglist.add(data);
-            } while (cs.moveToNext());
-        }
-
-        if (0 < songjanglist.size()) {
-
-            new ManualPodUploadHelper.Builder(this, opID, officeCode, deviceID, songjanglist).
-                    setOnPodUploadEventListener(new ManualPodUploadHelper.OnPodUploadEventListener() {
-
-                        @Override
-                        public void onPostResult() {
-
-                            Intent intent = getIntent();
-                            intent.putExtra("result", "OK");
-                            setResult(Activity.RESULT_OK, intent);
-                            finish();
-                        }
-
-                        @Override
-                        public void onPostFailList(ArrayList<String> resultList) {
-                            // 여기서 finish() 하면서 failList 전달
-                            StringBuilder result = new StringBuilder();
-                            for (String failInfo : resultList) {
-                                result.append(failInfo);
-                            }
-
-                            Intent intent = getIntent();
-                            intent.putExtra("result", result.toString());
-                            intent.putExtra("type", "D4");
-                            setResult(Activity.RESULT_OK, intent);
-                            finish();
-                        }
-                    }).build().execute();
         }
     }
 
@@ -2430,15 +2234,8 @@ public final class CaptureActivity extends AppCompatActivity implements SurfaceH
      * Qxpress송장번호 규칙(범용)
      * 운송장번호 규칙이 맞는지 체크
      * 10문자 안넘으면 false, 맨앞두글자가 KR,SG,QX,JP,CN이 아닐경우 false, 5,6번째가 숫자가 아닐경우 false, 영문숫자조합
-     */    //   TYPE_SCAN_CAPTURE / SELF_COLLECTION
+      SELF_COLLECTION */
     public static boolean isInvoiceCodeRule(String invoiceNo, String mType) {
-
-        // 2016-08-23 eylee C2C, RPC 번호 스캔할 수 있도록 기능확장
-        if (mType.equals(BarcodeType.TYPE_SCAN_CAPTURE)) {
-            if (invoiceNo.length() < 10) {
-                return false;
-            }
-        }
 
         boolean bln = Pattern.matches("^[a-zA-Z0-9]*$", invoiceNo);
         if (!bln) {

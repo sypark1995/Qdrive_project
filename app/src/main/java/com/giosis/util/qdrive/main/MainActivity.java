@@ -107,7 +107,6 @@ public class MainActivity extends AppBaseActivity {
     Button btn_home_change_delivery_driver;
     Button btn_home_outlet_order_status;
     Button btn_home_assign_pickup_driver;
-    Button btn_home_scan_delivery_sheet;
 
 
     String fcmToken;
@@ -238,7 +237,6 @@ public class MainActivity extends AppBaseActivity {
 
         btn_home_confirm_my_delivery_order = findViewById(R.id.btn_home_confirm_my_delivery_order);
         btn_home_assign_pickup_driver = findViewById(R.id.btn_home_assign_pickup_driver);
-        btn_home_scan_delivery_sheet = findViewById(R.id.btn_home_scan_delivery_sheet);
         btn_home_change_delivery_driver = findViewById(R.id.btn_home_change_delivery_driver);
         btn_home_outlet_order_status = findViewById(R.id.btn_home_outlet_order_status);    // 19.01 krm0219
 
@@ -282,18 +280,19 @@ public class MainActivity extends AppBaseActivity {
             btn_home_change_delivery_driver.setLayoutParams(lp);
         }
 
-        //POD Scan 권한 : 파트너 사장 또는 Auth:91
-        if (opDefault.equals("Y") || authNo.contains("91")) { // || opID.equals("karam.kim")) {
+        // NOTIFICATION.
+        // 2020.06  POD Scan 제거
+       /* //POD Scan 권한 : 파트너 사장 또는 Auth:91
+        if (opDefault.equals("Y") || authNo.contains("91") || opID.equals("karam.kim")) {
             btn_home_scan_delivery_sheet.setVisibility(View.VISIBLE);
             btn_home_scan_delivery_sheet.setOnClickListener(clickListener);
-        }
+        }*/
 
 
         btn_home_confirm_my_delivery_order.setOnClickListener(clickListener);
         btn_home_change_delivery_driver.setOnClickListener(clickListener);
         btn_home_outlet_order_status.setOnClickListener(clickListener);
         btn_home_assign_pickup_driver.setOnClickListener(clickListener);
-        btn_home_scan_delivery_sheet.setOnClickListener(clickListener);
 
 
         //
@@ -402,17 +401,6 @@ public class MainActivity extends AppBaseActivity {
                 if (failList != null && 0 < failList.length()) {
                     Intent failIntent = new Intent(MainActivity.this, FailListActivity.class);
                     failIntent.putExtra("failList", failList);
-                    startActivity(failIntent);
-                }
-            }
-        }
-        //POD Upload Result (실패시 POD 전용 리스트로 이동)
-        else if (requestCode == 2) {
-            if (resultCode == Activity.RESULT_OK) {
-
-                String result = intent.getStringExtra("result");
-                if (result != null && !result.equals("OK")) {
-                    Intent failIntent = new Intent(MainActivity.this, PodListActivity.class);
                     startActivity(failIntent);
                 }
             }
@@ -900,15 +888,6 @@ public class MainActivity extends AppBaseActivity {
 
                     Intent intent = new Intent(MainActivity.this, RpcListActivity.class);
                     startActivity(intent);
-                }
-                break;
-
-                case R.id.btn_home_scan_delivery_sheet: {
-
-                    Intent intent = new Intent(MainActivity.this, CaptureActivity.class);
-                    intent.putExtra("title", "(Step1) Scan Tracking No");
-                    intent.putExtra("type", BarcodeType.TYPE_SCAN_CAPTURE);
-                    startActivityForResult(intent, 2);
                 }
                 break;
 

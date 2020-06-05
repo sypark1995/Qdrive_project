@@ -168,12 +168,6 @@
             android:screenOrientation="portrait"
             android:windowSoftInputMode="stateAlwaysHidden|adjustPan" />
         <activity
-            android:name="com.giosis.util.qdrive.main.PodListActivity"
-            android:configChanges="orientation|keyboardHidden"
-            android:label="@string/app_name"
-            android:screenOrientation="portrait"
-            android:windowSoftInputMode="stateAlwaysHidden|adjustPan" />
-        <activity
             android:name="com.giosis.util.qdrive.main.MainActivity"
             android:configChanges="orientation|keyboardHidden"
             android:label="@string/app_name"
@@ -186,11 +180,6 @@
 
         <activity
             android:name="com.giosis.util.qdrive.barcodescanner.CaptureActivity"
-            android:configChanges="orientation|keyboardHidden"
-            android:screenOrientation="portrait"
-            android:windowSoftInputMode="adjustNothing" />
-        <activity
-            android:name="com.giosis.util.qdrive.barcodescanner.CameraActivity"
             android:configChanges="orientation|keyboardHidden"
             android:screenOrientation="portrait"
             android:windowSoftInputMode="adjustNothing" />

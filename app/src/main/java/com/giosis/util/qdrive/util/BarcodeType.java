@@ -19,6 +19,4 @@ public class BarcodeType {
     public static final String PICKUP_ADD_SCAN = "PAS";                 // LIST > Today Done > Add Scan
     public static final String OUTLET_PICKUP_SCAN = "OPS";              // LIST > Outlet Pickup Scan
     public static final String PICKUP_TAKE_BACK = "PTB";                // LIST > Today Done > Take Back
-
-    public static final String TYPE_SCAN_CAPTURE = "SC";    // POD Scan   ??
 }

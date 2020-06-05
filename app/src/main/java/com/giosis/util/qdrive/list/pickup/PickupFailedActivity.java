@@ -223,8 +223,8 @@ public class PickupFailedActivity extends AppCompatActivity implements Camera2AP
         maxDate.add(Calendar.DAY_OF_YEAR, 3);       // 2020.06  재시도 날짜 D+3일로 수정
 
         /* //TEST
-        minDate.set(2020, 6-1, 5);
-        maxDate.set(2020, 6-1, 7);*/
+        minDate.set(2020, 8-1, 8);
+        maxDate.set(2020, 8-1, 10);*/
 
         datePickerDialog.getDatePicker().setMinDate(minDate.getTimeInMillis());
         datePickerDialog.getDatePicker().setMaxDate(maxDate.getTimeInMillis());
