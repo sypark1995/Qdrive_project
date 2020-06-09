@@ -1,7 +1,6 @@
 package com.giosis.util.qdrive.list;
 
 
-import android.annotation.SuppressLint;
 import android.app.Activity;
 import android.app.ProgressDialog;
 import android.app.SearchManager;
@@ -9,9 +8,7 @@ import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.database.Cursor;
-import android.location.Location;
 import android.os.Bundle;
-import android.os.Handler;
 import android.util.Log;
 import android.util.TypedValue;
 import android.view.LayoutInflater;
@@ -28,7 +25,6 @@ import android.widget.ExpandableListView;
 import android.widget.ExpandableListView.OnGroupCollapseListener;
 import android.widget.ExpandableListView.OnGroupExpandListener;
 import android.widget.FrameLayout;
-import android.widget.ProgressBar;
 import android.widget.SearchView;
 import android.widget.SearchView.OnCloseListener;
 import android.widget.SearchView.OnQueryTextListener;
@@ -36,7 +32,6 @@ import android.widget.Toast;
 
 import androidx.fragment.app.Fragment;
 
-import com.giosis.util.qdrive.gps.GPSTrackerManager;
 import com.giosis.util.qdrive.portableprinter.bluetooth.GPrinterData;
 import com.giosis.util.qdrive.singapore.MyApplication;
 import com.giosis.util.qdrive.singapore.R;
@@ -56,10 +51,7 @@ import java.lang.reflect.Type;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Arrays;
-import java.util.Collections;
-import java.util.Comparator;
 import java.util.Date;
-import java.util.List;
 
 /***************
  * @author jtpark_qxpress
@@ -108,14 +100,17 @@ public class List_InProgressFragment extends Fragment implements OnQueryTextList
     private ArrayList<SmartRouteResult.RouteMaster> routeMasterArrayList;
     private SmartRouteExpandableAdapter smartRouteExpandableAdapter;
 
-    // 2020 Sort - Nearer
+    private int check = 0;
+
+ /*   // 2020 Sort - Nearer
     private int check = 0;
     private GPSTrackerManager gpsTrackerManager;
     private boolean gpsEnable = false;
     private double latitude = 0;
     private double longitude = 0;
 
-    private ProgressBar progress_in_progress;
+    private ProgressBar progress_in_progress;*/
+
 
     private String[] orderbyQuery = {
             "zip_code asc",
@@ -125,7 +120,7 @@ public class List_InProgressFragment extends Fragment implements OnQueryTextList
             "rcv_nm asc",
             "rcv_nm desc"
             , "Smart Route"
-            , "Nearer"
+            //    , "Nearer"
     };
 
 
@@ -185,13 +180,13 @@ public class List_InProgressFragment extends Fragment implements OnQueryTextList
 
         if (checker.lacksPermissions(PERMISSIONS)) {
 
-            isPermissionTrue = false;
+            //    isPermissionTrue = false;
             PermissionActivity.startActivityForResult(getActivity(), PERMISSION_REQUEST_CODE, PERMISSIONS);
             getActivity().overridePendingTransition(0, 0);
-        } else {
+        }/* else {
 
             isPermissionTrue = true;
-        }
+        }*/
     }
 
     @Override
@@ -211,7 +206,7 @@ public class List_InProgressFragment extends Fragment implements OnQueryTextList
         exlist_card_list = view.findViewById(R.id.exlist_card_list);
         exlist_smart_route = view.findViewById(R.id.exlist_smart_route);
 
-        progress_in_progress = view.findViewById(R.id.progress_in_progress);
+        //    progress_in_progress = view.findViewById(R.id.progress_in_progress);
 
         return view;
     }
@@ -254,7 +249,7 @@ public class List_InProgressFragment extends Fragment implements OnQueryTextList
                 getResources().getString(R.string.text_sort_name_asc),
                 getResources().getString(R.string.text_sort_name_desc)
                 , getResources().getString(R.string.text_smart_route)
-                , getResources().getString(R.string.text_nearer)
+                //   , getResources().getString(R.string.text_nearer)
         ));
 
 
@@ -286,7 +281,7 @@ public class List_InProgressFragment extends Fragment implements OnQueryTextList
                     MyApplication.preferences.setSortIndex(position);
                     selectedSort = orderbyQuery[position];
                     Log.e("krm0219", TAG + "  spinner position : " + position + " / " + selectedSort);
-                    getGPSCount = 0;
+                    //    getGPSCount = 0;
                     onResume();
                 }
             }
@@ -392,7 +387,7 @@ public class List_InProgressFragment extends Fragment implements OnQueryTextList
         super.onResume();
 
         // Location
-        if (isPermissionTrue) {
+       /* if (isPermissionTrue) {
 
             gpsTrackerManager = new GPSTrackerManager(context);
             gpsEnable = gpsTrackerManager.enableGPSSetting();
@@ -407,315 +402,315 @@ public class List_InProgressFragment extends Fragment implements OnQueryTextList
 
                 DataUtil.enableLocationSettings(getActivity(), context);
             }
+*/
+
+        try {
+
+            InputMethodManager imm = (InputMethodManager) getActivity().getSystemService(Context.INPUT_METHOD_SERVICE);
+            imm.hideSoftInputFromWindow(edit_list_searchview.getWindowToken(), 0);
+
+            edit_list_searchview.setText("");
+            edit_list_searchview.clearFocus();
+        } catch (Exception e) {
+            Log.e("Exception", "search init  Exception : " + e.toString());
+        }
 
 
-            try {
+        int createdSRCount = sharedPreferences.getInt("createdSRCount", 0);
+        int clickedSRCount = sharedPreferences.getInt("clickedSRCount", 0);
 
-                InputMethodManager imm = (InputMethodManager) getActivity().getSystemService(Context.INPUT_METHOD_SERVICE);
-                imm.hideSoftInputFromWindow(edit_list_searchview.getWindowToken(), 0);
+        Log.e("krm0219", TAG + "  onResume   SmartRoute  DATA > " + createdSRCount + " / " + clickedSRCount);
+        if (selectedSort.equals(context.getResources().getString(R.string.text_smart_route)) && createdSRCount != 0) {
 
-                edit_list_searchview.setText("");
-                edit_list_searchview.clearFocus();
-            } catch (Exception e) {
-                Log.e("Exception", "search init  Exception : " + e.toString());
-            }
+            exlist_card_list.setVisibility(View.GONE);
+            exlist_smart_route.setVisibility(View.VISIBLE);
 
-
-            int createdSRCount = sharedPreferences.getInt("createdSRCount", 0);
-            int clickedSRCount = sharedPreferences.getInt("clickedSRCount", 0);
-
-            Log.e("krm0219", TAG + "  onResume   SmartRoute  DATA > " + createdSRCount + " / " + clickedSRCount);
-            if (selectedSort.equals(context.getResources().getString(R.string.text_smart_route)) && createdSRCount != 0) {
-
-                exlist_card_list.setVisibility(View.GONE);
-                exlist_smart_route.setVisibility(View.VISIBLE);
-
-                // 'Smart Route' 선택하고 LIST 나갔다 오면 Count 표시 안됨
-                // 그래서 DB in-progress 상태인 주문건 Count 표시하기
-                Cursor cursor = dbHelper.get("SELECT * FROM " + DatabaseHelper.DB_TABLE_INTEGRATION_LIST + " WHERE punchOut_stat = 'N' and chg_dt is null and reg_id='" + opID + "'");
-                mCountCallback.onCountRefresh(cursor.getCount());
+            // 'Smart Route' 선택하고 LIST 나갔다 오면 Count 표시 안됨
+            // 그래서 DB in-progress 상태인 주문건 Count 표시하기
+            Cursor cursor = dbHelper.get("SELECT * FROM " + DatabaseHelper.DB_TABLE_INTEGRATION_LIST + " WHERE punchOut_stat = 'N' and chg_dt is null and reg_id='" + opID + "'");
+            mCountCallback.onCountRefresh(cursor.getCount());
 
 
-                if (createdSRCount != clickedSRCount) {
+            if (createdSRCount != clickedSRCount) {
 
-                    // NOTIFICATION.  GetRouteMaster
-                    new GetRouteMasterAsyncTask(context, progressDialog, opID, new GetRouteMasterAsyncTask.AsyncTaskCallback() {
-                        @Override
-                        public void onSuccess(SmartRouteResult result) {
+                // NOTIFICATION.  GetRouteMaster
+                new GetRouteMasterAsyncTask(context, progressDialog, opID, new GetRouteMasterAsyncTask.AsyncTaskCallback() {
+                    @Override
+                    public void onSuccess(SmartRouteResult result) {
 
-                            if (result != null) {
+                        if (result != null) {
 
-                                routeMasterArrayList = result.getRouteMasterList();
+                            routeMasterArrayList = result.getRouteMasterList();
 
-                                Gson gson = new GsonBuilder().create();
-                                Type listType = new TypeToken<ArrayList<SmartRouteResult.RouteMaster>>() {
-                                }.getType();
-                                String strResult = gson.toJson(routeMasterArrayList, listType);
+                            Gson gson = new GsonBuilder().create();
+                            Type listType = new TypeToken<ArrayList<SmartRouteResult.RouteMaster>>() {
+                            }.getType();
+                            String strResult = gson.toJson(routeMasterArrayList, listType);
 
-                                SharedPreferences.Editor editor = sharedPreferences.edit();
-                                editor.putInt("clickedSRCount", sharedPreferences.getInt("createdSRCount", 0));
-                                editor.putString("SRResult", strResult);
-                                editor.apply();
+                            SharedPreferences.Editor editor = sharedPreferences.edit();
+                            editor.putInt("clickedSRCount", sharedPreferences.getInt("createdSRCount", 0));
+                            editor.putString("SRResult", strResult);
+                            editor.apply();
 
-                                smartRouteExpandableAdapter = new SmartRouteExpandableAdapter(getActivity(), routeMasterArrayList);
-                                exlist_smart_route.setAdapter(smartRouteExpandableAdapter);
-                            }
+                            smartRouteExpandableAdapter = new SmartRouteExpandableAdapter(getActivity(), routeMasterArrayList);
+                            exlist_smart_route.setAdapter(smartRouteExpandableAdapter);
                         }
-
-                        @Override
-                        public void onFailure(SmartRouteResult result) {
-
-                            Toast.makeText(getActivity(), result.getResultMsg(), Toast.LENGTH_SHORT).show();
-                        }
-                    }).execute();
-                } else {
-
-                    String strResult = sharedPreferences.getString("SRResult", null);
-
-                    if (strResult != null) {
-
-                        Gson gson = new GsonBuilder().create();
-                        Type listType = new TypeToken<ArrayList<SmartRouteResult.RouteMaster>>() {
-                        }.getType();
-
-                        routeMasterArrayList = gson.fromJson(strResult, listType);
-                        smartRouteExpandableAdapter = new SmartRouteExpandableAdapter(getActivity(), routeMasterArrayList);
-                        exlist_smart_route.setAdapter(smartRouteExpandableAdapter);
                     }
-                }
+
+                    @Override
+                    public void onFailure(SmartRouteResult result) {
+
+                        Toast.makeText(getActivity(), result.getResultMsg(), Toast.LENGTH_SHORT).show();
+                    }
+                }).execute();
             } else {
 
-                exlist_card_list.setVisibility(View.VISIBLE);
-                exlist_smart_route.setVisibility(View.GONE);
-                exlist_smart_route.setAdapter((ExpandableListAdapter) null);
+                String strResult = sharedPreferences.getString("SRResult", null);
 
-                if (selectedSort.equals(context.getResources().getString(R.string.text_smart_route))) {
+                if (strResult != null) {
 
-                    Toast.makeText(context, context.getResources().getString(R.string.msg_please_create_smart_route), Toast.LENGTH_SHORT).show();
-                    spinner_list_sort.setSelection(0);
-                    return;
+                    Gson gson = new GsonBuilder().create();
+                    Type listType = new TypeToken<ArrayList<SmartRouteResult.RouteMaster>>() {
+                    }.getType();
+
+                    routeMasterArrayList = gson.fromJson(strResult, listType);
+                    smartRouteExpandableAdapter = new SmartRouteExpandableAdapter(getActivity(), routeMasterArrayList);
+                    exlist_smart_route.setAdapter(smartRouteExpandableAdapter);
                 }
+            }
+        } else {
 
-                Cursor cs;
-                if (selectedSort.equals(context.getResources().getString(R.string.text_nearer))) {
+            exlist_card_list.setVisibility(View.VISIBLE);
+            exlist_smart_route.setVisibility(View.GONE);
+            exlist_smart_route.setAdapter((ExpandableListAdapter) null);
+
+            if (selectedSort.equals(context.getResources().getString(R.string.text_smart_route))) {
+
+                Toast.makeText(context, context.getResources().getString(R.string.msg_please_create_smart_route), Toast.LENGTH_SHORT).show();
+                spinner_list_sort.setSelection(0);
+                return;
+            }
+
+            Cursor cs;
+              /*  if (selectedSort.equals(context.getResources().getString(R.string.text_nearer))) {
 
                     cs = DatabaseHelper.getInstance().get("SELECT * FROM " + DatabaseHelper.DB_TABLE_INTEGRATION_LIST + " WHERE punchOut_stat = 'N' and chg_dt is null and reg_id='" + opID + "' order by zip_code asc");
                 } else {
+*/
+            cs = DatabaseHelper.getInstance().get("SELECT * FROM " + DatabaseHelper.DB_TABLE_INTEGRATION_LIST + " WHERE punchOut_stat = 'N' and chg_dt is null and reg_id='" + opID + "' order by " + selectedSort);
+            //     }
+            rowItems = new ArrayList<>();
 
-                    cs = DatabaseHelper.getInstance().get("SELECT * FROM " + DatabaseHelper.DB_TABLE_INTEGRATION_LIST + " WHERE punchOut_stat = 'N' and chg_dt is null and reg_id='" + opID + "' order by " + selectedSort);
-                }
-                rowItems = new ArrayList<>();
+            if (cs.moveToFirst()) {
+                do {
 
-                if (cs.moveToFirst()) {
-                    do {
+                    ArrayList<ChildItem> childItems = new ArrayList<>();
+                    ChildItem child = new ChildItem();
+                    child.setHp(cs.getString(cs.getColumnIndex("hp_no")));
+                    child.setTel(cs.getString(cs.getColumnIndex("tel_no")));
+                    child.setStat(cs.getString(cs.getColumnIndex("stat")));
+                    child.setStatMsg(cs.getString(cs.getColumnIndex("driver_memo")));
+                    child.setStatReason(cs.getString(cs.getColumnIndex("fail_reason")));
+                    child.setSecretNoType(cs.getString(cs.getColumnIndex("secret_no_type")));
+                    child.setSecretNo(cs.getString(cs.getColumnIndex("secret_no")));
+                    childItems.add(child);
 
-                        ArrayList<ChildItem> childItems = new ArrayList<>();
-                        ChildItem child = new ChildItem();
-                        child.setHp(cs.getString(cs.getColumnIndex("hp_no")));
-                        child.setTel(cs.getString(cs.getColumnIndex("tel_no")));
-                        child.setStat(cs.getString(cs.getColumnIndex("stat")));
-                        child.setStatMsg(cs.getString(cs.getColumnIndex("driver_memo")));
-                        child.setStatReason(cs.getString(cs.getColumnIndex("fail_reason")));
-                        child.setSecretNoType(cs.getString(cs.getColumnIndex("secret_no_type")));
-                        child.setSecretNo(cs.getString(cs.getColumnIndex("secret_no")));
-                        childItems.add(child);
+                    long delay = 0;
+                    if (cs.getString(cs.getColumnIndex("delivery_dt")) != null && !cs.getString(cs.getColumnIndex("delivery_dt")).equals("")) {
+                        try {
 
-                        long delay = 0;
-                        if (cs.getString(cs.getColumnIndex("delivery_dt")) != null && !cs.getString(cs.getColumnIndex("delivery_dt")).equals("")) {
-                            try {
+                            delay = diffOfDate(cs.getString(cs.getColumnIndex("delivery_dt")));
+                        } catch (Exception e) {
 
-                                delay = diffOfDate(cs.getString(cs.getColumnIndex("delivery_dt")));
-                            } catch (Exception e) {
-
-                                Log.e("Exception", TAG + "  diffOfDate Exception : " + e.toString());
-                            }
+                            Log.e("Exception", TAG + "  diffOfDate Exception : " + e.toString());
                         }
+                    }
 
-                        // Route
-                        String routeType = cs.getString(cs.getColumnIndex("route"));
-                        //배송 타입
-                        String deliveryType = cs.getString(cs.getColumnIndex("type"));
-                        String rcv_name = "";
-                        if (deliveryType.equals("D")) {
-                            rcv_name = cs.getString(cs.getColumnIndex("rcv_nm")); //구매자
-                        } else if (deliveryType.equals("P")) {
-                            rcv_name = cs.getString(cs.getColumnIndex("req_nm")); //픽업 요청 셀러
+                    // Route
+                    String routeType = cs.getString(cs.getColumnIndex("route"));
+                    //배송 타입
+                    String deliveryType = cs.getString(cs.getColumnIndex("type"));
+                    String rcv_name = "";
+                    if (deliveryType.equals("D")) {
+                        rcv_name = cs.getString(cs.getColumnIndex("rcv_nm")); //구매자
+                    } else if (deliveryType.equals("P")) {
+                        rcv_name = cs.getString(cs.getColumnIndex("req_nm")); //픽업 요청 셀러
+                    }
+
+                    RowItem rowitem = new RowItem(cs.getString(cs.getColumnIndex("contr_no")),
+                            "D+" + delay,
+                            cs.getString(cs.getColumnIndex("invoice_no")),
+                            rcv_name,
+                            "(" + cs.getString(cs.getColumnIndex("zip_code")) + ") "
+                                    + cs.getString(cs.getColumnIndex("address")),
+                            cs.getString(cs.getColumnIndex("rcv_request")),
+                            deliveryType,
+                            routeType,
+                            cs.getString(cs.getColumnIndex("sender_nm")),
+                            cs.getString(cs.getColumnIndex("desired_date")),
+                            cs.getString(cs.getColumnIndex("req_qty")),
+                            cs.getString(cs.getColumnIndex("self_memo")),
+                            cs.getDouble(cs.getColumnIndex("lat")),
+                            cs.getDouble(cs.getColumnIndex("lng")),
+                            cs.getString(cs.getColumnIndex("stat")),
+                            cs.getString(cs.getColumnIndex("cust_no")),
+                            cs.getString(cs.getColumnIndex("partner_id")),
+                            cs.getString(cs.getColumnIndex("secure_delivery_yn")),
+                            cs.getString(cs.getColumnIndex("parcel_amount")),
+                            cs.getString(cs.getColumnIndex("currency"))
+                    );
+
+                    // NOTIFICATION.  19/10 - invoice 와 같은지 체크! 같으면 저장 x
+                    if (deliveryType.equals("P")) {
+                        if (cs.getString(cs.getColumnIndex("invoice_no")).equals(cs.getString(cs.getColumnIndex("partner_ref_no")))) {
+
+                            rowitem.setRef_pickup_no("");
+                        } else {
+
+                            Log.e("krm0219", "Ref. Pickup > " + cs.getString(cs.getColumnIndex("invoice_no")) + " / " + cs.getString(cs.getColumnIndex("partner_ref_no")));
+                            rowitem.setRef_pickup_no(cs.getString(cs.getColumnIndex("partner_ref_no")));
                         }
-
-                        RowItem rowitem = new RowItem(cs.getString(cs.getColumnIndex("contr_no")),
-                                "D+" + delay,
-                                cs.getString(cs.getColumnIndex("invoice_no")),
-                                rcv_name,
-                                "(" + cs.getString(cs.getColumnIndex("zip_code")) + ") "
-                                        + cs.getString(cs.getColumnIndex("address")),
-                                cs.getString(cs.getColumnIndex("rcv_request")),
-                                deliveryType,
-                                routeType,
-                                cs.getString(cs.getColumnIndex("sender_nm")),
-                                cs.getString(cs.getColumnIndex("desired_date")),
-                                cs.getString(cs.getColumnIndex("req_qty")),
-                                cs.getString(cs.getColumnIndex("self_memo")),
-                                cs.getDouble(cs.getColumnIndex("lat")),
-                                cs.getDouble(cs.getColumnIndex("lng")),
-                                cs.getString(cs.getColumnIndex("stat")),
-                                cs.getString(cs.getColumnIndex("cust_no")),
-                                cs.getString(cs.getColumnIndex("partner_id")),
-                                cs.getString(cs.getColumnIndex("secure_delivery_yn")),
-                                cs.getString(cs.getColumnIndex("parcel_amount")),
-                                cs.getString(cs.getColumnIndex("currency"))
-                        );
-
-                        // NOTIFICATION.  19/10 - invoice 와 같은지 체크! 같으면 저장 x
-                        if (deliveryType.equals("P")) {
-                            if (cs.getString(cs.getColumnIndex("invoice_no")).equals(cs.getString(cs.getColumnIndex("partner_ref_no")))) {
-
-                                rowitem.setRef_pickup_no("");
-                            } else {
-
-                                Log.e("krm0219", "Ref. Pickup > " + cs.getString(cs.getColumnIndex("invoice_no")) + " / " + cs.getString(cs.getColumnIndex("partner_ref_no")));
-                                rowitem.setRef_pickup_no(cs.getString(cs.getColumnIndex("partner_ref_no")));
-                            }
-                        }
+                    }
 
 
-                        if (deliveryType.equals("D")) {
-                            rowitem.setOrder_type_etc(cs.getString(cs.getColumnIndex("order_type_etc")));
-                        }
+                    if (deliveryType.equals("D")) {
+                        rowitem.setOrder_type_etc(cs.getString(cs.getColumnIndex("order_type_etc")));
+                    }
 
-                        if (routeType.equals("RPC")) {
-                            rowitem.setDesired_time(cs.getString(cs.getColumnIndex("desired_time")));
-                        }
+                    if (routeType.equals("RPC")) {
+                        rowitem.setDesired_time(cs.getString(cs.getColumnIndex("desired_time")));
+                    }
 
-                        rowitem.setItems(childItems);
+                    rowitem.setItems(childItems);
 
-                        // k. Outlet Delivery 경우 같은 지점은 하나만 나오도록 수정
-                        if (0 < rowItems.size()) {
-                            boolean isRegisteredRoute = false;
+                    // k. Outlet Delivery 경우 같은 지점은 하나만 나오도록 수정
+                    if (0 < rowItems.size()) {
+                        boolean isRegisteredRoute = false;
 
-                            for (int i = 0; i < rowItems.size(); i++) {
-                                if (deliveryType.equalsIgnoreCase("D")) {
-                                    if (routeType.contains("7E") || routeType.contains("FL")) {
-                                        // ex. 7E 001 name1, 7E 002 name2  / ex. FL FLA10001 mrtA, FL FLS10001 mrtB
+                        for (int i = 0; i < rowItems.size(); i++) {
+                            if (deliveryType.equalsIgnoreCase("D")) {
+                                if (routeType.contains("7E") || routeType.contains("FL")) {
+                                    // ex. 7E 001 name1, 7E 002 name2  / ex. FL FLA10001 mrtA, FL FLS10001 mrtB
 
-                                        String[] routeSplit = routeType.split(" ");
+                                    String[] routeSplit = routeType.split(" ");
 
-                                        if (1 < routeSplit.length) {
+                                    if (1 < routeSplit.length) {
 
-                                            String routeNumber = routeSplit[0] + " " + routeSplit[1];
-                                            if (rowItems.get(i).getType().equals("D") && rowItems.get(i).getRoute().contains(routeNumber)) {
-                                                isRegisteredRoute = true;
-                                            }
+                                        String routeNumber = routeSplit[0] + " " + routeSplit[1];
+                                        if (rowItems.get(i).getType().equals("D") && rowItems.get(i).getRoute().contains(routeNumber)) {
+                                            isRegisteredRoute = true;
                                         }
                                     }
                                 }
                             }
-                            if (!isRegisteredRoute) {
-
-                                rowItems.add(rowitem);
-                            }
-                        } else {
+                        }
+                        if (!isRegisteredRoute) {
 
                             rowItems.add(rowitem);
                         }
-                    } while (cs.moveToNext());
-                }
+                    } else {
+
+                        rowItems.add(rowitem);
+                    }
+                } while (cs.moveToNext());
+            }
 
 
-                // k. Outlet 정보 추가
-                for (int i = 0; i < rowItems.size(); i++) {
-                    if (rowItems.get(i).getType().equalsIgnoreCase("D")) {
+            // k. Outlet 정보 추가
+            for (int i = 0; i < rowItems.size(); i++) {
+                if (rowItems.get(i).getType().equalsIgnoreCase("D")) {
 
-                        rowItems.get(i).setOutlet_company(rowItems.get(i).getRoute());
-                        if (rowItems.get(i).getRoute().contains("7E") || rowItems.get(i).getRoute().contains("FL")) {
+                    rowItems.get(i).setOutlet_company(rowItems.get(i).getRoute());
+                    if (rowItems.get(i).getRoute().contains("7E") || rowItems.get(i).getRoute().contains("FL")) {
 
-                            String[] routeSplit = rowItems.get(i).getRoute().split(" ");
+                        String[] routeSplit = rowItems.get(i).getRoute().split(" ");
 
-                            if (1 < routeSplit.length) {
+                        if (1 < routeSplit.length) {
 
-                                String routeNumber = routeSplit[0] + " " + routeSplit[1];
-                                Cursor cursor = dbHelper.get("SELECT count(*) FROM " + DatabaseHelper.DB_TABLE_INTEGRATION_LIST + " WHERE punchOut_stat = 'N' and chg_dt is null and type = 'D' and reg_id='" + opID + "' and route LIKE '%" + routeNumber + "%'");
-                                cursor.moveToFirst();
-                                int count = cursor.getInt(0);
+                            String routeNumber = routeSplit[0] + " " + routeSplit[1];
+                            Cursor cursor = dbHelper.get("SELECT count(*) FROM " + DatabaseHelper.DB_TABLE_INTEGRATION_LIST + " WHERE punchOut_stat = 'N' and chg_dt is null and type = 'D' and reg_id='" + opID + "' and route LIKE '%" + routeNumber + "%'");
+                            cursor.moveToFirst();
+                            int count = cursor.getInt(0);
 
 
-                                StringBuilder sb = new StringBuilder();
+                            StringBuilder sb = new StringBuilder();
 
-                                for (int j = 2; j < routeSplit.length; j++) {
+                            for (int j = 2; j < routeSplit.length; j++) {
 
-                                    sb.append(routeSplit[j]);
-                                    sb.append(" ");
-                                }
-
-                                rowItems.get(i).setOutlet_company(routeSplit[0]);
-                                rowItems.get(i).setOutlet_store_code(routeSplit[1]);
-                                rowItems.get(i).setOutlet_store_name(sb.toString().trim());
-                                rowItems.get(i).setOutlet_qty(count);
+                                sb.append(routeSplit[j]);
+                                sb.append(" ");
                             }
-                        }
-                    } else {        // Pickup
-                        //   Log.i("krm0219", rowItems.get(i).getType() + " / " + rowItems.get(i).getRoute() + " / " + rowItems.get(i).getShipping());
-                        rowItems.get(i).setOutlet_company(rowItems.get(i).getRoute());
-                        if (rowItems.get(i).getRoute().contains("7E") || rowItems.get(i).getRoute().contains("FL")) {
 
-                            String[] routeSplit = rowItems.get(i).getRoute().split(" ");
-
-                            if (1 < routeSplit.length) {
-
-                                StringBuilder sb = new StringBuilder();
-
-                                for (int j = 2; j < routeSplit.length; j++) {
-
-                                    sb.append(routeSplit[j]);
-                                    sb.append(" ");
-                                }
-
-                                rowItems.get(i).setOutlet_company(routeSplit[0]);
-                                rowItems.get(i).setOutlet_store_code(routeSplit[1]);
-                                rowItems.get(i).setOutlet_store_name(sb.toString().trim());
-                            }
+                            rowItems.get(i).setOutlet_company(routeSplit[0]);
+                            rowItems.get(i).setOutlet_store_code(routeSplit[1]);
+                            rowItems.get(i).setOutlet_store_name(sb.toString().trim());
+                            rowItems.get(i).setOutlet_qty(count);
                         }
                     }
-                }
+                } else {        // Pickup
+                    //   Log.i("krm0219", rowItems.get(i).getType() + " / " + rowItems.get(i).getRoute() + " / " + rowItems.get(i).getShipping());
+                    rowItems.get(i).setOutlet_company(rowItems.get(i).getRoute());
+                    if (rowItems.get(i).getRoute().contains("7E") || rowItems.get(i).getRoute().contains("FL")) {
 
+                        String[] routeSplit = rowItems.get(i).getRoute().split(" ");
 
-                adapter = new CustomExpandableAdapter(getActivity(), rowItems);
-                adapter.setOnMoveUpListener(this);
-                exlist_card_list.setAdapter(adapter);
+                        if (1 < routeSplit.length) {
 
-                int groupCount = adapter.getGroupCount();
+                            StringBuilder sb = new StringBuilder();
 
-                for (int i = 0; i < groupCount; i++) {
-                    exlist_card_list.collapseGroup(i);
-                }
+                            for (int j = 2; j < routeSplit.length; j++) {
 
-                try {
+                                sb.append(routeSplit[j]);
+                                sb.append(" ");
+                            }
 
-                    Log.e("krm0219", groupCount + "   In Progress List Position : " + DataUtil.inProgressListPosition);
-                    if (groupCount <= DataUtil.inProgressListPosition) {
-                        DataUtil.inProgressListPosition = 0;
+                            rowItems.get(i).setOutlet_company(routeSplit[0]);
+                            rowItems.get(i).setOutlet_store_code(routeSplit[1]);
+                            rowItems.get(i).setOutlet_store_name(sb.toString().trim());
+                        }
                     }
-
-                    exlist_card_list.setSelectedGroup(DataUtil.inProgressListPosition);
-                    if (DataUtil.inProgressListPosition != 0) {
-
-                        exlist_card_list.expandGroup(DataUtil.inProgressListPosition);
-                    }
-                } catch (Exception e) {
-
-                    Log.e("Exception", TAG + "  setSelectedGroup Exception : " + e.toString());
-                }
-
-                mCountCallback.onCountRefresh(groupCount);
-
-
-                if (selectedSort.equals(context.getResources().getString(R.string.text_nearer))) {
-                    // Driver 현재 위치 기준 가까운 위치 순으로 정렬
-                    getDriverGPSLocation();
-                } else {
-
-                    adapter.setSorting(rowItems);
                 }
             }
+
+
+            adapter = new CustomExpandableAdapter(getActivity(), rowItems);
+            adapter.setOnMoveUpListener(this);
+            exlist_card_list.setAdapter(adapter);
+
+            int groupCount = adapter.getGroupCount();
+
+            for (int i = 0; i < groupCount; i++) {
+                exlist_card_list.collapseGroup(i);
+            }
+
+            try {
+
+                Log.e("krm0219", groupCount + "   In Progress List Position : " + DataUtil.inProgressListPosition);
+                if (groupCount <= DataUtil.inProgressListPosition) {
+                    DataUtil.inProgressListPosition = 0;
+                }
+
+                exlist_card_list.setSelectedGroup(DataUtil.inProgressListPosition);
+                if (DataUtil.inProgressListPosition != 0) {
+
+                    exlist_card_list.expandGroup(DataUtil.inProgressListPosition);
+                }
+            } catch (Exception e) {
+
+                Log.e("Exception", TAG + "  setSelectedGroup Exception : " + e.toString());
+            }
+
+            mCountCallback.onCountRefresh(groupCount);
+
+
+             /*   if (selectedSort.equals(context.getResources().getString(R.string.text_nearer))) {
+                    // Driver 현재 위치 기준 가까운 위치 순으로 정렬
+                    getDriverGPSLocation();
+                } else {*/
+
+            adapter.setSorting(rowItems);
+            //    }
+            //    }
 
 
             // 2019.01  krm0219
@@ -793,7 +788,7 @@ public class List_InProgressFragment extends Fragment implements OnQueryTextList
     @Override
     public void onDestroy() {
         super.onDestroy();
-        DataUtil.stopGPSManager(gpsTrackerManager);
+        //    DataUtil.stopGPSManager(gpsTrackerManager);
 
         GPrinterData.TEMP_TRACKING_NO = "";
         if (GPrinterData.mBluetoothAdapter != null) {
@@ -1039,10 +1034,11 @@ public class List_InProgressFragment extends Fragment implements OnQueryTextList
     }
 
 
-    private ArrayList<RowItem> resultItems;
+    // NOTIFICATION.  Sort - Nearer
+    //  2020.06  배터리 사용량 문제로 없애기..
+    /*private ArrayList<RowItem> resultItems;
     private int getGPSCount = 0;
 
-    // NOTIFICATION.  Sort - Nearer
     private void getDriverGPSLocation() {
 
         getGPSCount++;
@@ -1073,9 +1069,9 @@ public class List_InProgressFragment extends Fragment implements OnQueryTextList
             }
         } else {
 
-         /*   // TEST         1.356619,103.8632591     // 3.063302,101.6951980
+         *//*   // TEST         1.356619,103.8632591     // 3.063302,101.6951980
             latitude = 1.3649634;
-            longitude = 103.7650991;*/
+            longitude = 103.7650991;*//*
             resultItems = new ArrayList<>();
 
             for (int i = 0; i < rowItems.size(); i++) {
@@ -1122,10 +1118,10 @@ public class List_InProgressFragment extends Fragment implements OnQueryTextList
 
         Collections.sort(tempItems, new CompareDistanceAsc());
 
-        /*for (int i = 0; i < tempItems.size(); i++) {
+        *//*for (int i = 0; i < tempItems.size(); i++) {
 
             Log.e("krm0219", " ** " + tempItems.get(i).getShipping() + " - " + tempItems.get(i).getDistance() + "");
-        }*/
+        }*//*
 
 
         for (int i = 0; i < tempItems.size(); i++) {
@@ -1149,5 +1145,5 @@ public class List_InProgressFragment extends Fragment implements OnQueryTextList
 
             return Float.compare(o1.getDistance(), o2.getDistance());
         }
-    }
+    }*/
 }
