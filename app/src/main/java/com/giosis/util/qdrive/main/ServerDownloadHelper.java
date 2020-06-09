@@ -187,13 +187,10 @@ public class ServerDownloadHelper extends ManualHelper {
 
                 if (PickupServerList != null) {
 
-                    Log.e("krm0219", " get Geocode");
                     for (PickupAssignResult.QSignPickupList pickupInfo : PickupServerList.getResultObject()) {
                         successCount = insertDevicePickupData(pickupInfo);
                         publishProgress(1);
                     }
-
-                    Log.e("krm0219", " finish Geocode");
                 }
 
                 return successCount;

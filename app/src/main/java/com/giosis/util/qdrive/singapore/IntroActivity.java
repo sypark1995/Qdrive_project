@@ -37,7 +37,7 @@ public class IntroActivity extends Activity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_intro);
         context = getApplicationContext();
-        MyApplication.preferences.setSortIndex(0);
+        //MyApplication.preferences.setSortIndex(0);
 
       /*  // TEST.  VM
         Intent intent = new Intent();

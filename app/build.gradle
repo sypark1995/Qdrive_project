@@ -11,8 +11,8 @@ android {
         applicationId "com.giosis.util.qdrive.singapore"
         minSdkVersion 21
         targetSdkVersion 28
-        versionCode 88
-        versionName "3.3.7"
+        versionCode 89
+        versionName "3.3.8"
         testInstrumentationRunner "androidx.test.runner.AndroidJUnitRunner"
         multiDexEnabled true
     }
