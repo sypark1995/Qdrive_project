@@ -78,7 +78,6 @@ public class CnRPickupFailedActivity extends AppCompatActivity {
     DatePickerDialog.OnDateSetListener dateListener;
 
     String mStrWaybillNo = "";
-    String mType = "";
     ArrayList<BarcodeData> PickupNoList;
 
     GPSTrackerManager gpsTrackerManager;
@@ -125,12 +124,11 @@ public class CnRPickupFailedActivity extends AppCompatActivity {
         mStrWaybillNo = getIntent().getStringExtra("waybillNo");
         String strSenderName = getIntent().getStringExtra("senderName");
         String strReqQty = getIntent().getStringExtra("reqQty");
-        mType = getIntent().getStringExtra("type");         // "P"
 
 
         BarcodeData failBarcodeData = new BarcodeData();
         failBarcodeData.setBarcode(mStrWaybillNo);
-        failBarcodeData.setState(mType);
+        failBarcodeData.setState("P");
 
         PickupNoList = new ArrayList<>();
         PickupNoList.add(failBarcodeData);

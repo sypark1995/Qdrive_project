@@ -315,7 +315,7 @@
                     android:layout_marginEnd="3dp"
                     android:layout_weight="1"
                     android:background="@drawable/custom_button_list"
-                    android:text="@string/button_pickup_failed"
+                    android:text="@string/button_visit_log"
                     android:textAllCaps="false"
                     android:textColor="@color/color_303030"
                     android:textSize="@dimen/text_size_26px" />

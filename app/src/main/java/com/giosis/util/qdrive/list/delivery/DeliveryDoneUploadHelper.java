@@ -10,6 +10,7 @@ import android.graphics.Bitmap;
 import android.os.AsyncTask;
 import android.text.TextUtils;
 import android.util.Log;
+import android.widget.ImageView;
 
 import com.giosis.util.qdrive.barcodescanner.ManualHelper;
 import com.giosis.util.qdrive.barcodescanner.StdResult;
@@ -41,8 +42,12 @@ public class DeliveryDoneUploadHelper extends ManualHelper {
 
     private final ArrayList<BarcodeData> assignBarcodeList;
     private final String receiveType;
-    private final SigningView signingView;
     private final String driverMemo;
+
+    private final SigningView signingView;
+    private final boolean hasSignImage;
+    private final ImageView imageView;
+    private final boolean hasVisitImage;
 
     private final long disk_size;
     private final double lat;
@@ -62,8 +67,13 @@ public class DeliveryDoneUploadHelper extends ManualHelper {
 
         private final ArrayList<BarcodeData> assignBarcodeList;
         private final String receiveType;
-        private final SigningView signingView;
         private final String driverMemo;
+
+        private final SigningView signingView;
+        private final boolean hasSignImage;
+        private final ImageView imageView;
+        private final boolean hasVisitImage;
+
 
         private final long disk_size;
         private final double lat;
@@ -73,7 +83,8 @@ public class DeliveryDoneUploadHelper extends ManualHelper {
         private OnServerUploadEventListener eventListener;
 
         public Builder(Context context, String opID, String officeCode, String deviceID,
-                       ArrayList<BarcodeData> assignBarcodeList, String receiveType, SigningView signingView, String driverMemo,
+                       ArrayList<BarcodeData> assignBarcodeList, String receiveType, String driverMemo,
+                       SigningView signingView, boolean hasSignImage, ImageView imageView, boolean hasVisitImage,
                        long disk_size, double lat, double lon) {
 
             this.context = context;
@@ -84,8 +95,12 @@ public class DeliveryDoneUploadHelper extends ManualHelper {
 
             this.assignBarcodeList = assignBarcodeList;
             this.receiveType = receiveType;
-            this.signingView = signingView;
             this.driverMemo = driverMemo;
+
+            this.signingView = signingView;
+            this.hasSignImage = hasSignImage;
+            this.imageView = imageView;
+            this.hasVisitImage = hasVisitImage;
 
             this.disk_size = disk_size;
             this.lat = lat;
@@ -112,8 +127,12 @@ public class DeliveryDoneUploadHelper extends ManualHelper {
 
         this.assignBarcodeList = builder.assignBarcodeList;
         this.receiveType = builder.receiveType;
-        this.signingView = builder.signingView;
         this.driverMemo = builder.driverMemo;
+
+        this.signingView = builder.signingView;
+        this.hasSignImage = builder.hasSignImage;
+        this.imageView = builder.imageView;
+        this.hasVisitImage = builder.hasVisitImage;
 
         this.disk_size = builder.disk_size;
         this.lat = builder.lat;
@@ -261,7 +280,16 @@ public class DeliveryDoneUploadHelper extends ManualHelper {
 
         private StdResult requestServerUpload(String assignNo) {
 
-            DataUtil.captureSign("/Qdrive", assignNo, signingView);
+            //  NOTIFICATION.
+            if (hasSignImage) {
+
+                Log.e("krm0219", " save  sign");
+                DataUtil.captureSign("/Qdrive", assignNo + "_s", signingView);
+            } else if (hasVisitImage) {
+
+                Log.e("krm0219", " save  visit log");
+                DataUtil.captureSign("/Qdrive", assignNo + "_v", imageView);
+            }
 
 
             SimpleDateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
@@ -302,9 +330,17 @@ public class DeliveryDoneUploadHelper extends ManualHelper {
 
             try {
 
+                String bitmapString1;
+                String bitmapString2;
+
                 signingView.buildDrawingCache();
                 Bitmap captureView = signingView.getDrawingCache();
-                String bitmapString = DataUtil.bitmapToString(captureView);
+                bitmapString1 = DataUtil.bitmapToString(captureView);
+                imageView.buildDrawingCache();
+                Bitmap captureView2 = imageView.getDrawingCache();
+                bitmapString2 = DataUtil.bitmapToString(captureView2);
+                Log.e("krm0219", " DATA 1 : " + bitmapString1 + " \n DATA 2 : " + bitmapString2);
+
 
                 JSONObject job = new JSONObject();
                 job.accumulate("rcv_type", receiveType);
@@ -316,7 +352,8 @@ public class DeliveryDoneUploadHelper extends ManualHelper {
                 job.accumulate("device_id", deviceID);
                 job.accumulate("network_type", networkType);
                 job.accumulate("no_songjang", assignNo);
-                job.accumulate("fileData", bitmapString);
+                job.accumulate("fileData", bitmapString1);
+                job.accumulate("fileData2", bitmapString2);
                 job.accumulate("remark", driverMemo);            // 드라이버 메세지 driver_memo	== remark
                 job.accumulate("disk_size", disk_size);
                 job.accumulate("lat", lat);

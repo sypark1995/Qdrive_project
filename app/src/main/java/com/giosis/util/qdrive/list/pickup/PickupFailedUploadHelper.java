@@ -35,6 +35,7 @@ public class PickupFailedUploadHelper extends ManualHelper {
     private final String officeCode;
     private final String deviceID;
 
+    private final String rcvType;
     private final String pickupNo;
     private final String cancelCode;
     private final String retryDay;
@@ -57,6 +58,7 @@ public class PickupFailedUploadHelper extends ManualHelper {
         private final String officeCode;
         private final String deviceID;
 
+        private final String rcvType;
         private final String pickupNo;
         private final String cancelCode;
         private final String retryDay;
@@ -71,7 +73,7 @@ public class PickupFailedUploadHelper extends ManualHelper {
         private OnServerEventListener eventListener;
 
         public Builder(Context context, String opID, String officeCode, String deviceID,
-                       String pickupNo, String cancelCode, String retryDay, String driverMemo, ImageView imageView,
+                       String rcvType, String pickupNo, String cancelCode, String retryDay, String driverMemo, ImageView imageView,
                        long disk_size, double lat, double lon) {
 
             this.context = context;
@@ -80,6 +82,7 @@ public class PickupFailedUploadHelper extends ManualHelper {
             this.deviceID = deviceID;
             this.networkType = NetworkUtil.getNetworkType(context);
 
+            this.rcvType = rcvType;
             this.pickupNo = pickupNo;
             this.cancelCode = cancelCode;
             this.retryDay = retryDay;
@@ -109,6 +112,7 @@ public class PickupFailedUploadHelper extends ManualHelper {
         this.officeCode = builder.officeCode;
         this.deviceID = builder.deviceID;
 
+        this.rcvType = builder.rcvType;
         this.pickupNo = builder.pickupNo;
         this.cancelCode = builder.cancelCode;
         this.retryDay = builder.retryDay;
@@ -249,9 +253,9 @@ public class PickupFailedUploadHelper extends ManualHelper {
             Date date = new Date();
 
             ContentValues contentVal = new ContentValues();
+            contentVal.put("rcv_type", rcvType);
             contentVal.put("stat", "PF");
             contentVal.put("real_qty", "0");
-            contentVal.put("rcv_type", "VL");
             contentVal.put("chg_id", opID);
             contentVal.put("chg_dt", dateFormat.format(date));
             contentVal.put("fail_reason", cancelCode);  // fail code
@@ -287,7 +291,7 @@ public class PickupFailedUploadHelper extends ManualHelper {
                 String bitmapString = DataUtil.bitmapToString(captureView);
 
                 JSONObject job = new JSONObject();
-                job.accumulate("rcv_type", "VL");
+                job.accumulate("rcv_type", rcvType);
                 job.accumulate("stat", "PF");
                 job.accumulate("chg_id", opID);
                 job.accumulate("deliv_msg", "(by Qdrive RealTime-Upload)"); // 내부관리자용 메세지

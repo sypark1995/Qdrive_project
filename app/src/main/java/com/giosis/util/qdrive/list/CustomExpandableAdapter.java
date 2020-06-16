@@ -41,7 +41,6 @@ import com.giosis.util.qdrive.list.delivery.DeliveryDoneActivity;
 import com.giosis.util.qdrive.list.delivery.DeliveryFailedActivity;
 import com.giosis.util.qdrive.list.delivery.QuickReturnFailedActivity;
 import com.giosis.util.qdrive.list.delivery.QuickReturnedActivity;
-import com.giosis.util.qdrive.list.pickup.CnRPickupFailedActivity;
 import com.giosis.util.qdrive.list.pickup.CnRPickupInfoGetHelper;
 import com.giosis.util.qdrive.list.pickup.OutletPickupScanActivity;
 import com.giosis.util.qdrive.list.pickup.PickupFailedActivity;
@@ -878,7 +877,7 @@ public class CustomExpandableAdapter extends BaseExpandableListAdapter implement
             public void onClick(View v) {
 
                 Intent intent = new Intent(context, PickupFailedActivity.class);
-                intent.putExtra("title", context.getResources().getString(R.string.text_visit_log));
+                intent.putExtra("type", BarcodeType.TYPE_PICKUP);
                 intent.putExtra("reqQty", qty);
                 intent.putExtra("applicant", requester);
                 intent.putExtra("pickupNo", tracking_no);
@@ -930,13 +929,20 @@ public class CustomExpandableAdapter extends BaseExpandableListAdapter implement
             @Override
             public void onClick(View v) {
 
+                Intent intent = new Intent(context, PickupFailedActivity.class);
+                intent.putExtra("type", BarcodeType.TYPE_CNR);
+                intent.putExtra("reqQty", qty);
+                intent.putExtra("applicant", requester);
+                intent.putExtra("pickupNo", tracking_no);
+                context.startActivity(intent);
+
+                /*
                 Intent intent = new Intent(context, CnRPickupFailedActivity.class);
-                intent.putExtra("title", context.getResources().getString(R.string.text_pickup_fail));
-                intent.putExtra("type", BarcodeType.TYPE_PICKUP);
+                intent.putExtra("title", context.getResources().getString(R.string.text_visit_log));
+                intent.putExtra("reqQty", qty);
                 intent.putExtra("senderName", requester);
                 intent.putExtra("waybillNo", tracking_no);
-                intent.putExtra("reqQty", qty);
-                context.startActivity(intent);
+                context.startActivity(intent);*/
             }
         });
 

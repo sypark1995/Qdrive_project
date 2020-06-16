@@ -41,6 +41,7 @@ import androidx.appcompat.app.AppCompatActivity;
 import com.giosis.util.qdrive.gps.GPSTrackerManager;
 import com.giosis.util.qdrive.singapore.OnServerEventListener;
 import com.giosis.util.qdrive.singapore.R;
+import com.giosis.util.qdrive.util.BarcodeType;
 import com.giosis.util.qdrive.util.Camera2APIs;
 import com.giosis.util.qdrive.util.DataUtil;
 import com.giosis.util.qdrive.util.DatabaseHelper;
@@ -62,6 +63,7 @@ import java.util.Locale;
  * <p></p>
  * @editor krm0219
  * 2019.12 - Fail Reason / Retry Date 추가
+ * 2020.06  CNR Failed 합치기
  */
 public class PickupFailedActivity extends AppCompatActivity implements Camera2APIs.Camera2Interface, TextureView.SurfaceTextureListener {
     String TAG = "PickupFailedActivity";
@@ -71,6 +73,7 @@ public class PickupFailedActivity extends AppCompatActivity implements Camera2AP
     TextView text_top_title;
 
     TextView text_sign_p_f_pickup_no;
+    TextView text_sign_p_f_applicant_title;
     TextView text_sign_p_f_applicant;
     TextView text_sign_p_f_requested_qty;
 
@@ -90,10 +93,12 @@ public class PickupFailedActivity extends AppCompatActivity implements Camera2AP
 
     //---
     Context context;
+    String pickupType;      //  P, CNR
     String opID = "";
     String officeCode = "";
     String deviceID = "";
     String pickupNo;
+    String rcvType;         // VL, RC
 
     String[] failReasonCode = {"WA", "WP", "NA", "NO", "NR", "NQ", "ET"}; //Wrong address, Wrong phone number,No answer,No one available,Not ready for parcel,Others
 
@@ -133,6 +138,7 @@ public class PickupFailedActivity extends AppCompatActivity implements Camera2AP
         text_top_title = findViewById(R.id.text_top_title);
 
         text_sign_p_f_pickup_no = findViewById(R.id.text_sign_p_f_pickup_no);
+        text_sign_p_f_applicant_title = findViewById(R.id.text_sign_p_f_applicant_title);
         text_sign_p_f_applicant = findViewById(R.id.text_sign_p_f_applicant);
         text_sign_p_f_requested_qty = findViewById(R.id.text_sign_p_f_requested_qty);
 
@@ -157,16 +163,26 @@ public class PickupFailedActivity extends AppCompatActivity implements Camera2AP
         officeCode = SharedPreferencesHelper.getSigninOfficeCode(getApplicationContext());
         deviceID = SharedPreferencesHelper.getSigninDeviceID(getApplicationContext());
 
-        String strTitle = getIntent().getStringExtra("title");
+        pickupType = getIntent().getStringExtra("type");
         pickupNo = getIntent().getStringExtra("pickupNo");
         String applicant = getIntent().getStringExtra("applicant");
         String strReqQty = getIntent().getStringExtra("reqQty");
 
 
-        text_top_title.setText(strTitle);
+        text_top_title.setText(context.getResources().getString(R.string.text_visit_log));
         text_sign_p_f_pickup_no.setText(pickupNo);
         text_sign_p_f_applicant.setText(applicant);
         text_sign_p_f_requested_qty.setText(strReqQty);
+
+        if (pickupType.equals(BarcodeType.TYPE_PICKUP)) {
+
+            text_sign_p_f_applicant_title.setText(context.getResources().getString(R.string.text_applicant));
+            rcvType = "VL";
+        } else if (pickupType.equals(BarcodeType.TYPE_CNR)) {
+
+            text_sign_p_f_applicant_title.setText(context.getResources().getString(R.string.text_requestor));
+            rcvType = "RC";
+        }
 
 
         //
@@ -219,7 +235,6 @@ public class PickupFailedActivity extends AppCompatActivity implements Camera2AP
         Calendar minDate = Calendar.getInstance();
         minDate.add(Calendar.DAY_OF_YEAR, 1);
         Calendar maxDate = Calendar.getInstance();
-        //   maxDate.add(Calendar.DAY_OF_YEAR, 8);
         maxDate.add(Calendar.DAY_OF_YEAR, 3);       // 2020.06  재시도 날짜 D+3일로 수정
 
         /* //TEST
@@ -255,23 +270,18 @@ public class PickupFailedActivity extends AppCompatActivity implements Camera2AP
 
         });
 
-        spinner_p_f_failed_reason.post(new Runnable() {
+
+        spinner_p_f_failed_reason.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
+
             @Override
-            public void run() {
+            public void onItemSelected(AdapterView<?> parentView, View arg1, int position, long arg3) {
 
-                spinner_p_f_failed_reason.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
+                String selected_text = parentView.getItemAtPosition(position).toString();
+                text_sign_p_f_failed_reason.setText(selected_text);
+            }
 
-                    @Override
-                    public void onItemSelected(AdapterView<?> parentView, View arg1, int position, long arg3) {
-
-                        String selected_text = parentView.getItemAtPosition(position).toString();
-                        text_sign_p_f_failed_reason.setText(selected_text);
-                    }
-
-                    @Override
-                    public void onNothingSelected(AdapterView<?> arg0) {
-                    }
-                });
+            @Override
+            public void onNothingSelected(AdapterView<?> arg0) {
             }
         });
 
@@ -506,13 +516,14 @@ public class PickupFailedActivity extends AppCompatActivity implements Camera2AP
                 return;
             }
 
-            String retry_day = text_sign_p_f_retry_date.getText().toString();
+
             String fail_code = failReasonCode[spinner_p_f_failed_reason.getSelectedItemPosition()];
+            String retry_day = text_sign_p_f_retry_date.getText().toString();
 
             try {
 
                 Bundle params = new Bundle();
-                params.putString("Activity", TAG);
+                params.putString("Activity", TAG + "_" + pickupType);
                 params.putString("method", "SetPickupUploadData");
                 DataUtil.mFirebaseAnalytics.logEvent("button_click", params);
             } catch (Exception e) {
@@ -521,7 +532,7 @@ public class PickupFailedActivity extends AppCompatActivity implements Camera2AP
             }
 
             new PickupFailedUploadHelper.Builder(this, opID, officeCode, deviceID,
-                    pickupNo, fail_code, retry_day, driverMemo, img_sign_p_f_visit_log,
+                    rcvType, pickupNo, fail_code, retry_day, driverMemo, img_sign_p_f_visit_log,
                     MemoryStatus.getAvailableInternalMemorySize(), latitude, longitude)
                     .setOnServerEventListener(new OnServerEventListener() {
 

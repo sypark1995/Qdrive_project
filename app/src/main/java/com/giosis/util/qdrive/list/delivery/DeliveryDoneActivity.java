@@ -7,11 +7,20 @@ import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.database.Cursor;
+import android.graphics.Bitmap;
+import android.graphics.SurfaceTexture;
+import android.hardware.camera2.CameraDevice;
+import android.hardware.camera2.CameraManager;
+import android.net.Uri;
 import android.os.AsyncTask;
 import android.os.Bundle;
+import android.provider.MediaStore;
 import android.text.Editable;
 import android.text.TextWatcher;
 import android.util.Log;
+import android.util.Size;
+import android.view.Surface;
+import android.view.TextureView;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
@@ -33,6 +42,7 @@ import com.giosis.util.qdrive.list.BarcodeData;
 import com.giosis.util.qdrive.list.OutletInfo;
 import com.giosis.util.qdrive.list.SigningView;
 import com.giosis.util.qdrive.singapore.R;
+import com.giosis.util.qdrive.util.Camera2APIs;
 import com.giosis.util.qdrive.util.Custom_XmlPullParser;
 import com.giosis.util.qdrive.util.DataUtil;
 import com.giosis.util.qdrive.util.DatabaseHelper;
@@ -61,8 +71,9 @@ import static com.giosis.util.qdrive.barcodescanner.ManualHelper.MOBILE_SERVER_U
  * LIST > In-Progress > 'Delivered'
  * SCAN > Delivery Done
  *
+ * 2020.06 Visit Log 추가
  */
-public class DeliveryDoneActivity extends AppCompatActivity {
+public class DeliveryDoneActivity extends AppCompatActivity implements Camera2APIs.Camera2Interface, TextureView.SurfaceTextureListener {
     String TAG = "DeliveryDoneActivity";
 
     private static String RECEIVE_TYPE_SELF = "RC";
@@ -87,9 +98,16 @@ public class DeliveryDoneActivity extends AppCompatActivity {
     TextView text_sign_d_sender;
 
     LinearLayout layout_sign_d_sign_memo;
+    EditText edit_sign_d_memo;
     LinearLayout layout_sign_d_sign_eraser;
     SigningView sign_view_sign_d_signature;
-    EditText edit_sign_d_memo;
+
+    LinearLayout layout_sign_d_visit_log;
+    LinearLayout layout_sign_d_take_photo;
+    LinearLayout layout_sign_d_gallery;
+    TextureView texture_sign_d_preview;
+    ImageView img_sign_d_visit_log;
+
     Button btn_sign_d_save;
 
     // Outlet
@@ -112,9 +130,16 @@ public class DeliveryDoneActivity extends AppCompatActivity {
     String routeNumber;
 
     ArrayList<BarcodeData> songjanglist;
-
     String senderName;
     String receiverName;
+
+
+    // Camera & Gallery
+    Camera2APIs camera2;
+    String cameraId;
+    private static final int RESULT_LOAD_IMAGE = 3;
+    boolean isGalleryActivate = false;
+
 
     GPSTrackerManager gpsTrackerManager;
     boolean gpsEnable = false;
@@ -128,11 +153,11 @@ public class DeliveryDoneActivity extends AppCompatActivity {
     ArrayList<OutletDeliveryDoneListItem> outletDeliveryDoneListItemArrayList;
     OutletTrackingNoAdapter outletTrackingNoAdapter;
 
+
     boolean isPermissionTrue = false;
     private static final int PERMISSION_REQUEST_CODE = 1000;
     private static final String[] PERMISSIONS = new String[]{PermissionChecker.READ_EXTERNAL_STORAGE, PermissionChecker.WRITE_EXTERNAL_STORAGE,
-            PermissionChecker.ACCESS_COARSE_LOCATION, PermissionChecker.ACCESS_FINE_LOCATION};
-    //
+            PermissionChecker.ACCESS_COARSE_LOCATION, PermissionChecker.ACCESS_FINE_LOCATION, PermissionChecker.CAMERA};
 
 
     @Override
@@ -158,9 +183,15 @@ public class DeliveryDoneActivity extends AppCompatActivity {
         text_sign_d_sender = findViewById(R.id.text_sign_d_sender);
 
         layout_sign_d_sign_memo = findViewById(R.id.layout_sign_d_sign_memo);
+        edit_sign_d_memo = findViewById(R.id.edit_sign_d_memo);
         layout_sign_d_sign_eraser = findViewById(R.id.layout_sign_d_sign_eraser);
         sign_view_sign_d_signature = findViewById(R.id.sign_view_sign_d_signature);
-        edit_sign_d_memo = findViewById(R.id.edit_sign_d_memo);
+
+        layout_sign_d_visit_log = findViewById(R.id.layout_sign_d_visit_log);
+        layout_sign_d_take_photo = findViewById(R.id.layout_sign_d_take_photo);
+        layout_sign_d_gallery = findViewById(R.id.layout_sign_d_gallery);
+        texture_sign_d_preview = findViewById(R.id.texture_sign_d_preview);
+        img_sign_d_visit_log = findViewById(R.id.img_sign_d_visit_log);
         btn_sign_d_save = findViewById(R.id.btn_sign_d_save);
 
         // Outlet
@@ -181,12 +212,14 @@ public class DeliveryDoneActivity extends AppCompatActivity {
         img_sign_d_receiver_other.setOnClickListener(clickListener);
         text_sign_d_receiver_other.setOnClickListener(clickListener);
         layout_sign_d_sign_eraser.setOnClickListener(clickListener);
+        layout_sign_d_take_photo.setOnClickListener(clickListener);
+        layout_sign_d_gallery.setOnClickListener(clickListener);
         btn_sign_d_save.setOnClickListener(clickListener);
 
 
         //
         context = getApplicationContext();
-
+        camera2 = new Camera2APIs(this);
         opID = SharedPreferencesHelper.getSigninOpID(context);
         officeCode = SharedPreferencesHelper.getSigninOfficeCode(context);
         deviceID = SharedPreferencesHelper.getSigninDeviceID(context);
@@ -366,6 +399,7 @@ public class DeliveryDoneActivity extends AppCompatActivity {
                 text_top_title.setText(R.string.text_title_7e_store_delivery);
                 text_sign_d_outlet_address_title.setText(R.string.text_7e_store_address);
                 layout_sign_d_sign_memo.setVisibility(View.VISIBLE);
+                layout_sign_d_visit_log.setVisibility(View.VISIBLE);
 
                 if (!NetworkUtil.isNetworkAvailable(context)) {
 
@@ -381,6 +415,7 @@ public class DeliveryDoneActivity extends AppCompatActivity {
                 text_top_title.setText(R.string.text_title_fl_delivery);
                 text_sign_d_outlet_address_title.setText(R.string.text_federated_locker_address);
                 layout_sign_d_sign_memo.setVisibility(View.GONE);
+                layout_sign_d_visit_log.setVisibility(View.GONE);
 
                 outletTrackingNoAdapter = new OutletTrackingNoAdapter(DeliveryDoneActivity.this, outletDeliveryDoneListItemArrayList, "FL");
                 list_sign_d_outlet_list.setAdapter(outletTrackingNoAdapter);
@@ -393,6 +428,7 @@ public class DeliveryDoneActivity extends AppCompatActivity {
             layout_sign_d_receiver.setVisibility(View.VISIBLE);
             list_sign_d_outlet_list.setVisibility(View.GONE);
             layout_sign_d_sign_memo.setVisibility(View.VISIBLE);
+            layout_sign_d_visit_log.setVisibility(View.VISIBLE);
         }
 
 
@@ -418,10 +454,9 @@ public class DeliveryDoneActivity extends AppCompatActivity {
         });
 
 
-        //
+        // 권한 여부 체크 (없으면 true, 있으면 false)
         PermissionChecker checker = new PermissionChecker(this);
 
-        // 권한 여부 체크 (없으면 true, 있으면 false)
         if (checker.lacksPermissions(PERMISSIONS)) {
 
             isPermissionTrue = false;
@@ -439,13 +474,24 @@ public class DeliveryDoneActivity extends AppCompatActivity {
 
         if (isPermissionTrue) {
 
+            // Camera
+            camera2 = new Camera2APIs(this);
+
+            if (texture_sign_d_preview.isAvailable()) {
+
+                openCamera();
+            } else {
+
+                texture_sign_d_preview.setSurfaceTextureListener(this);
+            }
+
+            // Location
             gpsTrackerManager = new GPSTrackerManager(context);
             gpsEnable = gpsTrackerManager.enableGPSSetting();
 
             if (gpsEnable && gpsTrackerManager != null) {
 
                 gpsTrackerManager.GPSTrackerStart();
-
                 latitude = gpsTrackerManager.getLatitude();
                 longitude = gpsTrackerManager.getLongitude();
                 Log.e("Location", TAG + " GPSTrackerManager onResume : " + latitude + "  " + longitude + "  ");
@@ -459,10 +505,25 @@ public class DeliveryDoneActivity extends AppCompatActivity {
     @Override
     protected void onActivityResult(int requestCode, int resultCode, @Nullable Intent data) {
         super.onActivityResult(requestCode, resultCode, data);
+        isGalleryActivate = false;
 
-        if (requestCode == PERMISSION_REQUEST_CODE) {   // permission
+        if (requestCode == RESULT_LOAD_IMAGE && resultCode == RESULT_OK && data != null) {
+
+            try {
+
+                Uri selectedImageUri = data.getData();
+
+                Bitmap selectedImage = MediaStore.Images.Media.getBitmap(getContentResolver(), selectedImageUri);
+                Bitmap resizeBitmap = camera2.getResizeBitmap(selectedImage);
+                img_sign_d_visit_log.setImageBitmap(resizeBitmap);
+                img_sign_d_visit_log.setScaleType(ImageView.ScaleType.CENTER_INSIDE);
+                onResume();
+            } catch (Exception e) {
+                Log.e("eylee", e.toString());
+                e.printStackTrace();
+            }
+        } else if (requestCode == PERMISSION_REQUEST_CODE) {   // permission
             if (resultCode == PermissionActivity.PERMISSIONS_GRANTED) {
-
                 Log.e("Permission", TAG + "   onActivityResult  PERMISSIONS_GRANTED");
 
                 isPermissionTrue = true;
@@ -470,12 +531,18 @@ public class DeliveryDoneActivity extends AppCompatActivity {
         }
     }
 
+
+    @Override
+    protected void onPause() {
+        super.onPause();
+        closeCamera();
+    }
+
     @Override
     protected void onDestroy() {
         super.onDestroy();
         DataUtil.stopGPSManager(gpsTrackerManager);
     }
-
 
     @Override
     public void onBackPressed() {
@@ -597,9 +664,19 @@ public class DeliveryDoneActivity extends AppCompatActivity {
                 Log.e("Location", TAG + " saveServerUploadSign  GPSTrackerManager : " + latitude + "  " + longitude + "  ");
             }
 
-            //사인이미지를 그리지 않았다면
-            if (!sign_view_sign_d_signature.getIsTouche()) {
-                Toast.makeText(this.getApplicationContext(), context.getResources().getString(R.string.msg_signature_require), Toast.LENGTH_SHORT).show();
+            String driverMemo = edit_sign_d_memo.getText().toString();
+
+            // NOTIFICATION. 2020.06  visit log 추가
+            // 사인 or 사진 둘 중 하나는 있어야 함
+            boolean hasSignImage = sign_view_sign_d_signature.getIsTouche();
+            boolean hasVisitImage = camera2.hasImage(img_sign_d_visit_log);
+
+            if (!hasSignImage && !hasVisitImage) {
+
+                String msg = context.getResources().getString(R.string.msg_signature_require) + " or \n" +
+                        context.getResources().getString(R.string.msg_visit_photo_require);
+
+                Toast.makeText(this.getApplicationContext(), msg, Toast.LENGTH_SHORT).show();
                 return;
             }
 
@@ -609,8 +686,8 @@ public class DeliveryDoneActivity extends AppCompatActivity {
                 return;
             }
 
-            String driverMemo = edit_sign_d_memo.getText().toString();
 
+            Log.e("krm0219", TAG + "  has DATA : " + hasSignImage + " / " + hasVisitImage);
             try {
 
                 Bundle params = new Bundle();
@@ -623,7 +700,8 @@ public class DeliveryDoneActivity extends AppCompatActivity {
             }
 
             new DeliveryDoneUploadHelper.Builder(this, opID, officeCode, deviceID,
-                    songjanglist, mReceiveType, sign_view_sign_d_signature, driverMemo,
+                    songjanglist, mReceiveType, driverMemo,
+                    sign_view_sign_d_signature, hasSignImage, img_sign_d_visit_log, hasVisitImage,
                     MemoryStatus.getAvailableInternalMemorySize(), latitude, longitude)
                     .setOnServerUploadEventListener(new DeliveryDoneUploadHelper.OnServerUploadEventListener() {
 
@@ -771,6 +849,24 @@ public class DeliveryDoneActivity extends AppCompatActivity {
                 }
                 break;
 
+                case R.id.layout_sign_d_take_photo: {
+
+                    if (cameraId != null) {
+
+                        camera2.takePhoto(texture_sign_d_preview, img_sign_d_visit_log);
+                    } else {
+
+                        Toast.makeText(DeliveryDoneActivity.this, context.getResources().getString(R.string.msg_back_camera_required), Toast.LENGTH_SHORT).show();
+                    }
+                }
+                break;
+
+                case R.id.layout_sign_d_gallery: {
+
+                    getImageFromAlbum();
+                }
+                break;
+
                 case R.id.btn_sign_d_save: {
 
                     confirmSigning();
@@ -779,6 +875,82 @@ public class DeliveryDoneActivity extends AppCompatActivity {
             }
         }
     };
+
+
+    // Gallery
+    private void getImageFromAlbum() {
+        try {
+
+            if (!isGalleryActivate) {
+
+                Intent intent = new Intent();
+                intent.setType("image/*");
+                intent.setAction(Intent.ACTION_GET_CONTENT);
+                isGalleryActivate = true;
+                startActivityForResult(Intent.createChooser(intent, "Select Picture"), RESULT_LOAD_IMAGE);
+            }
+        } catch (Exception ex) {
+
+            isGalleryActivate = false;
+            Log.i("eylee", ex.toString());
+        }
+    }
+
+
+    // CAMERA
+    private void openCamera() {
+
+        CameraManager cameraManager = camera2.getCameraManager(this);
+        cameraId = camera2.getCameraCharacteristics(cameraManager);
+
+        Log.e("krm0219", TAG + "  openCamera " + cameraId);
+
+        if (cameraId != null) {
+
+            camera2.setCameraDevice(cameraManager, cameraId);
+        } else {
+
+            Toast.makeText(DeliveryDoneActivity.this, context.getResources().getString(R.string.msg_back_camera_required), Toast.LENGTH_SHORT).show();
+        }
+    }
+
+
+    private void closeCamera() {
+
+        camera2.closeCamera();
+    }
+
+
+    @Override
+    public void onCameraDeviceOpened(CameraDevice cameraDevice, Size cameraSize, int rotation) {
+
+        texture_sign_d_preview.setRotation(rotation);
+
+        SurfaceTexture texture = texture_sign_d_preview.getSurfaceTexture();
+        texture.setDefaultBufferSize(cameraSize.getWidth(), cameraSize.getHeight());
+        Surface surface = new Surface(texture);
+
+        camera2.setCaptureSessionRequest(cameraDevice, surface);
+    }
+
+    @Override
+    public void onSurfaceTextureAvailable(SurfaceTexture surface, int width, int height) {
+
+        openCamera();
+    }
+
+    @Override
+    public void onSurfaceTextureSizeChanged(SurfaceTexture surface, int width, int height) {
+    }
+
+    @Override
+    public boolean onSurfaceTextureDestroyed(SurfaceTexture surface) {
+        return true;
+    }
+
+    @Override
+    public void onSurfaceTextureUpdated(SurfaceTexture surface) {
+    }
 
 
     public class QRCodeAsyncTask extends AsyncTask<Void, Void, String> {
