@@ -172,6 +172,7 @@
             android:layout_marginStart="7dp"
             android:background="@drawable/qdrive_btn_icon_memo" />
 
+        <!-- Button-->
         <RelativeLayout
             android:id="@+id/layout_list_item_child_buttons"
             android:layout_width="match_parent"
@@ -247,7 +248,7 @@
                 android:id="@+id/layout_list_item_child_pickup_buttons"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:visibility="gone"
+                android:visibility="visible"
                 android:weightSum="3">
 
                 <Button
@@ -292,7 +293,7 @@
                 android:id="@+id/layout_list_item_child_cnr_buttons"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:visibility="visible"
+                android:visibility="gone"
                 android:weightSum="3">
 
                 <Button
@@ -351,5 +352,26 @@
                     android:textSize="@dimen/text_size_26px" />
             </RelativeLayout>
         </RelativeLayout>
+
+        <LinearLayout
+            android:id="@+id/layout_list_item_trip_detail"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_below="@id/layout_list_item_child_buttons"
+            android:visibility="gone"
+            android:weightSum="3">
+
+            <Button
+                android:id="@+id/btn_list_item_child_trip_detail_button"
+                android:layout_width="0dp"
+                android:layout_height="32dp"
+                android:layout_marginEnd="7dp"
+                android:layout_weight="1"
+                android:background="@drawable/custom_button_list"
+                android:text="Detail"
+                android:textAllCaps="false"
+                android:textColor="@color/color_303030"
+                android:textSize="@dimen/text_size_26px" />
+        </LinearLayout>
     </RelativeLayout>
 </LinearLayout>

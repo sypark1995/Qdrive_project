@@ -484,6 +484,9 @@ public class CustomExpandableAdapter extends BaseExpandableListAdapter implement
         RelativeLayout layout_list_item_child_outlet_pickup = convertView.findViewById(R.id.layout_list_item_child_outlet_pickup);
         Button btn_list_item_child_outlet_pickup_scan = convertView.findViewById(R.id.btn_list_item_child_outlet_pickup_scan);
 
+        LinearLayout layout_list_item_trip_detail = convertView.findViewById(R.id.layout_list_item_trip_detail);
+        Button btn_list_item_child_trip_detail_button = convertView.findViewById(R.id.btn_list_item_child_trip_detail_button);
+
 
         //
         String authNo = SharedPreferencesHelper.getSigninAuthNo(context);
@@ -697,6 +700,17 @@ public class CustomExpandableAdapter extends BaseExpandableListAdapter implement
                 layout_list_item_child_pickup_buttons.setVisibility(View.VISIBLE);
                 layout_list_item_child_cnr_buttons.setVisibility(View.GONE);
                 layout_list_item_child_outlet_pickup.setVisibility(View.GONE);
+            }
+
+
+            // TODO. 레이아웃 손보기 && 버튼 클릭시 Popup
+            // Trip
+            if (rowItem.get(groupPosition).getTripDataArrayList() != null) {
+
+                layout_list_item_trip_detail.setVisibility(View.VISIBLE);
+            } else {
+
+                layout_list_item_trip_detail.setVisibility(View.GONE);
             }
         }
 

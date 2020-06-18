@@ -487,6 +487,7 @@ public class List_InProgressFragment extends Fragment implements OnQueryTextList
         String primaryKey = "";
         //    ArrayList<RowItem.TripData> tripDataArrayList;
         ArrayList<RowItem> tripDataArrayList;
+        ArrayList<RowItem> finalArrayList = new ArrayList<>();
 
         while (count < tempArrayList.size() - 1) {
 
@@ -506,21 +507,43 @@ public class List_InProgressFragment extends Fragment implements OnQueryTextList
             } else {
                 if (tripCount != 0) {
 
-                    //    tripDataArrayList = new ArrayList<>();
+                    tripDataArrayList = new ArrayList<>();
+                    int primary = 0;
+
+                    for (int i = (count - tripCount); i <= count; i++) {
+
+                        RowItem rowItem = tempArrayList.get(i);
+
+                        if (rowItem.getShipping().equals(primaryKey)) {
+
+                            primary = i;
+                            rowItem.setPrimaryKey(true);
+                        } else {
+
+                            rowItem.setPrimaryKey(false);
+                        }
+
+                        Log.e("trip", "*** " + i + " / " + primary + " / " + rowItem.isPrimaryKey());
+                        tripDataArrayList.add(rowItem);
+                    }
 
                     Log.e("trip", " Sort > " + count + " / " + tripCount + " / " + primaryKey + " / " + item.getTripNo());
+                    tempArrayList.get(primary).setTripDataArrayList(tripDataArrayList);
+                    finalArrayList.add(tempArrayList.get(primary));
                     tripCount = 0;
                 } else {
 
                     item.setPrimaryKey(true);
                     item.setTripDataArrayList(null);
+                    finalArrayList.add(item);
                 }
             }
+
             count++;
         }
 
 
-        adapter = new CustomExpandableAdapter(getActivity(), tripArrayList);
+        adapter = new CustomExpandableAdapter(getActivity(), finalArrayList);
         adapter.setOnMoveUpListener(this);
         exlist_card_list.setAdapter(adapter);
 
@@ -531,12 +554,12 @@ public class List_InProgressFragment extends Fragment implements OnQueryTextList
         }
 
         mCountCallback.onCountRefresh(groupCount);
-        adapter.setSorting(tripArrayList);
+        adapter.setSorting(finalArrayList);
 
 
-        for (int i = 0; i < tripArrayList.size(); i++) {
+        for (int i = 0; i < finalArrayList.size(); i++) {
 
-            RowItem item = tripArrayList.get(i);
+            RowItem item = finalArrayList.get(i);
             Log.e("trip", i + " / " + item.getShipping() + " / " + item.getZip_code() + " / " + item.getItems().get(0).getHp() + " / " + item.getTripNo());
         }
 
