@@ -616,6 +616,12 @@ public class MainActivity extends AppBaseActivity {
 
     private void Download() {
 
+        // TEST.  많은 데이터필요 / 하루에 한번만 데이터받고 테스트하기 !
+        int a = 1;
+        if (a == 1)
+            return;
+
+        //
         if (!NetworkUtil.isNetworkAvailable(MainActivity.this)) {
 
             Toast.makeText(MainActivity.this, getString(R.string.msg_network_connect_error), Toast.LENGTH_SHORT).show();

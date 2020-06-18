@@ -330,10 +330,10 @@ public class ServerDownloadHelper extends ManualHelper {
             hmActionParam.put("app_id", DataUtil.appID);
             hmActionParam.put("nation_cd", DataUtil.nationCode);
 
-          /*  // TEST. Pickup
+            // TEST. Pickup
             String MOBILE_SERVER_URL = "https://qxapi.qxpress.asia/GMKT.INC.GLPS.MobileApiService/GlobalMobileService.qapi";
-            hmActionParam.put("opId", "Yak.PUCC");*/
-
+            hmActionParam.put("opId", "YuMin.dwl");
+       //     hmActionParam.put("opId", "Calla.FT");
             String methodName = "GetPickupList";
             Serializer serializer = new Persister();
 

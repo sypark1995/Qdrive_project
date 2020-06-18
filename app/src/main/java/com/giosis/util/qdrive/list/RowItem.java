@@ -41,6 +41,12 @@ public class RowItem {
     private String zip_code;
     private String ref_pickup_no;
 
+
+    // 2020.06  Trip 단위 묶음
+    private int tripNo;
+    private boolean primaryKey;
+    private ArrayList<TripData> tripDataArrayList;
+
     float distance;
 
 
@@ -305,6 +311,32 @@ public class RowItem {
     }
 
 
+
+    public int getTripNo() {
+        return tripNo;
+    }
+
+    public void setTripNo(int tripNo) {
+        this.tripNo = tripNo;
+    }
+
+    public boolean isPrimaryKey() {
+        return primaryKey;
+    }
+
+    public void setPrimaryKey(boolean primaryKey) {
+        this.primaryKey = primaryKey;
+    }
+
+    // primary key 'Y' 일 경우 해당 Trip에 묶인 데이터 리스트
+    public ArrayList<TripData> getTripDataArrayList() {
+        return tripDataArrayList;
+    }
+
+    public void setTripDataArrayList(ArrayList<TripData> tripDataArrayList) {
+        this.tripDataArrayList = tripDataArrayList;
+    }
+
     // 드라이버 위치와의 거리
     public float getDistance() {
         return distance;
@@ -312,5 +344,33 @@ public class RowItem {
 
     public void setDistance(float distance) {
         this.distance = distance;
+    }
+
+
+    public class TripData {
+
+        String trackingNo;
+        String address;
+
+        public TripData(String trackingNo, String address) {
+            this.trackingNo = trackingNo;
+            this.address = address;
+        }
+
+        public String getTrackingNo() {
+            return trackingNo;
+        }
+
+        public void setTrackingNo(String trackingNo) {
+            this.trackingNo = trackingNo;
+        }
+
+        public String getAddress() {
+            return address;
+        }
+
+        public void setAddress(String address) {
+            this.address = address;
+        }
     }
 }

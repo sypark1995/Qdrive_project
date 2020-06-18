@@ -19,12 +19,15 @@ import android.view.inputmethod.InputMethodManager;
 import android.widget.AdapterView;
 import android.widget.AdapterView.OnItemSelectedListener;
 import android.widget.ArrayAdapter;
+import android.widget.Button;
 import android.widget.EditText;
 import android.widget.ExpandableListAdapter;
 import android.widget.ExpandableListView;
 import android.widget.ExpandableListView.OnGroupCollapseListener;
 import android.widget.ExpandableListView.OnGroupExpandListener;
 import android.widget.FrameLayout;
+import android.widget.LinearLayout;
+import android.widget.ProgressBar;
 import android.widget.SearchView;
 import android.widget.SearchView.OnCloseListener;
 import android.widget.SearchView.OnQueryTextListener;
@@ -51,6 +54,8 @@ import java.lang.reflect.Type;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.Collections;
+import java.util.Comparator;
 import java.util.Date;
 
 /***************
@@ -67,6 +72,11 @@ public class List_InProgressFragment extends Fragment implements OnQueryTextList
     //
 
     View view;
+
+    private LinearLayout layout_list_pickup_sort_condition;
+    private Button btn_list_pickup_sort_request;
+    private Button btn_list_pickup_sort_trip;
+    private ProgressBar progress_in_progress;
 
     private SearchView searchview_list;
     private EditText edit_list_searchview;
@@ -102,16 +112,6 @@ public class List_InProgressFragment extends Fragment implements OnQueryTextList
 
     private int check = 0;
 
- /*   // 2020 Sort - Nearer
-    private int check = 0;
-    private GPSTrackerManager gpsTrackerManager;
-    private boolean gpsEnable = false;
-    private double latitude = 0;
-    private double longitude = 0;
-
-    private ProgressBar progress_in_progress;*/
-
-
     private String[] orderbyQuery = {
             "zip_code asc",
             "zip_code desc",
@@ -120,8 +120,21 @@ public class List_InProgressFragment extends Fragment implements OnQueryTextList
             "rcv_nm asc",
             "rcv_nm desc"
             , "Smart Route"
-            //    , "Nearer"
+            //      , "Nearer"
     };
+    private ArrayList<String> sortArrayList;
+    private ArrayAdapter<String> sortArrayAdapter;
+
+
+    private String pickupDriverYn;
+    private String pickupSortCondition = "R"; // R : Request(기본) / T : Trip (묶음배송)
+
+ /*   // 2020 Sort - Nearer
+    private int check = 0;
+    private GPSTrackerManager gpsTrackerManager;
+    private boolean gpsEnable = false;
+    private double latitude = 0;
+    private double longitude = 0;*/
 
 
     public List_InProgressFragment() {
@@ -199,6 +212,11 @@ public class List_InProgressFragment extends Fragment implements OnQueryTextList
 
         view = inflater.inflate(R.layout.fragment_inprogress, container, false);
 
+        layout_list_pickup_sort_condition = view.findViewById(R.id.layout_list_pickup_sort_condition);
+        btn_list_pickup_sort_request = view.findViewById(R.id.btn_list_pickup_sort_request);
+        btn_list_pickup_sort_trip = view.findViewById(R.id.btn_list_pickup_sort_trip);
+        progress_in_progress = view.findViewById(R.id.progress_in_progress);
+
         searchview_list = view.findViewById(R.id.searchview_list);
         layout_list_sort = view.findViewById(R.id.layout_list_sort);
         spinner_list_sort = view.findViewById(R.id.spinner_list_sort);
@@ -206,8 +224,39 @@ public class List_InProgressFragment extends Fragment implements OnQueryTextList
         exlist_card_list = view.findViewById(R.id.exlist_card_list);
         exlist_smart_route = view.findViewById(R.id.exlist_smart_route);
 
-        //    progress_in_progress = view.findViewById(R.id.progress_in_progress);
 
+        pickupDriverYn = SharedPreferencesHelper.getSigninPickupDriverYN(getActivity());
+
+        btn_list_pickup_sort_request.setOnClickListener(new OnClickListener() {
+            @Override
+            public void onClick(View v) {
+
+                if (!pickupSortCondition.equals("R")) {
+
+                    pickupSortCondition = "R";
+                    btn_list_pickup_sort_request.setBackgroundResource(R.drawable.back_round_30_4fb648);
+                    btn_list_pickup_sort_trip.setBackgroundResource(R.drawable.custom_button_selector);
+                    onResume();
+                }
+            }
+        });
+
+        btn_list_pickup_sort_trip.setOnClickListener(new OnClickListener() {
+            @Override
+            public void onClick(View v) {
+
+                if (!pickupSortCondition.equals("T")) {
+
+                    pickupSortCondition = "T";
+                    btn_list_pickup_sort_request.setBackgroundResource(R.drawable.custom_button_selector);
+                    btn_list_pickup_sort_trip.setBackgroundResource(R.drawable.back_round_30_4fb648);
+
+                    // TODO. Trip 단위 선 정렬 후, onResume() 정렬 필요
+                    sortByTrip();
+                    //onResume();
+                }
+            }
+        });
         return view;
     }
 
@@ -215,7 +264,6 @@ public class List_InProgressFragment extends Fragment implements OnQueryTextList
     @Override
     public void onActivityCreated(Bundle savedInstanceState) {
         super.onActivityCreated(savedInstanceState);
-
         Log.e("krm0219", TAG + "  onActivityCreated");
         sharedPreferences = getActivity().getSharedPreferences(DataUtil.SHARED_PREFERENCE_FILE, Context.MODE_PRIVATE);
 
@@ -241,7 +289,7 @@ public class List_InProgressFragment extends Fragment implements OnQueryTextList
         });
 
 
-        ArrayList<String> sortArrayList = new ArrayList<>(Arrays.asList(
+        sortArrayList = new ArrayList<>(Arrays.asList(
                 getResources().getString(R.string.text_sort_postal_code_asc),
                 getResources().getString(R.string.text_sort_postal_code_desc),
                 getResources().getString(R.string.text_sort_tracking_no_asc),
@@ -253,7 +301,7 @@ public class List_InProgressFragment extends Fragment implements OnQueryTextList
         ));
 
 
-        ArrayAdapter<String> sortArrayAdapter = new ArrayAdapter<>(getActivity(), android.R.layout.simple_spinner_dropdown_item, sortArrayList);
+        sortArrayAdapter = new ArrayAdapter<>(getActivity(), android.R.layout.simple_spinner_dropdown_item, sortArrayList);
         spinner_list_sort.setAdapter(sortArrayAdapter);
 
         try {
@@ -382,9 +430,152 @@ public class List_InProgressFragment extends Fragment implements OnQueryTextList
     }
 
 
+    //TODO
+    private ArrayList<RowItem> tripArrayList;
+
+    private void sortByTrip() {
+
+        tripArrayList = new ArrayList<>();
+        ArrayList<RowItem> tempArrayList = getSortList("zip_code asc");
+        Collections.sort(tempArrayList, new TripMultiComp());
+
+        // 1차 정렬
+        for (int i = 0; i < tempArrayList.size(); i++) {
+
+            RowItem item = tempArrayList.get(i);
+            Log.e("trip", item.getShipping() + " / " + item.getZip_code() + " / " + item.getItems().get(0).getHp());
+        }
+
+        int tripNo = 1;
+        int count = 0;
+
+        // Trip 묶음 번호
+        while (count < tempArrayList.size() - 1) {
+
+            RowItem item = tempArrayList.get(count);
+            RowItem nextItem = tempArrayList.get(count + 1);
+
+            if (item.getZip_code().equals(nextItem.getZip_code())) {
+                if (item.getItems().get(0).getHp().equals(nextItem.getItems().get(0).getHp())) {
+                    // 픽업 우편번호 & 픽업지 핸드폰 번호 동일
+                    if (item.getShipping().charAt(0) == 'P' && nextItem.getShipping().charAt(0) == 'P') {
+
+                        // P번호 끼리는 묶일 수 없음
+                        item.setTripNo(tripNo++);
+                    } else {
+
+                        item.setTripNo(tripNo);
+                    }
+                } else {
+
+                    // 핸드폰 번호 다름
+                    item.setTripNo(tripNo++);
+                }
+            } else {
+
+                // 우편번호 다름
+                item.setTripNo(tripNo++);
+            }
+
+            tripArrayList.add(item);
+            count++;
+        }
+
+
+        count = 0;
+        int tripCount = 0;
+        String primaryKey = "";
+        //    ArrayList<RowItem.TripData> tripDataArrayList;
+        ArrayList<RowItem> tripDataArrayList;
+
+        while (count < tempArrayList.size() - 1) {
+
+            RowItem item = tempArrayList.get(count);
+            RowItem nextItem = tempArrayList.get(count + 1);
+
+            if (item.getTripNo() == nextItem.getTripNo()) {
+
+                if (item.getShipping().charAt(0) == 'P') {
+
+                    primaryKey = item.getShipping();
+                } else if (tripCount == 0) {
+
+                    primaryKey = item.getShipping();
+                }
+                tripCount++;
+            } else {
+                if (tripCount != 0) {
+
+                    //    tripDataArrayList = new ArrayList<>();
+
+                    Log.e("trip", " Sort > " + count + " / " + tripCount + " / " + primaryKey + " / " + item.getTripNo());
+                    tripCount = 0;
+                } else {
+
+                    item.setPrimaryKey(true);
+                    item.setTripDataArrayList(null);
+                }
+            }
+            count++;
+        }
+
+
+        adapter = new CustomExpandableAdapter(getActivity(), tripArrayList);
+        adapter.setOnMoveUpListener(this);
+        exlist_card_list.setAdapter(adapter);
+
+        int groupCount = adapter.getGroupCount();
+
+        for (int i = 0; i < groupCount; i++) {
+            exlist_card_list.collapseGroup(i);
+        }
+
+        mCountCallback.onCountRefresh(groupCount);
+        adapter.setSorting(tripArrayList);
+
+
+        for (int i = 0; i < tripArrayList.size(); i++) {
+
+            RowItem item = tripArrayList.get(i);
+            Log.e("trip", i + " / " + item.getShipping() + " / " + item.getZip_code() + " / " + item.getItems().get(0).getHp() + " / " + item.getTripNo());
+        }
+
+
+        // 다중정렬 참고
+        // https://chickenpaella.tistory.com/24
+    }
+
+
     @Override
     public void onResume() {
         super.onResume();
+        Log.e("krm0219", TAG + "  onResume");
+
+
+        // NOTIFICATION.  2020-06
+        // Pickup Driver && By Trip 상태일 때만 'Nearer' 정렬 추가
+        if (pickupDriverYn.equals("Y"))
+            layout_list_pickup_sort_condition.setVisibility(View.VISIBLE);
+
+        if (pickupDriverYn.equals("Y") && pickupSortCondition.equals("T")) {
+
+            progress_in_progress.setVisibility(View.VISIBLE);
+
+            sortArrayList.add(getResources().getString(R.string.text_nearer));
+            ArrayList<String> orderbyList = new ArrayList<>(Arrays.asList(orderbyQuery));
+            orderbyList.add(getResources().getString(R.string.text_nearer));
+            orderbyQuery = orderbyList.toArray(new String[orderbyList.size()]);
+        } else {
+            if (orderbyQuery.length == 8) {
+
+                sortArrayList.remove(orderbyQuery.length - 1);
+                ArrayList<String> orderbyList = new ArrayList<>(Arrays.asList(orderbyQuery));
+                orderbyList.remove(orderbyQuery.length - 1);
+                orderbyQuery = orderbyList.toArray(new String[orderbyList.size()]);
+            }
+        }
+
+        sortArrayAdapter.notifyDataSetChanged();
 
         // Location
        /* if (isPermissionTrue) {
@@ -479,6 +670,8 @@ public class List_InProgressFragment extends Fragment implements OnQueryTextList
                 }
             }
         } else {
+            // 일반 정렬
+
 
             exlist_card_list.setVisibility(View.VISIBLE);
             exlist_smart_route.setVisibility(View.GONE);
@@ -491,186 +684,7 @@ public class List_InProgressFragment extends Fragment implements OnQueryTextList
                 return;
             }
 
-            Cursor cs;
-              /*  if (selectedSort.equals(context.getResources().getString(R.string.text_nearer))) {
-
-                    cs = DatabaseHelper.getInstance().get("SELECT * FROM " + DatabaseHelper.DB_TABLE_INTEGRATION_LIST + " WHERE punchOut_stat = 'N' and chg_dt is null and reg_id='" + opID + "' order by zip_code asc");
-                } else {
-*/
-            cs = DatabaseHelper.getInstance().get("SELECT * FROM " + DatabaseHelper.DB_TABLE_INTEGRATION_LIST + " WHERE punchOut_stat = 'N' and chg_dt is null and reg_id='" + opID + "' order by " + selectedSort);
-            //     }
-            rowItems = new ArrayList<>();
-
-            if (cs.moveToFirst()) {
-                do {
-
-                    ArrayList<ChildItem> childItems = new ArrayList<>();
-                    ChildItem child = new ChildItem();
-                    child.setHp(cs.getString(cs.getColumnIndex("hp_no")));
-                    child.setTel(cs.getString(cs.getColumnIndex("tel_no")));
-                    child.setStat(cs.getString(cs.getColumnIndex("stat")));
-                    child.setStatMsg(cs.getString(cs.getColumnIndex("driver_memo")));
-                    child.setStatReason(cs.getString(cs.getColumnIndex("fail_reason")));
-                    child.setSecretNoType(cs.getString(cs.getColumnIndex("secret_no_type")));
-                    child.setSecretNo(cs.getString(cs.getColumnIndex("secret_no")));
-                    childItems.add(child);
-
-                    long delay = 0;
-                    if (cs.getString(cs.getColumnIndex("delivery_dt")) != null && !cs.getString(cs.getColumnIndex("delivery_dt")).equals("")) {
-                        try {
-
-                            delay = diffOfDate(cs.getString(cs.getColumnIndex("delivery_dt")));
-                        } catch (Exception e) {
-
-                            Log.e("Exception", TAG + "  diffOfDate Exception : " + e.toString());
-                        }
-                    }
-
-                    // Route
-                    String routeType = cs.getString(cs.getColumnIndex("route"));
-                    //배송 타입
-                    String deliveryType = cs.getString(cs.getColumnIndex("type"));
-                    String rcv_name = "";
-                    if (deliveryType.equals("D")) {
-                        rcv_name = cs.getString(cs.getColumnIndex("rcv_nm")); //구매자
-                    } else if (deliveryType.equals("P")) {
-                        rcv_name = cs.getString(cs.getColumnIndex("req_nm")); //픽업 요청 셀러
-                    }
-
-                    RowItem rowitem = new RowItem(cs.getString(cs.getColumnIndex("contr_no")),
-                            "D+" + delay,
-                            cs.getString(cs.getColumnIndex("invoice_no")),
-                            rcv_name,
-                            "(" + cs.getString(cs.getColumnIndex("zip_code")) + ") "
-                                    + cs.getString(cs.getColumnIndex("address")),
-                            cs.getString(cs.getColumnIndex("rcv_request")),
-                            deliveryType,
-                            routeType,
-                            cs.getString(cs.getColumnIndex("sender_nm")),
-                            cs.getString(cs.getColumnIndex("desired_date")),
-                            cs.getString(cs.getColumnIndex("req_qty")),
-                            cs.getString(cs.getColumnIndex("self_memo")),
-                            cs.getDouble(cs.getColumnIndex("lat")),
-                            cs.getDouble(cs.getColumnIndex("lng")),
-                            cs.getString(cs.getColumnIndex("stat")),
-                            cs.getString(cs.getColumnIndex("cust_no")),
-                            cs.getString(cs.getColumnIndex("partner_id")),
-                            cs.getString(cs.getColumnIndex("secure_delivery_yn")),
-                            cs.getString(cs.getColumnIndex("parcel_amount")),
-                            cs.getString(cs.getColumnIndex("currency"))
-                    );
-
-                    // NOTIFICATION.  19/10 - invoice 와 같은지 체크! 같으면 저장 x
-                    if (deliveryType.equals("P")) {
-                        if (cs.getString(cs.getColumnIndex("invoice_no")).equals(cs.getString(cs.getColumnIndex("partner_ref_no")))) {
-
-                            rowitem.setRef_pickup_no("");
-                        } else {
-
-                            Log.e("krm0219", "Ref. Pickup > " + cs.getString(cs.getColumnIndex("invoice_no")) + " / " + cs.getString(cs.getColumnIndex("partner_ref_no")));
-                            rowitem.setRef_pickup_no(cs.getString(cs.getColumnIndex("partner_ref_no")));
-                        }
-                    }
-
-
-                    if (deliveryType.equals("D")) {
-                        rowitem.setOrder_type_etc(cs.getString(cs.getColumnIndex("order_type_etc")));
-                    }
-
-                    if (routeType.equals("RPC")) {
-                        rowitem.setDesired_time(cs.getString(cs.getColumnIndex("desired_time")));
-                    }
-
-                    rowitem.setItems(childItems);
-
-                    // k. Outlet Delivery 경우 같은 지점은 하나만 나오도록 수정
-                    if (0 < rowItems.size()) {
-                        boolean isRegisteredRoute = false;
-
-                        for (int i = 0; i < rowItems.size(); i++) {
-                            if (deliveryType.equalsIgnoreCase("D")) {
-                                if (routeType.contains("7E") || routeType.contains("FL")) {
-                                    // ex. 7E 001 name1, 7E 002 name2  / ex. FL FLA10001 mrtA, FL FLS10001 mrtB
-
-                                    String[] routeSplit = routeType.split(" ");
-
-                                    if (1 < routeSplit.length) {
-
-                                        String routeNumber = routeSplit[0] + " " + routeSplit[1];
-                                        if (rowItems.get(i).getType().equals("D") && rowItems.get(i).getRoute().contains(routeNumber)) {
-                                            isRegisteredRoute = true;
-                                        }
-                                    }
-                                }
-                            }
-                        }
-                        if (!isRegisteredRoute) {
-
-                            rowItems.add(rowitem);
-                        }
-                    } else {
-
-                        rowItems.add(rowitem);
-                    }
-                } while (cs.moveToNext());
-            }
-
-
-            // k. Outlet 정보 추가
-            for (int i = 0; i < rowItems.size(); i++) {
-                if (rowItems.get(i).getType().equalsIgnoreCase("D")) {
-
-                    rowItems.get(i).setOutlet_company(rowItems.get(i).getRoute());
-                    if (rowItems.get(i).getRoute().contains("7E") || rowItems.get(i).getRoute().contains("FL")) {
-
-                        String[] routeSplit = rowItems.get(i).getRoute().split(" ");
-
-                        if (1 < routeSplit.length) {
-
-                            String routeNumber = routeSplit[0] + " " + routeSplit[1];
-                            Cursor cursor = dbHelper.get("SELECT count(*) FROM " + DatabaseHelper.DB_TABLE_INTEGRATION_LIST + " WHERE punchOut_stat = 'N' and chg_dt is null and type = 'D' and reg_id='" + opID + "' and route LIKE '%" + routeNumber + "%'");
-                            cursor.moveToFirst();
-                            int count = cursor.getInt(0);
-
-
-                            StringBuilder sb = new StringBuilder();
-
-                            for (int j = 2; j < routeSplit.length; j++) {
-
-                                sb.append(routeSplit[j]);
-                                sb.append(" ");
-                            }
-
-                            rowItems.get(i).setOutlet_company(routeSplit[0]);
-                            rowItems.get(i).setOutlet_store_code(routeSplit[1]);
-                            rowItems.get(i).setOutlet_store_name(sb.toString().trim());
-                            rowItems.get(i).setOutlet_qty(count);
-                        }
-                    }
-                } else {        // Pickup
-                    //   Log.i("krm0219", rowItems.get(i).getType() + " / " + rowItems.get(i).getRoute() + " / " + rowItems.get(i).getShipping());
-                    rowItems.get(i).setOutlet_company(rowItems.get(i).getRoute());
-                    if (rowItems.get(i).getRoute().contains("7E") || rowItems.get(i).getRoute().contains("FL")) {
-
-                        String[] routeSplit = rowItems.get(i).getRoute().split(" ");
-
-                        if (1 < routeSplit.length) {
-
-                            StringBuilder sb = new StringBuilder();
-
-                            for (int j = 2; j < routeSplit.length; j++) {
-
-                                sb.append(routeSplit[j]);
-                                sb.append(" ");
-                            }
-
-                            rowItems.get(i).setOutlet_company(routeSplit[0]);
-                            rowItems.get(i).setOutlet_store_code(routeSplit[1]);
-                            rowItems.get(i).setOutlet_store_name(sb.toString().trim());
-                        }
-                    }
-                }
-            }
+            rowItems = getSortList(selectedSort);
 
 
             adapter = new CustomExpandableAdapter(getActivity(), rowItems);
@@ -707,6 +721,10 @@ public class List_InProgressFragment extends Fragment implements OnQueryTextList
                     // Driver 현재 위치 기준 가까운 위치 순으로 정렬
                     getDriverGPSLocation();
                 } else {*/
+
+
+            //    Collections.sort(rowItems, new CompareZipcodeAsc());
+
 
             adapter.setSorting(rowItems);
             //    }
@@ -859,6 +877,188 @@ public class List_InProgressFragment extends Fragment implements OnQueryTextList
             Log.e("Exception", TAG + "  onQueryTextChange Exception : " + e.toString());
         }
         return false;
+    }
+
+
+    // NOTIFICATION.
+    private ArrayList<RowItem> getSortList(String orderby) {
+
+        ArrayList<RowItem> resultArrayList = new ArrayList<>();
+
+        Cursor cs = DatabaseHelper.getInstance().get("SELECT * FROM " + DatabaseHelper.DB_TABLE_INTEGRATION_LIST + " WHERE punchOut_stat = 'N' and chg_dt is null and reg_id='" + opID + "' order by " + orderby);
+        if (cs.moveToFirst()) {
+            do {
+
+                ArrayList<ChildItem> childItems = new ArrayList<>();
+                ChildItem child = new ChildItem();
+                child.setHp(cs.getString(cs.getColumnIndex("hp_no")));
+                child.setTel(cs.getString(cs.getColumnIndex("tel_no")));
+                child.setStat(cs.getString(cs.getColumnIndex("stat")));
+                child.setStatMsg(cs.getString(cs.getColumnIndex("driver_memo")));
+                child.setStatReason(cs.getString(cs.getColumnIndex("fail_reason")));
+                child.setSecretNoType(cs.getString(cs.getColumnIndex("secret_no_type")));
+                child.setSecretNo(cs.getString(cs.getColumnIndex("secret_no")));
+                childItems.add(child);
+
+                long delay = 0;
+                if (cs.getString(cs.getColumnIndex("delivery_dt")) != null && !cs.getString(cs.getColumnIndex("delivery_dt")).equals("")) {
+                    try {
+
+                        delay = diffOfDate(cs.getString(cs.getColumnIndex("delivery_dt")));
+                    } catch (Exception e) {
+
+                        Log.e("Exception", TAG + "  diffOfDate Exception : " + e.toString());
+                    }
+                }
+
+                // Route
+                String routeType = cs.getString(cs.getColumnIndex("route"));
+                //배송 타입
+                String deliveryType = cs.getString(cs.getColumnIndex("type"));
+                String rcv_name = "";
+                if (deliveryType.equals("D")) {
+                    rcv_name = cs.getString(cs.getColumnIndex("rcv_nm")); //구매자
+                } else if (deliveryType.equals("P")) {
+                    rcv_name = cs.getString(cs.getColumnIndex("req_nm")); //픽업 요청 셀러
+                }
+
+                RowItem rowitem = new RowItem(cs.getString(cs.getColumnIndex("contr_no")),
+                        "D+" + delay,
+                        cs.getString(cs.getColumnIndex("invoice_no")),
+                        rcv_name,
+                        "(" + cs.getString(cs.getColumnIndex("zip_code")) + ") "
+                                + cs.getString(cs.getColumnIndex("address")),
+                        cs.getString(cs.getColumnIndex("rcv_request")),
+                        deliveryType,
+                        routeType,
+                        cs.getString(cs.getColumnIndex("sender_nm")),
+                        cs.getString(cs.getColumnIndex("desired_date")),
+                        cs.getString(cs.getColumnIndex("req_qty")),
+                        cs.getString(cs.getColumnIndex("self_memo")),
+                        cs.getDouble(cs.getColumnIndex("lat")),
+                        cs.getDouble(cs.getColumnIndex("lng")),
+                        cs.getString(cs.getColumnIndex("stat")),
+                        cs.getString(cs.getColumnIndex("cust_no")),
+                        cs.getString(cs.getColumnIndex("partner_id")),
+                        cs.getString(cs.getColumnIndex("secure_delivery_yn")),
+                        cs.getString(cs.getColumnIndex("parcel_amount")),
+                        cs.getString(cs.getColumnIndex("currency"))
+                );
+                rowitem.setZip_code(cs.getString(cs.getColumnIndex("zip_code")));
+
+                // NOTIFICATION.  19/10 - invoice 와 같은지 체크! 같으면 저장 x
+                if (deliveryType.equals("P")) {
+                    if (cs.getString(cs.getColumnIndex("invoice_no")).equals(cs.getString(cs.getColumnIndex("partner_ref_no")))) {
+
+                        rowitem.setRef_pickup_no("");
+                    } else {
+
+                        Log.e("krm0219", "Ref. Pickup > " + cs.getString(cs.getColumnIndex("invoice_no")) + " / " + cs.getString(cs.getColumnIndex("partner_ref_no")));
+                        rowitem.setRef_pickup_no(cs.getString(cs.getColumnIndex("partner_ref_no")));
+                    }
+                }
+
+
+                if (deliveryType.equals("D")) {
+                    rowitem.setOrder_type_etc(cs.getString(cs.getColumnIndex("order_type_etc")));
+                }
+
+                if (routeType.equals("RPC")) {
+                    rowitem.setDesired_time(cs.getString(cs.getColumnIndex("desired_time")));
+                }
+
+                rowitem.setItems(childItems);
+
+                // k. Outlet Delivery 경우 같은 지점은 하나만 나오도록 수정
+                if (0 < resultArrayList.size()) {
+                    boolean isRegisteredRoute = false;
+
+                    for (int i = 0; i < resultArrayList.size(); i++) {
+                        if (deliveryType.equalsIgnoreCase("D")) {
+                            if (routeType.contains("7E") || routeType.contains("FL")) {
+                                // ex. 7E 001 name1, 7E 002 name2  / ex. FL FLA10001 mrtA, FL FLS10001 mrtB
+
+                                String[] routeSplit = routeType.split(" ");
+
+                                if (1 < routeSplit.length) {
+
+                                    String routeNumber = routeSplit[0] + " " + routeSplit[1];
+                                    if (resultArrayList.get(i).getType().equals("D") && resultArrayList.get(i).getRoute().contains(routeNumber)) {
+                                        isRegisteredRoute = true;
+                                    }
+                                }
+                            }
+                        }
+                    }
+                    if (!isRegisteredRoute) {
+
+                        resultArrayList.add(rowitem);
+                    }
+                } else {
+
+                    resultArrayList.add(rowitem);
+                }
+            } while (cs.moveToNext());
+        }
+
+
+        // k. Outlet 정보 추가
+        for (int i = 0; i < resultArrayList.size(); i++) {
+            if (resultArrayList.get(i).getType().equalsIgnoreCase("D")) {
+
+                resultArrayList.get(i).setOutlet_company(resultArrayList.get(i).getRoute());
+                if (resultArrayList.get(i).getRoute().contains("7E") || resultArrayList.get(i).getRoute().contains("FL")) {
+
+                    String[] routeSplit = resultArrayList.get(i).getRoute().split(" ");
+
+                    if (1 < routeSplit.length) {
+
+                        String routeNumber = routeSplit[0] + " " + routeSplit[1];
+                        Cursor cursor = dbHelper.get("SELECT count(*) FROM " + DatabaseHelper.DB_TABLE_INTEGRATION_LIST + " WHERE punchOut_stat = 'N' and chg_dt is null and type = 'D' and reg_id='" + opID + "' and route LIKE '%" + routeNumber + "%'");
+                        cursor.moveToFirst();
+                        int count = cursor.getInt(0);
+
+
+                        StringBuilder sb = new StringBuilder();
+
+                        for (int j = 2; j < routeSplit.length; j++) {
+
+                            sb.append(routeSplit[j]);
+                            sb.append(" ");
+                        }
+
+                        resultArrayList.get(i).setOutlet_company(routeSplit[0]);
+                        resultArrayList.get(i).setOutlet_store_code(routeSplit[1]);
+                        resultArrayList.get(i).setOutlet_store_name(sb.toString().trim());
+                        resultArrayList.get(i).setOutlet_qty(count);
+                    }
+                }
+            } else {        // Pickup
+                //   Log.i("krm0219", rowItems.get(i).getType() + " / " + rowItems.get(i).getRoute() + " / " + rowItems.get(i).getShipping());
+                resultArrayList.get(i).setOutlet_company(resultArrayList.get(i).getRoute());
+                if (resultArrayList.get(i).getRoute().contains("7E") || resultArrayList.get(i).getRoute().contains("FL")) {
+
+                    String[] routeSplit = resultArrayList.get(i).getRoute().split(" ");
+
+                    if (1 < routeSplit.length) {
+
+                        StringBuilder sb = new StringBuilder();
+
+                        for (int j = 2; j < routeSplit.length; j++) {
+
+                            sb.append(routeSplit[j]);
+                            sb.append(" ");
+                        }
+
+                        resultArrayList.get(i).setOutlet_company(routeSplit[0]);
+                        resultArrayList.get(i).setOutlet_store_code(routeSplit[1]);
+                        resultArrayList.get(i).setOutlet_store_name(sb.toString().trim());
+                    }
+                }
+            }
+        }
+
+        return resultArrayList;
     }
 
 
@@ -1146,4 +1346,26 @@ public class List_InProgressFragment extends Fragment implements OnQueryTextList
             return Float.compare(o1.getDistance(), o2.getDistance());
         }
     }*/
+
+    class TripMultiComp implements Comparator<RowItem> {
+
+        @Override
+        public int compare(RowItem o1, RowItem o2) {
+
+            // 우편번호 > 핸드폰번호 > 송장번호
+            if (o1.getZip_code().equals(o2.getZip_code())) {
+
+                if (o1.getItems().get(0).getHp().equals(o2.getItems().get(0).getHp())) {
+
+                    return o1.getShipping().compareTo(o2.getShipping());
+                } else {
+
+                    return o1.getItems().get(0).getHp().compareTo(o2.getItems().get(0).getHp());
+                }
+            } else {
+
+                return o1.getZip_code().compareTo(o2.getZip_code());
+            }
+        }
+    }
 }
