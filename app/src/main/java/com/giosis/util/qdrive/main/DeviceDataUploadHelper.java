@@ -280,9 +280,9 @@ public class DeviceDataUploadHelper extends ManualHelper {
                     if (uploadData.getStat().equals("D4")) {
 
                         String dirPath = Environment.getExternalStorageDirectory().toString() + "/Qdrive";
+
                         String filePath = dirPath + "/" + uploadData.getNoSongjang() + "_s.png";
                         File imgFile = new File(filePath);
-
                         if (imgFile.exists()) {
 
                             Bitmap myBitmap = BitmapFactory.decodeFile(imgFile.getAbsolutePath());
@@ -291,16 +291,14 @@ public class DeviceDataUploadHelper extends ManualHelper {
 
                         String filePath2 = dirPath + "/" + uploadData.getNoSongjang() + "_v.png";
                         File imgFile2 = new File(filePath2);
-
                         if (imgFile2.exists()) {
 
-                            Bitmap myBitmap = BitmapFactory.decodeFile(imgFile.getAbsolutePath());
+                            Bitmap myBitmap = BitmapFactory.decodeFile(imgFile2.getAbsolutePath());
                             bitmapString2 = DataUtil.bitmapToString(myBitmap);
                         }
 
-                        Log.e("krm0219", "DATA 1 : " + bitmapString1);
-                        Log.e("krm0219", "DATA 2 : " + bitmapString2);
-
+                        Log.e("krm0219", " RE-Upload DATA 1 : " + bitmapString1);
+                        Log.e("krm0219", " RE-Upload DATA 2 : " + bitmapString2);
 
                         // 사인, visit log 이미지가 다 없으면 업로드 불가능
                         if (bitmapString1.equals("") && bitmapString2.equals("")) {

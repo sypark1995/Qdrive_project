@@ -6,10 +6,12 @@ import android.app.ProgressDialog;
 import android.content.Context;
 import android.content.ContextWrapper;
 import android.content.DialogInterface;
+import android.os.Bundle;
 import android.util.Log;
 import android.util.TypedValue;
 
 import com.giosis.util.qdrive.singapore.R;
+import com.google.firebase.analytics.FirebaseAnalytics;
 
 public class DisplayUtil {
     static String TAG = "DisplayUtil";
@@ -95,5 +97,36 @@ public class DisplayUtil {
                 });
         alert_internet_status.show();
     }
+
+
+    public static void FirebaseButtonEvents(String activity, String method) {
+
+        try {
+
+            Bundle params = new Bundle();
+            params.putString("Activity", activity);
+            params.putString("method", method);
+            DataUtil.mFirebaseAnalytics.logEvent("button_click", params);
+        } catch (Exception e) {
+
+            Log.e("Firebase", "FirebaseButtonEvents error : " + e.toString());
+        }
+    }
+
+    public static void FirebaseSelectEvents(String type, String id) {
+
+        try {
+
+            Bundle params = new Bundle();
+            params.putString(FirebaseAnalytics.Param.CONTENT_TYPE, type);
+            params.putString(FirebaseAnalytics.Param.ITEM_ID, id);
+            DataUtil.mFirebaseAnalytics.logEvent(FirebaseAnalytics.Event.SELECT_CONTENT, params);
+        } catch (Exception e) {
+
+            Log.e("Firebase", "FirebaseSelectEvents error : " + e.toString());
+        }
+    }
+
+
 
 }

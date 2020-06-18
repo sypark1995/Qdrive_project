@@ -280,16 +280,29 @@ public class DeliveryDoneUploadHelper extends ManualHelper {
 
         private StdResult requestServerUpload(String assignNo) {
 
+            String signString = "";
+            String visitString = "";
+
             //  NOTIFICATION.
             if (hasSignImage) {
-
                 Log.e("krm0219", " save  sign");
                 DataUtil.captureSign("/Qdrive", assignNo + "_s", signingView);
-            } else if (hasVisitImage) {
 
+                signingView.buildDrawingCache();
+                Bitmap signBitmap = signingView.getDrawingCache();
+                signString = DataUtil.bitmapToString(signBitmap);
+            }
+
+            if (hasVisitImage) {
                 Log.e("krm0219", " save  visit log");
                 DataUtil.captureSign("/Qdrive", assignNo + "_v", imageView);
+
+                imageView.buildDrawingCache();
+                Bitmap visitBitmap = imageView.getDrawingCache();
+                visitString = DataUtil.bitmapToString(visitBitmap);
             }
+            Log.e("krm0219", " DONE DATA 1 : " + signString);
+            Log.e("krm0219", " DONE DATA 2 : " + visitString);
 
 
             SimpleDateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
@@ -318,29 +331,16 @@ public class DeliveryDoneUploadHelper extends ManualHelper {
             }
 
 
-			/*// TEST.  Upload Failed
-			if(true) {
+            // TEST.  Upload Failed
+            if (true) {
 
                 result.setResultCode(-15);
                 result.setResultMsg(context.getResources().getString(R.string.msg_time_out));
 
-				return result;
-			}*/
-
+                return result;
+            }
 
             try {
-
-                String bitmapString1;
-                String bitmapString2;
-
-                signingView.buildDrawingCache();
-                Bitmap captureView = signingView.getDrawingCache();
-                bitmapString1 = DataUtil.bitmapToString(captureView);
-                imageView.buildDrawingCache();
-                Bitmap captureView2 = imageView.getDrawingCache();
-                bitmapString2 = DataUtil.bitmapToString(captureView2);
-                Log.e("krm0219", " DATA 1 : " + bitmapString1 + " \n DATA 2 : " + bitmapString2);
-
 
                 JSONObject job = new JSONObject();
                 job.accumulate("rcv_type", receiveType);
@@ -352,8 +352,8 @@ public class DeliveryDoneUploadHelper extends ManualHelper {
                 job.accumulate("device_id", deviceID);
                 job.accumulate("network_type", networkType);
                 job.accumulate("no_songjang", assignNo);
-                job.accumulate("fileData", bitmapString1);
-                job.accumulate("fileData2", bitmapString2);
+                job.accumulate("fileData", signString);
+                job.accumulate("fileData2", visitString);
                 job.accumulate("remark", driverMemo);            // 드라이버 메세지 driver_memo	== remark
                 job.accumulate("disk_size", disk_size);
                 job.accumulate("lat", lat);
