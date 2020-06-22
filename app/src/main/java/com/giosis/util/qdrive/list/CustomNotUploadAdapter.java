@@ -104,14 +104,6 @@ public class CustomNotUploadAdapter extends BaseExpandableListAdapter {
             convertView = mInflater.inflate(R.layout.item_list_group, null);
         }
 
-        if (gpsEnable && gpsTrackerManager != null) {
-
-            double latitude = gpsTrackerManager.getLatitude();
-            double longitude = gpsTrackerManager.getLongitude();
-
-            Log.e("Location", TAG + " getGroupView  GPSTrackerManager : " + latitude + "  " + longitude + "  ");
-        }
-
         LinearLayout layout_list_item_card_view = convertView.findViewById(R.id.layout_list_item_card_view);            // background change
 
         TextView text_list_item_d_day = convertView.findViewById(R.id.text_list_item_d_day);

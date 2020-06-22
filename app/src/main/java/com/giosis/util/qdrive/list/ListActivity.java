@@ -46,6 +46,7 @@ public class ListActivity extends FragmentActivity implements OnClickListener, L
     TextView text_top_title;
     FrameLayout layout_top_smart_route;
 
+    LinearLayout layout_list_pickup_sort_condition;
     LinearLayout layout_list_in_progress;
     TextView text_list_in_progress_count;
 
@@ -115,6 +116,7 @@ public class ListActivity extends FragmentActivity implements OnClickListener, L
         text_top_title.setText(context.getResources().getString(R.string.navi_list));
         layout_top_smart_route.setOnClickListener(this);
 
+        layout_list_pickup_sort_condition = findViewById(R.id.layout_list_pickup_sort_condition);
         layout_list_in_progress = findViewById(R.id.layout_list_in_progress);
         text_list_in_progress_count = findViewById(R.id.text_list_in_progress_count);
         layout_list_in_progress.setOnClickListener(this);
@@ -148,16 +150,19 @@ public class ListActivity extends FragmentActivity implements OnClickListener, L
                     case 0: {
                         layout_list_in_progress.setSelected(true);
                         layout_top_smart_route.setVisibility(View.VISIBLE);
+                        layout_list_pickup_sort_condition.setVisibility(View.VISIBLE);
                     }
                     break;
                     case 1: {
                         layout_list_upload_failed.setSelected(true);
                         layout_top_smart_route.setVisibility(View.GONE);
+                        layout_list_pickup_sort_condition.setVisibility(View.GONE);
                     }
                     break;
                     case 2: {
                         layout_list_today_done.setSelected(true);
                         layout_top_smart_route.setVisibility(View.GONE);
+                        layout_list_pickup_sort_condition.setVisibility(View.GONE);
                     }
                     break;
                     default:
@@ -177,12 +182,15 @@ public class ListActivity extends FragmentActivity implements OnClickListener, L
         if (position == 1) {
             layout_list_upload_failed.setSelected(true);
             layout_top_smart_route.setVisibility(View.GONE);
+            layout_list_pickup_sort_condition.setVisibility(View.GONE);
         } else if (position == 2) {
             layout_list_today_done.setSelected(true);
             layout_top_smart_route.setVisibility(View.GONE);
+            layout_list_pickup_sort_condition.setVisibility(View.GONE);
         } else {
             layout_list_in_progress.setSelected(true);
             layout_top_smart_route.setVisibility(View.VISIBLE);
+            layout_list_pickup_sort_condition.setVisibility(View.VISIBLE);
         }
 
 

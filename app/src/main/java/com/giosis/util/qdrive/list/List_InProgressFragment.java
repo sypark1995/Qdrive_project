@@ -584,7 +584,7 @@ public class List_InProgressFragment extends Fragment implements OnQueryTextList
         // NOTIFICATION.  2020-06
         // Pickup Driver && By Trip 상태일 때만 'Nearer' 정렬 추가
         if (pickupDriverYn.equals("Y"))
-            layout_list_pickup_sort_condition.setVisibility(View.VISIBLE);
+         //   layout_list_pickup_sort_condition.setVisibility(View.VISIBLE);
 
         if (pickupDriverYn.equals("Y") && pickupSortCondition.equals("T")) {
 
@@ -606,7 +606,7 @@ public class List_InProgressFragment extends Fragment implements OnQueryTextList
 
         sortArrayAdapter.notifyDataSetChanged();
 
-        // Location
+       // Location
        /* if (isPermissionTrue) {
 
             gpsTrackerManager = new GPSTrackerManager(context);
