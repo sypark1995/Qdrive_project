@@ -1,6 +1,7 @@
 package com.giosis.util.qdrive.list;
 
 
+import android.annotation.SuppressLint;
 import android.app.Activity;
 import android.app.ProgressDialog;
 import android.app.SearchManager;
@@ -228,14 +229,17 @@ public class List_InProgressFragment extends Fragment implements OnQueryTextList
         pickupDriverYn = SharedPreferencesHelper.getSigninPickupDriverYN(getActivity());
 
         btn_list_pickup_sort_request.setOnClickListener(new OnClickListener() {
+            @SuppressLint("ResourceAsColor")
             @Override
             public void onClick(View v) {
 
                 if (!pickupSortCondition.equals("R")) {
 
                     pickupSortCondition = "R";
-                    btn_list_pickup_sort_request.setBackgroundResource(R.drawable.back_round_30_4fb648);
-                    btn_list_pickup_sort_trip.setBackgroundResource(R.drawable.custom_button_selector);
+                    btn_list_pickup_sort_request.setBackgroundResource(R.drawable.back_round_4_ffffff);
+                    btn_list_pickup_sort_request.setTextColor(getResources().getColor(R.color.color_4e4e4e));
+                    btn_list_pickup_sort_trip.setBackgroundResource(R.color.transparent);
+                    btn_list_pickup_sort_trip.setTextColor(getResources().getColor(R.color.color_8f8f8f));
                     onResume();
                 }
             }
@@ -248,8 +252,10 @@ public class List_InProgressFragment extends Fragment implements OnQueryTextList
                 if (!pickupSortCondition.equals("T")) {
 
                     pickupSortCondition = "T";
-                    btn_list_pickup_sort_request.setBackgroundResource(R.drawable.custom_button_selector);
-                    btn_list_pickup_sort_trip.setBackgroundResource(R.drawable.back_round_30_4fb648);
+                    btn_list_pickup_sort_request.setBackgroundResource(R.color.transparent);
+                    btn_list_pickup_sort_request.setTextColor(getResources().getColor(R.color.color_8f8f8f));
+                    btn_list_pickup_sort_trip.setBackgroundResource(R.drawable.back_round_4_ffffff);
+                    btn_list_pickup_sort_trip.setTextColor(getResources().getColor(R.color.color_4e4e4e));
 
                     // TODO. Trip 단위 선 정렬 후, onResume() 정렬 필요
                     sortByTrip();

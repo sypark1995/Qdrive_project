@@ -1,5 +1,5 @@
 <component name="libraryTable">
-  <library name="Gradle: __local_aars__:F.\Android project\git_Qdrive_SG\app\libs\guice-2.0-no_aop.jar:unspecified@jar">
+  <library name="Gradle: ./app/libs/guice-2.0-no_aop.jar">
     <CLASSES>
       <root url="jar://$PROJECT_DIR$/app/libs/guice-2.0-no_aop.jar!/" />
     </CLASSES>
