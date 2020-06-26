@@ -280,30 +280,23 @@ public class DeliveryDoneUploadHelper extends ManualHelper {
 
         private StdResult requestServerUpload(String assignNo) {
 
-            String signString = "";
-            String visitString = "";
+            String bitmapString = "";
 
-            //  NOTIFICATION.
             if (hasSignImage) {
                 Log.e("krm0219", " save  sign");
-                DataUtil.captureSign("/Qdrive", assignNo + "_s", signingView);
+                DataUtil.captureSign("/Qdrive", assignNo, signingView);
 
                 signingView.buildDrawingCache();
                 Bitmap signBitmap = signingView.getDrawingCache();
-                signString = DataUtil.bitmapToString(signBitmap);
-            }
-
-            if (hasVisitImage) {
+                bitmapString = DataUtil.bitmapToString(signBitmap);
+            } else if (hasVisitImage) {
                 Log.e("krm0219", " save  visit log");
-                DataUtil.captureSign("/Qdrive", assignNo + "_v", imageView);
+                DataUtil.captureSign("/Qdrive", assignNo, imageView);
 
                 imageView.buildDrawingCache();
                 Bitmap visitBitmap = imageView.getDrawingCache();
-                visitString = DataUtil.bitmapToString(visitBitmap);
+                bitmapString = DataUtil.bitmapToString(visitBitmap);
             }
-            Log.e("krm0219", " DONE DATA 1 : " + signString);
-            Log.e("krm0219", " DONE DATA 2 : " + visitString);
-
 
             SimpleDateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
             Date date = new Date();
@@ -331,14 +324,14 @@ public class DeliveryDoneUploadHelper extends ManualHelper {
             }
 
 
-            // TEST.  Upload Failed
+          /*  // TEST.  Upload Failed
             if (true) {
 
                 result.setResultCode(-15);
                 result.setResultMsg(context.getResources().getString(R.string.msg_time_out));
 
                 return result;
-            }
+            }*/
 
             try {
 
@@ -352,8 +345,7 @@ public class DeliveryDoneUploadHelper extends ManualHelper {
                 job.accumulate("device_id", deviceID);
                 job.accumulate("network_type", networkType);
                 job.accumulate("no_songjang", assignNo);
-                job.accumulate("fileData", signString);
-                job.accumulate("fileData2", visitString);
+                job.accumulate("fileData", bitmapString);
                 job.accumulate("remark", driverMemo);            // 드라이버 메세지 driver_memo	== remark
                 job.accumulate("disk_size", disk_size);
                 job.accumulate("lat", lat);
@@ -362,7 +354,6 @@ public class DeliveryDoneUploadHelper extends ManualHelper {
                 job.accumulate("del_channel", "QR");        // 업로드 채널: Qsign Realtime
                 job.accumulate("app_id", DataUtil.appID);
                 job.accumulate("nation_cd", DataUtil.nationCode);
-
 
                 String methodName = "SetDeliveryUploadData";
                 String jsonString = Custom_JsonParser.requestServerDataReturnJSON(MOBILE_SERVER_URL, methodName, job);

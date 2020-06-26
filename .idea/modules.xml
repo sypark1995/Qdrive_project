@@ -2,8 +2,8 @@
 <project version="4">
   <component name="ProjectModuleManager">
     <modules>
-      <module fileurl="file://$PROJECT_DIR$/.idea/modules/Qdrive.iml" filepath="$PROJECT_DIR$/.idea/modules/Qdrive.iml" group="Qdrive" />
-      <module fileurl="file://$PROJECT_DIR$/app/app.iml" filepath="$PROJECT_DIR$/app/app.iml" group="Qdrive/app" />
+      <module fileurl="file://$PROJECT_DIR$/app/app.iml" filepath="$PROJECT_DIR$/app/app.iml" />
+      <module fileurl="file://$PROJECT_DIR$/git_Qdrive_SG.iml" filepath="$PROJECT_DIR$/git_Qdrive_SG.iml" />
     </modules>
   </component>
 </project>

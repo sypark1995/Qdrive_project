@@ -268,7 +268,6 @@ public class DeliveryFailedUploadHelper extends ManualHelper {
                 job.accumulate("device_id", deviceID);
                 job.accumulate("network_type", networkType);
                 job.accumulate("fileData", bitmapString);
-                job.accumulate("fileData2", "");
                 job.accumulate("no_songjang", assignNo);
                 job.accumulate("remark", driverMemo);               // 드라이버 메세지 driver_memo	== remark
                 job.accumulate("disk_size", disk_size);

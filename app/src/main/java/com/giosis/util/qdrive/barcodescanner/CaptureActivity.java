@@ -514,7 +514,7 @@ public final class CaptureActivity extends AppCompatActivity implements SurfaceH
     public void onStart() {
         super.onStart();
 
-        if (mBluetoothAdapter.isEnabled()) {
+        if (mBluetoothAdapter != null && mBluetoothAdapter.isEnabled()) {
             if (KTSyncData.mChatService == null)
                 setupChat();
         }

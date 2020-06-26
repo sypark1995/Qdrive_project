@@ -212,51 +212,6 @@ function setRestDays() {
 
     console.log("★★★★★★★ ::  setRestDays  ");
 
-/*
-    var methodName = "GetRestDays";
-    var params;
-    var rest_result;
-    var dt = new Date();
-
-    params = new RMSParam();
-    params.add("svc_nation_cd", "SG");
-    params.add("year", dt.getFullYear());
-    params.add("app_id", "QDRIVE");
-    params.add("nation_cd", "SG");
-
-    var MOBILE_SERVER_URL = "https://qxapi.qxpress.asia/GMKT.INC.GLPS.MobileApiService/GlobalMobileService.qapi";
-    rest_result = RMSHelper.callWebMethod(MOBILE_SERVER_URL, methodName, params.toJson());
-
-    for (var i = 0; i < rest_result.ResultObject.length; i++) {
-        var rest_dt = rest_result.ResultObject[i].rest_dt;
-        var title = rest_result.ResultObject[i].title;
-
-        var rest_columns = 'rest_dt, title';
-        var rest_data = '"' + rest_dt + '","' + title + '"';
-
-        insertTableData(db, "REST_DAYS", rest_columns, rest_data, null, failCB_Common);
-    }
-
-    // 차년도 휴무일
-    params.add("svc_nation_cd", "SG");
-    params.add("year", dt.getFullYear() + 1);
-    params.add("app_id", "QDRIVE");
-    params.add("nation_cd", "SG");
-
-    rest_result = RMSHelper.callWebMethod(MOBILE_SERVER_URL, methodName, params.toJson());
-
-    for (var i = 0; i < rest_result.ResultObject.length; i++) {
-        var rest_dt = rest_result.ResultObject[i].rest_dt;
-        var title = rest_result.ResultObject[i].title;
-
-        var rest_columns = 'rest_dt, title';
-        var rest_data = '"' + rest_dt + '","' + title + '"';
-
-        insertTableData(db, "REST_DAYS", rest_columns, rest_data, null, failCB_Common);
-    }
-*/
-
-
     cordova.require("com.giosis.util.qdrive.util.SharedPreferencesHelper").setSigninState({
             signInState: true,
             opId: localStorage.getItem('opId'),

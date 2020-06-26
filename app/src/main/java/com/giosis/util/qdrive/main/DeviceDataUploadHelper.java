@@ -274,34 +274,23 @@ public class DeviceDataUploadHelper extends ManualHelper {
 
                 if (uploadData.getType().equals("D")) {
 
-                    String bitmapString1 = "";
-                    String bitmapString2 = "";
+                    String bitmapString = "";
 
                     if (uploadData.getStat().equals("D4")) {
 
                         String dirPath = Environment.getExternalStorageDirectory().toString() + "/Qdrive";
-
-                        String filePath = dirPath + "/" + uploadData.getNoSongjang() + "_s.png";
+                        String filePath = dirPath + "/" + uploadData.getNoSongjang() + ".png";
                         File imgFile = new File(filePath);
                         if (imgFile.exists()) {
 
                             Bitmap myBitmap = BitmapFactory.decodeFile(imgFile.getAbsolutePath());
-                            bitmapString1 = DataUtil.bitmapToString(myBitmap);
+                            bitmapString = DataUtil.bitmapToString(myBitmap);
                         }
 
-                        String filePath2 = dirPath + "/" + uploadData.getNoSongjang() + "_v.png";
-                        File imgFile2 = new File(filePath2);
-                        if (imgFile2.exists()) {
-
-                            Bitmap myBitmap = BitmapFactory.decodeFile(imgFile2.getAbsolutePath());
-                            bitmapString2 = DataUtil.bitmapToString(myBitmap);
-                        }
-
-                        Log.e("krm0219", " RE-Upload DATA 1 : " + bitmapString1);
-                        Log.e("krm0219", " RE-Upload DATA 2 : " + bitmapString2);
+                        Log.e("krm0219", " RE-Upload DATA 1 : " + bitmapString);
 
                         // 사인, visit log 이미지가 다 없으면 업로드 불가능
-                        if (bitmapString1.equals("") && bitmapString2.equals("")) {
+                        if (bitmapString.equals("")) {
                             result.setResultCode(-14);
                             result.setResultMsg("");
                             return result;
@@ -314,7 +303,7 @@ public class DeviceDataUploadHelper extends ManualHelper {
 
                         if (imgFile.exists()) {
                             Bitmap myBitmap = BitmapFactory.decodeFile(imgFile.getAbsolutePath());
-                            bitmapString1 = DataUtil.bitmapToString(myBitmap);
+                            bitmapString = DataUtil.bitmapToString(myBitmap);
                         }
                     }
 
@@ -328,8 +317,7 @@ public class DeviceDataUploadHelper extends ManualHelper {
                     job.accumulate("device_id", deviceID);
                     job.accumulate("network_type", networkType);
                     job.accumulate("no_songjang", uploadData.getNoSongjang());
-                    job.accumulate("fileData", bitmapString1);
-                    job.accumulate("fileData2", bitmapString2);
+                    job.accumulate("fileData", bitmapString);
                     job.accumulate("remark", uploadData.getDriverMemo());  // 드라이버 메세지 driver_memo	== remark
                     job.accumulate("disk_size", "999999");  // 남은디스크용량(임의의 숫자) - 실시간 업로드 시에만 체크	해서 넘어옴
                     job.accumulate("lat", latitude);  // 위도
@@ -385,6 +373,7 @@ public class DeviceDataUploadHelper extends ManualHelper {
                         }
                     }
 
+                    Log.e("SERVER", "  DATA > " + uploadData.getReceiveType() + " / " + uploadData.getStat());
                     job.accumulate("rcv_type", uploadData.getReceiveType());
                     job.accumulate("stat", uploadData.getStat());       // P3:Pickup Done,  PF : Pickup Failed
                     job.accumulate("chg_id", opID);
