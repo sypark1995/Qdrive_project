@@ -176,6 +176,7 @@ public class MainActivity extends AppBaseActivity {
         setTopTitle(mContext.getResources().getString(R.string.navi_home));
 
 
+        // TEST.
         String imgDirName = "/QdrivePickup";
         String signName = "123";
 
@@ -185,11 +186,11 @@ public class MainActivity extends AppBaseActivity {
                 imgDirName + "/" + signName + ".png";
         Log.e("krm0219", "PATH 1 : " + dirPath + " / " + filePath + " / " + saveAbsolutePath);
 
-
         // FIXME.  API 29  deprecated
         String path = Environment.getExternalStorageDirectory().getAbsolutePath();
         String path1 = getApplication().getExternalFilesDir(Environment.DIRECTORY_PICTURES).toString();
         Log.e("krm0219", "PATH 2 : " + path + " / " + path1);
+        // ---
 
 
         dbHelper = DatabaseHelper.getInstance();
@@ -204,7 +205,7 @@ public class MainActivity extends AppBaseActivity {
         pickup_driver_yn = SharedPreferencesHelper.getSigninPickupDriverYN(getApplicationContext());
         setNaviHeader(opName, officeName);
 
-        // krm0219 Outlet
+        // Outlet
         String outletDriverYN;
         try {
 
@@ -242,7 +243,7 @@ public class MainActivity extends AppBaseActivity {
 
 
         getLocalCount();
-        if (DownloadChk()) {
+        if (DownloadCheck()) {
 
             Download();
         } else if (outletPush.equals("Y")) {
@@ -280,22 +281,18 @@ public class MainActivity extends AppBaseActivity {
             btn_home_change_delivery_driver.setLayoutParams(lp);
         }
 
-        // NOTIFICATION.
-        // 2020.06  POD Scan 제거
+        // NOTIFICATION. 2020.06  POD Scan 제거
        /* //POD Scan 권한 : 파트너 사장 또는 Auth:91
         if (opDefault.equals("Y") || authNo.contains("91") || opID.equals("karam.kim")) {
             btn_home_scan_delivery_sheet.setVisibility(View.VISIBLE);
             btn_home_scan_delivery_sheet.setOnClickListener(clickListener);
         }*/
-
-
         btn_home_confirm_my_delivery_order.setOnClickListener(clickListener);
         btn_home_change_delivery_driver.setOnClickListener(clickListener);
         btn_home_outlet_order_status.setOnClickListener(clickListener);
         btn_home_assign_pickup_driver.setOnClickListener(clickListener);
 
 
-        //
         //
         PermissionChecker checker = new PermissionChecker(this);
 
@@ -383,7 +380,6 @@ public class MainActivity extends AppBaseActivity {
                     }).build().execute();
         }
 
-
         getLocalCount();
     }
 
@@ -444,7 +440,6 @@ public class MainActivity extends AppBaseActivity {
 
 
     public void getLocalCount() {
-
         try {
 
             String selectQuery = " select   ifnull(sum(case when chg_dt is null then 1 else 0 end), 0) as InprogressCnt " //In-Progress
@@ -486,10 +481,9 @@ public class MainActivity extends AppBaseActivity {
             }
         } catch (Exception e) {
 
-            Log.e("Error", "Local Count Exception : " + e.toString());
+            Log.e("Exception", TAG + " - getLocalCount() Exception : " + e.toString());
         }
     }
-
 
     private void Upload() {
 
@@ -498,7 +492,6 @@ public class MainActivity extends AppBaseActivity {
             Toast.makeText(MainActivity.this, getString(R.string.wifi_connect_failed), Toast.LENGTH_SHORT).show();
             return;
         }
-
 
         ArrayList<UploadData> songjanglist = new ArrayList<>();
         // 업로드 대상건 로컬 DB 조회
@@ -531,46 +524,35 @@ public class MainActivity extends AppBaseActivity {
             } while (cs.moveToNext());
         }
 
-
         if (gpsOnceEnable && gpsTrackerManager != null) {
 
             latitude = gpsTrackerManager.getLatitude();
             longitude = gpsTrackerManager.getLongitude();
-
-            Log.e("Location", TAG + " Upload()  GPSTrackerManager : " + latitude + "  " + longitude + "  ");
+            Log.e("Location", TAG + " - Upload() > " + latitude + ", " + longitude);
         }
 
         if (songjanglist.size() > 0) {
 
-            try {
-                Bundle params = new Bundle();
-                params.putString("Activity", TAG);
-                params.putString("method", "SetDeliveryUploadData/SetPickupUploadData");
-                DataUtil.mFirebaseAnalytics.logEvent("button_click", params);
-            } catch (Exception ignored) {
+            DataUtil.logEvent("button_click", TAG, "SetDeliveryUploadData/SetPickupUploadData");
 
-            }
-
-            new DeviceDataUploadHelper.Builder(this, opID, officeCode, deviceID, songjanglist, "QH", latitude, longitude).
+            new DeviceDataUploadHelper.Builder(this, opID, officeCode, deviceID,
+                    songjanglist, "QH", latitude, longitude).
                     setOnServerEventListener(new OnServerEventListener() {
 
                         @Override
                         public void onPostResult() {
-
                             getLocalCount();
                         }
 
                         @Override
                         public void onPostFailList() {
-
                             getLocalCount();
                         }
                     }).build().execute();
         } else {
 
-            String msg = mContext.getResources().getString(R.string.msg_no_data_to_upload);
             new AlertDialog.Builder(this)
-                    .setMessage(msg)
+                    .setMessage(mContext.getResources().getString(R.string.msg_no_data_to_upload))
                     .setTitle(mContext.getResources().getString(R.string.button_upload))
                     .setCancelable(false).setPositiveButton(mContext.getResources().getString(R.string.button_ok),
                     new DialogInterface.OnClickListener() {
@@ -582,7 +564,8 @@ public class MainActivity extends AppBaseActivity {
     }
 
     @SuppressLint("SimpleDateFormat")
-    private Boolean DownloadChk() {
+    private Boolean DownloadCheck() {
+
         SimpleDateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd");
         dateFormat.setTimeZone(TimeZone.getTimeZone("GMT"));
         String today = dateFormat.format(new Date());
@@ -595,10 +578,11 @@ public class MainActivity extends AppBaseActivity {
                 + " and strftime('%Y-%m-%d', reg_dt) = date('now')";
 
         try {
+
             Cursor cs = dbHelper.get(selectQuery);
             if (cs.moveToFirst()) {
-                String PunchInDate = cs.getString(cs.getColumnIndex("PI_Date"));
 
+                String PunchInDate = cs.getString(cs.getColumnIndex("PI_Date"));
                 if (PunchInDate != null && !PunchInDate.equals("")) {
                     //오늘 날짜가 있으면 다운로드 하지 않음
                     if (today.equals(PunchInDate)) {
@@ -608,7 +592,7 @@ public class MainActivity extends AppBaseActivity {
             }
         } catch (Exception e) {
 
-            Log.e("Error", "Download Check Exception : " + e.toString());
+            Log.e("Exception", TAG + " - DownloadCheck Exception : " + e.toString());
         }
 
         return true;
@@ -617,9 +601,9 @@ public class MainActivity extends AppBaseActivity {
     private void Download() {
 
         // TEST.  많은 데이터필요 / 하루에 한번만 데이터받고 테스트하기 !
-        int a = 1;
+       /* int a = 1;
         if (a == 1)
-            return;
+            return;*/
 
         //
         if (!NetworkUtil.isNetworkAvailable(MainActivity.this)) {
@@ -628,8 +612,7 @@ public class MainActivity extends AppBaseActivity {
             return;
         }
 
-
-        // 2020.02 NOTIFICATION.  login.js 삭제 - 휴무일 가져오기
+        //  NOTIFICATION. 2020.02 login.js 삭제대비 - 휴무일 가져오기
         int delete = DatabaseHelper.getInstance().delete(DatabaseHelper.DB_TABLE_REST_DAYS, "");
         Log.e("krm0219", "DELETE  DB_TABLE_REST_DAYS  Count : " + delete);
         new GetRestDaysAsyncTask("SG", Calendar.getInstance().get(Calendar.YEAR)).execute();
@@ -641,13 +624,13 @@ public class MainActivity extends AppBaseActivity {
             latitude = gpsTrackerManager.getLatitude();
             longitude = gpsTrackerManager.getLongitude();
         }
-        Log.e("Location", "Download()  Location : " + latitude + "  " + longitude);
+        Log.e("Location", TAG + " - Download() > " + latitude + ", " + longitude);
 
         //
         if (0 < Integer.parseInt(uploadFailedCount)) {
-            String msg = mContext.getResources().getString(R.string.msg_download_not_supported);
+
             new AlertDialog.Builder(this)
-                    .setMessage(msg)
+                    .setMessage(mContext.getResources().getString(R.string.msg_download_not_supported))
                     .setTitle(mContext.getResources().getString(R.string.text_alert))
                     .setCancelable(false).setPositiveButton(mContext.getResources().getString(R.string.button_ok),
                     new DialogInterface.OnClickListener() {
@@ -655,6 +638,7 @@ public class MainActivity extends AppBaseActivity {
                         public void onClick(DialogInterface dialog, int which) {
                         }
                     }).show();
+
 
             return;
         }
@@ -666,13 +650,14 @@ public class MainActivity extends AppBaseActivity {
 
             dbHelper = DatabaseHelper.getInstance();
             dbHelper.delete(DatabaseHelper.DB_TABLE_INTEGRATION_LIST, "");
+            Log.e("Exception", TAG + "  DB Delete Exception : " + e.toString());
 
             try {
+
                 Bundle params = new Bundle();
                 params.putString("Activity", TAG);
                 params.putString("message", "" + " DB.delete > " + e.toString());
                 DataUtil.mFirebaseAnalytics.logEvent("error_exception", params);
-                Log.e("krm0219", "dbHelper.delete Exception : " + e.toString());
             } catch (Exception ignored) {
 
             }
@@ -683,7 +668,7 @@ public class MainActivity extends AppBaseActivity {
 
                     @Override
                     public void onDownloadResult() {
-                        // 다운로드 완료 후 카운트 갱신
+
                         getLocalCount();
                     }
                 }).build().execute();
@@ -754,22 +739,11 @@ public class MainActivity extends AppBaseActivity {
         DataUtil.stopGPSManager(gpsTrackerManager);
     }
 
-    @Override
-    protected void onStop() {
-        super.onStop();
-        String api_level = Integer.toString(Build.VERSION.SDK_INT);     // API Level
-        String device_info = android.os.Build.DEVICE;                   // Device
-        String device_model = android.os.Build.MODEL;                   // Model
-        String device_product = android.os.Build.PRODUCT;               // Product
-        String device_os_version = System.getProperty("os.version");    // OS version
-
-        Log.e("krm0219", TAG + "  DATA " + api_level + " / " + device_info + " / " + device_model + " / " + device_product + " / " + device_os_version);
-    }
 
     @Override
     protected void onDestroy() {
-        Log.e("krm0219", TAG + "  onDestroy");
         super.onDestroy();
+        Log.e(TAG, " ** onDestroy()");
 
         if (!isHomeBtnClick) {  // home btn 누른게 아닐 때 작동해야 할 destroy method
             isHomeBtnClick = false;
@@ -812,8 +786,7 @@ public class MainActivity extends AppBaseActivity {
         String device_model = android.os.Build.MODEL;                   // Model
         String device_product = android.os.Build.PRODUCT;               // Product
         String device_os_version = System.getProperty("os.version");    // OS version
-
-        Log.e("krm0219", "DATA " + api_level + " / " + device_info + " / " + device_model + " / " + device_product + " / " + device_os_version);
+        Log.e(TAG, " DATA " + api_level + " / " + device_info + " / " + device_model + " / " + device_product + " / " + device_os_version);
 
         new QuickAppUserInfoUploadHelper.Builder(mContext, opID, "", api_level, device_info,
                 device_model, device_product, device_os_version, "killapp")
@@ -834,7 +807,7 @@ public class MainActivity extends AppBaseActivity {
                 longitude = gpsTrackerManager.getLongitude();
                 accuracy = gpsTrackerManager.getAccuracy();
 
-                Log.e("krm0219", TAG + " setDestroyUserInfo  GPSTrackerManager : " + latitude + "  " + longitude + "  ");
+                Log.e("Location", TAG + " - setDestroyUserInfo() > " + latitude + ", " + longitude);
             }
         } catch (Exception e) {
 
@@ -947,7 +920,7 @@ public class MainActivity extends AppBaseActivity {
         String device_id = SharedPreferencesHelper.getSigninDeviceID(getApplicationContext());
         Log.i("FCM", TAG + "  Device ID : " + device_id + "  Device Token : " + fcmToken);
 
-        // TEST   -  Galaxy Note5
+        // TEST
         if (device_id.equals("890525e99f30801a") || device_id.equals("acd248681b26f53f") || device_id.equals("b843772197349df9")) {
 
             Log.i("FCM", "REAL TEST~~~~~");
@@ -979,7 +952,7 @@ public class MainActivity extends AppBaseActivity {
 
             URL url = new URL(MOBILE_SERVER_URL + "/SetGCMUserKeyRegister");
 
-            HttpURLConnection http = (HttpURLConnection) url.openConnection(); // 접속
+            HttpURLConnection http = (HttpURLConnection) url.openConnection();
             http.setDefaultUseCaches(false);
             http.setDoInput(true);
             http.setDoOutput(true);

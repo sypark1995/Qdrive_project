@@ -323,7 +323,6 @@ public class DeliveryDoneUploadHelper extends ManualHelper {
                 return result;
             }
 
-
           /*  // TEST.  Upload Failed
             if (true) {
 

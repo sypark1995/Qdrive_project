@@ -8,6 +8,7 @@ import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.graphics.Bitmap;
+import android.os.Bundle;
 import android.os.Environment;
 import android.provider.Settings;
 import android.util.Log;
@@ -15,6 +16,7 @@ import android.view.View;
 
 import com.gc.android.market.api.Base64;
 import com.giosis.util.qdrive.gps.GPSTrackerManager;
+import com.giosis.util.qdrive.list.RowItem;
 import com.giosis.util.qdrive.message.AdminMessageListDetailActivity;
 import com.giosis.util.qdrive.message.CustomerMessageListDetailActivity;
 import com.giosis.util.qdrive.message.MessageListActivity;
@@ -24,6 +26,7 @@ import com.google.firebase.analytics.FirebaseAnalytics;
 import java.io.ByteArrayOutputStream;
 import java.io.File;
 import java.io.FileOutputStream;
+import java.util.Comparator;
 
 public class DataUtil {
 
@@ -52,6 +55,19 @@ public class DataUtil {
 
     // 2019.04 FA(Firebase Analytics)
     public static FirebaseAnalytics mFirebaseAnalytics;
+
+    public static void logEvent(String event, String activity, String method) {
+
+        try {
+
+            Bundle params = new Bundle();
+            params.putString("Activity", activity);
+            params.putString("method", "SetDeliveryUploadData/SetPickupUploadData");
+            mFirebaseAnalytics.logEvent("button_click", params);
+        } catch (Exception ignored) {
+        }
+    }
+
 
     // 2019.07  -  Smart Route
     public static String SHARED_PREFERENCE_FILE = "com.giosis.qdrive.sharedpreferences";
@@ -130,7 +146,7 @@ public class DataUtil {
 
         if (gpsTrackerManager != null) {
 
-            Log.e("DataUtil", "Stop GPS");
+            Log.e("Location", "Stop GPS");
             gpsTrackerManager.stopFusedProviderService();
         }
     }
@@ -180,5 +196,66 @@ public class DataUtil {
         }
 
         return pngImage;
+    }
+
+
+    // Sort
+    class CompareZipCodeAsc implements Comparator<RowItem> {
+
+        @Override
+        public int compare(RowItem o1, RowItem o2) {
+
+            return o1.getZip_code().compareTo(o2.getZip_code());
+        }
+    }
+
+    class CompareZipCodeDesc implements Comparator<RowItem> {
+
+        @Override
+        public int compare(RowItem o1, RowItem o2) {
+
+            return o2.getZip_code().compareTo(o1.getZip_code());
+        }
+    }
+
+    private String[] orderbyQuery = {
+            "zip_code asc",
+            "zip_code desc",
+            "invoice_no asc",
+            "invoice_no desc",
+            "rcv_nm asc",
+            "rcv_nm desc"
+            , "Smart Route"
+            //      , "Nearer"
+    };
+
+    class CompareRowItem implements Comparator<RowItem> {
+
+        String orderBy;
+
+        public CompareRowItem(String orderBy) {
+
+            this.orderBy = orderBy;
+        }
+
+        @Override
+        public int compare(RowItem o1, RowItem o2) {
+
+            if (orderBy.equals(orderbyQuery[0])) {
+                return o1.getZip_code().compareTo(o2.getZip_code());
+            } else if (orderBy.equals(orderbyQuery[1])) {
+                return o2.getZip_code().compareTo(o1.getZip_code());
+            } else if (orderBy.equals(orderbyQuery[2])) {
+                return o1.getShipping().compareTo(o2.getShipping());
+            } else if (orderBy.equals(orderbyQuery[3])) {
+                return o2.getShipping().compareTo(o1.getShipping());
+            } else if (orderBy.equals(orderbyQuery[4])) {
+                return o1.getName().compareTo(o2.getName());
+            } else if (orderBy.equals(orderbyQuery[5])) {
+                return o2.getName().compareTo(o1.getName());
+            }
+
+            return o1.getZip_code().compareTo(o2.getZip_code());
+        }
     }
 }

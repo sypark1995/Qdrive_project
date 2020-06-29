@@ -191,7 +191,7 @@ public class NavListViewAdapter extends BaseExpandableListAdapter {
     }
 
 
-    public void addItem(Drawable icon, String title, ArrayList<String> list) {
+    void addItem(Drawable icon, String title, ArrayList<String> list, int position) {
 
         NavListItem item = new NavListItem();
 
@@ -199,6 +199,16 @@ public class NavListViewAdapter extends BaseExpandableListAdapter {
         item.setTitle(title);
         item.setChild_list(list);
 
-        itemArrayList.add(item);
+        if (position != -1) {
+            itemArrayList.add(position, item);
+        } else {
+            itemArrayList.add(item);
+        }
     }
+
+    NavListItem getItem(int position) {
+
+        return itemArrayList.get(position);
+    }
+
 }

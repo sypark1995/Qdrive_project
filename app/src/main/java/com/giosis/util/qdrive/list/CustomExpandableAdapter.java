@@ -13,6 +13,7 @@ import android.content.IntentFilter;
 import android.database.Cursor;
 import android.graphics.Bitmap;
 import android.graphics.Color;
+import android.graphics.drawable.ColorDrawable;
 import android.net.Uri;
 import android.os.AsyncTask;
 import android.text.SpannableString;
@@ -23,6 +24,7 @@ import android.view.MenuItem;
 import android.view.View;
 import android.view.View.OnClickListener;
 import android.view.ViewGroup;
+import android.view.Window;
 import android.widget.BaseExpandableListAdapter;
 import android.widget.Button;
 import android.widget.EditText;
@@ -437,7 +439,7 @@ public class CustomExpandableAdapter extends BaseExpandableListAdapter implement
 
 
     @Override
-    public View getChildView(int groupPosition, int childPosition, boolean isLastChild, View convertView, ViewGroup parent) {
+    public View getChildView(final int groupPosition, int childPosition, boolean isLastChild, View convertView, ViewGroup parent) {
 
         if (convertView == null) {
 
@@ -663,6 +665,8 @@ public class CustomExpandableAdapter extends BaseExpandableListAdapter implement
                 layout_list_item_child_parcel_amount.setVisibility(View.VISIBLE);
                 btn_list_item_child_delivery_failed.setVisibility(View.VISIBLE);
             }
+
+            layout_list_item_trip_detail.setVisibility(View.GONE);
         } else {            // Pickup
 
             text_list_item_child_parcel_amount_title.setText(context.getResources().getString(R.string.text_name));
@@ -702,8 +706,6 @@ public class CustomExpandableAdapter extends BaseExpandableListAdapter implement
                 layout_list_item_child_outlet_pickup.setVisibility(View.GONE);
             }
 
-
-            // TODO. 레이아웃 손보기 && 버튼 클릭시 Popup
             // Trip
             if (rowItem.get(groupPosition).getTripDataArrayList() != null) {
 
@@ -713,6 +715,30 @@ public class CustomExpandableAdapter extends BaseExpandableListAdapter implement
                 layout_list_item_trip_detail.setVisibility(View.GONE);
             }
         }
+
+        // TODO
+        btn_list_item_child_trip_detail_button.setOnClickListener(new OnClickListener() {
+            @Override
+            public void onClick(View v) {
+
+                ArrayList<RowItem> tripDataArrayList = group_item.getTripDataArrayList();
+
+                for (int i = 0; i < tripDataArrayList.size(); i++) {
+
+                    Log.e("trip", "DATA :: " + tripDataArrayList.get(i).getShipping() + tripDataArrayList.get(i).getAddress());
+                }
+
+
+                PickupTripDetailPopup dialog = new PickupTripDetailPopup(context, tripDataArrayList);
+                dialog.show();
+                Window window = dialog.getWindow();
+                window.setBackgroundDrawable(new ColorDrawable(Color.TRANSPARENT));
+                window.setLayout(LinearLayout.LayoutParams.MATCH_PARENT, LinearLayout.LayoutParams.WRAP_CONTENT);
+                //
+             /*   Intent intent = new Intent(context, PickupTripDetailPopup.class);
+                context.startActivity(intent);*/
+            }
+        });
 
         text_list_item_child_telephone_number.setOnClickListener(new OnClickListener() {
 
@@ -950,8 +976,7 @@ public class CustomExpandableAdapter extends BaseExpandableListAdapter implement
                 intent.putExtra("pickupNo", tracking_no);
                 context.startActivity(intent);
 
-                /*
-                Intent intent = new Intent(context, CnRPickupFailedActivity.class);
+             /*   Intent intent = new Intent(context, CnRPickupFailedActivity.class);
                 intent.putExtra("title", context.getResources().getString(R.string.text_visit_log));
                 intent.putExtra("reqQty", qty);
                 intent.putExtra("senderName", requester);
@@ -1246,7 +1271,7 @@ public class CustomExpandableAdapter extends BaseExpandableListAdapter implement
     int count = 0;
 
     // NOTIFICATION.  CNR Print
-    private void isConnectPortablePrint(String tracking_no) {
+    public void isConnectPortablePrint(String tracking_no) {
 
         count++;
         //   BluetoothDeviceData.connectedPrinterAddress = "DC:1D:30:92:0A:5C";

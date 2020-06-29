@@ -7,7 +7,6 @@ import android.content.Context;
 import android.content.Intent;
 import android.database.Cursor;
 import android.os.Bundle;
-import androidx.fragment.app.Fragment;
 import android.util.Log;
 import android.util.TypedValue;
 import android.view.LayoutInflater;
@@ -29,6 +28,8 @@ import android.widget.SearchView.OnCloseListener;
 import android.widget.SearchView.OnQueryTextListener;
 import android.widget.Spinner;
 
+import androidx.fragment.app.Fragment;
+
 import com.giosis.util.qdrive.gps.GPSTrackerManager;
 import com.giosis.util.qdrive.singapore.R;
 import com.giosis.util.qdrive.util.DataUtil;
@@ -49,12 +50,12 @@ import java.util.Arrays;
 public class List_UploadFailedFragment extends Fragment implements OnQueryTextListener, OnCloseListener, CustomNotUploadAdapter.AdapterInterface {
     String TAG = "List_UploadFailedFragment";
 
-    GPSTrackerManager gpsTrackerManager;
-    boolean gpsEnable = false;
+    private GPSTrackerManager gpsTrackerManager;
+    private boolean gpsEnable = false;
 
     //
     private PermissionChecker checker;
-    boolean isPermissionTrue = false;
+    private boolean isPermissionTrue = false;
     private static final int PERMISSION_REQUEST_CODE = 1000;
     private static final String[] PERMISSIONS = new String[]{PermissionChecker.READ_EXTERNAL_STORAGE, PermissionChecker.WRITE_EXTERNAL_STORAGE,
             PermissionChecker.ACCESS_FINE_LOCATION, PermissionChecker.ACCESS_COARSE_LOCATION};
@@ -62,11 +63,10 @@ public class List_UploadFailedFragment extends Fragment implements OnQueryTextLi
 
     View view;
 
-    SearchView searchview_list;
-    FrameLayout layout_list_sort;
-    Spinner spinner_list_sort;
-
-    ExpandableListView exlist_card_list;
+    private SearchView searchview_list;
+    private FrameLayout layout_list_sort;
+    private Spinner spinner_list_sort;
+    private ExpandableListView exlist_card_list;
 
 
     //

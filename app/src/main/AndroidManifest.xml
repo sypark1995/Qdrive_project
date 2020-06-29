@@ -256,6 +256,7 @@
             android:configChanges="orientation|keyboardHidden"
             android:screenOrientation="portrait"
             android:windowSoftInputMode="stateAlwaysHidden|adjustPan" />
+
         <activity
             android:name="com.giosis.util.qdrive.barcodescanner.PreferencesActivity"
             android:label=""
@@ -307,40 +308,36 @@
 
 
         <activity
-            android:name="com.giosis.util.qdrive.qdelivery.MyRouteActivity"
+            android:name="com.giosis.util.qdrive.createpickup.MyRouteActivity"
             android:screenOrientation="portrait" />
 
         <activity
-            android:name="com.giosis.util.qdrive.qdelivery.QDeliveryIntroActivity"
+            android:name="com.giosis.util.qdrive.createpickup.CreatePickupIntroActivity"
             android:screenOrientation="portrait" />
 
         <activity
-            android:name="com.giosis.util.qdrive.qdelivery.QDeliveryStep1Activity"
+            android:name="com.giosis.util.qdrive.createpickup.CreatePickupB2CTypeActivity"
             android:screenOrientation="portrait" />
 
         <activity
-            android:name="com.giosis.util.qdrive.qdelivery.QDeliveryStep2Activity"
+            android:name="com.giosis.util.qdrive.createpickup.CreatePickupC2CTypeActivity"
             android:screenOrientation="portrait" />
 
         <activity
-            android:name="com.giosis.util.qdrive.qdelivery.QDeliveryStep2EditInfoActivity"
+            android:name="com.giosis.util.qdrive.createpickup.CreatePickupC2CCompleteActivity"
             android:screenOrientation="portrait" />
 
         <activity
-            android:name="com.giosis.util.qdrive.qdelivery.QDeliveryStep3Activity"
+            android:name="com.giosis.util.qdrive.createpickup.QDeliveryStep3Activity"
             android:screenOrientation="portrait" />
 
         <activity
-            android:name="com.giosis.util.qdrive.qdelivery.QDeliveryStep4Activity"
-            android:screenOrientation="portrait" />
-
-        <activity
-            android:name="com.giosis.util.qdrive.qdelivery.QDeliveryStep5Activity"
+            android:name="com.giosis.util.qdrive.createpickup.QDeliveryStep4Activity"
             android:screenOrientation="portrait" />
 
 
         <activity
-            android:name="com.giosis.util.qdrive.qdelivery.MyQDeliveryActivity"
+            android:name="com.giosis.util.qdrive.createpickup.MyQDeliveryActivity"
             android:screenOrientation="portrait" />
         <activity android:name="com.giosis.util.qdrive.barcodescanner.bluetooth.Settings" />
         <activity android:name="com.giosis.util.qdrive.barcodescanner.bluetooth.SystemSetting" />

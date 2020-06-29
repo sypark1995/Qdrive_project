@@ -39,14 +39,13 @@ public class IntroActivity extends Activity {
         context = getApplicationContext();
         //MyApplication.preferences.setSortIndex(0);
 
-      /*  // TEST.  VM
+       /* // TEST.  VM
         Intent intent = new Intent();
         intent.setClass(IntroActivity.this, LoginActivity.class);
         intent.addFlags(Intent.FLAG_ACTIVITY_NO_ANIMATION);
         startActivity(intent);
         overridePendingTransition(android.R.anim.fade_in, android.R.anim.fade_out);
         finish();*/
-
 
         // Live10 설치 여부 확인
         Intent intent = getPackageManager().getLaunchIntentForPackage("net.giosis.qpost");
@@ -91,7 +90,6 @@ public class IntroActivity extends Activity {
 
                     Intent intent = new Intent();
                     intent.setClass(IntroActivity.this, LoginActivity.class);
-                    //intent.setClass(IntroActivity.this, LoginActivity2.class);
                     intent.addFlags(Intent.FLAG_ACTIVITY_NO_ANIMATION);
                     startActivity(intent);
                     finish();

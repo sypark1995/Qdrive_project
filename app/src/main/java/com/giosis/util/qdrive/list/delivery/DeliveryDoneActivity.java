@@ -67,10 +67,7 @@ import static com.giosis.util.qdrive.barcodescanner.ManualHelper.MOBILE_SERVER_U
 /***************
  * @author jtpark
  * @editor krm0219
- *
- * LIST > In-Progress > 'Delivered'
- * SCAN > Delivery Done
- *
+ * LIST, In Progress > 'Delivered'  // SCAN > Delivery Done
  * 2020.06 Visit Log 추가
  */
 public class DeliveryDoneActivity extends AppCompatActivity implements Camera2APIs.Camera2Interface, TextureView.SurfaceTextureListener {
@@ -78,7 +75,6 @@ public class DeliveryDoneActivity extends AppCompatActivity implements Camera2AP
 
     private static String RECEIVE_TYPE_SELF = "RC";
 
-    //krm0219
     FrameLayout layout_top_back;
     TextView text_top_title;
 
@@ -670,6 +666,7 @@ public class DeliveryDoneActivity extends AppCompatActivity implements Camera2AP
             // 사인 or 사진 둘 중 하나는 있어야 함
             boolean hasSignImage = sign_view_sign_d_signature.getIsTouche();
             boolean hasVisitImage = camera2.hasImage(img_sign_d_visit_log);
+            Log.e("krm0219", TAG + "  has DATA : " + hasSignImage + " / " + hasVisitImage);
 
             if (!hasSignImage && !hasVisitImage) {
 
@@ -686,8 +683,6 @@ public class DeliveryDoneActivity extends AppCompatActivity implements Camera2AP
                 return;
             }
 
-
-            Log.e("krm0219", TAG + "  has DATA : " + hasSignImage + " / " + hasVisitImage);
             try {
 
                 Bundle params = new Bundle();
