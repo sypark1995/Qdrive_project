@@ -9,7 +9,7 @@
 var MOBILE_SERVER_URL = "https://qxapi.qxpress.asia/GMKT.INC.GLPS.MobileApiService/GlobalMobileService.qapi"
 
 // Qdrive 버전관리
-var version = '3.3.9';
+var version = '3.4.0';
 
 // 이전
 /*var serviceName = "http://test.service.qxpress.asia/GMKT.INC.GLPS.Service.WebService/QSignService.qapi";

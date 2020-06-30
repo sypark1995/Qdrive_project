@@ -487,8 +487,7 @@ public class PickupFailedActivity extends AppCompatActivity implements Camera2AP
 
                 latitude = gpsTrackerManager.getLatitude();
                 longitude = gpsTrackerManager.getLongitude();
-
-                Log.e("Location", TAG + " saveServerUploadSign  GPSTrackerManager : " + latitude + "  " + longitude + "  ");
+                Log.e("Location", TAG + " saveServerUploadSign  : " + latitude + "  " + longitude + "  ");
             }
 
             if (text_sign_p_f_failed_reason.getText().equals(getString(R.string.text_select))) {

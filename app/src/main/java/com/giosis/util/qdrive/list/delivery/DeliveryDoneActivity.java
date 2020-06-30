@@ -97,13 +97,11 @@ public class DeliveryDoneActivity extends AppCompatActivity implements Camera2AP
     EditText edit_sign_d_memo;
     LinearLayout layout_sign_d_sign_eraser;
     SigningView sign_view_sign_d_signature;
-
     LinearLayout layout_sign_d_visit_log;
     LinearLayout layout_sign_d_take_photo;
     LinearLayout layout_sign_d_gallery;
     TextureView texture_sign_d_preview;
     ImageView img_sign_d_visit_log;
-
     Button btn_sign_d_save;
 
     // Outlet
@@ -135,7 +133,6 @@ public class DeliveryDoneActivity extends AppCompatActivity implements Camera2AP
     String cameraId;
     private static final int RESULT_LOAD_IMAGE = 3;
     boolean isGalleryActivate = false;
-
 
     GPSTrackerManager gpsTrackerManager;
     boolean gpsEnable = false;
@@ -182,7 +179,6 @@ public class DeliveryDoneActivity extends AppCompatActivity implements Camera2AP
         edit_sign_d_memo = findViewById(R.id.edit_sign_d_memo);
         layout_sign_d_sign_eraser = findViewById(R.id.layout_sign_d_sign_eraser);
         sign_view_sign_d_signature = findViewById(R.id.sign_view_sign_d_signature);
-
         layout_sign_d_visit_log = findViewById(R.id.layout_sign_d_visit_log);
         layout_sign_d_take_photo = findViewById(R.id.layout_sign_d_take_photo);
         layout_sign_d_gallery = findViewById(R.id.layout_sign_d_gallery);
@@ -469,7 +465,6 @@ public class DeliveryDoneActivity extends AppCompatActivity implements Camera2AP
         super.onResume();
 
         if (isPermissionTrue) {
-
             // Camera
             camera2 = new Camera2APIs(this);
 

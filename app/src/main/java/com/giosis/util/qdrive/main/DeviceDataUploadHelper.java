@@ -287,7 +287,7 @@ public class DeviceDataUploadHelper extends ManualHelper {
                             bitmapString = DataUtil.bitmapToString(myBitmap);
                         }
 
-                        Log.e("krm0219", " RE-Upload DATA 1 : " + bitmapString);
+                        Log.e("krm0219", " RE-Upload DATA : " + bitmapString);
 
                         // 사인, visit log 이미지가 다 없으면 업로드 불가능
                         if (bitmapString.equals("")) {
