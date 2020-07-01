@@ -68,6 +68,8 @@
                         android:id="@+id/text_sign_p_f_applicant_title"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
+                        android:layout_alignParentBottom="true"
+                        android:layout_marginBottom="8dp"
                         android:text="@string/text_applicant"
                         android:textColor="@color/color_303030"
                         android:textSize="@dimen/text_size_30px" />

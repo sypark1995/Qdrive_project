@@ -1,0 +1,167 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:background="@android:color/transparent">
+
+    <RelativeLayout
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_centerInParent="true"
+        android:layout_marginStart="45dp"
+        android:layout_marginEnd="45dp">
+
+        <Button
+            android:id="@+id/btn_pickup_type_close"
+            android:layout_width="40dp"
+            android:layout_height="40dp"
+            android:layout_alignParentEnd="true"
+            android:background="@drawable/btn_close"
+            android:visibility="gone" />
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_alignWithParentIfMissing="true"
+            android:layout_below="@id/btn_pickup_type_close"
+            android:background="@drawable/back_round_5_ffffff_border"
+            android:orientation="vertical"
+            android:padding="20dp">
+
+            <TextView
+                android:id="@+id/text_pickup_type_title"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginBottom="25dp"
+                android:gravity="center_vertical"
+                android:text="@string/text_choose_pickup_type"
+                android:textColor="@color/color_3e3e3e"
+                android:textSize="@dimen/text_size_34px"
+                android:textStyle="bold" />
+
+            <View
+                android:layout_width="match_parent"
+                android:layout_height="2dp"
+                android:background="@color/color_4fb648" />
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="8dp"
+                android:layout_marginBottom="20dp"
+                android:gravity="center_vertical"
+                android:text="@string/text_b_to_c_type"
+                android:textColor="@color/color_4fb648"
+                android:textSize="@dimen/text_size_28px"
+                android:textStyle="bold" />
+
+            <RelativeLayout
+                android:id="@+id/layout_pickup_type_by_qoo10"
+                android:layout_width="match_parent"
+                android:layout_height="30dp">
+
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_centerVertical="true"
+                    android:gravity="center_vertical"
+                    android:text="@string/text_by_qoo10_seller_id"
+                    android:textColor="@color/color_747474"
+                    android:textSize="@dimen/text_size_30px" />
+
+                <Button
+                    android:layout_width="6dp"
+                    android:layout_height="11dp"
+                    android:layout_alignParentEnd="true"
+                    android:layout_centerVertical="true"
+                    android:background="@drawable/qdrive_setting_icon_arrow_r" />
+            </RelativeLayout>
+
+            <RelativeLayout
+                android:id="@+id/layout_pickup_type_manual_register"
+                android:layout_width="match_parent"
+                android:layout_height="30dp"
+                android:layout_marginTop="6dp"
+                android:layout_marginBottom="30dp">
+
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_centerVertical="true"
+                    android:gravity="center_vertical"
+                    android:text="@string/text_manual_register"
+                    android:textColor="@color/color_747474"
+                    android:textSize="@dimen/text_size_30px" />
+
+                <Button
+                    android:layout_width="6dp"
+                    android:layout_height="11dp"
+                    android:layout_alignParentEnd="true"
+                    android:layout_centerVertical="true"
+                    android:background="@drawable/qdrive_setting_icon_arrow_r" />
+            </RelativeLayout>
+
+            <View
+                android:layout_width="match_parent"
+                android:layout_height="2dp"
+                android:background="@color/color_4fb648" />
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="8dp"
+                android:layout_marginBottom="20dp"
+                android:gravity="center_vertical"
+                android:text="@string/text_c_to_c_type"
+                android:textColor="@color/color_4fb648"
+                android:textSize="@dimen/text_size_28px"
+                android:textStyle="bold" />
+
+            <RelativeLayout
+                android:id="@+id/layout_pickup_type_pay_driver"
+                android:layout_width="match_parent"
+                android:layout_height="30dp">
+
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_centerVertical="true"
+                    android:gravity="center_vertical"
+                    android:text="@string/text_pay_by_driver"
+                    android:textColor="@color/color_747474"
+                    android:textSize="@dimen/text_size_30px" />
+
+                <Button
+                    android:layout_width="6dp"
+                    android:layout_height="11dp"
+                    android:layout_alignParentEnd="true"
+                    android:layout_centerVertical="true"
+                    android:background="@drawable/qdrive_setting_icon_arrow_r" />
+            </RelativeLayout>
+
+            <RelativeLayout
+                android:id="@+id/layout_pickup_type_pay_customer"
+                android:layout_width="match_parent"
+                android:layout_height="30dp"
+                android:layout_marginTop="6dp"
+                android:layout_marginBottom="10dp">
+
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_centerVertical="true"
+                    android:gravity="center_vertical"
+                    android:text="@string/text_pay_by_customer"
+                    android:textColor="@color/color_747474"
+                    android:textSize="@dimen/text_size_30px" />
+
+                <Button
+                    android:layout_width="6dp"
+                    android:layout_height="11dp"
+                    android:layout_alignParentEnd="true"
+                    android:layout_centerVertical="true"
+                    android:background="@drawable/qdrive_setting_icon_arrow_r" />
+            </RelativeLayout>
+        </LinearLayout>
+    </RelativeLayout>
+</RelativeLayout>

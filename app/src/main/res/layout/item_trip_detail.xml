@@ -1,0 +1,70 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:id="@+id/layout_trip_detail_item"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:background="@color/white"
+    android:minHeight="90dp"
+    android:orientation="vertical">
+
+    <View
+        android:id="@+id/line_trip_detail_divider"
+        android:layout_width="match_parent"
+        android:layout_height="1dp"
+        android:background="@color/color_d2d2d2" />
+
+    <RelativeLayout
+        android:id="@+id/layout_trip_detail_tracking_no"
+        android:layout_width="match_parent"
+        android:layout_height="28dp"
+        android:layout_marginTop="15dp">
+
+        <TextView
+            android:id="@+id/text_trip_detail_tracking_no"
+            android:layout_width="wrap_content"
+            android:layout_height="match_parent"
+            android:layout_centerVertical="true"
+            android:textColor="@color/color_4fb648"
+            android:textSize="@dimen/text_size_28px"
+            android:textStyle="bold"
+            tools:text="P1234567" />
+
+        <LinearLayout
+            android:id="@+id/layout_trip_detail_cnr_print"
+            android:layout_width="wrap_content"
+            android:layout_height="match_parent"
+            android:layout_alignParentEnd="true"
+            android:background="@drawable/back_round_20_white_border"
+            android:gravity="center_vertical"
+            android:orientation="horizontal"
+            android:paddingStart="10dp"
+            android:paddingEnd="10dp"
+            android:visibility="visible">
+
+            <ImageView
+                android:layout_width="14dp"
+                android:layout_height="20dp"
+                android:layout_marginEnd="5dp"
+                android:background="@drawable/icon_print" />
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="@string/button_print_label"
+                android:textColor="@color/color_84cc80"
+                android:textSize="@dimen/text_size_28px" />
+        </LinearLayout>
+    </RelativeLayout>
+
+    <TextView
+        android:id="@+id/text_trip_detail_address"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="7dp"
+        android:lineSpacingMultiplier="1.2"
+        android:paddingBottom="15dp"
+        android:textColor="@color/color_232323"
+        android:textSize="@dimen/text_size_28px"
+        tools:text="LIFELONG LEARNING INSTITUTE 11 EUNO RLIFELONG LEARNING INSTITUTE 11 EUNO R" />
+</LinearLayout>

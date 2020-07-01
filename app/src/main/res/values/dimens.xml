@@ -10,9 +10,11 @@
     <dimen name="text_size_32px">16sp</dimen>
     <dimen name="text_size_34px">17sp</dimen>
     <dimen name="text_size_36px">18sp</dimen>
-    <dimen name="text_size_38px">18sp</dimen>
+    <dimen name="text_size_38px">19sp</dimen>
     <dimen name="text_size_40px">20sp</dimen>
     <dimen name="text_size_42px">21sp</dimen>
+    <dimen name="text_size_44px">22sp</dimen>
     <dimen name="text_size_48px">24sp</dimen>
     <dimen name="text_size_52px">26sp</dimen>
+    <dimen name="text_size_60px">30sp</dimen>
 </resources>

@@ -52,7 +52,6 @@
     </shared>
   </component>
   <component name="AndroidLogFilters">
-    <option name="TOOL_WINDOW_CUSTOM_FILTER" value="Set" />
     <option name="TOOL_WINDOW_LOG_LEVEL" value="error" />
     <option name="TOOL_WINDOW_CONFIGURED_FILTER" value="Show only selected application" />
   </component>
@@ -102,8 +101,8 @@
       <change afterPath="$PROJECT_DIR$/app/src/main/java/com/giosis/util/qdrive/createpickup/SearchAddress.kt" afterDir="false" />
       <change afterPath="$PROJECT_DIR$/app/src/main/java/com/giosis/util/qdrive/createpickup/SearchAddressAdapter.kt" afterDir="false" />
       <change afterPath="$PROJECT_DIR$/app/src/main/java/com/giosis/util/qdrive/createpickup/SearchAddressDialog.kt" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/app/src/main/java/com/giosis/util/qdrive/list/PickupTripDetailDialog.java" afterDir="false" />
       <change afterPath="$PROJECT_DIR$/app/src/main/java/com/giosis/util/qdrive/list/PickupTripDetailListAdapter.java" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/app/src/main/java/com/giosis/util/qdrive/list/PickupTripDetailPopup.java" afterDir="false" />
       <change afterPath="$PROJECT_DIR$/app/src/main/res/drawable-hdpi/btn_close.png" afterDir="false" />
       <change afterPath="$PROJECT_DIR$/app/src/main/res/drawable-hdpi/btn_layerpop_change.png" afterDir="false" />
       <change afterPath="$PROJECT_DIR$/app/src/main/res/drawable-hdpi/btn_search_green.png" afterDir="false" />
@@ -126,46 +125,34 @@
       <change afterPath="$PROJECT_DIR$/app/src/main/res/layout/activity_create_pickup_c2c_complete.xml" afterDir="false" />
       <change afterPath="$PROJECT_DIR$/app/src/main/res/layout/activity_create_pickup_c2c_top.xml" afterDir="false" />
       <change afterPath="$PROJECT_DIR$/app/src/main/res/layout/activity_create_pickup_intro.xml" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/app/src/main/res/layout/dialog_create_pickup_confirm.xml" afterDir="false" />
       <change afterPath="$PROJECT_DIR$/app/src/main/res/layout/dialog_link_qoo10_account.xml" afterDir="false" />
       <change afterPath="$PROJECT_DIR$/app/src/main/res/layout/dialog_pickup_trip_detail.xml" afterDir="false" />
       <change afterPath="$PROJECT_DIR$/app/src/main/res/layout/dialog_pickup_type.xml" afterDir="false" />
       <change afterPath="$PROJECT_DIR$/app/src/main/res/layout/item_trip_detail.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/.gradle/5.1.1/executionHistory/executionHistory.bin" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/.gradle/5.1.1/executionHistory/executionHistory.lock" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/.gradle/5.1.1/fileChanges/last-build.bin" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/.gradle/5.1.1/fileContent/fileContent.lock" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/.gradle/5.1.1/fileHashes/fileHashes.bin" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/.gradle/5.1.1/fileHashes/fileHashes.lock" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/.gradle/5.1.1/fileHashes/resourceHashesCache.bin" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/.gradle/5.1.1/gc.properties" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/.gradle/5.1.1/javaCompile/classAnalysis.bin" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/.gradle/5.1.1/javaCompile/jarAnalysis.bin" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/.gradle/5.1.1/javaCompile/javaCompile.lock" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/.gradle/5.1.1/javaCompile/taskHistory.bin" beforeDir="false" />
       <change beforePath="$PROJECT_DIR$/.gradle/buildOutputCleanup/buildOutputCleanup.lock" beforeDir="false" afterPath="$PROJECT_DIR$/.gradle/buildOutputCleanup/buildOutputCleanup.lock" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/.idea/caches/build_file_checksums.ser" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/caches/build_file_checksums.ser" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/.idea/misc.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/misc.xml" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/app/build.gradle" beforeDir="false" afterPath="$PROJECT_DIR$/app/build.gradle" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/app/src/main/AndroidManifest.xml" beforeDir="false" afterPath="$PROJECT_DIR$/app/src/main/AndroidManifest.xml" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/app/src/main/assets/www/libs/js/enviroment.js" beforeDir="false" afterPath="$PROJECT_DIR$/app/src/main/assets/www/libs/js/enviroment.js" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/app/src/main/java/com/giosis/util/qdrive/barcodescanner/ManualHelper.java" beforeDir="false" afterPath="$PROJECT_DIR$/app/src/main/java/com/giosis/util/qdrive/barcodescanner/ManualHelper.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/app/src/main/java/com/giosis/util/qdrive/list/CustomExpandableAdapter.java" beforeDir="false" afterPath="$PROJECT_DIR$/app/src/main/java/com/giosis/util/qdrive/list/CustomExpandableAdapter.java" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/app/src/main/java/com/giosis/util/qdrive/list/List_InProgressFragment.java" beforeDir="false" afterPath="$PROJECT_DIR$/app/src/main/java/com/giosis/util/qdrive/list/List_InProgressFragment.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/app/src/main/java/com/giosis/util/qdrive/list/delivery/DeliveryDoneActivity.java" beforeDir="false" afterPath="$PROJECT_DIR$/app/src/main/java/com/giosis/util/qdrive/list/delivery/DeliveryDoneActivity.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/app/src/main/java/com/giosis/util/qdrive/list/pickup/PickupFailedActivity.java" beforeDir="false" afterPath="$PROJECT_DIR$/app/src/main/java/com/giosis/util/qdrive/list/pickup/PickupFailedActivity.java" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/app/src/main/java/com/giosis/util/qdrive/main/AppBaseActivity.java" beforeDir="false" afterPath="$PROJECT_DIR$/app/src/main/java/com/giosis/util/qdrive/main/AppBaseActivity.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/app/src/main/java/com/giosis/util/qdrive/main/DeviceDataUploadHelper.java" beforeDir="false" afterPath="$PROJECT_DIR$/app/src/main/java/com/giosis/util/qdrive/main/DeviceDataUploadHelper.java" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/app/src/main/java/com/giosis/util/qdrive/qdelivery/AddressDialog.kt" beforeDir="false" />
       <change beforePath="$PROJECT_DIR$/app/src/main/java/com/giosis/util/qdrive/qdelivery/CountryResult.kt" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/app/src/main/java/com/giosis/util/qdrive/qdelivery/MyQDeliveryActivity.java" beforeDir="false" afterPath="$PROJECT_DIR$/app/src/main/java/com/giosis/util/qdrive/createpickup/MyQDeliveryActivity.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/app/src/main/java/com/giosis/util/qdrive/qdelivery/MyQDeliveryListAdapter.java" beforeDir="false" afterPath="$PROJECT_DIR$/app/src/main/java/com/giosis/util/qdrive/createpickup/MyQDeliveryListAdapter.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/app/src/main/java/com/giosis/util/qdrive/qdelivery/MyQDeliveryResult.java" beforeDir="false" afterPath="$PROJECT_DIR$/app/src/main/java/com/giosis/util/qdrive/createpickup/MyQDeliveryResult.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/app/src/main/java/com/giosis/util/qdrive/qdelivery/MyRouteActivity.kt" beforeDir="false" afterPath="$PROJECT_DIR$/app/src/main/java/com/giosis/util/qdrive/createpickup/MyRouteActivity.kt" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/app/src/main/java/com/giosis/util/qdrive/qdelivery/MyQDeliveryActivity.java" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/app/src/main/java/com/giosis/util/qdrive/qdelivery/MyQDeliveryListAdapter.java" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/app/src/main/java/com/giosis/util/qdrive/qdelivery/MyQDeliveryResult.java" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/app/src/main/java/com/giosis/util/qdrive/qdelivery/MyRouteActivity.kt" beforeDir="false" />
       <change beforePath="$PROJECT_DIR$/app/src/main/java/com/giosis/util/qdrive/qdelivery/PackingCostResult.kt" beforeDir="false" afterPath="$PROJECT_DIR$/app/src/main/java/com/giosis/util/qdrive/createpickup/PackingCostResult.kt" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/app/src/main/java/com/giosis/util/qdrive/qdelivery/QDeliveryData.kt" beforeDir="false" afterPath="$PROJECT_DIR$/app/src/main/java/com/giosis/util/qdrive/createpickup/QDeliveryData.kt" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/app/src/main/java/com/giosis/util/qdrive/qdelivery/QDeliveryIntroActivity.kt" beforeDir="false" />
       <change beforePath="$PROJECT_DIR$/app/src/main/java/com/giosis/util/qdrive/qdelivery/QDeliveryStep1Activity.kt" beforeDir="false" />
       <change beforePath="$PROJECT_DIR$/app/src/main/java/com/giosis/util/qdrive/qdelivery/QDeliveryStep2Activity.kt" beforeDir="false" />
       <change beforePath="$PROJECT_DIR$/app/src/main/java/com/giosis/util/qdrive/qdelivery/QDeliveryStep2EditInfoActivity.kt" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/app/src/main/java/com/giosis/util/qdrive/qdelivery/QDeliveryStep3Activity.kt" beforeDir="false" afterPath="$PROJECT_DIR$/app/src/main/java/com/giosis/util/qdrive/createpickup/QDeliveryStep3Activity.kt" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/app/src/main/java/com/giosis/util/qdrive/qdelivery/QDeliveryStep3Activity.kt" beforeDir="false" />
       <change beforePath="$PROJECT_DIR$/app/src/main/java/com/giosis/util/qdrive/qdelivery/QDeliveryStep4Activity.kt" beforeDir="false" afterPath="$PROJECT_DIR$/app/src/main/java/com/giosis/util/qdrive/createpickup/QDeliveryStep4Activity.kt" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/app/src/main/java/com/giosis/util/qdrive/qdelivery/QDeliveryStep5Activity.kt" beforeDir="false" />
       <change beforePath="$PROJECT_DIR$/app/src/main/java/com/giosis/util/qdrive/qdelivery/SearchAddressDialog.java" beforeDir="false" />
@@ -257,29 +244,76 @@
   </component>
   <component name="FileEditorManager">
     <leaf SIDE_TABS_SIZE_LIMIT_KEY="300">
-      <file pinned="false" current-in-tab="true">
+      <file pinned="false" current-in-tab="false">
         <entry file="file://$PROJECT_DIR$/app/src/main/java/com/giosis/util/qdrive/barcodescanner/ManualHelper.java">
           <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="275">
-              <caret line="12" column="4" lean-forward="true" selection-start-line="12" selection-start-column="4" selection-end-line="12" selection-end-column="4" />
+            <state relative-caret-position="153">
+              <caret line="9" column="46" selection-start-line="9" selection-start-column="46" selection-end-line="9" selection-end-column="46" />
             </state>
           </provider>
         </entry>
       </file>
-      <file pinned="false" current-in-tab="false">
+      <file pinned="false" current-in-tab="true">
         <entry file="file://$PROJECT_DIR$/app/src/main/assets/www/libs/js/enviroment.js">
           <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="208">
-              <caret line="8" lean-forward="true" selection-start-line="8" selection-end-line="8" />
+            <state relative-caret-position="260">
+              <caret line="10" column="14" lean-forward="true" selection-start-line="10" selection-start-column="14" selection-end-line="10" selection-end-column="14" />
             </state>
           </provider>
         </entry>
       </file>
       <file pinned="false" current-in-tab="false">
-        <entry file="file://$PROJECT_DIR$/app/build.gradle">
+        <entry file="file://$PROJECT_DIR$/app/src/main/res/layout/dialog_create_pickup_confirm.xml">
+          <provider editor-type-id="android-designer2" />
           <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="312">
-              <caret line="18" column="16" lean-forward="true" selection-start-line="17" selection-start-column="5" selection-end-line="18" selection-end-column="16" />
+            <state relative-caret-position="234">
+              <caret line="9" column="44" selection-start-line="9" selection-start-column="44" selection-end-line="9" selection-end-column="44" />
+            </state>
+          </provider>
+        </entry>
+      </file>
+      <file pinned="false" current-in-tab="false">
+        <entry file="file://$PROJECT_DIR$/app/src/main/java/com/giosis/util/qdrive/main/AppBaseActivity.java">
+          <provider selected="true" editor-type-id="text-editor">
+            <state relative-caret-position="2964">
+              <caret line="142" selection-start-line="142" selection-end-line="142" />
+            </state>
+          </provider>
+        </entry>
+      </file>
+      <file pinned="false" current-in-tab="false">
+        <entry file="file://$PROJECT_DIR$/app/src/main/java/com/giosis/util/qdrive/createpickup/QDeliveryStep4Activity.kt">
+          <provider selected="true" editor-type-id="text-editor">
+            <state relative-caret-position="182">
+              <caret line="69" selection-start-line="69" selection-end-line="69" />
+            </state>
+          </provider>
+        </entry>
+      </file>
+      <file pinned="false" current-in-tab="false">
+        <entry file="file://$PROJECT_DIR$/app/src/main/AndroidManifest.xml">
+          <provider editor-type-id="android-manifest" />
+          <provider selected="true" editor-type-id="text-editor">
+            <state relative-caret-position="8008">
+              <caret line="308" selection-start-line="308" selection-end-line="308" />
+            </state>
+          </provider>
+        </entry>
+      </file>
+      <file pinned="false" current-in-tab="false">
+        <entry file="file://$PROJECT_DIR$/app/src/main/java/com/giosis/util/qdrive/createpickup/PackingCostResult.kt">
+          <provider selected="true" editor-type-id="text-editor">
+            <state relative-caret-position="130">
+              <caret line="5" column="8" selection-start-line="5" selection-start-column="8" selection-end-line="5" selection-end-column="8" />
+            </state>
+          </provider>
+        </entry>
+      </file>
+      <file pinned="false" current-in-tab="false">
+        <entry file="file://$PROJECT_DIR$/app/src/main/java/com/giosis/util/qdrive/createpickup/QDeliveryData.kt">
+          <provider selected="true" editor-type-id="text-editor">
+            <state relative-caret-position="104">
+              <caret line="4" column="13" selection-start-line="4" selection-start-column="13" selection-end-line="4" selection-end-column="13" />
             </state>
           </provider>
         </entry>
@@ -298,8 +332,6 @@
   </component>
   <component name="FindInProjectRecents">
     <findStrings>
-      <find>layout_list_item_trip_detail</find>
-      <find>pickup</find>
       <find>qxapi.qxpress</find>
       <find>ttp://staging-qxa</find>
       <find>3.3.9</find>
@@ -309,7 +341,6 @@
       <find>DownloadChk</find>
       <find>stopGPSManager</find>
       <find>gpsTrackerManager</find>
-      <find>onPause</find>
       <find>DeliveryDo</find>
       <find>P.Fai</find>
       <find>PF</find>
@@ -328,6 +359,9 @@
       <find>rcvType</find>
       <find>save</find>
       <find>http://staging-qxapi.qxpress.asia/GMKT.INC.GLP</find>
+      <find>onPause</find>
+      <find>Popup</find>
+      <find>QDeliveryStep3Activity</find>
     </findStrings>
   </component>
   <component name="GenerateSignedApkSettings">
@@ -342,11 +376,6 @@
   <component name="IdeDocumentHistory">
     <option name="CHANGED_PATHS">
       <list>
-        <option value="$PROJECT_DIR$/app/src/main/java/com/giosis/util/qdrive/createpickup/B2CManualRegisterActivity.kt" />
-        <option value="$PROJECT_DIR$/app/src/main/res/drawable/back_rect_border_4fb648.xml" />
-        <option value="$PROJECT_DIR$/app/src/main/res/drawable/back_round_15_border_aeaeae.xml" />
-        <option value="$PROJECT_DIR$/app/src/main/res/layout/activity_qdelivery_step4.xml" />
-        <option value="$PROJECT_DIR$/app/src/main/res/layout/activity_create_pickup_c2c_2.xml" />
         <option value="$PROJECT_DIR$/app/src/main/res/layout/activity_create_pickup_c2c_top.xml" />
         <option value="$PROJECT_DIR$/app/src/main/res/drawable/back_rect_bottom_border_f6f6f6.xml" />
         <option value="$PROJECT_DIR$/app/src/main/res/layout/activity_create_pickup_c2c.xml" />
@@ -357,11 +386,9 @@
         <option value="$PROJECT_DIR$/app/src/main/res/layout/dialog_pickup_trip_detail.xml" />
         <option value="$PROJECT_DIR$/app/src/main/java/com/giosis/util/qdrive/list/PickupTripDetailPopup.java" />
         <option value="$PROJECT_DIR$/app/src/main/res/drawable/back_rect_bottom_border_4fb648.xml" />
-        <option value="$PROJECT_DIR$/app/src/main/res/values/strings.xml" />
         <option value="$PROJECT_DIR$/app/src/main/java/com/giosis/util/qdrive/list/PickupTripDetailListAdapter.java" />
         <option value="$PROJECT_DIR$/app/src/main/java/com/giosis/util/qdrive/createpickup/SearchAddressListAdapter.java" />
         <option value="$PROJECT_DIR$/app/src/main/java/com/giosis/util/qdrive/createpickup/SearchAddress.kt" />
-        <option value="$PROJECT_DIR$/app/src/main/java/com/giosis/util/qdrive/createpickup/SearchAddressDialog.kt" />
         <option value="$PROJECT_DIR$/app/src/main/res/layout/dialog_search_address.xml" />
         <option value="$PROJECT_DIR$/app/src/main/java/com/giosis/util/qdrive/createpickup/SearchAddressAdapter.kt" />
         <option value="$PROJECT_DIR$/app/src/main/res/layout/item_search_address.xml" />
@@ -371,7 +398,6 @@
         <option value="$PROJECT_DIR$/app/src/main/java/com/giosis/util/qdrive/createpickup/CreatePickupB2CTypeActivity.kt" />
         <option value="$PROJECT_DIR$/app/src/main/java/com/giosis/util/qdrive/createpickup/CreatePickupC2CTypeActivity.kt" />
         <option value="$PROJECT_DIR$/app/src/main/java/com/giosis/util/qdrive/createpickup/CreatePickupC2CCompleteActivity.kt" />
-        <option value="$PROJECT_DIR$/app/src/main/java/com/giosis/util/qdrive/main/AppBaseActivity.java" />
         <option value="$PROJECT_DIR$/app/src/main/java/com/giosis/util/qdrive/list/delivery/DeliveryFailedUploadHelper.java" />
         <option value="$PROJECT_DIR$/app/src/main/java/com/giosis/util/qdrive/list/CustomNotUploadAdapter.java" />
         <option value="$PROJECT_DIR$/app/src/main/res/layout/item_list_child.xml" />
@@ -382,7 +408,6 @@
         <option value="$PROJECT_DIR$/app/src/main/java/com/giosis/util/qdrive/list/List_UploadFailedFragment.java" />
         <option value="$PROJECT_DIR$/app/src/main/java/com/giosis/util/qdrive/list/List_InProgressFragment.java" />
         <option value="$PROJECT_DIR$/app/src/main/java/com/giosis/util/qdrive/singapore/IntroActivity.java" />
-        <option value="$PROJECT_DIR$/app/src/main/AndroidManifest.xml" />
         <option value="$PROJECT_DIR$/app/src/main/java/com/giosis/util/qdrive/list/delivery/DeliveryDoneActivity.java" />
         <option value="$PROJECT_DIR$/app/src/main/java/com/giosis/util/qdrive/list/delivery/DeliveryDoneUploadHelper.java" />
         <option value="$PROJECT_DIR$/app/src/main/java/com/giosis/util/qdrive/main/DeviceDataUploadHelper.java" />
@@ -392,6 +417,15 @@
         <option value="$PROJECT_DIR$/app/src/main/java/com/giosis/util/qdrive/list/pickup/PickupFailedUploadHelper.java" />
         <option value="$PROJECT_DIR$/app/build.gradle" />
         <option value="$PROJECT_DIR$/app/src/main/assets/www/libs/js/enviroment.js" />
+        <option value="$PROJECT_DIR$/app/src/main/java/com/giosis/util/qdrive/list/PickupTripDetailDialog.java" />
+        <option value="$PROJECT_DIR$/app/src/main/res/layout/dialog_pickup_type.xml" />
+        <option value="$PROJECT_DIR$/app/src/main/res/values/strings.xml" />
+        <option value="$PROJECT_DIR$/app/src/main/res/values/colors.xml" />
+        <option value="$PROJECT_DIR$/app/src/main/java/com/giosis/util/qdrive/main/AppBaseActivity.java" />
+        <option value="$PROJECT_DIR$/app/src/main/java/com/giosis/util/qdrive/createpickup/SearchAddressDialog.kt" />
+        <option value="$PROJECT_DIR$/app/src/main/java/com/giosis/util/qdrive/createpickup/LinkQoo10AccountDialog.kt" />
+        <option value="$PROJECT_DIR$/app/src/main/res/layout/dialog_create_pickup_confirm.xml" />
+        <option value="$PROJECT_DIR$/app/src/main/AndroidManifest.xml" />
         <option value="$PROJECT_DIR$/app/src/main/java/com/giosis/util/qdrive/barcodescanner/ManualHelper.java" />
       </list>
     </option>
@@ -409,6 +443,34 @@
       <foldersAlwaysOnTop value="true" />
     </navigator>
     <panes>
+      <pane id="PackagesPane" />
+      <pane id="Scope" />
+      <pane id="AndroidView">
+        <subPane>
+          <expand>
+            <path>
+              <item name="git_Qdrive_SG" type="1abcf292:AndroidViewProjectNode" />
+              <item name="app" type="feadf853:AndroidModuleNode" />
+            </path>
+            <path>
+              <item name="git_Qdrive_SG" type="1abcf292:AndroidViewProjectNode" />
+              <item name="app" type="feadf853:AndroidModuleNode" />
+              <item name="java" type="edd41e36:AndroidSourceTypeNode" />
+            </path>
+            <path>
+              <item name="git_Qdrive_SG" type="1abcf292:AndroidViewProjectNode" />
+              <item name="app" type="feadf853:AndroidModuleNode" />
+              <item name="java" type="edd41e36:AndroidSourceTypeNode" />
+              <item name="qdrive" type="cbb59c9e:AndroidPsiDirectoryNode" />
+            </path>
+            <path>
+              <item name="git_Qdrive_SG" type="1abcf292:AndroidViewProjectNode" />
+              <item name="Gradle Scripts" type="ae0cef3a:AndroidBuildScriptsGroupNode" />
+            </path>
+          </expand>
+          <select />
+        </subPane>
+      </pane>
       <pane id="ProjectPane">
         <subPane>
           <expand>
@@ -455,82 +517,6 @@
           <select />
         </subPane>
       </pane>
-      <pane id="AndroidView">
-        <subPane>
-          <expand>
-            <path>
-              <item name="git_Qdrive_SG" type="1abcf292:AndroidViewProjectNode" />
-              <item name="app" type="feadf853:AndroidModuleNode" />
-            </path>
-            <path>
-              <item name="git_Qdrive_SG" type="1abcf292:AndroidViewProjectNode" />
-              <item name="app" type="feadf853:AndroidModuleNode" />
-              <item name="java" type="edd41e36:AndroidSourceTypeNode" />
-            </path>
-            <path>
-              <item name="git_Qdrive_SG" type="1abcf292:AndroidViewProjectNode" />
-              <item name="app" type="feadf853:AndroidModuleNode" />
-              <item name="java" type="edd41e36:AndroidSourceTypeNode" />
-              <item name="qdrive" type="cbb59c9e:AndroidPsiDirectoryNode" />
-            </path>
-            <path>
-              <item name="git_Qdrive_SG" type="1abcf292:AndroidViewProjectNode" />
-              <item name="app" type="feadf853:AndroidModuleNode" />
-              <item name="java" type="edd41e36:AndroidSourceTypeNode" />
-              <item name="qdrive" type="cbb59c9e:AndroidPsiDirectoryNode" />
-              <item name="list" type="462c0819:PsiDirectoryNode" />
-            </path>
-            <path>
-              <item name="git_Qdrive_SG" type="1abcf292:AndroidViewProjectNode" />
-              <item name="app" type="feadf853:AndroidModuleNode" />
-              <item name="java" type="edd41e36:AndroidSourceTypeNode" />
-              <item name="qdrive" type="cbb59c9e:AndroidPsiDirectoryNode" />
-              <item name="list" type="462c0819:PsiDirectoryNode" />
-              <item name="pickup" type="462c0819:PsiDirectoryNode" />
-            </path>
-            <path>
-              <item name="git_Qdrive_SG" type="1abcf292:AndroidViewProjectNode" />
-              <item name="app" type="feadf853:AndroidModuleNode" />
-              <item name="java" type="edd41e36:AndroidSourceTypeNode" />
-              <item name="qdrive" type="cbb59c9e:AndroidPsiDirectoryNode" />
-              <item name="util" type="462c0819:PsiDirectoryNode" />
-            </path>
-            <path>
-              <item name="git_Qdrive_SG" type="1abcf292:AndroidViewProjectNode" />
-              <item name="app" type="feadf853:AndroidModuleNode" />
-              <item name="assets" type="edd41e36:AndroidSourceTypeNode" />
-            </path>
-            <path>
-              <item name="git_Qdrive_SG" type="1abcf292:AndroidViewProjectNode" />
-              <item name="app" type="feadf853:AndroidModuleNode" />
-              <item name="assets" type="edd41e36:AndroidSourceTypeNode" />
-              <item name="www" type="cbb59c9e:AndroidPsiDirectoryNode" />
-            </path>
-            <path>
-              <item name="git_Qdrive_SG" type="1abcf292:AndroidViewProjectNode" />
-              <item name="app" type="feadf853:AndroidModuleNode" />
-              <item name="assets" type="edd41e36:AndroidSourceTypeNode" />
-              <item name="www" type="cbb59c9e:AndroidPsiDirectoryNode" />
-              <item name="libs" type="462c0819:PsiDirectoryNode" />
-            </path>
-            <path>
-              <item name="git_Qdrive_SG" type="1abcf292:AndroidViewProjectNode" />
-              <item name="app" type="feadf853:AndroidModuleNode" />
-              <item name="assets" type="edd41e36:AndroidSourceTypeNode" />
-              <item name="www" type="cbb59c9e:AndroidPsiDirectoryNode" />
-              <item name="libs" type="462c0819:PsiDirectoryNode" />
-              <item name="js" type="462c0819:PsiDirectoryNode" />
-            </path>
-            <path>
-              <item name="git_Qdrive_SG" type="1abcf292:AndroidViewProjectNode" />
-              <item name="Gradle Scripts" type="ae0cef3a:AndroidBuildScriptsGroupNode" />
-            </path>
-          </expand>
-          <select />
-        </subPane>
-      </pane>
-      <pane id="Scope" />
-      <pane id="PackagesPane" />
     </panes>
   </component>
   <component name="ProjectViewState">
@@ -581,14 +567,18 @@
     <property name="settings.editor.selected.configurable" value="preferences.pluginManager" />
   </component>
   <component name="RecentsManager">
-    <key name="MoveFile.RECENT_KEYS">
-      <recent name="F:\Android project\git_Qdrive_SG\app\src\main\res\drawable" />
-    </key>
     <key name="CopyKotlinDeclarationDialog.RECENTS_KEY">
       <recent name="com.giosis.util.qdrive.createpickup" />
       <recent name="com.giosis.util.qdrive.singapore" />
       <recent name="com.giosis.util.qdrive.list.pickup" />
       <recent name="com.giosis.util.qdrive.qdelivery" />
+    </key>
+    <key name="CopyFile.RECENT_KEYS">
+      <recent name="F:\Android project\git_Qdrive_SG\app\src\main\res\layout" />
+      <recent name="F:\Android project\git_Qdrive_SG\app\src\main\res\drawable" />
+      <recent name="F:\Android project\git_Qdrive_SG\app\src\main\res\drawable-hdpi" />
+      <recent name="$PROJECT_DIR$/app/src/main/res/drawable" />
+      <recent name="F:\Android project\0_Qdrive_SG\app\src\main\res\layout" />
     </key>
     <key name="MoveClassesOrPackagesDialog.RECENTS_KEY">
       <recent name="com.giosis.util.qdrive.singapore" />
@@ -600,12 +590,8 @@
       <recent name="com.giosis.util.qdrive.list.pickup" />
       <recent name="com.giosis.util.qdrive.util" />
     </key>
-    <key name="CopyFile.RECENT_KEYS">
+    <key name="MoveFile.RECENT_KEYS">
       <recent name="F:\Android project\git_Qdrive_SG\app\src\main\res\drawable" />
-      <recent name="F:\Android project\git_Qdrive_SG\app\src\main\res\layout" />
-      <recent name="F:\Android project\git_Qdrive_SG\app\src\main\res\drawable-hdpi" />
-      <recent name="$PROJECT_DIR$/app/src/main/res/drawable" />
-      <recent name="F:\Android project\0_Qdrive_SG\app\src\main\res\layout" />
     </key>
   </component>
   <component name="RunDashboard">
@@ -726,13 +712,6 @@
       <option name="number" value="Default" />
       <option name="presentableId" value="Default" />
       <updated>1557889152723</updated>
-    </task>
-    <task id="LOCAL-00002" summary="QDelivery _ 1">
-      <created>1574835893607</created>
-      <option name="number" value="00002" />
-      <option name="presentableId" value="LOCAL-00002" />
-      <option name="project" value="LOCAL" />
-      <updated>1574835893607</updated>
     </task>
     <task id="LOCAL-00003" summary="Camera _ 1">
       <created>1574843893391</created>
@@ -1070,7 +1049,14 @@
       <option name="project" value="LOCAL" />
       <updated>1593416580859</updated>
     </task>
-    <option name="localTasksCounter" value="51" />
+    <task id="LOCAL-00051" summary="기능개편 2, 3번 수정(정리) _ 3">
+      <created>1593486908597</created>
+      <option name="number" value="00051" />
+      <option name="presentableId" value="LOCAL-00051" />
+      <option name="project" value="LOCAL" />
+      <updated>1593486908597</updated>
+    </task>
+    <option name="localTasksCounter" value="52" />
     <servers />
   </component>
   <component name="TodoView">
@@ -1095,22 +1081,22 @@
       <window_info id="Resources Explorer" order="6" />
       <window_info id="Capture Tool" order="7" />
       <window_info id="Favorites" order="8" side_tool="true" />
-      <window_info anchor="bottom" id="Build" order="0" weight="0.34770888" />
+      <window_info anchor="bottom" id="Build" order="0" visible="true" weight="0.3470716" />
       <window_info anchor="bottom" id="Run" order="1" />
-      <window_info anchor="bottom" id="Logcat" order="2" sideWeight="0.49928367" weight="0.32614556" />
+      <window_info anchor="bottom" id="Logcat" order="2" sideWeight="0.49928367" weight="0.28060672" />
       <window_info anchor="bottom" id="TODO" order="3" weight="0.32884097" />
       <window_info anchor="bottom" id="Android Profiler" order="4" />
       <window_info anchor="bottom" id="Find" order="5" weight="0.32884097" />
       <window_info anchor="bottom" id="Terminal" order="6" />
       <window_info anchor="bottom" id="Event Log" order="7" sideWeight="0.5007163" side_tool="true" weight="0.32884097" />
-      <window_info anchor="bottom" id="Version Control" order="8" visible="true" weight="0.3286334" />
+      <window_info anchor="bottom" id="Version Control" order="8" weight="0.3286334" />
       <window_info anchor="bottom" id="Debug" order="9" />
       <window_info anchor="right" id="Device File Explorer" order="0" side_tool="true" />
       <window_info anchor="right" id="Capture Analysis" order="1" />
       <window_info anchor="right" id="Theme Preview" order="2" />
       <window_info anchor="right" id="Gradle" order="3" />
       <window_info anchor="right" id="Palette&#9;" order="4" />
-      <window_info anchor="right" id="Preview" order="5" weight="0.25692964" />
+      <window_info anchor="right" id="Preview" order="5" weight="0.24946696" />
     </layout>
   </component>
   <component name="Vcs.Log.History.Properties">
@@ -1157,7 +1143,6 @@
     </option>
   </component>
   <component name="VcsManagerConfiguration">
-    <MESSAGE value="sort_idx 수정,&#10;공통변수 수정, &#10;코드 수정" />
     <MESSAGE value="sort_idx  수정,&#10;MySharedPreferences 수정,&#10;코드 수정" />
     <MESSAGE value="공통변수 정리" />
     <MESSAGE value="코드 정리 (Helper)" />
@@ -1182,7 +1167,8 @@
     <MESSAGE value="기능개편 4번 (1)" />
     <MESSAGE value="기능개편 2, 3번 수정 _ 1" />
     <MESSAGE value="기능개편 2, 3번 수정 _ 2" />
-    <option name="LAST_COMMIT_MESSAGE" value="기능개편 2, 3번 수정 _ 2" />
+    <MESSAGE value="기능개편 2, 3번 수정(정리) _ 3" />
+    <option name="LAST_COMMIT_MESSAGE" value="기능개편 2, 3번 수정(정리) _ 3" />
   </component>
   <component name="WindowStateProjectService">
     <state x="472" y="307" key="#com.intellij.ide.util.projectWizard.JdkChooserPanel.MyDialog" timestamp="1592787475778">
@@ -1223,158 +1209,10 @@
     </breakpoint-manager>
   </component>
   <component name="editorHistoryManager">
-    <entry file="file://$PROJECT_DIR$/app/src/main/res/layout/dialog_search_address.xml">
-      <provider editor-type-id="android-designer2" />
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="141">
-          <caret line="91" column="47" lean-forward="true" selection-start-line="91" selection-start-column="47" selection-end-line="91" selection-end-column="47" />
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/app/src/main/java/com/giosis/util/qdrive/createpickup/LinkQoo10AccountDialog.kt">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="130">
-          <caret line="8" column="37" lean-forward="true" selection-start-line="8" selection-start-column="37" selection-end-line="8" selection-end-column="37" />
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/app/src/main/java/com/giosis/util/qdrive/list/pickup/PickupAddScanActivity.kt">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="48">
-          <caret line="44" selection-start-line="44" selection-end-line="44" />
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/app/src/main/res/values/styles.xml">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="-780" />
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/app/src/main/java/com/giosis/util/qdrive/createpickup/SearchAddressAdapter.kt">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="160">
-          <caret line="36" column="70" selection-start-line="36" selection-start-column="70" selection-end-line="36" selection-end-column="70" />
-          <folding>
-            <element signature="e#45#322#0" expanded="true" />
-          </folding>
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/app/src/main/res/layout/item_search_address.xml">
-      <provider editor-type-id="android-designer2" />
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="160">
-          <caret line="26" column="24" selection-start-line="26" selection-start-column="24" selection-end-line="26" selection-end-column="24" />
-          <folding>
-            <element signature="e#623#646#0" expanded="true" />
-            <element signature="e#994#1017#0" expanded="true" />
-          </folding>
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/app/src/main/java/com/giosis/util/qdrive/createpickup/ChangePickupTypeDialog.kt">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="78">
-          <caret line="8" selection-start-line="8" selection-end-line="8" />
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/app/src/main/res/layout/top_title.xml">
-      <provider editor-type-id="android-designer2" />
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="104">
-          <caret line="67" column="53" selection-start-line="67" selection-start-column="29" selection-end-line="67" selection-end-column="53" />
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/app/src/main/java/com/giosis/util/qdrive/createpickup/SearchAddressDialog.kt">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="78">
-          <caret line="8" selection-start-line="8" selection-end-line="8" />
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/app/src/main/res/layout/activity_create_pickup_intro.xml">
-      <provider editor-type-id="android-designer2" />
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="216">
-          <caret line="36" column="41" selection-start-line="36" selection-start-column="41" selection-end-line="36" selection-end-column="41" />
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/app/src/main/res/layout/dialog_pickup_type.xml">
-      <provider editor-type-id="android-designer2" />
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="156">
-          <caret line="147" column="68" selection-start-line="147" selection-start-column="37" selection-end-line="147" selection-end-column="68" />
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/app/src/main/res/layout/activity_create_pickup_b2c.xml">
-      <provider editor-type-id="android-designer2" />
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="167">
-          <caret line="85" column="76" selection-start-line="85" selection-start-column="49" selection-end-line="85" selection-end-column="76" />
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/app/src/main/res/layout/activity_create_pickup_c2c.xml">
-      <provider editor-type-id="android-designer2" />
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="-44">
-          <caret line="218" column="57" selection-start-line="218" selection-start-column="57" selection-end-line="218" selection-end-column="57" />
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/app/src/main/res/layout/activity_create_pickup_c2c_bottom.xml">
-      <provider editor-type-id="android-designer2" />
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="136">
-          <caret line="169" column="70" selection-start-line="169" selection-start-column="41" selection-end-line="169" selection-end-column="70" />
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/app/src/main/java/com/giosis/util/qdrive/createpickup/CreatePickupB2CTypeActivity.kt">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="242">
-          <caret line="93" column="80" lean-forward="true" selection-start-line="93" selection-start-column="14" selection-end-line="93" selection-end-column="80" />
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/app/src/main/java/com/giosis/util/qdrive/createpickup/CreatePickupC2CTypeActivity.kt">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="242">
-          <caret line="105" column="51" selection-start-line="105" selection-start-column="51" selection-end-line="105" selection-end-column="51" />
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/app/src/main/res/layout/activity_create_pickup_c2c_complete.xml">
-      <provider editor-type-id="android-designer2" />
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="167">
-          <caret line="160" column="55" selection-start-line="160" selection-start-column="33" selection-end-line="160" selection-end-column="55" />
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/app/src/main/java/com/giosis/util/qdrive/createpickup/CountryResult.kt" />
-    <entry file="file://$PROJECT_DIR$/app/src/main/java/com/giosis/util/qdrive/createpickup/CreatePickupC2CCompleteActivity.kt">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="243">
-          <caret line="58" column="32" selection-start-line="58" selection-start-column="32" selection-end-line="58" selection-end-column="32" />
-        </state>
-      </provider>
-    </entry>
     <entry file="file://$PROJECT_DIR$/app/src/main/java/com/giosis/util/qdrive/createpickup/CreatePickupIntroActivity.kt">
       <provider selected="true" editor-type-id="text-editor">
         <state relative-caret-position="104">
           <caret line="13" column="14" selection-start-line="13" selection-start-column="14" selection-end-line="13" selection-end-column="14" />
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/app/src/main/java/com/giosis/util/qdrive/main/AppBaseActivity.java">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="28">
-          <caret line="135" selection-start-line="135" selection-end-line="135" />
         </state>
       </provider>
     </entry>
@@ -1460,17 +1298,6 @@
         </state>
       </provider>
     </entry>
-    <entry file="file://$PROJECT_DIR$/app/src/main/java/com/giosis/util/qdrive/list/List_InProgressFragment.java">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="141">
-          <caret line="595" column="33" lean-forward="true" selection-start-line="595" selection-start-column="33" selection-end-line="595" selection-end-column="33" />
-          <folding>
-            <element signature="e#4637#4638#0" expanded="true" />
-            <element signature="e#4660#4661#0" expanded="true" />
-          </folding>
-        </state>
-      </provider>
-    </entry>
     <entry file="file://$PROJECT_DIR$/app/src/main/java/com/giosis/util/qdrive/list/pickup/PickupZeroQtyUploadHelper.java">
       <provider selected="true" editor-type-id="text-editor">
         <state relative-caret-position="219">
@@ -1489,14 +1316,6 @@
       <provider selected="true" editor-type-id="text-editor">
         <state relative-caret-position="312">
           <caret line="41" column="32" lean-forward="true" selection-start-line="41" selection-start-column="32" selection-end-line="41" selection-end-column="32" />
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/app/src/main/AndroidManifest.xml">
-      <provider editor-type-id="android-manifest" />
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="40">
-          <caret line="323" column="51" lean-forward="true" selection-start-line="323" selection-start-column="51" selection-end-line="323" selection-end-column="51" />
         </state>
       </provider>
     </entry>
@@ -1599,22 +1418,156 @@
     </entry>
     <entry file="file://$PROJECT_DIR$/app/build.gradle">
       <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="312">
-          <caret line="18" column="16" lean-forward="true" selection-start-line="17" selection-start-column="5" selection-end-line="18" selection-end-column="16" />
+        <state relative-caret-position="130">
+          <caret line="11" column="24" selection-start-line="11" selection-start-column="24" selection-end-line="11" selection-end-column="24" />
         </state>
       </provider>
     </entry>
-    <entry file="file://$PROJECT_DIR$/app/src/main/assets/www/libs/js/enviroment.js">
+    <entry file="file://$PROJECT_DIR$/app/src/main/java/com/giosis/util/qdrive/list/List_InProgressFragment.java">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="282">
+          <caret line="865" selection-start-line="865" selection-end-line="865" />
+          <folding>
+            <element signature="e#4637#4638#0" expanded="true" />
+            <element signature="e#4660#4661#0" expanded="true" />
+          </folding>
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/app/src/main/java/com/giosis/util/qdrive/list/PickupTripDetailDialog.java">
       <provider selected="true" editor-type-id="text-editor">
         <state relative-caret-position="208">
-          <caret line="8" lean-forward="true" selection-start-line="8" selection-end-line="8" />
+          <caret line="24" column="20" selection-start-line="24" selection-start-column="20" selection-end-line="24" selection-end-column="20" />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/app/src/main/res/values/strings.xml">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="457">
+          <caret line="573" column="43" selection-start-line="573" selection-start-column="18" selection-end-line="573" selection-end-column="43" />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/app/src/main/res/values/colors.xml">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="208">
+          <caret line="50" column="29" selection-start-line="50" selection-start-column="17" selection-end-line="50" selection-end-column="29" />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/app/src/main/res/layout/dialog_search_address.xml">
+      <provider editor-type-id="android-designer2" />
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="390">
+          <caret line="15" column="53" selection-start-line="15" selection-start-column="29" selection-end-line="15" selection-end-column="53" />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/app/src/main/java/com/giosis/util/qdrive/createpickup/LinkQoo10AccountDialog.kt">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="182">
+          <caret line="12" lean-forward="true" selection-start-line="12" selection-end-line="12" />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/app/src/main/java/com/giosis/util/qdrive/createpickup/ChangePickupTypeDialog.kt">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="338">
+          <caret line="21" column="7" selection-start-line="21" selection-start-column="7" selection-end-line="24" selection-end-column="9" />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/app/src/main/java/com/giosis/util/qdrive/createpickup/SearchAddressDialog.kt">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="257">
+          <caret line="29" column="46" lean-forward="true" selection-start-line="29" selection-start-column="46" selection-end-line="29" selection-end-column="46" />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/app/src/main/res/layout/dialog_pickup_type.xml">
+      <provider editor-type-id="android-designer2" />
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="156">
+          <caret line="24" column="21" lean-forward="true" selection-start-line="24" selection-start-column="21" selection-end-line="24" selection-end-column="21" />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/app/src/main/res/layout/dialog_pickup_trip_detail.xml">
+      <provider editor-type-id="android-designer2" />
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="442">
+          <caret line="32" column="30" selection-start-line="32" selection-start-column="30" selection-end-line="32" selection-end-column="30" />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/app/src/main/res/layout/dialog_link_qoo10_account.xml">
+      <provider editor-type-id="android-designer2" />
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="234">
+          <caret line="24" column="61" selection-start-line="24" selection-start-column="61" selection-end-line="24" selection-end-column="61" />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/app/src/main/java/com/giosis/util/qdrive/createpickup/QDeliveryStep3Activity.kt" />
+    <entry file="file://$PROJECT_DIR$/app/src/main/java/com/giosis/util/qdrive/createpickup/MyQDeliveryActivity.java" />
+    <entry file="file://$PROJECT_DIR$/app/src/main/java/com/giosis/util/qdrive/createpickup/MyQDeliveryListAdapter.java" />
+    <entry file="file://$PROJECT_DIR$/app/src/main/java/com/giosis/util/qdrive/createpickup/MyQDeliveryResult.java" />
+    <entry file="file://$PROJECT_DIR$/app/src/main/java/com/giosis/util/qdrive/createpickup/MyRouteActivity.kt" />
+    <entry file="file://$PROJECT_DIR$/app/src/main/res/layout/dialog_create_pickup_confirm.xml">
+      <provider editor-type-id="android-designer2" />
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="234">
+          <caret line="9" column="44" selection-start-line="9" selection-start-column="44" selection-end-line="9" selection-end-column="44" />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/app/src/main/java/com/giosis/util/qdrive/main/AppBaseActivity.java">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="2964">
+          <caret line="142" selection-start-line="142" selection-end-line="142" />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/app/src/main/AndroidManifest.xml">
+      <provider editor-type-id="android-manifest" />
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="8008">
+          <caret line="308" selection-start-line="308" selection-end-line="308" />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/app/src/main/java/com/giosis/util/qdrive/createpickup/PackingCostResult.kt">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="130">
+          <caret line="5" column="8" selection-start-line="5" selection-start-column="8" selection-end-line="5" selection-end-column="8" />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/app/src/main/java/com/giosis/util/qdrive/createpickup/QDeliveryData.kt">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="104">
+          <caret line="4" column="13" selection-start-line="4" selection-start-column="13" selection-end-line="4" selection-end-column="13" />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/app/src/main/java/com/giosis/util/qdrive/createpickup/QDeliveryStep4Activity.kt">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="182">
+          <caret line="69" selection-start-line="69" selection-end-line="69" />
         </state>
       </provider>
     </entry>
     <entry file="file://$PROJECT_DIR$/app/src/main/java/com/giosis/util/qdrive/barcodescanner/ManualHelper.java">
       <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="275">
-          <caret line="12" column="4" lean-forward="true" selection-start-line="12" selection-start-column="4" selection-end-line="12" selection-end-column="4" />
+        <state relative-caret-position="153">
+          <caret line="9" column="46" selection-start-line="9" selection-start-column="46" selection-end-line="9" selection-end-column="46" />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/app/src/main/assets/www/libs/js/enviroment.js">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="260">
+          <caret line="10" column="14" lean-forward="true" selection-start-line="10" selection-start-column="14" selection-end-line="10" selection-end-column="14" />
         </state>
       </provider>
     </entry>

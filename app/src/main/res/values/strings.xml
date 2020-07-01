@@ -256,8 +256,7 @@
 
     <string name="text_request_qdelivery">Request Qdelivery</string>
     <string name="text_my_qdelivery">My Qdelivery</string>
-    <string name="text_from">From</string>
-    <string name="text_to">To</string>
+
     <string name="text_default">Default</string>
     <string name="text_manual">Manual</string>
     <string name="text_name1">Name</string>
@@ -265,21 +264,14 @@
     <string name="text_address">Address</string>
     <string name="text_contact_no">Contact no.</string>
     <string name="text_receipt">Receipt</string>
-    <string name="text_search_address">Search address</string>
     <string name="text_1_month">1 month</string>
     <string name="text_select_date">Select date</string>
     <string name="text_select_time">Select time</string>
     <string name="text_pickup_memo">Pickup Memo</string>
-    <string name="text_item_information">Item information</string>
-    <string name="text_item_name">Item Name</string>
-    <string name="text_item_price">Item Price</string>
     <string name="text_item_definition">Item Definition</string>
     <string name="text_packing_information">Packing information</string>
-    <string name="text_size_lhw">Size (L+H+W)</string>
-    <string name="text_weight">Weight</string>
-    <string name="text_shipping_cost">Estimate Shipping Cost</string>
+
     <string name="text_edit">Edit</string>
-    <string name="text_order_complete">Order Complete!</string>
 
     <string name="text_summary">Summary</string>
     <string name="text_detail">Detail</string>
@@ -527,9 +519,6 @@
     <string name="text_nearer">Nearer</string>
     <string name="msg_error_get_gps">Error. Failed to get GPS.</string>
 
-
-    <!-- -->
-
     <string name="select_device">Select a device to connect</string>
     <string name="button_scan">Scan for devices</string>
     <string name="scanning">Scanning for devices …</string>
@@ -537,6 +526,60 @@
     <string name="title_paired_devices">Paired Devices</string>
     <string name="none_paired">No devices have been paired</string>
     <string name="none_found">No devices found</string>
+
+
+    <!-- NOTIFICATION  2020.하반기 Qdrive 개선사항 -->
+    <string name="text_create_pickup_order">Create Pickup Order</string>
+    <string name="text_qx_pickup_order">Qx Pickup Order</string>
+    <string name="text_choose_pickup_type">Choose Pickup Type</string>
+    <string name="text_b_to_c_type">B2C Type</string>
+    <string name="text_by_qoo10_seller_id">By Qoo10 Seller ID</string>
+    <string name="text_manual_register">Manual Register</string>
+    <string name="text_c_to_c_type">C2C Type</string>
+    <string name="text_pay_by_driver">Pay by Driver</string>
+    <string name="text_pay_by_customer">Pay by Customer</string>
+    <string name="text_change_pickup_type">Change Pickup Type</string>
+    <string name="text_seller_id">Seller ID</string>
+    <string name="text_applicant_name">Applicant Name</string>
+    <string name="text_pickup_address">Pickup Address</string>
+    <string name="text_remarks">Remarks</string>
+    <string name="symbol_star">*</string>
+    <string name="text_select_country">Select Country</string>
+    <string name="text_from">From</string>
+    <string name="text_to">To</string>
+    <string name="text_item_information">Item information</string>
+    <string name="text_item_name">Item Name</string>
+    <string name="text_item_price">Item Price</string>
+    <string name="text_size_lhw">Size (L+H+W)</string>
+    <string name="text_weight">Weight(kg)</string>
+    <string name="text_estimate_shipping_cost">Estimate Shipping Cost</string>
+    <string name="text_payer_information">Payer Information</string>
+    <string name="text_driver_qoo10_id">Driver\'s Qoo10 ID</string>
+    <string name="text_qmoney_balance">Qmoney Balance</string>
+    <string name="text_sender_information">Sender Information</string>
+    <string name="text_load_default_setting">Load Default Setting</string>
+    <string name="text_sender_name">Sender Name</string>
+    <string name="text_delivery_information">Delivery Information</string>
+    <string name="text_receiver_name">Receiver Name</string>
+    <string name="text_receiver_address">Receiver Address</string>
+    <string name="text_mobile_no_for_qpay">Mobile no. for Qpay</string>
+    <string name="text_order_complete">Order Complete</string>
+    <string name="symbol_exclamation_mark">!</string>
+    <string name="msg_successfully_registered">Successfully registered.</string>
+    <string name="msg_c2c_driver_registered">Please confirm then you can see the details from the List menu.</string>
+    <string name="msg_c2c_customer_registered">Qpay payment request has been sent.\nYou can see the details from the List menu. Only payment completed order can be in-housed.</string>
+    <string name="text_amount">Amount </string>
+    <string name="text_search_address">Search address</string>
+    <string name="text_postal_code_or_detail_address">Postal Code or Detail Address</string>
+    <string name="text_pickup_order_confirm">Pickup order Confirm</string>
+    <!-- TODO  -->
+
+
+    <string name="text_link_qoo10_account">Link Qoo10 Account</string>
+    <string name="text_qoo10_account">Qoo10 Account</string>
+    <string name="text_qoo10_id">Qoo10 ID</string>
+    <string name="text_qoo10_password">Qoo10 Password</string>
+    <string name="text_register">Register</string>
 
 
     <string name="msg_intent_failed">Sorry, the requested application could not be launched. The barcode contents may be invalid.</string>

@@ -308,10 +308,6 @@
 
 
         <activity
-            android:name="com.giosis.util.qdrive.createpickup.MyRouteActivity"
-            android:screenOrientation="portrait" />
-
-        <activity
             android:name="com.giosis.util.qdrive.createpickup.CreatePickupIntroActivity"
             android:screenOrientation="portrait" />
 
@@ -328,17 +324,10 @@
             android:screenOrientation="portrait" />
 
         <activity
-            android:name="com.giosis.util.qdrive.createpickup.QDeliveryStep3Activity"
-            android:screenOrientation="portrait" />
-
-        <activity
             android:name="com.giosis.util.qdrive.createpickup.QDeliveryStep4Activity"
             android:screenOrientation="portrait" />
 
 
-        <activity
-            android:name="com.giosis.util.qdrive.createpickup.MyQDeliveryActivity"
-            android:screenOrientation="portrait" />
         <activity android:name="com.giosis.util.qdrive.barcodescanner.bluetooth.Settings" />
         <activity android:name="com.giosis.util.qdrive.barcodescanner.bluetooth.SystemSetting" />
         <activity android:name="com.giosis.util.qdrive.barcodescanner.bluetooth.MSRSetting" />

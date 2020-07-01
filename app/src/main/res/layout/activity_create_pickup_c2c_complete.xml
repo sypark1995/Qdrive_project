@@ -1,0 +1,174 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:background="@color/color_f6f6f6"
+    android:orientation="vertical">
+
+    <include layout="@layout/top_title" />
+
+    <RelativeLayout
+        android:layout_width="match_parent"
+        android:layout_height="match_parent">
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_centerInParent="true"
+            android:layout_marginStart="40dp"
+            android:layout_marginEnd="40dp"
+            android:gravity="center"
+            android:orientation="vertical">
+
+            <ImageView
+                android:layout_width="182dp"
+                android:layout_height="90dp"
+                android:background="@drawable/img_pickup_order_complete" />
+
+            <LinearLayout
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="15dp"
+                android:layout_marginBottom="10dp"
+                android:orientation="horizontal">
+
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="@string/text_order_complete"
+                    android:textColor="@color/color_84cc80"
+                    android:textSize="@dimen/text_size_48px"
+                    android:textStyle="bold" />
+
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="@string/symbol_exclamation_mark"
+                    android:textColor="@color/color_84cc80"
+                    android:textSize="@dimen/text_size_48px"
+                    android:textStyle="italic|bold" />
+            </LinearLayout>
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="@string/msg_successfully_registered"
+                android:textColor="@color/color_767676"
+                android:textSize="@dimen/text_size_32px" />
+
+            <TextView
+                android:id="@+id/text_c2c_success_message"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="4dp"
+                android:gravity="center_horizontal"
+                android:lineSpacingMultiplier="1.25"
+                android:text="@string/msg_c2c_customer_registered"
+                android:textColor="@color/color_767676"
+                android:textSize="@dimen/text_size_32px" />
+
+            <LinearLayout
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="35dp"
+                android:orientation="horizontal">
+
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="@string/text_pickup_no"
+                    android:textColor="@color/color_232323"
+                    android:textSize="@dimen/text_size_32px"
+                    android:textStyle="bold" />
+
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginStart="5dp"
+                    android:textColor="@color/color_232323"
+                    android:textSize="@dimen/text_size_32px"
+                    android:textStyle="bold"
+                    tools:text="C12345678SGSG" />
+            </LinearLayout>
+
+            <LinearLayout
+                android:id="@+id/layout_c2c_complete_customer_info"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_gravity="center_horizontal"
+                android:orientation="vertical">
+
+                <LinearLayout
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="5dp"
+                    android:orientation="horizontal">
+
+                    <TextView
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:text="@string/text_mobile_no"
+                        android:textColor="@color/color_232323"
+                        android:textSize="@dimen/text_size_32px"
+                        android:textStyle="bold" />
+
+                    <TextView
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_marginStart="5dp"
+                        android:textColor="@color/color_232323"
+                        android:textSize="@dimen/text_size_32px"
+                        android:textStyle="bold"
+                        tools:text="+65-8888-9999" />
+                </LinearLayout>
+
+                <LinearLayout
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_gravity="center_horizontal"
+                    android:layout_marginTop="5dp"
+                    android:orientation="horizontal">
+
+                    <TextView
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:text="@string/text_amount"
+                        android:textColor="@color/color_232323"
+                        android:textSize="@dimen/text_size_32px"
+                        android:textStyle="bold" />
+
+                    <TextView
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_marginStart="5dp"
+                        android:textColor="@color/color_232323"
+                        android:textSize="@dimen/text_size_32px"
+                        android:textStyle="bold"
+                        tools:text="S$" />
+
+                    <TextView
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:textColor="@color/color_232323"
+                        android:textSize="@dimen/text_size_32px"
+                        android:textStyle="bold"
+                        tools:text="9.99" />
+                </LinearLayout>
+            </LinearLayout>
+
+            <Button
+                android:id="@+id/btn_c2c_order_complete"
+                android:layout_width="131dp"
+                android:layout_height="40dp"
+                android:layout_gravity="center"
+                android:layout_marginTop="40dp"
+                android:background="@drawable/back_round_20_4fb648"
+                android:gravity="center"
+                android:text="@string/button_confirm"
+                android:textAllCaps="false"
+                android:textColor="@color/white"
+                android:textSize="@dimen/text_size_38px" />
+        </LinearLayout>
+    </RelativeLayout>
+</LinearLayout>
