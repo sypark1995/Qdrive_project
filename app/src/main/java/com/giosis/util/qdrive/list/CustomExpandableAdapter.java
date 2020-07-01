@@ -729,14 +729,11 @@ public class CustomExpandableAdapter extends BaseExpandableListAdapter implement
                 }
 
 
-                PickupTripDetailPopup dialog = new PickupTripDetailPopup(context, tripDataArrayList);
+              /*  PickupTripDetailDialog dialog = new PickupTripDetailDialog(context, tripDataArrayList);
                 dialog.show();
                 Window window = dialog.getWindow();
                 window.setBackgroundDrawable(new ColorDrawable(Color.TRANSPARENT));
-                window.setLayout(LinearLayout.LayoutParams.MATCH_PARENT, LinearLayout.LayoutParams.WRAP_CONTENT);
-                //
-             /*   Intent intent = new Intent(context, PickupTripDetailPopup.class);
-                context.startActivity(intent);*/
+                window.setLayout(LinearLayout.LayoutParams.MATCH_PARENT, LinearLayout.LayoutParams.WRAP_CONTENT);*/
             }
         });
 
