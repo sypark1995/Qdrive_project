@@ -17,9 +17,9 @@ import androidx.core.content.ContextCompat;
 import androidx.drawerlayout.widget.DrawerLayout;
 
 import com.giosis.util.qdrive.barcodescanner.CaptureActivity;
+import com.giosis.util.qdrive.createpickup.CreatePickupIntroActivity;
 import com.giosis.util.qdrive.list.ListActivity;
 import com.giosis.util.qdrive.message.MessageListActivity;
-import com.giosis.util.qdrive.qdelivery.QDeliveryIntroActivity;
 import com.giosis.util.qdrive.settings.SettingActivity;
 import com.giosis.util.qdrive.singapore.R;
 import com.giosis.util.qdrive.singapore.ScanActivity;
@@ -102,19 +102,8 @@ public class AppBaseActivity extends AppCompatActivity {
         text_message_count = header.findViewById(R.id.text_message_count);
         btn_message.setOnClickListener(clickListener);
 
-        View footer = getLayoutInflater().inflate(R.layout.view_nav_list_footer, null, false);
-        LinearLayout layout_nav_footer_qdelivery = footer.findViewById(R.id.layout_nav_footer_qdelivery);
-        LinearLayout layout_nav_footer_topup = footer.findViewById(R.id.layout_nav_footer_topup);
-        layout_nav_footer_qdelivery.setOnClickListener(clickListener);
-        layout_nav_footer_topup.setOnClickListener(clickListener);
-
         nav_list.addHeaderView(header);
         nav_list.setAdapter(adapter);
-
-      /*  // TODO.  QDelivery
-        if (SharedPreferencesHelper.getSigninOpID(getApplicationContext()).equals("karam.kim")) {
-             nav_list.addFooterView(footer);
-        }*/
 
         // sub divider 칼라 없앰
         nav_list.setChildDivider(getResources().getDrawable(R.color.transparent));
@@ -146,55 +135,62 @@ public class AppBaseActivity extends AppCompatActivity {
         }
 
 
-        adapter.addItem(ContextCompat.getDrawable(this, R.drawable.side_icon_home_selector), getString(R.string.navi_home), null);
-        adapter.addItem(ContextCompat.getDrawable(this, R.drawable.side_icon_scan_selector), getString(R.string.navi_scan), arrayList);
-        adapter.addItem(ContextCompat.getDrawable(this, R.drawable.side_icon_list_selector), getString(R.string.navi_list), arrayList1);
-        adapter.addItem(ContextCompat.getDrawable(this, R.drawable.side_icon_statistics_selector), getString(R.string.navi_statistics), null);
-        adapter.addItem(ContextCompat.getDrawable(this, R.drawable.side_icon_settings_selector), getString(R.string.navi_setting), null);
+        adapter.addItem(ContextCompat.getDrawable(this, R.drawable.side_icon_home_selector), getString(R.string.navi_home), null, -1);
+        adapter.addItem(ContextCompat.getDrawable(this, R.drawable.side_icon_scan_selector), getString(R.string.navi_scan), arrayList, -1);
+        adapter.addItem(ContextCompat.getDrawable(this, R.drawable.side_icon_list_selector), getString(R.string.navi_list), arrayList1, -1);
+        adapter.addItem(ContextCompat.getDrawable(this, R.drawable.side_icon_statistics_selector), getString(R.string.navi_statistics), null, -1);
+        adapter.addItem(ContextCompat.getDrawable(this, R.drawable.side_icon_settings_selector), getString(R.string.navi_setting), null, -1);
+
+    //    if(SharedPreferencesHelper.getSigninPickupDriverYN(this).equals("Y")) {
+      /*  if(SharedPreferencesHelper.getSigninOpID(this).equals("karam.kim")) {
+            adapter.addItem(ContextCompat.getDrawable(this, R.drawable.icon_pickup_order), getString(R.string.text_create_pickup_order), null, 4);
+        }*/
 
         nav_list.setOnGroupClickListener(new ExpandableListView.OnGroupClickListener() {
             @Override
             public boolean onGroupClick(ExpandableListView expandableListView, View view, int position, long l) {
 
-                switch (position) {
-                    case 0: {   // HOME
+                String title = adapter.getItem(position).getTitle();
 
-                        drawerLayout.closeDrawers();
-                        if (!(top_title_string.contains(getString(R.string.navi_home)))) {
-                            Intent intent = new Intent(AppBaseActivity.this, MainActivity.class);
-                            startActivity(intent);
-                            finish();
-                        }
-                    }
-                    break;
+                if (title.equals(getString(R.string.navi_home))) {
 
-                    case 3: {   // STATISTIC
-
-                        drawerLayout.closeDrawers();
-                        Intent intent = new Intent(AppBaseActivity.this, StatisticsActivity.class);
+                    drawerLayout.closeDrawers();
+                    if (!(top_title_string.contains(getString(R.string.navi_home)))) {
+                        Intent intent = new Intent(AppBaseActivity.this, MainActivity.class);
                         startActivity(intent);
-
-                        if (!(top_title_string.contains(getString(R.string.navi_home)))) {
-                            finish();
-                        }
+                        finish();
                     }
-                    break;
+                } else if (title.equals(getString(R.string.navi_statistics))) {
 
-                    case 4: {   // SETTING
+                    drawerLayout.closeDrawers();
+                    Intent intent = new Intent(AppBaseActivity.this, StatisticsActivity.class);
+                    startActivity(intent);
 
-                        // TEST.
-                        drawerLayout.closeDrawers();
-                        Intent intent = new Intent(AppBaseActivity.this, SettingActivity.class);
-                        // Intent intent = new Intent(AppBaseActivity.this, MainTestVisitLog.class);
-                        //Intent intent = new Intent(AppBaseActivity.this, SMSVerificationActivity.class);
-                        // Intent intent = new Intent(AppBaseActivity.this, MyRouteActivity.class);
-                        startActivity(intent);
-
-                        if (!(top_title_string.contains(getString(R.string.navi_home)))) {
-                            finish();
-                        }
+                    if (!(top_title_string.contains(getString(R.string.navi_home)))) {
+                        finish();
                     }
-                    break;
+                } else if (title.equals(getString(R.string.navi_setting))) {
+
+                    // TEST.
+                    drawerLayout.closeDrawers();
+                    Intent intent = new Intent(AppBaseActivity.this, SettingActivity.class);
+                    // Intent intent = new Intent(AppBaseActivity.this, MainTestVisitLog.class);
+                    //Intent intent = new Intent(AppBaseActivity.this, SMSVerificationActivity.class);
+                    // Intent intent = new Intent(AppBaseActivity.this, MyRouteActivity.class);
+                    startActivity(intent);
+
+                    if (!(top_title_string.contains(getString(R.string.navi_home)))) {
+                        finish();
+                    }
+                } else if (title.equals(getString(R.string.text_create_pickup_order))) {
+
+                    drawerLayout.closeDrawers();
+                    Intent intent = new Intent(AppBaseActivity.this, CreatePickupIntroActivity.class);
+                    startActivity(intent);
+
+                    if (!(top_title_string.contains(getString(R.string.navi_home)))) {
+                        finish();
+                    }
                 }
 
                 return false;
@@ -370,20 +366,6 @@ public class AppBaseActivity extends AppCompatActivity {
 
                     Intent intent = new Intent(AppBaseActivity.this, SettingActivity.class);
                     startActivity(intent);
-                }
-                break;
-
-                case R.id.layout_nav_footer_qdelivery: {
-
-                    Intent intent = new Intent(AppBaseActivity.this, QDeliveryIntroActivity.class);
-                    startActivity(intent);
-                    overridePendingTransition(R.anim.slide_in_from_right, R.anim.slide_out_to_left);
-                    drawerLayout.closeDrawers();
-                }
-                break;
-
-                case R.id.layout_nav_footer_topup: {
-
                 }
                 break;
             }
