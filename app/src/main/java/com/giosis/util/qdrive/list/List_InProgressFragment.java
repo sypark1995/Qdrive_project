@@ -1,7 +1,6 @@
 package com.giosis.util.qdrive.list;
 
 
-import android.annotation.SuppressLint;
 import android.app.Activity;
 import android.app.ProgressDialog;
 import android.app.SearchManager;
@@ -14,7 +13,6 @@ import android.util.Log;
 import android.util.TypedValue;
 import android.view.LayoutInflater;
 import android.view.View;
-import android.view.View.OnClickListener;
 import android.view.ViewGroup;
 import android.view.inputmethod.InputMethodManager;
 import android.widget.AdapterView;
@@ -24,16 +22,14 @@ import android.widget.Button;
 import android.widget.EditText;
 import android.widget.ExpandableListAdapter;
 import android.widget.ExpandableListView;
-import android.widget.ExpandableListView.OnGroupCollapseListener;
-import android.widget.ExpandableListView.OnGroupExpandListener;
 import android.widget.FrameLayout;
-import android.widget.LinearLayout;
 import android.widget.ProgressBar;
 import android.widget.SearchView;
 import android.widget.SearchView.OnCloseListener;
 import android.widget.SearchView.OnQueryTextListener;
 import android.widget.Toast;
 
+import androidx.constraintlayout.widget.ConstraintLayout;
 import androidx.fragment.app.Fragment;
 
 import com.giosis.util.qdrive.portableprinter.bluetooth.GPrinterData;
@@ -63,18 +59,19 @@ import java.util.Date;
  * @author jtpark_qxpress
  * In-Progress Tab Fragment
  * @editor krm0219
+ *
+ * NOTIFICATION.  2020.07  Trip 단위 정렬 추가
  */
 public class List_InProgressFragment extends Fragment implements OnQueryTextListener, OnCloseListener, CustomExpandableAdapter.OnMoveUpListener {
     String TAG = "List_InProgressFragment";
 
-    boolean isPermissionTrue = false;
     private static final int PERMISSION_REQUEST_CODE = 1000;
     private static final String[] PERMISSIONS = new String[]{PermissionChecker.ACCESS_FINE_LOCATION, PermissionChecker.ACCESS_COARSE_LOCATION};
     //
 
     View view;
 
-    private LinearLayout layout_list_pickup_sort_condition;
+    private ConstraintLayout layout_list_pickup_sort_condition;
     private Button btn_list_pickup_sort_request;
     private Button btn_list_pickup_sort_trip;
     private ProgressBar progress_in_progress;
@@ -91,7 +88,8 @@ public class List_InProgressFragment extends Fragment implements OnQueryTextList
     //
     Context context;
     private ProgressDialog progressDialog;
-
+    InputMethodManager inputMethodManager;
+    private DatabaseHelper dbHelper;
 
     //
     private String opID;
@@ -99,20 +97,13 @@ public class List_InProgressFragment extends Fragment implements OnQueryTextList
     private OnTodayDoneCountListener onTodayDoneCountListener;
     private boolean isOpen = false;
 
-    private String selectedSort;
-
     private CustomExpandableAdapter adapter;
     private ArrayList<RowItem> rowItems;
 
-    private DatabaseHelper dbHelper;
 
-    // 2019.07  Smart Route
-    private SharedPreferences sharedPreferences;
-    private ArrayList<SmartRouteResult.RouteMaster> routeMasterArrayList;
-    private SmartRouteExpandableAdapter smartRouteExpandableAdapter;
-
+    //
+    private String selectedSort;
     private int check = 0;
-
     private String[] orderbyQuery = {
             "zip_code asc",
             "zip_code desc",
@@ -121,21 +112,17 @@ public class List_InProgressFragment extends Fragment implements OnQueryTextList
             "rcv_nm asc",
             "rcv_nm desc"
             , "Smart Route"
-            //      , "Nearer"
     };
-    private ArrayList<String> sortArrayList;
-    private ArrayAdapter<String> sortArrayAdapter;
 
+    // 2019.07  Smart Route
+    private SharedPreferences sharedPreferences;
+    private ArrayList<SmartRouteResult.RouteMaster> routeMasterArrayList;
+    private SmartRouteExpandableAdapter smartRouteExpandableAdapter;
 
+    // 2020.07  ByTrip 정렬기능 추가
     private String pickupDriverYn;
-    private String pickupSortCondition = "R"; // R : Request(기본) / T : Trip (묶음배송)
-
- /*   // 2020 Sort - Nearer
-    private int check = 0;
-    private GPSTrackerManager gpsTrackerManager;
-    private boolean gpsEnable = false;
-    private double latitude = 0;
-    private double longitude = 0;*/
+    private String pickupSortCondition = "R";   // R : Request(기본) / T : Trip (묶음배송)
+    private ArrayList<RowItem> tripArrayList;
 
 
     public List_InProgressFragment() {
@@ -189,18 +176,13 @@ public class List_InProgressFragment extends Fragment implements OnQueryTextList
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
 
-        //
         PermissionChecker checker = new PermissionChecker(getActivity());
 
         if (checker.lacksPermissions(PERMISSIONS)) {
 
-            //    isPermissionTrue = false;
             PermissionActivity.startActivityForResult(getActivity(), PERMISSION_REQUEST_CODE, PERMISSIONS);
             getActivity().overridePendingTransition(0, 0);
-        }/* else {
-
-            isPermissionTrue = true;
-        }*/
+        }
     }
 
     @Override
@@ -208,7 +190,10 @@ public class List_InProgressFragment extends Fragment implements OnQueryTextList
 
         context = getActivity();
         progressDialog = new ProgressDialog(getActivity());
+        inputMethodManager = (InputMethodManager) getActivity().getSystemService(Context.INPUT_METHOD_SERVICE);
+
         opID = SharedPreferencesHelper.getSigninOpID(getActivity());
+        pickupDriverYn = SharedPreferencesHelper.getSigninPickupDriverYN(getActivity());
         dbHelper = DatabaseHelper.getInstance();
 
         view = inflater.inflate(R.layout.fragment_inprogress, container, false);
@@ -226,43 +211,39 @@ public class List_InProgressFragment extends Fragment implements OnQueryTextList
         exlist_smart_route = view.findViewById(R.id.exlist_smart_route);
 
 
-        pickupDriverYn = SharedPreferencesHelper.getSigninPickupDriverYN(getActivity());
+        btn_list_pickup_sort_request.setOnClickListener(v -> {
 
-        btn_list_pickup_sort_request.setOnClickListener(new OnClickListener() {
-            @SuppressLint("ResourceAsColor")
-            @Override
-            public void onClick(View v) {
+            DataUtil.inProgressListPosition = 0;
 
-                if (!pickupSortCondition.equals("R")) {
+            if (!pickupSortCondition.equals("R")) {
 
-                    pickupSortCondition = "R";
-                    btn_list_pickup_sort_request.setBackgroundResource(R.drawable.back_round_4_ffffff);
-                    btn_list_pickup_sort_request.setTextColor(getResources().getColor(R.color.color_4e4e4e));
-                    btn_list_pickup_sort_trip.setBackgroundResource(R.color.transparent);
-                    btn_list_pickup_sort_trip.setTextColor(getResources().getColor(R.color.color_8f8f8f));
-                    onResume();
-                }
+                btn_list_pickup_sort_request.setBackgroundResource(R.drawable.back_round_4_ffffff);
+                btn_list_pickup_sort_request.setTextColor(getResources().getColor(R.color.color_4e4e4e));
+                btn_list_pickup_sort_trip.setBackgroundResource(R.color.transparent);
+                btn_list_pickup_sort_trip.setTextColor(getResources().getColor(R.color.color_8f8f8f));
+
+                pickupSortCondition = "R";
+                onResume();
             }
         });
 
-        btn_list_pickup_sort_trip.setOnClickListener(new OnClickListener() {
-            @Override
-            public void onClick(View v) {
 
-                if (!pickupSortCondition.equals("T")) {
+        btn_list_pickup_sort_trip.setOnClickListener(v -> {
 
-                    pickupSortCondition = "T";
-                    btn_list_pickup_sort_request.setBackgroundResource(R.color.transparent);
-                    btn_list_pickup_sort_request.setTextColor(getResources().getColor(R.color.color_8f8f8f));
-                    btn_list_pickup_sort_trip.setBackgroundResource(R.drawable.back_round_4_ffffff);
-                    btn_list_pickup_sort_trip.setTextColor(getResources().getColor(R.color.color_4e4e4e));
+            DataUtil.inProgressListPosition = 0;
 
-                    // TODO. Trip 단위 선 정렬 후, onResume() 정렬 필요
-                    sortByTrip();
-                    //onResume();
-                }
+            if (!pickupSortCondition.equals("T")) {
+
+                btn_list_pickup_sort_request.setBackgroundResource(R.color.transparent);
+                btn_list_pickup_sort_request.setTextColor(getResources().getColor(R.color.color_8f8f8f));
+                btn_list_pickup_sort_trip.setBackgroundResource(R.drawable.back_round_4_ffffff);
+                btn_list_pickup_sort_trip.setTextColor(getResources().getColor(R.color.color_4e4e4e));
+
+                pickupSortCondition = "T";
+                onResume();
             }
         });
+
         return view;
     }
 
@@ -270,7 +251,6 @@ public class List_InProgressFragment extends Fragment implements OnQueryTextList
     @Override
     public void onActivityCreated(Bundle savedInstanceState) {
         super.onActivityCreated(savedInstanceState);
-        Log.e("krm0219", TAG + "  onActivityCreated");
         sharedPreferences = getActivity().getSharedPreferences(DataUtil.SHARED_PREFERENCE_FILE, Context.MODE_PRIVATE);
 
         // Search
@@ -287,15 +267,9 @@ public class List_InProgressFragment extends Fragment implements OnQueryTextList
         edit_list_searchview.setHintTextColor(getResources().getColor(R.color.color_8f8f8f));
 
 
-        layout_list_sort.setOnClickListener(new OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                spinner_list_sort.performClick();
-            }
-        });
+        layout_list_sort.setOnClickListener(v -> spinner_list_sort.performClick());
 
-
-        sortArrayList = new ArrayList<>(Arrays.asList(
+        ArrayList<String> sortArrayList = new ArrayList<>(Arrays.asList(
                 getResources().getString(R.string.text_sort_postal_code_asc),
                 getResources().getString(R.string.text_sort_postal_code_desc),
                 getResources().getString(R.string.text_sort_tracking_no_asc),
@@ -303,11 +277,10 @@ public class List_InProgressFragment extends Fragment implements OnQueryTextList
                 getResources().getString(R.string.text_sort_name_asc),
                 getResources().getString(R.string.text_sort_name_desc)
                 , getResources().getString(R.string.text_smart_route)
-                //   , getResources().getString(R.string.text_nearer)
         ));
 
 
-        sortArrayAdapter = new ArrayAdapter<>(getActivity(), android.R.layout.simple_spinner_dropdown_item, sortArrayList);
+        ArrayAdapter<String> sortArrayAdapter = new ArrayAdapter<>(getActivity(), android.R.layout.simple_spinner_dropdown_item, sortArrayList);
         spinner_list_sort.setAdapter(sortArrayAdapter);
 
         try {
@@ -328,14 +301,11 @@ public class List_InProgressFragment extends Fragment implements OnQueryTextList
             @Override
             public void onItemSelected(AdapterView<?> parent, View view, int position, long id) {
 
-                Log.e("krm0219", TAG + "  onItemSelected");
-
                 if (++check > 1) {
 
                     MyApplication.preferences.setSortIndex(position);
                     selectedSort = orderbyQuery[position];
                     Log.e("krm0219", TAG + "  spinner position : " + position + " / " + selectedSort);
-                    //    getGPSCount = 0;
                     onResume();
                 }
             }
@@ -349,298 +319,113 @@ public class List_InProgressFragment extends Fragment implements OnQueryTextList
         rowItems = new ArrayList<>();
         adapter = new CustomExpandableAdapter(getActivity(), rowItems);
 
-        exlist_card_list.setOnGroupCollapseListener(new OnGroupCollapseListener() {
+        exlist_card_list.setOnGroupCollapseListener(groupPosition -> isOpen = false);
 
-            @Override
-            public void onGroupCollapse(int groupPosition) {
 
-                isOpen = false;
-            }
-        });
+        exlist_card_list.setOnGroupExpandListener(groupPosition -> {
 
-        exlist_card_list.setOnGroupExpandListener(new OnGroupExpandListener() {
+            isOpen = true;
+            DataUtil.inProgressListPosition = groupPosition;
+            inputMethodManager.hideSoftInputFromWindow(edit_list_searchview.getWindowToken(), 0);
 
-            @Override
-            public void onGroupExpand(int groupPosition) {
-
-                isOpen = true;
-                DataUtil.inProgressListPosition = groupPosition;
-
-                for (int i = 0; i < adapter.getGroupCount(); i++) {
-                    if (i != groupPosition)
-                        exlist_card_list.collapseGroup(i);
-                }
+            for (int i = 0; i < adapter.getGroupCount(); i++) {
+                if (i != groupPosition)
+                    exlist_card_list.collapseGroup(i);
             }
         });
 
 
         exlist_smart_route.setSelectionAfterHeaderView();
-        exlist_smart_route.setOnGroupExpandListener(new OnGroupExpandListener() {
+        exlist_smart_route.setOnGroupExpandListener(groupPosition -> {
 
-            @Override
-            public void onGroupExpand(int groupPosition) {
+            final int position = groupPosition;
+            SmartRouteResult.RouteMaster routeMasterItem = routeMasterArrayList.get(position);
 
-                final int position = groupPosition;
-                SmartRouteResult.RouteMaster routeMasterItem = routeMasterArrayList.get(position);
+            for (int i = 0; i < smartRouteExpandableAdapter.getGroupCount(); i++) {
+                if (i != position)
+                    exlist_smart_route.collapseGroup(i);
+            }
 
-                for (int i = 0; i < smartRouteExpandableAdapter.getGroupCount(); i++) {
-                    if (i != position)
-                        exlist_smart_route.collapseGroup(i);
-                }
+            Log.e("SmartRoute", TAG + "  Smart Route MasterItem : " + position + " / " + routeMasterItem.getRouteNo());
 
-                Log.e("krm0219", TAG + "  Smart Route MasterItem : " + position + " / " + routeMasterItem.getRouteNo());
+            // 처음 클릭시 API 호출
+            if (routeMasterItem.getRouteDetailList() == null) {
 
-                // 처음 클릭시 API 호출
-                if (routeMasterItem.getRouteDetailList() == null) {
+                Log.e("SmartRoute", TAG + "  Smart Route MasterItem Null");
 
-                    Log.e("krm0219", TAG + "  Smart Route MasterItem Null");
+                // NOTIFICATION.  GetRouteDetail
+                new GetRouteDetailAsyncTask(context, progressDialog, opID, routeMasterItem.getRouteNo(), new GetRouteDetailAsyncTask.AsyncTaskCallback() {
+                    @Override
+                    public void onSuccess(SmartRouteResult.RouteMaster result) {
 
-                    // NOTIFICATION.  GetRouteDetail
-                    new GetRouteDetailAsyncTask(context, progressDialog, opID, routeMasterItem.getRouteNo(), new GetRouteDetailAsyncTask.AsyncTaskCallback() {
-                        @Override
-                        public void onSuccess(SmartRouteResult.RouteMaster result) {
+                        SmartRouteResult.RouteMaster routeMasterItem = routeMasterArrayList.get(position);
 
-                            SmartRouteResult.RouteMaster routeMasterItem = routeMasterArrayList.get(position);
+                        ArrayList<RowItem> cardRowItemArrayList = getRouteList(result.getRouteDetailArrayList());
+                        routeMasterItem.setRouteDetailArrayList(result.getRouteDetailArrayList());
+                        routeMasterItem.setRouteDetailList(cardRowItemArrayList);
+                        smartRouteExpandableAdapter.notifyDataSetChanged();
 
-                            ArrayList<RowItem> cardRowItemArrayList = getRouteList(result.getRouteDetailArrayList());
-                            routeMasterItem.setRouteDetailArrayList(result.getRouteDetailArrayList());
-                            routeMasterItem.setRouteDetailList(cardRowItemArrayList);
-                            smartRouteExpandableAdapter.notifyDataSetChanged();
+                        Gson gson = new GsonBuilder().create();
+                        Type listType = new TypeToken<ArrayList<SmartRouteResult.RouteMaster>>() {
+                        }.getType();
+                        String strResult = gson.toJson(routeMasterArrayList, listType);
 
-                            Gson gson = new GsonBuilder().create();
-                            Type listType = new TypeToken<ArrayList<SmartRouteResult.RouteMaster>>() {
-                            }.getType();
-                            String strResult = gson.toJson(routeMasterArrayList, listType);
+                        SharedPreferences.Editor editor = sharedPreferences.edit();
+                        editor.putString("SRResult", strResult);
+                        editor.apply();
+                    }
 
-                            SharedPreferences.Editor editor = sharedPreferences.edit();
-                            editor.putString("SRResult", strResult);
-                            editor.apply();
-                        }
+                    @Override
+                    public void onFailure(SmartRouteResult.RouteMaster result) {
 
-                        @Override
-                        public void onFailure(SmartRouteResult.RouteMaster result) {
+                        Toast.makeText(getActivity(), result.getResultMsg(), Toast.LENGTH_SHORT).show();
+                    }
+                }).execute();
+            } else {
 
-                            Toast.makeText(getActivity(), result.getResultMsg(), Toast.LENGTH_SHORT).show();
-                        }
-                    }).execute();
-                } else {
-
-                    Log.e("krm0219", TAG + "  Smart Route MasterItem Not Null");
-                    // 기존에 호출했던 API 결과값으로 보여주기
-                    ArrayList<RowItem> cardRowItemArrayList = getRouteList(routeMasterItem.getRouteDetailArrayList());
-                    routeMasterItem.setRouteDetailList(cardRowItemArrayList);
-                    smartRouteExpandableAdapter.notifyDataSetChanged();
-                }
+                Log.e("SmartRoute", TAG + "  Smart Route MasterItem Not Null");
+                // 기존에 호출했던 API 결과값으로 보여주기
+                ArrayList<RowItem> cardRowItemArrayList = getRouteList(routeMasterItem.getRouteDetailArrayList());
+                routeMasterItem.setRouteDetailList(cardRowItemArrayList);
+                smartRouteExpandableAdapter.notifyDataSetChanged();
             }
         });
-    }
-
-
-    //TODO
-    private ArrayList<RowItem> tripArrayList;
-
-    private void sortByTrip() {
-
-        tripArrayList = new ArrayList<>();
-        ArrayList<RowItem> tempArrayList = getSortList("zip_code asc");
-        Collections.sort(tempArrayList, new TripMultiComp());
-
-        // 1차 정렬
-        for (int i = 0; i < tempArrayList.size(); i++) {
-
-            RowItem item = tempArrayList.get(i);
-            Log.e("trip", item.getShipping() + " / " + item.getZip_code() + " / " + item.getItems().get(0).getHp());
-        }
-
-        int tripNo = 1;
-        int count = 0;
-
-        // Trip 묶음 번호
-        while (count < tempArrayList.size() - 1) {
-
-            RowItem item = tempArrayList.get(count);
-            RowItem nextItem = tempArrayList.get(count + 1);
-
-            if (item.getZip_code().equals(nextItem.getZip_code())) {
-                if (item.getItems().get(0).getHp().equals(nextItem.getItems().get(0).getHp())) {
-                    // 픽업 우편번호 & 픽업지 핸드폰 번호 동일
-                    if (item.getShipping().charAt(0) == 'P' && nextItem.getShipping().charAt(0) == 'P') {
-
-                        // P번호 끼리는 묶일 수 없음
-                        item.setTripNo(tripNo++);
-                    } else {
-
-                        item.setTripNo(tripNo);
-                    }
-                } else {
-
-                    // 핸드폰 번호 다름
-                    item.setTripNo(tripNo++);
-                }
-            } else {
-
-                // 우편번호 다름
-                item.setTripNo(tripNo++);
-            }
-
-            tripArrayList.add(item);
-            count++;
-        }
-
-
-        count = 0;
-        int tripCount = 0;
-        String primaryKey = "";
-        //    ArrayList<RowItem.TripData> tripDataArrayList;
-        ArrayList<RowItem> tripDataArrayList;
-        ArrayList<RowItem> finalArrayList = new ArrayList<>();
-
-        while (count < tempArrayList.size() - 1) {
-
-            RowItem item = tempArrayList.get(count);
-            RowItem nextItem = tempArrayList.get(count + 1);
-
-            if (item.getTripNo() == nextItem.getTripNo()) {
-
-                if (item.getShipping().charAt(0) == 'P') {
-
-                    primaryKey = item.getShipping();
-                } else if (tripCount == 0) {
-
-                    primaryKey = item.getShipping();
-                }
-                tripCount++;
-            } else {
-                if (tripCount != 0) {
-
-                    tripDataArrayList = new ArrayList<>();
-                    int primary = 0;
-
-                    for (int i = (count - tripCount); i <= count; i++) {
-
-                        RowItem rowItem = tempArrayList.get(i);
-
-                        if (rowItem.getShipping().equals(primaryKey)) {
-
-                            primary = i;
-                            rowItem.setPrimaryKey(true);
-                        } else {
-
-                            rowItem.setPrimaryKey(false);
-                        }
-
-                        Log.e("trip", "*** " + i + " / " + primary + " / " + rowItem.isPrimaryKey());
-                        tripDataArrayList.add(rowItem);
-                    }
-
-                    Log.e("trip", " Sort > " + count + " / " + tripCount + " / " + primaryKey + " / " + item.getTripNo());
-                    tempArrayList.get(primary).setTripDataArrayList(tripDataArrayList);
-                    finalArrayList.add(tempArrayList.get(primary));
-                    tripCount = 0;
-                } else {
-
-                    item.setPrimaryKey(true);
-                    item.setTripDataArrayList(null);
-                    finalArrayList.add(item);
-                }
-            }
-
-            count++;
-        }
-
-
-        adapter = new CustomExpandableAdapter(getActivity(), finalArrayList);
-        adapter.setOnMoveUpListener(this);
-        exlist_card_list.setAdapter(adapter);
-
-        int groupCount = adapter.getGroupCount();
-
-        for (int i = 0; i < groupCount; i++) {
-            exlist_card_list.collapseGroup(i);
-        }
-
-        mCountCallback.onCountRefresh(groupCount);
-        adapter.setSorting(finalArrayList);
-
-
-        for (int i = 0; i < finalArrayList.size(); i++) {
-
-            RowItem item = finalArrayList.get(i);
-            Log.e("trip", i + " / " + item.getShipping() + " / " + item.getZip_code() + " / " + item.getItems().get(0).getHp() + " / " + item.getTripNo());
-        }
-
-
-        // 다중정렬 참고
-        // https://chickenpaella.tistory.com/24
     }
 
 
     @Override
     public void onResume() {
         super.onResume();
-        Log.e("krm0219", TAG + "  onResume");
+        Log.e("krm0219", "onResume  " + pickupSortCondition);
 
+        // NOTIFICATION.  2020.07
+        if (pickupDriverYn.equals("Y")) {
 
-        // NOTIFICATION.  2020-06
-        // Pickup Driver && By Trip 상태일 때만 'Nearer' 정렬 추가
-        if (pickupDriverYn.equals("Y"))
-         //   layout_list_pickup_sort_condition.setVisibility(View.VISIBLE);
+            layout_list_pickup_sort_condition.setVisibility(View.VISIBLE);
 
-        if (pickupDriverYn.equals("Y") && pickupSortCondition.equals("T")) {
-
-            progress_in_progress.setVisibility(View.VISIBLE);
-
-            sortArrayList.add(getResources().getString(R.string.text_nearer));
-            ArrayList<String> orderbyList = new ArrayList<>(Arrays.asList(orderbyQuery));
-            orderbyList.add(getResources().getString(R.string.text_nearer));
-            orderbyQuery = orderbyList.toArray(new String[orderbyList.size()]);
-        } else {
-            if (orderbyQuery.length == 8) {
-
-                sortArrayList.remove(orderbyQuery.length - 1);
-                ArrayList<String> orderbyList = new ArrayList<>(Arrays.asList(orderbyQuery));
-                orderbyList.remove(orderbyQuery.length - 1);
-                orderbyQuery = orderbyList.toArray(new String[orderbyList.size()]);
+            if (pickupSortCondition.equals("T")) {
+                sortByTrip();
             }
         }
 
-        sortArrayAdapter.notifyDataSetChanged();
-
-       // Location
-       /* if (isPermissionTrue) {
-
-            gpsTrackerManager = new GPSTrackerManager(context);
-            gpsEnable = gpsTrackerManager.enableGPSSetting();
-
-            if (gpsEnable && gpsTrackerManager != null) {
-
-                gpsTrackerManager.GPSTrackerStart();
-                latitude = gpsTrackerManager.getLatitude();
-                longitude = gpsTrackerManager.getLongitude();
-                Log.e("Location", TAG + " GPSTrackerManager onResume : " + latitude + "  " + longitude + "  ");
-            } else {
-
-                DataUtil.enableLocationSettings(getActivity(), context);
-            }
-*/
 
         try {
 
-            InputMethodManager imm = (InputMethodManager) getActivity().getSystemService(Context.INPUT_METHOD_SERVICE);
-            imm.hideSoftInputFromWindow(edit_list_searchview.getWindowToken(), 0);
-
+            inputMethodManager.hideSoftInputFromWindow(edit_list_searchview.getWindowToken(), 0);
             edit_list_searchview.setText("");
             edit_list_searchview.clearFocus();
         } catch (Exception e) {
+
             Log.e("Exception", "search init  Exception : " + e.toString());
         }
 
 
         int createdSRCount = sharedPreferences.getInt("createdSRCount", 0);
         int clickedSRCount = sharedPreferences.getInt("clickedSRCount", 0);
+        Log.e("SmartRoute", TAG + "  onResume   SmartRoute  DATA > " + createdSRCount + " / " + clickedSRCount);
+        if (selectedSort.equals(context.getResources().
 
-        Log.e("krm0219", TAG + "  onResume   SmartRoute  DATA > " + createdSRCount + " / " + clickedSRCount);
-        if (selectedSort.equals(context.getResources().getString(R.string.text_smart_route)) && createdSRCount != 0) {
+                getString(R.string.text_smart_route)) && createdSRCount != 0) {
 
             exlist_card_list.setVisibility(View.GONE);
             exlist_smart_route.setVisibility(View.VISIBLE);
@@ -700,8 +485,6 @@ public class List_InProgressFragment extends Fragment implements OnQueryTextList
             }
         } else {
             // 일반 정렬
-
-
             exlist_card_list.setVisibility(View.VISIBLE);
             exlist_smart_route.setVisibility(View.GONE);
             exlist_smart_route.setAdapter((ExpandableListAdapter) null);
@@ -713,12 +496,22 @@ public class List_InProgressFragment extends Fragment implements OnQueryTextList
                 return;
             }
 
-            rowItems = getSortList(selectedSort);
+            // 정렬
+            if (pickupDriverYn.equals("Y") && pickupSortCondition.equals("T")) {
+
+                Collections.sort(tripArrayList, new CompareRowItem(selectedSort));
+                rowItems = tripArrayList;
+            } else {
+
+                rowItems = getSortList(selectedSort);
+            }
 
 
             adapter = new CustomExpandableAdapter(getActivity(), rowItems);
             adapter.setOnMoveUpListener(this);
             exlist_card_list.setAdapter(adapter);
+            adapter.setSorting(rowItems);
+
 
             int groupCount = adapter.getGroupCount();
 
@@ -728,7 +521,6 @@ public class List_InProgressFragment extends Fragment implements OnQueryTextList
 
             try {
 
-                Log.e("krm0219", groupCount + "   In Progress List Position : " + DataUtil.inProgressListPosition);
                 if (groupCount <= DataUtil.inProgressListPosition) {
                     DataUtil.inProgressListPosition = 0;
                 }
@@ -742,41 +534,21 @@ public class List_InProgressFragment extends Fragment implements OnQueryTextList
 
                 Log.e("Exception", TAG + "  setSelectedGroup Exception : " + e.toString());
             }
-
             mCountCallback.onCountRefresh(groupCount);
-
-
-             /*   if (selectedSort.equals(context.getResources().getString(R.string.text_nearer))) {
-                    // Driver 현재 위치 기준 가까운 위치 순으로 정렬
-                    getDriverGPSLocation();
-                } else {*/
-
-
-            //    Collections.sort(rowItems, new CompareZipcodeAsc());
-
-
-            adapter.setSorting(rowItems);
-            //    }
-            //    }
 
 
             // 2019.01  krm0219
             // LIST 들어갈 때 TODAY DONE Count 표시하기 위함.
             // ViewPage 특성상 TODAY DONE 페이지는 처음에 호출되지 않아서 0 으로 표시되어있음.
-
             new TodayDonePickupListDownloadHelper.Builder(getActivity(), opID)
-                    .setOnTodayDonePickupOrderDownloadEventListener(new TodayDonePickupListDownloadHelper.OnTodayDonePickupOrderDownloadEventListener() {
+                    .setOnTodayDonePickupOrderDownloadEventListener(resultList -> {
+                        final int resultCode = Integer.parseInt((String) resultList.get(0));
 
-                        @Override
-                        public void onTodayDonePickupOrderDownloadResult(ArrayList<Object> resultList) {
-                            final int resultCode = Integer.parseInt((String) resultList.get(0));
+                        if (resultCode == 0) {
+                            PickupAssignResult pickupAssignResult = (PickupAssignResult) resultList.get(2);
 
-                            if (resultCode == 0) {
-                                PickupAssignResult pickupAssignResult = (PickupAssignResult) resultList.get(2);
-
-                                int todayDoneCount = pickupAssignResult.getResultObject().size();
-                                onTodayDoneCountListener.onTodayDoneCountRefresh(todayDoneCount);
-                            }
+                            int todayDoneCount = pickupAssignResult.getResultObject().size();
+                            onTodayDoneCountListener.onTodayDoneCountRefresh(todayDoneCount);
                         }
                     }).build().execute();
         }
@@ -785,8 +557,6 @@ public class List_InProgressFragment extends Fragment implements OnQueryTextList
     @Override
     public void onActivityResult(int requestCode, int resultCode, Intent data) {
         super.onActivityResult(requestCode, resultCode, data);
-
-        Log.e("krm0219", TAG + "  onActivityResult " + resultCode + " / " + requestCode);
 
         if (requestCode == PERMISSION_REQUEST_CODE) {   // permission
             if (resultCode == PermissionActivity.PERMISSIONS_GRANTED) {
@@ -835,7 +605,6 @@ public class List_InProgressFragment extends Fragment implements OnQueryTextList
     @Override
     public void onDestroy() {
         super.onDestroy();
-        //    DataUtil.stopGPSManager(gpsTrackerManager);
 
         GPrinterData.TEMP_TRACKING_NO = "";
         if (GPrinterData.mBluetoothAdapter != null) {
@@ -909,7 +678,7 @@ public class List_InProgressFragment extends Fragment implements OnQueryTextList
     }
 
 
-    // NOTIFICATION.
+    // NOTIFICATION. 기본 정렬
     private ArrayList<RowItem> getSortList(String orderby) {
 
         ArrayList<RowItem> resultArrayList = new ArrayList<>();
@@ -975,7 +744,7 @@ public class List_InProgressFragment extends Fragment implements OnQueryTextList
                 );
                 rowitem.setZip_code(cs.getString(cs.getColumnIndex("zip_code")));
 
-                // NOTIFICATION.  19/10 - invoice 와 같은지 체크! 같으면 저장 x
+                // NOTIFICATION.  2019.10  invoice와 같은지 체크! 같으면 저장 x
                 if (deliveryType.equals("P")) {
                     if (cs.getString(cs.getColumnIndex("invoice_no")).equals(cs.getString(cs.getColumnIndex("partner_ref_no")))) {
 
@@ -997,6 +766,7 @@ public class List_InProgressFragment extends Fragment implements OnQueryTextList
                 }
 
                 rowitem.setItems(childItems);
+
 
                 // k. Outlet Delivery 경우 같은 지점은 하나만 나오도록 수정
                 if (0 < resultArrayList.size()) {
@@ -1063,7 +833,7 @@ public class List_InProgressFragment extends Fragment implements OnQueryTextList
                     }
                 }
             } else {        // Pickup
-                //   Log.i("krm0219", rowItems.get(i).getType() + " / " + rowItems.get(i).getRoute() + " / " + rowItems.get(i).getShipping());
+
                 resultArrayList.get(i).setOutlet_company(resultArrayList.get(i).getRoute());
                 if (resultArrayList.get(i).getRoute().contains("7E") || resultArrayList.get(i).getRoute().contains("FL")) {
 
@@ -1091,7 +861,8 @@ public class List_InProgressFragment extends Fragment implements OnQueryTextList
     }
 
 
-    // NOTIFICATION
+    // NOTIFICATION.  2019.07  Smart Route 정렬기능 추가
+    // qoo10 API 호출 > 라우트 만들어지면 결과값 리스트에 뿌리기
     private ArrayList<RowItem> getRouteList(ArrayList<SmartRouteResult.RouteMaster.RouteDetail> list) {
 
         ArrayList<RowItem> resultArrayList = new ArrayList<>();
@@ -1263,120 +1034,148 @@ public class List_InProgressFragment extends Fragment implements OnQueryTextList
     }
 
 
-    // NOTIFICATION.  Sort - Nearer
-    //  2020.06  배터리 사용량 문제로 없애기..
-    /*private ArrayList<RowItem> resultItems;
-    private int getGPSCount = 0;
+    // NOTIFICATION.  2020.07 By Trip 정렬기능 추가
+    // 픽업 우편번호 & 픽업지 핸드폰 번호 동일
+    // P 번호로만 묶인 경우는 제외
+    // C or R 번호로만 묶이거나, C or R + P 번호와 묶인 경우에만 해당
+    private void sortByTrip() {
 
-    private void getDriverGPSLocation() {
+        tripArrayList = new ArrayList<>();
+        ArrayList<RowItem> tempArrayList = getSortList(orderbyQuery[0]);
+        Collections.sort(tempArrayList, new TripMultiComparator());
 
-        getGPSCount++;
-        progress_in_progress.setVisibility(View.VISIBLE);
-        latitude = gpsTrackerManager.getLatitude();
-        longitude = gpsTrackerManager.getLongitude();
+        /*// 1차 정렬   우편번호, 번호, Tracking No
+        for (int i = 0; i < tempArrayList.size(); i++) {
 
-        Log.e(TAG, " setSortNearer : " + latitude + "  " + longitude + "  ");
-        if (latitude == 0 && longitude == 0) {
+            RowItem item = tempArrayList.get(i);
+            Log.e("trip", i + " : " + item.getShipping() + " / " + item.getZip_code() + " / " + item.getItems().get(0).getHp());
+        }*/
 
-            if (getGPSCount < 10) {
-                // 위치를 가져오는데 시간이 살짝 소요되므로 1초 이후에 다시 시도
-                new Handler().postDelayed(new Runnable() {
-                    @Override
-                    public void run() {
+        int tripNo = 1;
+        int count = 0;
+        // Trip 묶음 번호
+        while (count < tempArrayList.size() - 1) {
 
-                        getDriverGPSLocation();
-                    }
-                }, 1000);
+            RowItem item = tempArrayList.get(count);
+            RowItem nextItem = tempArrayList.get(count + 1);
+
+            if (item.getZip_code().equals(nextItem.getZip_code()) && item.getItems().get(0).getHp().equals(nextItem.getItems().get(0).getHp())) {
+                // 픽업 우편번호 & 픽업지 핸드폰 번호 동일
+
+                if (item.getShipping().charAt(0) == 'P' && nextItem.getShipping().charAt(0) == 'P') {
+                    // P번호 끼리는 묶일 수 없음
+                    item.setTripNo(tripNo++);
+                } else {
+
+                    item.setTripNo(tripNo);
+                }
             } else {
-                // 무한반복 방지를 위해 최대 10번만 시도
 
-                progress_in_progress.setVisibility(View.GONE);
-                Toast.makeText(getActivity(), context.getResources().getString(R.string.msg_error_get_gps), Toast.LENGTH_SHORT).show();
-                MyApplication.preferences.setSortIndex(0);
-                spinner_list_sort.setSelection(0);
-                selectedSort = orderbyQuery[0];
+                // 우편번호 다름 || 핸드폰번호 다름
+                item.setTripNo(tripNo++);
             }
-        } else {
 
-         *//*   // TEST         1.356619,103.8632591     // 3.063302,101.6951980
-            latitude = 1.3649634;
-            longitude = 103.7650991;*//*
-            resultItems = new ArrayList<>();
+            // 마지막 List 값
+            if ((count + 1) == tempArrayList.size() - 1) {
 
-            for (int i = 0; i < rowItems.size(); i++) {
+                nextItem.setTripNo(tripNo);
+            }
 
-                if (i != 0) {
-                    latitude = resultItems.get(i - 1).getLat();
-                    longitude = resultItems.get(i - 1).getLng();
+            count++;
+        }
+
+        /*// Trip 그룹번호 정렬
+        for (int i = 0; i < tempArrayList.size(); i++) {
+
+            RowItem item = tempArrayList.get(i);
+            Log.e("trip", item.getTripNo() + " / " + item.getShipping() + " / " + item.getZip_code() + " / " + item.getItems().get(0).getHp());
+        }*/
+
+
+        count = 0;
+        int tripCount = 0;
+        int primaryPosition = 0;
+        ArrayList<RowItem> tripSubDataArrayList = new ArrayList<>();
+
+        // 리스트에 표시될 대표 번호로 구성된 ArrayList 생성
+        while (count < tempArrayList.size() - 1) {
+
+            RowItem item = tempArrayList.get(count);
+            RowItem nextItem = tempArrayList.get(count + 1);
+
+
+            if (item.getTripNo() == nextItem.getTripNo()) {
+
+                if (tripCount == 0) {
+
+                    primaryPosition = count;
+                    tripSubDataArrayList = new ArrayList<>();
+                    tripSubDataArrayList.add(item);
+                } else if (item.getShipping().charAt(0) == 'P') {
+
+                    primaryPosition = count;
+                    tripSubDataArrayList.add(0, item);
+                } else {
+
+                    tripSubDataArrayList.add(item);
                 }
 
-                RowItem item = setSortNearer(latitude, longitude);
-                resultItems.add(item);
+                tripCount++;
+            } else if ((item.getTripNo() != nextItem.getTripNo()) && tripCount != 0) {
+                // 마지막 순서의 Trip Data
+                if (item.getShipping().charAt(0) == 'P') {
+
+                    primaryPosition = count;
+                    tripSubDataArrayList.add(0, item);
+                } else {
+
+                    tripSubDataArrayList.add(item);
+                }
+
+                tempArrayList.get(primaryPosition).setPrimaryKey(true);
+                tempArrayList.get(primaryPosition).setTripSubDataArrayList(tripSubDataArrayList);
+                tripArrayList.add(tempArrayList.get(primaryPosition));
+                tripCount = 0;
+            } else {
+
+                tripArrayList.add(item);
             }
 
-            for (int i = 0; i < resultItems.size(); i++) {
 
-                Log.e("krm0219", "Sort DATA > " + resultItems.get(i).getShipping() + " / " + resultItems.get(i).getDistance() + " / " + resultItems.get(i).getAddress());
+            // 마지막 List 값
+            if ((count + 1) == tempArrayList.size() - 1) {
+                if (item.getTripNo() == nextItem.getTripNo()) {
+                    if (nextItem.getShipping().charAt(0) == 'P') {
+
+                        primaryPosition = count + 1;
+                        tripSubDataArrayList.add(0, nextItem);
+                    } else {
+
+                        tripSubDataArrayList.add(nextItem);
+                    }
+
+                    tempArrayList.get(primaryPosition).setPrimaryKey(true);
+                    tempArrayList.get(primaryPosition).setTripSubDataArrayList(tripSubDataArrayList);
+                    tripArrayList.add(tempArrayList.get(primaryPosition));
+                } else {
+
+                    tripArrayList.add(nextItem);
+                }
             }
 
-            adapter.setSorting(resultItems);
-            progress_in_progress.setVisibility(View.GONE);
+            count++;
         }
+
+        /*// Trip 대표번호 리스트
+        for (int i = 0; i < tripArrayList.size(); i++) {
+
+            RowItem item = tripArrayList.get(i);
+            Log.e("trip", i + " : " + item.getTripNo() + " / " + item.getShipping() + " / " + item.getZip_code() + " / " + item.getItems().get(0).getHp());
+        }*/
     }
 
-    @SuppressLint("DefaultLocale")
-    private RowItem setSortNearer(double _latitude, double _longitude) {
 
-        List<RowItem> tempItems = rowItems;
-        RowItem item = null;
-
-        //    Log.e("krm0219", "-- " + _latitude + ", " + _longitude + " --");
-        for (int i = 0; i < rowItems.size(); i++) {
-
-            Location locationA = new Location("point A");
-            locationA.setLatitude(_latitude);
-            locationA.setLongitude(_longitude);
-
-            Location locationB = new Location("point B");
-            locationB.setLatitude(Double.parseDouble(String.format("%.7f", tempItems.get(i).getLat())));
-            locationB.setLongitude(Double.parseDouble(String.format("%.7f", tempItems.get(i).getLng())));
-
-            float distance = locationA.distanceTo(locationB);
-            tempItems.get(i).setDistance(distance);
-        }
-
-        Collections.sort(tempItems, new CompareDistanceAsc());
-
-        *//*for (int i = 0; i < tempItems.size(); i++) {
-
-            Log.e("krm0219", " ** " + tempItems.get(i).getShipping() + " - " + tempItems.get(i).getDistance() + "");
-        }*//*
-
-
-        for (int i = 0; i < tempItems.size(); i++) {
-
-            item = tempItems.get(i);
-
-            if (!resultItems.contains(item)) {
-                break;
-            }
-        }
-
-        Log.e("krm0219", "PICK DATA : " + item.getShipping() + " / " + item.getDistance());
-
-        return item;
-    }
-
-    class CompareDistanceAsc implements Comparator<RowItem> {
-
-        @Override
-        public int compare(RowItem o1, RowItem o2) {
-
-            return Float.compare(o1.getDistance(), o2.getDistance());
-        }
-    }*/
-
-    class TripMultiComp implements Comparator<RowItem> {
+    static class TripMultiComparator implements Comparator<RowItem> {
 
         @Override
         public int compare(RowItem o1, RowItem o2) {
@@ -1395,6 +1194,36 @@ public class List_InProgressFragment extends Fragment implements OnQueryTextList
 
                 return o1.getZip_code().compareTo(o2.getZip_code());
             }
+        }
+    }
+
+    class CompareRowItem implements Comparator<RowItem> {
+
+        String orderBy;
+
+        public CompareRowItem(String orderBy) {
+
+            this.orderBy = orderBy;
+        }
+
+        @Override
+        public int compare(RowItem o1, RowItem o2) {
+
+            if (orderBy.equals(orderbyQuery[0])) {
+                return o1.getZip_code().compareTo(o2.getZip_code());
+            } else if (orderBy.equals(orderbyQuery[1])) {
+                return o2.getZip_code().compareTo(o1.getZip_code());
+            } else if (orderBy.equals(orderbyQuery[2])) {
+                return o1.getShipping().compareTo(o2.getShipping());
+            } else if (orderBy.equals(orderbyQuery[3])) {
+                return o2.getShipping().compareTo(o1.getShipping());
+            } else if (orderBy.equals(orderbyQuery[4])) {
+                return o1.getName().compareTo(o2.getName());
+            } else if (orderBy.equals(orderbyQuery[5])) {
+                return o2.getName().compareTo(o1.getName());
+            }
+
+            return o1.getZip_code().compareTo(o2.getZip_code());
         }
     }
 }

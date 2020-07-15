@@ -154,10 +154,9 @@ public class ServerDownloadHelper extends ManualHelper {
 
                 progressDialog.setMax((int) maxCount);
 
-                // FIXME.  서버에서 (-) Result 값이 내려왔을 때의 처리방법 바꾸기
-                    /*
-                Log.e("Server", "Download Result Code : " + resultCode + " / " + resultMsg);
+                 /*// FIXME.  서버에서 (-) Result 값이 내려왔을 때의 처리방법 바꾸기
 
+                Log.e("Server", "Download Result Code : " + resultCode + " / " + resultMsg);
 
                 if (resultCode < 0) {
 
@@ -330,10 +329,9 @@ public class ServerDownloadHelper extends ManualHelper {
             hmActionParam.put("app_id", DataUtil.appID);
             hmActionParam.put("nation_cd", DataUtil.nationCode);
 
-           /* // TEST. Pickup
+        /*    // TEST. Pickup
             String MOBILE_SERVER_URL = "https://qxapi.qxpress.asia/GMKT.INC.GLPS.MobileApiService/GlobalMobileService.qapi";
             hmActionParam.put("opId", "YuMin.dwl");*/
-       //     hmActionParam.put("opId", "Calla.FT");
             String methodName = "GetPickupList";
             Serializer serializer = new Persister();
 

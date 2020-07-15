@@ -107,9 +107,9 @@ public class CnRPickupInfoGetHelper extends ManualHelper {
                 HashMap<String, String> hmActionParam = new HashMap<>();
 
                 // TEST.
-               /* tracking_no = "C1133851SGSG";
-                String opID = "Ram.RE";
-                String MOBILE_SERVER_URL = "https://qxapi.qxpress.asia/GMKT.INC.GLPS.MobileApiService/GlobalMobileService.qapi";*/
+             /*   tracking_no = "C1133851SGSG";
+                String opID = "Ram.RE";*/
+             //   String MOBILE_SERVER_URL = "https://qxapi.qxpress.asia/GMKT.INC.GLPS.MobileApiService/GlobalMobileService.qapi";
 
                 hmActionParam.put("pickup_no", tracking_no);
                 hmActionParam.put("driver_id", opID);
