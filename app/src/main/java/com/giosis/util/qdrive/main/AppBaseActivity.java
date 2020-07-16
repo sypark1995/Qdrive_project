@@ -18,6 +18,7 @@ import androidx.drawerlayout.widget.DrawerLayout;
 
 import com.giosis.util.qdrive.barcodescanner.CaptureActivity;
 import com.giosis.util.qdrive.list.ListActivity;
+import com.giosis.util.qdrive.main.pickupOrder.ChoosePickupTypeActivity;
 import com.giosis.util.qdrive.message.MessageListActivity;
 import com.giosis.util.qdrive.settings.SettingActivity;
 import com.giosis.util.qdrive.singapore.R;
@@ -138,9 +139,14 @@ public class AppBaseActivity extends AppCompatActivity {
         adapter.addItem(ContextCompat.getDrawable(this, R.drawable.side_icon_scan_selector), getString(R.string.navi_scan), arrayList, -1);
         adapter.addItem(ContextCompat.getDrawable(this, R.drawable.side_icon_list_selector), getString(R.string.navi_list), arrayList1, -1);
         adapter.addItem(ContextCompat.getDrawable(this, R.drawable.side_icon_statistics_selector), getString(R.string.navi_statistics), null, -1);
+
+        if ("Y".equals(SharedPreferencesHelper.getSigninPickupDriverYN(this))) {
+            adapter.addItem(ContextCompat.getDrawable(this, R.drawable.side_icon_create_pickup_order_selector), getString(R.string.text_create_pickup_order), null, -1);
+        }
+
         adapter.addItem(ContextCompat.getDrawable(this, R.drawable.side_icon_settings_selector), getString(R.string.navi_setting), null, -1);
 
-    //    if(SharedPreferencesHelper.getSigninPickupDriverYN(this).equals("Y")) {
+        //    if(SharedPreferencesHelper.getSigninPickupDriverYN(this).equals("Y")) {
       /*  if(SharedPreferencesHelper.getSigninOpID(this).equals("karam.kim")) {
             adapter.addItem(ContextCompat.getDrawable(this, R.drawable.icon_pickup_order), getString(R.string.text_create_pickup_order), null, 4);
         }*/
@@ -168,6 +174,10 @@ public class AppBaseActivity extends AppCompatActivity {
                     if (!(top_title_string.contains(getString(R.string.navi_home)))) {
                         finish();
                     }
+                } else if (title.equals(getString(R.string.text_create_pickup_order))) {
+                    Intent intent = new Intent(AppBaseActivity.this, ChoosePickupTypeActivity.class);
+                    startActivity(intent);
+
                 } else if (title.equals(getString(R.string.navi_setting))) {
 
                     // TEST.

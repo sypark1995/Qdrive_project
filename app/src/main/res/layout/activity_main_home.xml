@@ -350,6 +350,18 @@
                 android:textSize="@dimen/text_size_32px" />
 
             <Button
+                android:id="@+id/btn_home_create_pickup_order"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="15dp"
+                android:background="@drawable/custom_button_normal_30"
+                android:text="@string/text_create_pickup_order"
+                android:textAllCaps="false"
+                android:textColor="@color/color_4fb648"
+                android:textSize="@dimen/text_size_32px"
+                android:visibility="visible" />
+
+            <Button
                 android:id="@+id/btn_home_outlet_order_status"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"

@@ -58,9 +58,6 @@ public class SettingActivity extends AppCompatActivity {
     TextView text_setting_app_version;
 
 
-    Context context;
-
-
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -92,8 +89,6 @@ public class SettingActivity extends AppCompatActivity {
         text_top_title.setText(R.string.navi_setting);
         layout_top_signOut.setVisibility(View.VISIBLE);
 
-
-        context = getApplicationContext();
 
         layout_top_back.setOnClickListener(clickListener);
         layout_top_signOut.setOnClickListener(clickListener);
@@ -267,8 +262,8 @@ public class SettingActivity extends AppCompatActivity {
                     Log.e("krm0219", "Delete : " + delete);
 
                     AlertDialog.Builder builder = new AlertDialog.Builder(SettingActivity.this);
-                    builder.setTitle(context.getResources().getString(R.string.text_alert));
-                    builder.setMessage(context.getResources().getString(R.string.msg_deleted_data));
+                    builder.setTitle(getResources().getString(R.string.text_alert));
+                    builder.setMessage(getResources().getString(R.string.msg_deleted_data));
                     builder.setPositiveButton(getResources().getString(R.string.button_ok), new DialogInterface.OnClickListener() {
 
                         @Override
@@ -316,7 +311,7 @@ public class SettingActivity extends AppCompatActivity {
         Paint borderImagePaint = new Paint();
         borderImagePaint.setStyle(Paint.Style.STROKE);
         borderImagePaint.setStrokeWidth(borderWidthHalfImage * 2);
-        borderImagePaint.setColor(context.getResources().getColor(R.color.color_ebebeb));
+        borderImagePaint.setColor(getResources().getColor(R.color.color_ebebeb));
         mcanvas.drawCircle(mcanvas.getWidth() / 2, mcanvas.getWidth() / 2, newBitmapSquareWidthImage / 2, borderImagePaint);
 
         RoundedBitmapDrawable roundedImageBitmapDrawable = RoundedBitmapDrawableFactory.create(getResources(), roundedImageBitmap);

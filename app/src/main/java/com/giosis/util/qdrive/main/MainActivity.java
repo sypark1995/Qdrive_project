@@ -41,6 +41,7 @@ import com.giosis.util.qdrive.gps.GPSTrackerManager;
 import com.giosis.util.qdrive.gps.LocationManagerService;
 import com.giosis.util.qdrive.gps.QuickAppUserInfoUploadHelper;
 import com.giosis.util.qdrive.list.ListActivity;
+import com.giosis.util.qdrive.main.pickupOrder.ChoosePickupTypeActivity;
 import com.giosis.util.qdrive.settings.BluetoothDeviceData;
 import com.giosis.util.qdrive.singapore.LoginActivity;
 import com.giosis.util.qdrive.singapore.MyApplication;
@@ -106,6 +107,7 @@ public class MainActivity extends AppBaseActivity {
     Button btn_home_confirm_my_delivery_order;
     Button btn_home_change_delivery_driver;
     Button btn_home_outlet_order_status;
+    Button btn_home_create_pickup_order;
     Button btn_home_assign_pickup_driver;
 
 
@@ -240,7 +242,7 @@ public class MainActivity extends AppBaseActivity {
         btn_home_assign_pickup_driver = findViewById(R.id.btn_home_assign_pickup_driver);
         btn_home_change_delivery_driver = findViewById(R.id.btn_home_change_delivery_driver);
         btn_home_outlet_order_status = findViewById(R.id.btn_home_outlet_order_status);    // 19.01 krm0219
-
+        btn_home_create_pickup_order = findViewById(R.id.btn_home_create_pickup_order);
 
         getLocalCount();
         if (DownloadCheck()) {
@@ -263,6 +265,12 @@ public class MainActivity extends AppBaseActivity {
         RoundedBitmapDrawable roundedImageDrawable = createRoundedBitmapImageDrawableWithBorder(mBitmap);
         img_home_driver_profile.setImageDrawable(roundedImageDrawable);
 
+        if ("Y".equals(pickup_driver_yn)) {
+            btn_home_create_pickup_order.setVisibility(View.VISIBLE);
+        } else {
+            btn_home_create_pickup_order.setVisibility(View.GONE);
+        }
+
         if (outletDriverYN.equals("Y")) {
 
             btn_home_confirm_my_delivery_order.setText(mContext.getResources().getString(R.string.text_start_delivery_for_outlet));
@@ -278,7 +286,12 @@ public class MainActivity extends AppBaseActivity {
 
             LinearLayout.LayoutParams lp = new LinearLayout.LayoutParams(LinearLayout.LayoutParams.MATCH_PARENT, LinearLayout.LayoutParams.WRAP_CONTENT);
             lp.setMargins(0, DisplayUtil.dpTopx(mContext, 15), 0, DisplayUtil.dpTopx(mContext, 30));
-            btn_home_change_delivery_driver.setLayoutParams(lp);
+
+            if (btn_home_create_pickup_order.getVisibility() == View.VISIBLE) {
+                btn_home_create_pickup_order.setLayoutParams(lp);
+            } else {
+                btn_home_change_delivery_driver.setLayoutParams(lp);
+            }
         }
 
         // NOTIFICATION. 2020.06  POD Scan 제거
@@ -290,6 +303,7 @@ public class MainActivity extends AppBaseActivity {
         btn_home_confirm_my_delivery_order.setOnClickListener(clickListener);
         btn_home_change_delivery_driver.setOnClickListener(clickListener);
         btn_home_outlet_order_status.setOnClickListener(clickListener);
+        btn_home_create_pickup_order.setOnClickListener(clickListener);
         btn_home_assign_pickup_driver.setOnClickListener(clickListener);
 
 
@@ -891,6 +905,11 @@ public class MainActivity extends AppBaseActivity {
                     startActivity(intent);
                 }
                 break;
+
+                case R.id.btn_home_create_pickup_order: {
+                    Intent intent = new Intent(MainActivity.this, ChoosePickupTypeActivity.class);
+                    startActivity(intent);
+                }
             }
         }
     };
