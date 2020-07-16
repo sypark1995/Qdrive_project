@@ -3,6 +3,7 @@ package com.giosis.util.qdrive.main.pickupOrder
 
 import android.content.Intent
 import android.os.Bundle
+import android.view.View
 import androidx.appcompat.app.AppCompatActivity
 import com.giosis.util.qdrive.singapore.R
 import kotlinx.android.synthetic.main.activity_create_pickup_intro.*
@@ -17,6 +18,8 @@ class ChoosePickupTypeActivity : AppCompatActivity() {
         setContentView(R.layout.activity_create_pickup_intro)
 
         btn_create_pickup_intro_back.setOnClickListener { finish() }
+        btn_pickup_type_close.visibility = View.GONE
+
 
         layout_pickup_type_by_qoo10.setOnClickListener {
             val intent = Intent(this, CreatePickupOrderB2CActivity::class.java)

@@ -22,8 +22,12 @@ class CreatePickupOrderB2CActivity : AppCompatActivity() {
 
         if (intent.getBooleanExtra(QOO10_SELLER, false)) {
             text_top_title.text = resources.getString(R.string.text_by_qoo10_seller_id)
+            layout_b2c_qoo10_seller.visibility = View.VISIBLE
+            layout_b2c_manual_register.visibility = View.GONE
         } else {
             text_top_title.text = resources.getString(R.string.text_manual_register)
+            layout_b2c_qoo10_seller.visibility = View.GONE
+            layout_b2c_manual_register.visibility = View.VISIBLE
         }
 
         layout_top_back.setOnClickListener { finish() }

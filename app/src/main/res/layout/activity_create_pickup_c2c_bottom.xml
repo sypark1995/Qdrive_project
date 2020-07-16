@@ -140,41 +140,29 @@
                         android:textSize="@dimen/text_size_36px"
                         tools:text="189720" />
 
-                    <LinearLayout
+                    <FrameLayout
                         android:id="@+id/layout_c2c_sender_address_search"
                         android:layout_width="wrap_content"
-                        android:layout_height="30dp"
-                        android:layout_marginEnd="8dp"
+                        android:layout_height="32dp"
+                        android:layout_marginEnd="4dp"
                         android:layout_toStartOf="@id/layout_c2c_sender_address_pin"
                         android:background="@drawable/back_round_15_border_4fb648"
-                        android:gravity="center"
-                        android:orientation="horizontal"
                         android:paddingStart="12dp"
                         android:paddingEnd="12dp">
 
                         <ImageView
-                            android:layout_width="14dp"
-                            android:layout_height="14dp"
+                            android:layout_width="15dp"
+                            android:layout_height="15dp"
+                            android:layout_gravity="center"
                             android:background="@drawable/btn_search_green" />
-
-                        <TextView
-                            android:layout_width="wrap_content"
-                            android:layout_height="wrap_content"
-                            android:layout_marginStart="5dp"
-                            android:text="@string/text_search"
-                            android:textColor="@color/color_4fb648"
-                            android:textSize="@dimen/text_size_32px" />
-                    </LinearLayout>
+                    </FrameLayout>
 
                     <FrameLayout
                         android:id="@+id/layout_c2c_sender_address_pin"
                         android:layout_width="wrap_content"
                         android:layout_height="32dp"
                         android:layout_alignParentEnd="true"
-                        android:layout_centerVertical="true"
                         android:background="@drawable/back_round_15_border_4fb648"
-                        android:gravity="center"
-                        android:orientation="horizontal"
                         android:paddingStart="12dp"
                         android:paddingEnd="12dp">
 
@@ -243,7 +231,7 @@
             </LinearLayout>
 
             <TextView
-                android:layout_width="100dp"
+                android:layout_width="80dp"
                 android:layout_height="match_parent"
                 android:background="@drawable/back_rect_bottom_border_f6f6f6"
                 android:gravity="top"
@@ -486,7 +474,7 @@
             </LinearLayout>
 
             <TextView
-                android:layout_width="100dp"
+                android:layout_width="80dp"
                 android:layout_height="match_parent"
                 android:background="@drawable/back_rect_bottom_border_f6f6f6"
                 android:gravity="center_vertical"
