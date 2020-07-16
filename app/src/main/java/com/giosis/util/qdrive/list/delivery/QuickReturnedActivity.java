@@ -34,7 +34,7 @@ import com.giosis.util.qdrive.util.PermissionChecker;
 import com.giosis.util.qdrive.util.SharedPreferencesHelper;
 
 public class QuickReturnedActivity extends AppCompatActivity {
-    String TAG = "ReturnedActivity";
+    String TAG = "QuickReturnedActivity";
 
     //
     FrameLayout layout_top_back;

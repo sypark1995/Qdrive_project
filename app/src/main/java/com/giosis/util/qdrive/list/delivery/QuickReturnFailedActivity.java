@@ -136,47 +136,23 @@ public class QuickReturnFailedActivity extends AppCompatActivity implements Came
 
 
         //
-        layout_top_back.setOnClickListener(new View.OnClickListener() {
+        layout_top_back.setOnClickListener(view -> cancelSigning());
 
-            @Override
-            public void onClick(View view) {
+        layout_sign_d_r_f_take_photo.setOnClickListener(view -> {
 
-                cancelSigning();
+            if (cameraId != null) {
+
+                camera2.takePhoto(texture_sign_d_r_f_preview, img_sign_d_r_f_visit_log);
+            } else {
+
+                Toast.makeText(QuickReturnFailedActivity.this, context.getResources().getString(R.string.msg_back_camera_required), Toast.LENGTH_SHORT).show();
             }
+
         });
 
-        layout_sign_d_r_f_take_photo.setOnClickListener(new View.OnClickListener() {
+        layout_sign_d_r_f_gallery.setOnClickListener(v -> getImageFromAlbum());
+        btn_sign_d_r_f_save.setOnClickListener(v -> saveServerUploadSign());
 
-            @Override
-            public void onClick(View view) {
-
-                if (cameraId != null) {
-
-                    camera2.takePhoto(texture_sign_d_r_f_preview, img_sign_d_r_f_visit_log);
-                } else {
-
-                    Toast.makeText(QuickReturnFailedActivity.this, context.getResources().getString(R.string.msg_back_camera_required), Toast.LENGTH_SHORT).show();
-                }
-
-            }
-        });
-
-        layout_sign_d_r_f_gallery.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-
-                getImageFromAlbum();
-            }
-        });
-
-        btn_sign_d_r_f_save.setOnClickListener(new View.OnClickListener() {
-
-            @Override
-            public void onClick(View v) {
-
-                saveServerUploadSign();
-            }
-        });
 
         // Memo 입력제한
         edit_sign_d_r_f_memo.addTextChangedListener(new TextWatcher() {
