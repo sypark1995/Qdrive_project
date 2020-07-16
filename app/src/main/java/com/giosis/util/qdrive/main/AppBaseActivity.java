@@ -191,7 +191,16 @@ public class AppBaseActivity extends AppCompatActivity {
                     if (!(top_title_string.contains(getString(R.string.navi_home)))) {
                         finish();
                     }
-                }
+                } /*else if (title.equals(getString(R.string.text_create_pickup_order))) {
+
+                    drawerLayout.closeDrawers();
+                    Intent intent = new Intent(AppBaseActivity.this, CreatePickupIntroActivity.class);
+                    startActivity(intent);
+
+                    if (!(top_title_string.contains(getString(R.string.navi_home)))) {
+                        finish();
+                    }
+                }*/
 
                 return false;
             }

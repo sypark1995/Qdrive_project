@@ -45,7 +45,7 @@ public class RowItem {
     // 2020.06  Trip 단위 묶음
     private int tripNo;
     private boolean primaryKey;
-    private ArrayList<RowItem> tripDataArrayList;
+    private ArrayList<RowItem> tripSubDataArrayList;
 
     float distance;
 
@@ -311,7 +311,6 @@ public class RowItem {
     }
 
 
-
     public int getTripNo() {
         return tripNo;
     }
@@ -328,13 +327,13 @@ public class RowItem {
         this.primaryKey = primaryKey;
     }
 
-    // primary key 'Y' 일 경우 해당 Trip에 묶인 데이터 리스트
-    public ArrayList<RowItem> getTripDataArrayList() {
-        return tripDataArrayList;
+
+    public ArrayList<RowItem> getTripSubDataArrayList() {
+        return tripSubDataArrayList;
     }
 
-    public void setTripDataArrayList(ArrayList<RowItem> tripDataArrayList) {
-        this.tripDataArrayList = tripDataArrayList;
+    public void setTripSubDataArrayList(ArrayList<RowItem> tripSubDataArrayList) {
+        this.tripSubDataArrayList = tripSubDataArrayList;
     }
 
     // 드라이버 위치와의 거리

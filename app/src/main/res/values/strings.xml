@@ -518,7 +518,6 @@
     <!-- 2020 Sort -->
     <string name="text_nearer">Nearer</string>
     <string name="msg_error_get_gps">Error. Failed to get GPS.</string>
-
     <string name="select_device">Select a device to connect</string>
     <string name="button_scan">Scan for devices</string>
     <string name="scanning">Scanning for devices …</string>
@@ -529,6 +528,10 @@
 
 
     <!-- NOTIFICATION  2020.하반기 Qdrive 개선사항 -->
+    <string name="text_by_request">By Request</string>
+    <string name="text_by_trip">By Trip</string>
+    <string name="text_trip_detail_requests">Trip Details (%d requests)</string>
+
     <string name="text_create_pickup_order">Create Pickup Order</string>
     <string name="text_qx_pickup_order">Qx Pickup Order</string>
     <string name="text_choose_pickup_type">Choose Pickup Type</string>
@@ -572,6 +575,7 @@
     <string name="text_search_address">Search address</string>
     <string name="text_postal_code_or_detail_address">Postal Code or Detail Address</string>
     <string name="text_pickup_order_confirm">Pickup order Confirm</string>
+    <string name="text_payment_check">Payment Check</string>
     <!-- TODO  -->
 
 
