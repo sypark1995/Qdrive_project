@@ -54,7 +54,6 @@ public class SettingActivity extends AppCompatActivity {
     RelativeLayout layout_setting_printer_setting;
     RelativeLayout layout_setting_scan_setting;
     LinearLayout layout_setting_locker;
-
     TextView text_setting_app_version;
 
 

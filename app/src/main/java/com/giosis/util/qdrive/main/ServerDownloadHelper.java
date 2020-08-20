@@ -16,12 +16,14 @@ import com.giosis.util.qdrive.barcodescanner.ManualHelper;
 import com.giosis.util.qdrive.list.PickupAssignResult;
 import com.giosis.util.qdrive.singapore.R;
 import com.giosis.util.qdrive.util.BarcodeType;
+import com.giosis.util.qdrive.util.Custom_JsonParser;
 import com.giosis.util.qdrive.util.DataUtil;
 import com.giosis.util.qdrive.util.DatabaseHelper;
 import com.giosis.util.qdrive.util.DisplayUtil;
 import com.giosis.util.qdrive.util.GeocoderUtil;
 import com.giosis.util.qdrive.util.NetworkUtil;
 
+import org.json.JSONObject;
 import org.simpleframework.xml.Serializer;
 import org.simpleframework.xml.core.Persister;
 
@@ -346,6 +348,48 @@ public class ServerDownloadHelper extends ManualHelper {
             Log.e("Exception", TAG + "  GetPickupList Exception : " + e.toString());
             resultObj = null;
         }
+
+
+
+        try {
+
+            JSONObject job = new JSONObject();
+            job.accumulate("opId", opID);            // 필수
+            job.accumulate("officeCd", officeCode);
+            job.accumulate("exceptList", "");
+            job.accumulate("assignList", "");
+            job.accumulate("device_id", deviceID);
+            job.accumulate("network_type", networkType);
+            job.accumulate("app_id", DataUtil.appID);
+            job.accumulate("nation_cd", DataUtil.nationCode);
+
+            String methodName = "GetPickupList";
+            String jsonString = Custom_JsonParser.requestServerDataReturnJSON(MOBILE_SERVER_URL, methodName, job);
+            // {"ResultCode":0,"ResultMsg":"STD"}
+            // {"ResultCode":-99,"ResultMsg":"There is no Default Route."}
+
+            JSONObject jsonObject = new JSONObject(jsonString);
+            Log.e("krm0219", "Server  getPikcupList  > " + jsonObject.toString());
+        //    resultObj.setResultCode(jsonObject.getInt("ResultCode"));
+        //    resultObj.setResultMsg(jsonObject.getString("ResultMsg"));
+        } catch (Exception e) {
+
+            Log.e("Exception", TAG + "  SetPickupScanNo Exception : " + e.toString());
+
+            String msg = String.format(context.getResources().getString(R.string.text_exception), e.toString());
+            resultObj.setResultCode(-15);
+            resultObj.setResultMsg(msg);
+        }
+
+
+
+
+
+
+
+
+
+
 
         return resultObj;
     }
