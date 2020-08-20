@@ -46,49 +46,49 @@ public class PickupAssignResult {
     public static class QSignPickupList {
 
         @Element(name = "contr_no", required = false)
-        private String ContrNo = "";
+        private String contr_no = "";
 
         @Element(name = "partner_ref_no", required = false)
-        private String partnerRefNo = "";
+        private String partner_ref_no = "";
 
         @Element(name = "invoice_no", required = false)
-        private String invoiceNo = "";
+        private String invoice_no = "";
 
         @Element(name = "stat", required = false)
         private String stat = "";
 
         @Element(name = "req_nm", required = false)
-        private String reqName = "";
+        private String req_nm = "";
 
         @Element(name = "partner_id", required = false)
-        private String partnerID = "";
+        private String partner_id = "";
 
         @Element(name = "req_dt", required = false)
-        private String reqDate = "";
+        private String req_dt = "";
 
         @Element(name = "tel_no", required = false)
-        private String telNo = "";
+        private String tel_no = "";
 
         @Element(name = "hp_no", required = false)
-        private String hpNo = "";
+        private String hp_no = "";
 
         @Element(name = "zip_code", required = false)
-        private String zipCode = "";
+        private String zip_code = "";
 
         @Element(name = "address", required = false)
         private String address = "";
 
         @Element(name = "del_memo", required = false)
-        private String delMemo = "";
+        private String del_memo = "";
 
         @Element(name = "driver_memo", required = false)
-        private String driverMemo = "";
+        private String driver_memo = "";
 
         @Element(name = "fail_reason", required = false)
-        private String failReason = "";
+        private String fail_reason = "";
 
         @Element(name = "pickup_hopeday", required = false)
-        private String pickupHopeDay = "";
+        private String pickup_hopeday = "";
 
         @Element(name = "qty", required = false)
         private String qty = "";
@@ -97,13 +97,13 @@ public class PickupAssignResult {
         private String route = "";
 
         @Element(name = "secret_no_type", required = false)
-        private String secretNoType = "";
+        private String secret_no_type = "";
 
         @Element(name = "secret_no", required = false)
-        private String secretNo = "";
+        private String secret_no = "";
 
         @Element(name = "failed_count", required = false)
-        private String failedCount = "";
+        private String failed_count = "";
 
         @Element(name = "dr_req_no", required = false)
         private String dr_req_no = "";
@@ -129,15 +129,15 @@ public class PickupAssignResult {
         }
 
         public String getContrNo() {
-            return ContrNo;
+            return contr_no;
         }
 
         public String getPartnerRefNo() {
-            return partnerRefNo;
+            return partner_ref_no;
         }
 
         public String getInvoiceNo() {
-            return invoiceNo;
+            return invoice_no;
         }
 
         public String getStat() {
@@ -145,19 +145,19 @@ public class PickupAssignResult {
         }
 
         public String getReqName() {
-            return reqName;
+            return req_nm;
         }
 
         public String getTelNo() {
-            return telNo;
+            return tel_no;
         }
 
         public String getHpNo() {
-            return hpNo;
+            return hp_no;
         }
 
         public String getZipCode() {
-            return zipCode;
+            return zip_code;
         }
 
         public String getAddress() {
@@ -165,15 +165,15 @@ public class PickupAssignResult {
         }
 
         public String getDelMemo() {
-            return delMemo;
+            return del_memo;
         }
 
         public String getDriverMemo() {
-            return driverMemo;
+            return driver_memo;
         }
 
         public String getFailReason() {
-            return failReason;
+            return fail_reason;
         }
 
         public String getQty() {
@@ -185,32 +185,32 @@ public class PickupAssignResult {
         }
 
         public String getSecretNoType() {
-            return secretNoType;
+            return secret_no_type;
         }
 
         public String getSecretNo() {
-            return secretNo;
+            return secret_no;
         }
 
         public String getFailedCount() {
-            return failedCount;
+            return failed_count;
         }
 
         public String getReqDate() {
-            return reqDate;
+            return req_dt;
         }
 
         public String getPartnerID() {
-            return partnerID;
+            return partner_id;
         }
 
         public String getPickupHopeDay() {
-            return pickupHopeDay;
+            return pickup_hopeday;
         }
 
         public String getPickupHopeTime() {
 
-            String pickupHopeTime = reqDate.substring(10, reqDate.length());
+            String pickupHopeTime = req_dt.substring(10, req_dt.length());
 
             return pickupHopeTime;
         }

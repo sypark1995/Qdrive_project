@@ -22,12 +22,15 @@ import com.giosis.util.qdrive.util.DatabaseHelper;
 import com.giosis.util.qdrive.util.DisplayUtil;
 import com.giosis.util.qdrive.util.GeocoderUtil;
 import com.giosis.util.qdrive.util.NetworkUtil;
+import com.google.gson.Gson;
 
+import org.json.JSONArray;
 import org.json.JSONObject;
 import org.simpleframework.xml.Serializer;
 import org.simpleframework.xml.core.Persister;
 
 import java.text.SimpleDateFormat;
+import java.util.ArrayList;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.TimeZone;
@@ -189,6 +192,7 @@ public class ServerDownloadHelper extends ManualHelper {
                 if (PickupServerList != null) {
 
                     for (PickupAssignResult.QSignPickupList pickupInfo : PickupServerList.getResultObject()) {
+
                         successCount = insertDevicePickupData(pickupInfo);
                         publishProgress(1);
                     }
@@ -316,6 +320,7 @@ public class ServerDownloadHelper extends ManualHelper {
 
     private PickupAssignResult getPickupServerData() {
 
+        // XML Parser
         PickupAssignResult resultObj;
 
         try {
@@ -350,7 +355,8 @@ public class ServerDownloadHelper extends ManualHelper {
         }
 
 
-
+        // JSON Parser
+        PickupAssignResult resultObj1 = new PickupAssignResult();
         try {
 
             JSONObject job = new JSONObject();
@@ -369,29 +375,31 @@ public class ServerDownloadHelper extends ManualHelper {
             // {"ResultCode":-99,"ResultMsg":"There is no Default Route."}
 
             JSONObject jsonObject = new JSONObject(jsonString);
-            Log.e("krm0219", "Server  getPikcupList  > " + jsonObject.toString());
-        //    resultObj.setResultCode(jsonObject.getInt("ResultCode"));
-        //    resultObj.setResultMsg(jsonObject.getString("ResultMsg"));
+            JSONArray jsonArray = jsonObject.getJSONArray("ResultObject");
+
+
+            ArrayList<PickupAssignResult.QSignPickupList> resultObject = new ArrayList<>();
+            Gson gson = new Gson();
+
+            for (int i = 0; i < jsonArray.length(); i++) {
+
+                PickupAssignResult.QSignPickupList data = gson.fromJson(jsonArray.get(i).toString(), PickupAssignResult.QSignPickupList.class);
+                resultObject.add(data);
+            }
+
+            resultObj1.setResultCode(jsonObject.getInt("ResultCode"));
+            resultObj1.setResultMsg(jsonObject.getString("ResultMsg"));
+            resultObj1.setResultObject(resultObject);
+
+            //    resultObj.setResultCode(jsonObject.getInt("ResultCode"));
+            //    resultObj.setResultMsg(jsonObject.getString("ResultMsg"));
         } catch (Exception e) {
 
             Log.e("Exception", TAG + "  SetPickupScanNo Exception : " + e.toString());
-
-            String msg = String.format(context.getResources().getString(R.string.text_exception), e.toString());
-            resultObj.setResultCode(-15);
-            resultObj.setResultMsg(msg);
         }
 
-
-
-
-
-
-
-
-
-
-
-        return resultObj;
+        return resultObj1;
+        //  return resultObj;
     }
 
 
