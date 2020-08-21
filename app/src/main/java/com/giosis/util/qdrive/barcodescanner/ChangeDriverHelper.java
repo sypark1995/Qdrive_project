@@ -19,20 +19,15 @@ import com.giosis.util.qdrive.util.DisplayUtil;
 import com.giosis.util.qdrive.util.GeocoderUtil;
 import com.giosis.util.qdrive.util.NetworkUtil;
 import com.giosis.util.qdrive.util.SharedPreferencesHelper;
+import com.google.gson.Gson;
 
 import org.json.JSONObject;
-import org.simpleframework.xml.Serializer;
-import org.simpleframework.xml.core.Persister;
 
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Date;
-import java.util.HashMap;
 import java.util.List;
 import java.util.TimeZone;
-
-import gmkt.inc.android.common.GMKT_SyncHttpTask;
-import gmkt.inc.android.common.network.http.GMKT_HTTPResponseMessage;
 
 public class ChangeDriverHelper extends ManualHelper {
     String TAG = "ChangeDriverHelper";
@@ -41,7 +36,7 @@ public class ChangeDriverHelper extends ManualHelper {
     private final String opID;
     private final String officeCode;
     private final String deviceID;
-    private final ArrayList<ChangeDriverResult.ResultObject> changeDriverObjectArrayList;
+    private final ArrayList<ChangeDriverResult.Data> changeDriverObjectArrayList;
     private final double lat;
     private final double lon;
 
@@ -55,7 +50,7 @@ public class ChangeDriverHelper extends ManualHelper {
         private final String opID;
         private final String officeCode;
         private final String deviceID;
-        private final ArrayList<ChangeDriverResult.ResultObject> changeDriverObjectArrayList;
+        private final ArrayList<ChangeDriverResult.Data> changeDriverObjectArrayList;
         private final double lat;
         private final double lon;
 
@@ -63,7 +58,7 @@ public class ChangeDriverHelper extends ManualHelper {
         private OnChangeDelDriverEventListener eventListener;
 
         public Builder(Context context, String opID, String officeCode, String deviceID,
-                       ArrayList<ChangeDriverResult.ResultObject> list, double lat, double lon) {
+                       ArrayList<ChangeDriverResult.Data> list, double lat, double lon) {
 
             this.context = context;
             this.opID = opID;
@@ -137,7 +132,7 @@ public class ChangeDriverHelper extends ManualHelper {
 
                 String ContrNoStr = null;
 
-                for (ChangeDriverResult.ResultObject item : changeDriverObjectArrayList) {
+                for (ChangeDriverResult.Data item : changeDriverObjectArrayList) {
 
                     if (!TextUtils.isEmpty(item.getContrNo())) {
 
@@ -171,7 +166,8 @@ public class ChangeDriverHelper extends ManualHelper {
 
             DisplayUtil.dismissProgressDialog(progressDialog);
 
-            if (resultList.getResultCode() == 0) {
+
+            if (resultList != null && resultList.getResultCode() == 0) {
 
                 List<DriverAssignResult.QSignDeliveryList> resultObject = resultList.getResultObject();
 
@@ -197,12 +193,11 @@ public class ChangeDriverHelper extends ManualHelper {
         private DriverAssignResult changeDriver(String assignNo) {
 
             DriverAssignResult resultObj;
-
+/*
             try {
 
                 GMKT_SyncHttpTask httpTask = new GMKT_SyncHttpTask("QSign");
                 HashMap<String, String> hmActionParam = new HashMap<>();
-
                 hmActionParam.put("assignList", assignNo);
                 hmActionParam.put("office_code", officeCode);
                 hmActionParam.put("network_type", networkType);
@@ -238,6 +233,35 @@ public class ChangeDriverHelper extends ManualHelper {
                 ArrayList<DriverAssignResult.QSignDeliveryList> resultList = new ArrayList<>();
                 resultList.add(result);
                 resultObj.setResultObject(resultList);
+            }
+*/
+
+            //    return resultObj;
+
+
+            // JSON Parser
+            Gson gson = new Gson();
+
+            try {
+
+                JSONObject job = new JSONObject();
+                job.accumulate("assignList", assignNo);
+                job.accumulate("office_code", officeCode);
+                job.accumulate("network_type", networkType);
+                job.accumulate("del_driver_id", opID);
+                job.accumulate("device_id", deviceID);
+                job.accumulate("lat", String.valueOf(lat));
+                job.accumulate("lon", String.valueOf(lon));
+                job.accumulate("app_id", DataUtil.appID);
+                job.accumulate("nation_cd", DataUtil.nationCode);
+
+                String methodName = "SetChangeDeliveryDriver";
+                String jsonString = Custom_JsonParser.requestServerDataReturnJSON(MOBILE_SERVER_URL, methodName, job);
+                resultObj = gson.fromJson(jsonString, DriverAssignResult.class);
+            } catch (Exception e) {
+
+                Log.e("Exception", TAG + "  SetChangeDeliveryDriver Json Exception : " + e.toString());
+                resultObj = null;
             }
 
             return resultObj;

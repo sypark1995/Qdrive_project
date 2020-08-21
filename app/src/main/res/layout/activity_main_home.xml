@@ -359,7 +359,7 @@
                 android:textAllCaps="false"
                 android:textColor="@color/color_4fb648"
                 android:textSize="@dimen/text_size_32px"
-                android:visibility="visible" />
+                android:visibility="gone" />
 
             <Button
                 android:id="@+id/btn_home_outlet_order_status"

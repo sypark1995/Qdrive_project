@@ -140,9 +140,9 @@ public class AppBaseActivity extends AppCompatActivity {
         adapter.addItem(ContextCompat.getDrawable(this, R.drawable.side_icon_list_selector), getString(R.string.navi_list), arrayList1, -1);
         adapter.addItem(ContextCompat.getDrawable(this, R.drawable.side_icon_statistics_selector), getString(R.string.navi_statistics), null, -1);
 
-        if ("Y".equals(SharedPreferencesHelper.getSigninPickupDriverYN(this))) {
+        /*if ("Y".equals(SharedPreferencesHelper.getSigninPickupDriverYN(this))) {
             adapter.addItem(ContextCompat.getDrawable(this, R.drawable.side_icon_create_pickup_order_selector), getString(R.string.text_create_pickup_order), null, -1);
-        }
+        }*/
 
         adapter.addItem(ContextCompat.getDrawable(this, R.drawable.side_icon_settings_selector), getString(R.string.navi_setting), null, -1);
 

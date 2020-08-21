@@ -10,36 +10,37 @@ import java.util.List;
 public class DriverAssignResult {
 
     @Element(name = "ResultCode", required = false)
-    private int resultCode = -1;
+    private int ResultCode = -1;
 
     @Element(name = "ResultMsg", required = false)
-    private String resultMsg = "";
+    private String ResultMsg = "";
 
     public int getResultCode() {
-        return resultCode;
+        return ResultCode;
     }
 
     public void setResultCode(int resultCode) {
-        this.resultCode = resultCode;
+        this.ResultCode = resultCode;
     }
 
     public String getResultMsg() {
-        return resultMsg;
+        return ResultMsg;
     }
 
     public void setResultMsg(String resultMsg) {
-        this.resultMsg = resultMsg;
+        this.ResultMsg = resultMsg;
     }
 
+
     @ElementList(required = false, name = "ResultObject")
-    private List<QSignDeliveryList> resultObject;
+    private List<QSignDeliveryList> ResultObject;
 
     public List<QSignDeliveryList> getResultObject() {
-        return resultObject;
+        return ResultObject;
     }
 
     public void setResultObject(List<QSignDeliveryList> resultObj) {
-        this.resultObject = resultObj;
+        this.ResultObject = resultObj;
     }
 
     @Root(strict = false, name = "QSignDeliveryList")

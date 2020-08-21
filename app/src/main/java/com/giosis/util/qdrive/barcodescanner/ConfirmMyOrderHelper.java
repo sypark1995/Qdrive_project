@@ -11,24 +11,21 @@ import android.util.Log;
 
 import com.giosis.util.qdrive.singapore.R;
 import com.giosis.util.qdrive.util.BarcodeType;
+import com.giosis.util.qdrive.util.Custom_JsonParser;
 import com.giosis.util.qdrive.util.DataUtil;
 import com.giosis.util.qdrive.util.DatabaseHelper;
 import com.giosis.util.qdrive.util.DisplayUtil;
 import com.giosis.util.qdrive.util.GeocoderUtil;
 import com.giosis.util.qdrive.util.SharedPreferencesHelper;
+import com.google.gson.Gson;
 
-import org.simpleframework.xml.Serializer;
-import org.simpleframework.xml.core.Persister;
+import org.json.JSONObject;
 
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Date;
-import java.util.HashMap;
 import java.util.List;
 import java.util.TimeZone;
-
-import gmkt.inc.android.common.GMKT_SyncHttpTask;
-import gmkt.inc.android.common.network.http.GMKT_HTTPResponseMessage;
 
 public class ConfirmMyOrderHelper extends ManualHelper {
     String TAG = "ConfirmMyOrderHelper";
@@ -148,7 +145,7 @@ public class ConfirmMyOrderHelper extends ManualHelper {
 
             DisplayUtil.dismissProgressDialog(progressDialog);
 
-            if (resultList.getResultCode() == 0) {
+            if (resultList != null && resultList.getResultCode() == 0) {
 
                 List<DriverAssignResult.QSignDeliveryList> resultObject = resultList.getResultObject();
 
@@ -169,11 +166,10 @@ public class ConfirmMyOrderHelper extends ManualHelper {
 
             DriverAssignResult resultObj;
 
-            try {
+            /*try {
 
                 GMKT_SyncHttpTask httpTask = new GMKT_SyncHttpTask("QSign");
                 HashMap<String, String> hmActionParam = new HashMap<>();
-
                 hmActionParam.put("assignList", assignNo);
                 hmActionParam.put("office_code", officeCode);
                 hmActionParam.put("del_driver_id", opID);
@@ -205,6 +201,29 @@ public class ConfirmMyOrderHelper extends ManualHelper {
                 resultList.add(result);
 
                 resultObj.setResultObject(resultList);
+            }*/
+
+            // JSON Parser
+            Gson gson = new Gson();
+
+            try {
+
+                JSONObject job = new JSONObject();
+                job.accumulate("assignList", assignNo);
+                job.accumulate("office_code", officeCode);
+                job.accumulate("del_driver_id", opID);
+                job.accumulate("device_id", deviceID);
+                job.accumulate("stat_chg_gubun", "D");
+                job.accumulate("app_id", DataUtil.appID);
+                job.accumulate("nation_cd", DataUtil.nationCode);
+
+                String methodName = "SetShippingStatDpc3out";
+                String jsonString = Custom_JsonParser.requestServerDataReturnJSON(MOBILE_SERVER_URL, methodName, job);
+                resultObj = gson.fromJson(jsonString, DriverAssignResult.class);
+            } catch (Exception e) {
+
+                Log.e("Exception", TAG + "  SetChangeDeliveryDriver Json Exception : " + e.toString());
+                resultObj = null;
             }
 
             return resultObj;

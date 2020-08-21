@@ -265,11 +265,11 @@ public class MainActivity extends AppBaseActivity {
         RoundedBitmapDrawable roundedImageDrawable = createRoundedBitmapImageDrawableWithBorder(mBitmap);
         img_home_driver_profile.setImageDrawable(roundedImageDrawable);
 
-        if ("Y".equals(pickup_driver_yn)) {
+       /* if ("Y".equals(pickup_driver_yn)) {
             btn_home_create_pickup_order.setVisibility(View.VISIBLE);
         } else {
             btn_home_create_pickup_order.setVisibility(View.GONE);
-        }
+        }*/
 
         if (outletDriverYN.equals("Y")) {
 

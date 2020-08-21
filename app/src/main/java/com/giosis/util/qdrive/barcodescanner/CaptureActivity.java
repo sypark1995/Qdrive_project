@@ -65,9 +65,6 @@ import android.widget.TextView;
 import android.widget.Toast;
 import android.widget.ToggleButton;
 
-import androidx.appcompat.app.AppCompatActivity;
-
-import com.giosis.util.qdrive.barcodescanner.ChangeDriverHelper.OnChangeDelDriverEventListener;
 import com.giosis.util.qdrive.barcodescanner.bluetooth.BluetoothChatService;
 import com.giosis.util.qdrive.barcodescanner.bluetooth.DeviceListActivity;
 import com.giosis.util.qdrive.barcodescanner.bluetooth.KScan;
@@ -97,6 +94,8 @@ import com.google.zxing.Result;
 import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.regex.Pattern;
+
+import androidx.appcompat.app.AppCompatActivity;
 
 /**
  * The barcode reader activity itself. This is loosely based on the
@@ -191,8 +190,8 @@ public final class CaptureActivity extends AppCompatActivity implements SurfaceH
     private InputBarcodeNoListAdapter scanBarcodeNoListAdapter;
     // resume 시 recreate 할 data list
     private ArrayList<String> barcodeList = new ArrayList<>();
-    private ArrayList<ChangeDriverResult.ResultObject> changeDriverObjectArrayList = new ArrayList<>();
-    private ChangeDriverResult.ResultObject changeDriverResult;
+    private ArrayList<ChangeDriverResult.Data> changeDriverObjectArrayList = new ArrayList<>();
+    private ChangeDriverResult.Data changeDriverResult;
     private HistoryManager historyManager;
 
 
@@ -1783,30 +1782,29 @@ public final class CaptureActivity extends AppCompatActivity implements SurfaceH
             }
 
             new ConfirmMyOrderHelper.Builder(this, opID, officeCode, deviceID, scanBarcodeArrayList)
-                    .setOnDriverAssignEventListener(new ConfirmMyOrderHelper.OnDriverAssignEventListener() {
+                    .setOnDriverAssignEventListener(stdResult -> {
 
-                        @Override
-                        public void onPostAssignResult(DriverAssignResult stdResult) {
+                        String msg = "";
 
-                            if (stdResult.getResultCode() == 0) {
-
+                        if (stdResult != null) {
+                            if (stdResult.getResultCode() == 0)
                                 onResetButtonClick();
-                            }
 
-                            // BadTokenException 예방
-                            if (!CaptureActivity.this.isFinishing()) {
+                            msg = stdResult.getResultMsg();
+                        } else {
 
-                                AlertDialog.Builder builder = new AlertDialog.Builder(CaptureActivity.this);
-                                builder.setTitle(context.getResources().getString(R.string.text_driver_assign_result));
-                                builder.setMessage(stdResult.getResultMsg());
-                                builder.setPositiveButton(context.getResources().getString(R.string.button_ok), new DialogInterface.OnClickListener() {
-                                    @Override
-                                    public void onClick(DialogInterface dialog, int id) {
-                                        dialog.cancel();
-                                    }
-                                });
-                                builder.show();
-                            }
+                            msg = context.getResources().getString(R.string.text_fail_update);
+                        }
+
+
+                        // BadTokenException 예방
+                        if (!CaptureActivity.this.isFinishing()) {
+
+                            AlertDialog.Builder builder = new AlertDialog.Builder(CaptureActivity.this);
+                            builder.setTitle(context.getResources().getString(R.string.text_driver_assign_result));
+                            builder.setMessage(msg);
+                            builder.setPositiveButton(context.getResources().getString(R.string.button_ok), (dialog, id) -> dialog.cancel());
+                            builder.show();
                         }
                     }).build().execute();
         } else if (mScanType.equals(BarcodeType.CHANGE_DELIVERY_DRIVER)) {
@@ -1829,27 +1827,26 @@ public final class CaptureActivity extends AppCompatActivity implements SurfaceH
             }
 
             new ChangeDriverHelper.Builder(this, opID, officeCode, deviceID, changeDriverObjectArrayList, latitude, longitude)
-                    .setOnChangeDelDriverEventListener(new OnChangeDelDriverEventListener() {
+                    .setOnChangeDelDriverEventListener(stdResult -> {
 
-                        @Override
-                        public void onPostAssignResult(DriverAssignResult stdResult) {
+                        String msg = "";
 
-                            if (stdResult.getResultCode() == 0) {
+                        if (stdResult != null) {
 
+                            if (stdResult.getResultCode() == 0)
                                 onResetButtonClick();
-                            }
 
-                            AlertDialog.Builder builder = new AlertDialog.Builder(CaptureActivity.this);
-                            builder.setTitle(context.getResources().getString(R.string.text_driver_assign_result));
-                            builder.setMessage(stdResult.getResultMsg());
-                            builder.setPositiveButton(context.getResources().getString(R.string.button_ok), new DialogInterface.OnClickListener() {
-                                @Override
-                                public void onClick(DialogInterface dialog, int id) {
-                                    dialog.cancel();
-                                }
-                            });
-                            builder.show();
+                            msg = stdResult.getResultMsg();
+                        } else {
+
+                            msg = context.getResources().getString(R.string.text_fail_update);
                         }
+
+                        AlertDialog.Builder builder = new AlertDialog.Builder(CaptureActivity.this);
+                        builder.setTitle(context.getResources().getString(R.string.text_driver_assign_result));
+                        builder.setMessage(msg);
+                        builder.setPositiveButton(context.getResources().getString(R.string.button_ok), (dialog, id) -> dialog.cancel());
+                        builder.show();
                     }).build().execute();
         }
     }

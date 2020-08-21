@@ -272,7 +272,7 @@ public class ServerDownloadHelper extends ManualHelper {
             resultObj = serializer.read(DriverAssignResult.class, resultString);
         } catch (Exception e) {
 
-            Log.e("Exception", TAG + "  GetDeliveryList Exception : " + e.toString());
+            Log.e("Exception", TAG + "  GetDeliveryList Xml Exception : " + e.toString());
             resultObj = null;
         }
 
@@ -313,7 +313,7 @@ public class ServerDownloadHelper extends ManualHelper {
             resultObj.setResultObject(resultObject);
         } catch (Exception e) {
 
-            Log.e("Exception", TAG + "  GetPickupList Json Exception : " + e.toString());
+            Log.e("Exception", TAG + "  GetDeliveryList Json Exception : " + e.toString());
             resultObj = null;
         }
 
@@ -325,6 +325,7 @@ public class ServerDownloadHelper extends ManualHelper {
 
         DriverAssignResult resultObj;
 
+        // XML Parser
         try {
 
           /*  // TEST. Outlet
@@ -354,7 +355,48 @@ public class ServerDownloadHelper extends ManualHelper {
             resultObj = serializer.read(DriverAssignResult.class, resultString);
         } catch (Exception e) {
 
-            Log.e("Exception", TAG + "  GetDeliveryList_Outlet Exception : " + e.toString());
+            Log.e("Exception", TAG + "  GetDeliveryList_Outlet Xml Exception : " + e.toString());
+            resultObj = null;
+        }
+
+    //    return resultObj;
+
+
+        // JSON Parser
+        resultObj = new DriverAssignResult();
+        try {
+
+            JSONObject job = new JSONObject();
+            job.accumulate("opId", opID);            // 필수
+            job.accumulate("officeCd", officeCode);
+            job.accumulate("exceptList", "");
+            job.accumulate("assignList", "");
+            job.accumulate("device_id", deviceID);
+            job.accumulate("network_type", networkType);
+            job.accumulate("app_id", DataUtil.appID);
+            job.accumulate("nation_cd", DataUtil.nationCode);
+
+            String methodName = "GetDeliveryList_Outlet";
+            String jsonString = Custom_JsonParser.requestServerDataReturnJSON(MOBILE_SERVER_URL, methodName, job);
+
+
+            JSONObject jsonObject = new JSONObject(jsonString);
+            JSONArray jsonArray = jsonObject.getJSONArray("ResultObject");
+
+            ArrayList<DriverAssignResult.QSignDeliveryList> resultObject = new ArrayList<>();
+
+            for (int i = 0; i < jsonArray.length(); i++) {
+
+                DriverAssignResult.QSignDeliveryList data = gson.fromJson(jsonArray.get(i).toString(), DriverAssignResult.QSignDeliveryList.class);
+                resultObject.add(data);
+            }
+
+            resultObj.setResultCode(jsonObject.getInt("ResultCode"));
+            resultObj.setResultMsg(jsonObject.getString("ResultMsg"));
+            resultObj.setResultObject(resultObject);
+        } catch (Exception e) {
+
+            Log.e("Exception", TAG + "  GetDeliveryList_Outlet Json Exception : " + e.toString());
             resultObj = null;
         }
 

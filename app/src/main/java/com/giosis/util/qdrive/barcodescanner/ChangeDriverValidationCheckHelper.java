@@ -9,9 +9,12 @@ import android.os.AsyncTask;
 import android.util.Log;
 
 import com.giosis.util.qdrive.singapore.R;
+import com.giosis.util.qdrive.util.Custom_JsonParser;
 import com.giosis.util.qdrive.util.DataUtil;
 import com.giosis.util.qdrive.util.NetworkUtil;
+import com.google.gson.Gson;
 
+import org.json.JSONObject;
 import org.simpleframework.xml.Serializer;
 import org.simpleframework.xml.core.Persister;
 
@@ -138,7 +141,7 @@ public class ChangeDriverValidationCheckHelper extends ManualHelper {
 
         private ChangeDriverResult validateScanNo(String scan_no) {
 
-            ChangeDriverResult resultObj = null;
+            ChangeDriverResult resultObj;
 
             try {
 
@@ -163,6 +166,30 @@ public class ChangeDriverValidationCheckHelper extends ManualHelper {
             } catch (Exception e) {
 
                 Log.e("Exception", TAG + "  GetChangeDriverValidationCheck Exception : " + e.toString());
+            }
+
+        //    return resultObj;
+
+
+            // JSON Parser
+            Gson gson = new Gson();
+
+            try {
+
+                JSONObject job = new JSONObject();
+                job.accumulate("scanData", scan_no);
+                job.accumulate("driverId", opID);
+                job.accumulate("app_id", DataUtil.appID);
+                job.accumulate("nation_cd", DataUtil.nationCode);
+
+                String methodName = "GetChangeDriverValidationCheck";
+                String jsonString = Custom_JsonParser.requestServerDataReturnJSON(MOBILE_SERVER_URL, methodName, job);
+                // {"ResultObject":{"contr_no":"89581332","tracking_no":"SGP163206810","status":"DPC3-OUT","del_driver_id":"Farhan_STD"},"ResultCode":0,"ResultMsg":"Success"}
+                resultObj = gson.fromJson(jsonString, ChangeDriverResult.class);
+            } catch (Exception e) {
+
+                Log.e("Exception", TAG + "  GetChangeDriverValidationCheck Json Exception : " + e.toString());
+                resultObj = null;
             }
 
             return resultObj;

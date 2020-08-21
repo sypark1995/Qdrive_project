@@ -6,93 +6,73 @@ import org.simpleframework.xml.Root;
 @Root(strict = false, name = "StdCustomResultOfChgDelDriverResult")
 public class ChangeDriverResult {
 
-    public static ResultObject ResultObject;
-
     @Element(name = "ResultCode", required = false)
-    private int resultCode = -1;
+    private int ResultCode = -1;
 
     @Element(name = "ResultMsg", required = false)
-    private String resultMsg = "";
+    private String ResultMsg = "";
 
     public int getResultCode() {
-        return resultCode;
+        return ResultCode;
     }
 
     public void setResultCode(int resultCode) {
-        this.resultCode = resultCode;
+        this.ResultCode = resultCode;
     }
 
     public String getResultMsg() {
-        return resultMsg;
+        return ResultMsg;
     }
 
     public void setResultMsg(String resultMsg) {
-        this.resultMsg = resultMsg;
+        this.ResultMsg = resultMsg;
     }
 
     @Element(required = false, name = "ResultObject")
-    private ResultObject resultObject;
+    private Data ResultObject;
 
-    public ResultObject getResultObject() {
-        return resultObject;
+    public Data getResultObject() {
+        return ResultObject;
     }
 
-    public void setResultObject(ResultObject resultObj) {
-        this.resultObject = resultObj;
+    public void setResultObject(Data resultObj) {
+        this.ResultObject = resultObj;
     }
 
-    //	@Root(strict=false, name="QdriveCNRList")
-//	public static class QdriveCNRList {
     @Root(strict = false, name = "ResultObject")
-    public static class ResultObject {
-        @Element(name = "contr_no", required = false)
-        private String contrNo = "";
+    public static class Data {
 
+        @Element(name = "contr_no", required = false)
+        private String contr_no = "";
 
         @Element(name = "tracking_no", required = false)
-        private String trackingNo = "";
+        private String tracking_no = "";
 
         @Element(name = "del_driver_id", required = false)
-        private String currentDriver = "";
+        private String del_driver_id = "";
 
         @Element(name = "status", required = false)
         private String status = "";
 
+
         public String getContrNo() {
-            return contrNo;
-        }
-
-
-        public void setContrNo(String contrNo) {
-            this.contrNo = contrNo;
+            return contr_no;
         }
 
         public String getTrackingNo() {
-            return trackingNo;
-        }
-
-        public void setTrackingNo(String trackingNo) {
-            this.trackingNo = trackingNo;
+            return tracking_no;
         }
 
         public String getCurrentDriver() {
-            return currentDriver;
-        }
-
-        public void setCurrentDriver(String currentDriver) {
-            this.currentDriver = currentDriver;
+            return del_driver_id;
         }
 
         public String getStatus() {
             return status;
         }
 
-
         public void setStatus(String status) {
             this.status = status;
         }
-
-
     }
-
 }
