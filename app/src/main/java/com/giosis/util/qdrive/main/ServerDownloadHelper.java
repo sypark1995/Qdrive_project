@@ -42,6 +42,8 @@ import gmkt.inc.android.common.network.http.GMKT_HTTPResponseMessage;
 public class ServerDownloadHelper extends ManualHelper {
     String TAG = "ServerDownloadHelper";
 
+    Gson gson = new Gson();
+
     private final Activity activity;
     private final Context context;
     private final String opID;
@@ -244,6 +246,7 @@ public class ServerDownloadHelper extends ManualHelper {
 
         DriverAssignResult resultObj;
 
+        // XML Parser
         try {
 
             GMKT_SyncHttpTask httpTask = new GMKT_SyncHttpTask("QSign");
@@ -273,6 +276,47 @@ public class ServerDownloadHelper extends ManualHelper {
             resultObj = null;
         }
 
+        //  return resultObj;
+
+
+        // JSON Parser
+        resultObj = new DriverAssignResult();
+        try {
+
+            JSONObject job = new JSONObject();
+            job.accumulate("opId", opID);            // 필수
+            job.accumulate("officeCd", officeCode);
+            job.accumulate("exceptList", "");
+            job.accumulate("assignList", "");
+            job.accumulate("device_id", deviceID);
+            job.accumulate("network_type", networkType);
+            job.accumulate("app_id", DataUtil.appID);
+            job.accumulate("nation_cd", DataUtil.nationCode);
+
+            String methodName = "GetDeliveryList";
+            String jsonString = Custom_JsonParser.requestServerDataReturnJSON(MOBILE_SERVER_URL, methodName, job);
+
+
+            JSONObject jsonObject = new JSONObject(jsonString);
+            JSONArray jsonArray = jsonObject.getJSONArray("ResultObject");
+
+            ArrayList<DriverAssignResult.QSignDeliveryList> resultObject = new ArrayList<>();
+
+            for (int i = 0; i < jsonArray.length(); i++) {
+
+                DriverAssignResult.QSignDeliveryList data = gson.fromJson(jsonArray.get(i).toString(), DriverAssignResult.QSignDeliveryList.class);
+                resultObject.add(data);
+            }
+
+            resultObj.setResultCode(jsonObject.getInt("ResultCode"));
+            resultObj.setResultMsg(jsonObject.getString("ResultMsg"));
+            resultObj.setResultObject(resultObject);
+        } catch (Exception e) {
+
+            Log.e("Exception", TAG + "  GetPickupList Json Exception : " + e.toString());
+            resultObj = null;
+        }
+
         return resultObj;
     }
 
@@ -286,7 +330,6 @@ public class ServerDownloadHelper extends ManualHelper {
           /*  // TEST. Outlet
             String MOBILE_SERVER_URL = "https://qxapi.qxpress.asia/GMKT.INC.GLPS.MobileApiService/GlobalMobileService.qapi";
             "Ramlan_7E"*/
-
             GMKT_SyncHttpTask httpTask = new GMKT_SyncHttpTask("QSign");
             HashMap<String, String> hmActionParam = new HashMap<>();
             hmActionParam.put("opId", opID);
@@ -320,9 +363,9 @@ public class ServerDownloadHelper extends ManualHelper {
 
     private PickupAssignResult getPickupServerData() {
 
-        // XML Parser
         PickupAssignResult resultObj;
 
+        // XML Parser
         try {
 
             GMKT_SyncHttpTask httpTask = new GMKT_SyncHttpTask("QSign");
@@ -350,13 +393,15 @@ public class ServerDownloadHelper extends ManualHelper {
             resultObj = serializer.read(PickupAssignResult.class, resultString);
         } catch (Exception e) {
 
-            Log.e("Exception", TAG + "  GetPickupList Exception : " + e.toString());
+            Log.e("Exception", TAG + "  GetPickupList Xml Exception : " + e.toString());
             resultObj = null;
         }
 
+        //  return resultObj;
+
 
         // JSON Parser
-        PickupAssignResult resultObj1 = new PickupAssignResult();
+        resultObj = new PickupAssignResult();
         try {
 
             JSONObject job = new JSONObject();
@@ -371,15 +416,12 @@ public class ServerDownloadHelper extends ManualHelper {
 
             String methodName = "GetPickupList";
             String jsonString = Custom_JsonParser.requestServerDataReturnJSON(MOBILE_SERVER_URL, methodName, job);
-            // {"ResultCode":0,"ResultMsg":"STD"}
-            // {"ResultCode":-99,"ResultMsg":"There is no Default Route."}
+
 
             JSONObject jsonObject = new JSONObject(jsonString);
             JSONArray jsonArray = jsonObject.getJSONArray("ResultObject");
 
-
             ArrayList<PickupAssignResult.QSignPickupList> resultObject = new ArrayList<>();
-            Gson gson = new Gson();
 
             for (int i = 0; i < jsonArray.length(); i++) {
 
@@ -387,19 +429,16 @@ public class ServerDownloadHelper extends ManualHelper {
                 resultObject.add(data);
             }
 
-            resultObj1.setResultCode(jsonObject.getInt("ResultCode"));
-            resultObj1.setResultMsg(jsonObject.getString("ResultMsg"));
-            resultObj1.setResultObject(resultObject);
-
-            //    resultObj.setResultCode(jsonObject.getInt("ResultCode"));
-            //    resultObj.setResultMsg(jsonObject.getString("ResultMsg"));
+            resultObj.setResultCode(jsonObject.getInt("ResultCode"));
+            resultObj.setResultMsg(jsonObject.getString("ResultMsg"));
+            resultObj.setResultObject(resultObject);
         } catch (Exception e) {
 
-            Log.e("Exception", TAG + "  SetPickupScanNo Exception : " + e.toString());
+            Log.e("Exception", TAG + "  GetPickupList Json Exception : " + e.toString());
+            resultObj = null;
         }
 
-        return resultObj1;
-        //  return resultObj;
+        return resultObj;
     }
 
 

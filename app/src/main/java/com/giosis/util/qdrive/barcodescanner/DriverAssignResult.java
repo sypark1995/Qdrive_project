@@ -46,55 +46,55 @@ public class DriverAssignResult {
     public static class QSignDeliveryList {
 
         @Element(name = "contr_no", required = false)
-        private String ContrNo = "";
+        private String contr_no = "";
 
         @Element(name = "partner_ref_no", required = false)
-        private String partnerRefNo = "";
+        private String partner_ref_no = "";
 
         @Element(name = "invoice_no", required = false)
-        private String invoiceNo = "";
+        private String invoice_no = "";
 
         @Element(name = "stat", required = false)
         private String stat = "";
 
         @Element(name = "rcv_nm", required = false)
-        private String rcvName = "";
+        private String rcv_nm = "";
 
         @Element(name = "tel_no", required = false)
-        private String telNo = "";
+        private String tel_no = "";
 
         @Element(name = "hp_no", required = false)
-        private String hpNo = "";
+        private String hp_no = "";
 
         @Element(name = "zip_code", required = false)
-        private String zipCode = "";
+        private String zip_code = "";
 
         @Element(name = "address", required = false)
         private String address = "";
 
         @Element(name = "sender_nm", required = false)
-        private String senderName = "";
+        private String sender_nm = "";
 
         @Element(name = "del_memo", required = false)
-        private String delMemo = "";
+        private String del_memo = "";
 
         @Element(name = "driver_memo", required = false)
-        private String driverMemo = "";
+        private String driver_memo = "";
 
         @Element(name = "fail_reason", required = false)
-        private String failReason = "";
+        private String fail_reason = "";
 
         @Element(name = "partner_ref_no_fail_assign", required = false)
-        private String partnerRefNoFailAssign = "";
+        private String partner_ref_no_fail_assign = "";
 
         @Element(name = "reason_fail_assign", required = false)
-        private String reasonFailAssign = "";
+        private String reason_fail_assign = "";
 
         @Element(name = "delivery_first_date", required = false)
-        private String deliveryFirstDate = "";
+        private String delivery_first_date = "";
 
         @Element(name = "delivery_count", required = false)
-        private String deliveryCount = "";
+        private String delivery_count = "";
 
         @Element(name = "route", required = false)
         private String route = "";
@@ -107,10 +107,10 @@ public class DriverAssignResult {
 
 
         @Element(name = "secure_delivery_yn", required = false)
-        private String secureDeliveryYN = "";
+        private String secure_delivery_yn = "";
 
         @Element(name = "parcel_amount", required = false)
-        private String parcelAmount = "";
+        private String parcel_amount = "";
 
 
         @Element(name = "currency", required = false)
@@ -134,15 +134,15 @@ public class DriverAssignResult {
 		*/
 
         public String getContrNo() {
-            return ContrNo;
+            return contr_no;
         }
 
         public String getPartnerRefNo() {
-            return partnerRefNo;
+            return partner_ref_no;
         }
 
         public String getInvoiceNo() {
-            return invoiceNo;
+            return invoice_no;
         }
 
         public String getStat() {
@@ -150,19 +150,19 @@ public class DriverAssignResult {
         }
 
         public String getRcvName() {
-            return rcvName;
+            return rcv_nm;
         }
 
         public String getTelNo() {
-            return telNo;
+            return tel_no;
         }
 
         public String getHpNo() {
-            return hpNo;
+            return hp_no;
         }
 
         public String getZipCode() {
-            return zipCode;
+            return zip_code;
         }
 
         public String getAddress() {
@@ -170,43 +170,43 @@ public class DriverAssignResult {
         }
 
         public String getSenderName() {
-            return senderName;
+            return sender_nm;
         }
 
         public String getDelMemo() {
-            return delMemo;
+            return del_memo;
         }
 
         public String getDriverMemo() {
-            return driverMemo;
+            return driver_memo;
         }
 
         public String getFailReason() {
-            return failReason;
+            return fail_reason;
         }
 
         public String getPartnerRefNoFailAssign() {
-            return partnerRefNoFailAssign;
+            return partner_ref_no_fail_assign;
         }
 
         public String getReasonFailAssign() {
-            return reasonFailAssign;
+            return reason_fail_assign;
         }
 
         public void setPartnerRefNoFailAssign(String assignNo) {
-            this.partnerRefNoFailAssign = assignNo;
+            this.partner_ref_no_fail_assign = assignNo;
         }
 
         public void setReasonFailAssign(String reasonFailAssign) {
-            this.reasonFailAssign = reasonFailAssign;
+            this.reason_fail_assign = reasonFailAssign;
         }
 
         public String getDeliveryFirstDate() {
-            return deliveryFirstDate;
+            return delivery_first_date;
         }
 
         public String getDeliveryCount() {
-            return deliveryCount;
+            return delivery_count;
         }
 
         public String getRoute() {
@@ -222,14 +222,12 @@ public class DriverAssignResult {
         }
 
         public String getSecureDeliveryYN() {
-            return secureDeliveryYN;
+            return secure_delivery_yn;
         }
-
 
         public String getParcelAmount() {
-            return parcelAmount;
+            return parcel_amount;
         }
-
 
         public String getCurrency() {
             return currency;
@@ -243,5 +241,4 @@ public class DriverAssignResult {
             return lat_lng;
         }
     }
-
 }
