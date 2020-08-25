@@ -15,13 +15,6 @@ import com.giosis.util.qdrive.util.NetworkUtil;
 import com.google.gson.Gson;
 
 import org.json.JSONObject;
-import org.simpleframework.xml.Serializer;
-import org.simpleframework.xml.core.Persister;
-
-import java.util.HashMap;
-
-import gmkt.inc.android.common.GMKT_SyncHttpTask;
-import gmkt.inc.android.common.network.http.GMKT_HTTPResponseMessage;
 
 public class ChangeDriverValidationCheckHelper extends ManualHelper {
     String TAG = "ChangeDriverValidationCheckHelper";
@@ -127,14 +120,8 @@ public class ChangeDriverValidationCheckHelper extends ManualHelper {
                 }
             }
 
-            if (result == null) {
-
-                eventListener.OnChangeDelDriverValidCheckFailList(result);
-            } else {
-
-                if (eventListener != null) {
-                    eventListener.OnChangeDelDriverValidCheckResult(result);
-                }
+            if (result != null && eventListener != null) {
+                eventListener.OnChangeDelDriverValidCheckResult(result);
             }
         }
 
@@ -142,34 +129,6 @@ public class ChangeDriverValidationCheckHelper extends ManualHelper {
         private ChangeDriverResult validateScanNo(String scan_no) {
 
             ChangeDriverResult resultObj;
-
-            try {
-
-                GMKT_SyncHttpTask httpTask = new GMKT_SyncHttpTask("QSign");
-                HashMap<String, String> hmActionParam = new HashMap<>();
-                hmActionParam.put("scanData", scan_no);
-                hmActionParam.put("driverId", opID);
-                hmActionParam.put("app_id", DataUtil.appID);
-                hmActionParam.put("nation_cd", DataUtil.nationCode);
-
-                String methodName = "GetChangeDriverValidationCheck";
-                Serializer serializer = new Persister();
-
-                GMKT_HTTPResponseMessage response = httpTask.requestServerDataReturnString(MOBILE_SERVER_URL, methodName, hmActionParam);
-                String resultString = response.getResultString();
-                Log.e("Server", methodName + "  Result : " + resultString);
-                // <ResultCode>0</ResultCode><ResultMsg>Success</ResultMsg><ResultObject><contr_no>55003830</contr_no><tracking_no>SG19611820</tracking_no><status>DPC3-OUT</status><del_driver_id>hyemi</del_driver_id></ResultObject>
-                // <ResultCode>-3</ResultCode><ResultMsg>[SG19611819] can't be changed to you.</ResultMsg><ResultObject />
-                // <ResultCode>-1</ResultCode><ResultMsg>No data.</ResultMsg><ResultObject />
-
-                resultObj = serializer.read(ChangeDriverResult.class, resultString);
-            } catch (Exception e) {
-
-                Log.e("Exception", TAG + "  GetChangeDriverValidationCheck Exception : " + e.toString());
-            }
-
-        //    return resultObj;
-
 
             // JSON Parser
             Gson gson = new Gson();
@@ -185,6 +144,8 @@ public class ChangeDriverValidationCheckHelper extends ManualHelper {
                 String methodName = "GetChangeDriverValidationCheck";
                 String jsonString = Custom_JsonParser.requestServerDataReturnJSON(MOBILE_SERVER_URL, methodName, job);
                 // {"ResultObject":{"contr_no":"89581332","tracking_no":"SGP163206810","status":"DPC3-OUT","del_driver_id":"Farhan_STD"},"ResultCode":0,"ResultMsg":"Success"}
+                // {"ResultObject":{"contr_no":null,"tracking_no":null,"status":null,"del_driver_id":null},"ResultCode":-1,"ResultMsg":"No data."}
+                // {"ResultObject":{"contr_no":null,"tracking_no":null,"status":null,"del_driver_id":null},"ResultCode":-8,"ResultMsg":"[SGP163353912] has been on delivery by yourself"}
                 resultObj = gson.fromJson(jsonString, ChangeDriverResult.class);
             } catch (Exception e) {
 
@@ -204,8 +165,7 @@ public class ChangeDriverValidationCheckHelper extends ManualHelper {
     }
 
     public interface OnChangeDelDriverValidCheckListener {
-        void OnChangeDelDriverValidCheckResult(ChangeDriverResult result);
 
-        void OnChangeDelDriverValidCheckFailList(ChangeDriverResult result);
+        void OnChangeDelDriverValidCheckResult(ChangeDriverResult result);
     }
 }

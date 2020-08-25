@@ -7,9 +7,12 @@ import android.util.Log;
 
 import com.giosis.util.qdrive.barcodescanner.ManualHelper;
 import com.giosis.util.qdrive.singapore.R;
+import com.giosis.util.qdrive.util.Custom_JsonParser;
 import com.giosis.util.qdrive.util.DataUtil;
 import com.giosis.util.qdrive.util.DisplayUtil;
+import com.google.gson.Gson;
 
+import org.json.JSONObject;
 import org.simpleframework.xml.Serializer;
 import org.simpleframework.xml.core.Persister;
 
@@ -120,7 +123,7 @@ public class ScanPackingListDownloadHelper extends ManualHelper {
 
         PickupPackingListResult resultObj = null;
 
-        try {
+        /*try {
 
             GMKT_SyncHttpTask httpTask = new GMKT_SyncHttpTask("QSign");
             HashMap<String, String> hmActionParam = new HashMap<>();
@@ -141,6 +144,29 @@ public class ScanPackingListDownloadHelper extends ManualHelper {
         } catch (Exception e) {
 
             Log.e("Exception", TAG + "  getScanPackingList Exception : " + e.toString());
+        }
+*/
+
+        // JSON Parser
+        Gson gson = new Gson();
+
+        try {
+
+            JSONObject job = new JSONObject();
+            job.accumulate("opId", opID);
+            job.accumulate("pickup_no", pickupNo);
+            job.accumulate("app_id", DataUtil.appID);
+            job.accumulate("nation_cd", DataUtil.nationCode);
+
+            String methodName = "getScanPackingList";
+            String jsonString = Custom_JsonParser.requestServerDataReturnJSON(MOBILE_SERVER_URL, methodName, job);
+
+            resultObj = gson.fromJson(jsonString, PickupPackingListResult.class);
+            // {"ResultObject":[{"packing_no":"SGP163596005","reg_dt":"Aug 24 2020  1:08PM","op_id":"YuMin.Dwl","pickup_no":"P1631998"},{"packing_no":"SGP163579875","reg_dt":"Aug 24 2020  1:08PM","op_id":"YuMin.Dwl","pickup_no":"P1631998"},{"packing_no":"SGP163612649","reg_dt":"Aug 24 2020  1:08PM","op_id":"YuMin.Dwl","pickup_no":"P1631998"}],"ResultCode":0,"ResultMsg":"SUCCESS"}
+        } catch (Exception e) {
+
+            Log.e("Exception", TAG + "  GetDeliveryList Json Exception : " + e.toString());
+            resultObj = null;
         }
 
         return resultObj;

@@ -98,4 +98,12 @@ class MySharedPreferences(context: Context) {
     var authNo: String
         get() = prefs.getString(PREF_KEY_AUTH_NO, "").toString()
         set(value) = prefs.edit().putString(PREF_KEY_AUTH_NO, value).apply()
+
+
+
+    private val PREF_KEY_AUTO_LOGOUT_TIME = "autoLogoutTime"
+
+    var autoLogoutTime: String
+        get() = prefs.getString(PREF_KEY_AUTO_LOGOUT_TIME, "11:50").toString()
+        set(value) = prefs.edit().putString(PREF_KEY_AUTO_LOGOUT_TIME, value).apply()
 }

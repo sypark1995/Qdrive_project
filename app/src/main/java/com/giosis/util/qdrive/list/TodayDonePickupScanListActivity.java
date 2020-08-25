@@ -141,13 +141,7 @@ public class TodayDonePickupScanListActivity extends AppCompatActivity {
         });
 
         new ScanPackingListDownloadHelper.Builder(this, opID, pickup_no)
-                .setOnScanPackingListDownloadEventListener(new ScanPackingListDownloadHelper.OnScanPackingListDownloadEventListener() {
-                    @Override
-                    public void onScanPackingListDownloadResult(PickupPackingListResult result) {
-
-                        setScannedList(result);
-                    }
-                }).build().execute();
+                .setOnScanPackingListDownloadEventListener(result -> setScannedList(result)).build().execute();
     }
 
     public void setScannedList(PickupPackingListResult result) {

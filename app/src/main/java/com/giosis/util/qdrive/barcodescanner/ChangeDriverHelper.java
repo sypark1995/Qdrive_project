@@ -193,51 +193,6 @@ public class ChangeDriverHelper extends ManualHelper {
         private DriverAssignResult changeDriver(String assignNo) {
 
             DriverAssignResult resultObj;
-/*
-            try {
-
-                GMKT_SyncHttpTask httpTask = new GMKT_SyncHttpTask("QSign");
-                HashMap<String, String> hmActionParam = new HashMap<>();
-                hmActionParam.put("assignList", assignNo);
-                hmActionParam.put("office_code", officeCode);
-                hmActionParam.put("network_type", networkType);
-                hmActionParam.put("del_driver_id", opID);
-                hmActionParam.put("device_id", deviceID);
-                hmActionParam.put("lat", String.valueOf(lat));
-                hmActionParam.put("lon", String.valueOf(lon));
-                hmActionParam.put("app_id", DataUtil.appID);
-                hmActionParam.put("nation_cd", DataUtil.nationCode);
-
-                Log.e("Server", TAG + "  DATA : " + assignNo);
-
-                String methodName = "SetChangeDeliveryDriver";
-                Serializer serializer = new Persister();
-
-                GMKT_HTTPResponseMessage response = httpTask.requestServerDataReturnString(MOBILE_SERVER_URL, methodName, hmActionParam);
-                String resultString = response.getResultString();
-                Log.e("Server", methodName + "  Result : " + resultString);
-                // <ResultCode>0</ResultCode><ResultMsg>Success</ResultMsg><ResultObject><QSignDeliveryList><contr_no>55003830</contr_no><partner_ref_no>SGSG105654</partner_ref_no><invoice_no>SG19611820</invoice_no><stat>D3</stat><rcv_nm>Eunyoung Lee</rcv_nm><tel_no>+65--</tel_no><hp_no>+65-8888-8888</hp_no><zip_code>408601</zip_code><address>LIFELONG LEARNING INSTITUTE 11 EUNOS ROAD 8test bbb</address><sender_nm>eeee</sender_nm><del_memo /><driver_memo /><fail_reason>  </fail_reason><delivery_count>0</delivery_count><delivery_first_date>2019-08-20</delivery_first_date><route>GIO</route><secret_no_type> </secret_no_type><secret_no /><secure_delivery_yn>N</secure_delivery_yn><parcel_amount>25.00</parcel_amount><currency>SGD</currency><order_type_etc>ETC</order_type_etc></QSignDeliveryList></ResultObject>
-
-                resultObj = serializer.read(DriverAssignResult.class, resultString);
-            } catch (Exception e) {
-
-                Log.e("Exception", TAG + "  SetChangeDeliveryDriver Exception : " + e.toString());
-                resultObj = new DriverAssignResult();
-                resultObj.setResultCode(-1);
-                resultObj.setResultMsg(context.getResources().getString(R.string.text_fail_update));
-
-                DriverAssignResult.QSignDeliveryList result = new DriverAssignResult.QSignDeliveryList();
-                result.setPartnerRefNoFailAssign(assignNo);
-                result.setReasonFailAssign(context.getResources().getString(R.string.text_http_request_error));
-
-                ArrayList<DriverAssignResult.QSignDeliveryList> resultList = new ArrayList<>();
-                resultList.add(result);
-                resultObj.setResultObject(resultList);
-            }
-*/
-
-            //    return resultObj;
-
 
             // JSON Parser
             Gson gson = new Gson();
@@ -257,6 +212,7 @@ public class ChangeDriverHelper extends ManualHelper {
 
                 String methodName = "SetChangeDeliveryDriver";
                 String jsonString = Custom_JsonParser.requestServerDataReturnJSON(MOBILE_SERVER_URL, methodName, job);
+                // {"ResultObject":[{"contr_no":"90256451","partner_ref_no":"SGSG23614214","invoice_no":"SGP163532597","stat":"D3","rcv_nm":"Ang Boon Sin","tel_no":"+65--","hp_no":"+65-9172-5419","zip_code":"791412","address":"412A FERNVALE LINK#05-13,  Singapore","sender_nm":"jenny","del_memo":"","driver_memo":"","fail_reason":"  ","partner_ref_no_fail_assign":null,"reason_fail_assign":null,"delivery_count":"0","delivery_first_date":"2020-08-23","route":"GIO","secret_no_type":" ","secret_no":"","del_hopeday":null,"course":null,"course_driver":null,"secure_delivery_yn":"N","parcel_amount":"20.41","currency":"SGD","qwms_yn":null,"order_type_etc":"DPC","del_hopedaybyDBData":null,"del_hopetime":null,"GoogleMap":null,"delivery_nation_cd":null,"lat_lng":"1.389179,103.877918"}],"ResultCode":0,"ResultMsg":"Success"}
                 resultObj = gson.fromJson(jsonString, DriverAssignResult.class);
             } catch (Exception e) {
 

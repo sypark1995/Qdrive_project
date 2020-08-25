@@ -1380,10 +1380,6 @@ public final class CaptureActivity extends AppCompatActivity implements SurfaceH
                                     addScannedBarcode(scanNo, "checkValidation - CHANGE_DELIVERY_DRIVER");
                                 }
                             }
-
-                            @Override
-                            public void OnChangeDelDriverValidCheckFailList(ChangeDriverResult result) {
-                            }
                         }).build().execute();
 
                 break;
