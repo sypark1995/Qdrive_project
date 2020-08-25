@@ -2,7 +2,6 @@ package com.giosis.util.qdrive.settings;
 
 import android.annotation.SuppressLint;
 import android.app.AlertDialog;
-import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.graphics.Bitmap;
@@ -27,6 +26,7 @@ import com.giosis.util.qdrive.barcodescanner.ManualHelper;
 import com.giosis.util.qdrive.singapore.LoginActivity;
 import com.giosis.util.qdrive.singapore.R;
 import com.giosis.util.qdrive.util.DatabaseHelper;
+import com.giosis.util.qdrive.util.DisplayUtil;
 import com.giosis.util.qdrive.util.SharedPreferencesHelper;
 
 /**
@@ -101,7 +101,7 @@ public class SettingActivity extends AppCompatActivity {
 
         Bitmap mBitmap = BitmapFactory.decodeResource(getResources(), R.drawable.qdrive_img_default);
         img_setting_profile.setImageBitmap(mBitmap);
-        RoundedBitmapDrawable roundedImageDrawable = createRoundedBitmapImageDrawableWithBorder(mBitmap);
+        RoundedBitmapDrawable roundedImageDrawable = DisplayUtil.createRoundedBitmapImageDrawableWithBorder(this,  mBitmap);
         img_setting_profile.setImageDrawable(roundedImageDrawable);
     }
 
@@ -288,34 +288,5 @@ public class SettingActivity extends AppCompatActivity {
 
         AlertDialog alertDialog = builder.create();
         alertDialog.show();
-    }
-
-    private RoundedBitmapDrawable createRoundedBitmapImageDrawableWithBorder(Bitmap bitmap) {
-        int bitmapWidthImage = bitmap.getWidth();
-        int bitmapHeightImage = bitmap.getHeight();
-        int borderWidthHalfImage = 4;
-
-        int bitmapRadiusImage = Math.min(bitmapWidthImage, bitmapHeightImage) / 2;
-        int bitmapSquareWidthImage = Math.min(bitmapWidthImage, bitmapHeightImage);
-        int newBitmapSquareWidthImage = bitmapSquareWidthImage + borderWidthHalfImage;
-
-        Bitmap roundedImageBitmap = Bitmap.createBitmap(newBitmapSquareWidthImage, newBitmapSquareWidthImage, Bitmap.Config.ARGB_8888);
-        Canvas mcanvas = new Canvas(roundedImageBitmap);
-        mcanvas.drawColor(Color.RED);
-        int i = borderWidthHalfImage + bitmapSquareWidthImage - bitmapWidthImage;
-        int j = borderWidthHalfImage + bitmapSquareWidthImage - bitmapHeightImage;
-
-        mcanvas.drawBitmap(bitmap, i, j, null);
-
-        Paint borderImagePaint = new Paint();
-        borderImagePaint.setStyle(Paint.Style.STROKE);
-        borderImagePaint.setStrokeWidth(borderWidthHalfImage * 2);
-        borderImagePaint.setColor(getResources().getColor(R.color.color_ebebeb));
-        mcanvas.drawCircle(mcanvas.getWidth() / 2, mcanvas.getWidth() / 2, newBitmapSquareWidthImage / 2, borderImagePaint);
-
-        RoundedBitmapDrawable roundedImageBitmapDrawable = RoundedBitmapDrawableFactory.create(getResources(), roundedImageBitmap);
-        roundedImageBitmapDrawable.setCornerRadius(bitmapRadiusImage);
-        roundedImageBitmapDrawable.setAntiAlias(true);
-        return roundedImageBitmapDrawable;
     }
 }

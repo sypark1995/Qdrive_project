@@ -19,8 +19,10 @@ import androidx.drawerlayout.widget.DrawerLayout;
 import com.giosis.util.qdrive.barcodescanner.CaptureActivity;
 import com.giosis.util.qdrive.list.ListActivity;
 import com.giosis.util.qdrive.main.pickupOrder.ChoosePickupTypeActivity;
+import com.giosis.util.qdrive.main.pickupOrder.CreatePickupOrderIntroActivity;
 import com.giosis.util.qdrive.message.MessageListActivity;
 import com.giosis.util.qdrive.settings.SettingActivity;
+import com.giosis.util.qdrive.settings.SettingActivity1;
 import com.giosis.util.qdrive.singapore.R;
 import com.giosis.util.qdrive.singapore.ScanActivity;
 import com.giosis.util.qdrive.singapore.StatisticsActivity;
@@ -141,7 +143,7 @@ public class AppBaseActivity extends AppCompatActivity {
         adapter.addItem(ContextCompat.getDrawable(this, R.drawable.side_icon_statistics_selector), getString(R.string.navi_statistics), null, -1);
 
         /*if ("Y".equals(SharedPreferencesHelper.getSigninPickupDriverYN(this))) {
-            adapter.addItem(ContextCompat.getDrawable(this, R.drawable.side_icon_create_pickup_order_selector), getString(R.string.text_create_pickup_order), null, -1);
+           adapter.addItem(ContextCompat.getDrawable(this, R.drawable.side_icon_create_pickup_order_selector), getString(R.string.text_create_pickup_order), null, -1);
         }*/
 
         adapter.addItem(ContextCompat.getDrawable(this, R.drawable.side_icon_settings_selector), getString(R.string.navi_setting), null, -1);

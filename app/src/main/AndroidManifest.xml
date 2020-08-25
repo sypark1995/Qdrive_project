@@ -206,6 +206,9 @@
             android:name=".StatisticsActivity"
             android:screenOrientation="portrait" />
         <activity
+            android:name="com.giosis.util.qdrive.settings.SettingActivity1"
+            android:screenOrientation="portrait" />
+        <activity
             android:name="com.giosis.util.qdrive.settings.SettingActivity"
             android:screenOrientation="portrait" />
 
@@ -243,11 +246,7 @@
             android:configChanges="orientation|keyboardHidden"
             android:screenOrientation="portrait"
             android:windowSoftInputMode="adjustNothing" />
-        <activity
-            android:name="com.giosis.util.qdrive.main.pickupOrder.ChoosePickupTypeActivity"
-            android:configChanges="orientation|keyboardHidden"
-            android:screenOrientation="portrait"
-            android:windowSoftInputMode="adjustNothing" />
+
         <activity
             android:name="com.giosis.util.qdrive.main.pickupOrder.CreatePickupOrderB2CActivity"
             android:configChanges="orientation|keyboardHidden"
@@ -258,8 +257,23 @@
             android:configChanges="orientation|keyboardHidden"
             android:screenOrientation="portrait"
             android:windowSoftInputMode="adjustNothing" />
+
+        <activity
+            android:name="com.giosis.util.qdrive.main.pickupOrder.ChoosePickupTypeActivity"
+            android:configChanges="orientation|keyboardHidden"
+            android:screenOrientation="portrait"
+            android:theme="@style/CustomDialog"
+            android:windowSoftInputMode="adjustResize" />
+
         <activity
             android:name="com.giosis.util.qdrive.main.pickupOrder.SearchAddressActivity"
+            android:configChanges="orientation|keyboardHidden"
+            android:screenOrientation="portrait"
+            android:theme="@style/CustomDialog"
+            android:windowSoftInputMode="adjustResize" />
+
+        <activity
+            android:name="com.giosis.util.qdrive.main.pickupOrder.LinkQoo10IDActivity"
             android:configChanges="orientation|keyboardHidden"
             android:screenOrientation="portrait"
             android:theme="@style/CustomDialog"
@@ -296,8 +310,10 @@
             </intent-filter>
         </receiver>
 
-        <receiver android:name="com.giosis.util.qdrive.singapore.AlarmReceiver"
+        <receiver
+            android:name="com.giosis.util.qdrive.singapore.AlarmReceiver"
             tools:ignore="Instantiatable" />
+
 
         <service android:name=".FCMIntentService">
             <intent-filter>
@@ -368,6 +384,5 @@
     <uses-permission android:name="com.google.android.providers.gsf.permission.WRITE_GSERVICES" />
 
     <uses-permission android:name="android.permission.GET_TASKS" />
-    <uses-permission android:name="android.permission.RECEIVE_BOOT_COMPLETED" />
 
 </manifest>

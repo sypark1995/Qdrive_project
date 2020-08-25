@@ -6,8 +6,9 @@ import android.content.pm.PackageManager;
 import android.location.Location;
 import android.os.Build;
 import android.os.Bundle;
-import androidx.core.app.ActivityCompat;
 import android.util.Log;
+
+import androidx.core.app.ActivityCompat;
 
 import com.giosis.util.qdrive.util.SharedPreferencesHelper;
 import com.google.android.gms.common.ConnectionResult;
@@ -117,7 +118,8 @@ public class FusedProviderWorker implements GoogleApiClient.ConnectionCallbacks,
         });
 
         LocationRequest locationRequest = new LocationRequest();
-        locationRequest.setPriority(LocationRequest.PRIORITY_HIGH_ACCURACY);
+        locationRequest.setPriority(LocationRequest.PRIORITY_BALANCED_POWER_ACCURACY);
+        // PRIORITY_BALANCED_POWER_ACCURACY     // PRIORITY_HIGH_ACCURACY
         locationRequest.setInterval(MIN_TIME_BW_UPDATES);
         locationRequest.setFastestInterval(MIN_FAST_INTERVAL_UPDATES);
         locationRequest.setSmallestDisplacement(MIN_DISTANCE_CHANGE_FOR_UPDATES);

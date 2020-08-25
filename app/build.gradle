@@ -10,8 +10,8 @@ android {
     defaultConfig {
         applicationId "com.giosis.util.qdrive.singapore"
         minSdkVersion 21
-        targetSdkVersion 28
-        versionCode 91
+        targetSdkVersion 29
+        versionCode 92
         versionName "3.4.1"
         testInstrumentationRunner "androidx.test.runner.AndroidJUnitRunner"
         multiDexEnabled true

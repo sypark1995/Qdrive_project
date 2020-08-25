@@ -100,10 +100,9 @@ class MySharedPreferences(context: Context) {
         set(value) = prefs.edit().putString(PREF_KEY_AUTH_NO, value).apply()
 
 
-
     private val PREF_KEY_AUTO_LOGOUT_TIME = "autoLogoutTime"
 
     var autoLogoutTime: String
-        get() = prefs.getString(PREF_KEY_AUTO_LOGOUT_TIME, "11:50").toString()
+        get() = prefs.getString(PREF_KEY_AUTO_LOGOUT_TIME, "15:15").toString()
         set(value) = prefs.edit().putString(PREF_KEY_AUTO_LOGOUT_TIME, value).apply()
 }

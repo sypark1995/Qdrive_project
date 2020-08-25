@@ -5,12 +5,14 @@ import android.app.Activity;
 import android.content.Intent;
 import android.net.Uri;
 import android.os.Bundle;
-import androidx.core.app.NotificationManagerCompat;
+import android.util.Log;
 import android.view.View;
 import android.view.View.OnClickListener;
 import android.view.Window;
 import android.widget.Button;
 import android.widget.TextView;
+
+import androidx.core.app.NotificationManagerCompat;
 
 import com.giosis.util.qdrive.main.MainActivity;
 import com.giosis.util.qdrive.util.DataUtil;
@@ -45,6 +47,7 @@ public class AlertDialogActivity extends Activity {
         actionKey = bun.getString("actionKey");
         actionValue = bun.getString("actionValue");
 
+        Log.e("Alarm", "actionKey : " + actionKey);
         try {
 
             outletPush = bun.getString("outletPush");
@@ -93,6 +96,12 @@ public class AlertDialogActivity extends Activity {
                 }
 
                 Intent intent = new Intent(Intent.ACTION_VIEW, Uri.parse(DataUtil.locker_pin_url));
+                startActivity(intent);
+            } else if (actionKey.equals("LOGOUT")) {
+
+                Log.e("Alarm", "LogOut");
+                Intent intent = new Intent(AlertDialogActivity.this, LoginActivity.class);
+                intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP | Intent.FLAG_ACTIVITY_SINGLE_TOP);
                 startActivity(intent);
             }
 

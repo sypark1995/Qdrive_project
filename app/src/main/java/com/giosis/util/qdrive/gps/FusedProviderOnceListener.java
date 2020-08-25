@@ -75,7 +75,8 @@ public class FusedProviderOnceListener implements GoogleApiClient.ConnectionCall
 
 
         LocationRequest locationRequest = new LocationRequest();
-        locationRequest.setPriority(LocationRequest.PRIORITY_HIGH_ACCURACY);
+        locationRequest.setPriority(LocationRequest.PRIORITY_BALANCED_POWER_ACCURACY);
+        // PRIORITY_BALANCED_POWER_ACCURACY     // PRIORITY_HIGH_ACCURACY
         locationRequest.setInterval(0);
         locationRequest.setFastestInterval(0);
 

@@ -8,11 +8,11 @@ import android.content.Intent;
 import android.content.pm.PackageManager;
 import android.util.Log;
 
+import androidx.multidex.MultiDexApplication;
+
 import com.giosis.util.qdrive.util.MySharedPreferences;
 
 import java.util.Calendar;
-
-import androidx.multidex.MultiDexApplication;
 
 /*********
  *
@@ -39,21 +39,9 @@ public class MyApplication extends MultiDexApplication {
         context = getApplicationContext();
         badgeCnt = 0;
 
-/*
-        if (MyApplication.alarmReceiver == null) {
 
-            alarmReceiver = new AlarmReceiver(context);
-
-            IntentFilter filter = new IntentFilter();
-            //    filter.addAction(BluetoothDeviceData.ACTION_CONNECT_STATE);        // "action_connect_state"
-            registerReceiver(alarmReceiver, filter);
-        }
-*/
-
+        // Auto LogOut
         String[] array = MyApplication.preferences.getAutoLogoutTime().split(":");
-        Log.e("Alarm", "AUTO LogOut Time : " + MyApplication.preferences.getAutoLogoutTime());
-        Log.e("Alarm", "AUTO LogOut Time 11 : " + array[0] + " / " + array[1]);
-
 
         Calendar calendar = Calendar.getInstance();
         calendar.setTimeInMillis(System.currentTimeMillis());
@@ -78,8 +66,8 @@ public class MyApplication extends MultiDexApplication {
             Log.e("Alarm", "set Repeating");
             // With setInexactRepeating(), you have to use one of the AlarmManager interval
             // constants--in this case, AlarmManager.INTERVAL_DAY.
-            alarmManager.setInexactRepeating(AlarmManager.RTC, calendar.getTimeInMillis(),
-                    AlarmManager.INTERVAL_DAY, pendingIntent);
+            alarmManager.setInexactRepeating(AlarmManager.RTC_WAKEUP, calendar.getTimeInMillis(),
+                    60 * 1000 * 3, pendingIntent);
             // TEST   60 * 1000 * 5
 
            /*

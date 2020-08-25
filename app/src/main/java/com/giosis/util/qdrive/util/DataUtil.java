@@ -226,7 +226,6 @@ public class DataUtil {
             "rcv_nm asc",
             "rcv_nm desc"
             , "Smart Route"
-            //      , "Nearer"
     };
 
     class CompareRowItem implements Comparator<RowItem> {

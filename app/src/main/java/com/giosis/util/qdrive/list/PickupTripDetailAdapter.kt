@@ -10,7 +10,8 @@ import androidx.recyclerview.widget.RecyclerView
 import com.giosis.util.qdrive.singapore.R
 import kotlinx.android.synthetic.main.item_trip_detail.view.*
 
-class PickupTripDetailAdapter(private val context: Context, private val list: ArrayList<RowItem>, private val adapter: CustomExpandableAdapter) : RecyclerView.Adapter<PickupTripDetailAdapter.ViewHolder>() {
+class PickupTripDetailAdapter(private val context: Context, private val list: ArrayList<RowItem>, private val adapter: CustomExpandableAdapter)
+    : RecyclerView.Adapter<PickupTripDetailAdapter.ViewHolder>() {
 
 
     class ViewHolder(val view: View) : RecyclerView.ViewHolder(view)
