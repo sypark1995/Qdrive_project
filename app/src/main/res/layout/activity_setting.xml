@@ -185,8 +185,8 @@
                         android:layout_centerVertical="true"
                         android:gravity="center_vertical"
                         android:text="@string/text_qoo10_account"
-                        android:textColor="@color/color_303030"
-                        android:textSize="@dimen/text_size_32px" />
+                        android:textColor="@color/color_767676"
+                        android:textSize="@dimen/text_size_28px" />
 
                     <TextView
                         android:id="@+id/text_setting_account"
@@ -467,6 +467,17 @@
                     android:textSize="@dimen/text_size_22px"
                     tools:text="3.2.7" />
             </LinearLayout>
+
+            <Button
+                android:id="@+id/btn_setting_developer_mode"
+                android:layout_width="match_parent"
+                android:visibility="gone"
+                android:layout_height="50dp"
+                android:text="@string/text_developer_mode"
+                android:background="@color/color_4fb648"
+                android:textColor="@color/black"
+                android:textSize="@dimen/text_size_30px"
+                android:textStyle="bold" />
         </LinearLayout>
     </ScrollView>
 </LinearLayout>

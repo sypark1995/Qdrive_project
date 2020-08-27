@@ -6,21 +6,19 @@ import android.content.DialogInterface;
 import android.content.Intent;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
-import android.graphics.Canvas;
-import android.graphics.Color;
-import android.graphics.Paint;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.View;
+import android.widget.Button;
 import android.widget.FrameLayout;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.core.graphics.drawable.RoundedBitmapDrawable;
-import androidx.core.graphics.drawable.RoundedBitmapDrawableFactory;
 
 import com.giosis.util.qdrive.barcodescanner.ManualHelper;
 import com.giosis.util.qdrive.singapore.LoginActivity;
@@ -55,6 +53,7 @@ public class SettingActivity extends AppCompatActivity {
     RelativeLayout layout_setting_scan_setting;
     LinearLayout layout_setting_locker;
     TextView text_setting_app_version;
+    Button btn_setting_developer_mode;
 
 
     @Override
@@ -82,13 +81,14 @@ public class SettingActivity extends AppCompatActivity {
         layout_setting_locker = findViewById(R.id.layout_setting_locker);
 
         text_setting_app_version = findViewById(R.id.text_setting_app_version);
+        btn_setting_developer_mode = findViewById(R.id.btn_setting_developer_mode);
 
 
         //
         text_top_title.setText(R.string.navi_setting);
         layout_top_signOut.setVisibility(View.VISIBLE);
 
-
+        text_top_title.setOnClickListener(clickListener);
         layout_top_back.setOnClickListener(clickListener);
         layout_top_signOut.setOnClickListener(clickListener);
         img_setting_modify_info.setOnClickListener(clickListener);
@@ -98,10 +98,11 @@ public class SettingActivity extends AppCompatActivity {
         layout_setting_printer_setting.setOnClickListener(clickListener);
         layout_setting_scan_setting.setOnClickListener(clickListener);
         layout_setting_locker.setOnClickListener(clickListener);
+        btn_setting_developer_mode.setOnClickListener(clickListener);
 
         Bitmap mBitmap = BitmapFactory.decodeResource(getResources(), R.drawable.qdrive_img_default);
         img_setting_profile.setImageBitmap(mBitmap);
-        RoundedBitmapDrawable roundedImageDrawable = DisplayUtil.createRoundedBitmapImageDrawableWithBorder(this,  mBitmap);
+        RoundedBitmapDrawable roundedImageDrawable = DisplayUtil.createRoundedBitmapImageDrawableWithBorder(this, mBitmap);
         img_setting_profile.setImageDrawable(roundedImageDrawable);
     }
 
@@ -145,71 +146,99 @@ public class SettingActivity extends AppCompatActivity {
         }
     }
 
-    View.OnClickListener clickListener = new View.OnClickListener() {
-        @Override
-        public void onClick(View v) {
 
-            switch (v.getId()) {
-                case R.id.layout_top_back: {
+    int showDeveloperModeClickCount = 0;
 
-                    finish();
+    View.OnClickListener clickListener = v -> {
+
+        switch (v.getId()) {
+
+            case R.id.text_top_title: {
+
+                if (showDeveloperModeClickCount == 10) {
+
+                    showDeveloperModeClickCount = 0;
+
+                    if (btn_setting_developer_mode.getVisibility() == View.VISIBLE)
+                        btn_setting_developer_mode.setVisibility(View.GONE);
+                    else {
+
+                        Toast.makeText(SettingActivity.this, getResources().getString(R.string.text_developer_mode), Toast.LENGTH_SHORT).show();
+                        btn_setting_developer_mode.setVisibility(View.VISIBLE);
+                    }
+                } else {
+
+                    showDeveloperModeClickCount++;
                 }
-                break;
-
-                case R.id.layout_top_signout: {
-
-                    signOut();
-                }
-                break;
-
-                case R.id.img_setting_modify_info: {
-
-                    Intent intent = new Intent(SettingActivity.this, ModifyUserInfoActivity.class);
-                    startActivity(intent);
-                }
-                break;
-
-                case R.id.text_setting_change_password: {
-
-                    Intent intent = new Intent(SettingActivity.this, ChangePwdActivity.class);
-                    startActivity(intent);
-                }
-                break;
-
-                case R.id.text_setting_delete_data: {
-
-                    deleteData();
-                }
-                break;
-
-                case R.id.layout_setting_notice: {
-
-                    Intent intent = new Intent(SettingActivity.this, NoticeActivity.class);
-                    startActivity(intent);
-                }
-                break;
-
-                case R.id.layout_setting_printer_setting: {
-
-                    Intent intent = new Intent(SettingActivity.this, PrinterSettingActivity.class);
-                    startActivity(intent);
-                }
-                break;
-
-                case R.id.layout_setting_scan_setting: {
-
-                    Intent intent = new Intent(SettingActivity.this, ScanSettingActivity.class);
-                    startActivity(intent);
-                }
-                break;
-
-                case R.id.layout_setting_locker: {
-
-                    Intent intent = new Intent(SettingActivity.this, LockerUserInfoActivity.class);
-                    startActivity(intent);
-                }
-                break;
             }
+            break;
+
+            case R.id.layout_top_back: {
+
+                finish();
+            }
+            break;
+
+            case R.id.layout_top_signout: {
+
+                signOut();
+            }
+            break;
+
+            case R.id.img_setting_modify_info: {
+
+                Intent intent = new Intent(SettingActivity.this, ModifyUserInfoActivity.class);
+                startActivity(intent);
+            }
+            break;
+
+            case R.id.text_setting_change_password: {
+
+                Intent intent = new Intent(SettingActivity.this, ChangePwdActivity.class);
+                startActivity(intent);
+            }
+            break;
+
+            case R.id.text_setting_delete_data: {
+
+                deleteData();
+            }
+            break;
+
+            case R.id.layout_setting_notice: {
+
+                Intent intent = new Intent(SettingActivity.this, NoticeActivity.class);
+                startActivity(intent);
+            }
+            break;
+
+            case R.id.layout_setting_printer_setting: {
+
+                Intent intent = new Intent(SettingActivity.this, PrinterSettingActivity.class);
+                startActivity(intent);
+            }
+            break;
+
+            case R.id.layout_setting_scan_setting: {
+
+                Intent intent = new Intent(SettingActivity.this, ScanSettingActivity.class);
+                startActivity(intent);
+            }
+            break;
+
+            case R.id.layout_setting_locker: {
+
+                Intent intent = new Intent(SettingActivity.this, LockerUserInfoActivity.class);
+                startActivity(intent);
+            }
+            break;
+
+            case R.id.btn_setting_developer_mode: {
+
+                Intent intent = new Intent(SettingActivity.this, DeveloperModeActivity.class);
+                startActivity(intent);
+            }
+            break;
         }
     };
 

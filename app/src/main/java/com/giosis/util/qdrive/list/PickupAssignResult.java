@@ -10,36 +10,36 @@ import java.util.List;
 public class PickupAssignResult {
 
     @Element(name = "ResultCode", required = false)
-    private int resultCode = -1;
+    private int ResultCode = -1;
 
     @Element(name = "ResultMsg", required = false)
-    private String resultMsg = "";
+    private String ResultMsg = "";
 
     public int getResultCode() {
-        return resultCode;
+        return ResultCode;
     }
 
     public void setResultCode(int resultCode) {
-        this.resultCode = resultCode;
+        this.ResultCode = resultCode;
     }
 
     public String getResultMsg() {
-        return resultMsg;
+        return ResultMsg;
     }
 
     public void setResultMsg(String resultMsg) {
-        this.resultMsg = resultMsg;
+        this.ResultMsg = resultMsg;
     }
 
     @ElementList(required = false, name = "ResultObject")
-    private List<QSignPickupList> resultObject;
+    private List<QSignPickupList> ResultObject;
 
     public List<QSignPickupList> getResultObject() {
-        return resultObject;
+        return ResultObject;
     }
 
     public void setResultObject(List<QSignPickupList> resultObj) {
-        this.resultObject = resultObj;
+        this.ResultObject = resultObj;
     }
 
     @Root(strict = false, name = "QSignPickupList")

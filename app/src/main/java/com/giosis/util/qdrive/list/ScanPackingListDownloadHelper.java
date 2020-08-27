@@ -13,13 +13,6 @@ import com.giosis.util.qdrive.util.DisplayUtil;
 import com.google.gson.Gson;
 
 import org.json.JSONObject;
-import org.simpleframework.xml.Serializer;
-import org.simpleframework.xml.core.Persister;
-
-import java.util.HashMap;
-
-import gmkt.inc.android.common.GMKT_SyncHttpTask;
-import gmkt.inc.android.common.network.http.GMKT_HTTPResponseMessage;
 
 
 public class ScanPackingListDownloadHelper extends ManualHelper {
@@ -160,9 +153,8 @@ public class ScanPackingListDownloadHelper extends ManualHelper {
 
             String methodName = "getScanPackingList";
             String jsonString = Custom_JsonParser.requestServerDataReturnJSON(MOBILE_SERVER_URL, methodName, job);
-
-            resultObj = gson.fromJson(jsonString, PickupPackingListResult.class);
             // {"ResultObject":[{"packing_no":"SGP163596005","reg_dt":"Aug 24 2020  1:08PM","op_id":"YuMin.Dwl","pickup_no":"P1631998"},{"packing_no":"SGP163579875","reg_dt":"Aug 24 2020  1:08PM","op_id":"YuMin.Dwl","pickup_no":"P1631998"},{"packing_no":"SGP163612649","reg_dt":"Aug 24 2020  1:08PM","op_id":"YuMin.Dwl","pickup_no":"P1631998"}],"ResultCode":0,"ResultMsg":"SUCCESS"}
+            resultObj = gson.fromJson(jsonString, PickupPackingListResult.class);
         } catch (Exception e) {
 
             Log.e("Exception", TAG + "  GetDeliveryList Json Exception : " + e.toString());

@@ -24,13 +24,11 @@ import com.giosis.util.qdrive.util.GeocoderUtil;
 import com.giosis.util.qdrive.util.NetworkUtil;
 import com.google.gson.Gson;
 
-import org.json.JSONArray;
 import org.json.JSONObject;
 import org.simpleframework.xml.Serializer;
 import org.simpleframework.xml.core.Persister;
 
 import java.text.SimpleDateFormat;
-import java.util.ArrayList;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.TimeZone;
@@ -296,8 +294,9 @@ public class ServerDownloadHelper extends ManualHelper {
             String methodName = "GetDeliveryList";
             String jsonString = Custom_JsonParser.requestServerDataReturnJSON(MOBILE_SERVER_URL, methodName, job);
 
+            resultObj = gson.fromJson(jsonString, DriverAssignResult.class);
 
-            JSONObject jsonObject = new JSONObject(jsonString);
+           /* JSONObject jsonObject = new JSONObject(jsonString);
             JSONArray jsonArray = jsonObject.getJSONArray("ResultObject");
 
             ArrayList<DriverAssignResult.QSignDeliveryList> resultObject = new ArrayList<>();
@@ -310,7 +309,7 @@ public class ServerDownloadHelper extends ManualHelper {
 
             resultObj.setResultCode(jsonObject.getInt("ResultCode"));
             resultObj.setResultMsg(jsonObject.getString("ResultMsg"));
-            resultObj.setResultObject(resultObject);
+            resultObj.setResultObject(resultObject);*/
         } catch (Exception e) {
 
             Log.e("Exception", TAG + "  GetDeliveryList Json Exception : " + e.toString());
@@ -329,7 +328,7 @@ public class ServerDownloadHelper extends ManualHelper {
         try {
 
           /*  // TEST. Outlet
-            String MOBILE_SERVER_URL = "https://qxapi.qxpress.asia/GMKT.INC.GLPS.MobileApiService/GlobalMobileService.qapi";
+            String MOBILE_SERVER_URL = "https://qxapi.qxpress.net/GMKT.INC.GLPS.MobileApiService/GlobalMobileService.qapi";
             "Ramlan_7E"*/
             GMKT_SyncHttpTask httpTask = new GMKT_SyncHttpTask("QSign");
             HashMap<String, String> hmActionParam = new HashMap<>();
@@ -359,7 +358,7 @@ public class ServerDownloadHelper extends ManualHelper {
             resultObj = null;
         }
 
-    //    return resultObj;
+        //    return resultObj;
 
 
         // JSON Parser
@@ -379,7 +378,8 @@ public class ServerDownloadHelper extends ManualHelper {
             String methodName = "GetDeliveryList_Outlet";
             String jsonString = Custom_JsonParser.requestServerDataReturnJSON(MOBILE_SERVER_URL, methodName, job);
 
-
+            resultObj = gson.fromJson(jsonString, DriverAssignResult.class);
+/*
             JSONObject jsonObject = new JSONObject(jsonString);
             JSONArray jsonArray = jsonObject.getJSONArray("ResultObject");
 
@@ -393,7 +393,7 @@ public class ServerDownloadHelper extends ManualHelper {
 
             resultObj.setResultCode(jsonObject.getInt("ResultCode"));
             resultObj.setResultMsg(jsonObject.getString("ResultMsg"));
-            resultObj.setResultObject(resultObject);
+            resultObj.setResultObject(resultObject);*/
         } catch (Exception e) {
 
             Log.e("Exception", TAG + "  GetDeliveryList_Outlet Json Exception : " + e.toString());
@@ -422,7 +422,7 @@ public class ServerDownloadHelper extends ManualHelper {
             hmActionParam.put("nation_cd", DataUtil.nationCode);
 
           /*  // TEST. Pickup
-            String MOBILE_SERVER_URL = "https://qxapi.qxpress.asia/GMKT.INC.GLPS.MobileApiService/GlobalMobileService.qapi";
+            String MOBILE_SERVER_URL = "https://qxapi.qxpress.net/GMKT.INC.GLPS.MobileApiService/GlobalMobileService.qapi";
             hmActionParam.put("opId", "YuMin.dwl");*/
             String methodName = "GetPickupList";
             Serializer serializer = new Persister();
@@ -459,7 +459,8 @@ public class ServerDownloadHelper extends ManualHelper {
             String methodName = "GetPickupList";
             String jsonString = Custom_JsonParser.requestServerDataReturnJSON(MOBILE_SERVER_URL, methodName, job);
 
-
+            resultObj = gson.fromJson(jsonString, PickupAssignResult.class);
+/*
             JSONObject jsonObject = new JSONObject(jsonString);
             JSONArray jsonArray = jsonObject.getJSONArray("ResultObject");
 
@@ -473,7 +474,7 @@ public class ServerDownloadHelper extends ManualHelper {
 
             resultObj.setResultCode(jsonObject.getInt("ResultCode"));
             resultObj.setResultMsg(jsonObject.getString("ResultMsg"));
-            resultObj.setResultObject(resultObject);
+            resultObj.setResultObject(resultObject);*/
         } catch (Exception e) {
 
             Log.e("Exception", TAG + "  GetPickupList Json Exception : " + e.toString());

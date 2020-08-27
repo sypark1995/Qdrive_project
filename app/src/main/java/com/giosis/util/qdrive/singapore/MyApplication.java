@@ -40,49 +40,11 @@ public class MyApplication extends MultiDexApplication {
         badgeCnt = 0;
 
 
-        // Auto LogOut
         String[] array = MyApplication.preferences.getAutoLogoutTime().split(":");
-
-        Calendar calendar = Calendar.getInstance();
-        calendar.setTimeInMillis(System.currentTimeMillis());
-        calendar.set(Calendar.HOUR_OF_DAY, Integer.parseInt(array[0]));
-        calendar.set(Calendar.MINUTE, Integer.parseInt(array[1]));
-
+        setAutoLogout(Integer.parseInt(array[0]), Integer.parseInt(array[1]), false);
 
         PackageManager pm = context.getPackageManager();
         ComponentName receiver = new ComponentName(context, DeviceBootReceiver.class);
-        Intent intent = new Intent(context, AlarmReceiver.class);
-        PendingIntent pendingIntent = PendingIntent.getBroadcast(context, 0, intent, 0);
-        AlarmManager alarmManager = (AlarmManager) context.getSystemService(Context.ALARM_SERVICE);
-
-        if (pendingIntent != null && alarmManager != null) {
-
-            Log.e("Alarm", "before cancel");
-            alarmManager.cancel(pendingIntent);
-        }
-
-        if (alarmManager != null) {
-
-            Log.e("Alarm", "set Repeating");
-            // With setInexactRepeating(), you have to use one of the AlarmManager interval
-            // constants--in this case, AlarmManager.INTERVAL_DAY.
-            alarmManager.setInexactRepeating(AlarmManager.RTC_WAKEUP, calendar.getTimeInMillis(),
-                    60 * 1000 * 3, pendingIntent);
-            // TEST   60 * 1000 * 5
-
-           /*
-            alarmManager.setInexactRepeating(AlarmManager.RTC, calendar.getTimeInMillis(),
-                   AlarmManager.INTERVAL_DAY, pendingIntent);
-
-           *  alarmManager.setRepeating(AlarmManager.RTC_WAKEUP, calendar.getTimeInMillis(),
-                            AlarmManager.INTERVAL_DAY, pendingIntent);
-
-                if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
-                    alarmManager.setExactAndAllowWhileIdle(AlarmManager.RTC_WAKEUP, calendar.getTimeInMillis(), pendingIntent);
-                }
-           * */
-        }
-
 
         pm.setComponentEnabledSetting(receiver,
                 PackageManager.COMPONENT_ENABLED_STATE_ENABLED,
@@ -101,4 +63,43 @@ public class MyApplication extends MultiDexApplication {
         return badgeCnt;
     }
 
+
+    public static void setAutoLogout(int hour, int minute, boolean test) {
+
+        // Auto LogOut
+        Calendar calendar = Calendar.getInstance();
+        calendar.setTimeInMillis(System.currentTimeMillis());
+        calendar.set(Calendar.HOUR_OF_DAY, hour);
+        calendar.set(Calendar.MINUTE, minute);
+        calendar.set(Calendar.SECOND, 0);
+
+        Intent intent = new Intent(context, AlarmReceiver.class);
+        PendingIntent pendingIntent = PendingIntent.getBroadcast(context, 123, intent, 0);
+        AlarmManager alarmManager = (AlarmManager) context.getSystemService(Context.ALARM_SERVICE);
+
+
+        Log.e("Alarm", "Auto LogOut Setting? " + preferences.getAutoLogoutSetting());
+        Log.e("Alarm", "Auto LogOut Time? " + hour + ":" + minute);
+
+        if (!preferences.getAutoLogoutSetting()) {
+
+            Log.e("Alarm", "AlarmManager Repeating  -  " + hour + ":" + minute);
+            // With setInexactRepeating(), you have to use one of the AlarmManager interval
+            // constants--in this case, AlarmManager.INTERVAL_DAY.
+            alarmManager.setInexactRepeating(AlarmManager.RTC, calendar.getTimeInMillis(),
+                    AlarmManager.INTERVAL_DAY, pendingIntent);
+
+            preferences.setAutoLogoutSetting(true);
+        } else {
+            if (test) {
+
+                Log.e("Alarm", "test Time? " + hour + ":" + minute);
+                alarmManager.cancel(pendingIntent);
+
+
+                alarmManager.setInexactRepeating(AlarmManager.RTC, calendar.getTimeInMillis(),
+                        AlarmManager.INTERVAL_DAY, pendingIntent);
+            }
+        }
+    }
 }

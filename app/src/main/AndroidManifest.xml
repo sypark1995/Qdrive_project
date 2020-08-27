@@ -213,6 +213,10 @@
             android:screenOrientation="portrait" />
 
         <activity
+            android:name="com.giosis.util.qdrive.settings.DeveloperModeActivity"
+            android:screenOrientation="portrait"/>
+
+        <activity
             android:name="com.giosis.util.qdrive.settings.ModifyUserInfoActivity"
             android:label="@string/app_name"
             android:screenOrientation="portrait" />
