@@ -6,6 +6,7 @@ import android.net.Uri;
 import android.util.Log;
 
 import com.giosis.util.qdrive.main.MainActivity;
+import com.giosis.util.qdrive.settings.DeveloperModeActivity;
 import com.giosis.util.qdrive.singapore.LoginActivity;
 import com.giosis.util.qdrive.singapore.SMSVerificationActivity;
 
@@ -42,7 +43,13 @@ public class MainActivityStarter extends CordovaPlugin {
         } else if (action.equals("verify")) {
 
             verify();
+        } else if(action.equals("goDeveloper")) {
+
+            goDeveloper();
         }
+
+
+
 
         if (action.equals("goHome")) {
 
@@ -97,5 +104,16 @@ public class MainActivityStarter extends CordovaPlugin {
         mainIntent.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
         mainIntent.putExtra("callstack", "goHomeBtn");
         context.startActivity(mainIntent);
+    }
+
+
+
+    private void goDeveloper() {
+
+        Activity context = cordova.getActivity();
+        Intent intent = new Intent(context, DeveloperModeActivity.class);
+        intent.putExtra("called", "login");
+        context.startActivity(intent);
+        context.finish();
     }
 }

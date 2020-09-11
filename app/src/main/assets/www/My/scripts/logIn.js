@@ -1,12 +1,21 @@
+var serverURL;
+var appVersion;
+
+
 function init() {
+
+	serverURL = localStorage.getItem('serverURL');
+	appVersion = localStorage.getItem('appVersion');
+	console.log("★★★★★★★ " + serverURL + " / " + appVersion);
+
 
     $("#loginID").val(localStorage.getItem('opId'));
     $("#pw").val(localStorage.getItem('opPasswd'));
-    $("#versionCode").text(version);
+    $("#versionCode").text(appVersion);
 
-     if(MOBILE_SERVER_URL.includes("test")) {
+     if(serverURL.includes("test")) {
          $("#environment").text("test - ");
-     } else if(MOBILE_SERVER_URL.includes("staging")) {
+     } else if(serverURL.includes("staging")) {
          $("#environment").text("staging -");
      }
 
@@ -15,7 +24,23 @@ function init() {
     localStorage.clear();
 
     setButton("btnLogin", getLoginLocation);
+    setButton("qdriveLogo", goDeveloper);
 }
+
+	var clicked = 0;
+
+function goDeveloper() {
+
+	clicked++;
+
+	if(clicked == 10) {
+
+    console.log("★★★★★★★ ::  goDeveloper ");
+	 cordova.require("com.giosis.util.qdrive.util.MainActivityStarter").goDeveloper();
+	 clicked = 0;
+	}
+}
+
 
 function onDeviceReady() {
 
@@ -127,7 +152,7 @@ function checkAuth(Latitude, Longitude) {
 
     var methodName = "LoginQDRIVE";
     cordova.require("com.giosis.util.qdrive.util.LoadingDialog").show();
-    result = RMSHelper.callWebMethod(MOBILE_SERVER_URL, methodName, params.toJson());
+    result = RMSHelper.callWebMethod(serverURL, methodName, params.toJson());
 
 
     if (result == -9999) { // Network Error
@@ -163,12 +188,12 @@ function checkAuth(Latitude, Longitude) {
 
     // Login Success
     var serverVersion = result.ResultObject.Version;
-    console.log('★★★★★★★   version : ' + version + ' / ' + serverVersion)
+    console.log('★★★★★★★   version : ' + appVersion + ' / ' + serverVersion)
 
-    if (version < serverVersion) {
+    if (appVersion < serverVersion) {
 
         cordova.require("com.giosis.util.qdrive.util.LoadingDialog").hide();
-        alert("Qdrive is updated to v" + serverVersion + " \nYour Qdrive version is v" + version + " \nYour version will be upgraded.");
+        alert("Qdrive is updated to v" + serverVersion + " \nYour Qdrive version is v" + appVersion + " \nYour version will be upgraded.");
         cordova.require("com.giosis.util.qdrive.util.MainActivityStarter").goMarket();
         return;
     }

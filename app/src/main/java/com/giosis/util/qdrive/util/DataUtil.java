@@ -8,6 +8,7 @@ import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.graphics.Bitmap;
+import android.graphics.Color;
 import android.os.Bundle;
 import android.os.Environment;
 import android.provider.Settings;
@@ -22,17 +23,29 @@ import com.giosis.util.qdrive.message.CustomerMessageListDetailActivity;
 import com.giosis.util.qdrive.message.MessageListActivity;
 import com.giosis.util.qdrive.singapore.R;
 import com.google.firebase.analytics.FirebaseAnalytics;
+import com.google.zxing.BarcodeFormat;
+import com.google.zxing.EncodeHintType;
+import com.google.zxing.MultiFormatWriter;
+import com.google.zxing.common.BitMatrix;
+import com.google.zxing.datamatrix.encoder.SymbolShapeHint;
 
 import java.io.ByteArrayOutputStream;
 import java.io.File;
 import java.io.FileOutputStream;
 import java.util.Comparator;
+import java.util.Hashtable;
 
 public class DataUtil {
 
     public static String appID = "QDRIVE";
     public static String nationCode = "SG";
     public static String qDeliveryData = "QDATA";
+
+    public static String SERVER_TEST = "https://test-api.qxpress.net";
+    public static String SERVER_STAGING = "http://staging-qxapi.qxpress.net";
+    public static String SERVER_REAL = "https://qxapi.qxpress.net";
+    public static String API_ADDRESS = "/GMKT.INC.GLPS.MobileApiService/GlobalMobileService.qapi";
+
 
     public static String qrcode_url = "https://dp.image-gmkt.com/qr.bar?scale=7&version=4&code=";
     public static String barcode_url = "http://image.qxpress.asia/code128/code128.php?no=";
@@ -196,6 +209,37 @@ public class DataUtil {
         }
 
         return pngImage;
+    }
+
+
+    public static Bitmap stringToDataMatrix(String scan_no) {
+
+        Bitmap bitmap = null;
+        MultiFormatWriter gen = new MultiFormatWriter();
+
+        try {
+
+            final int WIDTH = 200;
+            final int HEIGHT = 200;
+
+            Hashtable<EncodeHintType, Object> hints = new Hashtable<>(1);
+            hints.put(EncodeHintType.DATA_MATRIX_SHAPE, SymbolShapeHint.FORCE_SQUARE);
+
+            BitMatrix bytemap = gen.encode(scan_no, BarcodeFormat.DATA_MATRIX, WIDTH, HEIGHT, hints);
+            bitmap = Bitmap.createBitmap(WIDTH, HEIGHT, Bitmap.Config.ARGB_8888);
+            for (int i = 0; i < WIDTH; ++i) {
+                for (int j = 0; j < HEIGHT; ++j) {
+
+                    bitmap.setPixel(i, j, bytemap.get(i, j) ? Color.BLACK : Color.WHITE);
+                }
+            }
+        } catch (Exception e) {
+
+            Log.e("print", "stringToDataMatrix  MultiFormatWriter Exception  : " + e.toString());
+        }
+
+
+        return bitmap;
     }
 
 

@@ -17,6 +17,71 @@
         app:layout_constraintTop_toBottomOf="@id/header"
         app:layout_constraintVertical_bias="1.0">
 
+        <!--  SERVER URL -->
+        <RelativeLayout
+            android:id="@+id/layout_developer_server_url"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:padding="20dp"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="parent">
+
+            <EditText
+                android:id="@+id/edit_developer_server_url"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_below="@id/text_developer_server_url"
+                android:layout_marginTop="4dp"
+                android:enabled="false"
+                tools:text="https://qxapi.qxpress.net" />
+
+            <RadioGroup
+                android:id="@+id/rg_developer_server_url"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_below="@id/edit_developer_server_url"
+                android:layout_marginTop="8dp"
+                android:orientation="vertical">
+
+                <RadioButton
+                    android:id="@+id/rb_developer_server_url_test"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:buttonTint="@color/radio_colors"
+                    tools:text="test"
+                    android:textColor="#303030"
+                    android:textSize="14sp" />
+
+                <RadioButton
+                    android:id="@+id/rb_developer_server_url_staging"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:buttonTint="@color/radio_colors"
+                    tools:text="staging"
+                    android:textColor="#303030"
+                    android:textSize="14sp" />
+
+                <RadioButton
+                    android:id="@+id/rb_developer_server_url_real"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:buttonTint="@color/radio_colors"
+                    tools:text="real"
+                    android:textColor="#303030"
+                    android:textSize="14sp" />
+            </RadioGroup>
+
+            <TextView
+                android:id="@+id/text_developer_server_url"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:text="Server URL"
+                android:textColor="@color/color_767676"
+                android:textSize="@dimen/text_size_28px" />
+        </RelativeLayout>
+
+
         <!--  Auto LogOut TEST -->
         <RelativeLayout
             android:layout_width="match_parent"
@@ -72,11 +137,11 @@
             android:layout_height="wrap_content"
             android:layout_marginStart="20dp"
             android:layout_marginTop="20dp"
-            android:text="Auto LogOut Time"
+            android:text="Change Auto LogOut"
             android:textColor="@color/color_767676"
             android:textSize="@dimen/text_size_28px"
             app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toTopOf="parent" />
+            app:layout_constraintTop_toBottomOf="@id/layout_developer_server_url" />
     </androidx.constraintlayout.widget.ConstraintLayout>
 
     <include

@@ -2,7 +2,6 @@ package com.giosis.util.qdrive.settings;
 
 import android.annotation.SuppressLint;
 import android.app.AlertDialog;
-import android.content.DialogInterface;
 import android.content.Intent;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
@@ -20,8 +19,8 @@ import android.widget.Toast;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.core.graphics.drawable.RoundedBitmapDrawable;
 
-import com.giosis.util.qdrive.barcodescanner.ManualHelper;
 import com.giosis.util.qdrive.singapore.LoginActivity;
+import com.giosis.util.qdrive.singapore.MyApplication;
 import com.giosis.util.qdrive.singapore.R;
 import com.giosis.util.qdrive.util.DatabaseHelper;
 import com.giosis.util.qdrive.util.DisplayUtil;
@@ -106,10 +105,13 @@ public class SettingActivity extends AppCompatActivity {
         img_setting_profile.setImageDrawable(roundedImageDrawable);
     }
 
+
     @SuppressLint("SetTextI18n")
     @Override
     protected void onResume() {
         super.onResume();
+
+        initDeveloperMode();
 
         String opId = SharedPreferencesHelper.getSigninOpID(getApplicationContext());
         String driverName = SharedPreferencesHelper.getSigninOpName(getApplicationContext());
@@ -126,10 +128,10 @@ public class SettingActivity extends AppCompatActivity {
         text_setting_driver_branch.setText(officeName);
 
 
-        if (ManualHelper.MOBILE_SERVER_URL.contains("test")) {
+        if (MyApplication.preferences.getServerURL().contains("test")) {
 
             text_setting_app_version.setText(version + "_ test");
-        } else if (ManualHelper.MOBILE_SERVER_URL.contains("staging")) {
+        } else if (MyApplication.preferences.getServerURL().contains("staging")) {
 
             text_setting_app_version.setText(version + " _ staging");
         } else {
@@ -146,6 +148,16 @@ public class SettingActivity extends AppCompatActivity {
         }
     }
 
+    void initDeveloperMode() {
+        if (MyApplication.preferences.getDeveloperMode()) {
+
+            btn_setting_developer_mode.setVisibility(View.VISIBLE);
+        } else {
+
+            btn_setting_developer_mode.setVisibility(View.GONE);
+        }
+    }
+
 
     int showDeveloperModeClickCount = 0;
 
@@ -157,15 +169,19 @@ public class SettingActivity extends AppCompatActivity {
 
                 if (showDeveloperModeClickCount == 10) {
 
-                    showDeveloperModeClickCount = 0;
+                    if (MyApplication.preferences.getDeveloperMode()) {
+                        // true > false
 
-                    if (btn_setting_developer_mode.getVisibility() == View.VISIBLE)
-                        btn_setting_developer_mode.setVisibility(View.GONE);
-                    else {
+                        MyApplication.preferences.setDeveloperMode(false);
+                    } else {
+                        // false > true
 
+                        MyApplication.preferences.setDeveloperMode(true);
                         Toast.makeText(SettingActivity.this, getResources().getString(R.string.text_developer_mode), Toast.LENGTH_SHORT).show();
-                        btn_setting_developer_mode.setVisibility(View.VISIBLE);
                     }
+
+                    showDeveloperModeClickCount = 0;
+                    initDeveloperMode();
                 } else {
 
                     showDeveloperModeClickCount++;
@@ -248,25 +264,16 @@ public class SettingActivity extends AppCompatActivity {
         builder.setTitle(getResources().getString(R.string.button_confirm));
         builder.setMessage(getResources().getString(R.string.msg_want_sign_out));
         builder.setCancelable(true);
-        builder.setPositiveButton(getResources().getString(R.string.button_ok), new DialogInterface.OnClickListener() {
+        builder.setPositiveButton(getResources().getString(R.string.button_ok), (dialog, which) -> {
 
-            @Override
-            public void onClick(DialogInterface dialog, int which) {
-
-                Intent intent = new Intent(SettingActivity.this, LoginActivity.class);
-                intent.putExtra("method", "signOut");
-                intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP | Intent.FLAG_ACTIVITY_SINGLE_TOP);
-                startActivity(intent);
-                finish();
-            }
+            Intent intent = new Intent(SettingActivity.this, LoginActivity.class);
+            intent.putExtra("method", "signOut");
+            intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP | Intent.FLAG_ACTIVITY_SINGLE_TOP);
+            startActivity(intent);
+            finish();
         });
 
-        builder.setNeutralButton(getResources().getString(R.string.button_cancel), new DialogInterface.OnClickListener() {
-
-            public void onClick(DialogInterface dialog, int id) {
-                dialog.cancel();
-            }
-        });
+        builder.setNeutralButton(getResources().getString(R.string.button_cancel), (dialog, id) -> dialog.cancel());
 
         AlertDialog alertDialog = builder.create();
         alertDialog.show();
@@ -278,42 +285,25 @@ public class SettingActivity extends AppCompatActivity {
         builder.setTitle(getResources().getString(R.string.button_confirm));
         builder.setMessage(getResources().getString(R.string.msg_want_to_delete_data));
         builder.setCancelable(true);
-        builder.setPositiveButton(getResources().getString(R.string.button_ok), new DialogInterface.OnClickListener() {
+        builder.setPositiveButton(getResources().getString(R.string.button_ok), (dialog, which) -> {
 
-            @Override
-            public void onClick(DialogInterface dialog, int which) {
+            try {
 
-                try {
+                int delete = DatabaseHelper.getInstance().delete(DatabaseHelper.DB_TABLE_INTEGRATION_LIST, "");
+                Log.i("krm0219", "Delete Count : " + delete);
 
-                    int delete = DatabaseHelper.getInstance().delete(DatabaseHelper.DB_TABLE_INTEGRATION_LIST, "");
+                AlertDialog.Builder builder1 = new AlertDialog.Builder(SettingActivity.this);
+                builder1.setTitle(getResources().getString(R.string.text_alert));
+                builder1.setMessage(getResources().getString(R.string.msg_deleted_data));
+                builder1.setPositiveButton(getResources().getString(R.string.button_ok), (dialog1, which1) -> dialog1.cancel());
 
-                    Log.e("krm0219", "Delete : " + delete);
-
-                    AlertDialog.Builder builder = new AlertDialog.Builder(SettingActivity.this);
-                    builder.setTitle(getResources().getString(R.string.text_alert));
-                    builder.setMessage(getResources().getString(R.string.msg_deleted_data));
-                    builder.setPositiveButton(getResources().getString(R.string.button_ok), new DialogInterface.OnClickListener() {
-
-                        @Override
-                        public void onClick(DialogInterface dialog, int which) {
-                            dialog.cancel();
-                        }
-                    });
-
-                    AlertDialog alertDialog = builder.create();
-                    alertDialog.show();
-                } catch (Exception e) {
-
-                }
+                AlertDialog alertDialog = builder1.create();
+                alertDialog.show();
+            } catch (Exception ignored) {
             }
         });
 
-        builder.setNeutralButton(getResources().getString(R.string.button_cancel), new DialogInterface.OnClickListener() {
-
-            public void onClick(DialogInterface dialog, int id) {
-                dialog.cancel();
-            }
-        });
+        builder.setNeutralButton(getResources().getString(R.string.button_cancel), (dialog, id) -> dialog.cancel());
 
         AlertDialog alertDialog = builder.create();
         alertDialog.show();

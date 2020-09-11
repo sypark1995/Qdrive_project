@@ -3,10 +3,6 @@
 <head>
     <script>
 
-     setTimeout(function() {
-        console.log('krm0219 index.html');
-        window.location.href='./logIn.html';
-    }, 500);
 
     function initData(result) {
 
@@ -14,6 +10,21 @@
       localStorage.setItem('opId', '');
       localStorage.setItem('opPasswd', '');
     }
+
+    function intiServerURL(url, version) {
+
+
+      console.log('krm0219 intiServerURL1 ' + url);
+      console.log('krm0219 intiServerURL2 ' + version);
+
+       localStorage.setItem('serverURL', url);
+       localStorage.setItem('appVersion', version);
+
+        setTimeout(function() {
+            window.location.href='./logIn.html';
+        }, 500);
+    }
+
 
 
     </script>

@@ -29,8 +29,6 @@ public class MyApplication extends MultiDexApplication {
     private int badgeCnt;
 
 
-    static AlarmReceiver alarmReceiver = null;
-
     @Override
     public void onCreate() {
         super.onCreate();
@@ -40,6 +38,7 @@ public class MyApplication extends MultiDexApplication {
         badgeCnt = 0;
 
 
+        Log.e("Alarm", "MyApplication");
         String[] array = MyApplication.preferences.getAutoLogoutTime().split(":");
         setAutoLogout(Integer.parseInt(array[0]), Integer.parseInt(array[1]), false);
 
@@ -95,7 +94,6 @@ public class MyApplication extends MultiDexApplication {
 
                 Log.e("Alarm", "test Time? " + hour + ":" + minute);
                 alarmManager.cancel(pendingIntent);
-
 
                 alarmManager.setInexactRepeating(AlarmManager.RTC, calendar.getTimeInMillis(),
                         AlarmManager.INTERVAL_DAY, pendingIntent);

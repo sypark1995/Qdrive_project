@@ -110,4 +110,16 @@ class MySharedPreferences(context: Context) {
     var autoLogoutSetting: Boolean
         get() = prefs.getBoolean(PREF_KEY_AUTO_LOGOUT_SETTING, false)
         set(value) = prefs.edit().putBoolean(PREF_KEY_AUTO_LOGOUT_SETTING, value).apply()
+
+
+    private val PREF_KEY_DEVELOPER_MODE = "developerMode"
+    private val PREF_KEY_SERVER_URL = "serverURL"
+
+    var serverURL: String
+        get() = prefs.getString(PREF_KEY_SERVER_URL, "https://qxapi.qxpress.net").toString()
+        set(value) = prefs.edit().putString(PREF_KEY_SERVER_URL, value).apply()
+
+    var developerMode: Boolean
+        get() = prefs.getBoolean(PREF_KEY_DEVELOPER_MODE, false)
+        set(value) = prefs.edit().putBoolean(PREF_KEY_DEVELOPER_MODE, value).apply()
 }

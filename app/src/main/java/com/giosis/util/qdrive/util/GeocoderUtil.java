@@ -64,7 +64,7 @@ public class GeocoderUtil {
             }
         }
 
-        Log.e(TAG, " Geocode DATA > " + latLngArray[0] + ", " + latLngArray[1]);
+//        Log.e(TAG, " Geocode DATA > " + latLngArray[0] + ", " + latLngArray[1]);
         return latLngArray;
     }
 }

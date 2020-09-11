@@ -19,6 +19,10 @@ cordova.define("com.giosis.util.qdrive.util.MainActivityStarter", function (requ
     MainActivityStarter.prototype.goHome = function() {
 		exec(null, null, 'MainActivityStarter', 'goHome', []);
 	}
+
+	 MainActivityStarter.prototype.goDeveloper = function() {
+    		exec(null, null, 'MainActivityStarter', 'goDeveloper', []);
+    	}
     var plugin = new MainActivityStarter();
     module.exports = plugin;
 });

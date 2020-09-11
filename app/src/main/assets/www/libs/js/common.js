@@ -1,5 +1,3 @@
-document.write('<script type="text/javascript" src="../libs/js/enviroment.js"><\/script>');
-
 var result_GetDeliveryList;
 var result_GetPickupList;
 var networkState;
