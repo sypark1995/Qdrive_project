@@ -25,6 +25,7 @@ import androidx.viewpager.widget.ViewPager;
 import androidx.viewpager.widget.ViewPager.OnPageChangeListener;
 
 import com.giosis.util.qdrive.main.MainActivity;
+import com.giosis.util.qdrive.singapore.LoginActivity;
 import com.giosis.util.qdrive.singapore.MyApplication;
 import com.giosis.util.qdrive.singapore.R;
 import com.giosis.util.qdrive.util.DataUtil;
@@ -93,7 +94,6 @@ public class ListActivity extends FragmentActivity implements OnClickListener, L
         text_list_today_done_count.setText(String.valueOf(count));
     }
 
-
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -103,6 +103,7 @@ public class ListActivity extends FragmentActivity implements OnClickListener, L
         sharedPreferences = getSharedPreferences(DataUtil.SHARED_PREFERENCE_FILE, MODE_PRIVATE);
         dbHelper = DatabaseHelper.getInstance();
         opID = SharedPreferencesHelper.getSigninOpID(context);
+        Log.e("Alarm", "ListActivity onCreate   " + opID);
 
         getWindow().addFlags(WindowManager.LayoutParams.FLAG_KEEP_SCREEN_ON
                 | WindowManager.LayoutParams.FLAG_DISMISS_KEYGUARD
@@ -220,6 +221,22 @@ public class ListActivity extends FragmentActivity implements OnClickListener, L
             }
         }
     }
+
+
+    @Override
+    protected void onResume() {
+        super.onResume();
+
+        if (MyApplication.preferences.getUserId().equals("")) {
+
+            Toast.makeText(ListActivity.this, getResources().getString(R.string.msg_qdrive_auto_logout), Toast.LENGTH_SHORT).show();
+
+            Intent intent = new Intent(ListActivity.this, LoginActivity.class);
+            intent.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP | Intent.FLAG_ACTIVITY_SINGLE_TOP);
+            startActivity(intent);
+        }
+    }
+
 
     @Override
     public boolean onKeyDown(int keyCode, KeyEvent event) {

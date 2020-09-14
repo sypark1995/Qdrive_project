@@ -527,7 +527,7 @@
     <string name="none_found">No devices found</string>
 
 
-    <!-- NOTIFICATION  2020.하반기 Qdrive 개선사항 -->
+    <!-- -->
     <string name="text_by_request">By Request</string>
     <string name="text_by_trip">By Trip</string>
     <string name="text_trip_detail_requests">Trip Details (%d requests)</string>
@@ -578,7 +578,8 @@
     <string name="text_payment_check">Payment Check</string>
 
     <string name="text_developer_mode">Developer Mode</string>
-    <string name="msg_qdrive_auto_logout">Qdrive app logout at 11:59pm every day.  </string>
+    <string name="msg_qdrive_auto_logout">Qdrive app logout at 11:59pm every day.</string>
+
     <!-- TODO  -->
 
 

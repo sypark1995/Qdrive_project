@@ -29,13 +29,9 @@ class AlarmReceiver : BroadcastReceiver() {
             popupIntent.putExtras(bun)
             val pendingIntent = PendingIntent.getActivity(context, 0, popupIntent, PendingIntent.FLAG_ONE_SHOT)
             pendingIntent.send()
-
         } else {
 
-            val intent = Intent(context, LoginActivity::class.java)
-            intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK)
-            intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP or Intent.FLAG_ACTIVITY_SINGLE_TOP)
-            context.startActivity(intent)
+            MyApplication.preferences.userId = "";
         }
     }
 

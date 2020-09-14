@@ -65,6 +65,8 @@ import android.widget.TextView;
 import android.widget.Toast;
 import android.widget.ToggleButton;
 
+import androidx.appcompat.app.AppCompatActivity;
+
 import com.giosis.util.qdrive.barcodescanner.bluetooth.BluetoothChatService;
 import com.giosis.util.qdrive.barcodescanner.bluetooth.DeviceListActivity;
 import com.giosis.util.qdrive.barcodescanner.bluetooth.KScan;
@@ -80,6 +82,8 @@ import com.giosis.util.qdrive.list.pickup.PickupAddScanActivity;
 import com.giosis.util.qdrive.list.pickup.PickupDoneActivity;
 import com.giosis.util.qdrive.list.pickup.PickupTakeBackActivity;
 import com.giosis.util.qdrive.main.SelfCollectionDoneActivity;
+import com.giosis.util.qdrive.singapore.LoginActivity;
+import com.giosis.util.qdrive.singapore.MyApplication;
 import com.giosis.util.qdrive.singapore.R;
 import com.giosis.util.qdrive.util.BarcodeType;
 import com.giosis.util.qdrive.util.DataUtil;
@@ -94,8 +98,6 @@ import com.google.zxing.Result;
 import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.regex.Pattern;
-
-import androidx.appcompat.app.AppCompatActivity;
 
 /**
  * The barcode reader activity itself. This is loosely based on the
@@ -523,7 +525,17 @@ public final class CaptureActivity extends AppCompatActivity implements SurfaceH
     @Override
     public synchronized void onResume() {
         super.onResume();
-        Log.e(TAG, "   onResume");
+        Log.e(TAG, TAG + "   onResume");
+
+
+        if (MyApplication.preferences.getUserId().equals("")) {
+
+            Toast.makeText(CaptureActivity.this, getResources().getString(R.string.msg_qdrive_auto_logout), Toast.LENGTH_SHORT).show();
+
+            Intent intent = new Intent(CaptureActivity.this, LoginActivity.class);
+            intent.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP | Intent.FLAG_ACTIVITY_SINGLE_TOP);
+            startActivity(intent);
+        }
 
         try {
 

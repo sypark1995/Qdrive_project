@@ -150,6 +150,7 @@ public class MainActivity extends AppBaseActivity {
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
 
+        Log.e("krm0219", "MainActivity onCreate()  URL : " + MyApplication.preferences.getServerURL());
         getWindow().addFlags(WindowManager.LayoutParams.FLAG_KEEP_SCREEN_ON
                 | WindowManager.LayoutParams.FLAG_DISMISS_KEYGUARD
                 | WindowManager.LayoutParams.FLAG_SHOW_WHEN_LOCKED
@@ -327,6 +328,7 @@ public class MainActivity extends AppBaseActivity {
     protected void onResume() {
         super.onResume();
 
+        Log.e("krm0219", "MainActivity onResume()  URL : " + MyApplication.preferences.getServerURL());
         try {
 
             DataUtil.mFirebaseAnalytics = FirebaseAnalytics.getInstance(this);
@@ -361,7 +363,15 @@ public class MainActivity extends AppBaseActivity {
             Intent intent = new Intent(MainActivity.this, LoginActivity.class);
             intent.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP | Intent.FLAG_ACTIVITY_SINGLE_TOP);
             startActivity(intent);
+        } else if (MyApplication.preferences.getUserId().equals("")) {
+
+            Toast.makeText(MainActivity.this, getResources().getString(R.string.msg_qdrive_auto_logout), Toast.LENGTH_SHORT).show();
+
+            Intent intent = new Intent(MainActivity.this, LoginActivity.class);
+            intent.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP | Intent.FLAG_ACTIVITY_SINGLE_TOP);
+            startActivity(intent);
         }
+
 
         //Qx 소속 드라이버는 Assign 된 픽업 조회
         if (officeName.contains("Qxpress")) {
@@ -905,6 +915,7 @@ public class MainActivity extends AppBaseActivity {
                 break;
 
                 case R.id.btn_home_create_pickup_order: {
+
                     Intent intent = new Intent(MainActivity.this, ChoosePickupTypeActivity.class);
                     startActivity(intent);
                 }

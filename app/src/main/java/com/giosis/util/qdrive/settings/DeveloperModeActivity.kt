@@ -28,8 +28,6 @@ class DeveloperModeActivity : AppCompatActivity() {
 
             if (method == "login") {
 
-                Log.e("console", "console   : $method");
-
                 val intent = Intent(this@DeveloperModeActivity, LoginActivity::class.java)
                 intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP or Intent.FLAG_ACTIVITY_SINGLE_TOP)
                 startActivity(intent)
@@ -40,10 +38,10 @@ class DeveloperModeActivity : AppCompatActivity() {
 
 
         text_top_title.text = resources.getString(R.string.text_developer_mode)
+
         rb_developer_server_url_test.text = DataUtil.SERVER_TEST
         rb_developer_server_url_staging.text = DataUtil.SERVER_STAGING
         rb_developer_server_url_real.text = DataUtil.SERVER_REAL
-
         initServerUrl()
 
 
@@ -61,9 +59,6 @@ class DeveloperModeActivity : AppCompatActivity() {
                 text_developer_logout_time.text = changeTime
 
                 setAutoLogout(hourOfDay, minute, true)
-            } else {
-
-                Log.e("Alarm", "Same Time $preTime - $changeTime")
             }
         }
 
@@ -75,7 +70,6 @@ class DeveloperModeActivity : AppCompatActivity() {
 
             timePickerDialog.show()
         }
-        //
     }
 
 
