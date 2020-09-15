@@ -2,6 +2,7 @@ package com.giosis.util.qdrive.main
 
 import android.content.ContentValues
 import android.util.Log
+import com.giosis.util.qdrive.barcodescanner.ManualHelper.MOBILE_SERVER_URL
 import com.giosis.util.qdrive.util.Custom_JsonParser
 import com.giosis.util.qdrive.util.DatabaseHelper
 import gmkt.inc.android.common.util.bitmap.AsyncTask
@@ -22,9 +23,9 @@ class GetRestDaysAsyncTask(private val nation: String, private val year: Int) : 
             job.accumulate("app_id", "QDRIVE")
             job.accumulate("nation_cd", nation)
 
-            val serverURL = "https://qxapi.qxpress.net/GMKT.INC.GLPS.MobileApiService/GlobalMobileService.qapi"
             val methodName = "GetRestDays"
-            val jsonString = Custom_JsonParser.requestServerDataReturnJSON(serverURL, methodName, job)
+
+            val jsonString = Custom_JsonParser.requestServerDataReturnJSON(MOBILE_SERVER_URL, methodName, job)
             // {"ResultObject":[{"rest_dt":"2020-01-01","title":"New Year\u0027s Day"},{"rest_dt":"2020-05-01","title":"Labour Day"},{"rest_dt":"2020-08-09","title":"National Day"},{"rest_dt":"2020-12-25","title":"Christmas"}],"ResultCode":0,"ResultMsg":"SUCCESS"}
 
             val jsonObject = JSONObject(jsonString)

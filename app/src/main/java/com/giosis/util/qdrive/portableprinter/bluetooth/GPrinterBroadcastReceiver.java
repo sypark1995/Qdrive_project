@@ -148,7 +148,7 @@ public class GPrinterBroadcastReceiver extends BroadcastReceiver {
 
                 if (device != null) {
 
-                    Log.e("print", TAG + "  ACTION_ACL_DISCONNECTED  " + device.getName());
+                    Log.e("print", TAG + "  ACTION_ACL_DISCONNECTED  " + device.getName() + " / " + GPrinterData.printerConnManagerList.size());
 
                     if (GPrinterData.printerConnManagerList != null && 0 < GPrinterData.printerConnManagerList.size()) {
 

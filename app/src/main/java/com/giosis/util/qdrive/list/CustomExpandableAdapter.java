@@ -971,13 +971,6 @@ public class CustomExpandableAdapter extends BaseExpandableListAdapter implement
                 intent.putExtra("applicant", requester);
                 intent.putExtra("pickupNo", tracking_no);
                 context.startActivity(intent);
-
-             /*   Intent intent = new Intent(context, CnRPickupFailedActivity.class);
-                intent.putExtra("title", context.getResources().getString(R.string.text_visit_log));
-                intent.putExtra("reqQty", qty);
-                intent.putExtra("senderName", requester);
-                intent.putExtra("waybillNo", tracking_no);
-                context.startActivity(intent);*/
             }
         });
 
@@ -1270,10 +1263,7 @@ public class CustomExpandableAdapter extends BaseExpandableListAdapter implement
     public void isConnectPortablePrint(String tracking_no) {
 
         Log.e("trip", "click Dialog Item : " + tracking_no);
-        count++;
         //   BluetoothDeviceData.connectedPrinterAddress = "DC:1D:30:92:0A:5C";
-
-
         // 연결된 print 없으면..
         if (BluetoothDeviceData.connectedPrinterAddress == null) {
 
@@ -1287,10 +1277,19 @@ public class CustomExpandableAdapter extends BaseExpandableListAdapter implement
 
 
         String deviceAddress = getBluetoothPrinterAddress();
+        count++;
+
         if (!deviceAddress.equals("")) {  // 프린터 연결됨     // 출력시작
 
-            Toast.makeText(context, context.getResources().getString(R.string.msg_wait_while_print_job), Toast.LENGTH_SHORT).show();
-            printLabel(deviceAddress, tracking_no, "isConnectPortablePrint");
+            if (count < 10) {
+                Toast.makeText(context, context.getResources().getString(R.string.msg_wait_while_print_job), Toast.LENGTH_SHORT).show();
+                printLabel(deviceAddress, tracking_no, "isConnectPortablePrint");
+            } else {
+
+                BluetoothDeviceData.connectedPrinterAddress = null;
+                Toast.makeText(context, "Print Connect Error. Please use another printer.", Toast.LENGTH_SHORT).show();
+                Log.e("print_list", "Print Connect Error");
+            }
         } else {
 
             checkBluetoothState(tracking_no);
@@ -1375,7 +1374,6 @@ public class CustomExpandableAdapter extends BaseExpandableListAdapter implement
 
     private void printLabel(String address, String tracking_no, String where) {
 
-        Log.e("print", where + " printLabel Size : " + GPrinterData.printerConnManagerList.size());
         if (GPrinterData.printerConnManagerList == null || GPrinterData.printerConnManagerList.size() == 0 || !GPrinterData.printerConnManagerList.get(0).getConnState()) {
 
             return;
@@ -1399,7 +1397,6 @@ public class CustomExpandableAdapter extends BaseExpandableListAdapter implement
 
                                         // NOTIFICATION.  Send Label DATA
                                         Log.e("print", TAG + "  sendLabel");
-                                        //    sendBitmap();
                                         sendLabel(stdResult);
                                     } else {
 
@@ -1438,49 +1435,6 @@ public class CustomExpandableAdapter extends BaseExpandableListAdapter implement
         return address;
     }
 
-
-    private void sendBitmap() {
-
-        LabelCommand tsc = new LabelCommand();
-
-        tsc.addSize(80, 52); // label 크기 설정 -- mm
-        tsc.addGap(0);
-        // 인쇄방향 설정
-//        tsc.addDirection(LabelCommand.DIRECTION.BACKWARD, LabelCommand.MIRROR.MIRROR);
-//        tsc.addDirection(LabelCommand.DIRECTION.BACKWARD, LabelCommand.MIRROR.NORMAL);  마지막 버전
-        tsc.addDirection(LabelCommand.DIRECTION.FORWARD, LabelCommand.MIRROR.NORMAL);
-        //연속인쇄용?
-        tsc.addQueryPrinterStatus(LabelCommand.RESPONSE_MODE.ON);
-        //원점좌표설정(인쇄방향하고 같이)
-        tsc.addReference(0, 0);
-//        tsc.addTear(EscCommand.ENABLE.ON);
-        tsc.addTear(EscCommand.ENABLE.OFF);
-//        tsc.addPeel(EscCommand.ENABLE.ON); //방법 설명 : 프린터 스트립 모드 설정
-        // 인쇄 버퍼 데이터 지우기
-        tsc.addCls();
-
-        //tsc.addQRCode(450, 0, LabelCommand.EEC.LEVEL_L, 5, LabelCommand.ROTATION.ROTATION_0, result.getInvoiceNo());
-
-
-        Bitmap bitmap = null;
-        tsc.addBitmap(20, 0, 150, bitmap);
-
-
-        // 라벨인쇄
-        tsc.addPrint(1, 1);
-        tsc.addSound(1, 100);
-        tsc.addCashdrwer(LabelCommand.FOOT.F5, 255, 255);
-        Vector<Byte> datas = tsc.getCommand();
-
-        if (GPrinterData.printerConnManagerList.get(0) == null) {
-            return;
-        }
-
-        // 여기서 Gprinter 함수 콜
-        GPrinterData.printerConnManagerList.get(0).sendDataImmediately(datas);
-    }
-
-
     private void sendLabel(PrintDataResult stdResult) {
         // tsc.addUserCommand("BARCODE 10, 0, \"39\", 80, 0, 0, 2, 5, \"C828996SGSG\"");  - Custom
 
@@ -1506,7 +1460,9 @@ public class CustomExpandableAdapter extends BaseExpandableListAdapter implement
         //첫번째 row
         tsc.add1DBarcode(20, 0, LabelCommand.BARCODETYPE.CODE39S, 80, LabelCommand.READABEL.EANBEL,
                 LabelCommand.ROTATION.ROTATION_0, 2, 5, result.getInvoiceNo());
-        tsc.addQRCode(450, 0, LabelCommand.EEC.LEVEL_L, 5, LabelCommand.ROTATION.ROTATION_0, result.getInvoiceNo());
+        //   tsc.addQRCode(450, 0, LabelCommand.EEC.LEVEL_L, 5, LabelCommand.ROTATION.ROTATION_0, result.getInvoiceNo());
+        Bitmap bitmap = DataUtil.stringToDataMatrix(result.getInvoiceNo());
+        tsc.addBitmap(450, 0, 100, bitmap);
 
         // 두번째 row
         ArrayList<String> list = cutString(result.getCustName(), 1);

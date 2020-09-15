@@ -2,12 +2,18 @@ var serverURL;
 var appVersion;
 
 
+//"https://test-api.qxpress.net/GMKT.INC.GLPS.MobileApiService/GlobalMobileService.qapi";
+//"http://staging-qxapi.qxpress.net/GMKT.INC.GLPS.MobileApiService/GlobalMobileService.qapi";
+//"https://qxapi.qxpress.net/GMKT.INC.GLPS.MobileApiService/GlobalMobileService.qapi";
+
 function init() {
 
 	serverURL = localStorage.getItem('serverURL');
 	appVersion = localStorage.getItem('appVersion');
 	console.log("★★★★★★★ " + serverURL + " / " + appVersion);
 
+    serverURL = "http://staging-qxapi.qxpress.net/GMKT.INC.GLPS.MobileApiService/GlobalMobileService.qapi";
+    appVersion = "3.4.2"
 
     $("#loginID").val(localStorage.getItem('opId'));
     $("#pw").val(localStorage.getItem('opPasswd'));
@@ -27,18 +33,20 @@ function init() {
     setButton("qdriveLogo", goDeveloper);
 }
 
+
+
 	var clicked = 0;
 
 function goDeveloper() {
 
 	clicked++;
 
-	if(clicked == 10) {
-
-    console.log("★★★★★★★ ::  goDeveloper ");
-	 cordova.require("com.giosis.util.qdrive.util.MainActivityStarter").goDeveloper();
-	 clicked = 0;
-	}
+//	if(clicked == 10) {
+//
+//    console.log("★★★★★★★ ::  goDeveloper ");
+//	 cordova.require("com.giosis.util.qdrive.util.MainActivityStarter").goDeveloper();
+//	 clicked = 0;
+//	}
 }
 
 

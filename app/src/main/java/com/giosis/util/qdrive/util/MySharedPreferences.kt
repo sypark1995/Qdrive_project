@@ -2,6 +2,7 @@ package com.giosis.util.qdrive.util
 
 import android.content.Context
 import android.content.SharedPreferences
+import com.giosis.util.qdrive.barcodescanner.ManualHelper.MOBILE_SERVER_URL
 
 class MySharedPreferences(context: Context) {
 
@@ -116,7 +117,7 @@ class MySharedPreferences(context: Context) {
     private val PREF_KEY_SERVER_URL = "serverURL"
 
     var serverURL: String
-        get() = prefs.getString(PREF_KEY_SERVER_URL, "https://qxapi.qxpress.net").toString()
+        get() = prefs.getString(PREF_KEY_SERVER_URL, MOBILE_SERVER_URL).toString()
         set(value) = prefs.edit().putString(PREF_KEY_SERVER_URL, value).apply()
 
     var developerMode: Boolean

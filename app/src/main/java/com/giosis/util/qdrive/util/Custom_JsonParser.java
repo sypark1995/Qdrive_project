@@ -2,6 +2,8 @@ package com.giosis.util.qdrive.util;
 
 import android.util.Log;
 
+import com.giosis.util.qdrive.singapore.MyApplication;
+
 import org.json.JSONObject;
 
 import java.io.ByteArrayOutputStream;
@@ -40,6 +42,9 @@ public class Custom_JsonParser {
             // conn.setRequestProperty("Accept", "application/xml");    // xml 형식
             // conn.setRequestProperty("Accept", "application/json");   // json 형식
             conn.setRequestProperty("Accept", "*/*");
+
+            // User Agent
+            conn.setRequestProperty("User-Agent", QDataUtil.Companion.getCustomUserAgent(MyApplication.getContext()));
 
             // 서버 Request Data 형식 (JSON 형식으로 서버에 전달)
             conn.setRequestProperty("Content-Type", "application/json");

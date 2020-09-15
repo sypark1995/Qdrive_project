@@ -165,12 +165,6 @@ public class GMKT_MobileAPIService {
         return inputStream;
     }
 
-    private InputStream sendGet() throws Exception {
-        InputStream inputStream = mHttpRequestor.sendGet();
-
-        return inputStream;
-    }
-
 
     public GMKT_HTTPRequestor getmHttpRequestor() {
         return mHttpRequestor;

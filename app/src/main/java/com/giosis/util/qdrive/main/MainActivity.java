@@ -56,6 +56,7 @@ import com.giosis.util.qdrive.util.DisplayUtil;
 import com.giosis.util.qdrive.util.NetworkUtil;
 import com.giosis.util.qdrive.util.PermissionActivity;
 import com.giosis.util.qdrive.util.PermissionChecker;
+import com.giosis.util.qdrive.util.QDataUtil;
 import com.giosis.util.qdrive.util.SharedPreferencesHelper;
 import com.google.android.gms.common.ConnectionResult;
 import com.google.android.gms.common.GoogleApiAvailability;
@@ -151,6 +152,8 @@ public class MainActivity extends AppBaseActivity {
         super.onCreate(savedInstanceState);
 
         Log.e("krm0219", "MainActivity onCreate()  URL : " + MyApplication.preferences.getServerURL());
+        Log.e("krm0219", "User Agent : " + QDataUtil.Companion.getCustomUserAgent(MyApplication.getContext()));
+
         getWindow().addFlags(WindowManager.LayoutParams.FLAG_KEEP_SCREEN_ON
                 | WindowManager.LayoutParams.FLAG_DISMISS_KEYGUARD
                 | WindowManager.LayoutParams.FLAG_SHOW_WHEN_LOCKED

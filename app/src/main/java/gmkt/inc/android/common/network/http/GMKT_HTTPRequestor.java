@@ -2,11 +2,11 @@ package gmkt.inc.android.common.network.http;
 
 import android.util.Log;
 
-import java.io.BufferedInputStream;
-import java.io.BufferedOutputStream;
+import com.giosis.util.qdrive.singapore.MyApplication;
+import com.giosis.util.qdrive.util.QDataUtil;
+
 import java.io.DataOutputStream;
 import java.io.File;
-import java.io.FileInputStream;
 import java.io.IOException;
 import java.io.InputStream;
 import java.net.HttpURLConnection;
@@ -191,52 +191,6 @@ public class GMKT_HTTPRequestor {
     }
 
     /**
-     * GET 방식으로 대상 URL에 파라미터를 전송한 후
-     * 응답을 InputStream으로 리턴한다.
-     *
-     * @return InputStream
-     */
-    public InputStream sendGet() throws IOException {
-        System.setProperty("http.keepAlive", "false");
-
-        String paramString = null;
-        if (list.size() > 0)
-            paramString = "?" + encodeString(list);
-        else
-            paramString = "";
-
-        URL url = new URL(targetURL.toExternalForm() + paramString);
-
-        if (url.getProtocol().toLowerCase().equals("https")) {
-            trustAllHosts();
-            HttpsURLConnection conn = (HttpsURLConnection) url.openConnection();
-            conn.setHostnameVerifier(DO_NOT_VERIFY);
-
-            conn.addRequestProperty("Accept-Encoding", "gzip");
-            if (mUserAgentForOpenAPI != null && mUserAgentForOpenAPI.length() > 0) {
-                conn.addRequestProperty("User-Agent", mUserAgentForOpenAPI);
-            }
-            addHttpHeaderFields(conn, addHttpHeaderCustomFieldMap);
-            conn.setConnectTimeout(480000);
-            conn.setReadTimeout(480000);
-
-            return getResponseInputStream(conn);
-        } else {
-            HttpURLConnection conn = (HttpURLConnection) targetURL.openConnection();
-
-            conn.addRequestProperty("Accept-Encoding", "gzip");
-            if (mUserAgentForOpenAPI != null && mUserAgentForOpenAPI.length() > 0) {
-                conn.addRequestProperty("User-Agent", mUserAgentForOpenAPI);
-            }
-            addHttpHeaderFields(conn, addHttpHeaderCustomFieldMap);
-            conn.setConnectTimeout(480000);
-            conn.setReadTimeout(480000);
-
-            return getResponseInputStream(conn);
-        }
-    }
-
-    /**
      * POST 방식으로 대상 URL에 파라미터를 전송한 후
      * 응답을 InputStream으로 리턴한다.
      *
@@ -261,9 +215,9 @@ public class GMKT_HTTPRequestor {
             https.setReadTimeout(480000);
             https.setRequestProperty("Content-Type", "application/x-www-form-urlencoded");
             https.addRequestProperty("Accept-Encoding", "gzip");
-            if (mUserAgentForOpenAPI != null && mUserAgentForOpenAPI.length() > 0) {
-                https.addRequestProperty("User-Agent", mUserAgentForOpenAPI);
-            }
+            https.addRequestProperty("User-Agent", QDataUtil.Companion.getCustomUserAgent(MyApplication.getContext()));
+
+
             addHttpHeaderFields(https, addHttpHeaderCustomFieldMap);
             https.setDoInput(true);
             https.setDoOutput(true);
@@ -292,9 +246,10 @@ public class GMKT_HTTPRequestor {
             conn.setReadTimeout(480000);
             conn.setRequestProperty("Content-Type", "application/x-www-form-urlencoded");
             conn.addRequestProperty("Accept-Encoding", "gzip");
-            if (mUserAgentForOpenAPI != null && mUserAgentForOpenAPI.length() > 0) {
-                conn.addRequestProperty("User-Agent", mUserAgentForOpenAPI);
-            }
+            conn.addRequestProperty("User-Agent", QDataUtil.Companion.getCustomUserAgent(MyApplication.getContext()));
+//            if (mUserAgentForOpenAPI != null && mUserAgentForOpenAPI.length() > 0) {
+//                conn.addRequestProperty("User-Agent", mUserAgentForOpenAPI);
+//            }
             addHttpHeaderFields(conn, addHttpHeaderCustomFieldMap);
             conn.setDoInput(true);
             conn.setDoOutput(true);
@@ -335,126 +290,6 @@ public class GMKT_HTTPRequestor {
                 conn.addRequestProperty(key, value);
             }
         }
-    }
-
-    /**
-     * POST 방식으로 대상 URL에 파일을 포함한 Multipart 데이터를 전송한 후
-     * 응답을 InputStream으로 리턴한다.
-     *
-     * @return InputStream
-     * @throws IOException
-     */
-    public InputStream sendMultipartPost() throws IOException {
-        System.setProperty("http.keepAlive", "false");
-
-        HttpURLConnection conn = (HttpURLConnection) targetURL.openConnection();
-
-        // Delimeter 생성
-        String delimeter = makeDelimeter();
-        byte[] newLineBytes = CRLF.getBytes();
-        byte[] delimeterBytes = delimeter.getBytes();
-        byte[] dispositionBytes = "Content-Disposition: form-data; name=".getBytes();
-        byte[] quotationBytes = "\"".getBytes();
-        byte[] contentTypeBytes = "Content-Type: application/octet-stream".getBytes();
-        byte[] fileNameBytes = "; filename=".getBytes();
-        byte[] twoDashBytes = "--".getBytes();
-
-        conn.setRequestMethod("POST");
-        conn.setRequestProperty("Content-Type",
-                "multipart/form-data; boundary=" + delimeter);
-        conn.addRequestProperty("Accept-Encoding", "gzip");
-        if (mUserAgentForOpenAPI != null && mUserAgentForOpenAPI.length() > 0) {
-            conn.addRequestProperty("User-Agent", mUserAgentForOpenAPI);
-        }
-        addHttpHeaderFields(conn, addHttpHeaderCustomFieldMap);
-        conn.setDoInput(true);
-        conn.setDoOutput(true);
-        conn.setUseCaches(false);
-
-        BufferedOutputStream out = null;
-        try {
-            out = new BufferedOutputStream(conn.getOutputStream());
-
-            Object[] obj = new Object[list.size()];
-            list.toArray(obj);
-
-            for (int i = 0; i < obj.length; i += 2) {
-                // Delimeter 전송
-                out.write(twoDashBytes);
-                out.write(delimeterBytes);
-                out.write(newLineBytes);
-                // 파라미터 이름 출력
-                out.write(dispositionBytes);
-                out.write(quotationBytes);
-                out.write(((String) obj[i]).getBytes());
-                out.write(quotationBytes);
-                if (obj[i + 1] instanceof String) {
-                    // String 이라면
-                    out.write(newLineBytes);
-                    out.write(newLineBytes);
-                    // 값 출력
-                    out.write(((String) obj[i + 1]).getBytes());
-                    out.write(newLineBytes);
-                } else {
-                    // 파라미터의 값이 File 이나 NullFile인 경우
-                    if (obj[i + 1] instanceof File) {
-                        File file = (File) obj[i + 1];
-                        // File이 존재하는 지 검사한다.
-                        out.write(fileNameBytes);
-                        out.write(quotationBytes);
-                        out.write(file.getAbsolutePath().getBytes());
-                        out.write(quotationBytes);
-                    } else {
-                        // NullFile 인 경우
-                        out.write(fileNameBytes);
-                        out.write(quotationBytes);
-                        out.write(quotationBytes);
-                    }
-                    out.write(newLineBytes);
-                    out.write(contentTypeBytes);
-                    out.write(newLineBytes);
-                    out.write(newLineBytes);
-                    // File 데이터를 전송한다.
-                    if (obj[i + 1] instanceof File) {
-                        File file = (File) obj[i + 1];
-                        // file에 있는 내용을 전송한다.
-                        BufferedInputStream is = null;
-                        try {
-                            is = new BufferedInputStream(
-                                    new FileInputStream(file));
-                            byte[] fileBuffer = new byte[1024 * 8]; // 8k
-                            int len = -1;
-                            while ((len = is.read(fileBuffer)) != -1) {
-                                out.write(fileBuffer, 0, len);
-                            }
-                        } finally {
-                            if (is != null) try {
-                                is.close();
-                            } catch (IOException ex) {
-                            }
-                        }
-                    }
-                    out.write(newLineBytes);
-                } // 파일 데이터의 전송 블럭 끝
-                if (i + 2 == obj.length) {
-                    // 마지막 Delimeter 전송
-                    out.write(twoDashBytes);
-                    out.write(delimeterBytes);
-                    out.write(twoDashBytes);
-                    out.write(newLineBytes);
-                }
-            } // for 루프의 끝
-
-            out.flush();
-        } finally {
-            if (out != null) out.close();
-        }
-
-        return getResponseInputStream(conn);
-    }
-
-    private static String makeDelimeter() {
-        return "---------------------------7d115d2a20060c";
     }
 
     private static void trustAllHosts() {

@@ -119,7 +119,6 @@ public class FusedProviderWorker implements GoogleApiClient.ConnectionCallbacks,
 
         LocationRequest locationRequest = new LocationRequest();
         locationRequest.setPriority(LocationRequest.PRIORITY_BALANCED_POWER_ACCURACY);
-        // PRIORITY_BALANCED_POWER_ACCURACY     // PRIORITY_HIGH_ACCURACY
         locationRequest.setInterval(MIN_TIME_BW_UPDATES);
         locationRequest.setFastestInterval(MIN_FAST_INTERVAL_UPDATES);
         locationRequest.setSmallestDisplacement(MIN_DISTANCE_CHANGE_FOR_UPDATES);

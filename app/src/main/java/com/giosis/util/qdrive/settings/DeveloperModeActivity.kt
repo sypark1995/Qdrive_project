@@ -78,23 +78,17 @@ class DeveloperModeActivity : AppCompatActivity() {
         Log.e("krm0219", "init " + MyApplication.preferences.serverURL);
 
 
-        when (MyApplication.preferences.serverURL) {
+        if(MyApplication.preferences.serverURL.contains(DataUtil.SERVER_TEST)) {
 
-            DataUtil.SERVER_TEST -> {
+            rb_developer_server_url_test.isChecked = true
+        } else if(MyApplication.preferences.serverURL.contains(DataUtil.SERVER_STAGING)) {
 
-                rb_developer_server_url_test.isChecked = true
-            }
+            rb_developer_server_url_staging.isChecked = true
+        } else if(MyApplication.preferences.serverURL.contentEquals(DataUtil.SERVER_REAL)) {
 
-            DataUtil.SERVER_STAGING -> {
-
-                rb_developer_server_url_staging.isChecked = true
-            }
-
-            DataUtil.SERVER_REAL -> {
-
-                rb_developer_server_url_real.isChecked = true
-            }
+            rb_developer_server_url_real.isChecked = true
         }
+
         edit_developer_server_url.setText(MyApplication.preferences.serverURL)
 
 

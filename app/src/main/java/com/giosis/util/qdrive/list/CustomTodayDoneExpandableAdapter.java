@@ -8,6 +8,7 @@ import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.IntentFilter;
+import android.graphics.Bitmap;
 import android.net.Uri;
 import android.util.Log;
 import android.view.LayoutInflater;
@@ -32,6 +33,7 @@ import com.giosis.util.qdrive.portableprinter.bluetooth.PrinterConnManager;
 import com.giosis.util.qdrive.settings.BluetoothDeviceData;
 import com.giosis.util.qdrive.settings.PrinterSettingActivity;
 import com.giosis.util.qdrive.singapore.R;
+import com.giosis.util.qdrive.util.DataUtil;
 import com.giosis.util.qdrive.util.NetworkUtil;
 import com.giosis.util.qdrive.util.SharedPreferencesHelper;
 import com.gprinter.command.EscCommand;
@@ -637,7 +639,9 @@ public class CustomTodayDoneExpandableAdapter extends BaseExpandableListAdapter 
         //첫번째 row
         tsc.add1DBarcode(20, 0, LabelCommand.BARCODETYPE.CODE39S, 80, LabelCommand.READABEL.EANBEL,
                 LabelCommand.ROTATION.ROTATION_0, 2, 5, result.getInvoiceNo());
-        tsc.addQRCode(450, 0, LabelCommand.EEC.LEVEL_L, 5, LabelCommand.ROTATION.ROTATION_0, result.getInvoiceNo());
+    //    tsc.addQRCode(450, 0, LabelCommand.EEC.LEVEL_L, 5, LabelCommand.ROTATION.ROTATION_0, result.getInvoiceNo());
+        Bitmap bitmap = DataUtil.stringToDataMatrix(result.getInvoiceNo());
+        tsc.addBitmap(450, 0, 100, bitmap);
 
         // 두번째 row
         ArrayList<String> list = cutString(result.getCustName(), 1);
