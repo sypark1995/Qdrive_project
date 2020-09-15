@@ -328,7 +328,6 @@ public class ServerDownloadHelper extends ManualHelper {
         try {
 
           /*  // TEST. Outlet
-            String MOBILE_SERVER_URL = "https://qxapi.qxpress.net/GMKT.INC.GLPS.MobileApiService/GlobalMobileService.qapi";
             "Ramlan_7E"*/
             GMKT_SyncHttpTask httpTask = new GMKT_SyncHttpTask("QSign");
             HashMap<String, String> hmActionParam = new HashMap<>();
@@ -421,9 +420,6 @@ public class ServerDownloadHelper extends ManualHelper {
             hmActionParam.put("app_id", DataUtil.appID);
             hmActionParam.put("nation_cd", DataUtil.nationCode);
 
-          /*  // TEST. Pickup
-            String MOBILE_SERVER_URL = "https://qxapi.qxpress.net/GMKT.INC.GLPS.MobileApiService/GlobalMobileService.qapi";
-            hmActionParam.put("opId", "YuMin.dwl");*/
             String methodName = "GetPickupList";
             Serializer serializer = new Persister();
 

@@ -206,9 +206,6 @@
             android:name=".StatisticsActivity"
             android:screenOrientation="portrait" />
         <activity
-            android:name="com.giosis.util.qdrive.settings.SettingActivity1"
-            android:screenOrientation="portrait" />
-        <activity
             android:name="com.giosis.util.qdrive.settings.SettingActivity"
             android:screenOrientation="portrait" />
 

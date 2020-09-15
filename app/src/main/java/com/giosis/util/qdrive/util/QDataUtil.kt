@@ -15,7 +15,6 @@ class QDataUtil {
 
     companion object {
 
-
         //Android_QX.QUICK_1.119_1536906366(GMKTV2_WgkEK88K1Ibh8EComkw8O0_g_1_NBIxVOd0Nc_g_2_HqtHNGN8o_g_3_;B3-A40;7.0;ko_KR)
         //Android_QX MSMARTSHIP_1.0.1_2(GMKTV2_uzraf4dlXrPFBonIFPW0T4SGWotK2In00yfKtjUWABT0XUqh6YRC9jO8T4FUfLJ1_g_2_i_g_2_Icr2FQBY_g_3_;HMA-AL00;10;en_)
         //Android_QX.QDRIVE_3.4.2_93(GMKTV2_M1PeViVdTpFfkUXKlaIokacEEck0spYtBQClRi1osXmHRl8FFPskyRL0M2bvNOgMDHwffWKnXvQ_g_3_;HMA-AL00;10;ko_KR)
@@ -106,13 +105,17 @@ class QDataUtil {
 //
 //        uuid = String.format("%s____%s", androidID, mac);
 // 권한 때문에 IMEI 값 사용하지 않는다.
-            val imei: String? = getIMEI(context)
-            val mac: String? = getMacAddress()
-            val uuid = if (imei == null || imei == "") {
-                String.format("%s____%s", androidID, mac)
-            } else {
-                String.format("%s____%s", androidID, imei)
-            }
+//            val imei: String? = getIMEI(context)
+//            val mac: String? = getMacAddress()
+//            val uuid = if (imei == null || imei == "") {
+//                String.format("%s____%s", androidID, mac)
+//            } else {
+//                String.format("%s____%s", androidID, imei)
+//            }
+
+
+            val uuid = androidID
+
             return uuid
         }
 

@@ -1,18 +1,14 @@
 var serverURL;
 var appVersion;
 
-
-//"https://test-api.qxpress.net/GMKT.INC.GLPS.MobileApiService/GlobalMobileService.qapi";
-//"http://staging-qxapi.qxpress.net/GMKT.INC.GLPS.MobileApiService/GlobalMobileService.qapi";
-//"https://qxapi.qxpress.net/GMKT.INC.GLPS.MobileApiService/GlobalMobileService.qapi";
-
 function init() {
 
-	serverURL = localStorage.getItem('serverURL');
-	appVersion = localStorage.getItem('appVersion');
-	console.log("★★★★★★★ " + serverURL + " / " + appVersion);
+//	serverURL = localStorage.getItem('serverURL');
+//	appVersion = localStorage.getItem('appVersion');
+//	console.log("★★★★★★★ " + serverURL + " / " + appVersion);
 
-    serverURL = "http://staging-qxapi.qxpress.net/GMKT.INC.GLPS.MobileApiService/GlobalMobileService.qapi";
+    //serverURL = "http://staging-qxapi.qxpress.net/GMKT.INC.GLPS.MobileApiService/GlobalMobileService.qapi";
+    serverURL = "https://qxapi.qxpress.net/GMKT.INC.GLPS.MobileApiService/GlobalMobileService.qapi"
     appVersion = "3.4.2"
 
     $("#loginID").val(localStorage.getItem('opId'));

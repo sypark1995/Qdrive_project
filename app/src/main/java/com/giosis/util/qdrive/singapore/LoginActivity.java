@@ -36,7 +36,7 @@ public class LoginActivity extends CordovaActivity {
 //        }
 
 
-        new Handler().postDelayed(() -> executeJS("intiServerURL('"+url+"', '"+versionName+"')"), 100);
+     //   new Handler().postDelayed(() -> executeJS("intiServerURL('"+url+"', '"+versionName+"')"), 100);
 
     }
 

@@ -38,7 +38,6 @@ public class MyApplication extends MultiDexApplication {
         badgeCnt = 0;
 
 
-        Log.e("Alarm", "MyApplication");
         String[] array = MyApplication.preferences.getAutoLogoutTime().split(":");
         setAutoLogout(Integer.parseInt(array[0]), Integer.parseInt(array[1]), false);
 
@@ -77,8 +76,8 @@ public class MyApplication extends MultiDexApplication {
         AlarmManager alarmManager = (AlarmManager) context.getSystemService(Context.ALARM_SERVICE);
 
 
-        Log.e("Alarm", "Auto LogOut Setting? " + preferences.getAutoLogoutSetting());
-        Log.e("Alarm", "Auto LogOut Time? " + hour + ":" + minute);
+        Log.e("Alarm", "Auto Logout Setting? " + preferences.getAutoLogoutSetting());
+        Log.e("Alarm", "Auto Logout Time? " + hour + ":" + minute);
 
         if (!preferences.getAutoLogoutSetting()) {
 
