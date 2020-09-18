@@ -21,21 +21,20 @@ import android.widget.Toast;
 import androidx.fragment.app.Fragment;
 
 import com.giosis.util.qdrive.singapore.R;
-import com.giosis.util.qdrive.util.Custom_XmlPullParser;
+import com.giosis.util.qdrive.util.Custom_JsonParser;
 import com.giosis.util.qdrive.util.DataUtil;
 import com.giosis.util.qdrive.util.DisplayUtil;
 import com.giosis.util.qdrive.util.NetworkUtil;
 import com.giosis.util.qdrive.util.SharedPreferencesHelper;
+import com.google.gson.Gson;
+
+import org.json.JSONObject;
 
 import java.net.URLEncoder;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.Date;
-import java.util.HashMap;
-
-import gmkt.inc.android.common.GMKT_SyncHttpTask;
-import gmkt.inc.android.common.network.http.GMKT_HTTPResponseMessage;
 
 import static com.giosis.util.qdrive.barcodescanner.ManualHelper.MOBILE_SERVER_URL;
 
@@ -188,7 +187,7 @@ public class CustomerMessageListFragment extends Fragment {
 
 
     //NOTIFICATION.  CustomerMessageListAsyncTask
-    private class CustomerMessageListAsyncTask extends AsyncTask<Void, Void, String> {
+    private class CustomerMessageListAsyncTask extends AsyncTask<Void, Void, MessageListResult> {
 
         String qdriver_id;
         String search_start_date;
@@ -224,48 +223,60 @@ public class CustomerMessageListFragment extends Fragment {
         }
 
         @Override
-        protected String doInBackground(Void... params) {
+        protected MessageListResult doInBackground(Void... params) {
 
             Log.i("krm0219", TAG + "  CustomerMessageListAsyncTask  PageNumber : " + page_no);
-
-            GMKT_SyncHttpTask httpTask = new GMKT_SyncHttpTask("QSign");
-            HashMap<String, String> hmActionParam = new HashMap<>();
-            hmActionParam.put("qdriver_id", qdriver_id);
-            hmActionParam.put("page_no", page_no);              // current page number
-            hmActionParam.put("page_size", page_size);          // list size
-            hmActionParam.put("app_id", DataUtil.appID);
-            hmActionParam.put("nation_cd", DataUtil.nationCode);
-
-            Calendar cal = Calendar.getInstance();
-            cal.setTime(new Date());
-            cal.add(Calendar.DATE, -14); // 최근 2주
-            Date yDate = cal.getTime();
-            SimpleDateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd");
-            search_start_date = dateFormat.format(yDate) + " 00:00:00";
-            search_end_date = dateFormat.format(new Date()) + " 23:59:59";
+            MessageListResult resultObj;
+            Gson gson = new Gson();
 
             try {
 
-                hmActionParam.put("search_start_dt", URLEncoder.encode(search_start_date, "UTF-8"));
-                hmActionParam.put("search_end_dt", URLEncoder.encode(search_end_date, "UTF-8"));
+                JSONObject job = new JSONObject();
+                job.accumulate("qdriver_id", qdriver_id);
+                job.accumulate("page_no", page_no);
+                job.accumulate("page_size", page_size);
+                job.accumulate("app_id", DataUtil.appID);
+                job.accumulate("nation_cd", DataUtil.nationCode);
+
+                Calendar cal = Calendar.getInstance();
+                cal.setTime(new Date());
+                cal.add(Calendar.DATE, -14); // 최근 2주
+                Date yDate = cal.getTime();
+                SimpleDateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd");
+                search_start_date = dateFormat.format(yDate) + " 00:00:00";
+                search_end_date = dateFormat.format(new Date()) + " 23:59:59";
+
+                try {
+
+                    job.accumulate("search_start_dt", URLEncoder.encode(search_start_date, "UTF-8"));
+                    job.accumulate("search_end_dt", URLEncoder.encode(search_end_date, "UTF-8"));
+                } catch (Exception ignored) {
+
+                }
+
+//                // TEST
+//                job.accumulate("qdriver_id", "hdsg_jumali");
+//                job.accumulate("search_start_dt", "2019-08-01 00:00:00");
+//                job.accumulate("search_end_dt", "2019-08-14 23:59:59");
+
+
+                String methodName = "GetQdriverMessageList";
+                String jsonString = Custom_JsonParser.requestServerDataReturnJSON(MOBILE_SERVER_URL, methodName, job);
+                new_resultString = jsonString;
+
+                resultObj = gson.fromJson(jsonString, MessageListResult.class);
             } catch (Exception e) {
 
+                Log.e("Exception", TAG + "  GetQdriverMessageList Json Exception : " + e.toString());
+                resultObj = null;
             }
 
-            String methodName = "GetQdriverMessageList";
-
-            GMKT_HTTPResponseMessage response = httpTask.requestServerDataReturnString(MOBILE_SERVER_URL, methodName, hmActionParam);
-            String resultString = response.getResultString();
-            Log.e("Server", methodName + "  Result : " + resultString);
-            // {"ResultObject":[{"total_count":"1","total_page":"1","rownum":"1","sender_id":null,"tracking_No":"SGP148544451","question_seq_no":"261829215","seq_no":"261831370","contr_no":"300781188","svc_nation_cd":"SG","read_yn":"Y","contents":"Thank you Jumali, I’ve received your delivery in good condition! Sorry for the late response! 😂 have a good weekend! ✌🏻","send_dt":"2019-08-02 오후 10:36:59"}],"ResultCode":0,"ResultMsg":"OK"}
-
-            new_resultString = resultString;
-            return resultString;
+            return resultObj;
         }
 
         @Override
-        protected void onPostExecute(String resultString) {
-            super.onPostExecute(resultString);
+        protected void onPostExecute(MessageListResult result) {
+            super.onPostExecute(result);
 
             DisplayUtil.dismissProgressDialog(progressDialog);
 
@@ -275,8 +286,6 @@ public class CustomerMessageListFragment extends Fragment {
 
                     Log.e("krm0219", TAG + "  CustomerMessageListAsyncTask  EQUAL");
                 } else {
-
-                    MessageListResult result = Custom_XmlPullParser.getCustomerMessageList(resultString);
 
                     if (result != null) {
 

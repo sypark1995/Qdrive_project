@@ -24,11 +24,14 @@ import android.widget.Toast;
 import androidx.appcompat.app.AppCompatActivity;
 
 import com.giosis.util.qdrive.singapore.R;
-import com.giosis.util.qdrive.util.Custom_XmlPullParser;
+import com.giosis.util.qdrive.util.Custom_JsonParser;
 import com.giosis.util.qdrive.util.DataUtil;
 import com.giosis.util.qdrive.util.DisplayUtil;
 import com.giosis.util.qdrive.util.NetworkUtil;
 import com.giosis.util.qdrive.util.SharedPreferencesHelper;
+import com.google.gson.Gson;
+
+import org.json.JSONObject;
 
 import java.io.InputStream;
 import java.net.HttpURLConnection;
@@ -39,7 +42,6 @@ import java.text.DateFormat;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.Date;
-import java.util.HashMap;
 import java.util.Locale;
 
 import javax.net.ssl.HttpsURLConnection;
@@ -47,15 +49,12 @@ import javax.net.ssl.SSLContext;
 import javax.net.ssl.TrustManager;
 import javax.net.ssl.X509TrustManager;
 
-import gmkt.inc.android.common.GMKT_SyncHttpTask;
-import gmkt.inc.android.common.network.http.GMKT_HTTPResponseMessage;
-
 import static com.giosis.util.qdrive.barcodescanner.ManualHelper.MOBILE_SERVER_URL;
 
 public class LockerUserInfoActivity extends AppCompatActivity {
     String TAG = "LockerUserInfoActivity";
 
-
+    Gson gson = new Gson();
     FrameLayout layout_top_back;
     TextView text_top_title;
 
@@ -170,7 +169,7 @@ public class LockerUserInfoActivity extends AppCompatActivity {
     };
 
 
-    private class LockerUserInfoAsyncTask extends AsyncTask<Void, Void, String> {
+    private class LockerUserInfoAsyncTask extends AsyncTask<Void, Void, LockerUserInfoResult> {
 
         String op_id;
 
@@ -178,6 +177,9 @@ public class LockerUserInfoActivity extends AppCompatActivity {
         LockerUserInfoAsyncTask(String op_id) {
 
             this.op_id = op_id;
+
+            // TEST
+           // this.op_id = "7Eleven.Ajib";
         }
 
         @Override
@@ -191,41 +193,51 @@ public class LockerUserInfoActivity extends AppCompatActivity {
         }
 
         @Override
-        protected String doInBackground(Void... params) {
+        protected LockerUserInfoResult doInBackground(Void... params) {
 
-            GMKT_SyncHttpTask httpTask = new GMKT_SyncHttpTask("QSign");
-            HashMap<String, String> hmActionParam = new HashMap<>();
-            hmActionParam.put("op_id", op_id);
-            hmActionParam.put("app_id", DataUtil.appID);
-            hmActionParam.put("nation_cd", DataUtil.nationCode);
+            LockerUserInfoResult resultObj;
 
-            String methodName = "GetShuttleDriverForFederatedlockerInfo";
-            GMKT_HTTPResponseMessage response = httpTask.requestServerDataReturnString(MOBILE_SERVER_URL, methodName, hmActionParam);
-            String resultString = response.getResultString();
-            Log.e("Server", methodName + "  Result : " + resultString);
-
-            return resultString;
-        }
-
-        @Override
-        protected void onPostExecute(String results) {
 
             try {
 
-                LockerUserInfoResult result = Custom_XmlPullParser.getLockerUserInfo(results);
+                JSONObject job = new JSONObject();
+                job.accumulate("op_id", op_id);
+                job.accumulate("app_id", DataUtil.appID);
+                job.accumulate("nation_cd", DataUtil.nationCode);
 
+
+                String methodName = "GetShuttleDriverForFederatedlockerInfo";
+                String jsonString = Custom_JsonParser.requestServerDataReturnJSON(MOBILE_SERVER_URL, methodName, job);
+
+                resultObj = gson.fromJson(jsonString, LockerUserInfoResult.class);
+            } catch (Exception e) {
+
+                Log.e("Exception", TAG + "  GetShuttleDriverForFederatedlockerInfo Json Exception : " + e.toString());
+                resultObj = null;
+            }
+
+
+            return resultObj;
+        }
+
+        @Override
+        protected void onPostExecute(LockerUserInfoResult result) {
+
+            try {
                 if (result != null) {
 
                     if (result.getResult_code().equals("0")) {
 
-                        DataUtil.copyClipBoard(context, result.getUser_key());
-                        text_locker_user_user_key.setText(result.getUser_key());
-                        text_locker_user_status.setText(result.getUser_status());
-                        text_locker_user_mobile_no.setText(result.getUser_mobile());
+                        LockerUserInfoResult.LockerResultObject.LockerResultRow resultRow = result.getResultObject().getResultRows().get(0);
+
+                        DataUtil.copyClipBoard(context, resultRow.getUser_key());
+                        text_locker_user_user_key.setText(resultRow.getUser_key());
+                        text_locker_user_status.setText(resultRow.getUser_status());
+                        text_locker_user_mobile_no.setText(resultRow.getUser_mobile());
 
                         try {
 
-                            String result_date = result.getUser_expiry_date();
+                            String result_date = resultRow.getUser_expiry_date();
                             DateFormat old_format = new SimpleDateFormat("yyyy-MM-dd a hh:mm:ss", Locale.KOREA);
                             DateFormat new_format = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss", Locale.ENGLISH);
                             Date old_date = old_format.parse(result_date);
@@ -234,10 +246,10 @@ public class LockerUserInfoActivity extends AppCompatActivity {
                         } catch (ParseException e) {
 
                             Log.e("krm0219", "Error : " + e.toString());
-                            text_locker_user_expiry_pin_date.setText(result.getUser_expiry_date());
+                            text_locker_user_expiry_pin_date.setText(resultRow.getUser_expiry_date());
                         }
 
-                        BarcodeAsyncTask barcodeAsyncTask = new BarcodeAsyncTask(result);
+                        BarcodeAsyncTask barcodeAsyncTask = new BarcodeAsyncTask(resultRow);
                         barcodeAsyncTask.execute();
                     } else {
 
@@ -268,12 +280,12 @@ public class LockerUserInfoActivity extends AppCompatActivity {
 
     public class BarcodeAsyncTask extends AsyncTask<Void, Void, Bitmap> {
 
-        LockerUserInfoResult result;
+        LockerUserInfoResult.LockerResultObject.LockerResultRow result;
         String barcode_data;
 
         String imgUrl;
 
-        public BarcodeAsyncTask(LockerUserInfoResult data) {
+        public BarcodeAsyncTask(LockerUserInfoResult.LockerResultObject.LockerResultRow data) {
 
             this.result = data;
             this.barcode_data = data.getUser_key();

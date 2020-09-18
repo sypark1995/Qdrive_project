@@ -4,72 +4,73 @@ import java.util.List;
 
 /**
  * @author krm0219  2018.07.26
+ * @editor krm0219 2020.09
  */
 public class NotInHousedResult {
 
-    private int resultCode = -1;
-    private String resultMsg = "";
-    private List<NotInhousedList> resultObject;
+    private int ResultCode = -1;
+    private String ResultMsg = "";
+    private List<NotInHousedList> ResultObject;
 
     public int getResultCode() {
-        return resultCode;
+        return ResultCode;
     }
 
     public void setResultCode(int resultCode) {
-        this.resultCode = resultCode;
+        this.ResultCode = resultCode;
     }
 
     public String getResultMsg() {
-        return resultMsg;
+        return ResultMsg;
     }
 
     public void setResultMsg(String resultMsg) {
-        this.resultMsg = resultMsg;
+        this.ResultMsg = resultMsg;
     }
 
-    public List<NotInhousedList> getResultObject() {
-        return resultObject;
+    public List<NotInHousedList> getResultObject() {
+        return ResultObject;
     }
 
-    public void setResultObject(List<NotInhousedList> resultObject) {
-        this.resultObject = resultObject;
+    public void setResultObject(List<NotInHousedList> resultObject) {
+        this.ResultObject = resultObject;
     }
 
 
-    public static class NotInhousedList {
+    public static class NotInHousedList {
 
-        private String invoiceNo = "";
-        private String reqName = "";
+        private String invoice_no = "";
+        private String req_nm = "";
         private String partner_id = "";
-        private String zipCode = "";
+        private String zip_code = "";
         private String address = "";
-        private String pickup_date;
+        private String pickup_cmpl_dt;
         private String real_qty = "";
         private String not_processed_qty = "";
-        private List<NotInhousedSubList> subLists;
+        private List<NotInHousedSubList> qdriveOutstandingInhousedPickupLists;
 
         public String getInvoiceNo() {
-            return invoiceNo;
+            return invoice_no;
         }
 
         public void setInvoiceNo(String invoiceNo) {
-            this.invoiceNo = invoiceNo;
+            this.invoice_no = invoiceNo;
         }
 
         public String getReqName() {
-            return reqName;
+            return req_nm;
         }
 
         public void setReqName(String reqName) {
-            this.reqName = reqName;
+            this.req_nm = reqName;
         }
 
         public String getZipCode() {
-            return zipCode;
+            return zip_code;
         }
 
         public void setZipCode(String zipCode) {
-            this.zipCode = zipCode;
+            this.zip_code = zipCode;
         }
 
         public String getAddress() {
@@ -89,11 +90,11 @@ public class NotInHousedResult {
         }
 
         public String getPickup_date() {
-            return pickup_date;
+            return pickup_cmpl_dt;
         }
 
         public void setPickup_date(String pickup_date) {
-            this.pickup_date = pickup_date;
+            this.pickup_cmpl_dt = pickup_date;
         }
 
         public String getReal_qty() {
@@ -112,42 +113,43 @@ public class NotInHousedResult {
             this.not_processed_qty = not_processed_qty;
         }
 
-        public List<NotInhousedSubList> getSubLists() {
-            return subLists;
+        public List<NotInHousedSubList> getSubLists() {
+            return qdriveOutstandingInhousedPickupLists;
         }
 
-        public void setSubLists(List<NotInhousedSubList> subLists) {
-            this.subLists = subLists;
+        public void setSubLists(List<NotInHousedSubList> subLists) {
+            this.qdriveOutstandingInhousedPickupLists = subLists;
         }
 
-        public static class NotInhousedSubList {
 
-            private String packingNo = "";
-            private String purchasedAmount = "";
-            private String purchaseCurrency = "";
+        public static class NotInHousedSubList {
+
+            private String packing_no = "";
+            private String purchased_amt = "";
+            private String purchased_currency = "";
 
             public String getPackingNo() {
-                return packingNo;
+                return packing_no;
             }
 
             public void setPackingNo(String packingNo) {
-                this.packingNo = packingNo;
+                this.packing_no = packingNo;
             }
 
             public String getPurchasedAmount() {
-                return purchasedAmount;
+                return purchased_amt;
             }
 
             public void setPurchasedAmount(String purchasedAmount) {
-                this.purchasedAmount = purchasedAmount;
+                this.purchased_amt = purchasedAmount;
             }
 
             public String getPurchaseCurrency() {
-                return purchaseCurrency;
+                return purchased_currency;
             }
 
             public void setPurchaseCurrency(String purchaseCurrency) {
-                this.purchaseCurrency = purchaseCurrency;
+                this.purchased_currency = purchaseCurrency;
             }
         }
     }

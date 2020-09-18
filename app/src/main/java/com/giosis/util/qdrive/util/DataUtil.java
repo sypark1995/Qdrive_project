@@ -48,7 +48,7 @@ public class DataUtil {
 
 
     public static String qrcode_url = "https://dp.image-gmkt.com/qr.bar?scale=7&version=4&code=";
-    public static String barcode_url = "http://image.qxpress.asia/code128/code128.php?no=";
+    public static String barcode_url = "http://image.qxpress.net/code128/code128.php?no=";
     public static String locker_pin_url = "https://www.lockeralliance.net/pin";
     public static String smart_route_url = "http://xrouter.qxpress.asia/api";
 

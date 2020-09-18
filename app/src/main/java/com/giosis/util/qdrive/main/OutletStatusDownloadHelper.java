@@ -15,26 +15,25 @@ import com.giosis.util.qdrive.list.ChildItem;
 import com.giosis.util.qdrive.list.PickupAssignResult;
 import com.giosis.util.qdrive.list.RowItem;
 import com.giosis.util.qdrive.util.BarcodeType;
+import com.giosis.util.qdrive.util.Custom_JsonParser;
 import com.giosis.util.qdrive.util.DataUtil;
 import com.giosis.util.qdrive.util.DatabaseHelper;
 import com.giosis.util.qdrive.util.DisplayUtil;
 import com.giosis.util.qdrive.util.NetworkUtil;
+import com.google.gson.Gson;
 
-import org.simpleframework.xml.Serializer;
-import org.simpleframework.xml.core.Persister;
+import org.json.JSONObject;
 
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Date;
-import java.util.HashMap;
 import java.util.TimeZone;
-
-import gmkt.inc.android.common.GMKT_SyncHttpTask;
-import gmkt.inc.android.common.network.http.GMKT_HTTPResponseMessage;
 
 // Outlet Order Status
 public class OutletStatusDownloadHelper extends ManualHelper {
     String TAG = "OutletStatusDownloadHelper";
+
+    Gson gson = new Gson();
 
     private final Context context;
     private final String opID;
@@ -190,35 +189,30 @@ public class OutletStatusDownloadHelper extends ManualHelper {
 
     private DriverAssignResult getOutletRealTimeData(String type) {
 
-        DriverAssignResult resultObj = null;
+        DriverAssignResult resultObj;
 
         try {
 
-            GMKT_SyncHttpTask httpTask = new GMKT_SyncHttpTask("QSign");
-            HashMap<String, String> hmActionParam = new HashMap<>();
-            hmActionParam.put("type", type);
-            hmActionParam.put("opId", opID);
-            hmActionParam.put("officeCd", officeCode);
-            hmActionParam.put("exceptList", "");
-            hmActionParam.put("assignList", "");
-            hmActionParam.put("device_id", deviceID);
-            hmActionParam.put("network_type", networkType);
-            hmActionParam.put("app_id", DataUtil.appID);
-            hmActionParam.put("nation_cd", DataUtil.nationCode);
+            JSONObject job = new JSONObject();
+            job.accumulate("type", type);
+            job.accumulate("opId", opID);
+            job.accumulate("officeCd", officeCode);
+            job.accumulate("exceptList", "");
+            job.accumulate("assignList", "");
+            job.accumulate("device_id", deviceID);
+            job.accumulate("network_type", networkType);
+            job.accumulate("app_id", DataUtil.appID);
+            job.accumulate("nation_cd", DataUtil.nationCode);
 
-            Log.e("krm0219", "DATA : " + opID + " / " + officeCode + " / " + deviceID);
 
             String methodName = "GetDeliveryList_OutletRealTime";
-            Serializer serializer = new Persister();
+            String jsonString = Custom_JsonParser.requestServerDataReturnJSON(MOBILE_SERVER_URL, methodName, job);
 
-            GMKT_HTTPResponseMessage response = httpTask.requestServerDataReturnString(MOBILE_SERVER_URL, methodName, hmActionParam);
-            String resultString = response.getResultString();
-            Log.e("Server", methodName + "  Result : " + resultString);
-
-            resultObj = serializer.read(DriverAssignResult.class, resultString);
+            resultObj = gson.fromJson(jsonString, DriverAssignResult.class);
         } catch (Exception e) {
 
-            Log.e("Exception", TAG + "  GetDeliveryList_OutletRealTime(" + type + ")  Exception : " + e.toString());
+            Log.e("Exception", TAG + "  GetDeliveryList_OutletRealTime Json Exception : " + e.toString());
+            resultObj = null;
         }
 
         return resultObj;
@@ -227,66 +221,60 @@ public class OutletStatusDownloadHelper extends ManualHelper {
 
     private DriverAssignResult getOutletDeliveryServerData() {
 
-        DriverAssignResult resultObj = null;
+        DriverAssignResult resultObj;
 
         try {
 
-            GMKT_SyncHttpTask httpTask = new GMKT_SyncHttpTask("QSign");
-            HashMap<String, String> hmActionParam = new HashMap<>();
-            hmActionParam.put("opId", opID);
-            hmActionParam.put("officeCd", officeCode);
-            hmActionParam.put("exceptList", "");
-            hmActionParam.put("assignList", "");
-            hmActionParam.put("device_id", deviceID);
-            hmActionParam.put("network_type", networkType);
-            hmActionParam.put("app_id", DataUtil.appID);
-            hmActionParam.put("nation_cd", DataUtil.nationCode);
+            JSONObject job = new JSONObject();
+            job.accumulate("opId", opID);
+            job.accumulate("officeCd", officeCode);
+            job.accumulate("exceptList", "");
+            job.accumulate("assignList", "");
+            job.accumulate("device_id", deviceID);
+            job.accumulate("network_type", networkType);
+            job.accumulate("app_id", DataUtil.appID);
+            job.accumulate("nation_cd", DataUtil.nationCode);
 
-            Log.e("krm0219", "DATA : " + opID + " / " + officeCode + " / " + deviceID);
 
             String methodName = "GetDeliveryList_Outlet";
-            Serializer serializer = new Persister();
+            String jsonString = Custom_JsonParser.requestServerDataReturnJSON(MOBILE_SERVER_URL, methodName, job);
 
-            GMKT_HTTPResponseMessage response = httpTask.requestServerDataReturnString(MOBILE_SERVER_URL, methodName, hmActionParam);
-            String resultString = response.getResultString();
-            Log.e("Server", methodName + "  Result : " + resultString);
-
-            resultObj = serializer.read(DriverAssignResult.class, resultString);
+            resultObj = gson.fromJson(jsonString, DriverAssignResult.class);
         } catch (Exception e) {
 
-            Log.e("Exception", TAG + "  GetDeliveryList_Outlet Exception : " + e.toString());
+            Log.e("Exception", TAG + "  GetDeliveryList_Outlet Json Exception : " + e.toString());
+            resultObj = null;
         }
+
         return resultObj;
     }
 
     private PickupAssignResult getPickupServerData() {
 
-        PickupAssignResult resultObj = null;
+        PickupAssignResult resultObj;
 
         try {
 
-            GMKT_SyncHttpTask httpTask = new GMKT_SyncHttpTask("QSign");
-            HashMap<String, String> hmActionParam = new HashMap<>();
-            hmActionParam.put("opId", opID);
-            hmActionParam.put("officeCd", officeCode);
-            hmActionParam.put("exceptList", "");
-            hmActionParam.put("assignList", "");
-            hmActionParam.put("device_id", deviceID);
-            hmActionParam.put("network_type", networkType);
-            hmActionParam.put("app_id", DataUtil.appID);
-            hmActionParam.put("nation_cd", DataUtil.nationCode);
+            JSONObject job = new JSONObject();
+            job.accumulate("opId", opID);
+            job.accumulate("officeCd", officeCode);
+            job.accumulate("exceptList", "");
+            job.accumulate("assignList", "");
+            job.accumulate("device_id", deviceID);
+            job.accumulate("network_type", networkType);
+            job.accumulate("app_id", DataUtil.appID);
+            job.accumulate("nation_cd", DataUtil.nationCode);
+
 
             String methodName = "GetPickupList";
-            Serializer serializer = new Persister();
+            String jsonString = Custom_JsonParser.requestServerDataReturnJSON(MOBILE_SERVER_URL, methodName, job);
 
-            GMKT_HTTPResponseMessage response = httpTask.requestServerDataReturnString(MOBILE_SERVER_URL, methodName, hmActionParam);
-            String resultString = response.getResultString();
-            Log.e("Server", methodName + "  Result : " + resultString);
+            resultObj = gson.fromJson(jsonString, PickupAssignResult.class);
 
-            resultObj = serializer.read(PickupAssignResult.class, resultString);
         } catch (Exception e) {
 
-            Log.e("Exception", TAG + "  GetPickupList Exception : " + e.toString());
+            Log.e("Exception", TAG + "  GetPickupList Json Exception : " + e.toString());
+            resultObj = null;
         }
 
         return resultObj;

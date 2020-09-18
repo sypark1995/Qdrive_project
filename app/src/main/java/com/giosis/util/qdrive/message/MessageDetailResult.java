@@ -1,11 +1,18 @@
 package com.giosis.util.qdrive.message;
 
+import com.google.gson.annotations.SerializedName;
+
 import java.util.List;
 
 public class MessageDetailResult {
 
+    @SerializedName("ResultCode")
     private int resultCode = -1;
+
+    @SerializedName("ResultMsg")
     private String resultMsg = "";
+
+    @SerializedName("ResultObject")
     private List<MessageDetailList> resultObject;
 
     public int getResultCode() {
@@ -34,13 +41,28 @@ public class MessageDetailResult {
 
     public static class MessageDetailList {
 
+        @SerializedName("tracking_No")
         String tracking_no;
+
+        @SerializedName("question_seq_no")
         String question_seq_no;
+
+        @SerializedName("title")
         String title;
+
+        @SerializedName("contents")
         String message;
+
+        @SerializedName("sender_id")
         String sender_id;
+
+        @SerializedName("rcv_id")
         String receive_id;
+
+        @SerializedName("send_dt")
         String send_date;
+
+        @SerializedName("align")
         String align;            // left or right
 
 

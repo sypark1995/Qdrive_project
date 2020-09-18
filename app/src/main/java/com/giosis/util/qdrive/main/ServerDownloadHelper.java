@@ -365,7 +365,8 @@ public class ServerDownloadHelper extends ManualHelper {
         try {
 
             JSONObject job = new JSONObject();
-            job.accumulate("opId", opID);            // 필수
+            job.accumulate("opId", opID);
+            // job.accumulate("opId", "7Eleven.Ajib");      // Syed_7E
             job.accumulate("officeCd", officeCode);
             job.accumulate("exceptList", "");
             job.accumulate("assignList", "");

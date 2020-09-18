@@ -20,17 +20,16 @@ import android.widget.Toast;
 import androidx.fragment.app.Fragment;
 
 import com.giosis.util.qdrive.singapore.R;
-import com.giosis.util.qdrive.util.Custom_XmlPullParser;
+import com.giosis.util.qdrive.util.Custom_JsonParser;
 import com.giosis.util.qdrive.util.DataUtil;
 import com.giosis.util.qdrive.util.DisplayUtil;
 import com.giosis.util.qdrive.util.NetworkUtil;
 import com.giosis.util.qdrive.util.SharedPreferencesHelper;
+import com.google.gson.Gson;
+
+import org.json.JSONObject;
 
 import java.util.ArrayList;
-import java.util.HashMap;
-
-import gmkt.inc.android.common.GMKT_SyncHttpTask;
-import gmkt.inc.android.common.network.http.GMKT_HTTPResponseMessage;
 
 import static com.giosis.util.qdrive.barcodescanner.ManualHelper.MOBILE_SERVER_URL;
 
@@ -167,7 +166,7 @@ public class AdminMessageListFragment extends Fragment {
 
 
     //NOTI  :  AdminMessageListAsyncTask
-    private class AdminMessageListAsyncTask extends AsyncTask<Void, Void, String> {
+    private class AdminMessageListAsyncTask extends AsyncTask<Void, Void, MessageListResult> {
 
         String qdriver_id;
 
@@ -194,28 +193,36 @@ public class AdminMessageListFragment extends Fragment {
         }
 
         @Override
-        protected String doInBackground(Void... params) {
+        protected MessageListResult doInBackground(Void... params) {
 
-            GMKT_SyncHttpTask httpTask = new GMKT_SyncHttpTask("QSign");
-            HashMap<String, String> hmActionParam = new HashMap<>();
-            hmActionParam.put("qdriver_id", qdriver_id);
-            hmActionParam.put("app_id", DataUtil.appID);
-            hmActionParam.put("nation_cd", DataUtil.nationCode);
+            MessageListResult resultObj;
+            Gson gson = new Gson();
 
-            String methodName = "GetQdriverMessageListFromMessenger";
+            try {
 
-            GMKT_HTTPResponseMessage response = httpTask.requestServerDataReturnString(MOBILE_SERVER_URL, methodName, hmActionParam);
-            String resultString = response.getResultString();
-            Log.e("Server", methodName + "  Result : " + resultString);
-            // {"ResultObject":[{"total_count":null,"total_page":null,"rownum":"1","sender_id":"karam.kim","tracking_No":null,"question_seq_no":"1","seq_no":"12241","contr_no":null,"svc_nation_cd":null,"read_yn":"N","contents":"msg","send_dt":"2019-07-11 11:04:12"},{"total_count":null,"total_page":null,"rownum":"1","sender_id":"eylee","tracking_No":null,"question_seq_no":"1","seq_no":"12229","contr_no":null,"svc_nation_cd":null,"read_yn":"N","contents":"ff","send_dt":"2018-11-23 14:12:21"},{"total_count":null,"total_page":null,"rownum":"1","sender_id":"driver4","tracking_No":null,"question_seq_no":"1","seq_no":"11933","contr_no":null,"svc_nation_cd":null,"read_yn":"Y","contents":"hmm....😫","send_dt":"2018-08-30 14:52:02"}],"ResultCode":0,"ResultMsg":"OK"}
+                JSONObject job = new JSONObject();
+                job.accumulate("qdriver_id", qdriver_id);
+                job.accumulate("app_id", DataUtil.appID);
+                job.accumulate("nation_cd", DataUtil.nationCode);
 
-            new_resultString = resultString;
-            return resultString;
+
+                String methodName = "GetQdriverMessageListFromMessenger";
+                String jsonString = Custom_JsonParser.requestServerDataReturnJSON(MOBILE_SERVER_URL, methodName, job);
+                new_resultString = jsonString;
+
+                resultObj = gson.fromJson(jsonString, MessageListResult.class);
+            } catch (Exception e) {
+
+                Log.e("Exception", TAG + "  GetQdriverMessageListFromMessenger Json Exception : " + e.toString());
+                resultObj = null;
+            }
+
+            return resultObj;
         }
 
         @Override
-        protected void onPostExecute(String resultString) {
-            super.onPostExecute(resultString);
+        protected void onPostExecute(MessageListResult result) {
+            super.onPostExecute(result);
 
             DisplayUtil.dismissProgressDialog(progressDialog);
 
@@ -225,7 +232,7 @@ public class AdminMessageListFragment extends Fragment {
                     Log.e("krm0219", TAG + "  AdminMessageListAsyncTask  EQUAL");
                 } else {
 
-                    MessageListResult result = Custom_XmlPullParser.getAdminMessageList(resultString);
+//                    MessageListResult result = Custom_XmlPullParser.getAdminMessageList(resultString);
 
                     if (result != null) {
 

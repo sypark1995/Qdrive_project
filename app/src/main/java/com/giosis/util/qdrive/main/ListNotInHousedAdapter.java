@@ -82,7 +82,7 @@ public class ListNotInHousedAdapter extends BaseExpandableListAdapter {
         TextView text_not_in_parcels_item_not_processed_qty = view.findViewById(R.id.text_not_in_parcels_item_not_processed_qty);
 
 
-        final NotInHousedResult.NotInhousedList item = result.getResultObject().get(group_position);
+        final NotInHousedResult.NotInHousedList item = result.getResultObject().get(group_position);
         final int position = group_position;
 
         if (isExpanded && result.getResultObject().get(group_position).getSubLists() != null) {
@@ -99,7 +99,15 @@ public class ListNotInHousedAdapter extends BaseExpandableListAdapter {
         text_not_in_parcels_item_seller_name.setText(item.getReqName());
         text_not_in_parcels_item_address.setText("(" + item.getZipCode() + ") " + item.getAddress());
         text_not_in_parcels_item_qty.setText(item.getReal_qty());
-        text_not_in_parcels_item_not_processed_qty.setText(item.getNot_processed_qty());
+
+        if(item.getSubLists().size() == 0) {
+
+            text_not_in_parcels_item_not_processed_qty.setText("0");
+        } else {
+
+            text_not_in_parcels_item_not_processed_qty.setText(item.getNot_processed_qty());
+        }
+
 
         try {
 
@@ -145,7 +153,7 @@ public class ListNotInHousedAdapter extends BaseExpandableListAdapter {
 
                                 if (position > 0) {
 
-                                    NotInHousedResult.NotInhousedList upItem = result.getResultObject().remove(position);
+                                    NotInHousedResult.NotInHousedList upItem = result.getResultObject().remove(position);
                                     result.getResultObject().add(position - 1, upItem);
                                     notifyDataSetChanged();
                                 }
@@ -156,7 +164,7 @@ public class ListNotInHousedAdapter extends BaseExpandableListAdapter {
 
                                 if (position < result.getResultObject().size() - 1) {
 
-                                    NotInHousedResult.NotInhousedList downItem = result.getResultObject().remove(position);
+                                    NotInHousedResult.NotInHousedList downItem = result.getResultObject().remove(position);
                                     result.getResultObject().add(position + 1, downItem);
                                     notifyDataSetChanged();
                                 }
@@ -221,7 +229,7 @@ public class ListNotInHousedAdapter extends BaseExpandableListAdapter {
         TextView text_not_in_parcels_child_currency = view.findViewById(R.id.text_not_in_parcels_child_currency);
 
 
-        NotInHousedResult.NotInhousedList.NotInhousedSubList subitem = result.getResultObject().get(group_position).getSubLists().get(child_position);
+        NotInHousedResult.NotInHousedList.NotInHousedSubList subitem = result.getResultObject().get(group_position).getSubLists().get(child_position);
         int sub_size = result.getResultObject().get(group_position).getSubLists().size();
         Log.e("krm0219", result.getResultObject().get(group_position).getSubLists().size() + "  " + child_position);
 

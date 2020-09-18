@@ -36,7 +36,6 @@ import com.giosis.util.qdrive.util.PermissionChecker;
 import com.giosis.util.qdrive.util.SharedPreferencesHelper;
 
 import java.util.ArrayList;
-import java.util.List;
 
 
 public class SelfCollectionDoneActivity extends AppCompatActivity {
@@ -270,7 +269,7 @@ public class SelfCollectionDoneActivity extends AppCompatActivity {
                                 try {
 
                                     ShippingInfoResult list = resultList.get(0);
-                                    List<String> alist = list.getResultObject();
+                                    ShippingInfoResult.ShippingInfo alist = list.getResultObject();
 
                                     // 바코드스캔한 번호가 전부 NQ 이면 "Non-Q10 QFS (Route: Other)"
                                     if (isNonQ10QFSOrder) {
@@ -281,8 +280,10 @@ public class SelfCollectionDoneActivity extends AppCompatActivity {
                                         text_sign_sender.setText(tempList);
                                     } else {
 
-                                        text_sign_receiver.setText(alist.get(0));
-                                        text_sign_sender.setText(alist.get(1));
+//                                        text_sign_receiver.setText(alist.get(0));
+//                                        text_sign_sender.setText(alist.get(1));
+                                        text_sign_receiver.setText(alist.getRev_nm());
+                                        text_sign_sender.setText(alist.getCust_nm());
                                     }
                                 } catch (Exception e) {
                                     e.printStackTrace();

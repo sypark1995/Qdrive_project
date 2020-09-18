@@ -7,20 +7,17 @@ import android.util.Log;
 import com.giosis.util.qdrive.barcodescanner.ManualHelper;
 import com.giosis.util.qdrive.list.PrintDataResult;
 import com.giosis.util.qdrive.singapore.R;
+import com.giosis.util.qdrive.util.Custom_JsonParser;
 import com.giosis.util.qdrive.util.DataUtil;
 import com.giosis.util.qdrive.util.NetworkUtil;
+import com.google.gson.Gson;
 
-import org.simpleframework.xml.Serializer;
-import org.simpleframework.xml.core.Persister;
-
-import java.util.HashMap;
-
-import gmkt.inc.android.common.GMKT_SyncHttpTask;
-import gmkt.inc.android.common.network.http.GMKT_HTTPResponseMessage;
+import org.json.JSONObject;
 
 public class CnRPickupInfoGetHelper extends ManualHelper {
     String TAG = "CnRPickupInfoGetHelper";
 
+    Gson gson = new Gson();
     private final Context context;
     private final String opID;
     private final String tracking_no;
@@ -103,30 +100,18 @@ public class CnRPickupInfoGetHelper extends ManualHelper {
 
             try {
 
-                GMKT_SyncHttpTask httpTask = new GMKT_SyncHttpTask("QSign");
-                HashMap<String, String> hmActionParam = new HashMap<>();
-
-                // TEST.
-             /*   tracking_no = "C1133851SGSG";
-                String opID = "Ram.RE";*/
-
-                hmActionParam.put("pickup_no", tracking_no);
-                hmActionParam.put("driver_id", opID);
-                hmActionParam.put("app_id", DataUtil.appID);
-                hmActionParam.put("nation_cd", DataUtil.nationCode);
+                JSONObject job = new JSONObject();
+                job.accumulate("pickup_no", tracking_no);
+                job.accumulate("driver_id", opID);
+                job.accumulate("app_id", DataUtil.appID);
+                job.accumulate("nation_cd", DataUtil.nationCode);
 
                 String methodName = "GetCnRPrintData";
-                Serializer serializer = new Persister();
-
-                GMKT_HTTPResponseMessage response = httpTask.requestServerDataReturnString(MOBILE_SERVER_URL, methodName, hmActionParam);
-                String resultString = response.getResultString();
-                Log.e("Server", methodName + "  Result : " + resultString);
-                // {"ResultObject":{"contr_no":"55003355","pickup_no":null,"partner_ref_no":"C2859SGSG","invoice_no":"C2859SGSG","rcv_nm":"hyemi6666","tel_no":"+65--","hp_no":"+65-1424-2354","zip_code":"048741","front_address":"11 PEKIN STREET","back_address":"hyemi6666","seller_shop_nm":"test191919","delivery_course_code":"EAE042"},"ResultCode":0,"ResultMsg":"SUCCESS"}
-
-                resultObj = serializer.read(PrintDataResult.class, resultString);
+                String jsonString = Custom_JsonParser.requestServerDataReturnJSON(MOBILE_SERVER_URL, methodName, job);
+                resultObj = gson.fromJson(jsonString, PrintDataResult.class);
             } catch (Exception e) {
 
-                Log.e("Exception", TAG + "  GetCnRPrintData Exception : " + e.toString());
+                Log.e("Exception", TAG + "  GetCnRPrintData Json Exception : " + e.toString());
                 resultObj = new PrintDataResult();
                 resultObj.setResultCode(-1);
                 resultObj.setResultMsg("FAIL Update");

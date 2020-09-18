@@ -75,28 +75,30 @@ class DeveloperModeActivity : AppCompatActivity() {
 
     private fun initServerUrl() {
 
-        Log.e("krm0219", "init " + MyApplication.preferences.serverURL);
+        Log.e("krm0219", "init " + MyApplication.preferences.serverURL)
+
+        val serverURL = MyApplication.preferences.serverURL
 
 
         when {
-            MyApplication.preferences.serverURL.contains(DataUtil.SERVER_TEST) -> {
+            serverURL.contains(DataUtil.SERVER_TEST) -> {
 
                 rb_developer_server_url_test.isChecked = true
             }
-            MyApplication.preferences.serverURL.contains(DataUtil.SERVER_STAGING) -> {
+            serverURL.contains(DataUtil.SERVER_STAGING) -> {
 
                 rb_developer_server_url_staging.isChecked = true
             }
-            MyApplication.preferences.serverURL.contentEquals(DataUtil.SERVER_REAL) -> {
+            serverURL.contentEquals(DataUtil.SERVER_REAL) -> {
 
                 rb_developer_server_url_real.isChecked = true
             }
         }
-        edit_developer_server_url.setText(MyApplication.preferences.serverURL)
+        edit_developer_server_url.setText(serverURL.replace(DataUtil.API_ADDRESS, ""))
 
 
 
-        rg_developer_server_url.setOnCheckedChangeListener { group, checkedId ->
+        rg_developer_server_url.setOnCheckedChangeListener { _, checkedId ->
             when (checkedId) {
                 R.id.rb_developer_server_url_test -> {
 
@@ -119,7 +121,7 @@ class DeveloperModeActivity : AppCompatActivity() {
 
     private fun changeServerUrl() {
 
-        Toast.makeText(this, edit_developer_server_url.text.toString(), Toast.LENGTH_SHORT).show();
+        Toast.makeText(this, edit_developer_server_url.text.toString(), Toast.LENGTH_SHORT).show()
         MyApplication.preferences.serverURL = edit_developer_server_url.text.toString()
     }
 }

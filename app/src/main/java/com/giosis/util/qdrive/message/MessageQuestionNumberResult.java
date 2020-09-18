@@ -1,9 +1,16 @@
 package com.giosis.util.qdrive.message;
 
+import com.google.gson.annotations.SerializedName;
+
 public class MessageQuestionNumberResult {
 
+    @SerializedName("ResultCode")
     String resultCode;
+
+    @SerializedName("ResultMsg")
     String resultMsg;
+
+    @SerializedName("question_seq_no")
     int questionNo;
 
 

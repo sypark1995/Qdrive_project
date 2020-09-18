@@ -32,6 +32,7 @@ class AlarmReceiver : BroadcastReceiver() {
         } else {
 
             MyApplication.preferences.userId = "";
+            MyApplication.preferences.autoLogout = true;
         }
     }
 

@@ -114,31 +114,7 @@ public class ScanPackingListDownloadHelper extends ManualHelper {
 
     private PickupPackingListResult getPickupPackingListData() {
 
-        PickupPackingListResult resultObj = null;
-
-        /*try {
-
-            GMKT_SyncHttpTask httpTask = new GMKT_SyncHttpTask("QSign");
-            HashMap<String, String> hmActionParam = new HashMap<>();
-            hmActionParam.put("opId", opID);
-            hmActionParam.put("pickup_no", pickupNo);
-            hmActionParam.put("app_id", DataUtil.appID);
-            hmActionParam.put("nation_cd", DataUtil.nationCode);
-
-            String methodName = "getScanPackingList";
-            Serializer serializer = new Persister();
-
-            GMKT_HTTPResponseMessage response = httpTask.requestServerDataReturnString(MOBILE_SERVER_URL, methodName, hmActionParam);
-            String resultString = response.getResultString();
-            // {"ResultObject":[{"packing_no":"SG19611828","reg_dt":"Aug 21 2019 10:41AM","op_id":"karam.kim","pickup_no":"P42147N"}],"ResultCode":0,"ResultMsg":"SUCCESS"}
-            Log.e("Server", methodName + "  Result : " + resultString);
-
-            resultObj = serializer.read(PickupPackingListResult.class, resultString);
-        } catch (Exception e) {
-
-            Log.e("Exception", TAG + "  getScanPackingList Exception : " + e.toString());
-        }
-*/
+        PickupPackingListResult resultObj;
 
         // JSON Parser
         Gson gson = new Gson();
@@ -154,10 +130,11 @@ public class ScanPackingListDownloadHelper extends ManualHelper {
             String methodName = "getScanPackingList";
             String jsonString = Custom_JsonParser.requestServerDataReturnJSON(MOBILE_SERVER_URL, methodName, job);
             // {"ResultObject":[{"packing_no":"SGP163596005","reg_dt":"Aug 24 2020  1:08PM","op_id":"YuMin.Dwl","pickup_no":"P1631998"},{"packing_no":"SGP163579875","reg_dt":"Aug 24 2020  1:08PM","op_id":"YuMin.Dwl","pickup_no":"P1631998"},{"packing_no":"SGP163612649","reg_dt":"Aug 24 2020  1:08PM","op_id":"YuMin.Dwl","pickup_no":"P1631998"}],"ResultCode":0,"ResultMsg":"SUCCESS"}
+
             resultObj = gson.fromJson(jsonString, PickupPackingListResult.class);
         } catch (Exception e) {
 
-            Log.e("Exception", TAG + "  GetDeliveryList Json Exception : " + e.toString());
+            Log.e("Exception", TAG + "  getScanPackingList Json Exception : " + e.toString());
             resultObj = null;
         }
 

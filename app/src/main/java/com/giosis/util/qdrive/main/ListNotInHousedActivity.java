@@ -14,16 +14,14 @@ import android.widget.Toast;
 import androidx.appcompat.app.AppCompatActivity;
 
 import com.giosis.util.qdrive.singapore.R;
-import com.giosis.util.qdrive.util.Custom_XmlPullParser;
+import com.giosis.util.qdrive.util.Custom_JsonParser;
 import com.giosis.util.qdrive.util.DataUtil;
 import com.giosis.util.qdrive.util.DisplayUtil;
 import com.giosis.util.qdrive.util.NetworkUtil;
 import com.giosis.util.qdrive.util.SharedPreferencesHelper;
+import com.google.gson.Gson;
 
-import java.util.HashMap;
-
-import gmkt.inc.android.common.GMKT_SyncHttpTask;
-import gmkt.inc.android.common.network.http.GMKT_HTTPResponseMessage;
+import org.json.JSONObject;
 
 import static com.giosis.util.qdrive.barcodescanner.ManualHelper.MOBILE_SERVER_URL;
 
@@ -112,7 +110,7 @@ public class ListNotInHousedActivity extends AppCompatActivity {
     }
 
 
-    private class NotInHousedServerDownloadAsyncTask extends AsyncTask<Void, Void, String> {
+    private class NotInHousedServerDownloadAsyncTask extends AsyncTask<Void, Void, NotInHousedResult> {
 
         String op_id;
         String office_code;
@@ -140,37 +138,45 @@ public class ListNotInHousedActivity extends AppCompatActivity {
         }
 
         @Override
-        protected String doInBackground(Void... params) {
+        protected NotInHousedResult doInBackground(Void... params) {
 
-            GMKT_SyncHttpTask httpTask = new GMKT_SyncHttpTask("QSign");
-            HashMap<String, String> hmActionParam = new HashMap<>();
-            hmActionParam.put("opId", op_id);
-            hmActionParam.put("officeCd", office_code);
-            hmActionParam.put("device_id", device_id);
-            hmActionParam.put("network_type", network_type);
-            hmActionParam.put("app_id", DataUtil.appID);
-            hmActionParam.put("nation_cd", DataUtil.nationCode);
+            NotInHousedResult resultObj;
+            Gson gson = new Gson();
 
-            String methodName = "GetOutStandingInhousedPickupList";
+            try {
 
-            GMKT_HTTPResponseMessage response = httpTask.requestServerDataReturnString(MOBILE_SERVER_URL, methodName, hmActionParam);
-            String resultString = response.getResultString();
-            Log.e("Server", methodName + "  Result : " + resultString);
-            // <ResultCode>0</ResultCode><ResultMsg>SUCCESS</ResultMsg><ResultObject><QdriveCheckNotInhousedPickupList><contr_no>55003835</contr_no><partner_ref_no>P42147N</partner_ref_no><invoice_no>P42147N</invoice_no><stat>P3</stat><req_nm>KARAM</req_nm><req_dt>2019-08-2109:00-17:00</req_dt><tel_no>01012345678</tel_no><hp_no>01012345678</hp_no><zip_code>99785</zip_code><address>13 BUKIT TERESA CLOSE#10-16</address><pickup_hopeday>2019-08-21</pickup_hopeday><pickup_hopetime>09:00-17:00</pickup_hopetime><sender_nm /><del_memo /><driver_memo>(by Qdrive RealTime-Upload)</driver_memo><fail_reason>  </fail_reason><qty>1</qty><cust_nm>Qxpress</cust_nm><partner_id>qxpress.sg</partner_id><cust_no>100012253</cust_no><real_qty>1</real_qty><not_processed_qty>1</not_processed_qty><pickup_cmpl_dt>Aug 21 2019 11:42AM</pickup_cmpl_dt><qdriveOutstandingInhousedPickupLists><QdriveOutstandingInhousedPickupList><packing_no>SG19611828</packing_no><shipping_no /><tracking_no>SG19611828</tracking_no><purchased_amt>25.00</purchased_amt><purchased_currency>SGD</purchased_currency><stat>P3</stat></QdriveOutstandingInhousedPickupList></qdriveOutstandingInhousedPickupLists></QdriveCheckNotInhousedPickupList></ResultObject>
+                JSONObject job = new JSONObject();
+                job.accumulate("opId", op_id);
+                job.accumulate("officeCd", office_code);
+                job.accumulate("device_id", device_id);
+                job.accumulate("network_type", network_type);
+                job.accumulate("app_id", DataUtil.appID);
+                job.accumulate("nation_cd", DataUtil.nationCode);
 
-            return resultString;
+
+                String methodName = "GetOutStandingInhousedPickupList";
+                String jsonString = Custom_JsonParser.requestServerDataReturnJSON(MOBILE_SERVER_URL, methodName, job);
+
+                resultObj = gson.fromJson(jsonString, NotInHousedResult.class);
+            } catch (Exception e) {
+
+                Log.e("Exception", TAG + "  GetOutStandingInhousedPickupList Json Exception : " + e.toString());
+                resultObj = null;
+            }
+
+            return resultObj;
         }
 
         @Override
-        protected void onPostExecute(String resultString) {
-            super.onPostExecute(resultString);
+        protected void onPostExecute(NotInHousedResult result) {
+            super.onPostExecute(result);
 
             DisplayUtil.dismissProgressDialog(progressDialog);
 
             try {
 
-                NotInHousedResult result = Custom_XmlPullParser.getNotInHousedList(resultString);
-                Log.e("krm0219", TAG + " Size : " + result.getResultObject().size());
+//                NotInHousedResult result = Custom_XmlPullParser.getNotInHousedList(resultString);
+//                Log.e("krm0219", TAG + " Size : " + result.getResultObject().size());
 
                 if (result.getResultObject().size() == 0) {
 

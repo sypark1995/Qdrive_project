@@ -6,39 +6,37 @@ import org.simpleframework.xml.Root;
 @Root(strict = false, name = "StdCustomResultOfPrintDataResult")
 public class PrintDataResult {
 
-    public static ResultObject ResultObject;
-
     @Element(name = "ResultCode", required = false)
-    private int resultCode = -1;
+    private int ResultCode = -1;
 
     @Element(name = "ResultMsg", required = false)
-    private String resultMsg = "";
+    private String ResultMsg = "";
 
     public int getResultCode() {
-        return resultCode;
+        return ResultCode;
     }
 
     public void setResultCode(int resultCode) {
-        this.resultCode = resultCode;
+        this.ResultCode = resultCode;
     }
 
     public String getResultMsg() {
-        return resultMsg;
+        return ResultMsg;
     }
 
     public void setResultMsg(String resultMsg) {
-        this.resultMsg = resultMsg;
+        this.ResultMsg = resultMsg;
     }
 
     @Element(required = false, name = "ResultObject")
-    private ResultObject resultObject;
+    private ResultObject ResultObject;
 
     public ResultObject getResultObject() {
-        return resultObject;
+        return ResultObject;
     }
 
     public void setResultObject(ResultObject resultObj) {
-        this.resultObject = resultObj;
+        this.ResultObject = resultObj;
     }
 
     //	@Root(strict=false, name="QdriveCNRList")
@@ -46,135 +44,82 @@ public class PrintDataResult {
     @Root(strict = false, name = "ResultObject")
     public static class ResultObject {
         @Element(name = "contr_no", required = false)
-        private String ContrNo = "";
+        private String contr_no = "";
 
         @Element(name = "partner_ref_no", required = false)
-        private String partnerRefNo = "";
+        private String partner_ref_no = "";
 
         @Element(name = "invoice_no", required = false)
-        private String invoiceNo = "";
+        private String invoice_no = "";
 
         @Element(name = "tel_no", required = false)
-        private String telNo = "";
+        private String tel_no = "";
 
         @Element(name = "hp_no", required = false)
-        private String hpNo = "";
+        private String hp_no = "";
 
         @Element(name = "zip_code", required = false)
-        private String zipCode = "";
+        private String zip_code = "";
 
         @Element(name = "front_address", required = false)
-        private String frontAddress = "";
+        private String front_address = "";
 
         @Element(name = "back_address", required = false)
-        private String Backaddress = "";
+        private String back_address = "";
 
         @Element(name = "seller_shop_nm", required = false)
-        private String sellerShop = "";
+        private String seller_shop_nm = "";
 
         @Element(name = "delivery_course_code", required = false)
-        private String deliveryCouse = "";
+        private String delivery_course_code = "";
 
         @Element(name = "rcv_nm", required = false)
-        private String custName = "";
-
-        @Element(name = "partner_id", required = false)
-        private String partnerID = "";
+        private String rcv_nm = "";
 
 
         public String getFrontAddress() {
-            return frontAddress;
-        }
-
-        public void setFrontAddress(String frontAddress) {
-            this.frontAddress = frontAddress;
+            return front_address;
         }
 
         public String getBackaddress() {
-            return Backaddress;
-        }
-
-        public void setBackaddress(String backaddress) {
-            Backaddress = backaddress;
+            return back_address;
         }
 
         public String getSellerShop() {
-            return sellerShop;
-        }
-
-        public void setSellerShop(String sellerShop) {
-            this.sellerShop = sellerShop;
+            return seller_shop_nm;
         }
 
         public String getDeliveryCouse() {
-            return deliveryCouse;
+            return delivery_course_code;
         }
 
-        public void setDeliveryCouse(String deliveryCouse) {
-            this.deliveryCouse = deliveryCouse;
-        }
-
-        public void setInvoiceNo(String invoiceNo) {
-            this.invoiceNo = invoiceNo;
-        }
-
-        public void setTelNo(String telNo) {
-            this.telNo = telNo;
-        }
-
-        public void setHpNo(String hpNo) {
-            this.hpNo = hpNo;
-        }
-
-        public void setZipCode(String zipCode) {
-            this.zipCode = zipCode;
-        }
-
-        public void setCustName(String custName) {
-            this.custName = custName;
-        }
-
-        public void setPartnerID(String partnerID) {
-            this.partnerID = partnerID;
-        }
 
         public String getContrNo() {
-            return ContrNo;
+            return contr_no;
         }
 
         public String getPartnerRefNo() {
-            return partnerRefNo;
+            return partner_ref_no;
         }
 
         public String getInvoiceNo() {
-            return invoiceNo;
+            return invoice_no;
         }
 
         public String getTelNo() {
-            return telNo;
+            return tel_no;
         }
 
         public String getHpNo() {
-            return hpNo;
+            return hp_no;
         }
 
         public String getZipCode() {
-            return zipCode;
+            return zip_code;
         }
-
 
         public String getCustName() {
-            return custName;
+            return rcv_nm;
         }
-
-
-        public String getPartnerID() {
-            return partnerID;
-        }
-
-        public void setPartnerRefNo(String partnerRefNo) {
-            this.partnerRefNo = partnerRefNo;
-        }
-
     }
 }

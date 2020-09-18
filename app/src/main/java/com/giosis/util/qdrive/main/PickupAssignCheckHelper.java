@@ -2,7 +2,6 @@ package com.giosis.util.qdrive.main;
 
 import android.app.AlertDialog;
 import android.app.ProgressDialog;
-import android.content.ContentValues;
 import android.content.Context;
 import android.content.DialogInterface;
 import android.content.DialogInterface.OnClickListener;
@@ -10,26 +9,13 @@ import android.os.AsyncTask;
 import android.util.Log;
 
 import com.giosis.util.qdrive.barcodescanner.ManualHelper;
-import com.giosis.util.qdrive.list.PickupAssignResult;
 import com.giosis.util.qdrive.singapore.R;
-import com.giosis.util.qdrive.util.BarcodeType;
 import com.giosis.util.qdrive.util.Custom_JsonParser;
 import com.giosis.util.qdrive.util.DataUtil;
-import com.giosis.util.qdrive.util.DatabaseHelper;
 import com.giosis.util.qdrive.util.DisplayUtil;
 import com.giosis.util.qdrive.util.NetworkUtil;
 
 import org.json.JSONObject;
-import org.simpleframework.xml.Serializer;
-import org.simpleframework.xml.core.Persister;
-
-import java.text.SimpleDateFormat;
-import java.util.Date;
-import java.util.HashMap;
-import java.util.TimeZone;
-
-import gmkt.inc.android.common.GMKT_SyncHttpTask;
-import gmkt.inc.android.common.network.http.GMKT_HTTPResponseMessage;
 
 
 public class PickupAssignCheckHelper extends ManualHelper {
@@ -106,47 +92,7 @@ public class PickupAssignCheckHelper extends ManualHelper {
         @Override
         protected Integer doInBackground(Void... params) {
 
-            int assignCount = getManualAssignCount();
-
-            // result 0보다 큰 경우 있나 실제 드라이버 체크
-            // FIXME.  2020.05  문제 있으면 주석 풀기
-            /*if (0 < assignCount) {
-
-                if (progressDialog != null) {
-                    progressDialog.setProgressStyle(ProgressDialog.STYLE_HORIZONTAL);
-                    progressDialog.setMessage(context.getResources().getString(R.string.text_downloading) + "...");
-                    progressDialog.setMax(assignCount);
-                    progressDialog.show();
-                }
-
-
-                PickupAssignResult pickupAssignResult = getManualAssignedServerData();
-                String req_no_list = "";
-
-                for (PickupAssignResult.QSignPickupList pickupInfo : pickupAssignResult.getResultObject()) {
-
-                    long result = insertDevicePickupData(pickupInfo);
-
-                    if (0 < result) {
-
-                        req_no_list += (pickupInfo.getDrReqNo() + ",");
-                    }
-
-                    publishProgress(1);
-                }
-
-                // 다운로드 완료 서버 전송
-                if (0 < req_no_list.length()) {
-
-                    int req = setManualAssignReceived(req_no_list);
-
-                    if (req < 0) {
-                        return req;
-                    }
-                }
-            }*/
-
-            return assignCount;
+            return getManualAssignCount();
         }
 
         @Override
@@ -218,118 +164,6 @@ public class PickupAssignCheckHelper extends ManualHelper {
         }
 
         return result;
-    }
-
-
-    private PickupAssignResult getManualAssignedServerData() {
-
-        PickupAssignResult resultObj = null;
-
-        try {
-
-            GMKT_SyncHttpTask httpTask = new GMKT_SyncHttpTask("QSign");
-            HashMap<String, String> hmActionParam = new HashMap<>();
-            hmActionParam.put("opId", opID);
-            hmActionParam.put("officeCd", officeCode);
-            hmActionParam.put("dataType", "MA");
-            hmActionParam.put("device_id", deviceID);
-            hmActionParam.put("network_type", networkType);
-            hmActionParam.put("app_id", DataUtil.appID);
-            hmActionParam.put("nation_cd", DataUtil.nationCode);
-
-            String methodName = "GetChangedPickupList";
-            Serializer serializer = new Persister();
-
-            GMKT_HTTPResponseMessage response = httpTask.requestServerDataReturnString(MOBILE_SERVER_URL, methodName, hmActionParam);
-            String resultString = response.getResultString();
-            Log.e("Server", methodName + "  Result : " + resultString);
-            // <ResultCode>0</ResultCode><ResultMsg>SUCCESS</ResultMsg><ResultObject/>
-
-            resultObj = serializer.read(PickupAssignResult.class, resultString);
-        } catch (Exception e) {
-
-            Log.e("Exception", TAG + "  GetChangedPickupList Exception : " + e.toString());
-        }
-
-        return resultObj;
-    }
-
-
-    private int setManualAssignReceived(String req_no_list) {
-
-        if (!NetworkUtil.isNetworkAvailable(context)) {
-            return -16;
-        }
-
-        int result = -15;
-
-        try {
-
-            JSONObject job = new JSONObject();
-            job.accumulate("opid", opID);
-            job.accumulate("chg_stat", "S");
-            job.accumulate("req_no_list", req_no_list);
-            job.accumulate("app_id", DataUtil.appID);
-            job.accumulate("nation_cd", DataUtil.nationCode);
-
-            String methodName = "SetManualAssignReceived";
-            String jsonString = Custom_JsonParser.requestServerDataReturnJSON(MOBILE_SERVER_URL, methodName, job);
-            // {"ResultCode":1,"ResultMsg":"SUCCESS"}  123, 123
-            // {"ResultCode":-10,"ResultMsg":"SUCCESS"}
-
-            JSONObject jsonObject = new JSONObject(jsonString);
-            result = jsonObject.getInt("ResultCode");
-        } catch (Exception e) {
-
-            Log.e("Exception", TAG + "  SetManualAssignReceived Exception : " + e.toString());
-        }
-
-        return result;
-    }
-
-
-    private long insertDevicePickupData(PickupAssignResult.QSignPickupList data) {
-
-        SimpleDateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
-        dateFormat.setTimeZone(TimeZone.getTimeZone("GMT"));
-        String regDataString = dateFormat.format(new Date());
-
-        DatabaseHelper dbHelper = DatabaseHelper.getInstance();
-
-        try {
-
-            ContentValues contentVal = new ContentValues();
-            contentVal.put("contr_no", data.getContrNo());
-            contentVal.put("partner_ref_no", data.getPartnerRefNo());
-            contentVal.put("invoice_no", data.getPartnerRefNo());  //invoice_no = partnerRefNo 사용
-            contentVal.put("stat", data.getStat());
-            contentVal.put("tel_no", data.getTelNo());
-            contentVal.put("hp_no", data.getHpNo());
-            contentVal.put("zip_code", data.getZipCode());
-            contentVal.put("address", data.getAddress());
-            contentVal.put("route", data.getRoute());
-            contentVal.put("type", BarcodeType.TYPE_PICKUP);
-            contentVal.put("desired_date", data.getPickupHopeDay());
-            contentVal.put("req_qty", data.getQty());
-            contentVal.put("req_nm", data.getReqName());
-            contentVal.put("failed_count", data.getFailedCount());
-            contentVal.put("rcv_request", data.getDelMemo());
-            contentVal.put("sender_nm", "");
-            contentVal.put("punchOut_stat", "N");
-            contentVal.put("reg_id", opID);
-            contentVal.put("reg_dt", regDataString);
-            contentVal.put("fail_reason", data.getFailReason());
-            contentVal.put("secret_no_type", data.getSecretNoType());
-            contentVal.put("secret_no", data.getSecretNo());
-
-            dbHelper.insert(DatabaseHelper.DB_TABLE_INTEGRATION_LIST, contentVal);
-        } catch (Exception e) {
-
-            Log.e("Exception", TAG + "  insertDevicePickupData Exception : " + e.toString());
-            return 0;
-        }
-
-        return 1;
     }
 
 

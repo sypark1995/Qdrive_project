@@ -27,11 +27,12 @@ import com.giosis.util.qdrive.barcodescanner.CaptureActivity;
 import com.giosis.util.qdrive.list.OutletInfo;
 import com.giosis.util.qdrive.singapore.R;
 import com.giosis.util.qdrive.util.BarcodeType;
-import com.giosis.util.qdrive.util.Custom_XmlPullParser;
+import com.giosis.util.qdrive.util.Custom_JsonParser;
 import com.giosis.util.qdrive.util.DataUtil;
 import com.giosis.util.qdrive.util.DatabaseHelper;
 import com.giosis.util.qdrive.util.DisplayUtil;
 import com.giosis.util.qdrive.util.SharedPreferencesHelper;
+import com.google.gson.Gson;
 
 import org.json.JSONObject;
 
@@ -40,15 +41,11 @@ import java.net.HttpURLConnection;
 import java.net.URL;
 import java.security.cert.CertificateException;
 import java.security.cert.X509Certificate;
-import java.util.HashMap;
 
 import javax.net.ssl.HttpsURLConnection;
 import javax.net.ssl.SSLContext;
 import javax.net.ssl.TrustManager;
 import javax.net.ssl.X509TrustManager;
-
-import gmkt.inc.android.common.GMKT_SyncHttpTask;
-import gmkt.inc.android.common.network.http.GMKT_HTTPResponseMessage;
 
 import static com.giosis.util.qdrive.barcodescanner.ManualHelper.MOBILE_SERVER_URL;
 
@@ -85,7 +82,9 @@ public class OutletPickupScanActivity extends AppCompatActivity {
 
 
     //
+    Gson gson = new Gson();
     Context context;
+
     String opID = "";
     String officeCode = "";
     String deviceID = "";
@@ -151,6 +150,12 @@ public class OutletPickupScanActivity extends AppCompatActivity {
         mQty = getIntent().getStringExtra("qty");
 
         outletInfo = getOutletInfo(mPickupNo);
+
+       /* // TEST
+        outletInfo.route = "7E";
+        outletInfo.zip_code = "123";
+        outletInfo.address = "address";*/
+
 
         mRoute = outletInfo.route.substring(0, 2);
         Log.e("krm0219", TAG + " Data : " + mRoute + " / " + mPickupNo);
@@ -361,22 +366,19 @@ public class OutletPickupScanActivity extends AppCompatActivity {
 
             try {
 
-                GMKT_SyncHttpTask httpTask = new GMKT_SyncHttpTask("QSign");
-                HashMap<String, String> hmActionParam = new HashMap<>();
-                hmActionParam.put("outletType", outlet_type);
-                hmActionParam.put("pickupNo", pickup_no);
-                hmActionParam.put("app_id", DataUtil.appID);
-                hmActionParam.put("nation_cd", DataUtil.nationCode);
+                JSONObject job = new JSONObject();
+                job.accumulate("outletType", outlet_type);
+                job.accumulate("pickupNo", pickup_no);
+                job.accumulate("app_id", DataUtil.appID);
+                job.accumulate("nation_cd", DataUtil.nationCode);
                 Log.e("Server", TAG + " data : " + outlet_type + " / " + pickup_no);
 
+
                 String methodName = "GetCollectionPickupNoList";
+                String jsonString = Custom_JsonParser.requestServerDataReturnJSON(MOBILE_SERVER_URL, methodName, job);
 
-                GMKT_HTTPResponseMessage response = httpTask.requestServerDataReturnString(MOBILE_SERVER_URL, methodName, hmActionParam);
-                String resultString = response.getResultString();
-                Log.e("Server", methodName + "  Result : " + resultString);
-                // <ResultCode>0</ResultCode><ResultMsg>Success</ResultMsg><ResultObject><PickupNo>7E48528</PickupNo><JobNumber>CC20190821002</JobNumber><QRCode>{"Q":"C","J":"CC20190821002","V":"QX","S":"260","C":1}</QRCode><ListTrackingNo>["SGP148789305"]</ListTrackingNo></ResultObject>
+                result = gson.fromJson(jsonString, OutletPickupDoneResult.class);
 
-                result = Custom_XmlPullParser.getOutletPickupDoneData(resultString);
 
                 if (result != null && outlet_type.equals("7E")) {
 
@@ -389,18 +391,20 @@ public class OutletPickupScanActivity extends AppCompatActivity {
                     }
 
                     jobID = jsonObject.getString("J");
-                    if (jobID == null || jobID.equalsIgnoreCase("")) {
+                    if (jobID.equalsIgnoreCase("")) {
 
                         return null;
                     }
 
                     vendorCode = jsonObject.getString("V");
                 }
+
             } catch (Exception e) {
 
-                Log.e("Exception", TAG + "  GetCollectionPickupNoList Exception : " + e.toString());
+                Log.e("Exception", TAG + "  GetCollectionPickupNoList Json Exception : " + e.toString());
                 return null;
             }
+
 
             return result;
         }
@@ -421,8 +425,8 @@ public class OutletPickupScanActivity extends AppCompatActivity {
                         DisplayUtil.dismissProgressDialog(progressDialog);
 
                         showQRCode = true;
-                        /*
-                        // TODO TEST
+
+                        /* //  TEST
                         result.setTrackingNumbers("SGP1234,SGP1235,SGP1236");*/
                     }
 

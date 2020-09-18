@@ -1,71 +1,65 @@
 package com.giosis.util.qdrive.main;
 
-import org.simpleframework.xml.Element;
-import org.simpleframework.xml.ElementList;
-import org.simpleframework.xml.Root;
+import com.google.gson.annotations.SerializedName;
 
-import java.util.List;
-
-@Root(strict = false, name = "StdCustomResultOfQSignShippinfInfo")
 public class ShippingInfoResult {
 
-    @Element(name = "ResultCode", required = false)
-    private int resultCode = -1;
+    @SerializedName("ResultCode")
+    private int ResultCode = -1;
 
-    @Element(name = "ResultMsg", required = false)
-    private String resultMsg = "";
+    @SerializedName("ResultMsg")
+    private String ResultMsg = "";
 
     public int getResultCode() {
-        return resultCode;
+        return ResultCode;
     }
 
     public void setResultCode(int resultCode) {
-        this.resultCode = resultCode;
+        this.ResultCode = resultCode;
     }
 
     public String getResultMsg() {
-        return resultMsg;
+        return ResultMsg;
     }
 
     public void setResultMsg(String resultMsg) {
-        this.resultMsg = resultMsg;
+        this.ResultMsg = resultMsg;
     }
 
-    @ElementList(required = false, name = "ResultObject")
-    private List<String> resultObject;
 
-    public List<String> getResultObject() {
-        return resultObject;
+    @SerializedName("ResultObject")
+    private ShippingInfo ResultObject;
+
+    public ShippingInfo getResultObject() {
+        return ResultObject;
     }
 
-    public void setResultObject(List<String> resultObj) {
-        this.resultObject = resultObj;
+    public void setResultObject(ShippingInfo resultObject) {
+        ResultObject = resultObject;
     }
 
-    @Root(strict = false, name = "ResultObject")
-    public static class ResultObject {
+    class ShippingInfo {
 
-        @Element(name = "rev_nm", required = false)
-        private String revNm = "";
+        @SerializedName("rev_nm")
+        private String rev_nm = "";
 
-        @Element(name = "cust_nm", required = false)
-        private String custNm = "";
+        @SerializedName("cust_nm")
+        private String cust_nm = "";
 
-        public String getRevNm() {
-            return revNm;
+        public String getRev_nm() {
+            return rev_nm;
         }
 
-        public void setRevNm(String revNm) {
-            this.revNm = revNm;
+        public void setRev_nm(String rev_nm) {
+            this.rev_nm = rev_nm;
         }
 
-        public String getCustNm() {
-            return custNm;
+        public String getCust_nm() {
+            return cust_nm;
         }
 
-        public void setCustNm(String custNm) {
-            this.custNm = custNm;
+        public void setCust_nm(String cust_nm) {
+            this.cust_nm = cust_nm;
         }
-
     }
 }

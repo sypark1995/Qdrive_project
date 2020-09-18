@@ -149,6 +149,11 @@ public class OutletOrderStatusActivity extends AppCompatActivity implements Sear
         officeCode = SharedPreferencesHelper.getSigninOfficeCode(context);
         databaseHelper = DatabaseHelper.getInstance();
 
+
+        // TEST
+        //opID = "7Eleven.Ajib";
+
+
         //
         text_top_title.setText(context.getResources().getString(R.string.text_outlet_order_status));
 
@@ -338,12 +343,8 @@ public class OutletOrderStatusActivity extends AppCompatActivity implements Sear
 
         conditionArrayList = new ArrayList<>();
 
-        //TODO TEST
-        // Zorke_STD  / 0022
-        // saliason.ss / 0193
+        // TEST
         // 7Eleven.Ajib / 0040
-       /* opID = "7Eleven.Ajib";
-        officeCode = "0040";*/
 
         if (condition.equals(getResources().getString(R.string.text_outlet_status_1))) {
 

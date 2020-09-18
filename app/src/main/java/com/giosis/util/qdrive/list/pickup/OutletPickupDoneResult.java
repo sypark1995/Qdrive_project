@@ -1,16 +1,29 @@
 package com.giosis.util.qdrive.list.pickup;
 
+import com.google.gson.annotations.SerializedName;
+
 import java.io.Serializable;
 import java.util.ArrayList;
 
 public class OutletPickupDoneResult implements Serializable {
 
+    @SerializedName("ResultCode")
     String resultCode;
+
+    @SerializedName("ResultMsg")
     String resultMsg;
 
+
+    @SerializedName("PickupNo")
     String pickupNo;
+
+    @SerializedName("JobNumber")
     String jobNumber;
+
+    @SerializedName("QRCode")
     String QRCode;
+
+    @SerializedName("ListTrackingNo")
     String TrackingNumbers;
 
 

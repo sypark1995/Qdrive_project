@@ -101,8 +101,14 @@ class MySharedPreferences(context: Context) {
         set(value) = prefs.edit().putString(PREF_KEY_AUTH_NO, value).apply()
 
 
+    // 202008.  Auto Logout
+    private val PREF_KEY_AUTO_LOGOUT = "autoLogout"
     private val PREF_KEY_AUTO_LOGOUT_TIME = "autoLogoutTime"
     private val PREF_KEY_AUTO_LOGOUT_SETTING = "autoLogoutSetting"
+
+    var autoLogout: Boolean
+        get() = prefs.getBoolean(PREF_KEY_AUTO_LOGOUT, false)
+        set(value) = prefs.edit().putBoolean(PREF_KEY_AUTO_LOGOUT, value).apply()
 
     var autoLogoutTime: String
         get() = prefs.getString(PREF_KEY_AUTO_LOGOUT_TIME, "23:59").toString()
@@ -113,6 +119,7 @@ class MySharedPreferences(context: Context) {
         set(value) = prefs.edit().putBoolean(PREF_KEY_AUTO_LOGOUT_SETTING, value).apply()
 
 
+    // 202009.  Developer Mode , change ServerURL
     private val PREF_KEY_DEVELOPER_MODE = "developerMode"
     private val PREF_KEY_SERVER_URL = "serverURL"
 

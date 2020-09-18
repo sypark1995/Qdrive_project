@@ -1,9 +1,16 @@
 package com.giosis.util.qdrive.list.delivery;
 
+import com.google.gson.annotations.SerializedName;
+
 public class QRCodeResult {
 
+    @SerializedName("ResultCode")
     String result_code;
+
+    @SerializedName("ResultMsg")
     String result_msg;
+
+    @SerializedName("ResultObject")
     String qrcode_data;
 
     public String getResult_code() {

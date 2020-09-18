@@ -26,19 +26,18 @@ import android.widget.Toast;
 import androidx.appcompat.app.AppCompatActivity;
 
 import com.giosis.util.qdrive.singapore.R;
-import com.giosis.util.qdrive.util.Custom_XmlPullParser;
+import com.giosis.util.qdrive.util.Custom_JsonParser;
 import com.giosis.util.qdrive.util.DataUtil;
 import com.giosis.util.qdrive.util.DisplayUtil;
 import com.giosis.util.qdrive.util.NetworkUtil;
 import com.giosis.util.qdrive.util.SharedPreferencesHelper;
+import com.google.gson.Gson;
+
+import org.json.JSONObject;
 
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Calendar;
-import java.util.HashMap;
-
-import gmkt.inc.android.common.GMKT_SyncHttpTask;
-import gmkt.inc.android.common.network.http.GMKT_HTTPResponseMessage;
 
 import static com.giosis.util.qdrive.barcodescanner.ManualHelper.MOBILE_SERVER_URL;
 
@@ -58,6 +57,7 @@ public class CustomerMessageListDetailActivity extends AppCompatActivity {
 
 
     Context mContext;
+    Gson gson = new Gson();
 
     String opID;
 
@@ -230,7 +230,7 @@ public class CustomerMessageListDetailActivity extends AppCompatActivity {
 
 
     //NOTIFICATION.  GetQuestionNumberAsyncTask
-    private class GetQuestionNumberAsyncTask extends AsyncTask<Void, Void, String> {
+    private class GetQuestionNumberAsyncTask extends AsyncTask<Void, Void, MessageQuestionNumberResult> {
 
         String qdriver_id;
         String tracking_no;
@@ -254,34 +254,40 @@ public class CustomerMessageListDetailActivity extends AppCompatActivity {
         }
 
         @Override
-        protected String doInBackground(Void... params) {
+        protected MessageQuestionNumberResult doInBackground(Void... params) {
 
-            GMKT_SyncHttpTask httpTask = new GMKT_SyncHttpTask("QSign");
-            HashMap<String, String> hmActionParam = new HashMap<>();
-            hmActionParam.put("driverId", qdriver_id);
-            hmActionParam.put("trackingNo", tracking_no);
-            hmActionParam.put("app_id", DataUtil.appID);
-            hmActionParam.put("nation_cd", DataUtil.nationCode);
+            MessageQuestionNumberResult resultObj;
 
-            String methodName = "GetMessageToQPostOnPickupMenu";
+            try {
 
-            GMKT_HTTPResponseMessage response = httpTask.requestServerDataReturnString(MOBILE_SERVER_URL, methodName, hmActionParam);
-            String resultString = response.getResultString();
-            Log.e("Server", methodName + "  Result : " + resultString);
-            // {"ResultObject":[],"ResultCode":0,"ResultMsg":"OK"}
+                JSONObject job = new JSONObject();
+                job.accumulate("driverId", qdriver_id);
+                job.accumulate("trackingNo", tracking_no);
+                job.accumulate("app_id", DataUtil.appID);
+                job.accumulate("nation_cd", DataUtil.nationCode);
 
-            return resultString;
+
+                String methodName = "GetMessageToQPostOnPickupMenu";
+                String jsonString = Custom_JsonParser.requestServerDataReturnJSON(MOBILE_SERVER_URL, methodName, job);
+
+                resultObj = gson.fromJson(jsonString, MessageQuestionNumberResult.class);
+            } catch (Exception e) {
+
+                Log.e("Exception", TAG + "  GetMessageToQPostOnPickupMenu Json Exception : " + e.toString());
+                resultObj = null;
+            }
+
+            return resultObj;
         }
 
         @Override
-        protected void onPostExecute(String resultString) {
-            super.onPostExecute(resultString);
+        protected void onPostExecute(MessageQuestionNumberResult result) {
+            super.onPostExecute(result);
 
             DisplayUtil.dismissProgressDialog(progressDialog);
 
             try {
 
-                MessageQuestionNumberResult result = Custom_XmlPullParser.getQuestionNumber(resultString);
                 questionNo = "0";
 
                 if (result != null && result.getQuestionNo() > 0) {
@@ -302,7 +308,7 @@ public class CustomerMessageListDetailActivity extends AppCompatActivity {
 
 
     //NOTIFICATION.  CustomerMessageDetailAsyncTask      1분  refresh
-    private class CustomerMessageDetailAsyncTask extends AsyncTask<Void, Void, String> {
+    private class CustomerMessageDetailAsyncTask extends AsyncTask<Void, Void, MessageDetailResult> {
 
         String qdriver_id;
         String question_seq_no;
@@ -336,29 +342,36 @@ public class CustomerMessageListDetailActivity extends AppCompatActivity {
         }
 
         @Override
-        protected String doInBackground(Void... params) {
+        protected MessageDetailResult doInBackground(Void... params) {
 
-            GMKT_SyncHttpTask httpTask = new GMKT_SyncHttpTask("QSign");
-            HashMap<String, String> hmActionParam = new HashMap<>();
-            hmActionParam.put("qdriver_id", qdriver_id);
-            hmActionParam.put("question_seq_no", question_seq_no);
-            hmActionParam.put("app_id", DataUtil.appID);
-            hmActionParam.put("nation_cd", DataUtil.nationCode);
+            MessageDetailResult resultObj;
 
-            String methodName = "GetQdriverMessageDetail";
+            try {
 
-            GMKT_HTTPResponseMessage response = httpTask.requestServerDataReturnString(MOBILE_SERVER_URL, methodName, hmActionParam);
-            String resultString = response.getResultString();
-            Log.e("Server", methodName + "  Result : " + resultString);
-            // {"ResultObject":[{"rownum":"0","title":"This is Qxpress Driver","rcv_id":"245310801","send_place":"P","rcv_place":"F","reg_id":"Qxmessage","sender_id":"Qxmessage","sender_nm":"","recv_id":"245310801","recv_nm":"Eil***","read_dt":"2019-08-02 오후 10:36:20","align":"right","qlps_admin_yn":"N","tracking_No":"SGP148544451","question_seq_no":"261829215","seq_no":"261829215","contr_no":null,"svc_nation_cd":null,"read_yn":null,"contents":"Hi I\u0027m jumali from Qexpress. I\u0027m on my way to your delivery address, i will like to check if there is anyone to receive the parcel.","send_dt":"2019-08-02 오후 6:31:07"},{"rownum":"1","title":"[Re] This is Qxpress Driver","rcv_id":"Qxmessage","send_place":"F","rcv_place":"P","reg_id":"245310801","sender_id":"245310801","sender_nm":"Eil***","recv_id":"Qxmessage","recv_nm":"","read_dt":"2019-08-13 오후 1:01:37","align":"left","qlps_admin_yn":"N","tracking_No":"SGP148544451","question_seq_no":"261829215","seq_no":"261831370","contr_no":null,"svc_nation_cd":null,"read_yn":null,"contents":"Thank you Jumali, I’ve received your delivery in good condition! Sorry for the late response! 😂 have a good weekend! ✌🏻","send_dt":"2019-08-02 오후 10:36:59"}],"ResultCode":0,"ResultMsg":"OK"}
+                JSONObject job = new JSONObject();
+                job.accumulate("qdriver_id", qdriver_id);
+                job.accumulate("question_seq_no", question_seq_no);
+                job.accumulate("app_id", DataUtil.appID);
+                job.accumulate("nation_cd", DataUtil.nationCode);
 
-            new_resultString = resultString;
-            return resultString;
+
+                String methodName = "GetQdriverMessageDetail";
+                String jsonString = Custom_JsonParser.requestServerDataReturnJSON(MOBILE_SERVER_URL, methodName, job);
+                new_resultString = jsonString;
+
+                resultObj = gson.fromJson(jsonString, MessageDetailResult.class);
+            } catch (Exception e) {
+
+                Log.e("Exception", TAG + "  GetQdriverMessageDetail Json Exception : " + e.toString());
+                resultObj = null;
+            }
+
+            return resultObj;
         }
 
         @Override
-        protected void onPostExecute(String resultString) {
-            super.onPostExecute(resultString);
+        protected void onPostExecute(MessageDetailResult result) {
+            super.onPostExecute(result);
 
             DisplayUtil.dismissProgressDialog(progressDialog);
 
@@ -367,8 +380,6 @@ public class CustomerMessageListDetailActivity extends AppCompatActivity {
 
                     Log.e("krm0219", TAG + "  CustomerMessageDetailAsyncTask  EQUAL");
                 } else {
-
-                    MessageDetailResult result = Custom_XmlPullParser.getMessageDetailList(resultString);
 
                     if (result != null) {
 
@@ -424,7 +435,7 @@ public class CustomerMessageListDetailActivity extends AppCompatActivity {
     }
 
     //NOTIFICATION.  SendMessageAsyncTask
-    private class SendMessageAsyncTask extends AsyncTask<Void, Void, String> {
+    private class SendMessageAsyncTask extends AsyncTask<Void, Void, MessageSendResult> {
 
         String tracking_no;
         String svc_nation_cd;       // 'SG'
@@ -460,40 +471,46 @@ public class CustomerMessageListDetailActivity extends AppCompatActivity {
         }
 
         @Override
-        protected String doInBackground(Void... params) {
+        protected MessageSendResult doInBackground(Void... params) {
 
-            GMKT_SyncHttpTask httpTask = new GMKT_SyncHttpTask("QSign");
-            HashMap<String, String> hmActionParam = new HashMap<>();
-            hmActionParam.put("tracking_no", tracking_no);
-            hmActionParam.put("svc_nation_cd", svc_nation_cd);
-            hmActionParam.put("title", title);
-            hmActionParam.put("contents", contents);
-            hmActionParam.put("driver_id", driver_id);
-            hmActionParam.put("question_seq_no", question_seq_no);
-            hmActionParam.put("send_place", send_place);
-            hmActionParam.put("app_id", DataUtil.appID);
-            hmActionParam.put("nation_cd", DataUtil.nationCode);
+            MessageSendResult resultObj;
 
-            String methodName = "SendQdriverMessage";
+            try {
 
-            GMKT_HTTPResponseMessage response = httpTask.requestServerDataReturnString(MOBILE_SERVER_URL, methodName, hmActionParam);
-            String resultString = response.getResultString();
-            Log.e("Server", methodName + "  Result : " + resultString);
+                JSONObject job = new JSONObject();
+                job.accumulate("tracking_no", tracking_no);
+                job.accumulate("svc_nation_cd", svc_nation_cd);
+                job.accumulate("title", title);
+                job.accumulate("contents", contents);
+                job.accumulate("driver_id", driver_id);
+                job.accumulate("question_seq_no", question_seq_no);
+                job.accumulate("send_place", send_place);
+                job.accumulate("app_id", DataUtil.appID);
+                job.accumulate("nation_cd", DataUtil.nationCode);
 
-            return resultString;
+
+                String methodName = "SendQdriverMessage";
+                String jsonString = Custom_JsonParser.requestServerDataReturnJSON(MOBILE_SERVER_URL, methodName, job);
+
+                resultObj = gson.fromJson(jsonString, MessageSendResult.class);
+            } catch (Exception e) {
+
+                Log.e("Exception", TAG + "  SendQdriverMessage Json Exception : " + e.toString());
+                resultObj = null;
+            }
+
+            return resultObj;
         }
 
         @Override
-        protected void onPostExecute(String resultString) {
-            super.onPostExecute(resultString);
+        protected void onPostExecute(MessageSendResult result) {
+            super.onPostExecute(result);
 
             DisplayUtil.dismissProgressDialog(progressDialog);
 
             try {
-                MessageSendResult result = Custom_XmlPullParser.sendMessageResult(resultString);
-
                 if (result != null) {
-                    if (result.getObject_resultCode().equals("0")) {
+                    if (result.getResultObject().getResultCode().equals("0")) {
 
                         layout_message_detail_send.setBackgroundResource(R.color.color_ebebeb);
                         edit_message_detail_input.setHint(R.string.msg_qpost_edit_text_hint);
@@ -516,8 +533,8 @@ public class CustomerMessageListDetailActivity extends AppCompatActivity {
                     } else {
 
                         Toast.makeText(CustomerMessageListDetailActivity.this, getResources().getString(R.string.msg_send_message_error) +
-                                " : " + result.getObject_resultMsg(), Toast.LENGTH_SHORT).show();
-                        Log.e("krm0219", "SendMessageAsyncTask  ResultCode : " + result.getObject_resultCode());
+                                " : " + result.getResultObject().getResultMsg(), Toast.LENGTH_SHORT).show();
+                        Log.e("krm0219", "SendMessageAsyncTask  ResultCode : " + result.getResultObject().getResultCode());
                     }
                 } else {
 

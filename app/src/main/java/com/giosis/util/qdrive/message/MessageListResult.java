@@ -1,5 +1,7 @@
 package com.giosis.util.qdrive.message;
 
+import com.google.gson.annotations.SerializedName;
+
 import java.text.SimpleDateFormat;
 import java.util.Date;
 import java.util.List;
@@ -7,8 +9,13 @@ import java.util.Locale;
 
 public class MessageListResult {
 
+    @SerializedName("ResultCode")
     private int resultCode = -1;
+
+    @SerializedName("ResultMsg")
     private String resultMsg = "";
+
+    @SerializedName("ResultObject")
     private List<MessageList> resultObject;
 
     public int getResultCode() {
@@ -37,14 +44,25 @@ public class MessageListResult {
 
     public static class MessageList {
 
+        @SerializedName("question_seq_no")
         int question_seq_no;
+
+        @SerializedName("contents")
         String message;
+
+        @SerializedName("send_dt")
         String time;
+
+        @SerializedName("read_yn")
         String read_yn;
 
+        @SerializedName("tracking_No")
         String tracking_no;
+
+        @SerializedName("total_page")
         int total_page_size;
 
+        @SerializedName("sender_id")
         String sender_id;        // admin_id;
 
 

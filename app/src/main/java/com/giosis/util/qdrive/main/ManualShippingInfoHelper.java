@@ -7,17 +7,14 @@ import android.util.Log;
 
 import com.giosis.util.qdrive.barcodescanner.ManualHelper;
 import com.giosis.util.qdrive.list.BarcodeData;
+import com.giosis.util.qdrive.util.Custom_JsonParser;
 import com.giosis.util.qdrive.util.DataUtil;
 import com.giosis.util.qdrive.util.NetworkUtil;
+import com.google.gson.Gson;
 
-import org.simpleframework.xml.Serializer;
-import org.simpleframework.xml.core.Persister;
+import org.json.JSONObject;
 
 import java.util.ArrayList;
-import java.util.HashMap;
-
-import gmkt.inc.android.common.GMKT_SyncHttpTask;
-import gmkt.inc.android.common.network.http.GMKT_HTTPResponseMessage;
 
 public class ManualShippingInfoHelper extends ManualHelper {
     String TAG = "ManualShippingInfoHelper";
@@ -107,29 +104,26 @@ public class ManualShippingInfoHelper extends ManualHelper {
         // 배송정보 습득 (받는사람, 보내는셀러)
         private ShippingInfoResult requestShippingInfo(String assignNo) {
 
-            ShippingInfoResult resultObj = null;
+            Gson gson = new Gson();
+            ShippingInfoResult resultObj;
 
             try {
 
-                GMKT_SyncHttpTask httpTask = new GMKT_SyncHttpTask("QSign");
-                HashMap<String, String> hmActionParam = new HashMap<>();
-                hmActionParam.put("id_type", "PARTNERNO");
-                hmActionParam.put("id_value", assignNo);
-                hmActionParam.put("app_id", DataUtil.appID);
-                hmActionParam.put("nation_cd", DataUtil.nationCode);
+                JSONObject job = new JSONObject();
+                job.accumulate("id_type", "PARTNERNO");
+                job.accumulate("id_value", assignNo);
+                job.accumulate("app_id", DataUtil.appID);
+                job.accumulate("nation_cd", DataUtil.nationCode);
+
 
                 String methodName = "GetContrInfo";
-                Serializer serializer = new Persister();
+                String jsonString = Custom_JsonParser.requestServerDataReturnJSON(MOBILE_SERVER_URL, methodName, job);
 
-                GMKT_HTTPResponseMessage response = httpTask.requestServerDataReturnString(MOBILE_SERVER_URL, methodName, hmActionParam);
-                String resultString = response.getResultString();
-                Log.e("Server", methodName + "  Result : " + resultString);
-                // <ResultCode>-3</ResultCode><ResultMsg>No result</ResultMsg><ResultObject />
-
-                resultObj = serializer.read(ShippingInfoResult.class, resultString);
+                resultObj = gson.fromJson(jsonString, ShippingInfoResult.class);
             } catch (Exception e) {
 
-                Log.e("Exception", TAG + "  GetContrInfo Exception : " + e.toString());
+                Log.e("Exception", TAG + "  GetContrInfo Json Exception : " + e.toString());
+                resultObj = null;
             }
 
             return resultObj;

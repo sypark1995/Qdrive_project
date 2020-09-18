@@ -1,12 +1,15 @@
 package com.giosis.util.qdrive.message;
 
+import com.google.gson.annotations.SerializedName;
+
 public class MessageSendResult {
 
+    @SerializedName("ResultCode")
     private int resultCode = -1;
+
+    @SerializedName("ResultMsg")
     private String resultMsg = "";
 
-    private String object_resultCode;
-    private String object_resultMsg;
 
     public int getResultCode() {
         return resultCode;
@@ -24,19 +27,41 @@ public class MessageSendResult {
         this.resultMsg = resultMsg;
     }
 
-    public String getObject_resultCode() {
-        return object_resultCode;
+
+    @SerializedName("ResultObject")
+    private SendResult resultObject;
+
+    public SendResult getResultObject() {
+        return resultObject;
     }
 
-    public void setObject_resultCode(String object_resultCode) {
-        this.object_resultCode = object_resultCode;
+    public void setResultObject(SendResult resultObject) {
+        this.resultObject = resultObject;
     }
 
-    public String getObject_resultMsg() {
-        return object_resultMsg;
-    }
+    class SendResult {
 
-    public void setObject_resultMsg(String object_resultMsg) {
-        this.object_resultMsg = object_resultMsg;
+        @SerializedName("ResultCode")
+        private String resultCode = "-1";
+
+        @SerializedName("ResultMsg")
+        private String resultMsg = "";
+
+
+        public String getResultCode() {
+            return resultCode;
+        }
+
+        public void setResultCode(String resultCode) {
+            this.resultCode = resultCode;
+        }
+
+        public String getResultMsg() {
+            return resultMsg;
+        }
+
+        public void setResultMsg(String resultMsg) {
+            this.resultMsg = resultMsg;
+        }
     }
 }

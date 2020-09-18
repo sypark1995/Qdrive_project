@@ -43,7 +43,7 @@ import com.giosis.util.qdrive.list.OutletInfo;
 import com.giosis.util.qdrive.list.SigningView;
 import com.giosis.util.qdrive.singapore.R;
 import com.giosis.util.qdrive.util.Camera2APIs;
-import com.giosis.util.qdrive.util.Custom_XmlPullParser;
+import com.giosis.util.qdrive.util.Custom_JsonParser;
 import com.giosis.util.qdrive.util.DataUtil;
 import com.giosis.util.qdrive.util.DatabaseHelper;
 import com.giosis.util.qdrive.util.DisplayUtil;
@@ -52,14 +52,11 @@ import com.giosis.util.qdrive.util.NetworkUtil;
 import com.giosis.util.qdrive.util.PermissionActivity;
 import com.giosis.util.qdrive.util.PermissionChecker;
 import com.giosis.util.qdrive.util.SharedPreferencesHelper;
+import com.google.gson.Gson;
 
 import org.json.JSONObject;
 
 import java.util.ArrayList;
-import java.util.HashMap;
-
-import gmkt.inc.android.common.GMKT_SyncHttpTask;
-import gmkt.inc.android.common.network.http.GMKT_HTTPResponseMessage;
 
 import static com.giosis.util.qdrive.barcodescanner.ManualHelper.MOBILE_SERVER_URL;
 
@@ -977,9 +974,7 @@ public class DeliveryDoneActivity extends AppCompatActivity implements Camera2AP
 
                 for (int i = 0; i < outletDeliveryDoneListItemArrayList.size(); i++) {
 
-                    String resultString = getQRCodeData(outletDeliveryDoneListItemArrayList.get(i).getTrackingNo());
-
-                    QRCodeResult result = Custom_XmlPullParser.getQRCodeData(resultString);
+                    QRCodeResult result = getQRCodeData(outletDeliveryDoneListItemArrayList.get(i).getTrackingNo());
 
                     if (result != null) {
 
@@ -1049,24 +1044,32 @@ public class DeliveryDoneActivity extends AppCompatActivity implements Camera2AP
             }
         }
 
-        private String getQRCodeData(String tracking_no) {
+        private QRCodeResult getQRCodeData(String tracking_no) {
             Log.e("krm0219", TAG + "  getQRCodeData  " + outlet_type + " / " + tracking_no);
 
-            GMKT_SyncHttpTask httpTask = new GMKT_SyncHttpTask("QSign");
-            HashMap<String, String> hmActionParam = new HashMap<>();
-            hmActionParam.put("qstation_type", outlet_type);
-            hmActionParam.put("tracking_id", tracking_no);
-            hmActionParam.put("app_id", DataUtil.appID);
-            hmActionParam.put("nation_cd", DataUtil.nationCode);
+            QRCodeResult resultObj;
+            Gson gson = new Gson();
 
-            String methodName = "QRCodeForQStationDelivery";
+            try {
 
-            GMKT_HTTPResponseMessage response = httpTask.requestServerDataReturnString(MOBILE_SERVER_URL, methodName, hmActionParam);
-            String resultString = response.getResultString();
-            Log.e("Server", methodName + "  Result : " + resultString);
-            // {"ResultObject":"{\"Q\":\"D\",\"J\":\"CR20190612001\",\"V\":\"QT\",\"S\":\"472\",\"C\":1}","ResultCode":0,"ResultMsg":"OK"}
+                JSONObject job = new JSONObject();
+                job.accumulate("qstation_type", outlet_type);
+                job.accumulate("tracking_id", tracking_no);
+                job.accumulate("app_id", DataUtil.appID);
+                job.accumulate("nation_cd", DataUtil.nationCode);
 
-            return resultString;
+
+                String methodName = "QRCodeForQStationDelivery";
+                String jsonString = Custom_JsonParser.requestServerDataReturnJSON(MOBILE_SERVER_URL, methodName, job);
+
+                resultObj = gson.fromJson(jsonString, QRCodeResult.class);
+            } catch (Exception e) {
+
+                Log.e("Exception", TAG + "  QRCodeForQStationDelivery Json Exception : " + e.toString());
+                resultObj = null;
+            }
+
+            return resultObj;
         }
     }
 

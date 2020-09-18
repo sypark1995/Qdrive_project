@@ -129,7 +129,7 @@ public class TodayDonePickupListDownloadHelper extends ManualHelper {
 
     private PickupAssignResult getPickupServerData() {
 
-        PickupAssignResult resultObj = null;
+        PickupAssignResult resultObj;
 
         try {
 
@@ -146,7 +146,7 @@ public class TodayDonePickupListDownloadHelper extends ManualHelper {
 
             GMKT_HTTPResponseMessage response = httpTask.requestServerDataReturnString(MOBILE_SERVER_URL, methodName, hmActionParam);
             String resultString = response.getResultString();
-            Log.e("Server", methodName + "  Result : " + resultString);
+            //Log.e("Server", methodName + "  Result : " + resultString);
             // {"ResultObject":[{"contr_no":"55003835","partner_ref_no":"P42147N","invoice_no":"P42147N","stat":"P3","req_nm":"KARAM","req_dt":"2019-08-2109:00-17:00","tel_no":"01012345678","hp_no":"01012345678","zip_code":"99785","address":"13 BUKIT TERESA CLOSE#10-16","pickup_hopeday":"2019-08-21","pickup_hopetime":"09:00-17:00","sender_nm":"","del_memo":"","driver_memo":"(by Qdrive RealTime-Upload)","fail_reason":"  ","qty":"1","cust_nm":"Qxpress","partner_id":"qxpress.sg","dr_assign_requestor":null,"dr_assign_req_dt":null,"dr_assign_stat":null,"dr_req_no":null,"failed_count":null,"route":"QSM","del_driver_id":null,"cust_no":null}],"ResultCode":0,"ResultMsg":"SUCCESS"}
 
             resultObj = serializer.read(PickupAssignResult.class, resultString);

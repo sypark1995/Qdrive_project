@@ -146,6 +146,11 @@ public class SettingActivity extends AppCompatActivity {
                 layout_setting_locker.setVisibility(View.VISIBLE);
             }
         }
+
+//        if (opId.equalsIgnoreCase("karam.kim")) {
+//
+//            layout_setting_locker.setVisibility(View.VISIBLE);
+//        }
     }
 
     void initDeveloperMode() {
