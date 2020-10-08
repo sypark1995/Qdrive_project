@@ -219,6 +219,7 @@
                         android:layout_height="match_parent" />
 
                     <ImageView
+                        android:id="@+id/img_sign_d_r_f_preview_bg"
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
                         android:background="@drawable/capture_bg" />

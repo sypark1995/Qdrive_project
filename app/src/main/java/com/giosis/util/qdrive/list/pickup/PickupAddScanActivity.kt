@@ -45,9 +45,9 @@ class PickupAddScanActivity : AppCompatActivity() {
 
         text_top_title.text = intent.getStringExtra("title")
 
-        pickupNo = intent.getStringExtra("pickupNo")
-        scannedList = intent.getStringExtra("scannedList")
-        scannedQty = intent.getStringExtra("scannedQty")
+        pickupNo = intent.getStringExtra("pickupNo").toString()
+        scannedList = intent.getStringExtra("scannedList").toString()
+        scannedQty = intent.getStringExtra("scannedQty").toString()
 
         val scannedItems = scannedList.split(",")
         val qtyFormat = String.format(context.resources.getString(R.string.text_total_qty_count), scannedItems.size)

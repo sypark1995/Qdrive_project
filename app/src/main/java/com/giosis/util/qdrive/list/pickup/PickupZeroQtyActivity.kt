@@ -48,7 +48,7 @@ class PickupZeroQtyActivity : AppCompatActivity() {
         Log.e(tag, "  onCreate  $userId / $officeCode / $deviceId")
 
         text_top_title.text = intent.getStringExtra("title")
-        pickupNo = intent.getStringExtra("pickupNo")
+        pickupNo = intent.getStringExtra("pickupNo").toString()
         text_sign_p_pickup_no.text = pickupNo
         text_sign_p_applicant.text = intent.getStringExtra("applicant")
         img_sign_p_start_scan.background = context.resources.getDrawable(R.drawable.qdrive_btn_icon_check_off)

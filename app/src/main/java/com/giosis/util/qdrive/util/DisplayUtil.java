@@ -13,6 +13,9 @@ import android.graphics.Paint;
 import android.os.Bundle;
 import android.util.Log;
 import android.util.TypedValue;
+import android.view.ViewTreeObserver;
+import android.widget.ImageView;
+import android.widget.RelativeLayout;
 
 import androidx.core.graphics.drawable.RoundedBitmapDrawable;
 import androidx.core.graphics.drawable.RoundedBitmapDrawableFactory;
@@ -106,20 +109,6 @@ public class DisplayUtil {
     }
 
 
-    public static void FirebaseButtonEvents(String activity, String method) {
-
-        try {
-
-            Bundle params = new Bundle();
-            params.putString("Activity", activity);
-            params.putString("method", method);
-            DataUtil.mFirebaseAnalytics.logEvent("button_click", params);
-        } catch (Exception e) {
-
-            Log.e("Firebase", "FirebaseButtonEvents error : " + e.toString());
-        }
-    }
-
     public static void FirebaseSelectEvents(String type, String id) {
 
         try {
@@ -162,6 +151,29 @@ public class DisplayUtil {
         roundedImageBitmapDrawable.setCornerRadius(bitmapRadiusImage);
         roundedImageBitmapDrawable.setAntiAlias(true);
         return roundedImageBitmapDrawable;
+    }
+
+
+    public static void setPreviewCamera(ImageView imageview) {
+        // ViewTree의 뷰가 그려질 때마다
+        imageview.getViewTreeObserver()
+                .addOnGlobalLayoutListener(new ViewTreeObserver.OnGlobalLayoutListener() {
+                    @Override
+                    public void onGlobalLayout() {
+
+                        //뷰의 생성된 후 크기와 위치 구하기
+                        int a = imageview.getWidth();
+                        int b = imageview.getHeight();
+
+                        Log.e("krm0219", "Size : " + a + " / " + b);
+
+                        RelativeLayout.LayoutParams layoutParams = new RelativeLayout.LayoutParams(a, a);
+                        imageview.setLayoutParams(layoutParams);
+
+                        //리스너 해제
+                        imageview.getViewTreeObserver().removeOnGlobalLayoutListener(this);
+                    }
+                });
     }
 
 }

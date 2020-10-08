@@ -45,6 +45,7 @@ import com.giosis.util.qdrive.util.BarcodeType;
 import com.giosis.util.qdrive.util.Camera2APIs;
 import com.giosis.util.qdrive.util.DataUtil;
 import com.giosis.util.qdrive.util.DatabaseHelper;
+import com.giosis.util.qdrive.util.DisplayUtil;
 import com.giosis.util.qdrive.util.MemoryStatus;
 import com.giosis.util.qdrive.util.NetworkUtil;
 import com.giosis.util.qdrive.util.PermissionActivity;
@@ -87,6 +88,7 @@ public class PickupFailedActivity extends AppCompatActivity implements Camera2AP
     LinearLayout layout_sign_p_f_take_photo;
     LinearLayout layout_sign_p_f_gallery;
     TextureView texture_sign_p_f_preview;
+    ImageView img_sign_p_f_preview_bg;
     ImageView img_sign_p_f_visit_log;
     Button btn_sign_p_f_save;
 
@@ -152,6 +154,7 @@ public class PickupFailedActivity extends AppCompatActivity implements Camera2AP
         layout_sign_p_f_take_photo = findViewById(R.id.layout_sign_p_f_take_photo);
         layout_sign_p_f_gallery = findViewById(R.id.layout_sign_p_f_gallery);
         texture_sign_p_f_preview = findViewById(R.id.texture_sign_p_f_preview);
+        img_sign_p_f_preview_bg = findViewById(R.id.img_sign_p_f_preview_bg);
         img_sign_p_f_visit_log = findViewById(R.id.img_sign_p_f_visit_log);
         btn_sign_p_f_save = findViewById(R.id.btn_sign_p_f_save);
 
@@ -173,6 +176,7 @@ public class PickupFailedActivity extends AppCompatActivity implements Camera2AP
         text_sign_p_f_pickup_no.setText(pickupNo);
         text_sign_p_f_applicant.setText(applicant);
         text_sign_p_f_requested_qty.setText(strReqQty);
+        DisplayUtil.setPreviewCamera(img_sign_p_f_preview_bg);
 
         if (pickupType.equals(BarcodeType.TYPE_PICKUP)) {
 

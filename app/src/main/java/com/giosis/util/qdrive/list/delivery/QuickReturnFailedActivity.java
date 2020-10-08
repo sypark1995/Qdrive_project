@@ -38,6 +38,7 @@ import com.giosis.util.qdrive.singapore.R;
 import com.giosis.util.qdrive.util.Camera2APIs;
 import com.giosis.util.qdrive.util.DataUtil;
 import com.giosis.util.qdrive.util.DatabaseHelper;
+import com.giosis.util.qdrive.util.DisplayUtil;
 import com.giosis.util.qdrive.util.MemoryStatus;
 import com.giosis.util.qdrive.util.NetworkUtil;
 import com.giosis.util.qdrive.util.PermissionActivity;
@@ -60,6 +61,7 @@ public class QuickReturnFailedActivity extends AppCompatActivity implements Came
     LinearLayout layout_sign_d_r_f_take_photo;
     LinearLayout layout_sign_d_r_f_gallery;
     TextureView texture_sign_d_r_f_preview;
+    ImageView img_sign_d_r_f_preview_bg;
     ImageView img_sign_d_r_f_visit_log;
     Button btn_sign_d_r_f_save;
 
@@ -113,6 +115,7 @@ public class QuickReturnFailedActivity extends AppCompatActivity implements Came
         layout_sign_d_r_f_take_photo = findViewById(R.id.layout_sign_d_r_f_take_photo);
         layout_sign_d_r_f_gallery = findViewById(R.id.layout_sign_d_r_f_gallery);
         texture_sign_d_r_f_preview = findViewById(R.id.texture_sign_d_r_f_preview);
+        img_sign_d_r_f_preview_bg = findViewById(R.id.img_sign_d_r_f_preview_bg);
         img_sign_d_r_f_visit_log = findViewById(R.id.img_sign_d_r_f_visit_log);
         btn_sign_d_r_f_save = findViewById(R.id.btn_sign_d_r_f_save);
 
@@ -133,6 +136,7 @@ public class QuickReturnFailedActivity extends AppCompatActivity implements Came
         text_sign_d_r_f_tracking_no.setText(mStrWaybillNo);
         text_sign_d_r_f_receiver.setText(receiverName);
         text_sign_d_r_f_sender.setText(senderName);
+        DisplayUtil.setPreviewCamera(img_sign_d_r_f_preview_bg);
 
 
         //

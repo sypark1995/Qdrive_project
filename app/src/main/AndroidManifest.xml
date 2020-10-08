@@ -178,12 +178,6 @@
             android:windowSoftInputMode="stateAlwaysHidden|adjustPan" />
 
         <activity
-            android:name="com.giosis.util.qdrive.list.pickup.CnRPickupFailedActivity"
-            android:configChanges="orientation|keyboardHidden"
-            android:screenOrientation="portrait"
-            android:windowSoftInputMode="stateAlwaysHidden|adjustPan" />
-
-        <activity
             android:name="com.giosis.util.qdrive.list.delivery.QuickReturnedActivity"
             android:configChanges="orientation|keyboardHidden"
             android:screenOrientation="portrait"
@@ -272,15 +266,7 @@
             android:screenOrientation="portrait"
             android:theme="@style/CustomDialog"
             android:windowSoftInputMode="adjustResize" />
-
-        <activity
-            android:name="com.giosis.util.qdrive.main.pickupOrder.LinkQoo10IDActivity"
-            android:configChanges="orientation|keyboardHidden"
-            android:screenOrientation="portrait"
-            android:theme="@style/CustomDialog"
-            android:windowSoftInputMode="adjustResize" />
-
-
+        
         <activity android:name="com.giosis.util.qdrive.barcodescanner.bluetooth.Settings" />
         <activity android:name="com.giosis.util.qdrive.barcodescanner.bluetooth.SystemSetting" />
         <activity android:name="com.giosis.util.qdrive.barcodescanner.bluetooth.MSRSetting" />

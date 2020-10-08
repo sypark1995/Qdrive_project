@@ -58,8 +58,6 @@ import org.json.JSONObject;
 
 import java.util.ArrayList;
 
-import static com.giosis.util.qdrive.barcodescanner.ManualHelper.MOBILE_SERVER_URL;
-
 
 /***************
  * @author jtpark
@@ -98,6 +96,7 @@ public class DeliveryDoneActivity extends AppCompatActivity implements Camera2AP
     LinearLayout layout_sign_d_take_photo;
     LinearLayout layout_sign_d_gallery;
     TextureView texture_sign_d_preview;
+    ImageView img_sign_d_preview_bg;
     ImageView img_sign_d_visit_log;
     Button btn_sign_d_save;
 
@@ -180,6 +179,7 @@ public class DeliveryDoneActivity extends AppCompatActivity implements Camera2AP
         layout_sign_d_take_photo = findViewById(R.id.layout_sign_d_take_photo);
         layout_sign_d_gallery = findViewById(R.id.layout_sign_d_gallery);
         texture_sign_d_preview = findViewById(R.id.texture_sign_d_preview);
+        img_sign_d_preview_bg = findViewById(R.id.img_sign_d_preview_bg);
         img_sign_d_visit_log = findViewById(R.id.img_sign_d_visit_log);
         btn_sign_d_save = findViewById(R.id.btn_sign_d_save);
 
@@ -280,6 +280,7 @@ public class DeliveryDoneActivity extends AppCompatActivity implements Camera2AP
         text_top_title.setText(strTitle);
         text_sign_d_receiver.setText(receiverName);
         text_sign_d_sender.setText(senderName);
+        DisplayUtil.setPreviewCamera(img_sign_d_preview_bg);
 
         Log.e("krm0219", TAG + "  Outlet info Route : " + outletInfo.route.substring(0, 2) + " / " + outletInfo.route);
 
@@ -1060,7 +1061,7 @@ public class DeliveryDoneActivity extends AppCompatActivity implements Camera2AP
 
 
                 String methodName = "QRCodeForQStationDelivery";
-                String jsonString = Custom_JsonParser.requestServerDataReturnJSON(MOBILE_SERVER_URL, methodName, job);
+                String jsonString = Custom_JsonParser.requestServerDataReturnJSON(methodName, job);
 
                 resultObj = gson.fromJson(jsonString, QRCodeResult.class);
             } catch (Exception e) {
