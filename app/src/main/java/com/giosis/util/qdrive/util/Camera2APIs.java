@@ -330,24 +330,24 @@ public class Camera2APIs {
 
             Log.e("krm_camera", "★★★★★   first  :: width - " + width + " ,height - " + height);
 
-            if (height > 450) {
+            if (height > 900) {
 
                 int ratio;
 
                 if (width > height) {
 
-                    ratio = width / 500;
-                    width = 500;
+                    ratio = width / 1000;
+                    width = 1000;
                     height = height / ratio;
                 } else if (height > width) {
 
-                    ratio = height / 500;
-                    height = 500;
+                    ratio = height / 1000;
+                    height = 1000;
                     width = width / ratio;
                 } else {
 
-                    height = 500;
-                    width = 500;
+                    height = 1000;
+                    width = 1000;
                 }
 
                 Log.e("krm_camera", "★★★★★    :: width - " + width + " ,height - " + height);

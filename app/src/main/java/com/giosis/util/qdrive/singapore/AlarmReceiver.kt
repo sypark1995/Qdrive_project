@@ -31,8 +31,8 @@ class AlarmReceiver : BroadcastReceiver() {
             pendingIntent.send()
         } else {
 
-            MyApplication.preferences.userId = "";
-            MyApplication.preferences.autoLogout = true;
+            MyApplication.preferences.userId = ""
+            MyApplication.preferences.autoLogout = true
         }
     }
 
