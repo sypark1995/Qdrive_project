@@ -9,7 +9,7 @@ function init() {
 
     //serverURL = "http://staging-qxapi.qxpress.net/GMKT.INC.GLPS.MobileApiService/GlobalMobileService.qapi";
     serverURL = "https://qxapi.qxpress.net/GMKT.INC.GLPS.MobileApiService/GlobalMobileService.qapi"
-    appVersion = "3.4.2"
+    appVersion = "3.4.3"
 
     $("#loginID").val(localStorage.getItem('opId'));
     $("#pw").val(localStorage.getItem('opPasswd'));
