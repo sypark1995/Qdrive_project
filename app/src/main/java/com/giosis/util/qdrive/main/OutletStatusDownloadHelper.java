@@ -10,7 +10,6 @@ import android.os.AsyncTask;
 import android.util.Log;
 
 import com.giosis.util.qdrive.barcodescanner.DriverAssignResult;
-import com.giosis.util.qdrive.barcodescanner.ManualHelper;
 import com.giosis.util.qdrive.list.ChildItem;
 import com.giosis.util.qdrive.list.PickupAssignResult;
 import com.giosis.util.qdrive.list.RowItem;
@@ -30,11 +29,10 @@ import java.util.Date;
 import java.util.TimeZone;
 
 // Outlet Order Status
-public class OutletStatusDownloadHelper extends ManualHelper {
+public class OutletStatusDownloadHelper {
     String TAG = "OutletStatusDownloadHelper";
 
     Gson gson = new Gson();
-
     private final Context context;
     private final String opID;
     private final String officeCode;
@@ -206,7 +204,7 @@ public class OutletStatusDownloadHelper extends ManualHelper {
 
 
             String methodName = "GetDeliveryList_OutletRealTime";
-            String jsonString = Custom_JsonParser.requestServerDataReturnJSON(MOBILE_SERVER_URL, methodName, job);
+            String jsonString = Custom_JsonParser.requestServerDataReturnJSON(methodName, job);
 
             resultObj = gson.fromJson(jsonString, DriverAssignResult.class);
         } catch (Exception e) {
@@ -237,7 +235,7 @@ public class OutletStatusDownloadHelper extends ManualHelper {
 
 
             String methodName = "GetDeliveryList_Outlet";
-            String jsonString = Custom_JsonParser.requestServerDataReturnJSON(MOBILE_SERVER_URL, methodName, job);
+            String jsonString = Custom_JsonParser.requestServerDataReturnJSON(methodName, job);
 
             resultObj = gson.fromJson(jsonString, DriverAssignResult.class);
         } catch (Exception e) {
@@ -267,10 +265,9 @@ public class OutletStatusDownloadHelper extends ManualHelper {
 
 
             String methodName = "GetPickupList";
-            String jsonString = Custom_JsonParser.requestServerDataReturnJSON(MOBILE_SERVER_URL, methodName, job);
+            String jsonString = Custom_JsonParser.requestServerDataReturnJSON(methodName, job);
 
             resultObj = gson.fromJson(jsonString, PickupAssignResult.class);
-
         } catch (Exception e) {
 
             Log.e("Exception", TAG + "  GetPickupList Json Exception : " + e.toString());

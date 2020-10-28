@@ -14,7 +14,7 @@ import com.giosis.util.qdrive.util.NetworkUtil;
 
 import org.json.JSONObject;
 
-public class OutletPickupScanValidationCheckHelper extends ManualHelper {
+public class OutletPickupScanValidationCheckHelper {
     String TAG = "OutletPickupScanValidationCheckHelper";
 
     private final Context context;
@@ -135,7 +135,7 @@ public class OutletPickupScanValidationCheckHelper extends ManualHelper {
                 job.accumulate("nation_cd", DataUtil.nationCode);
 
                 String methodName = "SetPickupScanNo";
-                String jsonString = Custom_JsonParser.requestServerDataReturnJSON(MOBILE_SERVER_URL, methodName, job);
+                String jsonString = Custom_JsonParser.requestServerDataReturnJSON(methodName, job);
                 // {"ResultCode":0,"ResultMsg":"STD"}
 
                 JSONObject jsonObject = new JSONObject(jsonString);

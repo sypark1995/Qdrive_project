@@ -10,7 +10,6 @@ import android.graphics.Bitmap;
 import android.os.AsyncTask;
 import android.util.Log;
 
-import com.giosis.util.qdrive.barcodescanner.ManualHelper;
 import com.giosis.util.qdrive.barcodescanner.StdResult;
 import com.giosis.util.qdrive.list.SigningView;
 import com.giosis.util.qdrive.singapore.OnServerEventListener;
@@ -26,7 +25,7 @@ import org.json.JSONObject;
 import java.text.SimpleDateFormat;
 import java.util.Date;
 
-public class PickupTakeBackUploadHelper extends ManualHelper {
+public class PickupTakeBackUploadHelper {
     String TAG = "PickupTakeBackUploadHelper";
 
     private final Context context;
@@ -298,7 +297,7 @@ public class PickupTakeBackUploadHelper extends ManualHelper {
                 job.accumulate("nation_cd", DataUtil.nationCode);
 
                 String methodName = "SetPickupUploadData_TakeBack";
-                String jsonString = Custom_JsonParser.requestServerDataReturnJSON(MOBILE_SERVER_URL, methodName, job);
+                String jsonString = Custom_JsonParser.requestServerDataReturnJSON(methodName, job);
                 // {"ResultCode":10,"ResultMsg":"Success"}
                 // {"ResultCode":-1,"ResultMsg":"Scanned number is too short"}
 

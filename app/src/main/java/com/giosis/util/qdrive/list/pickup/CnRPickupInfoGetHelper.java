@@ -4,7 +4,6 @@ import android.content.Context;
 import android.os.AsyncTask;
 import android.util.Log;
 
-import com.giosis.util.qdrive.barcodescanner.ManualHelper;
 import com.giosis.util.qdrive.list.PrintDataResult;
 import com.giosis.util.qdrive.singapore.R;
 import com.giosis.util.qdrive.util.Custom_JsonParser;
@@ -14,10 +13,9 @@ import com.google.gson.Gson;
 
 import org.json.JSONObject;
 
-public class CnRPickupInfoGetHelper extends ManualHelper {
+public class CnRPickupInfoGetHelper {
     String TAG = "CnRPickupInfoGetHelper";
 
-    Gson gson = new Gson();
     private final Context context;
     private final String opID;
     private final String tracking_no;
@@ -87,6 +85,7 @@ public class CnRPickupInfoGetHelper extends ManualHelper {
 
         private PrintDataResult requestDriverAssign(String tracking_no) {
 
+            Gson gson = new Gson();
             PrintDataResult resultObj;
 
             if (!NetworkUtil.isNetworkAvailable(context)) {
@@ -107,7 +106,7 @@ public class CnRPickupInfoGetHelper extends ManualHelper {
                 job.accumulate("nation_cd", DataUtil.nationCode);
 
                 String methodName = "GetCnRPrintData";
-                String jsonString = Custom_JsonParser.requestServerDataReturnJSON(MOBILE_SERVER_URL, methodName, job);
+                String jsonString = Custom_JsonParser.requestServerDataReturnJSON(methodName, job);
                 resultObj = gson.fromJson(jsonString, PrintDataResult.class);
             } catch (Exception e) {
 

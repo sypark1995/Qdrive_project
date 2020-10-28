@@ -5,7 +5,6 @@ import android.content.Context;
 import android.os.AsyncTask;
 import android.util.Log;
 
-import com.giosis.util.qdrive.barcodescanner.ManualHelper;
 import com.giosis.util.qdrive.singapore.R;
 import com.giosis.util.qdrive.util.Custom_JsonParser;
 import com.giosis.util.qdrive.util.DataUtil;
@@ -15,7 +14,7 @@ import com.google.gson.Gson;
 import org.json.JSONObject;
 
 
-public class ScanPackingListDownloadHelper extends ManualHelper {
+public class ScanPackingListDownloadHelper {
     String TAG = "ScanPackingListDownloadHelper";
 
     private final Context context;
@@ -114,11 +113,10 @@ public class ScanPackingListDownloadHelper extends ManualHelper {
 
     private PickupPackingListResult getPickupPackingListData() {
 
+        Gson gson = new Gson();
         PickupPackingListResult resultObj;
 
         // JSON Parser
-        Gson gson = new Gson();
-
         try {
 
             JSONObject job = new JSONObject();
@@ -128,7 +126,7 @@ public class ScanPackingListDownloadHelper extends ManualHelper {
             job.accumulate("nation_cd", DataUtil.nationCode);
 
             String methodName = "getScanPackingList";
-            String jsonString = Custom_JsonParser.requestServerDataReturnJSON(MOBILE_SERVER_URL, methodName, job);
+            String jsonString = Custom_JsonParser.requestServerDataReturnJSON(methodName, job);
             // {"ResultObject":[{"packing_no":"SGP163596005","reg_dt":"Aug 24 2020  1:08PM","op_id":"YuMin.Dwl","pickup_no":"P1631998"},{"packing_no":"SGP163579875","reg_dt":"Aug 24 2020  1:08PM","op_id":"YuMin.Dwl","pickup_no":"P1631998"},{"packing_no":"SGP163612649","reg_dt":"Aug 24 2020  1:08PM","op_id":"YuMin.Dwl","pickup_no":"P1631998"}],"ResultCode":0,"ResultMsg":"SUCCESS"}
 
             resultObj = gson.fromJson(jsonString, PickupPackingListResult.class);

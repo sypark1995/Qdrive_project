@@ -29,8 +29,6 @@ import org.json.JSONObject;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
-import static com.giosis.util.qdrive.barcodescanner.ManualHelper.MOBILE_SERVER_URL;
-
 public class ModifyUserInfoActivity extends AppCompatActivity {
     String TAG = "ModifyUserInfoActivity";
 
@@ -292,7 +290,7 @@ public class ModifyUserInfoActivity extends AppCompatActivity {
                 job.accumulate("nation_cd", DataUtil.nationCode);
 
                 String methodName = "changeMyInfo";
-                String jsonString = Custom_JsonParser.requestServerDataReturnJSON(MOBILE_SERVER_URL, methodName, job);
+                String jsonString = Custom_JsonParser.requestServerDataReturnJSON(methodName, job);
                 // {"ResultCode":0,"ResultMsg":"Modification job is completed successfully."}
                 // {"ResultCode":-5,"ResultMsg":"This email is already registered by another Qsign ID."}
 

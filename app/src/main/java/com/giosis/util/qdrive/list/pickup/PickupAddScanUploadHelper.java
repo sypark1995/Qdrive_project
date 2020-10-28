@@ -9,7 +9,6 @@ import android.graphics.Bitmap;
 import android.os.AsyncTask;
 import android.util.Log;
 
-import com.giosis.util.qdrive.barcodescanner.ManualHelper;
 import com.giosis.util.qdrive.barcodescanner.StdResult;
 import com.giosis.util.qdrive.list.SigningView;
 import com.giosis.util.qdrive.singapore.OnServerEventListener;
@@ -21,7 +20,7 @@ import com.giosis.util.qdrive.util.NetworkUtil;
 
 import org.json.JSONObject;
 
-public class PickupAddScanUploadHelper extends ManualHelper {
+public class PickupAddScanUploadHelper {
     String TAG = "PickupAddScanUploadHelper";
 
     private final Context context;
@@ -289,7 +288,7 @@ public class PickupAddScanUploadHelper extends ManualHelper {
 
 
                 String methodName = "SetPickupUploadData_AddScan";
-                String jsonString = Custom_JsonParser.requestServerDataReturnJSON(MOBILE_SERVER_URL, methodName, job);
+                String jsonString = Custom_JsonParser.requestServerDataReturnJSON(methodName, job);
                 // {"ResultCode":0,"ResultMsg":"Success"}
                 // {"ResultCode":-11,"ResultMsg":"Failed"}
 

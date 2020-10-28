@@ -5,7 +5,6 @@ import android.content.Context;
 import android.os.AsyncTask;
 import android.util.Log;
 
-import com.giosis.util.qdrive.barcodescanner.ManualHelper;
 import com.giosis.util.qdrive.util.Custom_JsonParser;
 import com.giosis.util.qdrive.util.DataUtil;
 import com.giosis.util.qdrive.util.DisplayUtil;
@@ -17,7 +16,7 @@ import org.json.JSONObject;
 import java.util.ArrayList;
 
 
-public class StatisticsDownloadHelper extends ManualHelper {
+public class StatisticsDownloadHelper {
     private String TAG = "StatisticsDownloadHelper";
 
     private final Context context;
@@ -202,14 +201,14 @@ public class StatisticsDownloadHelper extends ManualHelper {
             job.accumulate("nation_cd", DataUtil.nationCode);
 
             String methodName = "GetStaticDeliverySummary";
-            String jsonString = Custom_JsonParser.requestServerDataReturnJSON(MOBILE_SERVER_URL, methodName, job);
+            String jsonString = Custom_JsonParser.requestServerDataReturnJSON(methodName, job);
             //  {"ResultObject":[],"ResultCode":0,"ResultMsg":"SUCCESS"}
 
             JSONObject jsonObject = new JSONObject(jsonString);
             JSONArray resultArray = jsonObject.getJSONArray("ResultObject");
 
           /*  // TEST.
-            if (MOBILE_SERVER_URL.contains("test")) {
+            if (MyApplication.preferences.getServerURL().contains("test")) {
                 String abc = "[{\"dpc3out_dt\":\"2019-12-04\",\"total_cnt\":\"10\",\"delivered_ctn\":\"8\",\"delivered_prcntg\":\"80\", \"avg_delivery_day\":\"5\"}," +
                         "{\"dpc3out_dt\":\"2019-12-05\",\"total_cnt\":\"10\",\"delivered_ctn\":\"8\",\"delivered_prcntg\":\"80\", \"avg_delivery_day\":\"4\"}," +
                         "{\"dpc3out_dt\":\"2019-12-06\",\"total_cnt\":\"10\",\"delivered_ctn\":\"8\",\"delivered_prcntg\":\"80\", \"avg_delivery_day\":\"6\"}]";
@@ -275,14 +274,14 @@ public class StatisticsDownloadHelper extends ManualHelper {
             job.accumulate("nation_cd", DataUtil.nationCode);
 
             String methodName = "GetStaticDeliveryDetail";
-            String jsonString = Custom_JsonParser.requestServerDataReturnJSON(MOBILE_SERVER_URL, methodName, job);
+            String jsonString = Custom_JsonParser.requestServerDataReturnJSON(methodName, job);
             //  {"ResultObject":[],"ResultCode":0,"ResultMsg":"SUCCESS"}
 
             JSONObject jsonObject = new JSONObject(jsonString);
             JSONArray resultArray = jsonObject.getJSONArray("ResultObject");
 
          /*   // TEST.
-            if (MOBILE_SERVER_URL.contains("test")) {
+            if (MyApplication.preferences.getServerURL().contains("test")) {
 
                 String abc = "[{\"shipping_no\":\"S1234\",\"tracking_no\":\"T1234\",\"stat\":\"D3\",\"delivered_dt\":\"2019-12-04\"}," +
                         "{\"shipping_no\":\"S5678\",\"tracking_no\":\"T5678\",\"stat\":\"D4\",\"delivered_dt\":\"2019-12-05\"}," +
@@ -348,14 +347,14 @@ public class StatisticsDownloadHelper extends ManualHelper {
             job.accumulate("nation_cd", DataUtil.nationCode);
 
             String methodName = "GetStaticPickupSummary";
-            String jsonString = Custom_JsonParser.requestServerDataReturnJSON(MOBILE_SERVER_URL, methodName, job);
+            String jsonString = Custom_JsonParser.requestServerDataReturnJSON(methodName, job);
             //  {"ResultObject":[],"ResultCode":0,"ResultMsg":"SUCCESS"}
 
             JSONObject jsonObject = new JSONObject(jsonString);
             JSONArray resultArray = jsonObject.getJSONArray("ResultObject");
 
            /*// TEST.
-            if (MOBILE_SERVER_URL.contains("test")) {
+            if (MyApplication.preferences.getServerURL().contains("test")) {
                 String abc = "[{\"desired_dt\":\"2019-12-04\",\"total_cnt\":\"10\",\"done\":\"8\",\"failed\":\"1\",\"confirmed\":\"1\",\"done_prcntg\":\"80\", \"avg_done_day\":\"5\"}," +
                         "{\"desired_dt\":\"2019-12-05\",\"total_cnt\":\"10\",\"done\":\"8\",\"failed\":\"1\",\"confirmed\":\"1\",\"done_prcntg\":\"80\", \"avg_done_day\":\"4\"}," +
                         "{\"desired_dt\":\"2019-12-06\",\"total_cnt\":\"10\",\"done\":\"8\",\"failed\":\"1\",\"confirmed\":\"1\",\"done_prcntg\":\"80\", \"avg_done_day\":\"6\"}]";
@@ -423,14 +422,14 @@ public class StatisticsDownloadHelper extends ManualHelper {
             job.accumulate("nation_cd", DataUtil.nationCode);
 
             String methodName = "GetStaticPickupDetail";
-            String jsonString = Custom_JsonParser.requestServerDataReturnJSON(MOBILE_SERVER_URL, methodName, job);
+            String jsonString = Custom_JsonParser.requestServerDataReturnJSON(methodName, job);
             //  {"ResultObject":[],"ResultCode":0,"ResultMsg":"SUCCESS"}
 
             JSONObject jsonObject = new JSONObject(jsonString);
             JSONArray resultArray = jsonObject.getJSONArray("ResultObject");
 
           /*// TEST.
-            if (MOBILE_SERVER_URL.contains("test")) {
+            if (MyApplication.preferences.getServerURL().contains("test")) {
                 String abc = "[{\"pickup_no\":\"P1234\",\"qty\":\"11\",\"stat\":\"P2\",\"desired_dt\":\"2019-12-04\"}," +
                         "{\"pickup_no\":\"P5678\",\"qty\":\"22\",\"stat\":\"P3\",\"desired_dt\":\"2019-12-05\"}," +
                         "{\"pickup_no\":\"P9012\",\"qty\":\"33\",\"stat\":\"P3\",\"desired_dt\":\"2019-12-06\"}]";

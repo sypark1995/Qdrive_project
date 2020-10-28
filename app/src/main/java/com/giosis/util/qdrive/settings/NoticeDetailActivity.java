@@ -25,8 +25,6 @@ import org.json.JSONObject;
 
 import java.util.ArrayList;
 
-import static com.giosis.util.qdrive.barcodescanner.ManualHelper.MOBILE_SERVER_URL;
-
 /**
  * @author krm0219
  **/
@@ -143,7 +141,7 @@ public class NoticeDetailActivity extends AppCompatActivity {
                 job.accumulate("nation_cd", DataUtil.nationCode);
 
                 String methodName = "GetNoticeData";
-                String jsonString = Custom_JsonParser.requestServerDataReturnJSON(MOBILE_SERVER_URL, methodName, job);
+                String jsonString = Custom_JsonParser.requestServerDataReturnJSON(methodName, job);
                 // {"ResultObject":[{"total_cnt":null,"nid":"158577","kind":"","title":"hello","link":"","priority":"","reg_dt_short":"Apr 3","reg_dt_long":"Apr 3, 2:02 PM","rownum":null,"contents":"","nextnid":"158578","prevnid":"158575"}],"ResultCode":0,"ResultMsg":"SUCCESS"}
 
                 JSONObject jsonObject = new JSONObject(jsonString);

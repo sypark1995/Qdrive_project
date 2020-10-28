@@ -15,7 +15,7 @@ import com.giosis.util.qdrive.util.NetworkUtil;
 
 import org.json.JSONObject;
 
-public class PickupScanValidationCheckHelper extends ManualHelper {
+public class PickupScanValidationCheckHelper {
     String TAG = "PickupScanValidationCheckHelper";
 
     private final Context context;
@@ -141,7 +141,7 @@ public class PickupScanValidationCheckHelper extends ManualHelper {
                 job.accumulate("nation_cd", DataUtil.nationCode);
 
                 String methodName = "SetPickupScanNo";
-                String jsonString = Custom_JsonParser.requestServerDataReturnJSON(MOBILE_SERVER_URL, methodName, job);
+                String jsonString = Custom_JsonParser.requestServerDataReturnJSON(methodName, job);
                 // {"ResultCode":0,"ResultMsg":"STD"}
                 // {"ResultCode":-99,"ResultMsg":"There is no Default Route."}
 

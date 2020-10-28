@@ -3,7 +3,6 @@ package com.giosis.util.qdrive.settings
 import android.app.TimePickerDialog
 import android.content.Intent
 import android.os.Bundle
-import android.util.Log
 import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
 import com.giosis.util.qdrive.singapore.LoginActivity
@@ -75,8 +74,6 @@ class DeveloperModeActivity : AppCompatActivity() {
 
     private fun initServerUrl() {
 
-        Log.e("krm0219", "init " + MyApplication.preferences.serverURL)
-
         val serverURL = MyApplication.preferences.serverURL
 
 
@@ -94,7 +91,7 @@ class DeveloperModeActivity : AppCompatActivity() {
                 rb_developer_server_url_real.isChecked = true
             }
         }
-        edit_developer_server_url.setText(serverURL.replace(DataUtil.API_ADDRESS, ""))
+        edit_developer_server_url.setText(serverURL)
 
 
 

@@ -49,8 +49,6 @@ import javax.net.ssl.SSLContext;
 import javax.net.ssl.TrustManager;
 import javax.net.ssl.X509TrustManager;
 
-import static com.giosis.util.qdrive.barcodescanner.ManualHelper.MOBILE_SERVER_URL;
-
 public class LockerUserInfoActivity extends AppCompatActivity {
     String TAG = "LockerUserInfoActivity";
 
@@ -207,7 +205,7 @@ public class LockerUserInfoActivity extends AppCompatActivity {
 
 
                 String methodName = "GetShuttleDriverForFederatedlockerInfo";
-                String jsonString = Custom_JsonParser.requestServerDataReturnJSON(MOBILE_SERVER_URL, methodName, job);
+                String jsonString = Custom_JsonParser.requestServerDataReturnJSON(methodName, job);
 
                 resultObj = gson.fromJson(jsonString, LockerUserInfoResult.class);
             } catch (Exception e) {

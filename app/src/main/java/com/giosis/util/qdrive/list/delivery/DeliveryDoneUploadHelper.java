@@ -12,7 +12,6 @@ import android.text.TextUtils;
 import android.util.Log;
 import android.widget.ImageView;
 
-import com.giosis.util.qdrive.barcodescanner.ManualHelper;
 import com.giosis.util.qdrive.barcodescanner.StdResult;
 import com.giosis.util.qdrive.list.BarcodeData;
 import com.giosis.util.qdrive.list.SigningView;
@@ -32,7 +31,7 @@ import java.util.Date;
 /**
  * Delivery Done
  */
-public class DeliveryDoneUploadHelper extends ManualHelper {
+public class DeliveryDoneUploadHelper {
     String TAG = "DeliveryDoneUploadHelper";
 
     private final Context context;
@@ -355,7 +354,7 @@ public class DeliveryDoneUploadHelper extends ManualHelper {
                 job.accumulate("nation_cd", DataUtil.nationCode);
 
                 String methodName = "SetDeliveryUploadData";
-                String jsonString = Custom_JsonParser.requestServerDataReturnJSON(MOBILE_SERVER_URL, methodName, job);
+                String jsonString = Custom_JsonParser.requestServerDataReturnJSON(methodName, job);
                 // {"ResultCode":0,"ResultMsg":"SUCCESS"}
                 // {"ResultCode":-11,"ResultMsg":"Upload Failed."}
 

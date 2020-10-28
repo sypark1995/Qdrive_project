@@ -2,7 +2,6 @@ package com.giosis.util.qdrive.util
 
 import android.content.Context
 import android.content.SharedPreferences
-import com.giosis.util.qdrive.barcodescanner.ManualHelper.MOBILE_SERVER_URL
 
 class MySharedPreferences(context: Context) {
 
@@ -23,13 +22,11 @@ class MySharedPreferences(context: Context) {
     private val PREF_KEY_IS_PICKUP_DRIVER = "pickupDriver"
     private val PREF_KEY_IS_OUTLET_DRIVER = "outletDriver"
     private val PREF_KEY_OUTLET_LOCKER_STATUS = "lockerStatus"
+    private val PREF_KEY_DEFAULT_YN = "default"
+    private val PREF_KEY_AUTH_NO = "authNo"
 
     private val PREF_KEY_LIST_SORT_INDEX = "sortIndex"
     private val PREF_KEY_SCAN_VIBRATION = "scanVibration"
-
-
-    private val PREF_KEY_DEFAULT_YN = "default"
-    private val PREF_KEY_AUTH_NO = "authNo"
 
 
     var userId: String
@@ -119,12 +116,12 @@ class MySharedPreferences(context: Context) {
         set(value) = prefs.edit().putBoolean(PREF_KEY_AUTO_LOGOUT_SETTING, value).apply()
 
 
-    // 202009.  Developer Mode , change ServerURL
+    // 202009.  Developer Mode, change ServerURL
     private val PREF_KEY_DEVELOPER_MODE = "developerMode"
     private val PREF_KEY_SERVER_URL = "serverURL"
 
     var serverURL: String
-        get() = prefs.getString(PREF_KEY_SERVER_URL, MOBILE_SERVER_URL).toString()
+        get() = prefs.getString(PREF_KEY_SERVER_URL, DataUtil.SERVER_REAL).toString()
         set(value) = prefs.edit().putString(PREF_KEY_SERVER_URL, value).apply()
 
     var developerMode: Boolean

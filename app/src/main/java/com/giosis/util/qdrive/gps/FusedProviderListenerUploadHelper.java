@@ -7,7 +7,6 @@ import android.content.DialogInterface.OnClickListener;
 import android.os.AsyncTask;
 import android.util.Log;
 
-import com.giosis.util.qdrive.barcodescanner.ManualHelper;
 import com.giosis.util.qdrive.singapore.R;
 import com.giosis.util.qdrive.util.Custom_JsonParser;
 import com.giosis.util.qdrive.util.DataUtil;
@@ -15,7 +14,7 @@ import com.giosis.util.qdrive.util.NetworkUtil;
 
 import org.json.JSONObject;
 
-public class FusedProviderListenerUploadHelper extends ManualHelper {
+public class FusedProviderListenerUploadHelper {
     private String TAG = "FusedProviderListenerUploadHelper";
 
     private final Context context;
@@ -159,7 +158,7 @@ public class FusedProviderListenerUploadHelper extends ManualHelper {
 
                 // ship.dbo.gps_location_history 위/경도 저장
                 String methodName = "setGPSLocationVersion2";
-                String jsonString = Custom_JsonParser.requestServerDataReturnJSON(MOBILE_SERVER_URL, methodName, job);
+                String jsonString = Custom_JsonParser.requestServerDataReturnJSON(methodName, job);
                 // {"ResultCode":0,"ResultMsg":"OK"}
 
                 JSONObject jsonObject = new JSONObject(jsonString);

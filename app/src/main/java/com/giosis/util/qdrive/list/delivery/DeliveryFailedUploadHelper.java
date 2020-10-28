@@ -12,7 +12,6 @@ import android.util.Log;
 import android.widget.ImageView;
 import android.widget.Toast;
 
-import com.giosis.util.qdrive.barcodescanner.ManualHelper;
 import com.giosis.util.qdrive.barcodescanner.StdResult;
 import com.giosis.util.qdrive.singapore.OnServerEventListener;
 import com.giosis.util.qdrive.singapore.R;
@@ -32,7 +31,7 @@ import java.util.Date;
 /**
  * Delivery Visit Log
  */
-public class DeliveryFailedUploadHelper extends ManualHelper {
+public class DeliveryFailedUploadHelper {
     String TAG = "DeliveryFailedUploadHelper";
 
     private final Context context;
@@ -280,7 +279,7 @@ public class DeliveryFailedUploadHelper extends ManualHelper {
 
 
                 String methodName = "SetDeliveryUploadData";
-                String jsonString = Custom_JsonParser.requestServerDataReturnJSON(MOBILE_SERVER_URL, methodName, job);
+                String jsonString = Custom_JsonParser.requestServerDataReturnJSON(methodName, job);
                 // {"ResultCode":0,"ResultMsg":"SUCCESS"}
                 // {"ResultCode":-11,"ResultMsg":"Upload Failed."}
 

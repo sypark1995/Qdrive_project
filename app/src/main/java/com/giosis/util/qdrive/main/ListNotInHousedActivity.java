@@ -23,8 +23,6 @@ import com.google.gson.Gson;
 
 import org.json.JSONObject;
 
-import static com.giosis.util.qdrive.barcodescanner.ManualHelper.MOBILE_SERVER_URL;
-
 /**
  * @author krm0219  2018.07.26
  */
@@ -155,7 +153,7 @@ public class ListNotInHousedActivity extends AppCompatActivity {
 
 
                 String methodName = "GetOutStandingInhousedPickupList";
-                String jsonString = Custom_JsonParser.requestServerDataReturnJSON(MOBILE_SERVER_URL, methodName, job);
+                String jsonString = Custom_JsonParser.requestServerDataReturnJSON(methodName, job);
 
                 resultObj = gson.fromJson(jsonString, NotInHousedResult.class);
             } catch (Exception e) {

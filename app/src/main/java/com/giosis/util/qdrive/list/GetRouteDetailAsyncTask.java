@@ -17,8 +17,6 @@ import org.json.JSONObject;
 
 import java.util.ArrayList;
 
-import static com.giosis.util.qdrive.barcodescanner.ManualHelper.MOBILE_SERVER_URL;
-
 public class GetRouteDetailAsyncTask extends AsyncTask<Void, Void, SmartRouteResult.RouteMaster> {
     String TAG = "GetRouteDetailAsyncTask";
 
@@ -73,7 +71,7 @@ public class GetRouteDetailAsyncTask extends AsyncTask<Void, Void, SmartRouteRes
             job.accumulate("nation_cd", DataUtil.nationCode);
 
             String methodName = "GetSmartRouteParcelList";
-            String jsonString = Custom_JsonParser.requestServerDataReturnJSON(MOBILE_SERVER_URL, methodName, job);
+            String jsonString = Custom_JsonParser.requestServerDataReturnJSON(methodName, job);
             // {"ResultObject":[{"route_no":"149","tracking_no":"SG19611830","contr_no":"55003837","sort_order":"1"},{"route_no":"149","tracking_no":"SG19611819","contr_no":"55003829","sort_order":"2"},{"route_no":"149","tracking_no":"C2859SGSG","contr_no":"55003355","sort_order":"3"}],"ResultCode":0,"ResultMsg":"SUCCESS"}
 
             JSONObject jsonObject = new JSONObject(jsonString);

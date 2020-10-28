@@ -14,20 +14,22 @@ import java.net.URL;
 
 public class Custom_JsonParser {
 
-    public static String requestServerDataReturnJSON(String serverURL, String method, JSONObject object) {
+    public static String requestServerDataReturnJSON(String method, JSONObject object) {
 
         URL url;
-        HttpURLConnection conn = null;
-        OutputStream os = null;
-        InputStream is = null;
-        ByteArrayOutputStream baos = null;
+        HttpURLConnection conn;
+        OutputStream os;
+        InputStream is;
+        ByteArrayOutputStream baos;
 
         String response = "";
+        String apiURL = MyApplication.preferences.getServerURL() + DataUtil.API_ADDRESS;
+        Log.e("krm0219", "JsonParser URL " + apiURL);
+
 
         try {
 
-            JSONObject jsonObject = object;
-            url = new URL(serverURL + "/" + method);
+            url = new URL(apiURL + "/" + method);
 
             // URL 연결
             conn = (HttpURLConnection) url.openConnection();
@@ -61,7 +63,7 @@ public class Custom_JsonParser {
             // Request Data를 담기 위해 객체 생성
             os = conn.getOutputStream();
             // Request Data 셋팅
-            os.write(jsonObject.toString().getBytes());
+            os.write(object.toString().getBytes());
             // Request Data 입력
             os.flush();
             // 실제 서버로 Request 요청 (응답 코드 받음. 200 성공 / 나머지 에러)
@@ -73,8 +75,8 @@ public class Custom_JsonParser {
                 is = conn.getInputStream();
                 baos = new ByteArrayOutputStream();
                 byte[] byteBuffer = new byte[1024];
-                byte[] byteData = null;
-                int nLength = 0;
+                byte[] byteData;
+                int nLength;
                 while ((nLength = is.read(byteBuffer, 0, byteBuffer.length)) != -1) {
                     baos.write(byteBuffer, 0, nLength);
                 }
@@ -92,6 +94,7 @@ public class Custom_JsonParser {
 
         return response;
     }
+
 
 
     public static String requestGetDataReturnJSON(String apiUrl, String method, String data) {

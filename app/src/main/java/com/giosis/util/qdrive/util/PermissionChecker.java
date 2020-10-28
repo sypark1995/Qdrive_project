@@ -10,9 +10,6 @@ import java.util.ArrayList;
 public class PermissionChecker {
 
     public static String CAMERA = Manifest.permission.CAMERA;
-    public static String READ_CONTACTS = Manifest.permission.READ_CONTACTS;
-    public static String WRITE_CONTACTS = Manifest.permission.WRITE_CONTACTS;
-    public static String GET_ACCOUNTS = Manifest.permission.GET_ACCOUNTS;
     public static String ACCESS_FINE_LOCATION = Manifest.permission.ACCESS_FINE_LOCATION;
     public static String ACCESS_COARSE_LOCATION = Manifest.permission.ACCESS_COARSE_LOCATION;
     public static String READ_PHONE_STATE = Manifest.permission.READ_PHONE_STATE;

@@ -11,7 +11,6 @@ import android.os.AsyncTask;
 import android.text.TextUtils;
 import android.util.Log;
 
-import com.giosis.util.qdrive.barcodescanner.ManualHelper;
 import com.giosis.util.qdrive.barcodescanner.StdResult;
 import com.giosis.util.qdrive.list.BarcodeData;
 import com.giosis.util.qdrive.list.SigningView;
@@ -31,10 +30,9 @@ import java.util.Date;
 
 /**
  * CnR Done
- * CnR Failed
  */
 
-public class CnRPickupUploadHelper extends ManualHelper {
+public class CnRPickupUploadHelper {
     String TAG = "CnRlPickupUploadHelper";
 
     private final Context context;
@@ -383,7 +381,7 @@ public class CnRPickupUploadHelper extends ManualHelper {
 
 
                 String methodName = "SetPickupUploadData";
-                String jsonString = Custom_JsonParser.requestServerDataReturnJSON(MOBILE_SERVER_URL, methodName, job);
+                String jsonString = Custom_JsonParser.requestServerDataReturnJSON(methodName, job);
                 // {"ResultCode":0,"ResultMsg":"SUCCESS"}
                 // {"ResultCode":-11,"ResultMsg":"SUCCESS"}
 

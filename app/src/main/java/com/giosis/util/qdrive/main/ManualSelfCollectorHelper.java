@@ -10,7 +10,6 @@ import android.os.AsyncTask;
 import android.text.TextUtils;
 import android.util.Log;
 
-import com.giosis.util.qdrive.barcodescanner.ManualHelper;
 import com.giosis.util.qdrive.list.BarcodeData;
 import com.giosis.util.qdrive.list.SigningView;
 import com.giosis.util.qdrive.singapore.R;
@@ -24,7 +23,7 @@ import org.json.JSONObject;
 import java.util.ArrayList;
 
 
-public class ManualSelfCollectorHelper extends ManualHelper {
+public class ManualSelfCollectorHelper {
     String TAG = "ManualSelfCollectorHelper";
 
     private final Context context;
@@ -311,7 +310,7 @@ public class ManualSelfCollectorHelper extends ManualHelper {
                 job.accumulate("nation_cd", DataUtil.nationCode);
 
                 String methodName = "SetSelfCollectorData";
-                result = Custom_JsonParser.requestServerDataReturnJSON(MOBILE_SERVER_URL, methodName, job);
+                result = Custom_JsonParser.requestServerDataReturnJSON(methodName, job);
                 // {"ResultCode":-12,"ResultMsg":"This shipping no (SG19611681) is not exist."}
 
             } catch (Exception e) {

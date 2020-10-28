@@ -27,8 +27,6 @@ import org.json.JSONObject;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
-import static com.giosis.util.qdrive.barcodescanner.ManualHelper.MOBILE_SERVER_URL;
-
 public class ChangePwdActivity extends AppCompatActivity {
     String TAG = "ChangePwdActivity";
 
@@ -293,7 +291,7 @@ public class ChangePwdActivity extends AppCompatActivity {
             job.accumulate("nation_cd", DataUtil.nationCode);
 
             String methodName = "changePassword";
-            String jsonString = Custom_JsonParser.requestServerDataReturnJSON(MOBILE_SERVER_URL, methodName, job);
+            String jsonString = Custom_JsonParser.requestServerDataReturnJSON(methodName, job);
             // {"ResultCode":0,"ResultMsg":"Change Password job is completed successfully"}
             // {"ResultCode":-31,"ResultMsg":"Change Password job is failed."}
 

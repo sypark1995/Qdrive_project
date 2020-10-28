@@ -69,8 +69,6 @@ import org.json.JSONObject;
 import java.util.ArrayList;
 import java.util.Vector;
 
-import static com.giosis.util.qdrive.barcodescanner.ManualHelper.MOBILE_SERVER_URL;
-
 /***********************
  * @author jtpark_eurasia *
  *  Child View 를 갖는 Adapter  *  List 클릭 시 확장
@@ -1213,7 +1211,7 @@ public class CustomExpandableAdapter extends BaseExpandableListAdapter implement
                     + " / " + svc_nation_cd + " / " + msg + " / " + qsign_id);
 
             String methodName = "SetSendQtalkMessagebyQsign";
-            String jsonString = Custom_JsonParser.requestServerDataReturnJSON(MOBILE_SERVER_URL, methodName, job);
+            String jsonString = Custom_JsonParser.requestServerDataReturnJSON(methodName, job);
             // {"ResultCode":-99,"ResultMsg":"Cannot send a content-body with this verb-type."}
             // {"ResultCode":-10,"ResultMsg":"The buyer is not Qtalk user."}
 
@@ -1458,8 +1456,9 @@ public class CustomExpandableAdapter extends BaseExpandableListAdapter implement
         tsc.addCls();
 
         //첫번째 row
-        tsc.add1DBarcode(20, 0, LabelCommand.BARCODETYPE.CODE39S, 80, LabelCommand.READABEL.EANBEL,
-                LabelCommand.ROTATION.ROTATION_0, 2, 5, result.getInvoiceNo());
+        tsc.add1DBarcode(20, 0, LabelCommand.BARCODETYPE.CODE128, 80, LabelCommand.READABEL.EANBEL,
+                LabelCommand.ROTATION.ROTATION_0,  result.getInvoiceNo());
+
         //   tsc.addQRCode(450, 0, LabelCommand.EEC.LEVEL_L, 5, LabelCommand.ROTATION.ROTATION_0, result.getInvoiceNo());
         Bitmap bitmap = DataUtil.stringToDataMatrix(result.getInvoiceNo());
         tsc.addBitmap(450, 0, 100, bitmap);

@@ -24,8 +24,6 @@ import android.widget.TextView;
 
 import com.giosis.util.qdrive.singapore.R;
 
-import gmkt.inc.android.common.util.GMKT_Utils;
-
 /**
  *
  * @brief Indeterminate Loading ProgressBar Dialog
@@ -228,9 +226,16 @@ public class GMKT_ProgressDialog extends Dialog {
         return progressBar;
     }
 
+    public  int DPFromPixel(Context context, int pixel) {
+        float scale = context.getResources().getDisplayMetrics().density;
+
+        return (int) (pixel / 1.5f * scale);
+    }
+
+
     private int getRoundRectImageHeight(float fontSize) {
         int size = ROUND_RECT_HEIGHT + (int) (fontSize - TEXT_DEFAULT_SIZE);
-        size = GMKT_Utils.DPFromPixel(getContext(), size);
+        size = DPFromPixel(getContext(), size);
         return size;
     }
 

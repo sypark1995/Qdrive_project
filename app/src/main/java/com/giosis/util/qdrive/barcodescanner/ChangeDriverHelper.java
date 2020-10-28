@@ -29,7 +29,7 @@ import java.util.Date;
 import java.util.List;
 import java.util.TimeZone;
 
-public class ChangeDriverHelper extends ManualHelper {
+public class ChangeDriverHelper {
     String TAG = "ChangeDriverHelper";
 
     private final Context context;
@@ -192,11 +192,10 @@ public class ChangeDriverHelper extends ManualHelper {
 
         private DriverAssignResult changeDriver(String assignNo) {
 
+            Gson gson = new Gson();
             DriverAssignResult resultObj;
 
             // JSON Parser
-            Gson gson = new Gson();
-
             try {
 
                 JSONObject job = new JSONObject();
@@ -211,7 +210,7 @@ public class ChangeDriverHelper extends ManualHelper {
                 job.accumulate("nation_cd", DataUtil.nationCode);
 
                 String methodName = "SetChangeDeliveryDriver";
-                String jsonString = Custom_JsonParser.requestServerDataReturnJSON(MOBILE_SERVER_URL, methodName, job);
+                String jsonString = Custom_JsonParser.requestServerDataReturnJSON(methodName, job);
                 // {"ResultObject":[{"contr_no":"90256451","partner_ref_no":"SGSG23614214","invoice_no":"SGP163532597","stat":"D3","rcv_nm":"Ang Boon Sin","tel_no":"+65--","hp_no":"+65-9172-5419","zip_code":"791412","address":"412A FERNVALE LINK#05-13,  Singapore","sender_nm":"jenny","del_memo":"","driver_memo":"","fail_reason":"  ","partner_ref_no_fail_assign":null,"reason_fail_assign":null,"delivery_count":"0","delivery_first_date":"2020-08-23","route":"GIO","secret_no_type":" ","secret_no":"","del_hopeday":null,"course":null,"course_driver":null,"secure_delivery_yn":"N","parcel_amount":"20.41","currency":"SGD","qwms_yn":null,"order_type_etc":"DPC","del_hopedaybyDBData":null,"del_hopetime":null,"GoogleMap":null,"delivery_nation_cd":null,"lat_lng":"1.389179,103.877918"}],"ResultCode":0,"ResultMsg":"Success"}
                 resultObj = gson.fromJson(jsonString, DriverAssignResult.class);
             } catch (Exception e) {
@@ -307,7 +306,7 @@ public class ChangeDriverHelper extends ManualHelper {
                 job.accumulate("nation_cd", DataUtil.nationCode);
 
                 String methodName = "SetQdriverMessageChangeQdriver";
-                String jsonString = Custom_JsonParser.requestServerDataReturnJSON(MOBILE_SERVER_URL, methodName, job);
+                String jsonString = Custom_JsonParser.requestServerDataReturnJSON(methodName, job);
                 // {"ResultObject":null,"ResultCode":0,"ResultMsg":"OK"}
 
                 JSONObject jsonObject = new JSONObject(jsonString);

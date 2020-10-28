@@ -13,7 +13,6 @@ import android.os.Environment;
 import android.text.TextUtils;
 import android.util.Log;
 
-import com.giosis.util.qdrive.barcodescanner.ManualHelper;
 import com.giosis.util.qdrive.barcodescanner.StdResult;
 import com.giosis.util.qdrive.singapore.OnServerEventListener;
 import com.giosis.util.qdrive.singapore.R;
@@ -35,7 +34,7 @@ import java.util.ArrayList;
  * 업로드 대상건을 홈에서 넘겨 줌
  */
 
-public class DeviceDataUploadHelper extends ManualHelper {
+public class DeviceDataUploadHelper {
     String TAG = "DeviceDataUploadHelper";
 
     private final Context context;
@@ -399,7 +398,7 @@ public class DeviceDataUploadHelper extends ManualHelper {
                 }
 
 
-                String jsonString = Custom_JsonParser.requestServerDataReturnJSON(MOBILE_SERVER_URL, methodName, job);
+                String jsonString = Custom_JsonParser.requestServerDataReturnJSON(methodName, job);
                 // {"ResultCode":0,"ResultMsg":"SUCCESS"}
                 // {"ResultCode":-11,"ResultMsg":"SUCCESS"}
 

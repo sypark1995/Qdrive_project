@@ -157,9 +157,10 @@ final class BeepManager {
                     mediaPlayer.seekTo(0);
                 }
 
-                // TODO TEST  테스트하기 (시끌~)
+                // TEST  테스트하기 (시끌~)
                 String opID = SharedPreferencesHelper.getSigninOpID(activity);
-                if (opID.equals("karam.kim") && ManualHelper.MOBILE_SERVER_URL.contains("test")) {
+
+                if (opID.equals("karam.kim")) {
 
                     Log.e("krm0219", "Sound Start");
                 } else {

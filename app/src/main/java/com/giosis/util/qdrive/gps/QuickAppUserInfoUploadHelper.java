@@ -7,7 +7,6 @@ import android.content.DialogInterface.OnClickListener;
 import android.os.AsyncTask;
 import android.util.Log;
 
-import com.giosis.util.qdrive.barcodescanner.ManualHelper;
 import com.giosis.util.qdrive.barcodescanner.StdResult;
 import com.giosis.util.qdrive.singapore.R;
 import com.giosis.util.qdrive.util.Custom_JsonParser;
@@ -19,7 +18,7 @@ import org.json.JSONObject;
 import java.text.SimpleDateFormat;
 import java.util.Date;
 
-public class QuickAppUserInfoUploadHelper extends ManualHelper {
+public class QuickAppUserInfoUploadHelper {
     private String TAG = "QuickAppUserInfoUploadHelper";
 
     private final Context context;
@@ -209,7 +208,7 @@ public class QuickAppUserInfoUploadHelper extends ManualHelper {
                 job.accumulate("nation_cd", DataUtil.nationCode);
 
                 String methodName = "setQuickAppUserInfo";
-                String jsonString = Custom_JsonParser.requestServerDataReturnJSON(MOBILE_SERVER_URL, methodName, job);
+                String jsonString = Custom_JsonParser.requestServerDataReturnJSON(methodName, job);
                 // {"ResultCode":0,"ResultMsg":"OK"}
 
                 JSONObject jsonObject = new JSONObject(jsonString);

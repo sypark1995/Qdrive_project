@@ -39,8 +39,6 @@ import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Calendar;
 
-import static com.giosis.util.qdrive.barcodescanner.ManualHelper.MOBILE_SERVER_URL;
-
 /**
  * @author krm0219
  */
@@ -268,7 +266,7 @@ public class CustomerMessageListDetailActivity extends AppCompatActivity {
 
 
                 String methodName = "GetMessageToQPostOnPickupMenu";
-                String jsonString = Custom_JsonParser.requestServerDataReturnJSON(MOBILE_SERVER_URL, methodName, job);
+                String jsonString = Custom_JsonParser.requestServerDataReturnJSON(methodName, job);
 
                 resultObj = gson.fromJson(jsonString, MessageQuestionNumberResult.class);
             } catch (Exception e) {
@@ -356,7 +354,7 @@ public class CustomerMessageListDetailActivity extends AppCompatActivity {
 
 
                 String methodName = "GetQdriverMessageDetail";
-                String jsonString = Custom_JsonParser.requestServerDataReturnJSON(MOBILE_SERVER_URL, methodName, job);
+                String jsonString = Custom_JsonParser.requestServerDataReturnJSON(methodName, job);
                 new_resultString = jsonString;
 
                 resultObj = gson.fromJson(jsonString, MessageDetailResult.class);
@@ -490,7 +488,7 @@ public class CustomerMessageListDetailActivity extends AppCompatActivity {
 
 
                 String methodName = "SendQdriverMessage";
-                String jsonString = Custom_JsonParser.requestServerDataReturnJSON(MOBILE_SERVER_URL, methodName, job);
+                String jsonString = Custom_JsonParser.requestServerDataReturnJSON(methodName, job);
 
                 resultObj = gson.fromJson(jsonString, MessageSendResult.class);
             } catch (Exception e) {

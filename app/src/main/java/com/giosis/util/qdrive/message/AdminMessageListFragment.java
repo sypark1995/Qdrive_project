@@ -31,8 +31,6 @@ import org.json.JSONObject;
 
 import java.util.ArrayList;
 
-import static com.giosis.util.qdrive.barcodescanner.ManualHelper.MOBILE_SERVER_URL;
-
 
 /**
  * @author krm0219
@@ -207,7 +205,7 @@ public class AdminMessageListFragment extends Fragment {
 
 
                 String methodName = "GetQdriverMessageListFromMessenger";
-                String jsonString = Custom_JsonParser.requestServerDataReturnJSON(MOBILE_SERVER_URL, methodName, job);
+                String jsonString = Custom_JsonParser.requestServerDataReturnJSON(methodName, job);
                 new_resultString = jsonString;
 
                 resultObj = gson.fromJson(jsonString, MessageListResult.class);

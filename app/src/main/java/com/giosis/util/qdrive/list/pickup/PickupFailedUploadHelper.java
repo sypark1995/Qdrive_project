@@ -11,7 +11,6 @@ import android.os.AsyncTask;
 import android.util.Log;
 import android.widget.ImageView;
 
-import com.giosis.util.qdrive.barcodescanner.ManualHelper;
 import com.giosis.util.qdrive.barcodescanner.StdResult;
 import com.giosis.util.qdrive.singapore.OnServerEventListener;
 import com.giosis.util.qdrive.singapore.R;
@@ -28,7 +27,7 @@ import java.util.Date;
 
 // 일반 픽업 - Visit Log
 // CnR건 - Visit Log
-public class PickupFailedUploadHelper extends ManualHelper {
+public class PickupFailedUploadHelper {
     String TAG = "PickupFailedUploadHelper";
 
     private final Context context;
@@ -315,7 +314,7 @@ public class PickupFailedUploadHelper extends ManualHelper {
                 Log.e("Server", "  SetPickupUploadData DATA : " + rcvType + " / " + assignNo + " / " + lat + ", " + lon);
 
                 String methodName = "SetPickupUploadData";
-                String jsonString = Custom_JsonParser.requestServerDataReturnJSON(MOBILE_SERVER_URL, methodName, job);
+                String jsonString = Custom_JsonParser.requestServerDataReturnJSON(methodName, job);
                 // {"ResultCode":0,"ResultMsg":"SUCCESS"}
                 // {"ResultCode":-11,"ResultMsg":"SUCCESS"}
 

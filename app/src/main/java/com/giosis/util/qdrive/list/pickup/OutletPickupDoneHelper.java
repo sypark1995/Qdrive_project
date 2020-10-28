@@ -10,7 +10,6 @@ import android.graphics.Bitmap;
 import android.os.AsyncTask;
 import android.util.Log;
 
-import com.giosis.util.qdrive.barcodescanner.ManualHelper;
 import com.giosis.util.qdrive.barcodescanner.StdResult;
 import com.giosis.util.qdrive.list.SigningView;
 import com.giosis.util.qdrive.list.delivery.OnOutletDataUploadEventListener;
@@ -26,7 +25,7 @@ import org.json.JSONObject;
 import java.text.SimpleDateFormat;
 import java.util.Date;
 
-public class OutletPickupDoneHelper extends ManualHelper {
+public class OutletPickupDoneHelper {
     String TAG = "OutletPickupDoneHelper";
 
     private final Context context;
@@ -312,7 +311,7 @@ public class OutletPickupDoneHelper extends ManualHelper {
 
 
                 String methodName = "SetOutletPickupUploadData";
-                String jsonString = Custom_JsonParser.requestServerDataReturnJSON(MOBILE_SERVER_URL, methodName, job);
+                String jsonString = Custom_JsonParser.requestServerDataReturnJSON(methodName, job);
                 // {"ResultCode":-11,"ResultMsg":"Failed"}
 
                 JSONObject jsonObject = new JSONObject(jsonString);

@@ -16,7 +16,7 @@ import com.giosis.util.qdrive.util.NetworkUtil;
 
 import org.json.JSONObject;
 
-public class ConfirmMyOrderValidationCheckHelper extends ManualHelper {
+public class ConfirmMyOrderValidationCheckHelper {
     String TAG = "ConfirmMyOrderValidationCheckHelper";
 
     private final Context context;
@@ -155,7 +155,7 @@ public class ConfirmMyOrderValidationCheckHelper extends ManualHelper {
                 job.accumulate("nation_cd", DataUtil.nationCode);
 
                 String methodName = "GetValidationCheckDpc3Out";
-                String jsonString = Custom_JsonParser.requestServerDataReturnJSON(MOBILE_SERVER_URL, methodName, job);
+                String jsonString = Custom_JsonParser.requestServerDataReturnJSON(methodName, job);
                 // {"ResultCode":0,"ResultMsg":"Success"}
                 // {"ResultCode":-25,"ResultMsg":"[SG19611818]  booking failed order. Pls return to DPC."}
 

@@ -81,8 +81,6 @@ import java.util.Date;
 import java.util.List;
 import java.util.TimeZone;
 
-import static com.giosis.util.qdrive.barcodescanner.ManualHelper.MOBILE_SERVER_URL;
-
 /**
  * @author wontae
  * @editor krm0219
@@ -151,8 +149,8 @@ public class MainActivity extends AppBaseActivity {
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
 
-        Log.e("krm0219", "MainActivity onCreate()  URL : " + MyApplication.preferences.getServerURL());
         Log.e("krm0219", "User Agent : " + QDataUtil.Companion.getCustomUserAgent(MyApplication.getContext()));
+        DatabaseHelper.getInstance().getDbPath();
 
         getWindow().addFlags(WindowManager.LayoutParams.FLAG_KEEP_SCREEN_ON
                 | WindowManager.LayoutParams.FLAG_DISMISS_KEYGUARD
@@ -712,7 +710,7 @@ public class MainActivity extends AppBaseActivity {
             isGooglePlayService = ConnectionResult.SUCCESS == status;
 
             //    Log.e("krm0219", TAG + "   MANUFACTURER = " + Build.MANUFACTURER); //제조사
-            if (Build.MANUFACTURER.equals("HUAWEI") && MOBILE_SERVER_URL.contains("staging")) {  // KR 화웨이폰 - google 위치정보 못가져옴
+            if (Build.MANUFACTURER.equals("HUAWEI") && MyApplication.preferences.getServerURL().contains("staging")) {  // KR 화웨이폰 - google 위치정보 못가져옴
                 isGooglePlayService = false;
             }
             /*// TEST.
@@ -981,7 +979,8 @@ public class MainActivity extends AppBaseActivity {
 
         try {
 
-            URL url = new URL(MOBILE_SERVER_URL + "/SetGCMUserKeyRegister");
+            String apiURL = MyApplication.preferences.getServerURL() + DataUtil.API_ADDRESS;
+            URL url = new URL(apiURL + "/SetGCMUserKeyRegister");
 
             HttpURLConnection http = (HttpURLConnection) url.openConnection();
             http.setDefaultUseCaches(false);
@@ -1095,7 +1094,7 @@ public class MainActivity extends AppBaseActivity {
                 job.accumulate("nation_cd", DataUtil.nationCode);
 
                 String methodName = "GetNewMessageCount";
-                String jsonString = Custom_JsonParser.requestServerDataReturnJSON(MOBILE_SERVER_URL, methodName, job);
+                String jsonString = Custom_JsonParser.requestServerDataReturnJSON(methodName, job);
                 // {"ResultObject":0,"ResultCode":0,"ResultMsg":"OK"}
 
                 JSONObject jsonObject = new JSONObject(jsonString);
@@ -1121,7 +1120,7 @@ public class MainActivity extends AppBaseActivity {
                 job.accumulate("nation_cd", DataUtil.nationCode);
 
                 String methodName = "GetNewMessageCountFromQxSystem";
-                String jsonString = Custom_JsonParser.requestServerDataReturnJSON(MOBILE_SERVER_URL, methodName, job);
+                String jsonString = Custom_JsonParser.requestServerDataReturnJSON(methodName, job);
                 // {"ResultObject":5,"ResultCode":0,"ResultMsg":"OK"}
 
                 JSONObject jsonObject = new JSONObject(jsonString);

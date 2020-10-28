@@ -10,7 +10,6 @@ import android.graphics.Bitmap;
 import android.os.AsyncTask;
 import android.util.Log;
 
-import com.giosis.util.qdrive.barcodescanner.ManualHelper;
 import com.giosis.util.qdrive.barcodescanner.StdResult;
 import com.giosis.util.qdrive.list.SigningView;
 import com.giosis.util.qdrive.singapore.OnServerEventListener;
@@ -27,7 +26,7 @@ import org.json.JSONObject;
 import java.text.SimpleDateFormat;
 import java.util.Date;
 
-public class QuickReturnedUploadHelper extends ManualHelper {
+public class QuickReturnedUploadHelper {
     String TAG = "QuickReturnedUploadHelper";
 
     private final Context context;
@@ -273,7 +272,7 @@ public class QuickReturnedUploadHelper extends ManualHelper {
 
 
                 String methodName = "setDeliveryRTNDPTypeUploadData";
-                String jsonString = Custom_JsonParser.requestServerDataReturnJSON(MOBILE_SERVER_URL, methodName, job);
+                String jsonString = Custom_JsonParser.requestServerDataReturnJSON(methodName, job);
                 // {"ResultCode":-32,"ResultMsg":"SUCCESS"}
 
                 JSONObject jsonObject = new JSONObject(jsonString);

@@ -16,7 +16,7 @@ import com.google.gson.Gson;
 
 import org.json.JSONObject;
 
-public class ChangeDriverValidationCheckHelper extends ManualHelper {
+public class ChangeDriverValidationCheckHelper {
     String TAG = "ChangeDriverValidationCheckHelper";
 
     private final Context context;
@@ -128,11 +128,10 @@ public class ChangeDriverValidationCheckHelper extends ManualHelper {
 
         private ChangeDriverResult validateScanNo(String scan_no) {
 
+            Gson gson = new Gson();
             ChangeDriverResult resultObj;
 
             // JSON Parser
-            Gson gson = new Gson();
-
             try {
 
                 JSONObject job = new JSONObject();
@@ -142,7 +141,7 @@ public class ChangeDriverValidationCheckHelper extends ManualHelper {
                 job.accumulate("nation_cd", DataUtil.nationCode);
 
                 String methodName = "GetChangeDriverValidationCheck";
-                String jsonString = Custom_JsonParser.requestServerDataReturnJSON(MOBILE_SERVER_URL, methodName, job);
+                String jsonString = Custom_JsonParser.requestServerDataReturnJSON(methodName, job);
                 // {"ResultObject":{"contr_no":"89581332","tracking_no":"SGP163206810","status":"DPC3-OUT","del_driver_id":"Farhan_STD"},"ResultCode":0,"ResultMsg":"Success"}
                 // {"ResultObject":{"contr_no":null,"tracking_no":null,"status":null,"del_driver_id":null},"ResultCode":-1,"ResultMsg":"No data."}
                 // {"ResultObject":{"contr_no":null,"tracking_no":null,"status":null,"del_driver_id":null},"ResultCode":-8,"ResultMsg":"[SGP163353912] has been on delivery by yourself"}

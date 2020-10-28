@@ -7,7 +7,6 @@ import android.content.DialogInterface.OnClickListener;
 import android.os.AsyncTask;
 import android.util.Log;
 
-import com.giosis.util.qdrive.barcodescanner.ManualHelper;
 import com.giosis.util.qdrive.barcodescanner.StdResult;
 import com.giosis.util.qdrive.singapore.R;
 import com.giosis.util.qdrive.util.Custom_JsonParser;
@@ -16,7 +15,7 @@ import com.giosis.util.qdrive.util.NetworkUtil;
 
 import org.json.JSONObject;
 
-public class DriverPerformanceLogUploadHelper extends ManualHelper {
+public class DriverPerformanceLogUploadHelper {
     String TAG = "DriverPerformanceLogUploadHelper";
 
     private final Context context;
@@ -175,7 +174,7 @@ public class DriverPerformanceLogUploadHelper extends ManualHelper {
                 job.accumulate("nation_cd", DataUtil.nationCode);
 
                 String methodName = "setDriverPerformanceLog";
-                String jsonString = Custom_JsonParser.requestServerDataReturnJSON(MOBILE_SERVER_URL, methodName, job);
+                String jsonString = Custom_JsonParser.requestServerDataReturnJSON(methodName, job);
                 // {"ResultCode":0,"ResultMsg":"Success"}
 
                 JSONObject jsonObject = new JSONObject(jsonString);

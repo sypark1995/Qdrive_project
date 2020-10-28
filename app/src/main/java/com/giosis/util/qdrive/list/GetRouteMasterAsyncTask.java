@@ -17,8 +17,6 @@ import org.json.JSONObject;
 
 import java.util.ArrayList;
 
-import static com.giosis.util.qdrive.barcodescanner.ManualHelper.MOBILE_SERVER_URL;
-
 public class GetRouteMasterAsyncTask extends AsyncTask<Void, Void, SmartRouteResult> {
     String TAG = "GetRouteMasterAsyncTask";
 
@@ -69,7 +67,7 @@ public class GetRouteMasterAsyncTask extends AsyncTask<Void, Void, SmartRouteRes
             job.accumulate("nation_cd", DataUtil.nationCode);
 
             String methodName = "GetSmartRouteInfo";
-            String jsonString = Custom_JsonParser.requestServerDataReturnJSON(MOBILE_SERVER_URL, methodName, job);
+            String jsonString = Custom_JsonParser.requestServerDataReturnJSON(methodName, job);
             // {"ResultObject":[{"seq_no":"149","route_id":"149","route_name":"smart route 1","short_google_url":"https://xroute.page.link/62Fx","reg_dt":"2019-08-26 오전 10:04:39"}],"ResultCode":0,"ResultMsg":"SUCCESS"}
 
 

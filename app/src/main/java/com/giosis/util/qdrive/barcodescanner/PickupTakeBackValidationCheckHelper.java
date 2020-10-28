@@ -16,7 +16,7 @@ import com.giosis.util.qdrive.util.DisplayUtil;
 
 import org.json.JSONObject;
 
-public class PickupTakeBackValidationCheckHelper extends ManualHelper {
+public class PickupTakeBackValidationCheckHelper {
     String TAG = "PickupTakeBackValidationCheckHelper";
 
     private final Context context;
@@ -149,7 +149,7 @@ public class PickupTakeBackValidationCheckHelper extends ManualHelper {
                 job.accumulate("nation_cd", DataUtil.nationCode);
 
                 String methodName = "SetAddScanNo_TakeBack";
-                String jsonString = Custom_JsonParser.requestServerDataReturnJSON(MOBILE_SERVER_URL, methodName, job);
+                String jsonString = Custom_JsonParser.requestServerDataReturnJSON(methodName, job);
                 // {"ResultCode":10,"ResultMsg":"Success"}
                 // {"ResultCode":-2,"ResultMsg":"Scanned number is not take back"}
 

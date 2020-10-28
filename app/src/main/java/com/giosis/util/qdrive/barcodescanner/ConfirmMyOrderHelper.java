@@ -27,7 +27,7 @@ import java.util.Date;
 import java.util.List;
 import java.util.TimeZone;
 
-public class ConfirmMyOrderHelper extends ManualHelper {
+public class ConfirmMyOrderHelper {
     String TAG = "ConfirmMyOrderHelper";
 
     private final Context context;
@@ -164,48 +164,10 @@ public class ConfirmMyOrderHelper extends ManualHelper {
 
         private DriverAssignResult requestDriverAssign(String assignNo) {
 
+            Gson gson = new Gson();
             DriverAssignResult resultObj;
 
-            /*try {
-
-                GMKT_SyncHttpTask httpTask = new GMKT_SyncHttpTask("QSign");
-                HashMap<String, String> hmActionParam = new HashMap<>();
-                hmActionParam.put("assignList", assignNo);
-                hmActionParam.put("office_code", officeCode);
-                hmActionParam.put("del_driver_id", opID);
-                hmActionParam.put("device_id", deviceID);
-                hmActionParam.put("stat_chg_gubun", "D");
-                hmActionParam.put("app_id", DataUtil.appID);
-                hmActionParam.put("nation_cd", DataUtil.nationCode);
-
-                String methodName = "SetShippingStatDpc3out";
-                Serializer serializer = new Persister();
-
-                GMKT_HTTPResponseMessage response = httpTask.requestServerDataReturnString(MOBILE_SERVER_URL, methodName, hmActionParam);
-                String resultString = response.getResultString();
-                Log.e("Server", methodName + "  Result : " + resultString);
-                // <ResultCode>0</ResultCode><ResultMsg>Success</ResultMsg><ResultObject><QSignDeliveryList><contr_no>55003829</contr_no><partner_ref_no>SGSG105653</partner_ref_no><invoice_no>SG19611819</invoice_no><stat>D3</stat><rcv_nm>Eunyoung Lee</rcv_nm><tel_no>+65--</tel_no><hp_no>+65-8888-8888</hp_no><zip_code>408601</zip_code><address>LIFELONG LEARNING INSTITUTE 11 EUNOS ROAD 8test bbb</address><sender_nm>eeee</sender_nm><del_memo /><driver_memo /><fail_reason>  </fail_reason><delivery_count>0</delivery_count><delivery_first_date>2019-08-20</delivery_first_date><route>GIO</route><secret_no_type> </secret_no_type><secret_no /><secure_delivery_yn>N</secure_delivery_yn><parcel_amount>25.0000</parcel_amount><currency>SGD</currency><delivery_nation_cd>SG</delivery_nation_cd></QSignDeliveryList></ResultObject>
-
-                resultObj = serializer.read(DriverAssignResult.class, resultString);
-            } catch (Exception e) {
-
-                Log.e("Exception", TAG + "  SetShippingStatDpc3out Exception : " + e.toString());
-                resultObj = new DriverAssignResult();
-                resultObj.setResultCode(-1);
-                resultObj.setResultMsg(context.getResources().getString(R.string.text_fail_update));
-
-                ArrayList<DriverAssignResult.QSignDeliveryList> resultList = new ArrayList<>();
-                DriverAssignResult.QSignDeliveryList result = new DriverAssignResult.QSignDeliveryList();
-                result.setPartnerRefNoFailAssign(assignNo);
-                result.setReasonFailAssign(context.getResources().getString(R.string.text_http_request_error));
-                resultList.add(result);
-
-                resultObj.setResultObject(resultList);
-            }*/
-
             // JSON Parser
-            Gson gson = new Gson();
-
             try {
 
                 JSONObject job = new JSONObject();
@@ -218,7 +180,7 @@ public class ConfirmMyOrderHelper extends ManualHelper {
                 job.accumulate("nation_cd", DataUtil.nationCode);
 
                 String methodName = "SetShippingStatDpc3out";
-                String jsonString = Custom_JsonParser.requestServerDataReturnJSON(MOBILE_SERVER_URL, methodName, job);
+                String jsonString = Custom_JsonParser.requestServerDataReturnJSON(methodName, job);
                 resultObj = gson.fromJson(jsonString, DriverAssignResult.class);
             } catch (Exception e) {
 

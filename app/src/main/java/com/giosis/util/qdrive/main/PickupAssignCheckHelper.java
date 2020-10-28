@@ -8,7 +8,6 @@ import android.content.DialogInterface.OnClickListener;
 import android.os.AsyncTask;
 import android.util.Log;
 
-import com.giosis.util.qdrive.barcodescanner.ManualHelper;
 import com.giosis.util.qdrive.singapore.R;
 import com.giosis.util.qdrive.util.Custom_JsonParser;
 import com.giosis.util.qdrive.util.DataUtil;
@@ -18,7 +17,7 @@ import com.giosis.util.qdrive.util.NetworkUtil;
 import org.json.JSONObject;
 
 
-public class PickupAssignCheckHelper extends ManualHelper {
+public class PickupAssignCheckHelper {
     String TAG = "PickupAssignCheckHelper";
 
     private final Context context;
@@ -152,8 +151,9 @@ public class PickupAssignCheckHelper extends ManualHelper {
             job.accumulate("app_id", DataUtil.appID);
             job.accumulate("nation_cd", DataUtil.nationCode);
 
+
             String methodName = "GetManualAssignCount";
-            String jsonString = Custom_JsonParser.requestServerDataReturnJSON(MOBILE_SERVER_URL, methodName, job);
+            String jsonString = Custom_JsonParser.requestServerDataReturnJSON(methodName, job);
             // {"ResultCode":0,"ResultMsg":"OK"}
 
             JSONObject jsonObject = new JSONObject(jsonString);

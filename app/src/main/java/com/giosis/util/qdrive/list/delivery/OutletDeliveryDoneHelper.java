@@ -11,7 +11,6 @@ import android.os.AsyncTask;
 import android.text.TextUtils;
 import android.util.Log;
 
-import com.giosis.util.qdrive.barcodescanner.ManualHelper;
 import com.giosis.util.qdrive.barcodescanner.StdResult;
 import com.giosis.util.qdrive.list.BarcodeData;
 import com.giosis.util.qdrive.list.SigningView;
@@ -28,7 +27,7 @@ import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Date;
 
-public class OutletDeliveryDoneHelper extends ManualHelper {
+public class OutletDeliveryDoneHelper {
     String TAG = "OutletDeliveryDoneHelper";
 
     private final Context context;
@@ -334,7 +333,7 @@ public class OutletDeliveryDoneHelper extends ManualHelper {
 
 
                 String methodName = "SetOutletDeliveryUploadData";
-                String jsonString = Custom_JsonParser.requestServerDataReturnJSON(MOBILE_SERVER_URL, methodName, job);
+                String jsonString = Custom_JsonParser.requestServerDataReturnJSON(methodName, job);
                 // {"ResultCode":-11,"ResultMsg":"Upload Failed."}
 
                 JSONObject jsonObject = new JSONObject(jsonString);

@@ -24,7 +24,7 @@ import java.text.SimpleDateFormat;
 import java.util.Date;
 import java.util.TimeZone;
 
-public class CnRPickupValidationCheckHelper2 extends ManualHelper {
+public class CnRPickupValidationCheckHelper2 {
     String TAG = "CnRPickupValidationCheckHelper";
 
     private final Context context;
@@ -166,7 +166,7 @@ public class CnRPickupValidationCheckHelper2 extends ManualHelper {
                 job.accumulate("nation_cd", DataUtil.nationCode);
 
                 String methodName = "GetCnROrderCheck";
-                String jsonString = Custom_JsonParser.requestServerDataReturnJSON(MOBILE_SERVER_URL, methodName, job);
+                String jsonString = Custom_JsonParser.requestServerDataReturnJSON(methodName, job);
                 // {"ResultObject":{"contr_no":"55003355","partner_ref_no":"C2859SGSG","invoice_no":"C2859SGSG","stat":"P2","req_nm":"normal order","req_dt":"2019-08-2010:00-19:00","tel_no":"+65--","hp_no":"+65-8424-2354","zip_code":"048741","address":"11 PEKIN STREEThyemi3333","pickup_hopeday":"2019-08-20","pickup_hopetime":"10:00-19:00","sender_nm":"normal order","del_memo":"","driver_memo":"","fail_reason":"WA","qty":"1","cust_nm":"test191919","partner_id":"hyemi223","dr_assign_requestor":"","dr_assign_req_dt":"","dr_assign_stat":"","dr_req_no":"","failed_count":"0","route":"C2C","del_driver_id":null,"cust_no":"100054639"},"ResultCode":0,"ResultMsg":"Success"}
 
                /* Serializer serializer = new Persister();
