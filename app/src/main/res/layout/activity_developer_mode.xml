@@ -34,7 +34,7 @@
                 android:layout_below="@id/text_developer_server_url"
                 android:layout_marginTop="4dp"
                 android:enabled="false"
-                tools:text="https://qxapi.qxpress.net" />
+                tools:text="http://www.naver.com" />
 
             <RadioGroup
                 android:id="@+id/rg_developer_server_url"

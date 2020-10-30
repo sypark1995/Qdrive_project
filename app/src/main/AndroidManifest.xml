@@ -4,14 +4,18 @@
     package="com.giosis.util.qdrive.singapore"
     android:windowSoftInputMode="adjustPan">
 
+    <queries>
+        <package android:name="net.giosis.qpost" />
+    </queries>
+
     <application
         android:name="com.giosis.util.qdrive.singapore.MyApplication"
         android:allowBackup="false"
         android:fullBackupContent="false"
         android:icon="@drawable/qdrive_icon"
         android:label="@string/app_name"
-        android:requestLegacyExternalStorage="true"
         android:networkSecurityConfig="@xml/network_security_config"
+        android:requestLegacyExternalStorage="true"
         android:theme="@style/AppTheme"
         tools:replace="android:allowBackup"
         tools:targetApi="n">
@@ -206,7 +210,7 @@
 
         <activity
             android:name="com.giosis.util.qdrive.settings.DeveloperModeActivity"
-            android:screenOrientation="portrait"/>
+            android:screenOrientation="portrait" />
 
         <activity
             android:name="com.giosis.util.qdrive.settings.ModifyUserInfoActivity"
@@ -372,5 +376,6 @@
     <uses-permission android:name="com.google.android.providers.gsf.permission.WRITE_GSERVICES" />
 
     <uses-permission android:name="android.permission.GET_TASKS" />
+    <uses-permission android:name="android.permission.QUERY_ALL_PACKAGES" />
 
 </manifest>

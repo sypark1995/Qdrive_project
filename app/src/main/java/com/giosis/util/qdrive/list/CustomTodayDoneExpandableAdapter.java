@@ -638,10 +638,10 @@ public class CustomTodayDoneExpandableAdapter extends BaseExpandableListAdapter 
 
         //첫번째 row
         tsc.add1DBarcode(20, 0, LabelCommand.BARCODETYPE.CODE128, 80, LabelCommand.READABEL.EANBEL,
-                LabelCommand.ROTATION.ROTATION_0,  result.getInvoiceNo());
+                LabelCommand.ROTATION.ROTATION_0, result.getInvoiceNo());
 //        tsc.add1DBarcode(20, 0, LabelCommand.BARCODETYPE.CODE39S, 80, LabelCommand.READABEL.EANBEL,
 //                LabelCommand.ROTATION.ROTATION_0, 2, 5, result.getInvoiceNo());
-    //    tsc.addQRCode(450, 0, LabelCommand.EEC.LEVEL_L, 5, LabelCommand.ROTATION.ROTATION_0, result.getInvoiceNo());
+        //    tsc.addQRCode(450, 0, LabelCommand.EEC.LEVEL_L, 5, LabelCommand.ROTATION.ROTATION_0, result.getInvoiceNo());
         Bitmap bitmap = DataUtil.stringToDataMatrix(result.getInvoiceNo());
         tsc.addBitmap(450, 0, 100, bitmap);
 
