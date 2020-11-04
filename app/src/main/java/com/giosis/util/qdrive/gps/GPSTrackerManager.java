@@ -16,7 +16,6 @@ public class GPSTrackerManager {
 
 
     public GPSTrackerManager(Context context) {
-
         this.context = context;
         locationManager = (LocationManager) context.getSystemService(Context.LOCATION_SERVICE);
     }

@@ -33,24 +33,25 @@ public class IntroActivity extends Activity {
         finish();*/
 
         // Live10 설치 여부 확인
-        Intent intent = getPackageManager().getLaunchIntentForPackage("net.giosis.qpost");
-        if (intent == null) {
-            new AlertDialog.Builder(this)
-                    .setMessage(context.getResources().getString(R.string.msg_live10_installed))
-                    .setCancelable(false).setPositiveButton(context.getResources().getString(R.string.button_ok),
-                    new DialogInterface.OnClickListener() {
-                        @Override
-                        public void onClick(DialogInterface dialog, int which) {
-
-                            // 구글 마켓으로 이동
-                            Intent intent = new Intent(Intent.ACTION_VIEW);
-                            intent.setData(Uri.parse("market://details?id=net.giosis.qpost"));
-                            startActivity(intent);
-                            finish();
-                        }
-
-                    }).show();
-        } else {
+//        Intent intent = getPackageManager().getLaunchIntentForPackage("net.giosis.qpost");
+//        if (intent == null) {
+//            new AlertDialog.Builder(this)
+//                    .setMessage(context.getResources().getString(R.string.msg_live10_installed))
+//                    .setCancelable(false).setPositiveButton(context.getResources().getString(R.string.button_ok),
+//                    new DialogInterface.OnClickListener() {
+//                        @Override
+//                        public void onClick(DialogInterface dialog, int which) {
+//
+//                            // 구글 마켓으로 이동
+//                            Intent intent = new Intent(Intent.ACTION_VIEW);
+//                            intent.setData(Uri.parse("market://details?id=net.giosis.qpost"));
+//                            startActivity(intent);
+//                            finish();
+//                        }
+//
+//                    }).show();
+//        } else
+            {
 
             try {
 
@@ -74,7 +75,7 @@ public class IntroActivity extends Activity {
                 public void run() {
 
                     Intent intent = new Intent();
-                    intent.setClass(IntroActivity.this, LoginActivity.class);
+                    intent.setClass(IntroActivity.this, LoginActivity2.class);
                     intent.addFlags(Intent.FLAG_ACTIVITY_NO_ANIMATION);
                     startActivity(intent);
                     finish();
