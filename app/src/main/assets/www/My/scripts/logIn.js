@@ -256,7 +256,8 @@ function setRestDays() {
             pickupDriverYN: localStorage.getItem('pickupDriverYN'),
             outletDriverYN: localStorage.getItem('shuttle_driver_yn'),
             lockerStatus: localStorage.getItem('locker_driver_status'),
-            version: localStorage.getItem('version')
+            version: localStorage.getItem('version'),
+            password: localStorage.getItem('opPasswd')
         },
         closeDatabase,
         function(error) {
