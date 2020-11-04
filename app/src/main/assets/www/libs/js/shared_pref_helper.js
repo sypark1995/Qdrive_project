@@ -18,7 +18,8 @@ cordova.define("com.giosis.util.qdrive.util.SharedPreferencesHelper", function (
     					pickupDriverYN:"",
     					outletDriverYN:"",
     					lockerStatus:"",
-    					version: ""
+    					version: "",
+    					password: ""
     				};
 
     				if (options == null) { options = defaults };

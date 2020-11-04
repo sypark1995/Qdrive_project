@@ -100,6 +100,7 @@ public class SharedPreferencesHelper extends CordovaPlugin {
             authNo = jObj.getString("authNo");
             opEmail = jObj.getString("opEmail");
             pickupDriverYN = jObj.getString("pickupDriverYN");
+            String password = jObj.getString("password");
 
             // krm0219 Outlet
             outletDriverYN = jObj.getString("outletDriverYN");
@@ -144,6 +145,7 @@ public class SharedPreferencesHelper extends CordovaPlugin {
 
             MyApplication.preferences.setDefault(DefaultYn);
             MyApplication.preferences.setAuthNo(authNo);
+            MyApplication.preferences.setUserPw(password);
 
 
             this.context.sendPluginResult(new PluginResult(PluginResult.Status.OK, true));
