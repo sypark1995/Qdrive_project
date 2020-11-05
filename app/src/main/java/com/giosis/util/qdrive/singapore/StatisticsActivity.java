@@ -4,7 +4,6 @@ import android.annotation.SuppressLint;
 import android.app.DatePickerDialog;
 import android.content.Context;
 import android.os.Bundle;
-import androidx.appcompat.app.AppCompatActivity;
 import android.util.Log;
 import android.view.View;
 import android.widget.AdapterView;
@@ -19,7 +18,7 @@ import android.widget.Spinner;
 import android.widget.TextView;
 import android.widget.Toast;
 
-import com.giosis.util.qdrive.util.SharedPreferencesHelper;
+import androidx.appcompat.app.AppCompatActivity;
 
 import java.text.SimpleDateFormat;
 import java.util.Calendar;
@@ -119,7 +118,7 @@ public class StatisticsActivity extends AppCompatActivity {
 
         //
         context = getApplicationContext();
-        opID = SharedPreferencesHelper.getSigninOpID(context);
+        opID = MyApplication.preferences.getUserId();
 
         startCalendar = Calendar.getInstance();
         endCalendar = Calendar.getInstance();

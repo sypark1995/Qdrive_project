@@ -394,6 +394,51 @@
             </RelativeLayout>
 
             <LinearLayout
+                android:id="@+id/layout_setting_language"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:orientation="vertical"
+                android:visibility="visible">
+
+                <FrameLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="1dp"
+                    android:background="@color/white"
+                    android:paddingStart="20dp"
+                    android:paddingEnd="20dp">
+
+                    <View
+                        android:layout_width="match_parent"
+                        android:layout_height="match_parent"
+                        android:background="@color/color_ebebeb" />
+                </FrameLayout>
+
+                <RelativeLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="50dp"
+                    android:background="@color/white"
+                    android:paddingStart="20dp"
+                    android:paddingEnd="20dp">
+
+                    <TextView
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_centerVertical="true"
+                        android:gravity="center_vertical"
+                        android:text="@string/text_title_language_setting"
+                        android:textColor="@color/color_303030"
+                        android:textSize="@dimen/text_size_32px" />
+
+                    <Button
+                        android:layout_width="6dp"
+                        android:layout_height="11dp"
+                        android:layout_alignParentEnd="true"
+                        android:layout_centerVertical="true"
+                        android:background="@drawable/qdrive_setting_icon_arrow_r" />
+                </RelativeLayout>
+            </LinearLayout>
+
+            <LinearLayout
                 android:id="@+id/layout_setting_locker"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
@@ -471,13 +516,13 @@
             <Button
                 android:id="@+id/btn_setting_developer_mode"
                 android:layout_width="match_parent"
-                android:visibility="gone"
                 android:layout_height="50dp"
-                android:text="@string/text_developer_mode"
                 android:background="@color/color_4fb648"
+                android:text="@string/text_developer_mode"
                 android:textColor="@color/black"
                 android:textSize="@dimen/text_size_30px"
-                android:textStyle="bold" />
+                android:textStyle="bold"
+                android:visibility="gone" />
         </LinearLayout>
     </ScrollView>
 </LinearLayout>

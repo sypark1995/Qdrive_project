@@ -22,9 +22,9 @@ import androidx.annotation.Nullable;
 import androidx.appcompat.app.AppCompatActivity;
 
 import com.giosis.util.qdrive.list.RowItem;
+import com.giosis.util.qdrive.singapore.MyApplication;
 import com.giosis.util.qdrive.singapore.R;
 import com.giosis.util.qdrive.util.DatabaseHelper;
-import com.giosis.util.qdrive.util.SharedPreferencesHelper;
 
 import java.lang.reflect.Field;
 import java.util.ArrayList;
@@ -144,9 +144,9 @@ public class OutletOrderStatusActivity extends AppCompatActivity implements Sear
 
         //
         context = getApplicationContext();
-        opID = SharedPreferencesHelper.getSigninOpID(context);
-        deviceID = SharedPreferencesHelper.getSigninDeviceID(context);
-        officeCode = SharedPreferencesHelper.getSigninOfficeCode(context);
+        opID = MyApplication.preferences.getUserId();
+        deviceID = MyApplication.preferences.getDeviceUUID();
+        officeCode = MyApplication.preferences.getOfficeCode();
         databaseHelper = DatabaseHelper.getInstance();
 
 

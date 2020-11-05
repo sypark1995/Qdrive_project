@@ -84,8 +84,6 @@ public class DataUtil {
 
     // 2019.07  -  Smart Route
     public static String SHARED_PREFERENCE_FILE = "com.giosis.qdrive.sharedpreferences";
-    public static String QDRIVE_API = "qdriveApiSG";
-    public static String QDRIVE_NATION_CODE = "SG";
 
 
     public static Intent getFusedProviderService() {

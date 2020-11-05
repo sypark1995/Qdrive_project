@@ -27,8 +27,8 @@ import android.os.Vibrator;
 import android.preference.PreferenceManager;
 import android.util.Log;
 
+import com.giosis.util.qdrive.singapore.MyApplication;
 import com.giosis.util.qdrive.singapore.R;
-import com.giosis.util.qdrive.util.SharedPreferencesHelper;
 
 import java.io.IOException;
 
@@ -158,7 +158,7 @@ final class BeepManager {
                 }
 
                 // TEST  테스트하기 (시끌~)
-                String opID = SharedPreferencesHelper.getSigninOpID(activity);
+                String opID = MyApplication.preferences.getUserId();
 
                 if (opID.equals("karam.kim")) {
 

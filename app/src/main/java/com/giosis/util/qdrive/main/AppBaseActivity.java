@@ -21,11 +21,11 @@ import com.giosis.util.qdrive.list.ListActivity;
 import com.giosis.util.qdrive.main.pickupOrder.ChoosePickupTypeActivity;
 import com.giosis.util.qdrive.message.MessageListActivity;
 import com.giosis.util.qdrive.settings.SettingActivity;
+import com.giosis.util.qdrive.singapore.MyApplication;
 import com.giosis.util.qdrive.singapore.R;
 import com.giosis.util.qdrive.singapore.ScanActivity;
 import com.giosis.util.qdrive.singapore.StatisticsActivity;
 import com.giosis.util.qdrive.util.BarcodeType;
-import com.giosis.util.qdrive.util.SharedPreferencesHelper;
 
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -111,7 +111,7 @@ public class AppBaseActivity extends AppCompatActivity {
         String outletDriverYN;
         try {
 
-            outletDriverYN = SharedPreferencesHelper.getPrefSignInOutletDriver(getApplicationContext());
+            outletDriverYN = MyApplication.preferences.getOutletDriver();
         } catch (Exception e) {
 
             outletDriverYN = "N";
@@ -140,8 +140,9 @@ public class AppBaseActivity extends AppCompatActivity {
         adapter.addItem(ContextCompat.getDrawable(this, R.drawable.side_icon_list_selector), getString(R.string.navi_list), arrayList1, -1);
         adapter.addItem(ContextCompat.getDrawable(this, R.drawable.side_icon_statistics_selector), getString(R.string.navi_statistics), null, -1);
 
-        //    if(SharedPreferencesHelper.getSigninPickupDriverYN(this).equals("Y")) {
-        if (SharedPreferencesHelper.getSigninOpID(this).equals("karam.kim")) {
+
+        //    if( MyApplication.preferences.getPickupDriver().equals("Y")) {
+        if (MyApplication.preferences.getUserId().equals("karam.kim")) {
             adapter.addItem(ContextCompat.getDrawable(this, R.drawable.icon_pickup_order), getString(R.string.text_create_pickup_order), null, 4);
         }
 

@@ -3,7 +3,6 @@ package com.giosis.util.qdrive.settings;
 import android.bluetooth.BluetoothDevice;
 import android.content.Context;
 import android.os.Bundle;
-import androidx.appcompat.app.AppCompatActivity;
 import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
@@ -11,8 +10,10 @@ import android.widget.FrameLayout;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import androidx.appcompat.app.AppCompatActivity;
+
+import com.giosis.util.qdrive.singapore.MyApplication;
 import com.giosis.util.qdrive.singapore.R;
-import com.giosis.util.qdrive.util.SharedPreferencesHelper;
 
 import java.lang.reflect.Method;
 
@@ -47,7 +48,7 @@ public class ModifyDeviceInfoActivity extends AppCompatActivity {
 
         //-------------
         context = getApplicationContext();
-        opId = SharedPreferencesHelper.getSigninOpID(getApplicationContext());
+        opId = MyApplication.preferences.getUserId();
 
         String strDevice = getIntent().getStringExtra(BluetoothDeviceData.DEVICE_ID);
         device = BluetoothDeviceData.mBluetoothAdapter.getRemoteDevice(strDevice);

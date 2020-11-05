@@ -16,9 +16,9 @@ import android.widget.TextView;
 import androidx.appcompat.app.AppCompatActivity;
 
 import com.giosis.util.qdrive.barcodescanner.CaptureActivity;
+import com.giosis.util.qdrive.singapore.MyApplication;
 import com.giosis.util.qdrive.singapore.R;
 import com.giosis.util.qdrive.util.BarcodeType;
-import com.giosis.util.qdrive.util.SharedPreferencesHelper;
 
 import java.util.ArrayList;
 
@@ -45,9 +45,6 @@ public class TodayDonePickupScanListActivity extends AppCompatActivity {
 
     Context context;
     String opID = "";
-    String opName = "";
-    String officeCode = "";
-    String deviceID = "";
 
     String button_type;
     String pickup_no = "";
@@ -91,10 +88,7 @@ public class TodayDonePickupScanListActivity extends AppCompatActivity {
 
         //
         context = getApplicationContext();
-        opID = SharedPreferencesHelper.getSigninOpID(getApplicationContext());
-        opName = SharedPreferencesHelper.getSigninOpName(getApplicationContext());
-        officeCode = SharedPreferencesHelper.getSigninOfficeCode(getApplicationContext());
-        deviceID = SharedPreferencesHelper.getSigninDeviceID(getApplicationContext());
+        opID = MyApplication.preferences.getUserId();
 
         String title = getIntent().getStringExtra("title");
         pickup_no = getIntent().getStringExtra("pickup_no");

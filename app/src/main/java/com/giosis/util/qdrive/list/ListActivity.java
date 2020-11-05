@@ -31,7 +31,6 @@ import com.giosis.util.qdrive.singapore.R;
 import com.giosis.util.qdrive.util.DataUtil;
 import com.giosis.util.qdrive.util.DatabaseHelper;
 import com.giosis.util.qdrive.util.ServerResult;
-import com.giosis.util.qdrive.util.SharedPreferencesHelper;
 
 import java.text.SimpleDateFormat;
 import java.util.Date;
@@ -102,7 +101,7 @@ public class ListActivity extends FragmentActivity implements OnClickListener, L
         context = getApplicationContext();
         sharedPreferences = getSharedPreferences(DataUtil.SHARED_PREFERENCE_FILE, MODE_PRIVATE);
         dbHelper = DatabaseHelper.getInstance();
-        opID = SharedPreferencesHelper.getSigninOpID(context);
+        opID = MyApplication.preferences.getUserId();
         Log.e("Alarm", "ListActivity onCreate   " + opID);
 
         getWindow().addFlags(WindowManager.LayoutParams.FLAG_KEEP_SCREEN_ON

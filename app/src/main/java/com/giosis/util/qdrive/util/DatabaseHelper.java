@@ -23,6 +23,7 @@ public class DatabaseHelper extends SQLiteOpenHelper {
 
     public static final String DB_TABLE_INTEGRATION_LIST = "INTEGRATION_LIST";
     public static final String DB_TABLE_REST_DAYS = "REST_DAYS";
+    //TODO 삭제가능
     public static final String DB_TABLE_SCAN_DELIVERY = "SCAN_DELIVERY";
 
     private static final String CREATE_TABLE_INTEGRATION_LIST = "CREATE TABLE IF NOT EXISTS " +

@@ -13,7 +13,6 @@ import androidx.appcompat.app.AppCompatActivity;
 
 import com.giosis.util.qdrive.barcodescanner.CaptureActivity;
 import com.giosis.util.qdrive.util.BarcodeType;
-import com.giosis.util.qdrive.util.SharedPreferencesHelper;
 
 /**
  * @author krm0219
@@ -60,12 +59,12 @@ public class ScanActivity extends AppCompatActivity {
         text_top_title.setText(R.string.text_title_delivery_scan);
 
         context = getApplicationContext();
-        officeName = SharedPreferencesHelper.getSigninOfficeName(getApplicationContext());
+        officeName = MyApplication.preferences.getOfficeName();
 
         // krm0219 Outlet
         try {
 
-            outletDriverYN = SharedPreferencesHelper.getPrefSignInOutletDriver(getApplicationContext());
+            outletDriverYN = MyApplication.preferences.getOutletDriver();
         } catch (Exception e) {
 
             outletDriverYN = "N";

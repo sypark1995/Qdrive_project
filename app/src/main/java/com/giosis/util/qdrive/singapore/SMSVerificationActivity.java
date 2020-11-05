@@ -95,8 +95,8 @@ public class SMSVerificationActivity extends AppCompatActivity {
 
         //
         context = getApplicationContext();
-        deviceID = SharedPreferencesHelper.getSigninDeviceID(getApplicationContext());
-        op_id = SharedPreferencesHelper.getSigninOpID(getApplicationContext());
+        deviceID = MyApplication.preferences.getDeviceUUID();
+        op_id = MyApplication.preferences.getUserId();
 
         text_top_title.setText(R.string.text_title_sms_verification);
 
@@ -518,11 +518,9 @@ public class SMSVerificationActivity extends AppCompatActivity {
                         edit.putString(SharedPreferencesHelper.PREF_SIGN_IN_OP_NM, name);
                         edit.apply();
 
-                        if (SharedPreferencesHelper.getSigninState(getApplicationContext())) {
-                            intent.setClass(SMSVerificationActivity.this, MainActivity.class);
-                        } else {
-                            intent.setClass(SMSVerificationActivity.this, LoginActivity.class);
-                        }
+                        MyApplication.preferences.setUserName(name);
+
+                        intent.setClass(SMSVerificationActivity.this, MainActivity.class);
 
                         intent.addFlags(Intent.FLAG_ACTIVITY_NO_ANIMATION);
                         startActivity(intent);

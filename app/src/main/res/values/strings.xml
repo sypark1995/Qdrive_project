@@ -413,6 +413,7 @@
     <string name="msg_input_item_name_info">Please enter the name of your sending item. (Input within 50 characters)</string>
 
     <string name="msg_back_camera_required">Back camera is required.(LENS_FACING_BACK) \n Please use the \'Gallery\' button.</string>
+    <string name="msg_language_change_restart">The language will not change until you restart the app. Do you want to restart?</string>
 
 
     <!-- Button -->

@@ -20,12 +20,12 @@ import android.widget.Toast;
 
 import androidx.fragment.app.Fragment;
 
+import com.giosis.util.qdrive.singapore.MyApplication;
 import com.giosis.util.qdrive.singapore.R;
 import com.giosis.util.qdrive.util.Custom_JsonParser;
 import com.giosis.util.qdrive.util.DataUtil;
 import com.giosis.util.qdrive.util.DisplayUtil;
 import com.giosis.util.qdrive.util.NetworkUtil;
-import com.giosis.util.qdrive.util.SharedPreferencesHelper;
 import com.google.gson.Gson;
 
 import org.json.JSONObject;
@@ -111,7 +111,7 @@ public class CustomerMessageListFragment extends Fragment {
             return;
         } else {
 
-            opID = SharedPreferencesHelper.getSigninOpID(mContext);
+            opID = MyApplication.preferences.getUserId();
 
             handler = new AsyncHandler();
             customerThread = new CustomerThread();

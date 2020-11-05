@@ -7,7 +7,9 @@ import android.os.Build
 import android.provider.Settings
 import android.telephony.TelephonyManager
 import android.text.TextUtils
+import android.util.Log
 import androidx.core.app.ActivityCompat
+import com.giosis.util.qdrive.singapore.MyApplication
 import java.net.NetworkInterface
 import java.util.*
 
@@ -40,14 +42,13 @@ class QDataUtil {
             val config: Configuration = appContext.resources.configuration
             val systemLocale = if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.N) config.locales[0] else config.locale
 
-            val appLanguage = systemLocale.language
+            val appLanguage = MyApplication.preferences.localeLanguage
             val localeNation = if (safeEqual(appLanguage, "in")) {
                 "id"
             } else {
                 appLanguage
             }
             val localeAndLanguageCode = localeNation + "_" + getLocaleCodeByDeviceSetting(appContext)
-
 
             val userAgent = StringBuffer()
             userAgent.append("Android")

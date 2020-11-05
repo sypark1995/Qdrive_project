@@ -10,6 +10,7 @@ import android.util.Log;
 
 import androidx.multidex.MultiDexApplication;
 
+import com.giosis.util.qdrive.util.LocaleManager;
 import com.giosis.util.qdrive.util.MySharedPreferences;
 
 import java.util.Calendar;
@@ -23,6 +24,7 @@ import java.util.Calendar;
 public class MyApplication extends MultiDexApplication {
     String TAG = "MyApplication";
 
+    public static LocaleManager localeManager;
     public static MySharedPreferences preferences;
     private static Context context;
 
@@ -48,6 +50,14 @@ public class MyApplication extends MultiDexApplication {
                 PackageManager.COMPONENT_ENABLED_STATE_ENABLED,
                 PackageManager.DONT_KILL_APP);
     }
+
+    @Override
+    protected void attachBaseContext(Context base) {
+
+        localeManager = new LocaleManager(base);
+        super.attachBaseContext(localeManager.setLocale(base));
+    }
+
 
     public static Context getContext() {
         return context;

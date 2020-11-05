@@ -2,6 +2,7 @@ package com.giosis.util.qdrive.util
 
 import android.content.Context
 import android.content.SharedPreferences
+import java.util.*
 
 class MySharedPreferences(context: Context) {
 
@@ -24,9 +25,6 @@ class MySharedPreferences(context: Context) {
     private val PREF_KEY_OUTLET_LOCKER_STATUS = "lockerStatus"
     private val PREF_KEY_DEFAULT_YN = "default"
     private val PREF_KEY_AUTH_NO = "authNo"
-
-    private val PREF_KEY_LIST_SORT_INDEX = "sortIndex"
-    private val PREF_KEY_SCAN_VIBRATION = "scanVibration"
 
 
     var userId: String
@@ -79,6 +77,17 @@ class MySharedPreferences(context: Context) {
         get() = prefs.getString(PREF_KEY_OUTLET_LOCKER_STATUS, "").toString()
         set(value) = prefs.edit().putString(PREF_KEY_OUTLET_LOCKER_STATUS, value).apply()
 
+    var default: String
+        get() = prefs.getString(PREF_KEY_DEFAULT_YN, "").toString()
+        set(value) = prefs.edit().putString(PREF_KEY_DEFAULT_YN, value).apply()
+
+    var authNo: String
+        get() = prefs.getString(PREF_KEY_AUTH_NO, "").toString()
+        set(value) = prefs.edit().putString(PREF_KEY_AUTH_NO, value).apply()
+
+
+    private val PREF_KEY_LIST_SORT_INDEX = "sortIndex"
+    private val PREF_KEY_SCAN_VIBRATION = "scanVibration"
 
     var sortIndex: Int
         get() = prefs.getInt(PREF_KEY_LIST_SORT_INDEX, 0)
@@ -87,15 +96,6 @@ class MySharedPreferences(context: Context) {
     var scanVibration: String
         get() = prefs.getString(PREF_KEY_SCAN_VIBRATION, "OFF").toString()
         set(value) = prefs.edit().putString(PREF_KEY_SCAN_VIBRATION, value).apply()
-
-
-    var default: String
-        get() = prefs.getString(PREF_KEY_DEFAULT_YN, "").toString()
-        set(value) = prefs.edit().putString(PREF_KEY_DEFAULT_YN, value).apply()
-
-    var authNo: String
-        get() = prefs.getString(PREF_KEY_AUTH_NO, "").toString()
-        set(value) = prefs.edit().putString(PREF_KEY_AUTH_NO, value).apply()
 
 
     // 202008.  Auto Logout
@@ -127,4 +127,10 @@ class MySharedPreferences(context: Context) {
     var developerMode: Boolean
         get() = prefs.getBoolean(PREF_KEY_DEVELOPER_MODE, false)
         set(value) = prefs.edit().putBoolean(PREF_KEY_DEVELOPER_MODE, value).apply()
+
+
+    private val PREF_KEY_LOCALE = "localeLanguage"
+    var localeLanguage: String
+        get() = prefs.getString(PREF_KEY_LOCALE, Locale.getDefault().language).toString()
+        set(value) = prefs.edit().putString(PREF_KEY_LOCALE, value).apply()
 }

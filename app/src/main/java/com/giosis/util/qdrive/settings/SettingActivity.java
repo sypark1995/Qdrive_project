@@ -24,7 +24,6 @@ import com.giosis.util.qdrive.singapore.MyApplication;
 import com.giosis.util.qdrive.singapore.R;
 import com.giosis.util.qdrive.util.DatabaseHelper;
 import com.giosis.util.qdrive.util.DisplayUtil;
-import com.giosis.util.qdrive.util.SharedPreferencesHelper;
 
 /**
  * @author krm0219
@@ -50,6 +49,7 @@ public class SettingActivity extends AppCompatActivity {
 
     RelativeLayout layout_setting_printer_setting;
     RelativeLayout layout_setting_scan_setting;
+    LinearLayout layout_setting_language;
     LinearLayout layout_setting_locker;
     TextView text_setting_app_version;
     Button btn_setting_developer_mode;
@@ -77,6 +77,7 @@ public class SettingActivity extends AppCompatActivity {
 
         layout_setting_printer_setting = findViewById(R.id.layout_setting_printer_setting);
         layout_setting_scan_setting = findViewById(R.id.layout_setting_scan_setting);
+        layout_setting_language = findViewById(R.id.layout_setting_language);
         layout_setting_locker = findViewById(R.id.layout_setting_locker);
 
         text_setting_app_version = findViewById(R.id.text_setting_app_version);
@@ -96,6 +97,7 @@ public class SettingActivity extends AppCompatActivity {
         layout_setting_notice.setOnClickListener(clickListener);
         layout_setting_printer_setting.setOnClickListener(clickListener);
         layout_setting_scan_setting.setOnClickListener(clickListener);
+        layout_setting_language.setOnClickListener(clickListener);
         layout_setting_locker.setOnClickListener(clickListener);
         btn_setting_developer_mode.setOnClickListener(clickListener);
 
@@ -113,13 +115,13 @@ public class SettingActivity extends AppCompatActivity {
 
         initDeveloperMode();
 
-        String opId = SharedPreferencesHelper.getSigninOpID(getApplicationContext());
-        String driverName = SharedPreferencesHelper.getSigninOpName(getApplicationContext());
-        String driverEmail = SharedPreferencesHelper.getSigninOpEmail(getApplicationContext());
-        String officeName = SharedPreferencesHelper.getSigninOfficeName(getApplicationContext());
-        String outletDriverYN = SharedPreferencesHelper.getPrefSignInOutletDriver(getApplicationContext());
-        String lockerStatus = SharedPreferencesHelper.getPrefSignInLockerStatus(getApplicationContext());
-        String version = SharedPreferencesHelper.getPrefSignInVersion(getApplicationContext());
+        String opId = MyApplication.preferences.getUserId();
+        String driverName = MyApplication.preferences.getUserName();
+        String driverEmail = MyApplication.preferences.getUserEmail();
+        String officeName = MyApplication.preferences.getOfficeName();
+        String outletDriverYN = MyApplication.preferences.getOutletDriver();
+        String lockerStatus = MyApplication.preferences.getLockerStatus();
+        String version = MyApplication.preferences.getAppVersion();
 
 
         text_setting_driver_name.setText(driverName);
@@ -151,6 +153,10 @@ public class SettingActivity extends AppCompatActivity {
 //
 //            layout_setting_locker.setVisibility(View.VISIBLE);
 //        }
+
+        layout_setting_language.setVisibility(View.GONE);
+
+
     }
 
     void initDeveloperMode() {
@@ -243,6 +249,13 @@ public class SettingActivity extends AppCompatActivity {
             case R.id.layout_setting_scan_setting: {
 
                 Intent intent = new Intent(SettingActivity.this, ScanSettingActivity.class);
+                startActivity(intent);
+            }
+            break;
+
+            case R.id.layout_setting_language: {
+
+                Intent intent = new Intent(SettingActivity.this, LanguageSettingActivity.class);
                 startActivity(intent);
             }
             break;

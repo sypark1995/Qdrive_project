@@ -31,12 +31,12 @@ import android.widget.Spinner;
 import androidx.fragment.app.Fragment;
 
 import com.giosis.util.qdrive.gps.GPSTrackerManager;
+import com.giosis.util.qdrive.singapore.MyApplication;
 import com.giosis.util.qdrive.singapore.R;
 import com.giosis.util.qdrive.util.DataUtil;
 import com.giosis.util.qdrive.util.DatabaseHelper;
 import com.giosis.util.qdrive.util.PermissionActivity;
 import com.giosis.util.qdrive.util.PermissionChecker;
-import com.giosis.util.qdrive.util.SharedPreferencesHelper;
 
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -151,7 +151,7 @@ public class List_UploadFailedFragment extends Fragment implements OnQueryTextLi
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
 
         context = getActivity();
-        opID = SharedPreferencesHelper.getSigninOpID(getActivity());
+        opID = MyApplication.preferences.getUserId();
 
         view = inflater.inflate(R.layout.fragment_inprogress, container, false);
 
@@ -283,7 +283,7 @@ public class List_UploadFailedFragment extends Fragment implements OnQueryTextLi
     public void onResume() {
         super.onResume();
 
-        opID = SharedPreferencesHelper.getSigninOpID(getActivity());
+        opID = MyApplication.preferences.getUserId();
 
         Cursor cs2 = DatabaseHelper.getInstance().get("SELECT * FROM " + DatabaseHelper.DB_TABLE_INTEGRATION_LIST + " WHERE punchOut_stat <> 'S' and chg_dt is not null and reg_id='" + opID + "' order by " + orderby);
 

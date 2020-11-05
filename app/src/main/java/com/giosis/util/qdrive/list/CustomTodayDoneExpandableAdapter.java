@@ -32,10 +32,10 @@ import com.giosis.util.qdrive.portableprinter.bluetooth.GPrinterHandler;
 import com.giosis.util.qdrive.portableprinter.bluetooth.PrinterConnManager;
 import com.giosis.util.qdrive.settings.BluetoothDeviceData;
 import com.giosis.util.qdrive.settings.PrinterSettingActivity;
+import com.giosis.util.qdrive.singapore.MyApplication;
 import com.giosis.util.qdrive.singapore.R;
 import com.giosis.util.qdrive.util.DataUtil;
 import com.giosis.util.qdrive.util.NetworkUtil;
-import com.giosis.util.qdrive.util.SharedPreferencesHelper;
 import com.gprinter.command.EscCommand;
 import com.gprinter.command.LabelCommand;
 
@@ -319,7 +319,7 @@ public class CustomTodayDoneExpandableAdapter extends BaseExpandableListAdapter 
 
                 Intent intent = new Intent(context, TodayDonePickupScanListActivity.class);
                 intent.putExtra("title", context.getResources().getString(R.string.text_today_done_scan_list));
-                intent.putExtra("opID", SharedPreferencesHelper.getSigninOpID(context));
+                intent.putExtra("opID", MyApplication.preferences.getUserId());
                 intent.putExtra("pickup_no", tracking_no);
                 intent.putExtra("applicant", applicant);
                 intent.putExtra("button_type", "Add Scan");
@@ -345,7 +345,7 @@ public class CustomTodayDoneExpandableAdapter extends BaseExpandableListAdapter 
 
                 Intent intent = new Intent(context, TodayDonePickupScanListActivity.class);
                 intent.putExtra("title", context.getResources().getString(R.string.text_today_done_scan_list));
-                intent.putExtra("opID", SharedPreferencesHelper.getSigninOpID(context));
+                intent.putExtra("opID", MyApplication.preferences.getUserId());
                 intent.putExtra("pickup_no", tracking_no);
                 intent.putExtra("applicant", applicant);
                 intent.putExtra("button_type", "Take Back");
@@ -564,7 +564,7 @@ public class CustomTodayDoneExpandableAdapter extends BaseExpandableListAdapter 
         //  handler 에서 메시지 받으면 다시 버튼 클릭을 interface 함수로 호출 하고 있음 - onStartGprinter
         if (GPrinterData.printerConnManagerList.get(0).getCurrentPrinterCommand() == PrinterConnManager.PrinterCommand.TSC) {
 
-            String opId = SharedPreferencesHelper.getSigninOpID(context);
+            String opId = MyApplication.preferences.getUserId();
             Log.e("print", TAG + "  printLabel Command : " + GPrinterData.printerConnManagerList.get(0).getCurrentPrinterCommand() + " / " + tracking_no);
 
             new CnRPickupInfoGetHelper.Builder(context, opId, tracking_no)

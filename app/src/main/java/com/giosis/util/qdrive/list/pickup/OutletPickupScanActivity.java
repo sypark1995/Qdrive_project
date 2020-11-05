@@ -25,13 +25,13 @@ import androidx.appcompat.app.AppCompatActivity;
 
 import com.giosis.util.qdrive.barcodescanner.CaptureActivity;
 import com.giosis.util.qdrive.list.OutletInfo;
+import com.giosis.util.qdrive.singapore.MyApplication;
 import com.giosis.util.qdrive.singapore.R;
 import com.giosis.util.qdrive.util.BarcodeType;
 import com.giosis.util.qdrive.util.Custom_JsonParser;
 import com.giosis.util.qdrive.util.DataUtil;
 import com.giosis.util.qdrive.util.DatabaseHelper;
 import com.giosis.util.qdrive.util.DisplayUtil;
-import com.giosis.util.qdrive.util.SharedPreferencesHelper;
 import com.google.gson.Gson;
 
 import org.json.JSONObject;
@@ -138,9 +138,9 @@ public class OutletPickupScanActivity extends AppCompatActivity {
 
         //
         context = getApplicationContext();
-        opID = SharedPreferencesHelper.getSigninOpID(context);
-        officeCode = SharedPreferencesHelper.getSigninOfficeCode(context);
-        deviceID = SharedPreferencesHelper.getSigninDeviceID(context);
+        opID = MyApplication.preferences.getUserId();
+        officeCode = MyApplication.preferences.getOfficeCode();
+        deviceID = MyApplication.preferences.getDeviceUUID();
 
         mTitle = getIntent().getStringExtra("title");
         mPickupNo = getIntent().getStringExtra("pickup_no");

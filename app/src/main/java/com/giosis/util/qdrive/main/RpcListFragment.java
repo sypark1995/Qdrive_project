@@ -38,7 +38,6 @@ import com.giosis.util.qdrive.singapore.R;
 import com.giosis.util.qdrive.util.DatabaseHelper;
 import com.giosis.util.qdrive.util.PermissionActivity;
 import com.giosis.util.qdrive.util.PermissionChecker;
-import com.giosis.util.qdrive.util.SharedPreferencesHelper;
 
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
@@ -122,7 +121,7 @@ public class RpcListFragment extends Fragment implements OnQueryTextListener, On
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
 
         context = getActivity();
-        opID = SharedPreferencesHelper.getSigninOpID(getActivity());
+        opID = MyApplication.preferences.getUserId();
 
         view = inflater.inflate(R.layout.fragment_inprogress, container, false);
 
@@ -340,7 +339,7 @@ public class RpcListFragment extends Fragment implements OnQueryTextListener, On
     public void onResume() {
         super.onResume();
 
-        opID = SharedPreferencesHelper.getSigninOpID(getActivity());
+        opID = MyApplication.preferences.getUserId();
 
         dbHelper = DatabaseHelper.getInstance();
         Cursor cs = dbHelper.get("SELECT * FROM " + DatabaseHelper.DB_TABLE_INTEGRATION_LIST + " WHERE punchOut_stat = 'N' and chg_dt is null and route='RPC' and reg_id='" + opID + "' order by " + orderby);

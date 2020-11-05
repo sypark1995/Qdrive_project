@@ -40,7 +40,6 @@ import com.giosis.util.qdrive.util.DatabaseHelper;
 import com.giosis.util.qdrive.util.NDSpinner;
 import com.giosis.util.qdrive.util.PermissionActivity;
 import com.giosis.util.qdrive.util.PermissionChecker;
-import com.giosis.util.qdrive.util.SharedPreferencesHelper;
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
 import com.google.gson.reflect.TypeToken;
@@ -192,8 +191,8 @@ public class List_InProgressFragment extends Fragment implements OnQueryTextList
         progressDialog = new ProgressDialog(getActivity());
         inputMethodManager = (InputMethodManager) getActivity().getSystemService(Context.INPUT_METHOD_SERVICE);
 
-        opID = SharedPreferencesHelper.getSigninOpID(getActivity());
-        pickupDriverYn = SharedPreferencesHelper.getSigninPickupDriverYN(getActivity());
+        opID = MyApplication.preferences.getUserId();
+        pickupDriverYn = MyApplication.preferences.getPickupDriver();
         dbHelper = DatabaseHelper.getInstance();
 
         view = inflater.inflate(R.layout.fragment_inprogress, container, false);

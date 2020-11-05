@@ -217,6 +217,10 @@
             android:label="@string/app_name"
             android:screenOrientation="portrait" />
         <activity
+            android:name="com.giosis.util.qdrive.settings.LanguageSettingActivity"
+            android:screenOrientation="portrait" />
+
+        <activity
             android:name="com.giosis.util.qdrive.settings.LockerUserInfoActivity"
             android:label="@string/app_name"
             android:screenOrientation="portrait" />

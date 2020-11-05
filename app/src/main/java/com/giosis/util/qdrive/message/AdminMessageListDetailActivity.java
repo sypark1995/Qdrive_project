@@ -25,12 +25,12 @@ import android.widget.Toast;
 
 import androidx.appcompat.app.AppCompatActivity;
 
+import com.giosis.util.qdrive.singapore.MyApplication;
 import com.giosis.util.qdrive.singapore.R;
 import com.giosis.util.qdrive.util.Custom_JsonParser;
 import com.giosis.util.qdrive.util.DataUtil;
 import com.giosis.util.qdrive.util.DisplayUtil;
 import com.giosis.util.qdrive.util.NetworkUtil;
-import com.giosis.util.qdrive.util.SharedPreferencesHelper;
 import com.google.gson.Gson;
 
 import org.json.JSONObject;
@@ -95,7 +95,7 @@ public class AdminMessageListDetailActivity extends AppCompatActivity {
 
         //
         mContext = getApplicationContext();
-        opID = SharedPreferencesHelper.getSigninOpID(mContext);
+        opID = MyApplication.preferences.getUserId();
         senderID = getIntent().getStringExtra("sender_id");
 
         text_top_title.setText(senderID);

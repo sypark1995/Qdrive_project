@@ -84,7 +84,7 @@ public final class LocaleManager {
     GOOGLE_BOOK_SEARCH_COUNTRY_TLD.putAll(GOOGLE_COUNTRY_TLD);
   }
 
-  private LocaleManager() {}
+  public LocaleManager() {}
 
   /**
    * @return country-specific TLD suffix appropriate for the current default locale

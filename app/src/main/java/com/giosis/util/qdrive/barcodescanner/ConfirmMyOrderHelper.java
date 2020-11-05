@@ -9,6 +9,7 @@ import android.os.AsyncTask;
 import android.text.TextUtils;
 import android.util.Log;
 
+import com.giosis.util.qdrive.singapore.MyApplication;
 import com.giosis.util.qdrive.singapore.R;
 import com.giosis.util.qdrive.util.BarcodeType;
 import com.giosis.util.qdrive.util.Custom_JsonParser;
@@ -16,7 +17,6 @@ import com.giosis.util.qdrive.util.DataUtil;
 import com.giosis.util.qdrive.util.DatabaseHelper;
 import com.giosis.util.qdrive.util.DisplayUtil;
 import com.giosis.util.qdrive.util.GeocoderUtil;
-import com.giosis.util.qdrive.util.SharedPreferencesHelper;
 import com.google.gson.Gson;
 
 import org.json.JSONObject;
@@ -195,7 +195,7 @@ public class ConfirmMyOrderHelper {
 
     private void insertDriverAssignInfo(DriverAssignResult.QSignDeliveryList assignInfo) {
 
-        String opId = SharedPreferencesHelper.getSigninOpID(context);
+        String opId = MyApplication.preferences.getUserId();
         SimpleDateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
         dateFormat.setTimeZone(TimeZone.getTimeZone("GMT"));
         String regDataString = dateFormat.format(new Date());

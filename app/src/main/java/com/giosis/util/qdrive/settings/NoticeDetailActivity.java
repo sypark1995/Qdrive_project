@@ -13,12 +13,12 @@ import android.widget.TextView;
 
 import androidx.appcompat.app.AppCompatActivity;
 
+import com.giosis.util.qdrive.singapore.MyApplication;
 import com.giosis.util.qdrive.singapore.R;
 import com.giosis.util.qdrive.util.Custom_JsonParser;
 import com.giosis.util.qdrive.util.DataUtil;
 import com.giosis.util.qdrive.util.DisplayUtil;
 import com.giosis.util.qdrive.util.NetworkUtil;
-import com.giosis.util.qdrive.util.SharedPreferencesHelper;
 
 import org.json.JSONArray;
 import org.json.JSONObject;
@@ -83,8 +83,8 @@ public class NoticeDetailActivity extends AppCompatActivity {
 
         progressDialog = new ProgressDialog(NoticeDetailActivity.this);
         context = getApplicationContext();
-        opID = SharedPreferencesHelper.getSigninOpID(getApplicationContext());
-        officeCode = SharedPreferencesHelper.getSigninOfficeCode(getApplicationContext());
+        opID = MyApplication.preferences.getUserId();
+        officeCode = MyApplication.preferences.getOfficeCode();
 
         noticeNo = getIntent().getStringExtra("notice_no");
         Log.e("krm0219", TAG + "  notice No > " + noticeNo);

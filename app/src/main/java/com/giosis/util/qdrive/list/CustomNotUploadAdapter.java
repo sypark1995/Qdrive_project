@@ -31,13 +31,13 @@ import android.widget.TextView;
 
 import com.giosis.util.qdrive.gps.GPSTrackerManager;
 import com.giosis.util.qdrive.main.DeviceDataUploadHelper;
+import com.giosis.util.qdrive.singapore.MyApplication;
 import com.giosis.util.qdrive.singapore.OnServerEventListener;
 import com.giosis.util.qdrive.singapore.R;
 import com.giosis.util.qdrive.singapore.UploadData;
 import com.giosis.util.qdrive.util.DataUtil;
 import com.giosis.util.qdrive.util.DatabaseHelper;
 import com.giosis.util.qdrive.util.DisplayUtil;
-import com.giosis.util.qdrive.util.SharedPreferencesHelper;
 
 import java.io.File;
 import java.util.ArrayList;
@@ -262,9 +262,9 @@ public class CustomNotUploadAdapter extends BaseExpandableListAdapter {
         Button btn_list_item_child_upload = convertView.findViewById(R.id.btn_list_item_child_upload);
 
 
-        opID = SharedPreferencesHelper.getSigninOpID(context);
-        officeCode = SharedPreferencesHelper.getSigninOfficeCode(context);
-        deviceID = SharedPreferencesHelper.getSigninDeviceID(context);
+        opID = MyApplication.preferences.getUserId();
+        officeCode = MyApplication.preferences.getOfficeCode();
+        deviceID = MyApplication.preferences.getDeviceUUID();
 
         final ChildItemNotUpload child = (ChildItemNotUpload) getChild(groupPosition, childPosition);
 

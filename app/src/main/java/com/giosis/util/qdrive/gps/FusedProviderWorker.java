@@ -10,7 +10,7 @@ import android.util.Log;
 
 import androidx.core.app.ActivityCompat;
 
-import com.giosis.util.qdrive.util.SharedPreferencesHelper;
+import com.giosis.util.qdrive.singapore.MyApplication;
 import com.google.android.gms.common.ConnectionResult;
 import com.google.android.gms.common.api.GoogleApiClient;
 import com.google.android.gms.location.FusedLocationProviderClient;
@@ -55,8 +55,8 @@ public class FusedProviderWorker implements GoogleApiClient.ConnectionCallbacks,
 
         this.reference = reference;
 
-        opID = SharedPreferencesHelper.getSigninOpID(context);
-        deviceID = SharedPreferencesHelper.getSigninDeviceID(context);
+        opID = MyApplication.preferences.getUserId();
+        deviceID = MyApplication.preferences.getDeviceUUID();
 
         if (reference.equals("time_fused")) {
 

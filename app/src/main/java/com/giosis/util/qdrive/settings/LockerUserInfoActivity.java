@@ -23,12 +23,12 @@ import android.widget.Toast;
 
 import androidx.appcompat.app.AppCompatActivity;
 
+import com.giosis.util.qdrive.singapore.MyApplication;
 import com.giosis.util.qdrive.singapore.R;
 import com.giosis.util.qdrive.util.Custom_JsonParser;
 import com.giosis.util.qdrive.util.DataUtil;
 import com.giosis.util.qdrive.util.DisplayUtil;
 import com.giosis.util.qdrive.util.NetworkUtil;
-import com.giosis.util.qdrive.util.SharedPreferencesHelper;
 import com.google.gson.Gson;
 
 import org.json.JSONObject;
@@ -95,7 +95,7 @@ public class LockerUserInfoActivity extends AppCompatActivity {
 
         //
         context = getApplicationContext();
-        op_id = SharedPreferencesHelper.getSigninOpID(getApplicationContext());
+        op_id = MyApplication.preferences.getUserId();
         progressDialog = new ProgressDialog(LockerUserInfoActivity.this);
 
         text_top_title.setText(R.string.text_title_locker_user_info);
@@ -138,7 +138,7 @@ public class LockerUserInfoActivity extends AppCompatActivity {
 
                 case R.id.text_locker_user_barcode_error: {
 
-                    op_id = SharedPreferencesHelper.getSigninOpID(getApplicationContext());
+                    op_id = MyApplication.preferences.getUserId();
 
                     if (NetworkUtil.isNetworkAvailable(LockerUserInfoActivity.this)) {
 
@@ -177,7 +177,7 @@ public class LockerUserInfoActivity extends AppCompatActivity {
             this.op_id = op_id;
 
             // TEST
-           // this.op_id = "7Eleven.Ajib";
+            // this.op_id = "7Eleven.Ajib";
         }
 
         @Override
