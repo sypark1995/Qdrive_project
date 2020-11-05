@@ -54,6 +54,7 @@ import com.giosis.util.qdrive.portableprinter.bluetooth.GPrinterHandler;
 import com.giosis.util.qdrive.portableprinter.bluetooth.PrinterConnManager;
 import com.giosis.util.qdrive.settings.BluetoothDeviceData;
 import com.giosis.util.qdrive.settings.PrinterSettingActivity;
+import com.giosis.util.qdrive.singapore.MyApplication;
 import com.giosis.util.qdrive.singapore.R;
 import com.giosis.util.qdrive.util.BarcodeType;
 import com.giosis.util.qdrive.util.Custom_JsonParser;
@@ -489,7 +490,8 @@ public class CustomExpandableAdapter extends BaseExpandableListAdapter implement
 
 
         //
-        String authNo = SharedPreferencesHelper.getSigninAuthNo(context);
+//        String authNo = SharedPreferencesHelper.getSigninAuthNo(context);
+        String authNo = MyApplication.preferences.getAuthNo();
 
         final RowItem group_item = rowItem.get(groupPosition);
         final ChildItem child = (ChildItem) getChild(groupPosition, childPosition);
@@ -1126,8 +1128,12 @@ public class CustomExpandableAdapter extends BaseExpandableListAdapter implement
         final String _order_type = order_type;
         final String _tracking_no = tracking_no;
         final String _svc_nation_cd = "SG";
-        final String _qsign_id = SharedPreferencesHelper.getSigninOpID(context);
-        final String _qsign_name = SharedPreferencesHelper.getSigninOpName(context);
+
+//        final String _qsign_id = SharedPreferencesHelper.getSigninOpID(context);
+//        final String _qsign_name = SharedPreferencesHelper.getSigninOpName(context);
+        final String _qsign_id = MyApplication.preferences.getUserId();
+        final String _qsign_name = MyApplication.preferences.getUserName();
+
         final String _seller_id = seller_id;
 
         final String[] Pickup_items = {
@@ -1381,7 +1387,9 @@ public class CustomExpandableAdapter extends BaseExpandableListAdapter implement
         //  handler 에서 메시지 받으면 다시 버튼 클릭을 interface 함수로 getTodayPickupDone호출 하고 있음 - onStartGprinter
         if (GPrinterData.printerConnManagerList.get(0).getCurrentPrinterCommand() == PrinterConnManager.PrinterCommand.TSC) {
 
-            String opId = SharedPreferencesHelper.getSigninOpID(context);
+//            String opId = SharedPreferencesHelper.getSigninOpID(context);
+            String opId = MyApplication.preferences.getUserId();
+
             Log.e("print", TAG + "  printLabel Command : " + GPrinterData.printerConnManagerList.get(0).getCurrentPrinterCommand() + " / " + address + " / " + tracking_no);
 
             new CnRPickupInfoGetHelper.Builder(context, opId, tracking_no)
@@ -1457,7 +1465,7 @@ public class CustomExpandableAdapter extends BaseExpandableListAdapter implement
 
         //첫번째 row
         tsc.add1DBarcode(20, 0, LabelCommand.BARCODETYPE.CODE128, 80, LabelCommand.READABEL.EANBEL,
-                LabelCommand.ROTATION.ROTATION_0,  result.getInvoiceNo());
+                LabelCommand.ROTATION.ROTATION_0, result.getInvoiceNo());
 
         //   tsc.addQRCode(450, 0, LabelCommand.EEC.LEVEL_L, 5, LabelCommand.ROTATION.ROTATION_0, result.getInvoiceNo());
         Bitmap bitmap = DataUtil.stringToDataMatrix(result.getInvoiceNo());

@@ -13,6 +13,7 @@ import android.widget.Toast;
 
 import androidx.appcompat.app.AppCompatActivity;
 
+import com.giosis.util.qdrive.singapore.MyApplication;
 import com.giosis.util.qdrive.singapore.R;
 import com.giosis.util.qdrive.util.Custom_JsonParser;
 import com.giosis.util.qdrive.util.DataUtil;
@@ -63,9 +64,13 @@ public class ListNotInHousedActivity extends AppCompatActivity {
         //
         context = getApplicationContext();
 
-        opID = SharedPreferencesHelper.getSigninOpID(context);
-        officeCode = SharedPreferencesHelper.getSigninOfficeCode(context);
-        deviceID = SharedPreferencesHelper.getSigninDeviceID(context);
+//        opID = SharedPreferencesHelper.getSigninOpID(context);
+//        officeCode = SharedPreferencesHelper.getSigninOfficeCode(context);
+//        deviceID = SharedPreferencesHelper.getSigninDeviceID(context);
+        opID = MyApplication.preferences.getUserId();
+        officeCode = MyApplication.preferences.getOfficeCode();
+        deviceID = MyApplication.preferences.getDeviceUUID();
+
         networkType = NetworkUtil.getNetworkType(context);
 
 

@@ -57,7 +57,6 @@ import com.giosis.util.qdrive.util.NetworkUtil;
 import com.giosis.util.qdrive.util.PermissionActivity;
 import com.giosis.util.qdrive.util.PermissionChecker;
 import com.giosis.util.qdrive.util.QDataUtil;
-import com.giosis.util.qdrive.util.SharedPreferencesHelper;
 import com.google.android.gms.common.ConnectionResult;
 import com.google.android.gms.common.GoogleApiAvailability;
 import com.google.android.gms.tasks.OnSuccessListener;
@@ -198,21 +197,31 @@ public class MainActivity extends AppBaseActivity {
 
         dbHelper = DatabaseHelper.getInstance();
 
-        opID = SharedPreferencesHelper.getSigninOpID(getApplicationContext());
-        opName = SharedPreferencesHelper.getSigninOpName(getApplicationContext());
-        officeCode = SharedPreferencesHelper.getSigninOfficeCode(getApplicationContext());
-        officeName = SharedPreferencesHelper.getSigninOfficeName(getApplicationContext());
-        opDefault = SharedPreferencesHelper.getSigninOpDefaultYN(getApplicationContext());
-        deviceID = SharedPreferencesHelper.getSigninDeviceID(getApplicationContext());
-        authNo = SharedPreferencesHelper.getSigninAuthNo(getApplicationContext());
-        pickup_driver_yn = SharedPreferencesHelper.getSigninPickupDriverYN(getApplicationContext());
+//        opID = SharedPreferencesHelper.getSigninOpID(getApplicationContext());
+//        opName = SharedPreferencesHelper.getSigninOpName(getApplicationContext());
+//        officeCode = SharedPreferencesHelper.getSigninOfficeCode(getApplicationContext());
+//        officeName = SharedPreferencesHelper.getSigninOfficeName(getApplicationContext());
+//        opDefault = SharedPreferencesHelper.getSigninOpDefaultYN(getApplicationContext());
+//        deviceID = SharedPreferencesHelper.getSigninDeviceID(getApplicationContext());
+//        authNo = SharedPreferencesHelper.getSigninAuthNo(getApplicationContext());
+//        pickup_driver_yn = SharedPreferencesHelper.getSigninPickupDriverYN(getApplicationContext());
+        opID = MyApplication.preferences.getUserId();
+        opName = MyApplication.preferences.getUserName();
+        officeCode = MyApplication.preferences.getOfficeCode();
+        officeName = MyApplication.preferences.getOfficeName();
+        opDefault = MyApplication.preferences.getDefault();
+        deviceID = MyApplication.preferences.getDeviceUUID();
+        authNo = MyApplication.preferences.getAuthNo();
+        pickup_driver_yn = MyApplication.preferences.getPickupDriver();
+
         setNaviHeader(opName, officeName);
 
         // Outlet
         String outletDriverYN;
         try {
 
-            outletDriverYN = SharedPreferencesHelper.getPrefSignInOutletDriver(getApplicationContext());
+//            outletDriverYN = SharedPreferencesHelper.getPrefSignInOutletDriver(getApplicationContext());
+            outletDriverYN = MyApplication.preferences.getOutletDriver();
         } catch (Exception e) {
 
             outletDriverYN = "N";
@@ -352,7 +361,8 @@ public class MainActivity extends AppBaseActivity {
             }
         }
 
-        opID = SharedPreferencesHelper.getSigninOpID(getApplicationContext());
+        //opID = SharedPreferencesHelper.getSigninOpID(getApplicationContext());
+        opID = MyApplication.preferences.getUserId();
         initMessageCount(opID);
 
         MyApplication myApp = (MyApplication) getApplicationContext();
@@ -944,9 +954,12 @@ public class MainActivity extends AppBaseActivity {
     }
 
     private void sendAPIkey() {
+//
+//        String op_id = SharedPreferencesHelper.getSigninOpID(getApplicationContext());
+//        String device_id = SharedPreferencesHelper.getSigninDeviceID(getApplicationContext());
+        String op_id = MyApplication.preferences.getUserId();
+        String device_id = MyApplication.preferences.getDeviceUUID();
 
-        String op_id = SharedPreferencesHelper.getSigninOpID(getApplicationContext());
-        String device_id = SharedPreferencesHelper.getSigninDeviceID(getApplicationContext());
         Log.i("FCM", TAG + "  Device ID : " + device_id + "  Device Token : " + fcmToken);
 
         // TEST

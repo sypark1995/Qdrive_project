@@ -19,6 +19,7 @@ import android.widget.Spinner;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import com.giosis.util.qdrive.barcodescanner.Intents;
 import com.giosis.util.qdrive.util.SharedPreferencesHelper;
 
 import java.text.SimpleDateFormat;
@@ -119,7 +120,8 @@ public class StatisticsActivity extends AppCompatActivity {
 
         //
         context = getApplicationContext();
-        opID = SharedPreferencesHelper.getSigninOpID(context);
+//        opID = SharedPreferencesHelper.getSigninOpID(context);
+        opID = MyApplication.preferences.getUserId();
 
         startCalendar = Calendar.getInstance();
         endCalendar = Calendar.getInstance();

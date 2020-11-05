@@ -36,6 +36,7 @@ import com.giosis.util.qdrive.list.RowItem;
 import com.giosis.util.qdrive.list.delivery.DeliveryDoneActivity;
 import com.giosis.util.qdrive.list.pickup.OutletPickupScanActivity;
 import com.giosis.util.qdrive.message.CustomerMessageListDetailActivity;
+import com.giosis.util.qdrive.singapore.MyApplication;
 import com.giosis.util.qdrive.singapore.R;
 import com.giosis.util.qdrive.util.BarcodeType;
 import com.giosis.util.qdrive.util.Custom_JsonParser;
@@ -284,7 +285,7 @@ public class OutletOrderStatusAdapter extends BaseExpandableListAdapter {
         Button btn_list_item_child = convertView.findViewById(R.id.btn_list_item_child);
 
         //
-        String authNo = SharedPreferencesHelper.getSigninAuthNo(context);
+//        String authNo = SharedPreferencesHelper.getSigninAuthNo(context);
 
         final RowItem group_item = rowItem.get(groupPosition);
         final ChildItem child = (ChildItem) getChild(groupPosition, childPosition);
@@ -645,8 +646,10 @@ public class OutletOrderStatusAdapter extends BaseExpandableListAdapter {
         final String _order_type = order_type;
         final String _tracking_no = tracking_no;
         final String _svc_nation_cd = svc_nation_cd;
-        final String _qsign_id = SharedPreferencesHelper.getSigninOpID(context);
-        final String _qsign_name = SharedPreferencesHelper.getSigninOpName(context);
+//        final String _qsign_id = SharedPreferencesHelper.getSigninOpID(context);
+//        final String _qsign_name = SharedPreferencesHelper.getSigninOpName(context);
+        final String _qsign_id = MyApplication.preferences.getUserId();
+        final String _qsign_name = MyApplication.preferences.getUserName();
         final String _seller_id = seller_id;
 
         final String Pickup_items[] = {

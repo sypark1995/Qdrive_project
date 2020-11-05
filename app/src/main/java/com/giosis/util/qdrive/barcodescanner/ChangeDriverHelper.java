@@ -10,6 +10,7 @@ import android.text.TextUtils;
 import android.util.Log;
 import android.widget.Toast;
 
+import com.giosis.util.qdrive.singapore.MyApplication;
 import com.giosis.util.qdrive.singapore.R;
 import com.giosis.util.qdrive.util.BarcodeType;
 import com.giosis.util.qdrive.util.Custom_JsonParser;
@@ -226,7 +227,8 @@ public class ChangeDriverHelper {
 
     private boolean insertDriverAssignInfo(DriverAssignResult.QSignDeliveryList assignInfo) {
 
-        String opId = SharedPreferencesHelper.getSigninOpID(context);
+//        String opId = SharedPreferencesHelper.getSigninOpID(context);
+        String opId = MyApplication.preferences.getUserId();
         SimpleDateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
         dateFormat.setTimeZone(TimeZone.getTimeZone("GMT"));
         String regDataString = dateFormat.format(new Date());

@@ -122,7 +122,8 @@ public class RpcListFragment extends Fragment implements OnQueryTextListener, On
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
 
         context = getActivity();
-        opID = SharedPreferencesHelper.getSigninOpID(getActivity());
+//        opID = SharedPreferencesHelper.getSigninOpID(getActivity());
+        opID = MyApplication.preferences.getUserId();
 
         view = inflater.inflate(R.layout.fragment_inprogress, container, false);
 
@@ -340,7 +341,8 @@ public class RpcListFragment extends Fragment implements OnQueryTextListener, On
     public void onResume() {
         super.onResume();
 
-        opID = SharedPreferencesHelper.getSigninOpID(getActivity());
+//        opID = SharedPreferencesHelper.getSigninOpID(getActivity());
+        opID = MyApplication.preferences.getUserId();
 
         dbHelper = DatabaseHelper.getInstance();
         Cursor cs = dbHelper.get("SELECT * FROM " + DatabaseHelper.DB_TABLE_INTEGRATION_LIST + " WHERE punchOut_stat = 'N' and chg_dt is null and route='RPC' and reg_id='" + opID + "' order by " + orderby);

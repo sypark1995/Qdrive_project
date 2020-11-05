@@ -20,6 +20,7 @@ import androidx.appcompat.app.AppCompatActivity;
 import com.giosis.util.qdrive.gps.GPSTrackerManager;
 import com.giosis.util.qdrive.list.BarcodeData;
 import com.giosis.util.qdrive.list.SigningView;
+import com.giosis.util.qdrive.singapore.MyApplication;
 import com.giosis.util.qdrive.singapore.OnServerEventListener;
 import com.giosis.util.qdrive.singapore.R;
 import com.giosis.util.qdrive.util.DataUtil;
@@ -112,9 +113,12 @@ public class CnRPickupDoneActivity extends AppCompatActivity {
 
         //
         context = getApplicationContext();
-        opID = SharedPreferencesHelper.getSigninOpID(getApplicationContext());
-        officeCode = SharedPreferencesHelper.getSigninOfficeCode(getApplicationContext());
-        deviceID = SharedPreferencesHelper.getSigninDeviceID(getApplicationContext());
+//        opID = SharedPreferencesHelper.getSigninOpID(getApplicationContext());
+//        officeCode = SharedPreferencesHelper.getSigninOfficeCode(getApplicationContext());
+//        deviceID = SharedPreferencesHelper.getSigninDeviceID(getApplicationContext());
+        opID = MyApplication.preferences.getUserId();
+        officeCode = MyApplication.preferences.getOfficeCode();
+        deviceID = MyApplication.preferences.getDeviceUUID();
 
         String strTitle = getIntent().getStringExtra("title");
         mType = getIntent().getStringExtra("type");

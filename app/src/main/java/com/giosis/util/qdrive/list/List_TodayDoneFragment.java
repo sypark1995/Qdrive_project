@@ -23,6 +23,7 @@ import android.widget.Toast;
 import androidx.fragment.app.Fragment;
 
 import com.giosis.util.qdrive.portableprinter.bluetooth.GPrinterData;
+import com.giosis.util.qdrive.singapore.MyApplication;
 import com.giosis.util.qdrive.singapore.R;
 import com.giosis.util.qdrive.util.PermissionActivity;
 import com.giosis.util.qdrive.util.PermissionChecker;
@@ -115,7 +116,8 @@ public class List_TodayDoneFragment extends Fragment implements OnQueryTextListe
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
 
         context = getActivity();
-        opID = SharedPreferencesHelper.getSigninOpID(getActivity());
+//        opID = SharedPreferencesHelper.getSigninOpID(getActivity());
+        opID = MyApplication.preferences.getUserId();
 
         view = inflater.inflate(R.layout.fragment_inprogress, container, false);
 
@@ -130,8 +132,8 @@ public class List_TodayDoneFragment extends Fragment implements OnQueryTextListe
     public void onActivityCreated(Bundle savedInstanceState) {
         super.onActivityCreated(savedInstanceState);
 
-        opID = SharedPreferencesHelper.getSigninOpID(getActivity());
-
+//        opID = SharedPreferencesHelper.getSigninOpID(getActivity());
+        opID = MyApplication.preferences.getUserId();
         // Search
         SearchManager searchManager = (SearchManager) getActivity().getSystemService(Context.SEARCH_SERVICE);
         searchview_list.setSearchableInfo(searchManager.getSearchableInfo(getActivity().getComponentName()));
@@ -184,8 +186,8 @@ public class List_TodayDoneFragment extends Fragment implements OnQueryTextListe
         }
 
 
-        opID = SharedPreferencesHelper.getSigninOpID(getActivity());
-
+//        opID = SharedPreferencesHelper.getSigninOpID(getActivity());
+        opID = MyApplication.preferences.getUserId();
 
         new TodayDonePickupListDownloadHelper.Builder(getActivity(), opID)
                 .setOnTodayDonePickupOrderDownloadEventListener(new TodayDonePickupListDownloadHelper.OnTodayDonePickupOrderDownloadEventListener() {

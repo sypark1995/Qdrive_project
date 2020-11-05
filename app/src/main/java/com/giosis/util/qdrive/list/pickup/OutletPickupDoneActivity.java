@@ -26,6 +26,7 @@ import com.giosis.util.qdrive.gps.GPSTrackerManager;
 import com.giosis.util.qdrive.list.ListActivity;
 import com.giosis.util.qdrive.list.SigningView;
 import com.giosis.util.qdrive.list.delivery.OnOutletDataUploadEventListener;
+import com.giosis.util.qdrive.singapore.MyApplication;
 import com.giosis.util.qdrive.singapore.R;
 import com.giosis.util.qdrive.util.DataUtil;
 import com.giosis.util.qdrive.util.MemoryStatus;
@@ -114,9 +115,12 @@ public class OutletPickupDoneActivity extends AppCompatActivity {
 
         //
         context = getApplicationContext();
-        opID = SharedPreferencesHelper.getSigninOpID(context);
-        officeCode = SharedPreferencesHelper.getSigninOfficeCode(context);
-        deviceID = SharedPreferencesHelper.getSigninDeviceID(context);
+//        opID = SharedPreferencesHelper.getSigninOpID(context);
+//        officeCode = SharedPreferencesHelper.getSigninOfficeCode(context);
+//        deviceID = SharedPreferencesHelper.getSigninDeviceID(context);
+        opID = MyApplication.preferences.getUserId();
+        officeCode = MyApplication.preferences.getOfficeCode();
+        deviceID = MyApplication.preferences.getDeviceUUID();
 
         mTitle = getIntent().getStringExtra("title");
         mPickupNo = getIntent().getStringExtra("pickupNo");

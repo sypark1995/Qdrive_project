@@ -41,6 +41,7 @@ import com.giosis.util.qdrive.gps.GPSTrackerManager;
 import com.giosis.util.qdrive.list.BarcodeData;
 import com.giosis.util.qdrive.list.OutletInfo;
 import com.giosis.util.qdrive.list.SigningView;
+import com.giosis.util.qdrive.singapore.MyApplication;
 import com.giosis.util.qdrive.singapore.R;
 import com.giosis.util.qdrive.util.Camera2APIs;
 import com.giosis.util.qdrive.util.Custom_JsonParser;
@@ -209,9 +210,12 @@ public class DeliveryDoneActivity extends AppCompatActivity implements Camera2AP
         //
         context = getApplicationContext();
         camera2 = new Camera2APIs(this);
-        opID = SharedPreferencesHelper.getSigninOpID(context);
-        officeCode = SharedPreferencesHelper.getSigninOfficeCode(context);
-        deviceID = SharedPreferencesHelper.getSigninDeviceID(context);
+//        opID = SharedPreferencesHelper.getSigninOpID(context);
+//        officeCode = SharedPreferencesHelper.getSigninOfficeCode(context);
+//        deviceID = SharedPreferencesHelper.getSigninDeviceID(context);
+        opID = MyApplication.preferences.getUserId();
+        officeCode = MyApplication.preferences.getOfficeCode();
+        deviceID = MyApplication.preferences.getDeviceUUID();
 
         String strTitle = getIntent().getStringExtra("title");
         String strReceiverName = getIntent().getStringExtra("receiverName");

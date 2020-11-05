@@ -157,75 +157,75 @@ public class SharedPreferencesHelper extends CordovaPlugin {
         }
     }
 
-
-    // Getter
-    public static boolean getSigninState(Context context) {
-        SharedPreferences settings = context.getSharedPreferences(SharedPreferencesHelper.SHARED_PREF_FILE, Context.MODE_PRIVATE);
-        return settings.getBoolean(SharedPreferencesHelper.PREF_SIGN_IN_STATE, false);
-    }
-
-    public static String getSigninOpID(Context context) {
-        SharedPreferences settings = context.getSharedPreferences(SharedPreferencesHelper.SHARED_PREF_FILE, Context.MODE_PRIVATE);
-        return settings.getString(SharedPreferencesHelper.PREF_SIGN_IN_OP_ID, "");
-    }
-
-    public static String getSigninOpName(Context context) {
-        SharedPreferences settings = context.getSharedPreferences(SharedPreferencesHelper.SHARED_PREF_FILE, Context.MODE_PRIVATE);
-        return settings.getString(SharedPreferencesHelper.PREF_SIGN_IN_OP_NM, "");
-    }
-
-    public static String getSigninAuthNo(Context context) {
-        SharedPreferences settings = context.getSharedPreferences(SharedPreferencesHelper.SHARED_PREF_FILE, Context.MODE_PRIVATE);
-        return settings.getString(SharedPreferencesHelper.PREF_SIGN_IN_AUTH_NO, "");
-    }
-
-    public static String getSigninOpDefaultYN(Context context) {
-        SharedPreferences settings = context.getSharedPreferences(SharedPreferencesHelper.SHARED_PREF_FILE, Context.MODE_PRIVATE);
-        return settings.getString(SharedPreferencesHelper.PREF_SIGN_IN_OP_DEFAULT, "");
-    }
-
-    public static String getSigninOfficeCode(Context context) {
-        SharedPreferences settings = context.getSharedPreferences(SharedPreferencesHelper.SHARED_PREF_FILE, Context.MODE_PRIVATE);
-        return settings.getString(SharedPreferencesHelper.PREF_SIGN_IN_OFFICE_CD, "");
-    }
-
-    public static String getSigninOfficeName(Context context) {
-        SharedPreferences settings = context.getSharedPreferences(SharedPreferencesHelper.SHARED_PREF_FILE, Context.MODE_PRIVATE);
-        return settings.getString(SharedPreferencesHelper.PREF_SIGN_IN_OFFICE_NM, "");
-    }
-
-    public static String getSigninDeviceID(Context context) {
-        SharedPreferences settings = context.getSharedPreferences(SharedPreferencesHelper.SHARED_PREF_FILE, Context.MODE_PRIVATE);
-        return settings.getString(SharedPreferencesHelper.PREF_SIGN_IN_DEVICE_ID, "");
-    }
-
-    public static String getSigninOpEmail(Context context) {
-        SharedPreferences settings = context.getSharedPreferences(SharedPreferencesHelper.SHARED_PREF_FILE, Context.MODE_PRIVATE);
-        return settings.getString(SharedPreferencesHelper.PREF_SIGN_IN_OP_EMAIL, "");
-    }
-
-    public static String getSigninPickupDriverYN(Context context) {
-        SharedPreferences settings = context.getSharedPreferences(SharedPreferencesHelper.SHARED_PREF_FILE, Context.MODE_PRIVATE);
-        return settings.getString(SharedPreferencesHelper.PREF_SIGN_IN_OP_PICKUP_DRIVER_YN, "");
-    }
-
-    public static String getPrefSignInOutletDriver(Context context) {
-        SharedPreferences settings = context.getSharedPreferences(SharedPreferencesHelper.SHARED_PREF_FILE, Context.MODE_PRIVATE);
-        return settings.getString(SharedPreferencesHelper.PREF_SIGN_IN_OUTLET_DRIVER, "");
-    }
-
-    public static String getPrefSignInLockerStatus(Context context) {
-        SharedPreferences settings = context.getSharedPreferences(SharedPreferencesHelper.SHARED_PREF_FILE, Context.MODE_PRIVATE);
-        return settings.getString(SharedPreferencesHelper.PREF_SIGN_IN_LOCKER_STATUS, "");
-    }
-
-    public static String getPrefSignInVersion(Context context) {
-        SharedPreferences settings = context.getSharedPreferences(SharedPreferencesHelper.SHARED_PREF_FILE, Context.MODE_PRIVATE);
-        return settings.getString(SharedPreferencesHelper.PREF_SIGN_IN_VERSION, "");
-    }
-
-    public static String getPrefSignInDriverPw(Context context) {
-        SharedPreferences settings = context.getSharedPreferences(SharedPreferencesHelper.SHARED_PREF_FILE, Context.MODE_PRIVATE);
-        return settings.getString(SharedPreferencesHelper.PREF_SIGN_IN_DRIVER_PW, "");
-    }
+//
+//    // Getter
+//    public static boolean getSigninState(Context context) {
+//        SharedPreferences settings = context.getSharedPreferences(SharedPreferencesHelper.SHARED_PREF_FILE, Context.MODE_PRIVATE);
+//        return settings.getBoolean(SharedPreferencesHelper.PREF_SIGN_IN_STATE, false);
+//    }
+//
+//    public static String getSigninOpID(Context context) {
+//        SharedPreferences settings = context.getSharedPreferences(SharedPreferencesHelper.SHARED_PREF_FILE, Context.MODE_PRIVATE);
+//        return settings.getString(SharedPreferencesHelper.PREF_SIGN_IN_OP_ID, "");
+//    }
+//
+//    public static String getSigninOpName(Context context) {
+//        SharedPreferences settings = context.getSharedPreferences(SharedPreferencesHelper.SHARED_PREF_FILE, Context.MODE_PRIVATE);
+//        return settings.getString(SharedPreferencesHelper.PREF_SIGN_IN_OP_NM, "");
+//    }
+//
+//    public static String getSigninAuthNo(Context context) {
+//        SharedPreferences settings = context.getSharedPreferences(SharedPreferencesHelper.SHARED_PREF_FILE, Context.MODE_PRIVATE);
+//        return settings.getString(SharedPreferencesHelper.PREF_SIGN_IN_AUTH_NO, "");
+//    }
+//
+//    public static String getSigninOpDefaultYN(Context context) {
+//        SharedPreferences settings = context.getSharedPreferences(SharedPreferencesHelper.SHARED_PREF_FILE, Context.MODE_PRIVATE);
+//        return settings.getString(SharedPreferencesHelper.PREF_SIGN_IN_OP_DEFAULT, "");
+//    }
+//
+//    public static String getSigninOfficeCode(Context context) {
+//        SharedPreferences settings = context.getSharedPreferences(SharedPreferencesHelper.SHARED_PREF_FILE, Context.MODE_PRIVATE);
+//        return settings.getString(SharedPreferencesHelper.PREF_SIGN_IN_OFFICE_CD, "");
+//    }
+//
+//    public static String getSigninOfficeName(Context context) {
+//        SharedPreferences settings = context.getSharedPreferences(SharedPreferencesHelper.SHARED_PREF_FILE, Context.MODE_PRIVATE);
+//        return settings.getString(SharedPreferencesHelper.PREF_SIGN_IN_OFFICE_NM, "");
+//    }
+//
+//    public static String getSigninDeviceID(Context context) {
+//        SharedPreferences settings = context.getSharedPreferences(SharedPreferencesHelper.SHARED_PREF_FILE, Context.MODE_PRIVATE);
+//        return settings.getString(SharedPreferencesHelper.PREF_SIGN_IN_DEVICE_ID, "");
+//    }
+//
+//    public static String getSigninOpEmail(Context context) {
+//        SharedPreferences settings = context.getSharedPreferences(SharedPreferencesHelper.SHARED_PREF_FILE, Context.MODE_PRIVATE);
+//        return settings.getString(SharedPreferencesHelper.PREF_SIGN_IN_OP_EMAIL, "");
+//    }
+//
+//    public static String getSigninPickupDriverYN(Context context) {
+//        SharedPreferences settings = context.getSharedPreferences(SharedPreferencesHelper.SHARED_PREF_FILE, Context.MODE_PRIVATE);
+//        return settings.getString(SharedPreferencesHelper.PREF_SIGN_IN_OP_PICKUP_DRIVER_YN, "");
+//    }
+//
+//    public static String getPrefSignInOutletDriver(Context context) {
+//        SharedPreferences settings = context.getSharedPreferences(SharedPreferencesHelper.SHARED_PREF_FILE, Context.MODE_PRIVATE);
+//        return settings.getString(SharedPreferencesHelper.PREF_SIGN_IN_OUTLET_DRIVER, "");
+//    }
+//
+//    public static String getPrefSignInLockerStatus(Context context) {
+//        SharedPreferences settings = context.getSharedPreferences(SharedPreferencesHelper.SHARED_PREF_FILE, Context.MODE_PRIVATE);
+//        return settings.getString(SharedPreferencesHelper.PREF_SIGN_IN_LOCKER_STATUS, "");
+//    }
+//
+//    public static String getPrefSignInVersion(Context context) {
+//        SharedPreferences settings = context.getSharedPreferences(SharedPreferencesHelper.SHARED_PREF_FILE, Context.MODE_PRIVATE);
+//        return settings.getString(SharedPreferencesHelper.PREF_SIGN_IN_VERSION, "");
+//    }
+//
+//    public static String getPrefSignInDriverPw(Context context) {
+//        SharedPreferences settings = context.getSharedPreferences(SharedPreferencesHelper.SHARED_PREF_FILE, Context.MODE_PRIVATE);
+//        return settings.getString(SharedPreferencesHelper.PREF_SIGN_IN_DRIVER_PW, "");
+//    }
 }

@@ -95,6 +95,11 @@
 
         <TextView
             android:layout_width="wrap_content"
+            android:text="네이티브"
+            android:layout_height="wrap_content"/>
+
+        <TextView
+            android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:text="@string/login_footer"
             android:textColor="@color/color_9dd59a"

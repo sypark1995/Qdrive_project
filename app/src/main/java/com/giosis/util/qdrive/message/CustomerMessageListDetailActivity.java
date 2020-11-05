@@ -25,6 +25,7 @@ import android.widget.Toast;
 
 import androidx.appcompat.app.AppCompatActivity;
 
+import com.giosis.util.qdrive.singapore.MyApplication;
 import com.giosis.util.qdrive.singapore.R;
 import com.giosis.util.qdrive.util.Custom_JsonParser;
 import com.giosis.util.qdrive.util.DataUtil;
@@ -96,7 +97,8 @@ public class CustomerMessageListDetailActivity extends AppCompatActivity {
 
         //
         mContext = getApplicationContext();
-        opID = SharedPreferencesHelper.getSigninOpID(mContext);
+//        opID = SharedPreferencesHelper.getSigninOpID(mContext);
+        opID = MyApplication.preferences.getUserId();
 
         questionNo = Integer.toString(getIntent().getIntExtra("question_no", 0));       // 최초 0
         trackingNo = getIntent().getStringExtra("tracking_no");

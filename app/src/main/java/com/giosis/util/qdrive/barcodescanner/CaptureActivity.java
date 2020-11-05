@@ -92,7 +92,6 @@ import com.giosis.util.qdrive.util.MemoryStatus;
 import com.giosis.util.qdrive.util.NetworkUtil;
 import com.giosis.util.qdrive.util.PermissionActivity;
 import com.giosis.util.qdrive.util.PermissionChecker;
-import com.giosis.util.qdrive.util.SharedPreferencesHelper;
 import com.google.zxing.Result;
 
 import java.io.Serializable;
@@ -305,12 +304,15 @@ public final class CaptureActivity extends AppCompatActivity implements SurfaceH
         //------------------
         context = getApplicationContext();
         inputMethodManager = (InputMethodManager) getSystemService(Context.INPUT_METHOD_SERVICE);
-        opID = SharedPreferencesHelper.getSigninOpID(getApplicationContext());
-        officeCode = SharedPreferencesHelper.getSigninOfficeCode(getApplicationContext());
-        deviceID = SharedPreferencesHelper.getSigninDeviceID(getApplicationContext());
-
+//        opID = SharedPreferencesHelper.getSigninOpID(getApplicationContext());
+//        officeCode = SharedPreferencesHelper.getSigninOfficeCode(getApplicationContext());
+//        deviceID = SharedPreferencesHelper.getSigninDeviceID(getApplicationContext());
+        opID = MyApplication.preferences.getUserId();
+        officeCode = MyApplication.preferences.getOfficeCode();
+        deviceID = MyApplication.preferences.getDeviceUUID();
         try {
-            outletDriverYN = SharedPreferencesHelper.getPrefSignInOutletDriver(getApplicationContext());
+//            outletDriverYN = SharedPreferencesHelper.getPrefSignInOutletDriver(getApplicationContext());
+            outletDriverYN = MyApplication.preferences.getOutletDriver();
         } catch (Exception e) {
             outletDriverYN = "N";
         }

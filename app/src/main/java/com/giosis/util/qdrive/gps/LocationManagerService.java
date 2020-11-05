@@ -10,12 +10,13 @@ import android.content.Intent;
 import android.location.LocationManager;
 import android.os.Build;
 import android.os.IBinder;
-import androidx.core.app.NotificationCompat;
 import android.util.Log;
 
+import androidx.core.app.NotificationCompat;
+
 import com.giosis.util.qdrive.main.MainActivity;
+import com.giosis.util.qdrive.singapore.MyApplication;
 import com.giosis.util.qdrive.singapore.R;
-import com.giosis.util.qdrive.util.SharedPreferencesHelper;
 
 public class LocationManagerService extends Service {
     String TAG = "LocationManagerService";
@@ -38,8 +39,10 @@ public class LocationManagerService extends Service {
     @Override
     public int onStartCommand(Intent intent, int flags, int startId) {
 
-        opID = SharedPreferencesHelper.getSigninOpID(this);
-        deviceID = SharedPreferencesHelper.getSigninDeviceID(this);
+//        opID = SharedPreferencesHelper.getSigninOpID(this);
+//        deviceID = SharedPreferencesHelper.getSigninDeviceID(this);
+        opID = MyApplication.preferences.getUserId();
+        deviceID = MyApplication.preferences.getDeviceUUID();
 
         startLocationService();
 

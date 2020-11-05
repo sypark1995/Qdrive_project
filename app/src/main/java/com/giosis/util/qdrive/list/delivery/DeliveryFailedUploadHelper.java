@@ -13,6 +13,7 @@ import android.widget.ImageView;
 import android.widget.Toast;
 
 import com.giosis.util.qdrive.barcodescanner.StdResult;
+import com.giosis.util.qdrive.singapore.MyApplication;
 import com.giosis.util.qdrive.singapore.OnServerEventListener;
 import com.giosis.util.qdrive.singapore.R;
 import com.giosis.util.qdrive.util.Custom_JsonParser;
@@ -323,7 +324,8 @@ public class DeliveryFailedUploadHelper {
     // SQLite UPDATE
     private void updateReceiverSign(String invoiceNo, String driverMemo) {
 
-        String opId = SharedPreferencesHelper.getSigninOpID(context);
+//        String opId = SharedPreferencesHelper.getSigninOpID(context);
+        String opId = MyApplication.preferences.getUserId();
 
         SimpleDateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
         Date date = new Date();

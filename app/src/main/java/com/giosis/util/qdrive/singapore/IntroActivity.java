@@ -75,7 +75,7 @@ public class IntroActivity extends Activity {
                 public void run() {
 
                     Intent intent = new Intent();
-                    intent.setClass(IntroActivity.this, LoginActivity2.class);
+                    intent.setClass(IntroActivity.this, LoginActivity.class);
                     intent.addFlags(Intent.FLAG_ACTIVITY_NO_ANIMATION);
                     startActivity(intent);
                     finish();

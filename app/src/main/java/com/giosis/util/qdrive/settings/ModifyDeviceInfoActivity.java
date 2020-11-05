@@ -11,6 +11,7 @@ import android.widget.FrameLayout;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import com.giosis.util.qdrive.singapore.MyApplication;
 import com.giosis.util.qdrive.singapore.R;
 import com.giosis.util.qdrive.util.SharedPreferencesHelper;
 
@@ -47,7 +48,8 @@ public class ModifyDeviceInfoActivity extends AppCompatActivity {
 
         //-------------
         context = getApplicationContext();
-        opId = SharedPreferencesHelper.getSigninOpID(getApplicationContext());
+//        opId = SharedPreferencesHelper.getSigninOpID(getApplicationContext());
+        opId = MyApplication.preferences.getUserId();
 
         String strDevice = getIntent().getStringExtra(BluetoothDeviceData.DEVICE_ID);
         device = BluetoothDeviceData.mBluetoothAdapter.getRemoteDevice(strDevice);

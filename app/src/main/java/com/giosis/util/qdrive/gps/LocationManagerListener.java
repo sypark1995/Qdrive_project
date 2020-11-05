@@ -7,10 +7,11 @@ import android.location.Location;
 import android.location.LocationListener;
 import android.location.LocationManager;
 import android.os.Bundle;
-import androidx.core.app.ActivityCompat;
 import android.util.Log;
 
-import com.giosis.util.qdrive.util.SharedPreferencesHelper;
+import androidx.core.app.ActivityCompat;
+
+import com.giosis.util.qdrive.singapore.MyApplication;
 
 public class LocationManagerListener implements LocationListener {
     private String TAG = "LocationManagerListener";
@@ -25,11 +26,15 @@ public class LocationManagerListener implements LocationListener {
     private float minDistance;
     private String provider = "";
 
+
+
     LocationManagerListener(Context context, String reference) {
 
         this.context = context;
-        opID = SharedPreferencesHelper.getSigninOpID(context);
-        deviceID = SharedPreferencesHelper.getSigninDeviceID(context);
+//        opID = SharedPreferencesHelper.getSigninOpID(context);
+//        deviceID = SharedPreferencesHelper.getSigninDeviceID(context);
+        opID = MyApplication.preferences.getUserId();
+        deviceID = MyApplication.preferences.getDeviceUUID();
 
         this.reference = reference;
 

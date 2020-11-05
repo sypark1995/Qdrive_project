@@ -1,10 +1,12 @@
 package com.giosis.util.qdrive.server
 
+import android.util.Log
 import com.giosis.util.qdrive.singapore.MyApplication
 import com.giosis.util.qdrive.util.QDataUtil
 import okhttp3.Interceptor
 import okhttp3.OkHttpClient
 import okhttp3.Response
+import okhttp3.logging.HttpLoggingInterceptor
 import retrofit2.Retrofit
 import retrofit2.converter.gson.GsonConverterFactory
 
@@ -14,12 +16,11 @@ object RetrofitClient {
     const val TAG = "Retrofit"
     private var BASE_URL :String = ""
         get() {
-            return "https://qxapi.qxpress.net/GMKT.INC.GLPS.MobileApiService/GlobalMobileService.qapi"
+            return "https://qxapi.qxpress.net/GMKT.INC.GLPS.MobileApiService/GlobalMobileService.qapi/"
         }
 
     class AppInterceptor : Interceptor {
         override fun intercept(chain: Interceptor.Chain): Response = with(chain) {
-
             val newRequest = request().newBuilder()
                     .addHeader("User-Agent", QDataUtil.getCustomUserAgent(MyApplication.getContext())) // TODO kjyoo user agent check
                     .build()
@@ -28,10 +29,22 @@ object RetrofitClient {
         }
     }
 
+    private fun loggingInterceptor(): HttpLoggingInterceptor {
+        val interceptor = HttpLoggingInterceptor(object : HttpLoggingInterceptor.Logger {
+            override fun log(message: String) {
+                Log.i(TAG, message + "")
+            }
+        })
+        // BASIC
+        // HEADERS
+        // BODY
+        return interceptor.setLevel(HttpLoggingInterceptor.Level.BASIC)
+    }
+
     private fun provideOkHttpClient(interceptor: AppInterceptor): OkHttpClient =
             OkHttpClient.Builder().run {
-
                 addInterceptor(interceptor)
+                addInterceptor(loggingInterceptor())
                 build()
             }
 

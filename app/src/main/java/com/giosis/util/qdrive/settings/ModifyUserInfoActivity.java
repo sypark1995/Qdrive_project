@@ -18,6 +18,7 @@ import android.widget.TextView;
 import androidx.appcompat.app.AppCompatActivity;
 
 import com.giosis.util.qdrive.barcodescanner.StdResult;
+import com.giosis.util.qdrive.singapore.MyApplication;
 import com.giosis.util.qdrive.singapore.R;
 import com.giosis.util.qdrive.util.Custom_JsonParser;
 import com.giosis.util.qdrive.util.DataUtil;
@@ -70,9 +71,13 @@ public class ModifyUserInfoActivity extends AppCompatActivity {
 
         //
         context = getApplicationContext();
-        op_id = SharedPreferencesHelper.getSigninOpID(getApplicationContext());
-        opName = SharedPreferencesHelper.getSigninOpName(getApplicationContext());
-        opEmail = SharedPreferencesHelper.getSigninOpEmail(getApplicationContext());
+//        op_id = SharedPreferencesHelper.getSigninOpID(getApplicationContext());
+//        opName = SharedPreferencesHelper.getSigninOpName(getApplicationContext());
+//        opEmail = SharedPreferencesHelper.getSigninOpEmail(getApplicationContext());
+
+        op_id = MyApplication.preferences.getUserId();
+        opName = MyApplication.preferences.getUserName();
+        opEmail = MyApplication.preferences.getUserEmail();
 
         if (opEmail.equals("null")) {
             opEmail = "";

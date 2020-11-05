@@ -60,12 +60,14 @@ public class ScanActivity extends AppCompatActivity {
         text_top_title.setText(R.string.text_title_delivery_scan);
 
         context = getApplicationContext();
-        officeName = SharedPreferencesHelper.getSigninOfficeName(getApplicationContext());
+//        officeName = SharedPreferencesHelper.getSigninOfficeName(getApplicationContext());
+        officeName = MyApplication.preferences.getOfficeName();
 
         // krm0219 Outlet
         try {
 
-            outletDriverYN = SharedPreferencesHelper.getPrefSignInOutletDriver(getApplicationContext());
+//            outletDriverYN = SharedPreferencesHelper.getPrefSignInOutletDriver(getApplicationContext());
+            outletDriverYN = MyApplication.preferences.getOutletDriver();
         } catch (Exception e) {
 
             outletDriverYN = "N";

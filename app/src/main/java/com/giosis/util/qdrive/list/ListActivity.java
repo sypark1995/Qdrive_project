@@ -102,7 +102,9 @@ public class ListActivity extends FragmentActivity implements OnClickListener, L
         context = getApplicationContext();
         sharedPreferences = getSharedPreferences(DataUtil.SHARED_PREFERENCE_FILE, MODE_PRIVATE);
         dbHelper = DatabaseHelper.getInstance();
-        opID = SharedPreferencesHelper.getSigninOpID(context);
+//        opID = SharedPreferencesHelper.getSigninOpID(context);
+        opID =MyApplication.preferences.getUserId();
+
         Log.e("Alarm", "ListActivity onCreate   " + opID);
 
         getWindow().addFlags(WindowManager.LayoutParams.FLAG_KEEP_SCREEN_ON

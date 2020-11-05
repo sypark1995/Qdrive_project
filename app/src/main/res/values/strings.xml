@@ -25,6 +25,7 @@
     <string name="msg_please_input_id">Please input ID.</string>
     <string name="msg_please_input_password">Please input Password.</string>
     <string name="msg_db_problem">Sorry, DB encountered a problem. You may need to restart the device.</string>
+    <string name="msg_update_version">Qdrive is updated to v%1$s\nYour Qdrive versions is v%2$s\nYour version will be upgraded.</string>
 
     <string name="text_title_fail_list">Fail List</string>
     <string name="text_title_change_password">Change Password</string>

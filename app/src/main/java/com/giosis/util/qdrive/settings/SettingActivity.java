@@ -112,14 +112,22 @@ public class SettingActivity extends AppCompatActivity {
         super.onResume();
 
         initDeveloperMode();
-
-        String opId = SharedPreferencesHelper.getSigninOpID(getApplicationContext());
-        String driverName = SharedPreferencesHelper.getSigninOpName(getApplicationContext());
-        String driverEmail = SharedPreferencesHelper.getSigninOpEmail(getApplicationContext());
-        String officeName = SharedPreferencesHelper.getSigninOfficeName(getApplicationContext());
-        String outletDriverYN = SharedPreferencesHelper.getPrefSignInOutletDriver(getApplicationContext());
-        String lockerStatus = SharedPreferencesHelper.getPrefSignInLockerStatus(getApplicationContext());
-        String version = SharedPreferencesHelper.getPrefSignInVersion(getApplicationContext());
+//
+//        String opId = SharedPreferencesHelper.getSigninOpID(getApplicationContext());
+//        String driverName = SharedPreferencesHelper.getSigninOpName(getApplicationContext());
+//        String driverEmail = SharedPreferencesHelper.getSigninOpEmail(getApplicationContext());
+//        String officeName = SharedPreferencesHelper.getSigninOfficeName(getApplicationContext());
+//        String outletDriverYN = SharedPreferencesHelper.getPrefSignInOutletDriver(getApplicationContext());
+//        String lockerStatus = SharedPreferencesHelper.getPrefSignInLockerStatus(getApplicationContext());
+//        String version = SharedPreferencesHelper.getPrefSignInVersion(getApplicationContext());
+//
+        String opId = MyApplication.preferences.getUserId();
+        String driverName = MyApplication.preferences.getUserName();
+        String driverEmail = MyApplication.preferences.getUserEmail();
+        String officeName =  MyApplication.preferences.getOfficeName();
+        String outletDriverYN = MyApplication.preferences.getOutletDriver();
+        String lockerStatus = MyApplication.preferences.getLockerStatus();
+        String version = MyApplication.preferences.getAppVersion();
 
 
         text_setting_driver_name.setText(driverName);
