@@ -7,7 +7,6 @@ import com.giosis.library.R
 import com.giosis.library.server.APIModel
 import com.giosis.library.server.RetrofitClient
 import com.giosis.library.util.DisplayUtil
-import com.google.gson.Gson
 import kotlinx.android.synthetic.main.activity_change_pwd.*
 import kotlinx.android.synthetic.main.top_title.*
 import retrofit2.Call
@@ -74,7 +73,7 @@ class ChangePasswordActivity : AppCompatActivity() {
                         if (response.isSuccessful) {
                             if (response.body() != null && response.body()!!.resultCode == 0) {
 //                                val loginData = Gson().fromJson(response.body()!!.resultObject, LoginInfo::class.java)
-
+// TODO kjyoo
                             }
                         }
 
