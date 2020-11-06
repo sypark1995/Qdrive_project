@@ -24,7 +24,6 @@ android {
     }
 
     lintOptions {
-
         checkReleaseBuilds false
     }
 
