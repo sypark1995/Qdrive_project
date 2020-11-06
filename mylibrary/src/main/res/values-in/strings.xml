@@ -1,0 +1,1153 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="app_name">Qdrive Malaysia</string>
+    <string name="text_malaysia">Malaysia</string>
+    <string name="text_Indonesia">Indonesia</string>
+
+    <string name="navi_home">Halaman utama</string>
+    <string name="navi_scan">Memindai</string>
+    <string name="navi_list">Daftar</string>
+    <string name="navi_statistics">Statistik</string>
+    <string name="navi_setting">Pengaturan</string>
+
+    <string name="navi_sub_confirm_delivery">Konfirmasi order pengiriman saya</string>
+    <string name="navi_sub_delivery_done">Pengiriman selesai</string>
+    <string name="navi_sub_pickup">Penjemputan paket</string>
+    <string name="navi_sub_self">Koleksi pribadi</string>
+    <string name="navi_sub_in_progress">Dalam proses</string>
+    <string name="navi_sub_upload_fail">Gagal mengunggah</string>
+    <string name="navi_sub_today_done">Hari ini selesai</string>
+    <string name="navi_sub_not_in_housed">Paket tidak di dalam</string>
+
+    <string name="text_title_7e_store_delivery">Pengiriman ke Toko 7 eleven</string>
+    <string name="text_title_fl_delivery">Loker pengiriman gabungan</string>
+    <string name="text_title_fail_list">Daftar gagal</string>
+    <string name="text_title_pod_list">Bukti tanda terima</string>
+    <string name="text_title_change_password">Ganti kata kunci</string>
+    <string name="text_title_my_info">Informasi saya</string>
+    <string name="text_title_message">Pesan</string>
+    <string name="text_title_printer_setting">Pengaturan printer</string>
+    <string name="text_title_device_info">Informas perangkat</string>
+    <string name="text_title_sms_verification">SMS Verifikasi</string>
+    <string name="text_title_scan_setting">Pengaturan pemindai</string>
+    <string name="text_title_fl_pickup">Loker penjemputan gabungan</string>
+    <string name="text_title_locker_user_info">Loker Informasi pengguna gabungan</string>
+    <string name="text_title_delivery_scan">Pemindaian pengiriman</string>
+    <string name="text_title_language_setting">Pengaturan bahasa</string>
+    <string name="text_title_scan_barcode">(Langkah 1) memindai barcode</string>
+    <string name="text_cnr_pickup_done">penjemputan barang selesai untuk</string>
+    <string name="text_title_add_pickup">Tambahkan no. pindai penjemputan</string>
+    <string name="text_title_driver_assign">Tugas pengemudi</string>
+    <string name="text_title_scan_pickup_cnr">Memindai penjemputan barang</string>
+    <string name="text_title_notice">Pemberitahuan</string>
+
+    <!-- Text -->
+    <string name="text_office">Kantor</string>
+    <string name="text_total_qty">Jumlah total</string>
+    <string name="text_in_progress">Dalam proses </string>
+    <string name="text_delivery">Pengiriman</string>
+    <string name="text_pickup">Penjemputan</string>
+    <string name="text_rpc">Klaim Pengembalian Paket</string>
+    <string name="text_downloading">Mengunduh</string>
+    <string name="text_download_result">[Mengunduh] Hasil</string>
+    <string name="text_upload_result">[Unggah] Hasil</string>
+    <string name="text_upload_failed_msg">Gagal : %1$s</string>
+    <string name="text_exception">Pengecualian : %1$s</string>
+    <string name="text_upload_success_count">Unggah berhasil : %1$d</string>
+    <string name="text_upload_fail_count">Unggah berhasil : %1$d\nUnggah gagal : %2$d\nAlasan gagal : %3$s</string>
+    <string name="text_upload_fail_count3">Unggah berhasil : %1$d\nUnggah gagal : %2$d</string>
+    <string name="text_location_setting">Pengaturan lokasi</string>
+
+    <string name="text_upload_failed">Unggah gagal</string>
+    <string name="text_today_done">Hari ini selesai</string>
+    <string name="text_search">Pencarian</string>
+    <string name="text_sort_postal_code_asc">Kode pos : rendah ke tinggi</string>
+    <string name="text_sort_postal_code_desc">Kode pos : tinggi ke rendah</string>
+    <string name="text_sort_tracking_no_asc">No. Pelacakan : rendah ke tinggi</string>
+    <string name="text_sort_tracking_no_desc">No. pelacakan : tinggi ke rendah</string>
+    <string name="text_sort_name_asc">Nama : rendah ke tinggi</string>
+    <string name="text_sort_name_desc">Nama : tinggi ke rendah</string>
+    <string name="text_receipt_name">Nama penerima&#160;:&#160;</string>
+    <string name="text_parcel_qty">Jumlah paket&#160;:&#160;</string>
+    <string name="text_desired_date">Tanggal yang diinginkan&#160;:&#160;</string>
+    <string name="text_qty">Jumlah&#160;:&#160;</string>
+    <string name="text_request">Permintaan&#160;:&#160;</string>
+    <string name="text_driver_memo">Pesan kepada supir&#160;:&#160;</string>
+    <string name="text_pickup_reassigned">Penjemputan kembali</string>
+    <string name="text_pickup_failed">Penjemputan gagal</string>
+    <string name="text_failed">Gagal</string>
+    <string name="text_retrieve">Mengambil</string>
+    <string name="text_google_map">Peta Google</string>
+    <string name="text_up">Atas</string>
+    <string name="text_down">Bawah</string>
+    <string name="text_parcel_amount">Jumlah paket&#160;:&#160;</string>
+    <string name="text_tel">Telpon&#160;:&#160;</string>
+    <string name="text_mobile">Ponsel&#160;:&#160;</string>
+    <string name="text_name">Nama&#160;:&#160;</string>
+    <string name="text_driver_memo1">Pesan kepada supir</string>
+    <string name="text_signature">Tanda tangan</string>
+    <string name="text_visit_log">Data kunjungan</string>
+    <string name="text_start_to_scan">Memulai memindai</string>
+    <string name="text_zero_qty">Jumlah nol</string>
+    <string name="text_outlet_pickup_done">Qsuttle : Penjemputan selesai</string>
+    <string name="text_pickup_cancel">Penjemputan di batalkan</string>
+    <string name="text_pickup_fail">Penjemputan gagal</string>
+    <string name="text_qpost_auto_message">Qtalk pesan mobil</string>
+    <string name="text_d_failed">D. Gagal</string>
+    <string name="text_delivered">Terkirim</string>
+    <string name="text_p_failed">P. Gagal</string>
+    <string name="text_p_cancelled">P. Dibatalkan</string>
+    <string name="text_p_done">P. Selesai</string>
+    <string name="text_reason">Alasan&#160;:&#160;</string>
+    <string name="text_memo1">Pesan&#160;:&#160;</string>
+    <string name="text_requestor">Pemohon</string>
+    <string name="text_driver">Supir</string>
+    <string name="text_qpost_message">Pesan Qtalk</string>
+    <string name="text_data_error">Kesalahan data</string>
+    <string name="text_scanned_qty">Jumlah yang di pindai&#160;:&#160;</string>
+    <string name="text_today_done_scan_list">Hari ini daftar pemindaian selesai</string>
+    <string name="text_warning">Peringatan</string>
+
+    <string name="text_7e_store_address">7E alamat toko</string>
+    <string name="text_operation_hour">Jam operasional</string>
+    <string name="text_operation_hours">Jam operasionals</string>
+    <string name="text_tracking_no">Nomor Pelacakan</string>
+    <string name="text_receiver">Penerima</string>
+    <string name="text_self">Diri</string>
+    <string name="text_substitute">Pengganti</string>
+    <string name="text_other">Lainnya</string>
+    <string name="text_sender">Pengirim</string>
+    <string name="text_clear">Bersih</string>
+    <string name="text_memo">Tulisan</string>
+    <string name="text_total_qty_count">Total %1$d Jumlah</string>
+    <string name="text_parcel_qty1">Jumlah paket</string>
+    <string name="text_federated_locker_address">Alamat </string>
+    <string name="text_not_assigned_failed">&#160;Tidak di tugaskan - Gagal&#160;</string>
+    <string name="text_delivery_done_success">&#160;Pengiriman selesai - Sukses&#160;</string>
+    <string name="text_error">Masalah</string>
+    <string name="text_please_wait">Silahkan menunggu…</string>
+    <string name="text_set_transfer">Set pemindahan…</string>
+    <string name="text_upload_fail_count1">Unggah gagal : %1$d\nAlasan gagal : %2$s</string>
+    <string name="text_date">Tanggal</string>
+    <string name="text_job_id">Kerja ID</string>
+    <string name="text_vendor_code">Kode vendor</string>
+    <string name="text_take_photo">Ambil gambar</string>
+    <string name="text_gallery">Galeri</string>
+    <string name="text_pickup_no">Nomor penjemputan</string>
+    <string name="text_applicant">Pemohon</string>
+    <string name="text_bundle_type">Tipe bundel</string>
+    <string name="text_applicant_signature">Tanda tangan pemohon</string>
+    <string name="text_collector_signature">Tanda tangan kolektor</string>
+    <string name="text_pickup_requested_qty">Jumlah permintaan penjemputan</string>
+    <string name="text_parcels">Paket</string>
+    <string name="text_detail_list">List terperinci</string>
+    <string name="text_non_q10_qfs">Non-Q10 QFS (Rute : Lain)</string>
+    <string name="text_pickup_done_success">&#160;Penjemputan selesai - Sukses&#160;</string>
+    <string name="text_self_collector">Kolektor sendiri…</string>
+    <string name="text_self_collector_result">[Kolektor sendiri] hasil</string>
+    <string name="text_request_qty">Jumlah permintaan</string>
+    <string name="text_cancel_reason">Alasan pembatalan</string>
+    <string name="text_wrong_address">Salah alamat</string>
+    <string name="text_request_to_cancel">Permintaan pembatalan</string>
+    <string name="text_pickup_cancel_success">&#160;Penjemputan batal- sukses&#160;</string>
+    <string name="text_pickup_failed_reason">Alasan penjemputan gagal</string>
+    <string name="text_pickup_date_retried">Tanggal Pickup akan dicoba</string>
+    <string name="text_select">Memilih</string>
+    <string name="text_pickup_fail_success">&#160;Penjemputan gagal -sukses&#160;</string>
+    <string name="text_total_scan_qty_pop">Jumlah total penjemputan (BPB,  Bukti Penjemputan Barang)</string>
+    <string name="text_take_back_qty">Jumlah memindai mengambil kembali</string>
+    <string name="text_changed_scan_qty_pop">Merubah jumlah pemindaian (BPB,  Bukti Penjemputan Barang)</string>
+
+    <string name="text_camera">Kamera</string>
+    <string name="text_scanner">Pemindai</string>
+    <string name="text_bluetooth">Bluetooth</string>
+    <string name="text_scanner_mode">Mode pembaca kabel pemindai</string>
+    <string name="text_bluetooth_mode">Mode pembaca BLUETOOTH</string>
+    <string name="text_disconnected">Terputus</string>
+    <string name="text_scan_for_devices">Perangkat pemindai</string>
+    <string name="text_please_type_number">Silahkan ketik nomor pelacakan</string>
+    <string name="text_scanned">Memindai&#160;:&#160;</string>
+    <string name="text_scanning">Pemindaian</string>
+    <string name="text_connected">Terhubung</string>
+    <string name="text_connecting">Menghubungkan…</string>
+    <string name="text_connected_to">Terhubung kepada </string>
+    <string name="text_driver_assign_result">[Tugas pengemudi] Hasil</string>
+    <string name="text_not_assigned"> Tidak di tugaskan </string>
+    <string name="text_success"> Sukses </string>
+    <string name="text_scanned_failed">Gagal memindai</string>
+    <string name="text_driver_assign">Tugas pengemudi…</string>
+    <string name="text_fail_update">Gagal memperbaharui</string>
+    <string name="text_http_request_error">Http permintaan gagal</string>
+
+    <string name="text_invalidation_alert">Peringatan penghapusan</string>
+    <string name="text_verification">Verifikasi</string>
+    <string name="text_alert">Peringatan</string>
+    <string name="text_enter_your_information">Enter your Information</string>
+
+    <string name="text_summary">Summary</string>
+    <string name="text_detail">Detail</string>
+    <string name="text_dpc3_out_date">DPC3-Out Date</string>
+    <string name="text_delivered_date">Delivered Date</string>
+    <string name="text_bar">~</string>
+    <string name="text_not_delivered">Not Delivered</string>
+    <string name="text_done">Done</string>
+    <string name="text_cancelled">Cancelled</string>
+    <string name="text_confirmed">Confirmed</string>
+    <string name="text_percent">%</string>
+    <string name="text_avg_date">Avg Date</string>
+    <string name="text_shipping_no">Shipping No.</string>
+    <string name="text_desired_date1">Desired Date</string>
+    <string name="text_qty1">Qty</string>
+
+    <!-- Message -->
+    <string name="msg_live10_installed">Untuk menggunakan Qdrive, Qoo10 Live aplikasi harus sudah terinstal pada HP anda</string>
+    <string name="msg_your_account_deactivated">Aplikasi Qdrive anda sudah di non aktifkan</string>
+    <string name="msg_no_data_to_upload">Tidak ada data yang di unggah</string>
+    <string name="msg_download_not_supported">Pengunggahan data tidak mendukung dengan alasan : Data yang di modifikasi belum di unggah </string>
+    <string name="msg_network_connect_error">Silahkan dicek jaringan anda</string>
+    <string name="msg_network_connect_error_saved">Silahkan dicek jaringan anda . Simpan di perangkat lokal</string>
+    <string name="msg_qdrive_app_exited">Keluar dari aplikasi QDRIVE</string>
+    <string name="msg_manual_assign_failed">Penugasan manual gagal</string>
+    <string name="msg_no_data_to_download">Tidak ada data yang di unggah</string>
+    <string name="msg_upload_fail_14"> Tidak ada tanda tangan. Untuk kasus ini, pengunggahan  data tidak diizinkan. Silahkan kembalikan ke Qxpress DPC.</string>
+    <string name="msg_upload_fail_15"> Pengunggahan data gagal (batas waktu habis). Data ini akan pindah ke tab [Unggah gagal]. Anda dapat mengunggahnya di tab [Unggah gagal]</string>
+    <string name="msg_upload_fail_16"> Pekerjaan unggah gagal (jaringan terputus). Data ini pindah ke tab [Unggah gagal]. Anda dapat mengunggahnya di tab [Unggah gagal]</string>
+    <string name="msg_upload_fail_etc"> Pekerjaan unggah gagal (kode salah:% d). Data ini pindah ke tab [Unggah gagal]. Anda dapat mengunggahnya di tab [Unggah gagal]</string>
+    <string name="msg_location_off">Lokasi tidak di temukan. Anda harus mengaktifkan lokasi</string>
+
+    <string name="msg_delivery_start_sms">Yang terhormat %1$s, Paket anda sudah mulai di kirimkan ke alamat tujuan menggunakan Qxpress. Terima kasih.</string>
+    <string name="msg_send_sms_error">Pengiriman pesan SMS gagal</string>
+    <string name="msg_qpost_delivery_1">Pesan pertama</string>
+    <string name="msg_qpost_delivery_2">Pesan kedua</string>
+    <string name="msg_qpost_pickup_1">[Qxpress]\nMobil penjemputan berangkat ke.\n-Seller : %s-Nomor penjemputan : %s\n-Nama supir Qxpress : %s</string>
+    <string name="msg_qpost_pickup_2">[Qxpress]\nPenjempuatan gagal karena tidak ada.\n-Seller : %s\n-Nomor penjemputan :  %s\n-Nama supir Qxpress : %s</string>
+    <string name="msg_qpost_pickup1">Mobil penjemputan berangkat</string>
+    <string name="msg_qpost_pickup2">Mobil penjemputan gagal</string>
+    <string name="msg_qpost_delivery1">Keluar untuk pengiriman</string>
+    <string name="msg_qpost_delivery2">Pengiriman gagal karena ketidakhadiran</string>
+    <string name="msg_first_connect_printer">Pertama-tama cobalah menghubungkan printer portabel</string>
+    <string name="msg_wait_while_print_job">Harap menunggu sementara printer menyelesaikan pekerjaan mencetak</string>
+    <string name="msg_bluetooth_not_supported">Perangat Transfer data Bluetooth tidak mendukung</string>
+    <string name="msg_check_again_print">Please check the printer status again.</string>
+
+    <string name="msg_delivered_sign_cancel">Memilih \'OK\' untuk membatalkan pembaharuan.</string>
+    <string name="msg_outlet_qrcode_require">QRCode diperlukan. Silahkan dicoba kembali..</string>
+    <string name="msg_signature_require">Tanda tangan wajib disi</string>
+    <string name="msg_disk_size_error">Silahkan diperiksa ukuran penyimpanan data anda </string>
+    <string name="msg_outlet_qrcode_data_error">QRCode data gagal. Silahkan dicoba kembali..</string>
+    <string name="msg_qrcode_loading_error">QRCode ada kesalahan. Silahkan dicoba kembali..</string>
+    <string name="msg_must_enter_memo1">Kamu harus meninggalkan memo kepada supit atau nama penerima</string>
+    <string name="msg_visit_photo_require">Lampiran mendukung</string>
+    <string name="msg_must_enter_memo">Kamu harus meninggalkan memo </string>
+    <string name="msg_collector_signature_require">Koletor tanda tangan dapat di terima </string>
+    <string name="msg_self_collection_fail_11">Status paket adalah \'DPC1-In\'. Anda tidak memilih sendiri</string>
+    <string name="msg_self_collection_fail_12">Nomor pelacakan salah</string>
+    <string name="msg_self_collection_fail_13">Penjemputan sudah selesai</string>
+    <string name="msg_self_collection_fail_14">Penjemputan sudah di batalkan</string>
+    <string name="msg_self_collection_fail_etc">Silahkan menghubungi pihak terkait</string>
+    <string name="msg_real_parcels_require">Jumlah paket yang diinput sudah sesuai</string>
+    <string name="msg_customer_signature_require">Tanda tangan wajib disi</string>
+    <string name="msg_duplicate_address">Tidak ada proses penjemputan pada alamat yang sama.\n( %1$s )</string>
+    <string name="msg_choose_one_week">Silahkan di pilih tanggal mulai besok hingga 1 minggu ke depan (7 hari)</string>
+    <string name="msg_choose_sunday_error">Tanggal yang di pilih minggu. Silahkan pilih tanggal lainnya.</string>
+    <string name="msg_choose_another_day"> - Silahkan pilih tanggal lainnya</string>
+    <string name="msg_select_fail_reason">Anda harus pilih alasan penjemputan gagal</string>
+    <string name="msg_select_retry_date">Anda harus pilih alasan tanggal ulang penjemputan barang</string>
+
+    <string name="msg_bluetooth_enabled">Bluetooth di aktifkan</string>
+    <string name="msg_camera_framework_bug">Maaf, Kamera Android anda bermasalah. Anda perlu melakukan restart ulang perangkat anda.</string>
+    <string name="msg_different_recipient_address">Nama penerima tidak sama. Silahkan dicoba kembali untuk melakukan pengecekan nama penerima</string>
+    <string name="msg_tracking_number_manually">Silahkan di tulis nomor pelacakan</string>
+    <string name="msg_invalid_scan">Nomor pelacakan tidak sesuai</string>
+    <string name="msg_click_next_before_upload">Tekan \'Berikut (Langkah 2)\' sebelum mengunggah</string>
+    <string name="msg_duplicate_tracking_no">Duplikat pemindai nomor pelacakan</string>
+    <string name="msg_different_order_type">Anda tidak dapat memindai nomor order yang berbeda</string>
+    <string name="msg_tracking_number_already_entered">Nomor ini sudah di lakukan pemindaian</string>
+    <string name="msg_no_outlet_parcels">Tidak ada outlet penjemputan</string>
+    <string name="msg_internal_error">Kesalahan aplikasi internal </string>
+    <string name="msg_message_change_error">Pesan pengubah jumlah kesalahan..</string>
+
+    <string name="msg_please_enter_name">Silahkan isi nama anda</string>
+    <string name="msg_please_enter_right_number">Silahkan isi nomor anda dengan benar</string>
+    <string name="msg_enter_right_format_number">Silahkan isi format nomor anda dengan benar</string>
+    <string name="msg_verify_phone_number">Qdrive akan memverifikasi nomor telepon anda</string>
+    <string name="msg_is_this_ok">Apakah ini Ok ?</string>
+    <string name="msg_sms_request_failed">SMS permintaan gagal</string>
+    <string name="msg_sms_verification_failed">SMS verifikasi gagal</string>
+    <string name="msg_verification_not_use">Jika anda tidak menerima data verifikasi, maka anda tidak dapat menggunakan Aplikasi Qdrive</string>
+    <string name="msg_sms_verification_success">SMS verifikasi berhasil</string>
+    <string name="msg_language_change_restart">Bahasa tidak berubah hingga memulai ulang aplikasi. ingin restart?</string>
+
+    <string name="msg_memo_too_long">Memo is too long. (limit 100 char)</string>
+    <string name="msg_only_one_device_connected">Only one device can be connected.</string>
+    <string name="msg_disconnecting_old_device">Disconnecting old device. Please wait and try again.</string>
+
+    <string name="msg_no_results">There are no results.</string>
+    <string name="msg_check_date_range">Please check the date range. Max 1 month</string>
+
+    <string name="msg_back_camera_required">Back camera is required.(LENS_FACING_BACK) \n Please use the \'Gallery\' button.</string>
+
+    <!-- Button -->
+    <string name="button_download">Mengunduh</string>
+    <string name="button_upload">Unggahan</string>
+    <string name="button_confirm_my_delivery_order">Konfirmasi order pengiriman saya</string>
+    <string name="button_assign_pickup_driver">Supir yang di tugaskan untuk penjemputan</string>
+    <string name="button_scan_delivery_sheet">Pindai lembar pengiriman</string>
+    <string name="button_change_delivery_driver">Perubahan sopir</string>
+
+    <string name="button_delivered">Terkirim</string>
+    <string name="button_failed">Gagal</string>
+    <string name="button_delivered_returned">Terkirim\n(Pengembalian)</string>
+    <string name="button_failed_return_failed">Pengiriman gagal\n(Pengembalian gagal)</string>
+    <string name="button_start_to_scan">Memulai memindai</string>
+    <string name="button_zero_qty">Jumlah nol</string>
+    <string name="button_visit_log">Data kunjungan</string>
+    <string name="button_cancelled">Pembatalan</string>
+    <string name="button_pickup_failed">Penjemputan gagal</string>
+    <string name="button_print_label">Pencetakan label</string>
+    <string name="button_pickup_done">Penjemputan selesai</string>
+    <string name="button_ok">OK</string>
+    <string name="button_cancel">Gagal</string>
+    <string name="button_send">Kirim</string>
+    <string name="button_add_scan">Tambahkan memindai</string>
+    <string name="button_take_back">Ambil kembali</string>
+    <string name="button_close">Tutup</string>
+
+    <string name="button_save">Simpan</string>
+    <string name="button_reload">Isi ulang</string>
+    <string name="button_add">Tambah</string>
+    <string name="button_reset">Setel ulang</string>
+    <string name="button_update">Memperbaharui</string>
+    <string name="button_next_step2">Selanjutnya\n(langkah 2)</string>
+    <string name="button_done">Selesai</string>
+    <string name="button_confirm">Konfirmasi</string>
+    <string name="button_next">Selanjutnya</string>
+
+
+    <string-array name="delivery_fail_reason_array">
+        <item>Upaya pengiriman : Tidak ada yang tersedia</item>
+        <item>Tidak terkirim : Alamat tidak lengkap</item>
+        <item>Tidak terkirim : Penerima menolak</item>
+        <item>Tidak terkirim : Salah tujuan</item>
+        <item>Tidak terkirim : Lainnya</item>
+    </string-array>
+    <string-array name="fail_reason_array">
+        <item>Salah alamat</item>
+        <item>Salah nomor telepon</item>
+        <item>Tidak ada jawaban</item>
+        <item>Tidak ada yang tersedia</item>
+        <item>Paket belum siap</item>
+        <item>Tidak ada kuantitas</item>
+        <item>Lainnya</item>
+    </string-array>
+    <string-array name="cancel_reason_array">
+        <item>Salah alamat</item>
+        <item>Permintaan pembatalan</item>
+        <item>Lainnya</item>
+    </string-array>
+
+
+    <string name="permission_title">Bantuan</string>
+    <string name="permission_content">Permintaan anda di tolak. Sehingga anda tidak dapat menggunakan fungsi ini.\nTab ke menu mencoba kembali, lalu menu perizinan android akan muncul kembali</string>
+    <string name="permission_dont_again_content">Anda tidak diizinkan untuk mengakses fungsi ini. Anda harus mengaktifkan permintaan izin kembali.
+        \n\nTekan tombol PENGATURAN. Pergi ke menu perizinan. Dan nyalakan semua izin.</string>
+    <string name="permission_re_try">Mencoba</string>
+    <string name="permission_setting">Pengaturan</string>
+
+
+    <!--  2차  start   -->
+    <string name="text_developer_mode">Developer Mode</string>
+    <string name="msg_qdrive_auto_logout">Qdrive app logout at 11:59pm every day.  </string>
+
+
+    <string name="text_mobile_no">Nomor telepon selular</string>
+    <string name="text_full_name">Nama lengkap</string>
+    <string name="text_email">E-mail</string>
+    <string name="text_digit">4-angka</string>
+    <string name="text_delivery_data_scan">Pemindaian data pengiriman</string>
+    <string name="text_pickup_scan">Pemindaian penjemputan</string>
+    <string name="text_self_scan">Pemindaian sendiri</string>
+    <string name="text_start_delivery_for_outlet">Memulai pengiriman untuk outlet</string>
+    <string name="text_id">ID</string>
+    <string name="text_branch">Cabang</string>
+    <string name="text_work">Kerja</string>
+    <string name="text_delete_data">Hapus data di perangkat</string>
+    <string name="text_setting">Pengaturan</string>
+    <string name="text_app_version">Versi APP</string>
+    <string name="text_qdrive_id">Qdrive ID</string>
+    <string name="text_write_hint">Menulis…</string>
+    <string name="text_modify_my_info">Ubah info saya</string>
+    <string name="text_invalidation">Penghapusan</string>
+    <string name="text_old_password">Kata kunci lama</string>
+    <string name="text_new_password">Kata kunci baru</string>
+    <string name="text_confirm_password">Konfirmasi kata kunci</string>
+    <string name="text_reload">Ulang</string>
+    <string name="text_connected_device">Perangkat yang terhubung</string>
+    <string name="text_paired_devices">Perangkat saya</string>
+    <string name="text_available_devices">Cari perangkat lain</string>
+    <string name="text_device_name">Nama perangkat</string>
+    <string name="text_rename">Ganti</string>
+    <string name="text_vibration">Getaran</string>
+    <string name="text_user_key">Kunci pengguna</string>
+    <string name="text_status">Status</string>
+    <string name="text_expiry_pin_date">Tanggal kadaluwarsa pin</string>
+    <string name="text_register_change_pin">Daftarkan / Ubah PIN</string>
+    <string name="text_language_en">Inggris (standar)</string>
+    <string name="text_language_ko">Korea</string>
+    <string name="text_language_zh_cn">China</string>
+    <string name="text_language_zh_tw">China tradisional</string>
+    <string name="text_language_ms">Melayu</string>
+    <string name="text_language_id">Indonesia</string>
+
+    <string name="text_empty">Kosong</string>
+    <string name="text_pickup_date">Tanggal penjemputan&#160;:&#160;</string>
+    <string name="text_not_processed">Tidak di proses</string>
+    <string name="text_scanned_qty1">Jumlah yang di pindai</string>
+
+    <string name="text_customer">Pelanggan</string>
+    <string name="text_administrator">Administrator</string>
+    <string name="text_first_page">Halaman pertama…</string>
+    <string name="text_last_page">Halaman terakhir …</string>
+    <string name="text_qxpress_driver">Ini adalah supir Qxpress</string>
+    <string name="text_send_message">Mengirim pesan</string>
+
+
+    <string name="msg_error_check_again">Silahkan diperika kembali..</string>
+    <string name="msg_enter_phone_number">Silakan masukkan nomor telepon selular anda</string>
+    <string name="msg_enter_phone_number_excluding_code">Masukkan nomor telepon kecuali kode negara.</string>
+    <string name="msg_enter_verification_number">Silahkan masukkan nomor SMS verifikasi</string>
+    <string name="msg_sms_arrive">Notifikasi SMS akan tiba dalam beberapa menit</string>
+    <string name="msg_make_sure_sms">Mohon dipastikan anda memiliki paket SMS yang berfungsi</string>
+
+    <string name="msg_delivery_scan1">* Ini untuk penggunaan pengiriman Qdrive (kasus normal)</string>
+    <string name="msg_delivery_scan2">* Ketika data pengiriman anda tidak di tampilkan, Jalankan \'%1$s\'</string>
+    <string name="msg_want_sign_out">Jika anad kelar sebelum mengunggah, daftar anda tidak akan sinkron. Apakah anda ingin melanjutkan kembali?</string>
+    <string name="msg_want_to_delete_data">Data perangkat anda akan di hapus.\nApakah anda ingin melanjutkan?</string>
+    <string name="msg_deleted_data">Daftar anda di hapus</string>
+    <string name="msg_full_name_info">Nama lengkap harusnya 6 kata atau lebih</string>
+    <string name="msg_want_change_info">Apakah anda ingin merubah informasi anda?</string>
+    <string name="msg_email_format_error">Silahkan masukkan format email yang benar</string>
+    <string name="msg_password_info">* Kata kunci harusnya 11 kata atau lebih.\n* Gunakan campuran huruf, angka dan simbol khusus (!@#$%) dikata kunci anda</string>
+    <string name="msg_want_change_password">Apakah anda ingin merubah kata kunci anda?</string>
+    <string name="msg_same_password_error">Konfirmasi kata kunci harus sama dengan kata kunci baru</string>
+    <string name="msg_password_symbols_error">Gunakan campuran huruf, angka dan simbol khusus (!@#$%) dikata kunci anda</string>
+    <string name="msg_password_length_error">Kata kunci harusnya 11 kata atau lebih</string>
+    <string name="msg_empty_password_error">Silahkan masukkan kata kunci </string>
+    <string name="msg_no_connected_device">Tidak ada perangkat yang terhubung..</string>
+    <string name="msg_no_device">Tidak ada perangkat..</string>
+    <string name="msg_bluetooth_not_enabled">Bluetooth tidak diaktifkan…</string>
+    <string name="msg_bluetooth_device_rename">Ganti nama perangkat</string>
+    <string name="msg_sure_disconnect_bluetooth">Apakah anda ingin memutuskan </string>
+    <string name="msg_already_connected">Sudah terhubung</string>
+    <string name="msg_already_disconnected">Sudah terputus</string>
+    <string name="msg_request_disconnect"> di minta untuk memutuskan sambungan</string>
+    <string name="msg_disconnect_requested">Putuskan sambungan di minta</string>
+    <string name="msg_is_disconnected"> terputus</string>
+    <string name="msg_is_disconnecting"> is disconnecting.</string>
+    <string name="msg_is_connecting">  menghubungkan</string>
+    <string name="msg_is_connected"> terhubung </string>
+    <string name="msg_please_try_again">Silahkan mencoba kembali…</string>
+    <string name="msg_connection_failed"> Koneksi terputus</string>
+    <string name="msg_pairing_requested">Permintaan pemasangan</string>
+    <string name="msg_device_bone_state_changed">Status ikatan perangkat berubah </string>
+    <string name="msg_correct_printer_instruction">Silahkan memilih perintah printer yang benar</string>
+    <string name="msg_connect_printer_first">Silahkan hubungkan printer terlebih dahulu</string>
+    <string name="msg_is_paired"> dipasangkan</string>
+    <string name="msg_is_unpaired"> tidak dipasangkan</string>
+    <string name="msg_device_name_info">Nama perangkat harusnya memiliki 1 atau lebih</string>
+    <string name="text_error_retry">Kesalahan / Mencoba kembali</string>
+    <string name="msg_download_locker_info_error">Unduh kesalahan info loker </string>
+    <string name="msg_app_restarted">Aplikasi di mulai ulang</string>
+
+    <string name="msg_left_and_come_back">Kamu meninggalkan halaman saat ini. Dan kembali</string>
+    <string name="msg_qpost_edit_text_hint">Silahkan masukkan konten</string>
+    <string name="msg_enter_message">Silahkan masukkan pesan</string>
+    <string name="msg_send_message_error">Pesan yang kirim salah</string>
+
+
+    <string name="button_request">Permintaan</string>
+    <string name="button_submit">Menyerahkan</string>
+    <string name="button_delete">Hapus</string>
+    <string name="button_prev">Sebelumnya</string>
+    <string name="button_connect">Terhubung</string>
+    <string name="button_modify">Memodifikasi</string>
+    <string name="button_disconnect">Memutuskan</string>
+    <string name="button_on">Aktif</string>
+    <string name="button_off">Non aktif</string>
+    <string name="button_go">Lanjutkan</string>
+
+    <!--    -->
+    <string name="text_qdrive_message">Pesan Qdrive</string>
+    <string name="text_fail">Gagal</string>
+    <string name="text_gps_tracking">Pelacakan GPS…</string>
+    <string name="text_gps_service">Layanan GPS</string>
+    <string name="text_gps_location_service">Pusat lokasi GPS</string>
+    <string name="text_failed_reason">Alasan gagal</string>
+    <string name="text_rpc_change_driver">Klaim pengembalian paket</string>
+    <string name="text_select_all">Pilih semua</string>
+    <string name="text_ready">Siap</string>
+    <string name="text_fl">FL</string>
+    <string name="text_outlet_7e">7E</string>
+    <string name="text_outlet_order_status">Status pemesanan outlet</string>
+    <string name="text_total">Total</string>
+    <string name="text_all">Semua</string>
+    <string name="text_outlet_status_1">Perlu dipindah hari ini</string>
+    <string name="text_outlet_status_2">Harus pergi ke outlet (Pemindaian siap)</string>
+    <string name="text_outlet_status_3">Daftar selesai hari ini</string>
+    <string name="text_upload_fail_count2">Alasan unggal gagal : %1$s</string>
+
+    <string name="button_add_scan_list">Penambahan daftar pindai</string>
+    <string name="button_save_continue">Simpan &amp; Lanjutkan</string>
+
+    <string name="select_device">Pilih perangkat yang akan di hubungkan</string>
+    <string name="button_scan">Perangkat pemindai</string>
+    <string name="scanning">Memindai perangkat…</string>
+    <string name="title_other_devices">Perangkat lain yang tersedia</string>
+    <string name="title_paired_devices">Perangkat yang dipasangkan</string>
+    <string name="none_paired">Tidak ada perangkat yang dipasangkan</string>
+    <string name="none_found">Tidak ada perangkat yang ditemukan</string>
+
+    <string name="button_open">Open</string>
+
+
+    <!--   2019.06   -->
+    <string name="text_delivery_pickup">Penjemputan &amp; pengiriman untuk Qxpress</string>
+    <string name="text_select_nation">Pilih negara</string>
+    <string name="text_password">Kata kunci</string>
+    <string name="button_sign">Tanda</string>
+    <string name="msg_only_qxpress_partner">Hanya driver mitra Qxpress yang bisa menggunakan aplikasi ini</string>
+    <string-array name="select_nation_array">
+        <item>pilih negara</item>
+        <item>Malaysia</item>
+        <item>Indonesia</item>
+    </string-array>
+    <string name="msg_please_select_nation">Silahkan pilih negara.</string>
+    <string name="msg_please_input_id">Silahkan memasukkan ID.</string>
+    <string name="msg_please_input_password">Silahkan memasukkan kata kunci.</string>
+    <string name="msg_db_problem">Maaf, DB menghadapi masalah. Anda mungkin perlu memulakan semula peranti ini.</string>
+    <string name="msg_account_deactivated">Akun Qdrive anda sudah di non aktifkan.</string>
+    <string name="msg_not_valid_info">Maaf, informasi yang anda masukkan tidak benar. Silahkan mencoa kembali dengan ID dan kata kunci yang benar.</string>
+    <string name="msg_update_version">Qdrive sudah diperbaharui menjadi %1$s\nVersi Qdrive anda %2$s\nVersi anda akan akan di tingkatkan.</string>
+    <string name="msg_go_sms_verification">You have attempted to login from unauthorized mobile phone.\nIf your mobile phone was changed, you have to pass the SMS verification.</string>
+
+    <string name="msg_print_done">Print Done!</string>
+    <string name="msg_please_select_printer">Please select the correct printer instructions.</string>
+    <string name="msg_please_print_again">Please print it again.</string>
+
+
+    <!--  2020  Login  -->
+    <string name="login_desc">Penjemputan dan pengiriman untuk Qxpress</string>
+    <string name="login_password">Kata kunci</string>
+    <string name="login_sign">Tanda</string>
+    <string name="login_footer">Hanya driver mitra Qxpress yang bisa menggunakan aplikasi ini</string>
+
+
+    <!--  STOP   -->
+
+    <string name="msg_intent_failed">Sorry, the requested application could not be launched. The barcode contents may be invalid.</string>
+    <string name="msg_not_our_results">You are leaving this application. The search results you will see are not related to this application.</string>
+    <string name="msg_share_subject_line">Here are the contents of a barcode I scanned</string>
+    <string name="preferences_actions_title">When a barcode is found\u2026</string>
+    <string name="preferences_bulk_mode_summary">Scan and save many barcodes continuously</string>
+    <string name="preferences_bulk_mode_title">Bulk scan mode</string>
+    <string name="preferences_copy_to_clipboard_title">Copy to clipboard</string>
+    <string name="preferences_custom_product_search_summary" formatted="false">Use %s as a placeholder for the product ID, and %f for format</string>
+    <string name="preferences_custom_product_search_title">Custom search URL</string>
+    <string name="preferences_decode_1D_title">1D barcodes</string>
+    <string name="preferences_decode_Data_Matrix_title">Data Matrix</string>
+    <string name="preferences_decode_QR_title">QR Codes</string>
+    <string name="preferences_front_light_summary">Improves scanning in low light on some phones, but may cause glare. Does not work on all phones.</string>
+    <string name="preferences_front_light_title">Use front light</string>
+    <string name="preferences_general_title">General settings</string>
+    <string name="preferences_play_beep_title">Beep</string>
+    <string name="preferences_remember_duplicates_summary">Store multiple scans of the same barcode in History</string>
+    <string name="preferences_remember_duplicates_title">Remember duplicates</string>
+    <string name="preferences_reverse_image_summary">Enable on devices with a front camera only</string>
+    <string name="preferences_reverse_image_title">Reversed camera image</string>
+    <string name="preferences_result_title">Result settings</string>
+    <string name="preferences_scanning_title">When scanning for barcodes, decode\u2026</string>
+    <string name="preferences_supplemental_summary">Try to retrieve more information about the barcode contents</string>
+    <string name="preferences_supplemental_title">Retrieve more info</string>
+    <string name="preferences_vibrate_title">Vibrate</string>
+
+    <string name="title_sync_preference">Synchronization settings</string>
+    <string name="summary_sync_preference">Set synchronization options</string>
+    <string name="title_config_preference">KDC Configuration</string>
+    <string name="summary_config_preference">Configure KDC options</string>
+    <string name="title_info_preference">KDC Information</string>
+    <string name="summary_info_preference">Display KDC information</string>
+    <string name="title_other_preference">Other settings</string>
+    <string name="summary_other_preference">Set miscellaneous options</string>
+    <string name="title_timestamp_preference">Attach Timestamp</string>
+    <string name="summary_timestamp_preference">Attach barcode timestamp</string>
+    <string name="title_serial_preference">Attach Serial Number</string>
+    <string name="summary_serial_preference">Attach KDC serial number</string>
+    <string name="title_barcodetype_preference">Attach Barcode Type</string>
+    <string name="summary_barcodetype_preference">Attach barcode type</string>
+    <string name="title_autoconnect_preference">Auto Connect</string>
+    <string name="summary_autoconnect_preference">Auto connect KDC</string>
+    <string name="title_location_preference">Attach Location Data</string>
+    <string name="summary_location_preference">Attach Location Data(KDC250 only)</string>
+    <string name="appdata_preferences">Application Data</string>
+    <string name="title_noncomp_preference">Sync Non-Compliant</string>
+    <string name="summary_noncomp_preference">Synchronize non-compliant applciation data</string>
+    <string name="title_quantity_preference">Attach Quantity</string>
+    <string name="summary_quantity_preference">Attach Quantity Data</string>
+    <string name="title_erase_preference">Erase Memory</string>
+    <string name="summary_erase_preference">Erase KDC memory after synchronization</string>
+    <string name="title_record_preference">Record Delimiter</string>
+    <string name="summary_record_preference">Choose delimiter of each record</string>
+    <string name="dialog_title_record_preference">Choose one</string>
+
+    <string-array name="entries_record_preference">
+        <item>NONE</item>
+        <item>LF</item>
+        <item>CR</item>
+        <item>TAB</item>
+        <item>CR+LF</item>
+    </string-array>
+    <string-array name="entryvalues_record_preference">
+        <item>0</item>
+        <item>1</item>
+        <item>2</item>
+        <item>3</item>
+        <item>4</item>
+    </string-array>
+    <string name="title_data_preference">Data Delimiter</string>
+    <string name="summary_data_preference">Choose delimiter of each data</string>
+    <string name="dialog_title_data_preference">Choose one</string>
+    <string-array name="entries_data_preference">
+        <item>NONE</item>
+        <item>TAB</item>
+        <item>SPACE</item>
+        <item>COMMA</item>
+        <item>SEMICOLON</item>
+    </string-array>
+    <string-array name="entryvalues_five_preference">
+        <item>0</item>
+        <item>1</item>
+        <item>2</item>
+        <item>3</item>
+        <item>4</item>
+    </string-array>
+
+    <string name="title_serialno_preference">Serial number</string>
+    <string name="title_fwversion_preference">Firmware version</string>
+    <string name="title_macaddress_preference">Bluetooth MAC address</string>
+    <string name="title_btversion_preference">Bluetooth firmware version</string>
+    <string name="title_memory_preference">Memory status</string>
+    <string name="menu">KDC Configuration</string>
+    <string name="menu_preferences">KDC Menu Configuration</string>
+    <string name="title_symbol_preference">Set Barcodes</string>
+    <string name="summary_symbol_preference">Select barcode symbology to be decoded</string>
+    <string name="title_option_preference">Barcode Options</string>
+    <string name="summary_option_preference">Change symbology options</string>
+    <string name="title_scan_preference">Scan Options</string>
+    <string name="summary_scan_preference">Change barcode scanner options</string>
+    <string name="title_dataprocess_preference">Data Process</string>
+    <string name="summary_dataprocess_preference">Edit barcode data</string>
+    <string name="title_bt_preference">Bluetooth Options</string>
+    <string name="summary_bt_preference">Change bluetooth device settings</string>
+    <string name="title_system_preference">System Settings</string>
+    <string name="summary_system_preference">Change general settings</string>
+    <string name="title_msr_preference">MSR Options</string>
+    <string name="summary_msr_preference">Change MSR settings</string>
+    <string name="sym_preferences">Symbology Selection</string>
+    <string name="title_oneD_preference">1D Symbology</string>
+    <string name="title_twoD_preference">2D Symbology</string>
+    <string name="title_post_preference">Postal Symbology</string>
+    <string name="title_ocr_preference">OCR Symbology</string>
+    <string name="dialog_title_preference">Choose one</string>
+    <string-array name="entries_ocr_preference">
+        <item>OCR Off</item>
+        <item>OCR A</item>
+        <item>OCR B</item>
+        <item>OCR US Currency</item>
+        <item>OCR MICR E-138B</item>
+        <item>OCR Semi Font</item>
+    </string-array>
+    <string-array name="entryvalues_six_preference">
+        <item>0</item>
+        <item>1</item>
+        <item>2</item>
+        <item>3</item>
+        <item>4</item>
+        <item>5</item>
+    </string-array>
+    <string name="title_codabar_preference">Codabar</string>
+    <string name="title_code11_preference">Code11</string>
+    <string name="title_code32_preference">Code32</string>
+    <string name="title_code35_preference">Code35</string>
+    <string name="title_code39_preference">Code39</string>
+    <string name="title_code93_preference">Code93</string>
+    <string name="title_code128_preference">Code128</string>
+    <string name="title_ean8_preference">EAN8</string>
+    <string name="title_ean8a_preference">EAN8 with Add-on</string>
+    <string name="title_ean13_preference">EAN13</string>
+    <string name="title_ean13b_preference">Bookland EAN 13</string>
+    <string name="title_ean13a_preference">EAN13 with Add-on</string>
+    <string name="title_gs1128_preference">GS1 128</string>
+    <string name="title_gs1c_preference">GS1 Composite</string>
+    <string name="title_i2of5_preference">I2of5</string>
+    <string name="title_m2of5_preference">Matrix 2of5</string>
+    <string name="title_msi_preference">MSI</string>
+    <string name="title_plessy_preference">Plessy</string>
+    <string name="title_posi_preference">PosiCode</string>
+    <string name="title_gs1o_preference">GS1 Omni</string>
+    <string name="title_gs1l_preference">GS1 Limited</string>
+    <string name="title_gs1e_preference">GS1 Expanded</string>
+    <string name="title_s2of5_preference">Straight 2of5 Industrial</string>
+    <string name="title_tlc39_preference">TLC39</string>
+    <string name="title_s2of5i_preference">Straight 2of5 IATA</string>
+    <string name="title_tele_preference">Telepen</string>
+    <string name="title_trio_preference">Triopic</string>
+    <string name="title_upca_preference">UPCA</string>
+    <string name="title_upcaa_preference">UPCA with Add-on</string>
+    <string name="title_upce_preference">UPCE</string>
+    <string name="title_upcea_preference">UPCE with Add-on</string>
+    <string name="title_upc0_preference">UPCE0</string>
+    <string name="title_upc1_preference">UPCE1</string>
+    <string name="title_itf14_preference">ITF 14</string>
+    <string name="title_aztec_preference">Aztec Code</string>
+    <string name="title_aztecr_preference">Aztec Runes</string>
+    <string name="title_coda_preference">Codeblock F</string>
+    <string name="title_code16_preference">Code16K</string>
+    <string name="title_code49_preference">Code49</string>
+    <string name="title_datam_preference">Data Matrix</string>
+    <string name="title_maxi_preference">MaxiCode</string>
+    <string name="title_mpdf_preference">Micro PDF417</string>
+    <string name="title_pdf_preference">PDF417</string>
+    <string name="title_qr_preference">QR Code</string>
+    <string name="title_han_preference">HanXin Code</string>
+    <string name="title_postnet_preference">Postnet</string>
+    <string name="title_planet_preference">Planet Code</string>
+    <string name="title_british_preference">British Post</string>
+    <string name="title_canada_preference">Canadian Post</string>
+    <string name="title_japan_preference">Japanese Post</string>
+    <string name="title_aus_preference">Australian Post</string>
+    <string name="title_china_preference">China Post</string>
+    <string name="title_kix_preference">Kix(Netherlands) Post</string>
+    <string name="title_korea_preference">Korea Post</string>
+    <string name="opt_preferences">Symbology Options</string>
+    <string name="title_codabarOpt_preference">Codabar Options</string>
+    <string name="title_transmit_preference">Transmit start/stop character</string>
+    <string name="title_cbcon_preference">Concatenation Options</string>
+    <string-array name="entries_cbcon_preference">
+        <item>Concatenation Off</item>
+        <item>Concatenation On</item>
+        <item>Concatenation Require</item>
+    </string-array>
+    <string-array name="entryvalues_three_preference">
+        <item>0</item>
+        <item>1</item>
+        <item>2</item>
+    </string-array>
+    <string name="title_verify_preference">Verify Check Digit Options</string>
+    <string-array name="entries_verify_preference">
+        <item>Do not verify check digit</item>
+        <item>Verify check digit, but do not transmit</item>
+        <item>Verify check digit and transmit</item>
+    </string-array>
+    <string name="title_code39Opt_preference">Code39 Options</string>
+    <string name="title_append_preference">Append</string>
+    <string name="title_fullascii_preference">Full ASCII</string>
+    <string name="title_upcaOpt_preference">UPCA Options</string>
+    <string name="title_checkdigit_preference">Verify check digit</string>
+    <string name="title_number_preference">Number system</string>
+    <string name="title_2digit_preference">2 digit addenda</string>
+    <string name="title_5digit_preference">5 digit addenda</string>
+    <string name="title_addrequired_preference">Addenda required</string>
+    <string name="title_addseparator_preference">Addenda separator</string>
+    <string name="title_extcoupon_preference">Extended coupon code</string>
+    <string name="title_upceOpt_preference">UPCE Options</string>
+    <string name="title_expand_preference">Expand</string>
+    <string name="title_ean8Opt_preference">EAN8 Options</string>
+    <string name="title_ean13Opt_preference">EAN13 Options</string>
+    <string name="title_isbn_preference">ISBN Translate</string>
+    <string name="title_i2of5_verify_preference">Verify I2of5 check digit options</string>
+    <string name="title_code128_isbt_preference">Code128 ISBT Concatenation</string>
+    <string name="title_code11_checkdigit_preference">Verify Code11 check digit</string>
+    <string name="title_output_preference">Telepen Output Options</string>
+    <string-array name="entries_output_preference">
+        <item>AM Output</item>
+        <item>Original Output</item>
+    </string-array>
+    <string-array name="entryvalues_two_preference">
+        <item>0</item>
+        <item>1</item>
+    </string-array>
+    <string name="title_gs1Opt_preference">GS1 Options</string>
+    <string name="title_upce_ean_preference">UPCE/EAN Version</string>
+    <string name="title_emulation_preference">Emulation Option</string>
+    <string-array name="entries_emulation_preference">
+        <item>GS1 Emulation Off</item>
+        <item>GS1-128 Emulation</item>
+        <item>GS1 Databar Emulation</item>
+    </string-array>
+    <string name="title_msi_verify_transmit_preference">Verify MSI check digit and transmit</string>
+    <string name="title_posi_option_preference">PosiCode Option</string>
+    <string-array name="entries_posi_option_preference">
+        <item>A and B On</item>
+        <item>A and B and Limited A On</item>
+        <item>A and B and Limited B On</item>
+    </string-array>
+    <string name="title_post_verify_transmit_preference">Verify PostNet check digit and transmit</string>
+    <string name="title_planet_verify_transmit_preference">Verify PlanetCode check digit and transmit</string>
+    <string name="title_ean8as13_preference">Show EAN8 as EAN13</string>
+    <string name="title_upcaas13_preference">Show UPCA as EAN13</string>
+    <string name="title_upceasa_preference">Show UPCE as UPCA</string>
+    <string name="title_upceas13_preference">Show UPCE as EAN 13</string>
+    <string name="title_ean13c_preference">Show EAN13 check digit</string>
+    <string name="title_ean8c_preference">Show EAN8 check digit</string>
+    <string name="title_upcac_preference">Show UPCA check digit</string>
+    <string name="title_upcec_preference">Show UPCE check digit</string>
+    <string name="title_code39v_preference">Verify Code39 check digit</string>
+    <string name="title_code39r_preference">Return Code39 check digit</string>
+    <string name="title_i2of5v_preference">Verify I2of5 check digit</string>
+    <string name="title_i2of5r_preference">Return I2of5 check digit</string>
+    <string name="title_codabarss_preference">Do not return Codabar START and STOP</string>
+    <string name="title_wedge_store_preference">Select wedge/store option</string>
+    <string-array name="entries_wedge_store_preference">
+        <item>Wedge only</item>
+        <item>Wedge and store</item>
+        <item>Store only</item>
+        <item>Store If Sent</item>
+        <item>Store If Not Sent</item>
+    </string-array>
+    <string name="data_preferences">Data process settings</string>
+    <string name="title_data_format_preference">Select barcode data format</string>
+    <string-array name="entries_data_format_preference">
+        <item>Barcode only</item>
+        <item>Packet data</item>
+    </string-array>
+    <string name="title_terminator_preference">Select barcode terminator</string>
+    <string-array name="entries_terminator_preference">
+        <item>None</item>
+        <item>CR</item>
+        <item>LF</item>
+        <item>CR+LF</item>
+        <item>Tab</item>
+        <item>Right Arrow</item>
+        <item>Left Arrow</item>
+        <item>Down Arrow</item>
+        <item>Up Arrow</item>
+    </string-array>
+    <string-array name="entryvalues_nine_preference">
+        <item>0</item>
+        <item>1</item>
+        <item>2</item>
+        <item>3</item>
+        <item>4</item>
+        <item>5</item>
+        <item>6</item>
+        <item>7</item>
+        <item>8</item>
+    </string-array>
+    <string name="title_duplicate_preference">Check duplicated barcode</string>
+    <string name="edit_preferences">Data edit settings</string>
+    <string name="title_prefix_preference">Edit prefix</string>
+    <string name="summary_prefix_preference">Create or change barcode prefix</string>
+    <string name="dialog_title_prefix_preference">Edit barcode prefix(up to 11 characters)\nESC(\\e),CR(\\r),LF(\\n),TAB(\\t),Back Slash(\\\\)</string>
+    <string name="title_suffix_preference">Edit suffix</string>
+    <string name="summary_suffix_preference">Create or change barcode suffix</string>
+    <string name="dialog_title_suffix_preference">Edit barcode suffix(up to 11 characters)\nESC(\\e),CR(\\r),LF(\\n),TAB(\\t),Back Slash(\\\\)</string>
+    <string name="title_aim_preference">Enter AIM ID</string>
+    <string-array name="entries_aim_preference">
+        <item>None</item>
+        <item>In Prefix</item>
+        <item>In Suffix</item>
+    </string-array>
+    <string name="partial_preferences">Partial data edit settings</string>
+    <string name="title_start_preference">Start position</string>
+    <string name="summary_start_preference">Enter start position from 1 to 999</string>
+    <string name="dialog_title_number_preference">Enter number(1 to 999)</string>
+    <string name="title_noofchar_preference">Number of characters</string>
+    <string name="summary_noofchar_preference">Enter number of characters from 0 to 999</string>
+    <string name="dialog_title_noofchar_preference">Enter number(0 to 999)</string>
+    <string name="title_action_preference">Action</string>
+    <string-array name="entries_action_preference">
+        <item>Erase</item>
+        <item>Select</item>
+    </string-array>
+    <string name="scan_preferences">Scanner options</string>
+    <string name="title_angle_preference">Wide scan angle</string>
+    <string-array name="entries_angle_preference">
+        <item>Narrow</item>
+        <item>Wide</item>
+    </string-array>
+    <string name="title_filter_preference">High filter mode</string>
+    <string name="title_security_preference">Security level</string>
+    <string-array name="entries_security_preference">
+        <item>1</item>
+        <item>2</item>
+        <item>3</item>
+        <item>4</item>
+    </string-array>
+    <string-array name="entryvalues_security_preference">
+        <item>1</item>
+        <item>2</item>
+        <item>3</item>
+        <item>4</item>
+    </string-array>
+    <string name="title_readingtimeout_preference">Reading timeout</string>
+    <string-array name="entries_readingtimeout_preference">
+        <item>1 second</item>
+        <item>2 seconds</item>
+        <item>3 seconds</item>
+        <item>4 seconds</item>
+        <item>5 seconds</item>
+        <item>6 seconds</item>
+        <item>7 seconds</item>
+        <item>8 seconds</item>
+        <item>9 seconds</item>
+        <item>10 seconds</item>
+    </string-array>
+    <string-array name="entryvalues_readingtimeout_preference">
+        <item>1</item>
+        <item>2</item>
+        <item>3</item>
+        <item>4</item>
+        <item>5</item>
+        <item>6</item>
+        <item>7</item>
+        <item>8</item>
+        <item>9</item>
+        <item>10</item>
+    </string-array>
+    <string name="title_minlen_preference">Minimum barcode length</string>
+    <string name="summary_minlen_preference">Enter number of minimum length from 2 to 36</string>
+    <string name="title_trigger_preference">Auto trigger mode</string>
+    <string name="title_reread_preference">Reread delay</string>
+    <string-array name="entries_reread_preference">
+        <item>Continuous</item>
+        <item>Short</item>
+        <item>Medium</item>
+        <item>Large</item>
+        <item>Extra large</item>
+    </string-array>
+    <string name="summary_reread_preference">Used only when auto trigger mode is enabled</string>
+    <string name="title_btpower_preference">Bluetooth power</string>
+    <string name="title_btdevice_preference">Connect device profile</string>
+    <string-array name="entries_btdevice_preference">
+        <item>SPP</item>
+        <item>HID iOS</item>
+        <item>iPhone</item>
+        <item>SPP 2.0</item>
+        <item>HID normal</item>
+    </string-array>
+    <string name="title_btautoconnect_preference">Auto connect</string>
+    <string name="title_btautopoweron_preference">Auto power on</string>
+    <string name="title_btpowerontime_preference">Auto power on timeout</string>
+    <string-array name="entries_btpowerontime_preference">
+        <item>Disabled</item>
+        <item>1 second</item>
+        <item>2 seconds</item>
+        <item>3 seconds</item>
+        <item>4 seconds</item>
+        <item>5 seconds</item>
+        <item>6 seconds</item>
+        <item>7 seconds</item>
+        <item>8 seconds</item>
+        <item>9 seconds</item>
+        <item>10 seconds</item>
+    </string-array>
+    <string-array name="entryvalues_poweron_preference">
+        <item>0</item>
+        <item>1</item>
+        <item>2</item>
+        <item>3</item>
+        <item>4</item>
+        <item>5</item>
+        <item>6</item>
+        <item>7</item>
+        <item>8</item>
+        <item>9</item>
+        <item>10</item>
+    </string-array>
+    <string name="title_btautopoweroff_preference">Auto power off</string>
+    <string name="title_btwarning_preference">Beep warning</string>
+    <string name="title_btpowerofftime_preference">Auto power off timeout</string>
+    <string-array name="entries_btpowerofftime_preference">
+        <item>1 minute</item>
+        <item>2 minutes</item>
+        <item>3 minutes</item>
+        <item>4 minutes</item>
+        <item>5 minutes</item>
+        <item>6 minutes</item>
+        <item>7 minutes</item>
+        <item>8 minutes</item>
+        <item>9 minutes</item>
+        <item>10 minutes</item>
+        <item>11 minute</item>
+        <item>12 minutes</item>
+        <item>13 minutes</item>
+        <item>14 minutes</item>
+        <item>15 minutes</item>
+        <item>16 minutes</item>
+        <item>17 minutes</item>
+        <item>18 minutes</item>
+        <item>19 minutes</item>
+        <item>20 minutes</item>
+        <item>21 minute</item>
+        <item>22 minutes</item>
+        <item>23 minutes</item>
+        <item>24 minutes</item>
+        <item>25 minutes</item>
+        <item>26 minutes</item>
+        <item>27 minutes</item>
+        <item>28 minutes</item>
+        <item>29 minutes</item>
+        <item>30 minutes</item>
+    </string-array>
+    <string-array name="entryvalues_poweroff_preference">
+        <item>1</item>
+        <item>2</item>
+        <item>3</item>
+        <item>4</item>
+        <item>5</item>
+        <item>6</item>
+        <item>7</item>
+        <item>8</item>
+        <item>9</item>
+        <item>10</item>
+        <item>11</item>
+        <item>12</item>
+        <item>13</item>
+        <item>14</item>
+        <item>15</item>
+        <item>16</item>
+        <item>17</item>
+        <item>18</item>
+        <item>19</item>
+        <item>20</item>
+        <item>21</item>
+        <item>22</item>
+        <item>23</item>
+        <item>24</item>
+        <item>25</item>
+        <item>26</item>
+        <item>27</item>
+        <item>28</item>
+        <item>29</item>
+        <item>30</item>
+    </string-array>
+    <string name="title_btpoweroffmsg_preference">Send power off message</string>
+    <string name="title_btwakeupnull_preference">Send wakeup nulls</string>
+    <string name="title_bttoggle_preference">Connection toggle key</string>
+    <string name="title_hid_preference">HID Settings</string>
+    <string name="summary_hid_preference">Change HID options</string>
+    <string name="title_hidautolock_preference">HID autolock time</string>
+    <string-array name="entries_hidautolock_preference">
+        <item>Disabled</item>
+        <item>1 minute</item>
+        <item>2 minutes</item>
+        <item>3 minutes</item>
+        <item>4 minutes</item>
+        <item>5 minutes</item>
+        <item>10 minutes</item>
+        <item>15 minutes</item>
+    </string-array>
+    <string-array name="entryvalues_eight_preference">
+        <item>0</item>
+        <item>1</item>
+        <item>2</item>
+        <item>3</item>
+        <item>4</item>
+        <item>5</item>
+        <item>10</item>
+        <item>15</item>
+    </string-array>
+    <string name="title_hidkbd_preference">HID keyboard layout</string>
+    <string-array name="entries_hidkbd_preference">
+        <item>US</item>
+        <item>German</item>
+        <item>Italian</item>
+        <item>French</item>
+        <item>Spanish</item>
+    </string-array>
+    <string name="title_hidinitdelay_preference">HID initial transmit delay</string>
+    <string-array name="entries_hidinitdelay_preference">
+        <item>Disabled</item>
+        <item>1 second</item>
+        <item>2 seconds</item>
+        <item>3 seconds</item>
+        <item>5 seconds</item>
+        <item>10 seconds</item>
+    </string-array>
+    <string name="title_hidchardelay_preference">HID inter-character delay</string>
+    <string-array name="entries_hidchardelay_preference">
+        <item>Disabled</item>
+        <item>10 msecs</item>
+        <item>20 msecs</item>
+        <item>30 msecs</item>
+        <item>50 msecs</item>
+        <item>100 msecs</item>
+    </string-array>
+    <string name="title_hidctrlchar_preference">HID control character transmit method</string>
+    <string-array name="entries_hidctrlchar_preference">
+        <item>Disabled</item>
+        <item>Alt+Numpad</item>
+        <item>^+Character</item>
+    </string-array>
+    <string name="title_msr_format_preference">Select MSR data format</string>
+    <string-array name="entries_msr_format_preference">
+        <item>MSR data only</item>
+        <item>Packet data</item>
+    </string-array>
+    <string name="summary_trackterm_preference">Create or change MSR track terminator</string>
+    <string name="dialog_title_trackterm_preference">Edit MSR track terminator\nESC(\\e),CR(\\r),LF(\\n),TAB(\\t),Back Slash(\\\\)</string>
+    <string name="title_trackterm_preference">Select track terminator</string>
+    <string-array name="entries_trackterm_preference">
+        <item>None</item>
+        <item>Space</item>
+        <item>Comma</item>
+        <item>Semicolon</item>
+        <item>CR</item>
+        <item>LF</item>
+        <item>CR+LF</item>
+        <item>Tab</item>
+    </string-array>
+    <string name="title_encrypt_preference">Encrypt data</string>
+    <string name="title_beeponerror_preference">Beep on error reading</string>
+    <string name="track_preferences">Select tracks</string>
+    <string name="title_track1_preference">Enable track 1</string>
+    <string name="title_track2_preference">Enable track 2</string>
+    <string name="title_track3_preference">Enable track 3</string>
+    <string name="title_sleeptimeout_preference">Sleep timeout</string>
+    <string-array name="entries_sleeptimeout_preference">
+        <item>Disabled</item>
+        <item>1 second</item>
+        <item>2 seconds</item>
+        <item>3 seconds</item>
+        <item>4 seconds</item>
+        <item>5 seconds</item>
+        <item>10 seconds</item>
+        <item>20 seconds</item>
+        <item>30 seconds</item>
+        <item>60 seconds</item>
+        <item>120 seconds</item>
+        <item>300 seconds</item>
+        <item>600 seconds</item>
+    </string-array>
+    <string-array name="entryvalues_sleeptimeout_preference">
+        <item>0</item>
+        <item>1</item>
+        <item>2</item>
+        <item>3</item>
+        <item>4</item>
+        <item>5</item>
+        <item>6</item>
+        <item>7</item>
+        <item>8</item>
+        <item>9</item>
+        <item>10</item>
+        <item>11</item>
+        <item>12</item>
+    </string-array>
+    <string name="title_beepsound_preference">Beep sound</string>
+    <string name="title_beepvolume_preference">High beep volume</string>
+    <string name="title_autoerase_preference">Auto erase memory</string>
+    <string name="title_menubarcode_preference">Menu barcode</string>
+
+
+</resources>

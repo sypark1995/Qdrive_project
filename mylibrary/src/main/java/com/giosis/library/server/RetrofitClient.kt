@@ -17,10 +17,10 @@ object RetrofitClient {
             return "https://qxapi.qxpress.net/GMKT.INC.GLPS.MobileApiService/GlobalMobileService.qapi/"
         }
 
-    class AppInterceptor : Interceptor {
+    class AppInterceptor(private val userAgent: String) : Interceptor {
         override fun intercept(chain: Interceptor.Chain): Response = with(chain) {
             val newRequest = request().newBuilder()
-//                    .addHeader("User-Agent", QDataUtil.getCustomUserAgent(MyApplication.getContext())) // TODO kjyoo user agent check
+                    .addHeader("User-Agent", userAgent)
                     .build()
 
             proceed(newRequest)
@@ -45,11 +45,11 @@ object RetrofitClient {
             }
 
     private lateinit var instanceDynamic: RetrofitService
-    fun instanceDynamic(): RetrofitService {
+    fun instanceDynamic(userAgent: String): RetrofitService {
 
         val retrofit = Retrofit.Builder()
                 .baseUrl(BASE_URL)
-                .client(provideOkHttpClient(AppInterceptor()))
+                .client(provideOkHttpClient(AppInterceptor(userAgent)))
                 .addConverterFactory(GsonConverterFactory.create())
                 .build()
 

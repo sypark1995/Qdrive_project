@@ -1,0 +1,55 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string-array name="login_nation">
+        <item>Malaysia</item>
+        <item>Indonesia</item>
+    </string-array>
+
+
+
+
+    <string-array name="status">
+        <item>Pickup-Driver Check</item>
+        <item>Pickup Failed</item>
+        <item>Pickup Done</item>
+        <item>Delivery-Driver Check</item>
+        <item>Delivery Done</item>
+        <item>Delivery Failed</item>
+    </string-array>
+
+    <string-array name="status_code">
+        <item>P2</item>
+        <item>PX</item>
+        <item>D2</item>
+        <item>D3</item>
+        <item>D4</item>
+        <item>DX</item>
+    </string-array>
+
+    <string-array name="outlet_company_code">
+        <item>ALL</item>
+        <item>7E</item>
+        <item>LA</item>
+    </string-array>
+
+    <string-array name="outlet_status_condition">
+        <item>Need to be scanned Today</item>
+        <item>Need to go to Outlets (Scanned already)</item>
+        <item>Today Done List</item>
+    </string-array>
+
+    <string-array name="statistics_type">
+        <item>Delivery</item>
+        <item>Pickup</item>
+    </string-array>
+
+    <string-array name="statistics_result_type">
+        <item>Summary</item>
+        <item>Detail</item>
+    </string-array>
+
+    <string-array name="statistics_delivery_type">
+        <item>DPC3-Out Date</item>
+        <item>Delivered Date</item>
+    </string-array>
+</resources>

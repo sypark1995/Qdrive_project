@@ -1,0 +1,48 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="45dp"
+    android:background="@color/color_4fb648">
+
+    <FrameLayout
+        android:id="@+id/layout_top_back"
+        android:layout_width="60dp"
+        android:layout_height="match_parent"
+        android:paddingStart="20dp">
+
+        <ImageView
+            android:layout_width="17dp"
+            android:layout_height="21dp"
+            android:layout_gravity="center_vertical"
+            android:background="@drawable/qdrive_setting_icon_arrow_l" />
+    </FrameLayout>
+
+    <TextView
+        android:id="@+id/text_top_title"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_centerInParent="true"
+        android:layout_marginStart="80dp"
+        android:ellipsize="end"
+        android:maxLines="1"
+        android:textColor="@color/white"
+        android:textSize="@dimen/text_size_38px"
+        android:textStyle="bold"
+        tools:text="Top Title" />
+
+    <FrameLayout
+        android:id="@+id/layout_top_signout"
+        android:layout_width="60dp"
+        android:layout_height="match_parent"
+        android:layout_alignParentEnd="true"
+        android:paddingStart="23dp"
+        android:visibility="gone">
+
+        <ImageView
+            android:layout_width="17dp"
+            android:layout_height="21dp"
+            android:layout_gravity="center_vertical"
+            android:background="@drawable/qdrive_setting_icon_signout" />
+    </FrameLayout>
+</RelativeLayout>

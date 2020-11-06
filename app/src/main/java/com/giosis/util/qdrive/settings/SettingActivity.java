@@ -19,6 +19,7 @@ import android.widget.Toast;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.core.graphics.drawable.RoundedBitmapDrawable;
 
+import com.giosis.library.setting.ChangePasswordActivity;
 import com.giosis.util.qdrive.singapore.LoginActivity;
 import com.giosis.util.qdrive.singapore.MyApplication;
 import com.giosis.util.qdrive.singapore.R;
@@ -223,7 +224,7 @@ public class SettingActivity extends AppCompatActivity {
 
             case R.id.text_setting_change_password: {
 
-                Intent intent = new Intent(SettingActivity.this, ChangePwdActivity.class);
+                Intent intent = new Intent(SettingActivity.this, ChangePasswordActivity.class);
                 startActivity(intent);
             }
             break;

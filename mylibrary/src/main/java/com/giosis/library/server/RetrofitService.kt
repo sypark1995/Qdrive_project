@@ -23,4 +23,14 @@ interface RetrofitService {
     ): Call<APIModel>
 
 
+    @POST("changePassword")
+    @FormUrlEncoded
+    fun requestChangePwd(
+            @Field("op_id") login_id: String,
+            @Field("old_pwd") old_pwd: String,
+            @Field("new_pwd") new_pwd: String,
+            @Field("app_id") app_id: String,
+            @Field("nation_cd") nation_cd: String,
+    ): Call<APIModel>
+
 }
