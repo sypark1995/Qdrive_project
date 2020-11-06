@@ -1,4 +1,4 @@
-package com.giosis.util.qdrive.server;
+package com.giosis.util.server;
 
 import android.database.Cursor;
 

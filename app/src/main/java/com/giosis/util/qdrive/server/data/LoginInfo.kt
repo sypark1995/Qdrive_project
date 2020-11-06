@@ -1,6 +1,6 @@
 package com.giosis.util.qdrive.server.data
 
-import com.giosis.util.qdrive.server.JsonModel
+import com.giosis.util.server.JsonModel
 import com.google.gson.annotations.SerializedName
 import java.io.Serializable
 
