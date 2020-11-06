@@ -70,7 +70,7 @@ class DeliveryFailedActivity : CommonActivity(), Camera2APIs.Camera2Interface, S
 
 
         text_top_title.text = intent.getStringExtra("title")
-        trackingNo = intent.getStringExtra("trackingNo")
+        trackingNo = intent.getStringExtra("trackingNo")!!
         text_sign_d_f_tracking_no.text = trackingNo
         text_sign_d_f_receiver.text = intent.getStringExtra("receiverName")
         text_sign_d_f_sender.text = intent.getStringExtra("senderName")
@@ -184,24 +184,23 @@ class DeliveryFailedActivity : CommonActivity(), Camera2APIs.Camera2Interface, S
         texture_sign_d_f_preview.rotation = rotation.toFloat()
 
         val texture = texture_sign_d_f_preview.surfaceTexture
-        texture.setDefaultBufferSize(cameraSize.width, cameraSize.height)
+        texture?.setDefaultBufferSize(cameraSize.width, cameraSize.height)
 
         val surface = Surface(texture)
         camera2.setCaptureSessionRequest(cameraDevice, surface)
     }
 
-    override fun onSurfaceTextureAvailable(p0: SurfaceTexture?, p1: Int, p2: Int) {
-
+    override fun onSurfaceTextureAvailable(p0: SurfaceTexture, p1: Int, p2: Int) {
         openCamera()
     }
 
-    override fun onSurfaceTextureSizeChanged(p0: SurfaceTexture?, p1: Int, p2: Int) {
+    override fun onSurfaceTextureSizeChanged(p0: SurfaceTexture, p1: Int, p2: Int) {
     }
 
-    override fun onSurfaceTextureUpdated(p0: SurfaceTexture?) {
+    override fun onSurfaceTextureUpdated(p0: SurfaceTexture) {
     }
 
-    override fun onSurfaceTextureDestroyed(p0: SurfaceTexture?): Boolean {
+    override fun onSurfaceTextureDestroyed(p0: SurfaceTexture): Boolean {
         return true
     }
 

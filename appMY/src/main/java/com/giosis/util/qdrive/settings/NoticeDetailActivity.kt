@@ -70,8 +70,7 @@ class NoticeDetailActivity : CommonActivity() {
             noticeDetailAsyncTask.execute()
         }
 
-
-        seqNo = intent.getStringExtra("notice_no")
+        seqNo = intent.getStringExtra("notice_no")!!
         val noticeDetailAsyncTask = NoticeDetailAsyncTask(seqNo)
         noticeDetailAsyncTask.execute()
     }

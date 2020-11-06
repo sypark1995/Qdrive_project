@@ -45,9 +45,9 @@ class PickupTakeBackActivity : CommonActivity() {
 
         text_top_title.text = intent.getStringExtra("title")
 
-        pickupNo = intent.getStringExtra("pickupNo")
-        scannedList = intent.getStringExtra("scannedList")
-        finalQty = intent.getStringExtra("totalQty").toInt() - intent.getStringExtra("takeBackQty").toInt()
+        pickupNo = intent.getStringExtra("pickupNo")!!
+        scannedList = intent.getStringExtra("scannedList")!!
+        finalQty = intent.getStringExtra("totalQty")!!.toInt() - intent.getStringExtra("takeBackQty")!!.toInt()
 
         text_sign_p_tb_pickup_no.text = pickupNo
         text_sign_p_tb_applicant.text = intent.getStringExtra("applicant")

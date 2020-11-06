@@ -82,8 +82,8 @@ class PickupFailedActivity : CommonActivity(), Camera2APIs.Camera2Interface, Tex
 
 
         text_top_title.text = context.resources.getString(R.string.text_visit_log)
-        pickupNo = intent.getStringExtra("pickupNo")
-        pickupType = intent.getStringExtra("type")
+        pickupNo = intent.getStringExtra("pickupNo")!!
+        pickupType = intent.getStringExtra("type")!!
         text_sign_p_f_pickup_no.text = pickupNo
         text_sign_p_f_applicant.text = intent.getStringExtra("applicant")
         text_sign_p_f_requested_qty.text = intent.getStringExtra("reqQty")
@@ -281,24 +281,23 @@ class PickupFailedActivity : CommonActivity(), Camera2APIs.Camera2Interface, Tex
         texture_sign_p_f_preview.rotation = rotation.toFloat()
 
         val texture = texture_sign_p_f_preview.surfaceTexture
-        texture.setDefaultBufferSize(cameraSize.width, cameraSize.height)
+        texture?.setDefaultBufferSize(cameraSize.width, cameraSize.height)
 
         val surface = Surface(texture)
         camera2.setCaptureSessionRequest(cameraDevice, surface)
     }
 
-    override fun onSurfaceTextureAvailable(p0: SurfaceTexture?, p1: Int, p2: Int) {
-
+    override fun onSurfaceTextureAvailable(p0: SurfaceTexture, p1: Int, p2: Int) {
         openCamera()
     }
 
-    override fun onSurfaceTextureSizeChanged(p0: SurfaceTexture?, p1: Int, p2: Int) {
+    override fun onSurfaceTextureSizeChanged(p0: SurfaceTexture, p1: Int, p2: Int) {
     }
 
-    override fun onSurfaceTextureUpdated(p0: SurfaceTexture?) {
+    override fun onSurfaceTextureUpdated(p0: SurfaceTexture) {
     }
 
-    override fun onSurfaceTextureDestroyed(p0: SurfaceTexture?): Boolean {
+    override fun onSurfaceTextureDestroyed(p0: SurfaceTexture): Boolean {
         return true
     }
 
