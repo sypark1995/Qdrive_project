@@ -1,0 +1,352 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:background="@color/color_f0f0f0"
+    android:orientation="vertical">
+
+    <include layout="@layout/top_title" />
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="40dp"
+        android:orientation="horizontal"
+        android:weightSum="3">
+
+        <LinearLayout
+            android:id="@+id/layout_capture_camera"
+            android:layout_width="0dp"
+            android:layout_height="match_parent"
+            android:layout_weight="1"
+            android:background="@drawable/bg_rect_ffffff_shadow_ff0000"
+            android:gravity="center"
+            android:orientation="vertical">
+
+            <TextView
+                android:id="@+id/text_capture_camera"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="@string/text_camera"
+                android:textAllCaps="true"
+                android:textColor="@color/color_ff0000"
+                android:textSize="@dimen/text_size_28px"
+                android:textStyle="bold" />
+        </LinearLayout>
+
+        <LinearLayout
+            android:id="@+id/layout_capture_scanner"
+            android:layout_width="0dp"
+            android:layout_height="match_parent"
+            android:layout_weight="1"
+            android:background="@drawable/bg_rect_ffffff"
+            android:gravity="center"
+            android:orientation="vertical">
+
+            <TextView
+                android:id="@+id/text_capture_scanner"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="@string/text_scanner"
+                android:textAllCaps="true"
+                android:textColor="@color/color_303030"
+                android:textSize="@dimen/text_size_28px" />
+        </LinearLayout>
+
+        <LinearLayout
+            android:id="@+id/layout_capture_bluetooth"
+            android:layout_width="0dp"
+            android:layout_height="match_parent"
+            android:layout_weight="1"
+            android:background="@drawable/bg_rect_ffffff"
+            android:gravity="center"
+            android:orientation="vertical">
+
+            <TextView
+                android:id="@+id/text_capture_bluetooth"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="@string/text_bluetooth"
+                android:textAllCaps="true"
+                android:textColor="@color/color_303030"
+                android:textSize="@dimen/text_size_28px" />
+        </LinearLayout>
+    </LinearLayout>
+
+    <RelativeLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="10dp">
+
+        <SurfaceView
+            android:id="@+id/surface_capture_preview"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent" />
+
+        <com.giosis.util.qdrive.barcodescanner.ViewfinderView
+            android:id="@+id/viewfinder_capture_preview"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:background="@color/transparent" />
+
+        <RelativeLayout
+            android:id="@+id/layout_viewer"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content">
+
+            <ImageView
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:background="@drawable/bg_capture_preview" />
+
+            <ToggleButton
+                android:id="@+id/toggle_btn_capture_camera_flash"
+                android:layout_width="50dp"
+                android:layout_height="30dp"
+                android:background="@drawable/btn_flash_toggle_background_selector"
+                android:textOff=""
+                android:textOn="" />
+
+            <LinearLayout
+                android:id="@+id/layout_capture_scanner_mode"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_centerInParent="true"
+                android:background="@drawable/bluetooth_mode_layer_bg"
+                android:gravity="center"
+                android:orientation="vertical"
+                android:visibility="gone">
+
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="@string/text_scanner_mode"
+                    android:textColor="@color/white"
+                    android:textSize="@dimen/text_size_28px" />
+            </LinearLayout>
+
+            <LinearLayout
+                android:id="@+id/layout_capture_bluetooth_mode"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_centerInParent="true"
+                android:background="@drawable/bluetooth_mode_layer_bg"
+                android:gravity="center"
+                android:orientation="vertical"
+                android:visibility="gone">
+
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="@string/text_bluetooth_mode"
+                    android:textColor="@color/white"
+                    android:textSize="@dimen/text_size_28px" />
+
+                <TextView
+                    android:id="@+id/text_capture_bluetooth_connect_state"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="10dp"
+                    android:text="@string/text_disconnected"
+                    android:textColor="@color/white"
+                    android:textSize="@dimen/text_size_28px" />
+
+                <TextView
+                    android:id="@+id/text_capture_bluetooth_device_name"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="10dp"
+                    android:textColor="@color/white"
+                    android:textSize="@dimen/text_size_28px"
+                    android:visibility="gone"
+                    tools:text="[KDC 3000 : 000000]" />
+
+                <Button
+                    android:id="@+id/btn_capture_bluetooth_device_find"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="10dp"
+                    android:background="@drawable/btn_bluetooth_scan_button_selector"
+                    android:drawableStart="@drawable/icon_search"
+                    android:drawablePadding="-10dp"
+                    android:paddingStart="10dp"
+                    android:text="@string/text_scan_for_devices"
+                    android:textColor="@color/white"
+                    android:textSize="@dimen/text_size_22px" />
+            </LinearLayout>
+        </RelativeLayout>
+
+        <RelativeLayout
+            android:id="@+id/layout_tracking_number"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_below="@id/layout_viewer"
+            android:background="@color/color_f0f0f0"
+            android:paddingStart="20dp"
+            android:paddingTop="10dp"
+            android:paddingEnd="20dp"
+            android:paddingBottom="10dp">
+
+            <EditText
+                android:id="@+id/edit_capture_type_number"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_centerVertical="true"
+                android:layout_toStartOf="@id/btn_capture_type_number_add"
+                android:background="@drawable/bg_radius_10_ffffff"
+                android:ellipsize="end"
+                android:hint="@string/text_please_type_number"
+                android:lines="1"
+                android:paddingStart="10dp"
+                android:paddingTop="10dp"
+                android:paddingEnd="30dp"
+                android:paddingBottom="10dp"
+                android:singleLine="true"
+                android:textColor="@color/color_8f8f8f"
+                android:textColorHint="@color/color_8f8f8f"
+                android:textSize="@dimen/text_size_30px" />
+
+            <ImageView
+                android:id="@+id/img_capture_type_number_delete"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_centerVertical="true"
+                android:layout_marginEnd="10dp"
+                android:layout_toStartOf="@id/btn_capture_type_number_add"
+                android:background="@drawable/btn_delete"
+                android:visibility="visible" />
+
+            <Button
+                android:id="@+id/btn_capture_type_number_add"
+                android:layout_width="65dp"
+                android:layout_height="35dp"
+                android:layout_alignParentEnd="true"
+                android:layout_centerVertical="true"
+                android:layout_marginStart="7dp"
+                android:background="@drawable/bg_radius_20_4fb648"
+                android:paddingStart="5dp"
+                android:paddingEnd="5dp"
+                android:text="@string/button_add"
+                android:textColor="@color/white"
+                android:textSize="@dimen/text_size_24px" />
+        </RelativeLayout>
+
+        <FrameLayout
+            android:id="@+id/line"
+            android:layout_width="match_parent"
+            android:layout_height="1dp"
+            android:layout_below="@id/layout_tracking_number"
+            android:background="@color/color_f0f0f0"
+            android:paddingStart="20dp"
+            android:paddingEnd="20dp">
+
+            <View
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:background="@color/color_e5e5e5" />
+        </FrameLayout>
+
+        <RelativeLayout
+            android:id="@+id/layout_capture_scan_count"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_below="@id/line"
+            android:background="@color/color_f0f0f0"
+            android:paddingTop="10dp"
+            android:paddingEnd="20dp"
+            android:paddingBottom="5dp">
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_toStartOf="@id/text_capture_scan_count"
+                android:text="@string/text_scanned"
+                android:textColor="@color/color_8f8f8f"
+                android:textSize="@dimen/text_size_30px" />
+
+            <TextView
+                android:id="@+id/text_capture_scan_count"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_alignParentEnd="true"
+                android:text="0"
+                android:textColor="@color/color_ff0000"
+                android:textSize="@dimen/text_size_30px"
+                android:textStyle="bold"
+                tools:text="999" />
+        </RelativeLayout>
+
+
+        <ListView
+            android:id="@+id/list_capture_scan_barcode"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:layout_above="@id/layout_capture_buttons"
+            android:layout_below="@id/layout_capture_scan_count"
+            android:background="@color/color_f0f0f0"
+            android:divider="@null"
+            android:dividerHeight="0dp"
+            android:paddingStart="20dp"
+            android:paddingTop="7dp"
+            android:paddingEnd="20dp"
+            android:scrollbars="vertical"
+            android:smoothScrollbar="true"
+            android:transcriptMode="alwaysScroll" />
+
+        <LinearLayout
+            android:id="@+id/layout_capture_buttons"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_alignParentBottom="true"
+            android:background="@color/color_f0f0f0"
+            android:gravity="center"
+            android:orientation="horizontal"
+            android:paddingTop="10dp"
+            android:paddingBottom="25dp">
+
+            <Button
+                android:id="@+id/btn_capture_barcode_reset"
+                android:layout_width="wrap_content"
+                android:layout_height="40dp"
+                android:background="@drawable/border_radius_30_4fb648_ffffff"
+                android:minWidth="131dp"
+                android:paddingStart="15dp"
+                android:paddingEnd="15dp"
+                android:text="@string/button_reset"
+                android:textAllCaps="false"
+                android:textColor="@color/color_4fb648"
+                android:textSize="@dimen/text_size_32px" />
+
+            <Button
+                android:id="@+id/btn_capture_barcode_confirm"
+                android:layout_width="wrap_content"
+                android:layout_height="40dp"
+                android:layout_marginStart="20dp"
+                android:background="@drawable/bg_radius_30_4fb648"
+                android:minWidth="131dp"
+                android:paddingStart="15dp"
+                android:paddingEnd="15dp"
+                android:text="@string/button_update"
+                android:textAllCaps="false"
+                android:textColor="@color/white"
+                android:textSize="@dimen/text_size_32px"
+                android:visibility="visible" />
+
+            <Button
+                android:id="@+id/barcode_pod_upload"
+                android:layout_width="wrap_content"
+                android:layout_height="40dp"
+                android:layout_marginStart="20dp"
+                android:background="@drawable/bg_radius_30_4fb648"
+                android:minWidth="131dp"
+                android:onClick="onPodUpdateButtonClick"
+                android:paddingStart="15dp"
+                android:paddingEnd="15dp"
+                android:text="@string/button_upload"
+                android:textAllCaps="false"
+                android:textColor="@color/white"
+                android:textSize="@dimen/text_size_28px"
+                android:visibility="gone" />
+        </LinearLayout>
+    </RelativeLayout>
+</LinearLayout>

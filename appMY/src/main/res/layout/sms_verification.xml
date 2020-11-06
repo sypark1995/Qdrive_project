@@ -1,0 +1,226 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:background="@color/color_f6f6f6"
+    android:orientation="vertical">
+
+    <include layout="@layout/top_title" />
+
+    <ScrollView
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content">
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:focusable="true"
+            android:focusableInTouchMode="true"
+            android:orientation="vertical">
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginStart="25dp"
+                android:layout_marginTop="26dp"
+                android:text="@string/text_mobile_no"
+                android:textColor="@color/color_6e6e6e"
+                android:textSize="@dimen/text_size_32px"
+                android:textStyle="bold" />
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginStart="25dp"
+                android:layout_marginTop="4dp"
+                android:text="@string/msg_enter_phone_number"
+                android:textColor="@color/color_767676"
+                android:textSize="@dimen/text_size_28px" />
+
+            <RelativeLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginStart="20dp"
+                android:layout_marginTop="9dp"
+                android:layout_marginEnd="20dp">
+
+                <FrameLayout
+                    android:layout_width="206dp"
+                    android:layout_height="50dp"
+                    android:background="@drawable/bg_rect_ffffff_shadows">
+
+                    <EditText
+                        android:id="@+id/edit_verify_phone_number"
+                        android:layout_width="match_parent"
+                        android:layout_height="match_parent"
+                        android:layout_marginStart="10dp"
+                        android:layout_marginEnd="10dp"
+                        android:background="@android:color/transparent"
+                        android:ems="10"
+                        android:inputType="number"
+                        android:textColor="@color/color_303030"
+                        android:textColorHint="@color/color_d1d1d1"
+                        android:textSize="@dimen/text_size_34px"
+                        tools:hint="00000000000" />
+                </FrameLayout>
+
+                <Button
+                    android:id="@+id/btn_verify_request"
+                    android:layout_width="111dp"
+                    android:layout_height="49dp"
+                    android:layout_alignParentEnd="true"
+                    android:background="@drawable/bg_rect_e2e2e2"
+                    android:text="@string/button_request"
+                    android:textColor="@color/color_fefefe"
+                    android:textSize="@dimen/text_size_26px" />
+            </RelativeLayout>
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginStart="25dp"
+                android:layout_marginTop="19dp"
+                android:text="@string/text_digit"
+                android:textColor="@color/color_6e6e6e"
+                android:textSize="@dimen/text_size_32px"
+                android:textStyle="bold" />
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginStart="25dp"
+                android:layout_marginTop="4dp"
+                android:text="@string/msg_enter_verification_number"
+                android:textColor="@color/color_767676"
+                android:textSize="@dimen/text_size_28px" />
+
+            <FrameLayout
+                android:layout_width="match_parent"
+                android:layout_height="50dp"
+                android:layout_marginStart="20dp"
+                android:layout_marginTop="9dp"
+                android:layout_marginEnd="20dp"
+                android:background="@drawable/bg_rect_ffffff_shadows">
+
+                <EditText
+                    android:id="@+id/edit_verify_4_digit"
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent"
+                    android:layout_marginStart="10dp"
+                    android:layout_marginEnd="10dp"
+                    android:background="@android:color/transparent"
+                    android:ems="10"
+                    android:inputType="number"
+                    android:textColor="@color/color_303030"
+                    android:textColorHint="@color/color_d1d1d1"
+                    android:textSize="@dimen/text_size_34px"
+                    tools:hint="0000" />
+            </FrameLayout>
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginStart="30dp"
+                android:layout_marginTop="9dp"
+                android:layout_marginEnd="30dp"
+                android:text="@string/msg_sms_arrive"
+                android:textColor="@color/color_969696"
+                android:textSize="@dimen/text_size_26px" />
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginStart="30dp"
+                android:layout_marginTop="2dp"
+                android:layout_marginEnd="30dp"
+                android:text="@string/msg_make_sure_sms"
+                android:textColor="@color/color_969696"
+                android:textSize="@dimen/text_size_26px" />
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginStart="25dp"
+                android:layout_marginTop="19dp"
+                android:text="@string/text_enter_your_information"
+                android:textColor="@color/color_6e6e6e"
+                android:textSize="@dimen/text_size_32px"
+                android:textStyle="bold" />
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginStart="25dp"
+                android:layout_marginTop="19dp"
+                android:text="@string/text_full_name"
+                android:textColor="@color/color_767676"
+                android:textSize="@dimen/text_size_28px" />
+
+            <FrameLayout
+                android:layout_width="match_parent"
+                android:layout_height="50dp"
+                android:layout_marginStart="20dp"
+                android:layout_marginTop="9dp"
+                android:layout_marginEnd="20dp"
+                android:background="@drawable/bg_rect_ffffff_shadows">
+
+                <EditText
+                    android:id="@+id/edit_verify_name"
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent"
+                    android:layout_marginStart="10dp"
+                    android:layout_marginEnd="10dp"
+                    android:background="@android:color/transparent"
+                    android:ems="10"
+                    android:hint="@string/text_write_hint"
+                    android:textColor="@color/color_303030"
+                    android:textColorHint="@color/color_d4d3d3"
+                    android:textSize="@dimen/text_size_34px" />
+            </FrameLayout>
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginStart="25dp"
+                android:layout_marginTop="9dp"
+                android:text="@string/text_email"
+                android:textColor="@color/color_767676"
+                android:textSize="@dimen/text_size_28px" />
+
+            <FrameLayout
+                android:layout_width="match_parent"
+                android:layout_height="50dp"
+                android:layout_marginStart="20dp"
+                android:layout_marginTop="9dp"
+                android:layout_marginEnd="20dp"
+                android:background="@drawable/bg_rect_ffffff_shadows">
+
+                <EditText
+                    android:id="@+id/edit_verify_email"
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent"
+                    android:layout_marginStart="10dp"
+                    android:layout_marginEnd="10dp"
+                    android:background="@android:color/transparent"
+                    android:ems="10"
+                    android:hint="@string/text_write_hint"
+                    android:textColor="@color/color_303030"
+                    android:textColorHint="@color/color_d4d3d3"
+                    android:textSize="@dimen/text_size_34px" />
+            </FrameLayout>
+
+            <Button
+                android:id="@+id/btn_verify_submit"
+                android:layout_width="131dp"
+                android:layout_height="40dp"
+                android:layout_gravity="center"
+                android:layout_marginTop="20dp"
+                android:background="@drawable/bg_radius_20_cccccc"
+                android:text="@string/button_save"
+                android:textAllCaps="false"
+                android:textColor="@color/white"
+                android:textSize="@dimen/text_size_36px" />
+        </LinearLayout>
+    </ScrollView>
+</LinearLayout>

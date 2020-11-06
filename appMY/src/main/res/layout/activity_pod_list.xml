@@ -1,0 +1,72 @@
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:orientation="vertical">
+
+    <include layout="@layout/top_title" />
+
+    <FrameLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:background="@color/white">
+
+        <CheckBox
+            android:id="@+id/check_pod_list_all"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:checked="true"
+            android:text="@string/text_select_all" />
+    </FrameLayout>
+
+    <View
+        android:layout_width="match_parent"
+        android:layout_height="1dp"
+        android:background="@color/color_e5e5e5" />
+
+    <RelativeLayout
+        android:layout_width="match_parent"
+        android:layout_height="match_parent">
+
+        <ListView
+            android:id="@android:id/list"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:layout_above="@id/layout_pod_list_buttons"
+            android:layout_marginBottom="10dp"
+            android:background="@color/color_f0f0f0"
+            android:paddingTop="10dp" />
+
+        <LinearLayout
+            android:id="@+id/layout_pod_list_buttons"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_alignParentBottom="true"
+            android:background="@color/white"
+            android:gravity="center"
+            android:orientation="horizontal"
+            android:paddingTop="10dp"
+            android:paddingBottom="25dp">
+
+            <Button
+                android:id="@+id/btn_pod_list_delete"
+                android:layout_width="131dp"
+                android:layout_height="40dp"
+                android:background="@drawable/border_radius_30_4fb648_ffffff"
+                android:text="@string/button_delete"
+                android:textAllCaps="false"
+                android:textColor="@color/color_4fb648"
+                android:textSize="@dimen/text_size_32px" />
+
+            <Button
+                android:id="@+id/btn_pod_list_upload"
+                android:layout_width="131dp"
+                android:layout_height="40dp"
+                android:layout_marginStart="20dp"
+                android:background="@drawable/border_radius_30_4fb648_ffffff"
+                android:text="@string/button_upload"
+                android:textAllCaps="false"
+                android:textColor="@color/color_4fb648"
+                android:textSize="@dimen/text_size_32px" />
+        </LinearLayout>
+    </RelativeLayout>
+</LinearLayout>

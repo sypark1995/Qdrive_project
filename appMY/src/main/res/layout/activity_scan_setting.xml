@@ -1,0 +1,54 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:background="@color/color_f6f6f6"
+    android:orientation="vertical">
+
+    <include layout="@layout/top_title" />
+
+    <RelativeLayout
+        android:layout_width="match_parent"
+        android:layout_height="50dp"
+        android:background="@color/white"
+        android:paddingEnd="20dp"
+        android:paddingStart="20dp">
+
+        <TextView
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_centerVertical="true"
+            android:layout_toStartOf="@id/btn_scan_setting_vibration_on"
+            android:gravity="center_vertical"
+            android:text="@string/text_vibration"
+            android:textColor="@color/color_303030"
+            android:textSize="@dimen/text_size_32px" />
+
+        <Button
+            android:id="@+id/btn_scan_setting_vibration_on"
+            android:layout_width="wrap_content"
+            android:layout_height="30dp"
+            android:layout_centerVertical="true"
+            android:layout_toStartOf="@id/btn_scan_setting_vibration_off"
+            android:background="@drawable/border_radius_30_4fb648_ffffff"
+            android:paddingEnd="10dp"
+            android:paddingStart="10dp"
+            android:text="@string/button_on"
+            android:textColor="@color/color_4fb648"
+            android:textSize="@dimen/text_size_26px" />
+
+        <Button
+            android:id="@+id/btn_scan_setting_vibration_off"
+            android:layout_width="wrap_content"
+            android:layout_height="30dp"
+            android:layout_alignParentEnd="true"
+            android:layout_centerVertical="true"
+            android:layout_marginStart="10dp"
+            android:background="@drawable/bg_radius_30_4fb648"
+            android:paddingEnd="10dp"
+            android:paddingStart="10dp"
+            android:text="@string/button_off"
+            android:textColor="@color/white"
+            android:textSize="@dimen/text_size_26px" />
+    </RelativeLayout>
+</LinearLayout>
