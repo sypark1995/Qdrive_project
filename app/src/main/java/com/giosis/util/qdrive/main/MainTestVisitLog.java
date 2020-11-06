@@ -28,11 +28,11 @@ import android.widget.Toast;
 
 import androidx.appcompat.app.AppCompatActivity;
 
+import com.giosis.util.qdrive.singapore.MyApplication;
 import com.giosis.util.qdrive.singapore.R;
 import com.giosis.util.qdrive.util.Camera2APIScan;
 import com.giosis.util.qdrive.util.PermissionActivity;
 import com.giosis.util.qdrive.util.PermissionChecker;
-import com.giosis.util.qdrive.util.SharedPreferencesHelper;
 
 import java.io.File;
 import java.io.FileOutputStream;
@@ -98,9 +98,9 @@ public class MainTestVisitLog extends AppCompatActivity implements Camera2APISca
         context = getApplicationContext();
         camera = new Camera2APIScan(this);
 
-        opID = SharedPreferencesHelper.getSigninOpID(getApplicationContext());
-        officeCode = SharedPreferencesHelper.getSigninOfficeCode(getApplicationContext());
-        deviceID = SharedPreferencesHelper.getSigninDeviceID(getApplicationContext());
+        opID = MyApplication.preferences.getUserId();
+        officeCode = MyApplication.preferences.getOfficeCode();
+        deviceID = MyApplication.preferences.getDeviceUUID();
 
         layout_top_back.setOnClickListener(new OnClickListener() {
 
