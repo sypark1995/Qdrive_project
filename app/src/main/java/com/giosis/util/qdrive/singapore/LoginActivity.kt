@@ -22,8 +22,8 @@ import com.giosis.util.qdrive.util.DataUtil
 import com.giosis.util.qdrive.util.DatabaseHelper
 import com.giosis.util.qdrive.util.PermissionActivity
 import com.giosis.util.qdrive.util.PermissionChecker
-import com.giosis.util.server.APIModel
-import com.giosis.util.server.RetrofitClient
+import com.giosis.library.server.APIModel
+import com.giosis.library.server.RetrofitClient
 import com.google.gson.Gson
 import kotlinx.android.synthetic.main.activity_login.*
 import retrofit2.Call

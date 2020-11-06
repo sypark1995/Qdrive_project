@@ -1,4 +1,4 @@
-package com.giosis.util.server;
+package com.giosis.library.server;
 
 import android.database.Cursor;
 

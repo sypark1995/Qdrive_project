@@ -1,4 +1,4 @@
-package com.giosis.util.server
+package com.giosis.library.server
 
 import retrofit2.Call
 import retrofit2.http.Field
