@@ -19,13 +19,12 @@ import android.widget.Toast;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.core.graphics.drawable.RoundedBitmapDrawable;
 
-import com.giosis.library.setting.ChangePasswordActivity;
+import com.giosis.library.setting.ChangePwdActivity;
 import com.giosis.util.qdrive.singapore.LoginActivity;
 import com.giosis.util.qdrive.singapore.MyApplication;
 import com.giosis.util.qdrive.singapore.R;
 import com.giosis.util.qdrive.util.DatabaseHelper;
 import com.giosis.util.qdrive.util.DisplayUtil;
-import com.giosis.util.qdrive.util.SharedPreferencesHelper;
 
 /**
  * @author krm0219
@@ -125,7 +124,7 @@ public class SettingActivity extends AppCompatActivity {
         String opId = MyApplication.preferences.getUserId();
         String driverName = MyApplication.preferences.getUserName();
         String driverEmail = MyApplication.preferences.getUserEmail();
-        String officeName =  MyApplication.preferences.getOfficeName();
+        String officeName = MyApplication.preferences.getOfficeName();
         String outletDriverYN = MyApplication.preferences.getOutletDriver();
         String lockerStatus = MyApplication.preferences.getLockerStatus();
         String version = MyApplication.preferences.getAppVersion();
@@ -224,7 +223,7 @@ public class SettingActivity extends AppCompatActivity {
 
             case R.id.text_setting_change_password: {
 
-                Intent intent = new Intent(SettingActivity.this, ChangePasswordActivity.class);
+                Intent intent = new Intent(SettingActivity.this, ChangePwdActivity.class);
                 startActivity(intent);
             }
             break;
