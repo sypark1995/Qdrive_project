@@ -1,4 +1,4 @@
-package com.giosis.util.qdrive.server
+package com.giosis.library.server
 
 import android.util.Log
 import com.giosis.util.qdrive.singapore.MyApplication
@@ -15,15 +15,15 @@ import retrofit2.converter.gson.GsonConverterFactory
 object RetrofitClient {
 
     const val TAG = "Retrofit"
-    private var BASE_URL :String = ""
+    private var BASE_URL: String = ""
         get() {
             return "https://qxapi.qxpress.net/GMKT.INC.GLPS.MobileApiService/GlobalMobileService.qapi/"
         }
 
-    class AppInterceptor : Interceptor {
+    class AppInterceptor(private val userAgent: String) : Interceptor {
         override fun intercept(chain: Interceptor.Chain): Response = with(chain) {
             val newRequest = request().newBuilder()
-                    .addHeader("User-Agent", QDataUtil.getCustomUserAgent(MyApplication.getContext())) // TODO kjyoo user agent check
+                    .addHeader("User-Agent", userAgent)
                     .build()
 
             proceed(newRequest)
@@ -31,11 +31,9 @@ object RetrofitClient {
     }
 
     private fun loggingInterceptor(): HttpLoggingInterceptor {
-        val interceptor = HttpLoggingInterceptor(object : HttpLoggingInterceptor.Logger {
-            override fun log(message: String) {
-                Log.i(TAG, message + "")
-            }
-        })
+        val interceptor = HttpLoggingInterceptor { message ->
+            Log.i(TAG, message + "")
+        }
         // BASIC
         // HEADERS
         // BODY
@@ -50,14 +48,14 @@ object RetrofitClient {
             }
 
     private lateinit var instanceDynamic: RetrofitService
-    fun instanceDynamic(): RetrofitService {
+    fun instanceDynamic(userAgent: String): RetrofitService {
 
         val url = MyApplication.preferences.serverURL + DataUtil.API_ADDRESS + "/"
         Log.e("krm0219", "instanceDynamic  URL $BASE_URL   $url")
 
         val retrofit = Retrofit.Builder()
                 .baseUrl(url)
-                .client(provideOkHttpClient(AppInterceptor()))
+                .client(provideOkHttpClient(AppInterceptor(userAgent)))
                 .addConverterFactory(GsonConverterFactory.create())
                 .build()
 

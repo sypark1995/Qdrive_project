@@ -1,7 +1,6 @@
 package com.giosis.util.qdrive.singapore
 
 import android.annotation.SuppressLint
-import android.app.Activity
 import android.content.Context
 import android.content.Intent
 import android.net.Uri
@@ -17,14 +16,11 @@ import androidx.appcompat.app.AlertDialog
 import androidx.appcompat.app.AppCompatActivity
 import com.giosis.util.qdrive.gps.GPSTrackerManager
 import com.giosis.util.qdrive.main.MainActivity
-import com.giosis.util.qdrive.server.APIModel
-import com.giosis.util.qdrive.server.RetrofitClient
 import com.giosis.util.qdrive.server.data.LoginInfo
 import com.giosis.util.qdrive.settings.DeveloperModeActivity
-import com.giosis.util.qdrive.util.DataUtil
-import com.giosis.util.qdrive.util.DatabaseHelper
-import com.giosis.util.qdrive.util.PermissionActivity
-import com.giosis.util.qdrive.util.PermissionChecker
+import com.giosis.library.server.APIModel
+import com.giosis.library.server.RetrofitClient
+import com.giosis.util.qdrive.util.*
 import com.google.gson.Gson
 import kotlinx.android.synthetic.main.activity_login.*
 import retrofit2.Call
@@ -129,10 +125,11 @@ class LoginActivity : AppCompatActivity() {
 
                     progressBar.visibility = View.VISIBLE
 
-                    RetrofitClient.instanceDynamic().requestServerLogin(
+                    RetrofitClient.instanceDynamic(QDataUtil.getCustomUserAgent(MyApplication.getContext())).requestServerLogin(
                             userID, userPW, "QDRIVE", "", deviceUUID, "",
                             latitude.toString(), longitude.toString(), "QDRIVE", "SG"
                     ).enqueue(object : Callback<APIModel> {
+
                         override fun onFailure(call: Call<APIModel>, t: Throwable) {
                             Log.e(RetrofitClient.TAG, t.message.toString())
                             progressBar.visibility = View.GONE

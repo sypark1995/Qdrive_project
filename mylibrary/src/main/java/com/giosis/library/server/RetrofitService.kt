@@ -1,4 +1,4 @@
-package com.giosis.util.qdrive.server
+package com.giosis.library.server
 
 import retrofit2.Call
 import retrofit2.http.Field
@@ -22,5 +22,15 @@ interface RetrofitService {
             @Field("nation_cd") nation_cd: String
     ): Call<APIModel>
 
+
+    @POST("changePassword")
+    @FormUrlEncoded
+    fun requestChangePwd(
+            @Field("op_id") login_id: String,
+            @Field("old_pwd") old_pwd: String,
+            @Field("new_pwd") new_pwd: String,
+            @Field("app_id") app_id: String,
+            @Field("nation_cd") nation_cd: String,
+    ): Call<APIModel>
 
 }

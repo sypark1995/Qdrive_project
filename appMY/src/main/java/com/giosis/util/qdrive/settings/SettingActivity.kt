@@ -12,6 +12,7 @@ import android.view.View
 import android.widget.Toast
 import androidx.core.graphics.drawable.RoundedBitmapDrawable
 import androidx.core.graphics.drawable.RoundedBitmapDrawableFactory
+import com.giosis.library.setting.ChangePwdActivity
 import com.giosis.util.qdrive.barcodescanner.ManualHelper
 import com.giosis.util.qdrive.international.LoginActivity
 import com.giosis.util.qdrive.international.MyApplication
@@ -86,7 +87,7 @@ class SettingActivity : CommonActivity() {
 
         text_setting_change_password.setOnClickListener {
 
-            val intent = Intent(this, ChangePasswordActivity::class.java)
+            val intent = Intent(this, ChangePwdActivity::class.java)
             startActivity(intent)
         }
 
