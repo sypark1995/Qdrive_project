@@ -166,37 +166,56 @@ class LoginActivity : AppCompatActivity() {
 
                                                 if (!loginData.opNm.isNullOrEmpty()) {
                                                     MyApplication.preferences.userName = loginData.opNm!!
+                                                } else {
+                                                    MyApplication.preferences.userName = ""
                                                 }
 
                                                 if (!loginData.epEmail.isNullOrEmpty()) {
                                                     MyApplication.preferences.userEmail = loginData.epEmail!!
+                                                } else {
+                                                    MyApplication.preferences.userEmail = ""
                                                 }
 
                                                 if (!loginData.officeCode.isNullOrEmpty()) {
                                                     MyApplication.preferences.officeCode = loginData.officeCode!!
+                                                } else {
+                                                    MyApplication.preferences.officeCode = ""
                                                 }
 
                                                 if (!loginData.officeName.isNullOrEmpty()) {
                                                     MyApplication.preferences.officeName = loginData.officeName!!
+                                                } else {
+                                                    MyApplication.preferences.officeName = ""
                                                 }
 
                                                 if (!loginData.pickupDriverYN.isNullOrEmpty()) {
                                                     MyApplication.preferences.pickupDriver = loginData.pickupDriverYN!!
-                                                }else {
+                                                } else {
                                                     MyApplication.preferences.pickupDriver = "N"
                                                 }
 
                                                 if (!loginData.shuttle_driver_yn.isNullOrEmpty()) {
                                                     MyApplication.preferences.outletDriver = loginData.shuttle_driver_yn!!
+                                                } else {
+                                                    MyApplication.preferences.outletDriver = ""
                                                 }
+
                                                 if (!loginData.locker_driver_status.isNullOrEmpty()) {
                                                     MyApplication.preferences.lockerStatus = loginData.locker_driver_status!!
+                                                } else {
+                                                    MyApplication.preferences.lockerStatus = ""
                                                 }
+
                                                 if (!loginData.defaultYn.isNullOrEmpty()) {
                                                     MyApplication.preferences.default = loginData.defaultYn!!
+                                                } else {
+                                                    MyApplication.preferences.default = ""
                                                 }
+
                                                 if (!loginData.authNo.isNullOrEmpty()) {
                                                     MyApplication.preferences.authNo = loginData.authNo!!
+                                                } else {
+                                                    MyApplication.preferences.authNo = ""
                                                 }
 
                                                 if (loginData.smsYn == "Y" && loginData.deviceYn == "Y") {
