@@ -7,15 +7,9 @@ import com.giosis.library.BR
 import com.giosis.library.BaseActivity
 import com.giosis.library.R
 import com.giosis.library.databinding.ActivityChangePwdBinding
-import com.giosis.library.server.APIModel
-import com.giosis.library.server.RetrofitClient
 import com.giosis.library.util.DisplayUtil
 import kotlinx.android.synthetic.main.activity_change_pwd.*
 import kotlinx.android.synthetic.main.top_title.*
-import retrofit2.Call
-import retrofit2.Callback
-import retrofit2.Response
-import java.util.regex.Pattern
 
 class ChangePwdActivity : BaseActivity<ActivityChangePwdBinding, ChangePwdViewModel>() {
 
@@ -35,141 +29,59 @@ class ChangePwdActivity : BaseActivity<ActivityChangePwdBinding, ChangePwdViewMo
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-//
-//        text_top_title.text = resources.getString(R.string.text_title_change_password)
-//
-//        layout_top_back.setOnClickListener {
-//            finish()
-//        }
-//
-//        btn_setting_change_confirm.setOnClickListener {
-//            changePassword()
-//        }
-    }
 
+        text_top_title.text = resources.getString(R.string.text_title_change_password)
 
-    private fun changePassword() {
-        DisplayUtil.hideKeyboard(this)
-
-        val alertBuilder = AlertDialog.Builder(this)
-        alertBuilder.setTitle(resources.getString(R.string.text_title_change_password))
-        alertBuilder.setMessage(resources.getString(R.string.msg_want_change_password))
-        alertBuilder.setCancelable(true)
-
-        alertBuilder.setPositiveButton(resources.getString(R.string.button_ok)) { dialogInterface, _ ->
-
-            dialogInterface.cancel()
-
-            val oldPassword = edit_setting_change_old_password.text.toString().trim()
-            val newPassword = edit_setting_change_new_password.text.toString().trim()
-            val confirmPassword = edit_setting_change_confirm_password.text.toString().trim()
-
-            val isValid = isValidPassword(oldPassword, newPassword, confirmPassword)
-
-            if (isValid) {
-
-                val userAgent = ""
-                val id = ""
-                val appID = ""
-                val nationCode = ""
-
-                RetrofitClient.instanceDynamic(userAgent).requestChangePwd(
-                        id, oldPassword, newPassword, appID, nationCode
-                ).enqueue(object : Callback<APIModel> {
-
-                    override fun onFailure(call: Call<APIModel>, t: Throwable) {
-//                        progressBar.visibility = View.GONE
-
-                    }
-
-                    override fun onResponse(call: Call<APIModel>, response: Response<APIModel>) {
-
-                        if (response.isSuccessful) {
-                            if (response.body() != null && response.body()!!.resultCode == 0) {
-//                                val loginData = Gson().fromJson(response.body()!!.resultObject, LoginInfo::class.java)
-// TODO kjyoo
-                            }
-                        }
-
-//                        progressBar.visibility = View.GONE
-                    }
-                })
-            }
+        layout_top_back.setOnClickListener {
+            finish()
         }
 
-        alertBuilder.setNegativeButton(resources.getString(R.string.button_cancel)) { dialogInterface, _ ->
-            dialogInterface.cancel()
-        }
+        mViewModel.checkAlert.observe(this, {
 
-        alertBuilder.show()
-    }
+            DisplayUtil.hideKeyboard(this)
 
-    private fun isValidPassword(oldPassword: String, newPassword: String, confirmPassword: String): Boolean {
-        var isValid = false
+            val alertBuilder = AlertDialog.Builder(this)
+            alertBuilder.setTitle(resources.getString(R.string.text_title_change_password))
+            alertBuilder.setMessage(resources.getString(R.string.msg_want_change_password))
+            alertBuilder.setCancelable(true)
 
-        val alertBuilder = AlertDialog.Builder(this)
-        alertBuilder.setTitle(resources.getString(R.string.text_invalidation))
-
-        if (oldPassword.isNotEmpty()) {      // 현재 패스워드 입력
-
-            if (11 <= newPassword.length) {     // 새로운 패스워드 11자리 이상 입력
-
-                val passwordPattern = "((?=.*\\d)(?=.*[A-Za-z])(?=.*[!@#$%]).{11,20})"
-                val pattern = Pattern.compile(passwordPattern)
-                val matcher = pattern.matcher(newPassword)
-                val patternValid = matcher.matches()
-
-                if (patternValid) {  // 비밀번호 유효성
-
-                    if (newPassword == confirmPassword) {    // 확인 비밀번호 일치
-                        isValid = true
-
-                    } else {        // 확인 비밀번호 불일치
-
-                        alertBuilder.setMessage(resources.getString(R.string.msg_same_password_error))
-                        alertBuilder.setPositiveButton(resources.getString(R.string.button_ok)) { dialogInterface, _ ->
-
-                            edit_setting_change_confirm_password.requestFocus()
-                            dialogInterface.cancel()
-                        }
-
-                        alertBuilder.show()
-                    }
-                } else {             // 비밀번호 유효성 틀림
-
-                    alertBuilder.setMessage(resources.getString(R.string.msg_password_symbols_error))
-                    alertBuilder.setPositiveButton(resources.getString(R.string.button_ok)) { dialogInterface, _ ->
-
-                        edit_setting_change_new_password.requestFocus()
-                        dialogInterface.cancel()
-                    }
-
-                    alertBuilder.show()
-                }
-            } else {        // 새로운 패스워드 11자리 이상 입력하지 않음
-
-                alertBuilder.setMessage(resources.getString(R.string.msg_password_length_error))
-                alertBuilder.setPositiveButton(resources.getString(R.string.button_ok)) { dialogInterface, _ ->
-
-                    edit_setting_change_new_password.requestFocus()
-                    dialogInterface.cancel()
-                }
-
-                alertBuilder.show()
-            }
-        } else {    // 현재 패스워드 입력하지 않음
-
-            alertBuilder.setMessage(resources.getString(R.string.msg_empty_password_error))
             alertBuilder.setPositiveButton(resources.getString(R.string.button_ok)) { dialogInterface, _ ->
+                mViewModel.alertOkClick()
+            }
 
-                edit_setting_change_old_password.requestFocus()
+            alertBuilder.setNegativeButton(resources.getString(R.string.button_cancel)) { dialogInterface, _ ->
                 dialogInterface.cancel()
             }
 
             alertBuilder.show()
-        }
+        })
 
-        return isValid
+        mViewModel.errorAlert.observe(this, {
+
+            val alertBuilder = AlertDialog.Builder(this)
+            alertBuilder.setTitle(resources.getString(R.string.text_invalidation))
+            alertBuilder.setMessage(resources.getString(it))
+            alertBuilder.setPositiveButton(resources.getString(R.string.button_ok)) { dialogInterface, _ ->
+
+                when (it) {
+                    R.string.msg_same_password_error -> {
+                        edit_setting_change_confirm_password.requestFocus()
+                    }
+                    R.string.msg_password_symbols_error -> {
+                        edit_setting_change_new_password.requestFocus()
+                    }
+                    R.string.msg_empty_password_error -> {
+                        edit_setting_change_old_password.requestFocus()
+                    }
+                    R.string.msg_password_length_error -> {
+                        edit_setting_change_new_password.requestFocus()
+                    }
+                }
+                dialogInterface.cancel()
+            }
+
+            alertBuilder.show()
+        })
     }
 
 
