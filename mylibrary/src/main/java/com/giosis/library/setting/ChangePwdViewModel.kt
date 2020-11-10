@@ -41,9 +41,9 @@ class ChangePwdViewModel : BaseViewModel() {
 
     fun alertOkClick() {
 
-        val oldPassword = oldPwd.toString().trim()
-        val newPassword = newPwd.toString().trim()
-        val confirmPassword = confirmPwd.toString().trim()
+        val oldPassword = _oldPwd.value.toString().trim()
+        val newPassword = _newPwd.value.toString().trim()
+        val confirmPassword = _confirmPwd.value.toString().trim()
 
         val isValid = isValidPassword(oldPassword, newPassword, confirmPassword)
 

@@ -45,7 +45,7 @@
                 android:hint="@string/text_write_hint"
                 android:inputType="textPassword"
                 android:maxLines="1"
-                android:text="@{viewModel.oldPwd}"
+                android:text="@={viewModel.oldPwd}"
                 android:textColor="@color/color_303030"
                 android:textColorHint="@color/color_d4d3d3"
                 android:textSize="@dimen/text_size_32px" />
@@ -71,7 +71,7 @@
                 android:layout_height="wrap_content"
                 android:layout_centerVertical="true"
                 android:layout_marginStart="140dp"
-                android:text="@{viewModel.newPwd}"
+                android:text="@={viewModel.newPwd}"
                 android:ellipsize="end"
                 android:hint="@string/text_write_hint"
                 android:inputType="textPassword"
@@ -106,7 +106,7 @@
                 android:hint="@string/text_write_hint"
                 android:inputType="textPassword"
                 android:maxLines="1"
-                android:text="@{viewModel.confirmPwd}"
+                android:text="@={viewModel.confirmPwd}"
                 android:textColor="@color/color_303030"
                 android:textColorHint="@color/color_d4d3d3"
                 android:textSize="@dimen/text_size_32px" />
