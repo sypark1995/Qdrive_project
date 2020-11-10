@@ -38,7 +38,6 @@ import com.giosis.util.qdrive.singapore.UploadData;
 import com.giosis.util.qdrive.util.DataUtil;
 import com.giosis.util.qdrive.util.DatabaseHelper;
 import com.giosis.util.qdrive.util.DisplayUtil;
-import com.giosis.util.qdrive.util.SharedPreferencesHelper;
 
 import java.io.File;
 import java.util.ArrayList;
@@ -266,7 +265,7 @@ public class CustomNotUploadAdapter extends BaseExpandableListAdapter {
 //        officeCode = SharedPreferencesHelper.getSigninOfficeCode(context);
 //        deviceID = SharedPreferencesHelper.getSigninDeviceID(context);
         opID = MyApplication.preferences.getUserId();
-        officeCode =MyApplication.preferences.getOfficeCode();
+        officeCode = MyApplication.preferences.getOfficeCode();
         deviceID = MyApplication.preferences.getDeviceUUID();
 
         final ChildItemNotUpload child = (ChildItemNotUpload) getChild(groupPosition, childPosition);

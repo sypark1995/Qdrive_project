@@ -5,8 +5,6 @@ import android.content.Context;
 import android.content.DialogInterface;
 import android.content.DialogInterface.OnClickListener;
 import android.content.Intent;
-import android.content.SharedPreferences;
-import android.content.SharedPreferences.Editor;
 import android.content.pm.PackageManager;
 import android.os.AsyncTask;
 import android.os.Bundle;
@@ -30,7 +28,6 @@ import com.giosis.util.qdrive.util.DataUtil;
 import com.giosis.util.qdrive.util.NetworkUtil;
 import com.giosis.util.qdrive.util.PermissionActivity;
 import com.giosis.util.qdrive.util.PermissionChecker;
-import com.giosis.util.qdrive.util.SharedPreferencesHelper;
 
 import org.json.JSONObject;
 
@@ -514,11 +511,13 @@ public class SMSVerificationActivity extends AppCompatActivity {
                         dialog.cancel();
                         Intent intent = new Intent();
 
-                        // 사용자 이름 바꾸기
-                        SharedPreferences settings = context.getSharedPreferences(SharedPreferencesHelper.SHARED_PREF_FILE, Context.MODE_PRIVATE);
-                        Editor edit = settings.edit();
-                        edit.putString(SharedPreferencesHelper.PREF_SIGN_IN_OP_NM, name);
-                        edit.apply();
+//                        // 사용자 이름 바꾸기
+//                        SharedPreferences settings = context.getSharedPreferences(SharedPreferencesHelper.SHARED_PREF_FILE, Context.MODE_PRIVATE);
+//                        Editor edit = settings.edit();
+//                        edit.putString(SharedPreferencesHelper.PREF_SIGN_IN_OP_NM, name);
+//                        edit.apply();
+
+                        MyApplication.preferences.setUserName(name);
 
 
 //                        if (SharedPreferencesHelper.getSigninState(getApplicationContext())) {

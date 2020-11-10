@@ -24,12 +24,12 @@ public class Custom_JsonParser {
 
         String response = "";
         String apiURL = MyApplication.preferences.getServerURL() + DataUtil.API_ADDRESS;
-        Log.e("krm0219", "JsonParser URL " + apiURL);
 
 
         try {
 
             url = new URL(apiURL + "/" + method);
+            Log.e("krm0219", "JsonParser URL " + url.toString());
 
             // URL 연결
             conn = (HttpURLConnection) url.openConnection();

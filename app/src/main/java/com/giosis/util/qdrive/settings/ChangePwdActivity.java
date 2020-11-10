@@ -21,7 +21,6 @@ import com.giosis.util.qdrive.singapore.R;
 import com.giosis.util.qdrive.util.Custom_JsonParser;
 import com.giosis.util.qdrive.util.DataUtil;
 import com.giosis.util.qdrive.util.NetworkUtil;
-import com.giosis.util.qdrive.util.SharedPreferencesHelper;
 
 import org.json.JSONObject;
 
@@ -69,7 +68,7 @@ public class ChangePwdActivity extends AppCompatActivity {
         //
         context = getApplicationContext();
         op_id = MyApplication.preferences.getUserId();
-    //    op_id = SharedPreferencesHelper.getSigninOpID(getApplicationContext());
+        //    op_id = SharedPreferencesHelper.getSigninOpID(getApplicationContext());
 
         text_top_title.setText(R.string.text_title_change_password);
 

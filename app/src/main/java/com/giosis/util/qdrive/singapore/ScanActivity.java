@@ -13,7 +13,6 @@ import androidx.appcompat.app.AppCompatActivity;
 
 import com.giosis.util.qdrive.barcodescanner.CaptureActivity;
 import com.giosis.util.qdrive.util.BarcodeType;
-import com.giosis.util.qdrive.util.SharedPreferencesHelper;
 
 /**
  * @author krm0219

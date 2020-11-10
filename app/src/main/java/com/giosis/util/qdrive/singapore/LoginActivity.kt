@@ -136,7 +136,7 @@ class LoginActivity : AppCompatActivity() {
                         override fun onFailure(call: Call<APIModel>, t: Throwable) {
                             Log.e(RetrofitClient.TAG, t.message.toString())
                             progressBar.visibility = View.GONE
-
+                            showDialog(t.message.toString())
                         }
 
                         override fun onResponse(call: Call<APIModel>, response: Response<APIModel>) {
@@ -144,6 +144,7 @@ class LoginActivity : AppCompatActivity() {
                             if (response.isSuccessful) {
                                 if (response.body() != null && response.body()!!.resultCode == 0) {
                                     val loginData = Gson().fromJson(response.body()!!.resultObject, LoginInfo::class.java)
+                                    Log.e(RetrofitClient.TAG, "response : ${response.body()!!.resultObject}")
 
                                     if (loginData != null) {
 
@@ -165,34 +166,56 @@ class LoginActivity : AppCompatActivity() {
 
                                                 if (!loginData.opNm.isNullOrEmpty()) {
                                                     MyApplication.preferences.userName = loginData.opNm!!
+                                                } else {
+                                                    MyApplication.preferences.userName = ""
                                                 }
 
                                                 if (!loginData.epEmail.isNullOrEmpty()) {
                                                     MyApplication.preferences.userEmail = loginData.epEmail!!
+                                                } else {
+                                                    MyApplication.preferences.userEmail = ""
                                                 }
 
                                                 if (!loginData.officeCode.isNullOrEmpty()) {
                                                     MyApplication.preferences.officeCode = loginData.officeCode!!
+                                                } else {
+                                                    MyApplication.preferences.officeCode = ""
                                                 }
 
                                                 if (!loginData.officeName.isNullOrEmpty()) {
                                                     MyApplication.preferences.officeName = loginData.officeName!!
+                                                } else {
+                                                    MyApplication.preferences.officeName = ""
                                                 }
 
                                                 if (!loginData.pickupDriverYN.isNullOrEmpty()) {
                                                     MyApplication.preferences.pickupDriver = loginData.pickupDriverYN!!
+                                                } else {
+                                                    MyApplication.preferences.pickupDriver = "N"
                                                 }
+
                                                 if (!loginData.shuttle_driver_yn.isNullOrEmpty()) {
                                                     MyApplication.preferences.outletDriver = loginData.shuttle_driver_yn!!
+                                                } else {
+                                                    MyApplication.preferences.outletDriver = ""
                                                 }
+
                                                 if (!loginData.locker_driver_status.isNullOrEmpty()) {
                                                     MyApplication.preferences.lockerStatus = loginData.locker_driver_status!!
+                                                } else {
+                                                    MyApplication.preferences.lockerStatus = ""
                                                 }
+
                                                 if (!loginData.defaultYn.isNullOrEmpty()) {
                                                     MyApplication.preferences.default = loginData.defaultYn!!
+                                                } else {
+                                                    MyApplication.preferences.default = ""
                                                 }
+
                                                 if (!loginData.authNo.isNullOrEmpty()) {
                                                     MyApplication.preferences.authNo = loginData.authNo!!
+                                                } else {
+                                                    MyApplication.preferences.authNo = ""
                                                 }
 
                                                 if (loginData.smsYn == "Y" && loginData.deviceYn == "Y") {
@@ -215,6 +238,9 @@ class LoginActivity : AppCompatActivity() {
                                         }
                                     }
                                 }
+                            } else {
+
+                                showDialog(response.errorBody().toString())
                             }
 
                             progressBar.visibility = View.GONE
@@ -255,11 +281,10 @@ class LoginActivity : AppCompatActivity() {
 
         if (isPermissionTrue) {
 
-            val gpsEnable = gpsTrackerManager?.enableGPSSetting()
+            val gpsEnable = gpsTrackerManager.enableGPSSetting()
 
-            if (gpsEnable == true) {
-                gpsTrackerManager?.GPSTrackerStart()
-                Log.e(tag, " onResume  Location  :  ${gpsTrackerManager?.latitude} / ${gpsTrackerManager?.longitude}")
+            if (gpsEnable) {
+                gpsTrackerManager.GPSTrackerStart()
             } else {
                 DataUtil.enableLocationSettings(this, this@LoginActivity)
             }

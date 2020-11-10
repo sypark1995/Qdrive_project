@@ -4,8 +4,6 @@ import android.app.AlertDialog;
 import android.content.Context;
 import android.content.DialogInterface;
 import android.content.DialogInterface.OnClickListener;
-import android.content.SharedPreferences;
-import android.content.SharedPreferences.Editor;
 import android.os.AsyncTask;
 import android.os.Bundle;
 import android.util.Log;
@@ -23,7 +21,6 @@ import com.giosis.util.qdrive.singapore.R;
 import com.giosis.util.qdrive.util.Custom_JsonParser;
 import com.giosis.util.qdrive.util.DataUtil;
 import com.giosis.util.qdrive.util.NetworkUtil;
-import com.giosis.util.qdrive.util.SharedPreferencesHelper;
 
 import org.json.JSONObject;
 
@@ -264,13 +261,16 @@ public class ModifyUserInfoActivity extends AppCompatActivity {
 
 
         void updateSharedPreference() {
-
-            SharedPreferences settings = context.getSharedPreferences(SharedPreferencesHelper.SHARED_PREF_FILE, Context.MODE_PRIVATE);
-
-            Editor edit = settings.edit();
-            edit.putString(SharedPreferencesHelper.PREF_SIGN_IN_OP_NM, name);
-            edit.putString(SharedPreferencesHelper.PREF_SIGN_IN_OP_EMAIL, email);
-            edit.apply();
+//
+//            SharedPreferences settings = context.getSharedPreferences(SharedPreferencesHelper.SHARED_PREF_FILE, Context.MODE_PRIVATE);
+//
+//            Editor edit = settings.edit();
+//            edit.putString(SharedPreferencesHelper.PREF_SIGN_IN_OP_NM, name);
+//            edit.putString(SharedPreferencesHelper.PREF_SIGN_IN_OP_EMAIL, email);
+//            edit.apply();
+//
+            MyApplication.preferences.setUserName(name);
+            MyApplication.preferences.setUserEmail(email);
         }
 
 

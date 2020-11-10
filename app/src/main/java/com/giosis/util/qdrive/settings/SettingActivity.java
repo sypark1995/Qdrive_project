@@ -24,7 +24,6 @@ import com.giosis.util.qdrive.singapore.MyApplication;
 import com.giosis.util.qdrive.singapore.R;
 import com.giosis.util.qdrive.util.DatabaseHelper;
 import com.giosis.util.qdrive.util.DisplayUtil;
-import com.giosis.util.qdrive.util.SharedPreferencesHelper;
 
 /**
  * @author krm0219
@@ -124,7 +123,7 @@ public class SettingActivity extends AppCompatActivity {
         String opId = MyApplication.preferences.getUserId();
         String driverName = MyApplication.preferences.getUserName();
         String driverEmail = MyApplication.preferences.getUserEmail();
-        String officeName =  MyApplication.preferences.getOfficeName();
+        String officeName = MyApplication.preferences.getOfficeName();
         String outletDriverYN = MyApplication.preferences.getOutletDriver();
         String lockerStatus = MyApplication.preferences.getLockerStatus();
         String version = MyApplication.preferences.getAppVersion();
