@@ -2,8 +2,11 @@ package com.giosis.library.setting
 
 import android.app.AlertDialog
 import android.os.Bundle
-import androidx.appcompat.app.AppCompatActivity
+import androidx.lifecycle.ViewModelProvider
+import com.giosis.library.BR
+import com.giosis.library.BaseActivity
 import com.giosis.library.R
+import com.giosis.library.databinding.ActivityChangePwdBinding
 import com.giosis.library.server.APIModel
 import com.giosis.library.server.RetrofitClient
 import com.giosis.library.util.DisplayUtil
@@ -14,25 +17,36 @@ import retrofit2.Callback
 import retrofit2.Response
 import java.util.regex.Pattern
 
+class ChangePwdActivity : BaseActivity<ActivityChangePwdBinding, ChangePwdViewModel>() {
 
-class ChangePasswordActivity : AppCompatActivity() {
+    val tag = "ChangePwdActivity"
 
-    val tag = "ChangePasswordActivity"
+    override fun getLayoutId(): Int {
+        return R.layout.activity_change_pwd
+    }
+
+    override fun getBindingVariable(): Int {
+        return BR.viewModel
+    }
+
+    override fun getViewModel(): ChangePwdViewModel {
+        return ViewModelProvider(this).get(ChangePwdViewModel::class.java)
+    }
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        setContentView(R.layout.activity_change_pwd)
-
-        text_top_title.text = resources.getString(R.string.text_title_change_password)
-
-        layout_top_back.setOnClickListener {
-            finish()
-        }
-
-        btn_setting_change_confirm.setOnClickListener {
-            changePassword()
-        }
+//
+//        text_top_title.text = resources.getString(R.string.text_title_change_password)
+//
+//        layout_top_back.setOnClickListener {
+//            finish()
+//        }
+//
+//        btn_setting_change_confirm.setOnClickListener {
+//            changePassword()
+//        }
     }
+
 
     private fun changePassword() {
         DisplayUtil.hideKeyboard(this)
@@ -157,6 +171,7 @@ class ChangePasswordActivity : AppCompatActivity() {
 
         return isValid
     }
+
 
 //    @SuppressLint("StaticFieldLeak")
 //    inner class ChangePasswordAsyncTask(private val oldPassword: String, private val newPassword: String) : AsyncTask<Void, Void, StdResult>() {

@@ -5,8 +5,11 @@
     <application>
 
         <activity
-            android:name=".setting.ChangePasswordActivity"
-            android:label="@string/app_name"
+            android:name=".setting.ChangePwdActivity"
+            android:screenOrientation="portrait" />
+
+        <activity
+            android:name=".TestActivity"
             android:screenOrientation="portrait" />
 
     </application>

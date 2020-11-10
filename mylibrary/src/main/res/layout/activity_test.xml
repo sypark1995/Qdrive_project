@@ -2,14 +2,14 @@
 <layout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
-    tools:context="com.giosis.library.setting.ChangePwdActivity">
+    tools:context="com.giosis.library.TestActivity">
 
     <data>
         <import type="android.view.View"/>
 
         <variable
             name="viewModel"
-            type="com.giosis.library.setting.ChangePwdViewModel" />
+            type="com.giosis.library.TestViewModel" />
     </data>
 
     <LinearLayout
@@ -119,10 +119,9 @@
             android:text="@string/button_confirm"
             android:textAllCaps="false"
             android:textColor="@color/white"
-            android:onClick="@{()->viewModel.onclick()}"
             android:textSize="@dimen/text_size_32px" />
 
-
+        <!--            android:onClick="@{()->viewModel.onclick()}"-->
         <!--            android:background="@drawable/bg_radius_30_4fb648"-->
 
 
