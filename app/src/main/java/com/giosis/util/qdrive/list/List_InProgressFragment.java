@@ -399,7 +399,7 @@ public class List_InProgressFragment extends Fragment implements OnQueryTextList
     @Override
     public void onResume() {
         super.onResume();
-        Log.e("krm0219", "onResume  " + pickupSortCondition);
+        Log.e("krm0219", "onResume  " + pickupSortCondition + " / " + pickupDriverYn);
 
         // NOTIFICATION.  2020.07
         if (pickupDriverYn.equals("Y")) {

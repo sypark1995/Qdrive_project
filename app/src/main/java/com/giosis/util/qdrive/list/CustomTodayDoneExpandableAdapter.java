@@ -36,7 +36,6 @@ import com.giosis.util.qdrive.singapore.MyApplication;
 import com.giosis.util.qdrive.singapore.R;
 import com.giosis.util.qdrive.util.DataUtil;
 import com.giosis.util.qdrive.util.NetworkUtil;
-import com.giosis.util.qdrive.util.SharedPreferencesHelper;
 import com.gprinter.command.EscCommand;
 import com.gprinter.command.LabelCommand;
 

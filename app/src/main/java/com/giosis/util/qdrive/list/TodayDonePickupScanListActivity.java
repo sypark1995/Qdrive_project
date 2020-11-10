@@ -19,7 +19,6 @@ import com.giosis.util.qdrive.barcodescanner.CaptureActivity;
 import com.giosis.util.qdrive.singapore.MyApplication;
 import com.giosis.util.qdrive.singapore.R;
 import com.giosis.util.qdrive.util.BarcodeType;
-import com.giosis.util.qdrive.util.SharedPreferencesHelper;
 
 import java.util.ArrayList;
 

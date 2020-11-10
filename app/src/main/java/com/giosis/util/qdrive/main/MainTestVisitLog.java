@@ -33,7 +33,6 @@ import com.giosis.util.qdrive.singapore.R;
 import com.giosis.util.qdrive.util.Camera2APIScan;
 import com.giosis.util.qdrive.util.PermissionActivity;
 import com.giosis.util.qdrive.util.PermissionChecker;
-import com.giosis.util.qdrive.util.SharedPreferencesHelper;
 
 import java.io.File;
 import java.io.FileOutputStream;

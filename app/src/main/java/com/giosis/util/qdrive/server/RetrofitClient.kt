@@ -2,6 +2,7 @@ package com.giosis.util.qdrive.server
 
 import android.util.Log
 import com.giosis.util.qdrive.singapore.MyApplication
+import com.giosis.util.qdrive.util.DataUtil
 import com.giosis.util.qdrive.util.QDataUtil
 import okhttp3.Interceptor
 import okhttp3.OkHttpClient
@@ -51,8 +52,11 @@ object RetrofitClient {
     private lateinit var instanceDynamic: RetrofitService
     fun instanceDynamic(): RetrofitService {
 
+        val url = MyApplication.preferences.serverURL + DataUtil.API_ADDRESS + "/"
+        Log.e("krm0219", "instanceDynamic  URL $BASE_URL   $url")
+
         val retrofit = Retrofit.Builder()
-                .baseUrl(BASE_URL)
+                .baseUrl(url)
                 .client(provideOkHttpClient(AppInterceptor()))
                 .addConverterFactory(GsonConverterFactory.create())
                 .build()

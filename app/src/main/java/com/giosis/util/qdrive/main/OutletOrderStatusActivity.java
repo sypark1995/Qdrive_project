@@ -25,7 +25,6 @@ import com.giosis.util.qdrive.list.RowItem;
 import com.giosis.util.qdrive.singapore.MyApplication;
 import com.giosis.util.qdrive.singapore.R;
 import com.giosis.util.qdrive.util.DatabaseHelper;
-import com.giosis.util.qdrive.util.SharedPreferencesHelper;
 
 import java.lang.reflect.Field;
 import java.util.ArrayList;

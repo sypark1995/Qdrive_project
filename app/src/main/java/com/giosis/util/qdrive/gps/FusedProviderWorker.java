@@ -11,7 +11,6 @@ import android.util.Log;
 import androidx.core.app.ActivityCompat;
 
 import com.giosis.util.qdrive.singapore.MyApplication;
-import com.giosis.util.qdrive.util.SharedPreferencesHelper;
 import com.google.android.gms.common.ConnectionResult;
 import com.google.android.gms.common.api.GoogleApiClient;
 import com.google.android.gms.location.FusedLocationProviderClient;
