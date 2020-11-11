@@ -7,7 +7,9 @@ import android.os.Build
 import android.provider.Settings
 import android.telephony.TelephonyManager
 import android.text.TextUtils
+import android.util.Log
 import androidx.core.app.ActivityCompat
+import com.giosis.library.util.Preferences
 import java.net.NetworkInterface
 import java.util.*
 
@@ -21,54 +23,58 @@ class QDataUtil {
         //Android_QX.QDRIVE_3.4.2_93(GMKTV2_emuSLleJ3UIN5Rv29oCED7Td5beIHgQG8ctYtFPvDRVr7q2dCnCEESVCvK1eseEAq_g_2_ZB9mkCfFA_g_3_;SM-G960N;10;ko_KR)
         fun getCustomUserAgent(appContext: Context): String {
 
-            var appVersionName = ""
-            var appVersionCode = ""
-            val appName = "QX.QDRIVE"
+            if (TextUtils.isEmpty(Preferences.userAgent)) {
+                var appVersionName = ""
+                var appVersionCode = ""
+                val appName = "QX.QDRIVE"
 
-            try {
-                val info = appContext.packageManager.getPackageInfo(appContext.packageName, 0)
-                appVersionName = info.versionName
-                appVersionCode = info.versionCode.toString()
-            } catch (e: PackageManager.NameNotFoundException) {
-                e.printStackTrace()
-                //GMKT_Log.i(e.toString());
+                try {
+                    val info = appContext.packageManager.getPackageInfo(appContext.packageName, 0)
+                    appVersionName = info.versionName
+                    appVersionCode = info.versionCode.toString()
+                } catch (e: PackageManager.NameNotFoundException) {
+                    e.printStackTrace()
+                    //GMKT_Log.i(e.toString());
+                }
+
+
+                val deviceCode = getSecretCode(getUUID(appContext), appVersionName)
+
+                val config: Configuration = appContext.resources.configuration
+                val systemLocale = if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.N) config.locales[0] else config.locale
+
+                val appLanguage = systemLocale.language
+                val localeNation = if (safeEqual(appLanguage, "in")) {
+                    "id"
+                } else {
+                    appLanguage
+                }
+                val localeAndLanguageCode = localeNation + "_" + getLocaleCodeByDeviceSetting(appContext)
+
+
+                val userAgent = StringBuffer()
+                userAgent.append("Android")
+                userAgent.append("_")
+                userAgent.append(appName)
+                userAgent.append("_")
+                userAgent.append(appVersionName)
+                userAgent.append("_")
+                userAgent.append(appVersionCode)
+                userAgent.append("(")
+
+                userAgent.append(deviceCode)
+                userAgent.append(";")
+                userAgent.append(Build.MODEL)
+                userAgent.append(";")
+                userAgent.append(Build.VERSION.RELEASE)
+                userAgent.append(";")
+                userAgent.append(localeAndLanguageCode)
+                userAgent.append(")")
+
+                Preferences.userAgent = userAgent.toString()
             }
-
-
-            val deviceCode = getSecretCode(getUUID(appContext), appVersionName)
-
-            val config: Configuration = appContext.resources.configuration
-            val systemLocale = if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.N) config.locales[0] else config.locale
-
-            val appLanguage = systemLocale.language
-            val localeNation = if (safeEqual(appLanguage, "in")) {
-                "id"
-            } else {
-                appLanguage
-            }
-            val localeAndLanguageCode = localeNation + "_" + getLocaleCodeByDeviceSetting(appContext)
-
-
-            val userAgent = StringBuffer()
-            userAgent.append("Android")
-            userAgent.append("_")
-            userAgent.append(appName)
-            userAgent.append("_")
-            userAgent.append(appVersionName)
-            userAgent.append("_")
-            userAgent.append(appVersionCode)
-            userAgent.append("(")
-
-            userAgent.append(deviceCode)
-            userAgent.append(";")
-            userAgent.append(Build.MODEL)
-            userAgent.append(";")
-            userAgent.append(Build.VERSION.RELEASE)
-            userAgent.append(";")
-            userAgent.append(localeAndLanguageCode)
-            userAgent.append(")")
-
-            return userAgent.toString()
+            Log.e(":", "${Preferences.userAgent}")
+            return Preferences.userAgent
         }
 
 

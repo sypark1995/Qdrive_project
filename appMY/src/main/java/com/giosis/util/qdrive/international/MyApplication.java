@@ -10,6 +10,7 @@ import android.util.Log;
 
 import androidx.multidex.MultiDexApplication;
 
+import com.giosis.library.util.Preferences;
 import com.giosis.util.qdrive.util.LocaleManager;
 import com.giosis.util.qdrive.util.MySharedPreferences;
 
@@ -35,6 +36,10 @@ public class MyApplication extends MultiDexApplication {
         super.onCreate();
 
         preferences = new MySharedPreferences(getApplicationContext());
+
+        Preferences.INSTANCE.init(this);
+        Preferences.INSTANCE.setAppInfo("MY");
+
         context = getApplicationContext();
         badgeCnt = 0;
 
@@ -48,6 +53,7 @@ public class MyApplication extends MultiDexApplication {
         pm.setComponentEnabledSetting(receiver,
                 PackageManager.COMPONENT_ENABLED_STATE_ENABLED,
                 PackageManager.DONT_KILL_APP);
+
     }
 
     @Override

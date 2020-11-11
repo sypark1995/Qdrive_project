@@ -10,6 +10,7 @@ import android.util.Log;
 
 import androidx.multidex.MultiDexApplication;
 
+import com.giosis.library.util.Preferences;
 import com.giosis.util.qdrive.util.MySharedPreferences;
 
 import java.util.Calendar;
@@ -34,6 +35,9 @@ public class MyApplication extends MultiDexApplication {
         super.onCreate();
 
         preferences = new MySharedPreferences(getApplicationContext());
+        Preferences.INSTANCE.init(this);
+        Preferences.INSTANCE.setAppInfo("SG");
+
         context = getApplicationContext();
         badgeCnt = 0;
 

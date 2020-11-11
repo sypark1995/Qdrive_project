@@ -35,6 +35,7 @@ object Preferences {
     private val PREF_KEY_LIST_SORT_INDEX = "sortIndex"
     private val PREF_KEY_SCAN_VIBRATION = "scanVibration"
 
+    // SG , MY 둘중 하나 만 넣고 빼기로....
     var appInfo: String
         get() = preferences.getString(APP_INFO, "SG").toString()
         set(value) = preferences.edit().putString(APP_INFO, value).apply()
@@ -51,6 +52,7 @@ object Preferences {
         get() = preferences.getString(PREF_KEY_USER_PW, "").toString()
         set(value) = preferences.edit().putString(PREF_KEY_USER_PW, value).apply()
 
+    // SG / 나머지 것들 비교
     var userNation: String
         get() = preferences.getString(PREF_KEY_USER_NATION, "").toString()
         set(value) = preferences.edit().putString(PREF_KEY_USER_NATION, value).apply()
@@ -133,9 +135,10 @@ object Preferences {
     private val PREF_KEY_DEVELOPER_MODE = "developerMode"
     private val PREF_KEY_SERVER_URL = "serverURL"
 
-//    var serverURL: String
-//        get() = preferences.getString(PREF_KEY_SERVER_URL, DataUtil.SERVER_REAL).toString()
-//        set(value) = preferences.edit().putString(PREF_KEY_SERVER_URL, value).apply()
+    var serverURL: String
+        get() = preferences.getString(PREF_KEY_SERVER_URL, DataUtil.SERVER_REAL).toString()
+        set(value) = preferences.edit().putString(PREF_KEY_SERVER_URL, value).apply()
+
 
     var developerMode: Boolean
         get() = preferences.getBoolean(PREF_KEY_DEVELOPER_MODE, false)

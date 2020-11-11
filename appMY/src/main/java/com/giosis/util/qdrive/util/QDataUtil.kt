@@ -10,6 +10,7 @@ import android.telephony.TelephonyManager
 import android.text.TextUtils
 import android.util.Log
 import androidx.core.app.ActivityCompat
+import com.giosis.library.util.Preferences
 import com.giosis.util.qdrive.international.MyApplication
 import java.net.NetworkInterface
 import java.util.*
@@ -23,64 +24,68 @@ class QDataUtil {
         //Android_QX.QDRIVE_1.1.6_17(GMKTV2_s7cTZfZ1Oow6FPec1lL15FfyVvI63_g_2_jaTZlxabwu_g_1_YK6oRye00XLrDzZANfcrMlcJBqn_g_2_ff6HgA_g_3_;SM-G960N;10;en_MY)
         fun getCustomUserAgent(appContext: Context): String {
 
-            var appVersionName = ""
-            var appVersionCode = ""
-            val appName = "QX.QDRIVE"
+            if (TextUtils.isEmpty(Preferences.userAgent)) {
+                var appVersionName = ""
+                var appVersionCode = ""
+                val appName = "QX.QDRIVE"
 
-            try {
-                val info = appContext.packageManager.getPackageInfo(appContext.packageName, 0)
-                appVersionName = info.versionName
-                appVersionCode = info.versionCode.toString()
-            } catch (e: PackageManager.NameNotFoundException) {
-                e.printStackTrace()
-                //GMKT_Log.i(e.toString());
+                try {
+                    val info = appContext.packageManager.getPackageInfo(appContext.packageName, 0)
+                    appVersionName = info.versionName
+                    appVersionCode = info.versionCode.toString()
+                } catch (e: PackageManager.NameNotFoundException) {
+                    e.printStackTrace()
+                    //GMKT_Log.i(e.toString());
+                }
+
+
+                val deviceCode = getSecretCode(getUUID(appContext), appVersionName)
+
+                val config: Configuration = appContext.resources.configuration
+                val systemLocale = if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.N) config.locales[0] else config.locale
+
+                /*
+                *   val appLanguage = SharedPreferenceManager.getInstance().getLocale()
+                val localeNation = if (safeEqual(appLanguage, "in")) {
+                    "id"
+                } else {
+                    appLanguage
+                }
+
+                * */
+                val appLanguage = MyApplication.preferences.localeLanguage
+                val localeNation = if (safeEqual(appLanguage, "in")) {
+                    "id"
+                } else {
+                    appLanguage
+                }
+
+                val localeAndLanguageCode = localeNation + "_" + DataUtil.nationCode
+
+
+                val userAgent = StringBuffer()
+                userAgent.append("Android")
+                userAgent.append("_")
+                userAgent.append(appName)
+                userAgent.append("_")
+                userAgent.append(appVersionName)
+                userAgent.append("_")
+                userAgent.append(appVersionCode)
+                userAgent.append("(")
+
+                userAgent.append(deviceCode)
+                userAgent.append(";")
+                userAgent.append(Build.MODEL)
+                userAgent.append(";")
+                userAgent.append(Build.VERSION.RELEASE)
+                userAgent.append(";")
+                userAgent.append(localeAndLanguageCode)
+                userAgent.append(")")
+
+                Preferences.userAgent = userAgent.toString()
             }
 
-
-            val deviceCode = getSecretCode(getUUID(appContext), appVersionName)
-
-            val config: Configuration = appContext.resources.configuration
-            val systemLocale = if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.N) config.locales[0] else config.locale
-
-            /*
-            *   val appLanguage = SharedPreferenceManager.getInstance().getLocale()
-            val localeNation = if (safeEqual(appLanguage, "in")) {
-                "id"
-            } else {
-                appLanguage
-            }
-
-            * */
-            val appLanguage = MyApplication.preferences.localeLanguage
-            val localeNation = if (safeEqual(appLanguage, "in")) {
-                "id"
-            } else {
-                appLanguage
-            }
-
-            val localeAndLanguageCode = localeNation + "_" + DataUtil.nationCode
-
-
-            val userAgent = StringBuffer()
-            userAgent.append("Android")
-            userAgent.append("_")
-            userAgent.append(appName)
-            userAgent.append("_")
-            userAgent.append(appVersionName)
-            userAgent.append("_")
-            userAgent.append(appVersionCode)
-            userAgent.append("(")
-
-            userAgent.append(deviceCode)
-            userAgent.append(";")
-            userAgent.append(Build.MODEL)
-            userAgent.append(";")
-            userAgent.append(Build.VERSION.RELEASE)
-            userAgent.append(";")
-            userAgent.append(localeAndLanguageCode)
-            userAgent.append(")")
-
-            return userAgent.toString()
+            return Preferences.userAgent
         }
 
 
@@ -106,7 +111,7 @@ class QDataUtil {
             val config = context.resources.configuration
 
             if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.N)
-            Log.e("krm0219", "Agent ;; " + config.locales[0].country)
+                Log.e("krm0219", "Agent ;; " + config.locales[0].country)
             else {
 
                 Log.e("krm0219", "Agent --- " + config.locale.country)
