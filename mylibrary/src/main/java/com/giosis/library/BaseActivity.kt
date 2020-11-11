@@ -10,7 +10,7 @@ import androidx.databinding.ViewDataBinding
 abstract class BaseActivity<T : ViewDataBinding, V : BaseViewModel> : AppCompatActivity() {
 
     private lateinit var mViewDataBinding: T
-    public lateinit var mViewModel: V
+    lateinit var mViewModel: V
 
     @LayoutRes
     abstract fun getLayoutId(): Int
