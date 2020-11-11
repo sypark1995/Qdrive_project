@@ -39,6 +39,7 @@ public class MyApplication extends MultiDexApplication {
 
         Preferences.INSTANCE.init(this);
         Preferences.INSTANCE.setAppInfo("MY");
+        Preferences.INSTANCE.setUserNation("MY");
 
         context = getApplicationContext();
         badgeCnt = 0;

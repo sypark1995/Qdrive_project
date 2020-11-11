@@ -221,9 +221,6 @@
             android:name="com.giosis.util.qdrive.settings.NoticeDetailActivity"
             android:screenOrientation="portrait" />
         <activity
-            android:name="com.giosis.util.qdrive.settings.ScanSettingActivity"
-            android:screenOrientation="portrait" />
-        <activity
             android:name="com.giosis.util.qdrive.settings.PrinterSettingActivity"
             android:label="@string/app_name"
             android:screenOrientation="portrait" />

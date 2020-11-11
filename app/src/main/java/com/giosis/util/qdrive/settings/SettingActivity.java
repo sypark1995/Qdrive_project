@@ -21,6 +21,7 @@ import androidx.core.graphics.drawable.RoundedBitmapDrawable;
 
 import com.giosis.library.setting.ChangePwdActivity;
 import com.giosis.library.setting.ModifyUserInfoActivity;
+import com.giosis.library.setting.ScanSettingActivity;
 import com.giosis.util.qdrive.singapore.LoginActivity;
 import com.giosis.util.qdrive.singapore.MyApplication;
 import com.giosis.util.qdrive.singapore.R;
@@ -112,6 +113,8 @@ public class SettingActivity extends AppCompatActivity {
     protected void onResume() {
         super.onResume();
 
+
+        Log.e("krm0219", "SG  Scan Vibration  " + MyApplication.preferences.getScanVibration());
         initDeveloperMode();
 //
 //        String opId = SharedPreferencesHelper.getSigninOpID(getApplicationContext());

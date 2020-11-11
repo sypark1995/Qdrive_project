@@ -33,4 +33,15 @@ interface RetrofitService {
             @Field("nation_cd") nation_cd: String,
     ): Call<APIModel>
 
+
+    @POST("changeMyInfo")
+    @FormUrlEncoded
+    fun requestChangeMyInfo(
+            @Field("op_id") op_id: String,
+            @Field("name") name: String,
+            @Field("email") email: String,
+            @Field("app_id") app_id: String,
+            @Field("nation_cd") nation_cd: String,
+    ): Call<APIModel>
+
 }

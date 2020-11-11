@@ -12,6 +12,9 @@
             android:name=".setting.ModifyUserInfoActivity"
             android:screenOrientation="portrait" />
 
+        <activity
+            android:name=".setting.ScanSettingActivity"
+            android:screenOrientation="portrait" />
 
         <activity
             android:name=".TestActivity"
