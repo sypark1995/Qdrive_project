@@ -1,9 +1,9 @@
 package com.giosis.library.server
 
-import android.util.Log
 //import com.giosis.util.qdrive.singapore.MyApplication
 //import com.giosis.util.qdrive.util.DataUtil
 //import com.giosis.util.qdrive.util.QDataUtil
+import android.util.Log
 import okhttp3.Interceptor
 import okhttp3.OkHttpClient
 import okhttp3.Response
@@ -31,9 +31,17 @@ object RetrofitClient {
     }
 
     private fun loggingInterceptor(): HttpLoggingInterceptor {
-        val interceptor = HttpLoggingInterceptor { message ->
-            Log.i(TAG, message + "")
-        }
+
+        val interceptor = HttpLoggingInterceptor(object : HttpLoggingInterceptor.Logger {
+            override fun log(message: String) {
+                Log.i(TAG, message + "")
+            }
+        })
+//
+//        val interceptor = HttpLoggingInterceptor { message ->
+//            Log.i(TAG, message + "")
+//        }
+
         // BASIC
         // HEADERS
         // BODY

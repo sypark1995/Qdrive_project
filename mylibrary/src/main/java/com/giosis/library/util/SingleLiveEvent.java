@@ -25,6 +25,10 @@ public class SingleLiveEvent<T> extends MutableLiveData<T> {
 
     private final AtomicBoolean mPending = new AtomicBoolean(false);
 
+    /**
+     * View가 활성화 상태가 되거나,
+     * setValue로 값이 바뀌었을 때 호출되는 함수
+    */
     @MainThread
     public void observe(LifecycleOwner owner, final Observer<? super T> observer) {
 
@@ -43,6 +47,10 @@ public class SingleLiveEvent<T> extends MutableLiveData<T> {
         });
     }
 
+    /**
+     * LiveData로써 데이터의 값을 변경하는 함수
+     * pending(AtomicBoolean) 변수가 true로 바뀌어, observe내에 if문을 처리함
+     */
     @MainThread
     public void setValue(@Nullable T t) {
         mPending.set(true);

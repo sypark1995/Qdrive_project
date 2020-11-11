@@ -70,7 +70,7 @@ class DeliveryFailedActivity : CommonActivity(), Camera2APIs.Camera2Interface, S
 
 
         text_top_title.text = intent.getStringExtra("title")
-        trackingNo = intent.getStringExtra("trackingNo")!!
+        trackingNo = intent.getStringExtra("trackingNo").toString()
         text_sign_d_f_tracking_no.text = trackingNo
         text_sign_d_f_receiver.text = intent.getStringExtra("receiverName")
         text_sign_d_f_sender.text = intent.getStringExtra("senderName")

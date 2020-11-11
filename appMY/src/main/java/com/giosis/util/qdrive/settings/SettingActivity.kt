@@ -13,6 +13,7 @@ import android.widget.Toast
 import androidx.core.graphics.drawable.RoundedBitmapDrawable
 import androidx.core.graphics.drawable.RoundedBitmapDrawableFactory
 import com.giosis.library.setting.ChangePwdActivity
+import com.giosis.library.setting.ModifyUserInfoActivity
 import com.giosis.util.qdrive.barcodescanner.ManualHelper
 import com.giosis.util.qdrive.international.LoginActivity
 import com.giosis.util.qdrive.international.MyApplication

@@ -32,7 +32,7 @@ class AlarmReceiver : BroadcastReceiver() {
 
         } else {
 
-            MyApplication.preferences.autoLogout = true;
+            MyApplication.preferences.autoLogout = true
         }
     }
 
