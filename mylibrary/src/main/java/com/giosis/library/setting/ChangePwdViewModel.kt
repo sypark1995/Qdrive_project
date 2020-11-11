@@ -1,12 +1,14 @@
 package com.giosis.library.setting
 
-import android.app.AlertDialog
+import android.util.Log
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import com.giosis.library.BaseViewModel
 import com.giosis.library.R
 import com.giosis.library.server.APIModel
 import com.giosis.library.server.RetrofitClient
+import com.giosis.library.util.DataUtil
+import com.giosis.library.util.Preferences
 import com.giosis.library.util.SingleLiveEvent
 import retrofit2.Call
 import retrofit2.Callback
@@ -48,12 +50,11 @@ class ChangePwdViewModel : BaseViewModel() {
         val isValid = isValidPassword(oldPassword, newPassword, confirmPassword)
 
         if (isValid) {
-
             // TODO kjyoo
-            val userAgent = ""
-            val id = ""
-            val appID = ""
-            val nationCode = ""
+            val userAgent = Preferences.userAgent
+            val id = Preferences.userId
+            val appID = DataUtil.appID
+            val nationCode = Preferences.userNation
 
             RetrofitClient.instanceDynamic(userAgent).requestChangePwd(
                     id, oldPassword, newPassword, appID, nationCode
