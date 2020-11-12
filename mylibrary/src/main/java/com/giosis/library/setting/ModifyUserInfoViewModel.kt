@@ -1,5 +1,6 @@
 package com.giosis.library.setting
 
+import android.util.Log
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import com.giosis.library.BaseViewModel
@@ -70,28 +71,21 @@ class ModifyUserInfoViewModel : BaseViewModel() {
                     id, name, email, appID, nationCode)
                     .subscribeOn(Schedulers.io())
                     .observeOn(AndroidSchedulers.mainThread())
-                    .subscribe({ response ->
-//                        progressBar.visibility = View.GONE
-//                        if (response.isSuccessful) {
-//                            if (response.body() != null) {
-//
-//                                _successAlert.value = response.body()
-//                                Log.e(RetrofitClient.TAG, "${response.body()!!.resultCode} / ${response.body()!!.resultMsg}")
-//
-//                                if (response.body()!!.resultCode == 0) {
-//
-//                                    Preferences.userName = name
-//                                    Preferences.userEmail = email
-//                                }
-//                            }
-//                        } else {
-//
-//                            TODO()
-//                        }
-//
-//                        progressBar.visibility = View.GONE
+                    .subscribe({
+
+                        if (it.resultCode == 0 && it.resultObject != null) {
+                            Log.e(RetrofitClient.TAG, "${it.resultCode} / ${it.resultMsg}")
+
+                            Preferences.userName = name
+                            Preferences.userEmail = email
+                            _successAlert.value = it
+                        } else {
+                            // TODO
+                        }
+
+                        // progressBar.visibility = View.GONE
                     }, {
-//                        progressBar.visibility = View.GONE
+                        // progressBar.visibility = View.GONE
                     })
 
         }
