@@ -1,6 +1,6 @@
 package com.giosis.library.server
 
-import retrofit2.Call
+import io.reactivex.rxjava3.core.Single
 import retrofit2.http.Field
 import retrofit2.http.FormUrlEncoded
 import retrofit2.http.POST
@@ -20,7 +20,7 @@ interface RetrofitService {
             @Field("longitude") longitude: String,
             @Field("app_id") app_id: String,
             @Field("nation_cd") nation_cd: String
-    ): Call<APIModel>
+    ): Single<APIModel>
 
 
     @POST("changePassword")
@@ -31,7 +31,7 @@ interface RetrofitService {
             @Field("new_pwd") new_pwd: String,
             @Field("app_id") app_id: String,
             @Field("nation_cd") nation_cd: String,
-    ): Call<APIModel>
+    ): Single<APIModel>
 
 
     @POST("changeMyInfo")
@@ -42,6 +42,6 @@ interface RetrofitService {
             @Field("email") email: String,
             @Field("app_id") app_id: String,
             @Field("nation_cd") nation_cd: String,
-    ): Call<APIModel>
+    ): Single<APIModel>
 
 }

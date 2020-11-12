@@ -1,18 +1,15 @@
 package com.giosis.library.setting
 
-import android.util.Log
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import com.giosis.library.BaseViewModel
 import com.giosis.library.R
-import com.giosis.library.server.APIModel
 import com.giosis.library.server.RetrofitClient
 import com.giosis.library.util.DataUtil
 import com.giosis.library.util.Preferences
 import com.giosis.library.util.SingleLiveEvent
-import retrofit2.Call
-import retrofit2.Callback
-import retrofit2.Response
+import io.reactivex.rxjava3.android.schedulers.AndroidSchedulers
+import io.reactivex.rxjava3.schedulers.Schedulers
 import java.util.regex.Matcher
 import java.util.regex.Pattern
 
@@ -53,7 +50,6 @@ class ModifyUserInfoViewModel : BaseViewModel() {
 
 
     fun onClickConfirm() {
-
         _checkAlert.call()
     }
 
@@ -66,43 +62,38 @@ class ModifyUserInfoViewModel : BaseViewModel() {
 
         if (isValid) {
 
-            val userAgent = Preferences.userAgent
             val id = Preferences.userId
             val appID = DataUtil.appID
             val nationCode = Preferences.userNation
 
-
-            RetrofitClient.instanceDynamic(userAgent).requestChangeMyInfo(
-                    id, name, email, appID, nationCode
-            ).enqueue(object : Callback<APIModel> {
-
-                override fun onFailure(call: Call<APIModel>, t: Throwable) {
+            RetrofitClient.instanceDynamic().requestChangeMyInfo(
+                    id, name, email, appID, nationCode)
+                    .subscribeOn(Schedulers.io())
+                    .observeOn(AndroidSchedulers.mainThread())
+                    .subscribe({ response ->
 //                        progressBar.visibility = View.GONE
-
-                }
-
-                override fun onResponse(call: Call<APIModel>, response: Response<APIModel>) {
-
-                    if (response.isSuccessful) {
-                        if (response.body() != null) {
-
-                            _successAlert.value = response.body()
-                            Log.e(RetrofitClient.TAG, "${response.body()!!.resultCode} / ${response.body()!!.resultMsg}")
-
-                            if (response.body()!!.resultCode == 0) {
-
-                                Preferences.userName = name
-                                Preferences.userEmail = email
-                            }
-                        }
-                    } else {
-
-                        TODO()
-                    }
+//                        if (response.isSuccessful) {
+//                            if (response.body() != null) {
+//
+//                                _successAlert.value = response.body()
+//                                Log.e(RetrofitClient.TAG, "${response.body()!!.resultCode} / ${response.body()!!.resultMsg}")
+//
+//                                if (response.body()!!.resultCode == 0) {
+//
+//                                    Preferences.userName = name
+//                                    Preferences.userEmail = email
+//                                }
+//                            }
+//                        } else {
+//
+//                            TODO()
+//                        }
 //
 //                        progressBar.visibility = View.GONE
-                }
-            })
+                    }, {
+//                        progressBar.visibility = View.GONE
+                    })
+
         }
     }
 

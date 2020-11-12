@@ -14,18 +14,19 @@ import android.widget.LinearLayout
 import android.widget.ProgressBar
 import androidx.appcompat.app.AlertDialog
 import androidx.appcompat.app.AppCompatActivity
+import com.giosis.library.server.RetrofitClient
 import com.giosis.util.qdrive.gps.GPSTrackerManager
 import com.giosis.util.qdrive.main.MainActivity
 import com.giosis.util.qdrive.server.data.LoginInfo
 import com.giosis.util.qdrive.settings.DeveloperModeActivity
-import com.giosis.library.server.APIModel
-import com.giosis.library.server.RetrofitClient
-import com.giosis.util.qdrive.util.*
+import com.giosis.util.qdrive.util.DataUtil
+import com.giosis.util.qdrive.util.DatabaseHelper
+import com.giosis.util.qdrive.util.PermissionActivity
+import com.giosis.util.qdrive.util.PermissionChecker
 import com.google.gson.Gson
+import io.reactivex.rxjava3.android.schedulers.AndroidSchedulers
+import io.reactivex.rxjava3.schedulers.Schedulers
 import kotlinx.android.synthetic.main.activity_login.*
-import retrofit2.Call
-import retrofit2.Callback
-import retrofit2.Response
 import java.io.File
 
 class LoginActivity : AppCompatActivity() {
@@ -125,23 +126,16 @@ class LoginActivity : AppCompatActivity() {
 
                     progressBar.visibility = View.VISIBLE
 
-                    RetrofitClient.instanceDynamic(QDataUtil.getCustomUserAgent(MyApplication.getContext())).requestServerLogin(
+                    RetrofitClient.instanceDynamic().requestServerLogin(
                             userID, userPW, "QDRIVE", "", deviceUUID, "",
-                            latitude.toString(), longitude.toString(), "QDRIVE", "SG"
-                    ).enqueue(object : Callback<APIModel> {
+                            latitude.toString(), longitude.toString(), "QDRIVE", "SG")
+                            .subscribeOn(Schedulers.io())
+                            .observeOn(AndroidSchedulers.mainThread())
+                            .subscribe({
 
-                        override fun onFailure(call: Call<APIModel>, t: Throwable) {
-                            Log.e(RetrofitClient.TAG, t.message.toString())
-                            progressBar.visibility = View.GONE
-                            showDialog(t.message.toString())
-                        }
-
-                        override fun onResponse(call: Call<APIModel>, response: Response<APIModel>) {
-
-                            if (response.isSuccessful) {
-                                if (response.body() != null && response.body()!!.resultCode == 0) {
-                                    val loginData = Gson().fromJson(response.body()!!.resultObject, LoginInfo::class.java)
-                                    Log.e(RetrofitClient.TAG, "response : ${response.body()!!.resultObject}")
+                                if (it.resultObject != null && it.resultCode == 0) {
+                                    val loginData = Gson().fromJson(it.resultObject, LoginInfo::class.java)
+                                    Log.e(RetrofitClient.TAG, "response : ${it.resultObject}")
 
                                     if (loginData != null) {
 
@@ -234,15 +228,132 @@ class LoginActivity : AppCompatActivity() {
                                             }
                                         }
                                     }
+
+                                } else {
+                                    showDialog(it.resultMsg)
                                 }
-                            } else {
 
-                                showDialog(response.errorBody().toString())
-                            }
 
-                            progressBar.visibility = View.GONE
-                        }
-                    })
+                            }, {
+                                Log.e(RetrofitClient.TAG, it.message.toString())
+                                progressBar.visibility = View.GONE
+                                showDialog(it.message.toString())
+                            })
+
+//
+//                            .enqueue(object : Callback<APIModel> {
+//
+//                                override fun onFailure(call: Call<APIModel>, t: Throwable) {
+//
+//                                }
+//
+//                                override fun onResponse(call: Call<APIModel>, response: Response<APIModel>) {
+//
+//                                    if (response.isSuccessful) {
+//                                        if (response.body() != null && response.body()!!.resultCode == 0) {
+//                                            val loginData = Gson().fromJson(response.body()!!.resultObject, LoginInfo::class.java)
+//                                            Log.e(RetrofitClient.TAG, "response : ${response.body()!!.resultObject}")
+//
+//                                            if (loginData != null) {
+//
+//                                                if (!loginData.version.isNullOrEmpty()) {
+//                                                    if (MyApplication.preferences.appVersion < loginData.version!!) {
+//                                                        progressBar.visibility = View.GONE
+//                                                        val msg = java.lang.String.format(resources.getString(R.string.msg_update_version),
+//                                                                loginData.version!!, MyApplication.preferences.appVersion)
+//                                                        goGooglePlay(msg)
+//                                                    } else {
+//
+//                                                        MyApplication.preferences.userId = loginData.opId!!
+//                                                        MyApplication.preferences.userPw = userPW
+//                                                        MyApplication.preferences.deviceUUID = deviceUUID
+//
+//                                                        if (!loginData.version.isNullOrEmpty()) {
+//                                                            MyApplication.preferences.appVersion = loginData.version!!
+//                                                        }
+//
+//                                                        if (!loginData.opNm.isNullOrEmpty()) {
+//                                                            MyApplication.preferences.userName = loginData.opNm!!
+//                                                        } else {
+//                                                            MyApplication.preferences.userName = ""
+//                                                        }
+//
+//                                                        if (!loginData.epEmail.isNullOrEmpty()) {
+//                                                            MyApplication.preferences.userEmail = loginData.epEmail!!
+//                                                        } else {
+//                                                            MyApplication.preferences.userEmail = ""
+//                                                        }
+//
+//                                                        if (!loginData.officeCode.isNullOrEmpty()) {
+//                                                            MyApplication.preferences.officeCode = loginData.officeCode!!
+//                                                        } else {
+//                                                            MyApplication.preferences.officeCode = ""
+//                                                        }
+//
+//                                                        if (!loginData.officeName.isNullOrEmpty()) {
+//                                                            MyApplication.preferences.officeName = loginData.officeName!!
+//                                                        } else {
+//                                                            MyApplication.preferences.officeName = ""
+//                                                        }
+//
+//                                                        if (!loginData.pickupDriverYN.isNullOrEmpty()) {
+//                                                            MyApplication.preferences.pickupDriver = loginData.pickupDriverYN!!
+//                                                        } else {
+//                                                            MyApplication.preferences.pickupDriver = "N"
+//                                                        }
+//
+//                                                        if (!loginData.shuttle_driver_yn.isNullOrEmpty()) {
+//                                                            MyApplication.preferences.outletDriver = loginData.shuttle_driver_yn!!
+//                                                        } else {
+//                                                            MyApplication.preferences.outletDriver = ""
+//                                                        }
+//
+//                                                        if (!loginData.locker_driver_status.isNullOrEmpty()) {
+//                                                            MyApplication.preferences.lockerStatus = loginData.locker_driver_status!!
+//                                                        } else {
+//                                                            MyApplication.preferences.lockerStatus = ""
+//                                                        }
+//
+//                                                        if (!loginData.defaultYn.isNullOrEmpty()) {
+//                                                            MyApplication.preferences.default = loginData.defaultYn!!
+//                                                        } else {
+//                                                            MyApplication.preferences.default = ""
+//                                                        }
+//
+//                                                        if (!loginData.authNo.isNullOrEmpty()) {
+//                                                            MyApplication.preferences.authNo = loginData.authNo!!
+//                                                        } else {
+//                                                            MyApplication.preferences.authNo = ""
+//                                                        }
+//
+//                                                        if (loginData.smsYn == "Y" && loginData.deviceYn == "Y") {
+//                                                            val intent = Intent(this@LoginActivity, MainActivity::class.java)
+//                                                            startActivity(intent)
+//                                                            finish()
+//
+//                                                        } else {
+//                                                            if (loginData.deviceYn == "N") {
+//                                                                showDialog("You have attempted to login from unauthorized mobile phone.\n" +
+//                                                                        "If your mobile phone was changed, you have to pass the SMS verification.")
+//                                                            }
+//
+//                                                            val intent = Intent(this@LoginActivity, SMSVerificationActivity::class.java)
+//                                                            startActivity(intent)
+//                                                            finish()
+//                                                        }
+//
+//                                                    }
+//                                                }
+//                                            }
+//                                        }
+//                                    } else {
+//
+//                                        showDialog(response.errorBody().toString())
+//                                    }
+//
+//                                    progressBar.visibility = View.GONE
+//                                }
+//                            })
 
                 }
             }
