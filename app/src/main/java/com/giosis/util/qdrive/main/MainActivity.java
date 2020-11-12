@@ -160,17 +160,6 @@ public class MainActivity extends AppBaseActivity {
         // FCM token
         saveServerFCMToken();
 
-        // Settings - Scan Setting (vibration)
-        SharedPreferences sharedPreferences = getSharedPreferences("PREF_SCAN_SETTING", Activity.MODE_PRIVATE);
-        String vibrationString = sharedPreferences.getString("vibration", "0");
-
-        if (vibrationString.equals("0")) {
-
-            vibrationString = "OFF";
-            SharedPreferences.Editor editor = sharedPreferences.edit();
-            editor.putString("vibration", vibrationString);
-            editor.apply();
-        }
 
         LayoutInflater inflater = (LayoutInflater) getSystemService(Context.LAYOUT_INFLATER_SERVICE);
         View contentView = inflater.inflate(R.layout.activity_main_home, container, false);

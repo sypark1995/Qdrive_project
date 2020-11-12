@@ -52,7 +52,7 @@ object Preferences {
         get() = preferences.getString(PREF_KEY_USER_PW, "").toString()
         set(value) = preferences.edit().putString(PREF_KEY_USER_PW, value).apply()
 
-    // SG / 나머지 것들 비교
+    // SG / MY / ID
     var userNation: String
         get() = preferences.getString(PREF_KEY_USER_NATION, "").toString()
         set(value) = preferences.edit().putString(PREF_KEY_USER_NATION, value).apply()

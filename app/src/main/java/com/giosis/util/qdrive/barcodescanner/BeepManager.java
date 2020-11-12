@@ -60,13 +60,19 @@ final class BeepManager {
 
     void updatePrefs() {
 
+        String vibrationString = MyApplication.preferences.getScanVibration();
+
+        if (vibrationString.equals("ON")) {
+
+            vibrate = true;
+        } else {
+
+            vibrate = false;
+        }
+
+
         SharedPreferences prefs = PreferenceManager.getDefaultSharedPreferences(activity);
         playBeep = shouldBeep(prefs, activity);
-        // vibrate = prefs.getBoolean(PreferencesActivity.KEY_VIBRATE, true);
-
-        SharedPreferences sharedPreferences = activity.getSharedPreferences("PREF_SCAN_SETTING", Activity.MODE_PRIVATE);
-        String vibrationString = sharedPreferences.getString("vibration", "0");
-        vibrate = vibrationString.equals("ON");
 
         if (playBeep && mediaPlayer == null) {
             // The volume on STREAM_SYSTEM is not adjustable, and users found it

@@ -1,21 +1,27 @@
 package com.giosis.library.setting
 
+import android.util.Log
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import com.giosis.library.BaseViewModel
+import com.giosis.library.R
+import com.giosis.library.server.APIModel
+import com.giosis.library.server.RetrofitClient
+import com.giosis.library.util.DataUtil
+import com.giosis.library.util.Preferences
 import com.giosis.library.util.SingleLiveEvent
+import retrofit2.Call
+import retrofit2.Callback
+import retrofit2.Response
+import java.util.regex.Matcher
+import java.util.regex.Pattern
+
 
 class ModifyUserInfoViewModel : BaseViewModel() {
 
     private val _driverId = MutableLiveData<String>()
     val driverId: MutableLiveData<String>
         get() = _driverId
-
-    init {
-
-        _driverId.value = "karam.kim"
-    }
-
 
     private val _name = MutableLiveData<String>()
     val name: MutableLiveData<String>
@@ -33,91 +39,103 @@ class ModifyUserInfoViewModel : BaseViewModel() {
     val errorAlert: LiveData<Int>
         get() = _errorAlert
 
+    private val _successAlert = SingleLiveEvent<Any>()
+    val successAlert: LiveData<Any>
+        get() = _successAlert
+
+
+    init {
+
+        _driverId.value = Preferences.userId
+        _name.value = Preferences.userName
+        _email.value = Preferences.userEmail
+    }
+
 
     fun onClickConfirm() {
 
         _checkAlert.call()
     }
 
-//    fun alertOkClick() {
-//
-//        val oldPassword = _oldPwd.value.toString().trim()
-//        val newPassword = _newPwd.value.toString().trim()
-//        val confirmPassword = _confirmPwd.value.toString().trim()
-//
-//        val isValid = isValidPassword(oldPassword, newPassword, confirmPassword)
-//
-//        if (isValid) {
-//
-//            // TODO kjyoo
-//            val userAgent = ""
-//            val id = ""
-//            val appID = ""
-//            val nationCode = ""
-//
-//            RetrofitClient.instanceDynamic(userAgent).requestChangePwd(
-//                    id, oldPassword, newPassword, appID, nationCode
-//            ).enqueue(object : Callback<APIModel> {
-//
-//                override fun onFailure(call: Call<APIModel>, t: Throwable) {
-////                        progressBar.visibility = View.GONE
-//
-//                }
-//
-//                override fun onResponse(call: Call<APIModel>, response: Response<APIModel>) {
-//
-//                    if (response.isSuccessful) {
-//                        if (response.body() != null && response.body()!!.resultCode == 0) {
-////                                val loginData = Gson().fromJson(response.body()!!.resultObject, LoginInfo::class.java)
-//// TODO kjyoo
-//                        }
-//                    }
-//
-////                        progressBar.visibility = View.GONE
-//                }
-//            })
-//        }
-//    }
-//
-//
-//    private fun isValidPassword(oldPassword: String, newPassword: String, confirmPassword: String): Boolean {
-//        var isValid = false
-//
-//        if (oldPassword.isNotEmpty()) {      // 현재 패스워드 입력
-//
-//            if (11 <= newPassword.length) {     // 새로운 패스워드 11자리 이상 입력
-//
-//                val passwordPattern = "((?=.*\\d)(?=.*[A-Za-z])(?=.*[!@#$%]).{11,20})"
-//                val pattern = Pattern.compile(passwordPattern)
-//                val matcher = pattern.matcher(newPassword)
-//                val patternValid = matcher.matches()
-//
-//                if (patternValid) {  // 비밀번호 유효성
-//
-//                    if (newPassword == confirmPassword) {    // 확인 비밀번호 일치
-//                        isValid = true
-//
-//                    } else {
-//                        // 확인 비밀번호 불일치
-//                        _errorAlert.value = R.string.msg_same_password_error
-//                    }
-//
-//                } else {
-//                    // 비밀번호 유효성 틀림
-//                    _errorAlert.value = R.string.msg_password_symbols_error
-//
-//                }
-//            } else {
-//                // 새로운 패스워드 11자리 이상 입력하지 않음
-//                _errorAlert.value = R.string.msg_password_length_error
-//            }
-//        } else {
-//            // 현재 패스워드 입력하지 않음
-//            _errorAlert.value = R.string.msg_empty_password_error
-//
-//        }
-//
-//        return isValid
-//    }
+    fun modifyUserInfo() {
 
+        val name = _name.value.toString().trim()
+        val email = _email.value.toString().trim()
+
+        val isValid = isValidData(name, email)
+
+        if (isValid) {
+
+            val userAgent = Preferences.userAgent
+            val id = Preferences.userId
+            val appID = DataUtil.appID
+            val nationCode = Preferences.userNation
+
+
+            RetrofitClient.instanceDynamic(userAgent).requestChangeMyInfo(
+                    id, name, email, appID, nationCode
+            ).enqueue(object : Callback<APIModel> {
+
+                override fun onFailure(call: Call<APIModel>, t: Throwable) {
+//                        progressBar.visibility = View.GONE
+
+                }
+
+                override fun onResponse(call: Call<APIModel>, response: Response<APIModel>) {
+
+                    if (response.isSuccessful) {
+                        if (response.body() != null) {
+
+                            _successAlert.value = response.body()
+                            Log.e(RetrofitClient.TAG, "${response.body()!!.resultCode} / ${response.body()!!.resultMsg}")
+
+                            if (response.body()!!.resultCode == 0) {
+
+                                Preferences.userName = name
+                                Preferences.userEmail = email
+                            }
+                        }
+                    } else {
+
+                        TODO()
+                    }
+//
+//                        progressBar.visibility = View.GONE
+                }
+            })
+        }
+    }
+
+
+    private fun isValidData(name: String, email: String): Boolean {
+
+        val isValid: Boolean
+
+        if (name.trim().length >= 6) {
+            if (email.isNotEmpty()) {
+
+                val emailPattern = "^[_A-Za-z0-9-\\+]+(\\.[_A-Za-z0-9-]+)*@" + "[A-Za-z0-9-]+(\\.[A-Za-z0-9]+)*(\\.[A-Za-z]{2,})$"
+                val pattern: Pattern = Pattern.compile(emailPattern)
+                val matcher: Matcher = pattern.matcher(email)
+                val isEmail: Boolean = matcher.matches()
+
+                if (isEmail) {
+
+                    isValid = true
+                } else {
+
+                    isValid = false
+                    _errorAlert.value = R.string.msg_email_format_error
+                }
+            } else {
+                isValid = true
+            }
+        } else {
+
+            isValid = false
+            _errorAlert.value = R.string.msg_full_name_info
+        }
+
+        return isValid
+    }
 }

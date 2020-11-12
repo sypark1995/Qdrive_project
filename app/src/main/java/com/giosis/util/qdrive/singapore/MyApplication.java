@@ -37,6 +37,8 @@ public class MyApplication extends MultiDexApplication {
         preferences = new MySharedPreferences(getApplicationContext());
         Preferences.INSTANCE.init(this);
         Preferences.INSTANCE.setAppInfo("SG");
+        Preferences.INSTANCE.setUserNation("SG");
+
 
         context = getApplicationContext();
         badgeCnt = 0;
@@ -52,6 +54,7 @@ public class MyApplication extends MultiDexApplication {
                 PackageManager.COMPONENT_ENABLED_STATE_ENABLED,
                 PackageManager.DONT_KILL_APP);
     }
+
 
     public static Context getContext() {
         return context;
