@@ -1,5 +1,6 @@
 package com.giosis.library.setting
 
+import android.util.Log
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import com.giosis.library.BaseViewModel
@@ -8,6 +9,8 @@ import com.giosis.library.server.RetrofitClient
 import com.giosis.library.util.DataUtil
 import com.giosis.library.util.Preferences
 import com.giosis.library.util.SingleLiveEvent
+import com.giosis.library.util.dialog.DialogUiConfig
+import com.giosis.library.util.dialog.DialogViewModel
 import io.reactivex.rxjava3.android.schedulers.AndroidSchedulers
 import io.reactivex.rxjava3.schedulers.Schedulers
 import java.util.regex.Pattern
@@ -26,8 +29,8 @@ class ChangePwdViewModel : BaseViewModel() {
     val newPwd: MutableLiveData<String>
         get() = _newPwd
 
-    private val _checkAlert = SingleLiveEvent<Any>()
-    val checkAlert: LiveData<Any>
+    private val _checkAlert = MutableLiveData<Pair<DialogUiConfig, DialogViewModel>>()
+    val checkAlert: LiveData<Pair<DialogUiConfig, DialogViewModel>>
         get() = _checkAlert
 
     private val _errorAlert = SingleLiveEvent<Int>()
@@ -35,10 +38,30 @@ class ChangePwdViewModel : BaseViewModel() {
         get() = _errorAlert
 
     fun onClickConfirm() {
-        _checkAlert.call()
+        val text = DialogUiConfig(
+                title = R.string.text_title_change_password,
+                message = R.string.msg_want_change_password,
+                positiveButtonText = R.string.button_ok,
+                negativeButtonText = R.string.button_cancel
+        )
+
+        val listener = DialogViewModel(
+                positiveClick = {
+                    Log.e("TAG", "positiveClick")
+                    alertOkClick()
+                    _checkAlert.value = null
+                },
+                //negativeClick = ::onErrorCancel
+                negativeClick = {
+                    _checkAlert.value = null
+                }
+        )
+
+        _checkAlert.value = Pair(text, listener)
     }
 
-    fun alertOkClick() {
+
+    private fun alertOkClick() {
 
         val oldPassword = _oldPwd.value.toString().trim()
         val newPassword = _newPwd.value.toString().trim()
@@ -48,7 +71,6 @@ class ChangePwdViewModel : BaseViewModel() {
 
         if (isValid) {
             // TODO kjyoo
-            val userAgent = Preferences.userAgent
             val id = Preferences.userId
             val appID = DataUtil.appID
             val nationCode = Preferences.userNation

@@ -2,12 +2,14 @@ package com.giosis.library.setting
 
 import android.app.AlertDialog
 import android.os.Bundle
+import android.view.View
 import androidx.lifecycle.ViewModelProvider
 import com.giosis.library.BR
 import com.giosis.library.BaseActivity
 import com.giosis.library.R
 import com.giosis.library.databinding.ActivityChangePwdBinding
 import com.giosis.library.util.DisplayUtil
+import com.giosis.library.util.dialog.DialogShowingView
 import kotlinx.android.synthetic.main.activity_change_pwd.*
 import kotlinx.android.synthetic.main.top_title.*
 
@@ -36,24 +38,34 @@ class ChangePwdActivity : BaseActivity<ActivityChangePwdBinding, ChangePwdViewMo
             finish()
         }
 
+        val dialog = DialogShowingView(this@ChangePwdActivity)
+
         mViewModel.checkAlert.observe(this, {
+            if (it != null) {
+                dialog.bindingData = it
+                dialog.visibility = View.VISIBLE
 
-            DisplayUtil.hideKeyboard(this)
+                DisplayUtil.hideKeyboard(this)
+            } else {
 
-            val alertBuilder = AlertDialog.Builder(this)
-            alertBuilder.setTitle(resources.getString(R.string.text_title_change_password))
-            alertBuilder.setMessage(resources.getString(R.string.msg_want_change_password))
-            alertBuilder.setCancelable(true)
-
-            alertBuilder.setPositiveButton(resources.getString(R.string.button_ok)) { dialogInterface, _ ->
-                mViewModel.alertOkClick()
+                dialog.visibility = View.GONE
             }
 
-            alertBuilder.setNegativeButton(resources.getString(R.string.button_cancel)) { dialogInterface, _ ->
-                dialogInterface.cancel()
-            }
 
-            alertBuilder.show()
+//            val alertBuilder = AlertDialog.Builder(this)
+//            alertBuilder.setTitle(resources.getString(R.string.text_title_change_password))
+//            alertBuilder.setMessage(resources.getString(R.string.msg_want_change_password))
+//            alertBuilder.setCancelable(true)
+//
+//            alertBuilder.setPositiveButton(resources.getString(R.string.button_ok)) { dialogInterface, _ ->
+//                mViewModel.alertOkClick()
+//            }
+//
+//            alertBuilder.setNegativeButton(resources.getString(R.string.button_cancel)) { dialogInterface, _ ->
+//                dialogInterface.cancel()
+//            }
+//
+//            alertBuilder.show()
         })
 
         mViewModel.errorAlert.observe(this, {
