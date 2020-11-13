@@ -5,14 +5,12 @@ import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import com.giosis.library.BaseViewModel
 import com.giosis.library.R
-import com.giosis.library.server.APIModel
 import com.giosis.library.server.RetrofitClient
 import com.giosis.library.util.DataUtil
 import com.giosis.library.util.Preferences
 import com.giosis.library.util.SingleLiveEvent
-import retrofit2.Call
-import retrofit2.Callback
-import retrofit2.Response
+import io.reactivex.rxjava3.android.schedulers.AndroidSchedulers
+import io.reactivex.rxjava3.schedulers.Schedulers
 import java.util.regex.Matcher
 import java.util.regex.Pattern
 
@@ -53,7 +51,6 @@ class ModifyUserInfoViewModel : BaseViewModel() {
 
 
     fun onClickConfirm() {
-
         _checkAlert.call()
     }
 
@@ -66,43 +63,31 @@ class ModifyUserInfoViewModel : BaseViewModel() {
 
         if (isValid) {
 
-            val userAgent = Preferences.userAgent
             val id = Preferences.userId
             val appID = DataUtil.appID
             val nationCode = Preferences.userNation
 
+            RetrofitClient.instanceDynamic().requestChangeMyInfo(
+                    id, name, email, appID, nationCode)
+                    .subscribeOn(Schedulers.io())
+                    .observeOn(AndroidSchedulers.mainThread())
+                    .subscribe({
 
-            RetrofitClient.instanceDynamic(userAgent).requestChangeMyInfo(
-                    id, name, email, appID, nationCode
-            ).enqueue(object : Callback<APIModel> {
+                        if (it.resultCode == 0 && it.resultObject != null) {
+                            Log.e(RetrofitClient.TAG, "${it.resultCode} / ${it.resultMsg}")
 
-                override fun onFailure(call: Call<APIModel>, t: Throwable) {
-//                        progressBar.visibility = View.GONE
-
-                }
-
-                override fun onResponse(call: Call<APIModel>, response: Response<APIModel>) {
-
-                    if (response.isSuccessful) {
-                        if (response.body() != null) {
-
-                            _successAlert.value = response.body()
-                            Log.e(RetrofitClient.TAG, "${response.body()!!.resultCode} / ${response.body()!!.resultMsg}")
-
-                            if (response.body()!!.resultCode == 0) {
-
-                                Preferences.userName = name
-                                Preferences.userEmail = email
-                            }
+                            Preferences.userName = name
+                            Preferences.userEmail = email
+                            _successAlert.value = it
+                        } else {
+                            // TODO
                         }
-                    } else {
 
-                        TODO()
-                    }
-//
-//                        progressBar.visibility = View.GONE
-                }
-            })
+                        // progressBar.visibility = View.GONE
+                    }, {
+                        // progressBar.visibility = View.GONE
+                    })
+
         }
     }
 

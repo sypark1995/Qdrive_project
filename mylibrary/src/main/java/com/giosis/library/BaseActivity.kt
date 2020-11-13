@@ -25,6 +25,7 @@ abstract class BaseActivity<T : ViewDataBinding, V : BaseViewModel> : AppCompatA
         mViewModel = getViewModel()
         mViewDataBinding.setVariable(getBindingVariable(), mViewModel)
         mViewDataBinding.executePendingBindings()
+
     }
 
 }

@@ -14,6 +14,7 @@ import android.widget.LinearLayout
 import android.widget.ProgressBar
 import androidx.appcompat.app.AlertDialog
 import androidx.appcompat.app.AppCompatActivity
+import com.giosis.library.server.RetrofitClient
 import com.giosis.util.qdrive.gps.GPSTrackerManager
 import com.giosis.util.qdrive.main.MainActivity
 import com.giosis.util.qdrive.server.data.LoginInfo
@@ -22,10 +23,9 @@ import com.giosis.library.server.RetrofitClient
 import com.giosis.library.setting.DeveloperModeActivity
 import com.giosis.util.qdrive.util.*
 import com.google.gson.Gson
+import io.reactivex.rxjava3.android.schedulers.AndroidSchedulers
+import io.reactivex.rxjava3.schedulers.Schedulers
 import kotlinx.android.synthetic.main.activity_login.*
-import retrofit2.Call
-import retrofit2.Callback
-import retrofit2.Response
 import java.io.File
 
 class LoginActivity : AppCompatActivity() {
@@ -125,23 +125,16 @@ class LoginActivity : AppCompatActivity() {
 
                     progressBar.visibility = View.VISIBLE
 
-                    RetrofitClient.instanceDynamic(QDataUtil.getCustomUserAgent(MyApplication.getContext())).requestServerLogin(
+                    RetrofitClient.instanceDynamic().requestServerLogin(
                             userID, userPW, "QDRIVE", "", deviceUUID, "",
-                            latitude.toString(), longitude.toString(), "QDRIVE", "SG"
-                    ).enqueue(object : Callback<APIModel> {
+                            latitude.toString(), longitude.toString(), "QDRIVE", "SG")
+                            .subscribeOn(Schedulers.io())
+                            .observeOn(AndroidSchedulers.mainThread())
+                            .subscribe({
 
-                        override fun onFailure(call: Call<APIModel>, t: Throwable) {
-                            Log.e(RetrofitClient.TAG, t.message.toString())
-                            progressBar.visibility = View.GONE
-                            showDialog(t.message.toString())
-                        }
-
-                        override fun onResponse(call: Call<APIModel>, response: Response<APIModel>) {
-
-                            if (response.isSuccessful) {
-                                if (response.body() != null && response.body()!!.resultCode == 0) {
-                                    val loginData = Gson().fromJson(response.body()!!.resultObject, LoginInfo::class.java)
-                                    Log.e(RetrofitClient.TAG, "response : ${response.body()!!.resultObject}")
+                                if (it.resultObject != null && it.resultCode == 0) {
+                                    val loginData = Gson().fromJson(it.resultObject, LoginInfo::class.java)
+                                    Log.e(RetrofitClient.TAG, "response : ${it.resultObject}")
 
                                     if (loginData != null) {
 
@@ -234,15 +227,17 @@ class LoginActivity : AppCompatActivity() {
                                             }
                                         }
                                     }
+
+                                } else {
+                                    showDialog(it.resultMsg)
                                 }
-                            } else {
 
-                                showDialog(response.errorBody().toString())
-                            }
 
-                            progressBar.visibility = View.GONE
-                        }
-                    })
+                            }, {
+                                Log.e(RetrofitClient.TAG, it.message.toString())
+                                progressBar.visibility = View.GONE
+                                showDialog(it.message.toString())
+                            })
 
                 }
             }
