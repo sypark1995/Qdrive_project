@@ -51,21 +51,6 @@ class ChangePwdActivity : BaseActivity<ActivityChangePwdBinding, ChangePwdViewMo
                 dialog.visibility = View.GONE
             }
 
-
-//            val alertBuilder = AlertDialog.Builder(this)
-//            alertBuilder.setTitle(resources.getString(R.string.text_title_change_password))
-//            alertBuilder.setMessage(resources.getString(R.string.msg_want_change_password))
-//            alertBuilder.setCancelable(true)
-//
-//            alertBuilder.setPositiveButton(resources.getString(R.string.button_ok)) { dialogInterface, _ ->
-//                mViewModel.alertOkClick()
-//            }
-//
-//            alertBuilder.setNegativeButton(resources.getString(R.string.button_cancel)) { dialogInterface, _ ->
-//                dialogInterface.cancel()
-//            }
-//
-//            alertBuilder.show()
         })
 
         mViewModel.errorAlert.observe(this, {
