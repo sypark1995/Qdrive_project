@@ -17,9 +17,9 @@ import androidx.appcompat.app.AppCompatActivity
 import com.giosis.util.qdrive.gps.GPSTrackerManager
 import com.giosis.util.qdrive.main.MainActivity
 import com.giosis.util.qdrive.server.data.LoginInfo
-import com.giosis.util.qdrive.settings.DeveloperModeActivity
 import com.giosis.library.server.APIModel
 import com.giosis.library.server.RetrofitClient
+import com.giosis.library.setting.DeveloperModeActivity
 import com.giosis.util.qdrive.util.*
 import com.google.gson.Gson
 import kotlinx.android.synthetic.main.activity_login.*

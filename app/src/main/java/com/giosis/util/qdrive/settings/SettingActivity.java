@@ -20,6 +20,7 @@ import androidx.appcompat.app.AppCompatActivity;
 import androidx.core.graphics.drawable.RoundedBitmapDrawable;
 
 import com.giosis.library.setting.ChangePwdActivity;
+import com.giosis.library.setting.DeveloperModeActivity;
 import com.giosis.library.setting.ModifyUserInfoActivity;
 import com.giosis.library.setting.ScanSettingActivity;
 import com.giosis.util.qdrive.singapore.LoginActivity;
