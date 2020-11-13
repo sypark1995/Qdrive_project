@@ -15,7 +15,7 @@ import com.giosis.library.R
 
 
 @SuppressLint("Recycle")
-class DialogShowingView @JvmOverloads constructor(
+class CustomDialog @JvmOverloads constructor(
         context: Context,
         attrs: AttributeSet? = null,
         @AttrRes defStyleAttr: Int = 0

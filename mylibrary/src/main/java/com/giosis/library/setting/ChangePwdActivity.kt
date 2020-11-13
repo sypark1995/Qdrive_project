@@ -9,7 +9,7 @@ import com.giosis.library.BaseActivity
 import com.giosis.library.R
 import com.giosis.library.databinding.ActivityChangePwdBinding
 import com.giosis.library.util.DisplayUtil
-import com.giosis.library.util.dialog.DialogShowingView
+import com.giosis.library.util.dialog.CustomDialog
 import kotlinx.android.synthetic.main.activity_change_pwd.*
 import kotlinx.android.synthetic.main.top_title.*
 
@@ -38,7 +38,7 @@ class ChangePwdActivity : BaseActivity<ActivityChangePwdBinding, ChangePwdViewMo
             finish()
         }
 
-        val dialog = DialogShowingView(this@ChangePwdActivity)
+        val dialog = CustomDialog(this@ChangePwdActivity)
 
         mViewModel.checkAlert.observe(this, {
             if (it != null) {
