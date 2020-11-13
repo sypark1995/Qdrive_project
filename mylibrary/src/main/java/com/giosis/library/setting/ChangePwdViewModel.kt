@@ -42,7 +42,8 @@ class ChangePwdViewModel : BaseViewModel() {
                 title = R.string.text_title_change_password,
                 message = R.string.msg_want_change_password,
                 positiveButtonText = R.string.button_ok,
-                negativeButtonText = R.string.button_cancel
+                negativeButtonText = R.string.button_cancel,
+                cancelVisible = true
         )
 
         val listener = DialogViewModel(

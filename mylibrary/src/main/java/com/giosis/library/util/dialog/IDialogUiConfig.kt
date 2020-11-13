@@ -16,4 +16,6 @@ interface IDialogUiConfig : Parcelable {
 
     @get:StringRes
     val negativeButtonText: Int?
+
+    val cancelVisible: Boolean
 }

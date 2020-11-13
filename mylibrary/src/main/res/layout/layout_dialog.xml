@@ -5,6 +5,8 @@
 
     <data>
 
+        <import type="android.view.View" />
+
         <variable
             name="viewModel"
             type="com.giosis.library.util.dialog.IDialogViewModel" />
@@ -59,6 +61,7 @@
             android:layout_height="wrap_content"
             android:layout_marginTop="10dp"
             android:text="@{uiConfig.negativeButtonText}"
+            android:visibility="@{uiConfig.cancelVisible ? View.VISIBLE: View.GONE}"
             app:layout_constraintEnd_toStartOf="@id/positiveButton"
             app:layout_constraintTop_toBottomOf="@id/message"
             app:onClick="@{viewModel::onNegativeButtonClick}"
