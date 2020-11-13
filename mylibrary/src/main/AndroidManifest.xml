@@ -9,6 +9,10 @@
             android:screenOrientation="portrait" />
 
         <activity
+            android:name=".setting.DeveloperModeActivity"
+            android:screenOrientation="portrait" />
+
+        <activity
             android:name=".setting.ModifyUserInfoActivity"
             android:screenOrientation="portrait" />
 

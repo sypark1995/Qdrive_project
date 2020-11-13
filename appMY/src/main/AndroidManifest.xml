@@ -329,10 +329,6 @@
             android:name="com.giosis.util.qdrive.settings.LanguageSettingActivity"
             android:screenOrientation="portrait" />
 
-        <activity
-            android:name="com.giosis.util.qdrive.settings.DeveloperModeActivity"
-            android:screenOrientation="portrait" />
-
         <!--  NOTIFICATION.  Message  -->
         <activity
             android:name="com.giosis.util.qdrive.message.AdminMessageListDetailActivity"

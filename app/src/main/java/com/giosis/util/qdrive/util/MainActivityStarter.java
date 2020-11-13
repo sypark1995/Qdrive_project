@@ -6,7 +6,6 @@ import android.net.Uri;
 import android.util.Log;
 
 import com.giosis.util.qdrive.main.MainActivity;
-import com.giosis.util.qdrive.settings.DeveloperModeActivity;
 import com.giosis.util.qdrive.singapore.LoginActivity;
 import com.giosis.util.qdrive.singapore.SMSVerificationActivity;
 
@@ -110,10 +109,5 @@ public class MainActivityStarter extends CordovaPlugin {
 
     private void goDeveloper() {
 
-        Activity context = cordova.getActivity();
-        Intent intent = new Intent(context, DeveloperModeActivity.class);
-        intent.putExtra("called", "login");
-        context.startActivity(intent);
-        context.finish();
     }
 }
