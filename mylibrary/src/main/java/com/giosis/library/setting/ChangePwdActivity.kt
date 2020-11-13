@@ -1,6 +1,5 @@
 package com.giosis.library.setting
 
-import android.app.AlertDialog
 import android.os.Bundle
 import android.view.View
 import androidx.lifecycle.ViewModelProvider
@@ -10,6 +9,8 @@ import com.giosis.library.R
 import com.giosis.library.databinding.ActivityChangePwdBinding
 import com.giosis.library.util.DisplayUtil
 import com.giosis.library.util.dialog.CustomDialog
+import com.giosis.library.util.dialog.DialogUiConfig
+import com.giosis.library.util.dialog.DialogViewModel
 import kotlinx.android.synthetic.main.activity_change_pwd.*
 import kotlinx.android.synthetic.main.top_title.*
 
@@ -29,6 +30,10 @@ class ChangePwdActivity : BaseActivity<ActivityChangePwdBinding, ChangePwdViewMo
         return ViewModelProvider(this).get(ChangePwdViewModel::class.java)
     }
 
+    private val dialog by lazy { CustomDialog(this@ChangePwdActivity) }
+
+    private val errDialog by lazy { CustomDialog(this@ChangePwdActivity) }
+
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
 
@@ -37,8 +42,6 @@ class ChangePwdActivity : BaseActivity<ActivityChangePwdBinding, ChangePwdViewMo
         layout_top_back.setOnClickListener {
             finish()
         }
-
-        val dialog = CustomDialog(this@ChangePwdActivity)
 
         mViewModel.checkAlert.observe(this, {
             if (it != null) {
@@ -53,31 +56,46 @@ class ChangePwdActivity : BaseActivity<ActivityChangePwdBinding, ChangePwdViewMo
 
         })
 
+
         mViewModel.errorAlert.observe(this, {
 
-            val alertBuilder = AlertDialog.Builder(this)
-            alertBuilder.setTitle(resources.getString(R.string.text_invalidation))
-            alertBuilder.setMessage(resources.getString(it))
-            alertBuilder.setPositiveButton(resources.getString(R.string.button_ok)) { dialogInterface, _ ->
+            if (it != null) {
+                DisplayUtil.hideKeyboard(this)
 
-                when (it) {
-                    R.string.msg_same_password_error -> {
-                        edit_setting_change_confirm_password.requestFocus()
-                    }
-                    R.string.msg_password_symbols_error -> {
-                        edit_setting_change_new_password.requestFocus()
-                    }
-                    R.string.msg_empty_password_error -> {
-                        edit_setting_change_old_password.requestFocus()
-                    }
-                    R.string.msg_password_length_error -> {
-                        edit_setting_change_new_password.requestFocus()
-                    }
-                }
-                dialogInterface.cancel()
+                val text = DialogUiConfig(
+                        title = R.string.text_invalidation,
+                        message = it,
+                        positiveButtonText = R.string.button_ok,
+                        negativeButtonText = R.string.button_cancel,
+                        cancelVisible = false
+                )
+
+                val listener = DialogViewModel(
+                        positiveClick = {
+                            when (it) {
+                                R.string.msg_same_password_error -> {
+                                    edit_setting_change_confirm_password.requestFocus()
+                                }
+                                R.string.msg_password_symbols_error -> {
+                                    edit_setting_change_new_password.requestFocus()
+                                }
+                                R.string.msg_empty_password_error -> {
+                                    edit_setting_change_old_password.requestFocus()
+                                }
+                                R.string.msg_password_length_error -> {
+                                    edit_setting_change_new_password.requestFocus()
+                                }
+                            }
+
+                            errDialog.visibility = View.GONE
+                        }
+                )
+
+                errDialog.bindingData = Pair(text, listener)
+                errDialog.visibility = View.VISIBLE
+
             }
 
-            alertBuilder.show()
         })
     }
 
