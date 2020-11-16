@@ -7,9 +7,11 @@ interface IDialogUiConfig : Parcelable {
 
     @get:StringRes
     val title: Int
-
+    
     @get:StringRes
     val message: Int
+
+    val messageString: String
 
     @get:StringRes
     val positiveButtonText: Int?
