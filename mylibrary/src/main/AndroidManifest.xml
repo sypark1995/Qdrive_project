@@ -17,6 +17,10 @@
             android:screenOrientation="portrait" />
 
         <activity
+            android:name=".setting.NoticeDetailActivity"
+            android:screenOrientation="portrait" />
+
+        <activity
             android:name=".setting.ScanSettingActivity"
             android:screenOrientation="portrait" />
 

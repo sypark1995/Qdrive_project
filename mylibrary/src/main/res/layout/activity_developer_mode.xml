@@ -56,6 +56,7 @@
                     android:layout_marginTop="8dp"
                     android:checkedButton="@={viewModel.checkedId}"
                     android:orientation="vertical">
+                    <!--                    android:checkedButton="@={viewModel.checkedId}"-->
 
                     <RadioButton
                         android:id="@+id/rb_developer_server_url_test"
@@ -94,66 +95,65 @@
                     android:textSize="@dimen/text_size_28px" />
             </RelativeLayout>
 
-
             <!--  Auto LogOut TEST -->
-            <RelativeLayout
-                android:layout_width="match_parent"
-                android:layout_height="50dp"
-                android:layout_marginTop="10dp"
-                android:background="@color/white"
-                android:paddingStart="20dp"
-                android:paddingEnd="20dp"
-                app:layout_constraintEnd_toEndOf="parent"
-                app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintTop_toBottomOf="@id/text_developer_logout_setting"
-                app:layout_constraintVertical_chainStyle="packed">
+            <!--            <RelativeLayout-->
+            <!--                android:layout_width="match_parent"-->
+            <!--                android:layout_height="50dp"-->
+            <!--                android:layout_marginTop="10dp"-->
+            <!--                android:background="@color/white"-->
+            <!--                android:paddingStart="20dp"-->
+            <!--                android:paddingEnd="20dp"-->
+            <!--                app:layout_constraintEnd_toEndOf="parent"-->
+            <!--                app:layout_constraintStart_toStartOf="parent"-->
+            <!--                app:layout_constraintTop_toBottomOf="@id/text_developer_logout_setting"-->
+            <!--                app:layout_constraintVertical_chainStyle="packed">-->
 
-                <Button
-                    android:id="@+id/btn_developer_logout_time"
-                    android:layout_width="wrap_content"
-                    android:layout_height="35dp"
-                    android:layout_alignParentEnd="true"
-                    android:layout_centerVertical="true"
-                    android:background="@drawable/border_round_30_4fb648"
-                    android:text="Change"
-                    android:textAllCaps="false"
-                    android:textColor="@color/color_4fb648"
-                    android:textSize="@dimen/text_size_28px" />
+            <!--                <Button-->
+            <!--                    android:id="@+id/btn_developer_logout_time"-->
+            <!--                    android:layout_width="wrap_content"-->
+            <!--                    android:layout_height="35dp"-->
+            <!--                    android:layout_alignParentEnd="true"-->
+            <!--                    android:layout_centerVertical="true"-->
+            <!--                    android:background="@drawable/border_round_30_4fb648"-->
+            <!--                    android:text="Change"-->
+            <!--                    android:textAllCaps="false"-->
+            <!--                    android:textColor="@color/color_4fb648"-->
+            <!--                    android:textSize="@dimen/text_size_28px" />-->
 
-                <TextView
-                    android:id="@+id/text_developer_logout_time_title"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:layout_centerVertical="true"
-                    android:gravity="center_vertical"
-                    android:text="(is24Hour)"
-                    android:textColor="@color/color_8f8f8f"
-                    android:textSize="@dimen/text_size_32px" />
+            <!--                <TextView-->
+            <!--                    android:id="@+id/text_developer_logout_time_title"-->
+            <!--                    android:layout_width="wrap_content"-->
+            <!--                    android:layout_height="wrap_content"-->
+            <!--                    android:layout_centerVertical="true"-->
+            <!--                    android:gravity="center_vertical"-->
+            <!--                    android:text="(is24Hour)"-->
+            <!--                    android:textColor="@color/color_8f8f8f"-->
+            <!--                    android:textSize="@dimen/text_size_32px" />-->
 
-                <TextView
-                    android:id="@+id/text_developer_logout_time"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:layout_centerVertical="true"
-                    android:layout_marginStart="10dp"
-                    android:layout_toEndOf="@id/text_developer_logout_time_title"
-                    android:gravity="center_vertical"
-                    android:textColor="@color/color_303030"
-                    android:textSize="@dimen/text_size_32px"
-                    tools:text="23:59" />
-            </RelativeLayout>
+            <!--                <TextView-->
+            <!--                    android:id="@+id/text_developer_logout_time"-->
+            <!--                    android:layout_width="wrap_content"-->
+            <!--                    android:layout_height="wrap_content"-->
+            <!--                    android:layout_centerVertical="true"-->
+            <!--                    android:layout_marginStart="10dp"-->
+            <!--                    android:layout_toEndOf="@id/text_developer_logout_time_title"-->
+            <!--                    android:gravity="center_vertical"-->
+            <!--                    android:textColor="@color/color_303030"-->
+            <!--                    android:textSize="@dimen/text_size_32px"-->
+            <!--                    tools:text="23:59" />-->
+            <!--            </RelativeLayout>-->
 
-            <TextView
-                android:id="@+id/text_developer_logout_setting"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:layout_marginStart="20dp"
-                android:layout_marginTop="20dp"
-                android:text="Change Auto LogOut"
-                android:textColor="@color/color_767676"
-                android:textSize="@dimen/text_size_28px"
-                app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintTop_toBottomOf="@id/layout_developer_server_url" />
+            <!--            <TextView-->
+            <!--                android:id="@+id/text_developer_logout_setting"-->
+            <!--                android:layout_width="match_parent"-->
+            <!--                android:layout_height="wrap_content"-->
+            <!--                android:layout_marginStart="20dp"-->
+            <!--                android:layout_marginTop="20dp"-->
+            <!--                android:text="Change Auto LogOut"-->
+            <!--                android:textColor="@color/color_767676"-->
+            <!--                android:textSize="@dimen/text_size_28px"-->
+            <!--                app:layout_constraintStart_toStartOf="parent"-->
+            <!--                app:layout_constraintTop_toBottomOf="@id/layout_developer_server_url" />-->
         </androidx.constraintlayout.widget.ConstraintLayout>
 
         <include

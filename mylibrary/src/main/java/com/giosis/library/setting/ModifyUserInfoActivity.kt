@@ -1,7 +1,7 @@
 package com.giosis.library.setting
 
-import android.app.AlertDialog
 import android.os.Bundle
+import android.view.View
 import androidx.lifecycle.ViewModelProvider
 import androidx.lifecycle.observe
 import com.giosis.library.BR
@@ -10,6 +10,9 @@ import com.giosis.library.R
 import com.giosis.library.databinding.ActivityModifyUserInfoBinding
 import com.giosis.library.server.APIModel
 import com.giosis.library.util.DisplayUtil
+import com.giosis.library.util.dialog.CustomDialog
+import com.giosis.library.util.dialog.DialogUiConfig
+import com.giosis.library.util.dialog.DialogViewModel
 import kotlinx.android.synthetic.main.activity_modify_user_info.*
 import kotlinx.android.synthetic.main.top_title.*
 
@@ -32,6 +35,10 @@ class ModifyUserInfoActivity : BaseActivity<ActivityModifyUserInfoBinding, Modif
     }
 
 
+    private val dialog by lazy { CustomDialog(this) }
+    private val errDialog by lazy { CustomDialog(this) }
+    private val resultDialog by lazy { CustomDialog(this) }
+
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
 
@@ -45,64 +52,90 @@ class ModifyUserInfoActivity : BaseActivity<ActivityModifyUserInfoBinding, Modif
 
         getViewModel().checkAlert.observe(this) {
 
-            DisplayUtil.hideKeyboard(this)
+            if (it != null) {
 
-            val alertBuilder = AlertDialog.Builder(this)
-            alertBuilder.setTitle(resources.getString(R.string.text_modify_my_info))
-            alertBuilder.setMessage(resources.getString(R.string.msg_want_change_info))
-            alertBuilder.setCancelable(true)
+                DisplayUtil.hideKeyboard(this)
 
-            alertBuilder.setPositiveButton(resources.getString(R.string.button_ok)) { _, _ ->
-                getViewModel().modifyUserInfo()
+                dialog.bindingData = it
+                dialog.visibility = View.VISIBLE
+            } else {
+
+                dialog.visibility = View.GONE
             }
-
-            alertBuilder.setNegativeButton(resources.getString(R.string.button_cancel)) { dialogInterface, _ ->
-                dialogInterface.cancel()
-            }
-
-            alertBuilder.show()
         }
 
 
         getViewModel().errorAlert.observe(this) {
 
-            val alertBuilder = AlertDialog.Builder(this)
-            alertBuilder.setTitle(resources.getString(R.string.text_invalidation))
-            alertBuilder.setMessage(resources.getString(it))
-            alertBuilder.setPositiveButton(resources.getString(R.string.button_ok)) { dialogInterface, _ ->
+            DisplayUtil.hideKeyboard(this)
 
-                when (it) {
-                    R.string.msg_full_name_info -> {
-                        edit_setting_change_name.requestFocus()
+            val text = DialogUiConfig(
+                    title = R.string.text_invalidation,
+                    message = it,
+                    positiveButtonText = R.string.button_ok,
+                    cancelVisible = false
+            )
+
+            val listener = DialogViewModel(
+                    positiveClick = {
+                        when (it) {
+                            R.string.msg_full_name_info -> {
+                                edit_setting_change_name.requestFocus()
+                            }
+                            R.string.msg_email_format_error -> {
+                                edit_setting_change_email.requestFocus()
+                            }
+                        }
+
+                        errDialog.visibility = View.GONE
                     }
-                    R.string.msg_email_format_error -> {
-                        edit_setting_change_email.requestFocus()
-                    }
-                }
+            )
 
-                dialogInterface.cancel()
-            }
-
-            alertBuilder.show()
+            errDialog.bindingData = Pair(text, listener)
+            errDialog.visibility = View.VISIBLE
         }
 
 
-        getViewModel().successAlert.observe(this) {
+        getViewModel().resultAlert.observe(this) {
 
-            val alertBuilder = AlertDialog.Builder(this)
-            alertBuilder.setTitle(resources.getString(R.string.text_alert))
-            alertBuilder.setMessage((it as APIModel).resultMsg)
-            alertBuilder.setPositiveButton(resources.getString(R.string.button_ok)) { dialogInterface, _ ->
+            val text = DialogUiConfig(
+                    title = R.string.text_invalidation,
+                    messageString = (it as APIModel).resultMsg.toString(),
+                    positiveButtonText = R.string.button_ok,
+                    negativeButtonText = null,
+                    cancelVisible = false
+            )
 
-                dialogInterface.cancel()
+            val listener = DialogViewModel(
+                    positiveClick = {
 
-                if (it.resultCode == 0) {
+                        resultDialog.visibility = View.GONE
 
-                    finish()
-                }
-            }
+                        if(it.resultCode == 0) {
 
-            alertBuilder.show()
+                            finish()
+                        }
+                    }
+            )
+
+            resultDialog.bindingData = Pair(text, listener)
+            resultDialog.visibility = View.VISIBLE
+
+//
+//            val alertBuilder = AlertDialog.Builder(this)
+//            alertBuilder.setTitle(resources.getString(R.string.text_alert))
+//            alertBuilder.setMessage((it as APIModel).resultMsg)
+//            alertBuilder.setPositiveButton(resources.getString(R.string.button_ok)) { dialogInterface, _ ->
+//
+//                dialogInterface.cancel()
+//
+//                if (it.resultCode == 0) {
+//
+//                    finish()
+//                }
+//            }
+//
+//            alertBuilder.show()
         }
     }
 

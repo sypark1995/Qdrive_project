@@ -1,5 +1,6 @@
 package com.giosis.util.qdrive.settings
 
+import android.annotation.SuppressLint
 import android.content.Context
 import android.content.Intent
 import android.view.LayoutInflater
@@ -7,6 +8,7 @@ import android.view.MotionEvent
 import android.view.View
 import android.view.ViewGroup
 import androidx.recyclerview.widget.RecyclerView
+import com.giosis.library.setting.NoticeDetailActivity
 import com.giosis.util.qdrive.international.R
 import kotlinx.android.synthetic.main.notice_item.view.*
 
@@ -23,6 +25,7 @@ class NoticeAdapter(val context: Context, val items: ArrayList<NoticeResults.Not
         return items.size
     }
 
+    @SuppressLint("ClickableViewAccessibility")
     override fun onBindViewHolder(holder: Holder, position: Int) {
 
         val item = items[position]

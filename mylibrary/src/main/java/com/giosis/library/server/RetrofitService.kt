@@ -1,5 +1,6 @@
 package com.giosis.library.server
 
+import com.giosis.library.util.Preferences
 import io.reactivex.rxjava3.core.Single
 import retrofit2.http.Field
 import retrofit2.http.FormUrlEncoded
@@ -44,4 +45,18 @@ interface RetrofitService {
             @Field("nation_cd") nation_cd: String,
     ): Single<APIModel>
 
+    @POST("GetNoticeData")
+    @FormUrlEncoded
+    fun requestGetNoticeData(
+            @Field("nid") nid: String,
+            @Field("opId") opId: String = Preferences.userId,
+            @Field("officeCd") officeCode: String = Preferences.officeCode,
+            @Field("gubun") gubun: String = "DETAIL",
+            @Field("kind") kind: String = "QSIGN",
+            @Field("page_no") page_no: Int = 0,
+            @Field("page_size") page_size: Int = 0,
+            @Field("svc_nation_cd") svc_natiion_cd: String = Preferences.userNation,
+            @Field("app_id") app_id: String = "QDRIVE",
+            @Field("nation_cd") nation_cd: String = Preferences.userNation
+    ): Single<APIModel>
 }

@@ -11,6 +11,11 @@ import android.widget.BaseAdapter;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
 
+import androidx.lifecycle.MutableLiveData;
+import androidx.lifecycle.ViewModelProvider;
+
+import com.giosis.library.setting.NoticeDetailActivity;
+import com.giosis.library.setting.NoticeDetailViewModel;
 import com.giosis.util.qdrive.singapore.R;
 
 import java.util.ArrayList;

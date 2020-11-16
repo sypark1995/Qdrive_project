@@ -9,6 +9,8 @@ import com.giosis.library.server.RetrofitClient
 import com.giosis.library.util.DataUtil
 import com.giosis.library.util.Preferences
 import com.giosis.library.util.SingleLiveEvent
+import com.giosis.library.util.dialog.DialogUiConfig
+import com.giosis.library.util.dialog.DialogViewModel
 import io.reactivex.rxjava3.android.schedulers.AndroidSchedulers
 import io.reactivex.rxjava3.schedulers.Schedulers
 import java.util.regex.Matcher
@@ -29,17 +31,17 @@ class ModifyUserInfoViewModel : BaseViewModel() {
     val email: MutableLiveData<String>
         get() = _email
 
-    private val _checkAlert = SingleLiveEvent<Any>()
-    val checkAlert: LiveData<Any>
+    private val _checkAlert = MutableLiveData<Pair<DialogUiConfig, DialogViewModel>>()
+    val checkAlert: LiveData<Pair<DialogUiConfig, DialogViewModel>>
         get() = _checkAlert
 
     private val _errorAlert = SingleLiveEvent<Int>()
     val errorAlert: LiveData<Int>
         get() = _errorAlert
 
-    private val _successAlert = SingleLiveEvent<Any>()
-    val successAlert: LiveData<Any>
-        get() = _successAlert
+    private val _resultAlert = SingleLiveEvent<Any>()
+    val resultAlert: LiveData<Any>
+        get() = _resultAlert
 
 
     init {
@@ -51,10 +53,32 @@ class ModifyUserInfoViewModel : BaseViewModel() {
 
 
     fun onClickConfirm() {
-        _checkAlert.call()
+
+        val text = DialogUiConfig(
+                title = R.string.text_modify_my_info,
+                message = R.string.msg_want_change_info,
+                positiveButtonText = R.string.button_ok,
+                negativeButtonText = R.string.button_cancel,
+                cancelVisible = true
+        )
+
+        val listener = DialogViewModel(
+                positiveClick = {
+
+                    modifyUserInfo()
+                    _checkAlert.value = null
+                },
+                negativeClick = {
+
+                    _checkAlert.value = null
+                }
+        )
+
+        _checkAlert.value = Pair(text, listener)
     }
 
-    fun modifyUserInfo() {
+
+    private fun modifyUserInfo() {
 
         val name = _name.value.toString().trim()
         val email = _email.value.toString().trim()
@@ -67,27 +91,29 @@ class ModifyUserInfoViewModel : BaseViewModel() {
             val appID = DataUtil.appID
             val nationCode = Preferences.userNation
 
+            progressVisible.value = true
+
             RetrofitClient.instanceDynamic().requestChangeMyInfo(
                     id, name, email, appID, nationCode)
                     .subscribeOn(Schedulers.io())
                     .observeOn(AndroidSchedulers.mainThread())
                     .subscribe({
 
-                        if (it.resultCode == 0 && it.resultObject != null) {
-                            Log.e(RetrofitClient.TAG, "${it.resultCode} / ${it.resultMsg}")
+                        progressVisible.value = false
+                        Log.e(RetrofitClient.TAG, "${it.resultCode} / ${it.resultMsg}")
+
+                        if (it.resultCode == 0) {
 
                             Preferences.userName = name
                             Preferences.userEmail = email
-                            _successAlert.value = it
-                        } else {
-                            // TODO
                         }
 
-                        // progressBar.visibility = View.GONE
+                        _resultAlert.value = it
                     }, {
-                        // progressBar.visibility = View.GONE
-                    })
 
+                        progressVisible.value = false
+                        _errorAlert.value = R.string.msg_network_connect_error
+                    })
         }
     }
 

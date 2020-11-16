@@ -1,13 +1,10 @@
 package com.giosis.library.setting
 
-import android.util.Log
-import android.widget.RadioGroup
 import androidx.lifecycle.MutableLiveData
 import com.giosis.library.BaseViewModel
 import com.giosis.library.R
 import com.giosis.library.util.DataUtil
 import com.giosis.library.util.Preferences
-import okhttp3.internal.notifyAll
 
 
 class DeveloperModeViewModel : BaseViewModel() {
@@ -33,7 +30,7 @@ class DeveloperModeViewModel : BaseViewModel() {
 
     init {
 
-       _serverUrl.value = Preferences.serverURL
+        _serverUrl.value = Preferences.serverURL
 
         when (Preferences.serverURL) {
             DataUtil.SERVER_REAL -> {
@@ -52,32 +49,8 @@ class DeveloperModeViewModel : BaseViewModel() {
     }
 
 
-    val changeListener = RadioGroup.OnCheckedChangeListener { _, checkedId -> changeServer(checkedId, DataUtil.SERVER_STAGING) }
+    fun changeServer(url: String) {
 
-
-//    rg_developer_server_url.setOnCheckedChangeListener { _, checkedId ->
-//
-//        when (checkedId) {
-//            R.id.rb_developer_server_url_test -> {
-//
-//                getViewModel().changeServer(checkedId, DataUtil.SERVER_TEST)
-//            }
-//            R.id.rb_developer_server_url_staging -> {
-//
-//                getViewModel().changeServer(checkedId, DataUtil.SERVER_STAGING)
-//            }
-//            R.id.rb_developer_server_url_real -> {
-//
-//                getViewModel().changeServer(checkedId, DataUtil.SERVER_REAL)
-//            }
-//        }
-//    }
-
-    fun changeServer(id: Int, url: String) {
-
-        Log.e("krm0219", "changeServer  $id / $url")
-
-        _checkedId.value = id
         Preferences.serverURL = url
         _serverUrl.value = url
     }
