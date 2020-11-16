@@ -37,10 +37,11 @@
             android:layout_width="0dp"
             android:layout_height="wrap_content"
             android:layout_marginTop="16dp"
-            android:text="@{uiConfig.message == 0 ? uiConfig.messageString : uiConfig.message}"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toBottomOf="@id/title"
+            app:set_text_resource="@{uiConfig.message}"
+            app:set_text_string="@{uiConfig.messageString}"
             tools:text="message" />
 
         <Button

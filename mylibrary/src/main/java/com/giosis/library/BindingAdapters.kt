@@ -1,6 +1,7 @@
 package com.giosis.library
 
 import android.view.View
+import android.widget.TextView
 import androidx.databinding.BindingAdapter
 
 
@@ -8,5 +9,14 @@ import androidx.databinding.BindingAdapter
 fun View.onClick(listener: (() -> Unit)?) {
     setOnClickListener {
         listener?.invoke()
+    }
+}
+
+@BindingAdapter("set_text_resource", "set_text_string")
+fun TextView.setText(resource: Int, string: String) {
+    if (resource == 0) {
+        setText(string)
+    } else {
+        setText(resource)
     }
 }
