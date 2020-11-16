@@ -76,13 +76,17 @@ class ChangePwdViewModel : BaseViewModel() {
             val appID = DataUtil.appID
             val nationCode = Preferences.userNation
 
+            progressVisible.value = true
+
             RetrofitClient.instanceDynamic().requestChangePwd(
                     id, oldPassword, newPassword, appID, nationCode)
                     .subscribeOn(Schedulers.io())
                     .observeOn(AndroidSchedulers.mainThread())
                     .subscribe({
+                        progressVisible.value = false
 
                     }, {
+                        progressVisible.value = false
 
                     })
 
