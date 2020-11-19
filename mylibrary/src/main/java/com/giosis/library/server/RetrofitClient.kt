@@ -1,6 +1,7 @@
 package com.giosis.library.server
 
 import android.util.Log
+import com.giosis.library.util.DataUtil
 import com.giosis.library.util.Preferences
 import okhttp3.Interceptor
 import okhttp3.OkHttpClient
@@ -53,8 +54,12 @@ object RetrofitClient {
     private lateinit var instanceDynamic: RetrofitService
     fun instanceDynamic(): RetrofitService {
 
+        val serverURL = Preferences.serverURL + DataUtil.API_ADDRESS
+        Log.e("Server", "Server URL  $serverURL")
+
+
         val retrofit = Retrofit.Builder()
-                .baseUrl(BASE_URL)
+                .baseUrl(serverURL)
                 .client(provideOkHttpClient(AppInterceptor()))
                 .addConverterFactory(GsonConverterFactory.create())
                 .addCallAdapterFactory(RxJava3CallAdapterFactory.create())
@@ -63,4 +68,23 @@ object RetrofitClient {
         instanceDynamic = retrofit.create(RetrofitService::class.java)
         return instanceDynamic
     }
+
+
+    fun instanceBarcode(): RetrofitService {
+
+        // "http://image.qxpress.net/code128/code128.php?no="
+        val barcodeUrl = "http://image.qxpress.net/"
+
+        val retrofit = Retrofit.Builder()
+                .baseUrl(barcodeUrl)
+                .client(provideOkHttpClient(AppInterceptor()))
+                .addConverterFactory(GsonConverterFactory.create())
+                .addCallAdapterFactory(RxJava3CallAdapterFactory.create())
+                .build()
+
+        instanceDynamic = retrofit.create(RetrofitService::class.java)
+        return instanceDynamic
+    }
+
+
 }

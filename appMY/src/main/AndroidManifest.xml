@@ -300,13 +300,6 @@
 
 
         <!--  NOTIFICATION. Settings  -->
-        <activity
-            android:name="com.giosis.util.qdrive.settings.LockerUserInfoActivity"
-            android:screenOrientation="portrait" />
-
-        <activity
-            android:name="com.giosis.util.qdrive.settings.ModifyDeviceInfoActivity"
-            android:screenOrientation="portrait" />
 
         <activity
             android:name="com.giosis.util.qdrive.settings.PrinterSettingActivity"
@@ -318,11 +311,11 @@
             android:screenOrientation="portrait" />
 
         <activity
-            android:name="com.giosis.util.qdrive.settings.NoticeActivity"
+            android:name="com.giosis.util.qdrive.settings.LanguageSettingActivity"
             android:screenOrientation="portrait" />
 
         <activity
-            android:name="com.giosis.util.qdrive.settings.LanguageSettingActivity"
+            android:name="com.giosis.util.qdrive.settings.ModifyDeviceInfoActivity"
             android:screenOrientation="portrait" />
 
         <!--  NOTIFICATION.  Message  -->

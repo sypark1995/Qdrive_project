@@ -21,7 +21,9 @@ import androidx.core.graphics.drawable.RoundedBitmapDrawable;
 
 import com.giosis.library.setting.ChangePwdActivity;
 import com.giosis.library.setting.DeveloperModeActivity;
+import com.giosis.library.setting.LockerUserInfoActivity;
 import com.giosis.library.setting.ModifyUserInfoActivity;
+import com.giosis.library.setting.NoticeActivity;
 import com.giosis.library.setting.ScanSettingActivity;
 import com.giosis.util.qdrive.singapore.LoginActivity;
 import com.giosis.util.qdrive.singapore.MyApplication;
@@ -160,10 +162,10 @@ public class SettingActivity extends AppCompatActivity {
             }
         }
 
-//        if (opId.equalsIgnoreCase("karam.kim")) {
-//
-//            layout_setting_locker.setVisibility(View.VISIBLE);
-//        }
+        if (opId.equalsIgnoreCase("karam.kim")) {
+
+            layout_setting_locker.setVisibility(View.VISIBLE);
+        }
     }
 
     void initDeveloperMode() {

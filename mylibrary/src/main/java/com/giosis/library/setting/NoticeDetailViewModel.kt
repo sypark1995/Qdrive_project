@@ -6,19 +6,12 @@ import androidx.lifecycle.MutableLiveData
 import com.giosis.library.BaseViewModel
 import com.giosis.library.R
 import com.giosis.library.server.RetrofitClient
-import com.giosis.library.server.data.NoticeResults
-import com.giosis.library.util.DataUtil
-import com.giosis.library.util.Preferences
+import com.giosis.library.server.data.NoticeResult
 import com.giosis.library.util.SingleLiveEvent
-import com.giosis.library.util.dialog.DialogUiConfig
-import com.giosis.library.util.dialog.DialogViewModel
 import com.google.gson.Gson
 import com.google.gson.reflect.TypeToken
 import io.reactivex.rxjava3.android.schedulers.AndroidSchedulers
 import io.reactivex.rxjava3.schedulers.Schedulers
-import retrofit2.http.Field
-import java.lang.Exception
-import java.util.regex.Pattern
 
 class NoticeDetailViewModel : BaseViewModel() {
 
@@ -42,9 +35,8 @@ class NoticeDetailViewModel : BaseViewModel() {
         get() = _resultAlert
 
 
-
     fun setSeqNo(value: String) {
-        Log.e("krm0219", "set Value  $value")
+
         _seqNo.value = value
     }
 
@@ -52,6 +44,7 @@ class NoticeDetailViewModel : BaseViewModel() {
     fun callServer() {
 
         val noticeNo = _seqNo.value.toString()
+        Log.e("krm0219", "callServer DATA > $noticeNo")
 
         progressVisible.value = true
 
@@ -64,8 +57,8 @@ class NoticeDetailViewModel : BaseViewModel() {
 
                     try {
 
-                        val result = Gson().fromJson<List<NoticeResults.NoticeItem>>(
-                                it.resultObject.toString(), object : TypeToken<List<NoticeResults.NoticeItem>>() {}.type
+                        val result = Gson().fromJson<List<NoticeResult.NoticeItem>>(
+                                it.resultObject.toString(), object : TypeToken<List<NoticeResult.NoticeItem>>() {}.type
                         )
 
                         Log.e("krm0219", it.resultObject.toString())
@@ -76,9 +69,8 @@ class NoticeDetailViewModel : BaseViewModel() {
                         _prevNo.value = result[0].prevNo
                         _nextNo.value = result[0].nextNo
 
-
-                        _resultAlert.value = it
-                    } catch(e: Exception) {
+                        _resultAlert.value = result
+                    } catch (e: Exception) {
 
                         _resultAlert.value = e.toString()
                     }
@@ -108,17 +100,19 @@ class NoticeDetailViewModel : BaseViewModel() {
         get() = _nextNo
 
 
-
     fun onClickPrev() {
 
         Log.e("krm0219", "Click Prev  ${_prevNo.value.toString()}")
-
+        _seqNo.value = _prevNo.value
+        callServer()
     }
 
 
     fun onClickNext() {
 
         Log.e("krm0219", "Click Next  ${_nextNo.value.toString()}")
+        _seqNo.value = _nextNo.value
+        callServer()
     }
 
 

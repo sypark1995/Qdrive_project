@@ -3,10 +3,12 @@ package com.giosis.library.setting
 import android.os.Bundle
 import android.view.View
 import androidx.lifecycle.ViewModelProvider
+import androidx.lifecycle.observe
 import com.giosis.library.BR
 import com.giosis.library.BaseActivity
 import com.giosis.library.R
 import com.giosis.library.databinding.ActivityChangePwdBinding
+import com.giosis.library.server.APIModel
 import com.giosis.library.util.DisplayUtil
 import com.giosis.library.util.dialog.CustomDialog
 import com.giosis.library.util.dialog.DialogUiConfig
@@ -31,8 +33,8 @@ class ChangePwdActivity : BaseActivity<ActivityChangePwdBinding, ChangePwdViewMo
     }
 
     private val dialog by lazy { CustomDialog(this@ChangePwdActivity) }
-
     private val errDialog by lazy { CustomDialog(this@ChangePwdActivity) }
+    private val resultDialog by lazy { CustomDialog(this@ChangePwdActivity) }
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -45,58 +47,77 @@ class ChangePwdActivity : BaseActivity<ActivityChangePwdBinding, ChangePwdViewMo
 
         mViewModel.checkAlert.observe(this, {
             if (it != null) {
-                dialog.bindingData = it
-                dialog.visibility = View.VISIBLE
 
                 DisplayUtil.hideKeyboard(this)
+
+                dialog.bindingData = it
+                dialog.visibility = View.VISIBLE
             } else {
 
                 dialog.visibility = View.GONE
             }
-
         })
 
 
         mViewModel.errorAlert.observe(this, {
 
-            if (it != null) {
-                DisplayUtil.hideKeyboard(this)
+            DisplayUtil.hideKeyboard(this)
 
-                val text = DialogUiConfig(
-                        title = R.string.text_invalidation,
-                        message = it,
-                        positiveButtonText = R.string.button_ok,
-                        negativeButtonText = R.string.button_cancel,
-                        cancelVisible = false
-                )
+            val text = DialogUiConfig(
+                    title = R.string.text_invalidation,
+                    message = it,
+                    cancelVisible = false
+            )
 
-                val listener = DialogViewModel(
-                        positiveClick = {
-                            when (it) {
-                                R.string.msg_same_password_error -> {
-                                    edit_setting_change_confirm_password.requestFocus()
-                                }
-                                R.string.msg_password_symbols_error -> {
-                                    edit_setting_change_new_password.requestFocus()
-                                }
-                                R.string.msg_empty_password_error -> {
-                                    edit_setting_change_old_password.requestFocus()
-                                }
-                                R.string.msg_password_length_error -> {
-                                    edit_setting_change_new_password.requestFocus()
-                                }
+            val listener = DialogViewModel(
+                    positiveClick = {
+                        when (it) {
+                            R.string.msg_same_password_error -> {
+                                edit_setting_change_confirm_password.requestFocus()
                             }
-
-                            errDialog.visibility = View.GONE
+                            R.string.msg_password_symbols_error -> {
+                                edit_setting_change_new_password.requestFocus()
+                            }
+                            R.string.msg_empty_password_error -> {
+                                edit_setting_change_old_password.requestFocus()
+                            }
+                            R.string.msg_password_length_error -> {
+                                edit_setting_change_new_password.requestFocus()
+                            }
                         }
-                )
 
-                errDialog.bindingData = Pair(text, listener)
-                errDialog.visibility = View.VISIBLE
+                        errDialog.visibility = View.GONE
+                    }
+            )
 
-            }
-
+            errDialog.bindingData = Pair(text, listener)
+            errDialog.visibility = View.VISIBLE
         })
+
+
+        getViewModel().resultAlert.observe(this) {
+
+            val text = DialogUiConfig(
+                    title = R.string.text_alert,
+                    messageString = (it as APIModel).resultMsg.toString(),
+                    cancelVisible = false
+            )
+
+            val listener = DialogViewModel(
+                    positiveClick = {
+
+                        resultDialog.visibility = View.GONE
+
+                        if(it.resultCode == 0) {
+
+                            finish()
+                        }
+                    }
+            )
+
+            resultDialog.bindingData = Pair(text, listener)
+            resultDialog.visibility = View.VISIBLE
+        }
     }
 
 

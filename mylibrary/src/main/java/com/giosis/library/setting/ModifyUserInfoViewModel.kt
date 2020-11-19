@@ -6,7 +6,6 @@ import androidx.lifecycle.MutableLiveData
 import com.giosis.library.BaseViewModel
 import com.giosis.library.R
 import com.giosis.library.server.RetrofitClient
-import com.giosis.library.util.DataUtil
 import com.giosis.library.util.Preferences
 import com.giosis.library.util.SingleLiveEvent
 import com.giosis.library.util.dialog.DialogUiConfig
@@ -30,6 +29,7 @@ class ModifyUserInfoViewModel : BaseViewModel() {
     private val _email = MutableLiveData<String>()
     val email: MutableLiveData<String>
         get() = _email
+
 
     private val _checkAlert = MutableLiveData<Pair<DialogUiConfig, DialogViewModel>>()
     val checkAlert: LiveData<Pair<DialogUiConfig, DialogViewModel>>
@@ -56,10 +56,7 @@ class ModifyUserInfoViewModel : BaseViewModel() {
 
         val text = DialogUiConfig(
                 title = R.string.text_modify_my_info,
-                message = R.string.msg_want_change_info,
-                positiveButtonText = R.string.button_ok,
-                negativeButtonText = R.string.button_cancel,
-                cancelVisible = true
+                message = R.string.msg_want_change_info
         )
 
         val listener = DialogViewModel(
@@ -87,14 +84,9 @@ class ModifyUserInfoViewModel : BaseViewModel() {
 
         if (isValid) {
 
-            val id = Preferences.userId
-            val appID = DataUtil.appID
-            val nationCode = Preferences.userNation
-
             progressVisible.value = true
 
-            RetrofitClient.instanceDynamic().requestChangeMyInfo(
-                    id, name, email, appID, nationCode)
+            RetrofitClient.instanceDynamic().requestChangeMyInfo(name, email)
                     .subscribeOn(Schedulers.io())
                     .observeOn(AndroidSchedulers.mainThread())
                     .subscribe({

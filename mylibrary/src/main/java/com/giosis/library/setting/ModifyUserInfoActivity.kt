@@ -72,7 +72,6 @@ class ModifyUserInfoActivity : BaseActivity<ActivityModifyUserInfoBinding, Modif
             val text = DialogUiConfig(
                     title = R.string.text_invalidation,
                     message = it,
-                    positiveButtonText = R.string.button_ok,
                     cancelVisible = false
             )
 
@@ -99,10 +98,8 @@ class ModifyUserInfoActivity : BaseActivity<ActivityModifyUserInfoBinding, Modif
         getViewModel().resultAlert.observe(this) {
 
             val text = DialogUiConfig(
-                    title = R.string.text_invalidation,
+                    title = R.string.text_alert,
                     messageString = (it as APIModel).resultMsg.toString(),
-                    positiveButtonText = R.string.button_ok,
-                    negativeButtonText = null,
                     cancelVisible = false
             )
 
@@ -120,22 +117,6 @@ class ModifyUserInfoActivity : BaseActivity<ActivityModifyUserInfoBinding, Modif
 
             resultDialog.bindingData = Pair(text, listener)
             resultDialog.visibility = View.VISIBLE
-
-//
-//            val alertBuilder = AlertDialog.Builder(this)
-//            alertBuilder.setTitle(resources.getString(R.string.text_alert))
-//            alertBuilder.setMessage((it as APIModel).resultMsg)
-//            alertBuilder.setPositiveButton(resources.getString(R.string.button_ok)) { dialogInterface, _ ->
-//
-//                dialogInterface.cancel()
-//
-//                if (it.resultCode == 0) {
-//
-//                    finish()
-//                }
-//            }
-//
-//            alertBuilder.show()
         }
     }
 

@@ -13,7 +13,15 @@
             android:screenOrientation="portrait" />
 
         <activity
+            android:name=".setting.LockerUserInfoActivity"
+            android:screenOrientation="portrait" />
+
+        <activity
             android:name=".setting.ModifyUserInfoActivity"
+            android:screenOrientation="portrait" />
+
+        <activity
+            android:name=".setting.NoticeActivity"
             android:screenOrientation="portrait" />
 
         <activity
@@ -27,6 +35,7 @@
         <activity
             android:name=".TestActivity"
             android:screenOrientation="portrait" />
+
 
     </application>
 

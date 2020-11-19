@@ -1,7 +1,6 @@
 package com.giosis.library.setting
 
 import android.os.Bundle
-import android.util.Log
 import androidx.lifecycle.ViewModelProvider
 import androidx.lifecycle.observe
 import com.giosis.library.BR
@@ -9,7 +8,6 @@ import com.giosis.library.BaseActivity
 import com.giosis.library.R
 import com.giosis.library.databinding.ActivityDeveloperModeBinding
 import com.giosis.library.util.DataUtil
-import com.giosis.library.util.Preferences
 import kotlinx.android.synthetic.main.activity_developer_mode.*
 import kotlinx.android.synthetic.main.top_title.*
 
@@ -42,21 +40,20 @@ class DeveloperModeActivity : BaseActivity<ActivityDeveloperModeBinding, Develop
         }
 
 
-
         rg_developer_server_url.setOnCheckedChangeListener { _, checkedId ->
 
             when (checkedId) {
                 R.id.rb_developer_server_url_test -> {
 
-                    getViewModel().changeServer(checkedId, DataUtil.SERVER_TEST)
+                    getViewModel().changeServer(DataUtil.SERVER_TEST)
                 }
                 R.id.rb_developer_server_url_staging -> {
 
-                    getViewModel().changeServer(checkedId, DataUtil.SERVER_STAGING)
+                    getViewModel().changeServer(DataUtil.SERVER_STAGING)
                 }
                 R.id.rb_developer_server_url_real -> {
 
-                    getViewModel().changeServer(checkedId, DataUtil.SERVER_REAL)
+                    getViewModel().changeServer(DataUtil.SERVER_REAL)
                 }
             }
         }
@@ -66,13 +63,6 @@ class DeveloperModeActivity : BaseActivity<ActivityDeveloperModeBinding, Develop
 
             edit_developer_server_url.setText(it)
         }
-    }
-
-
-    private fun changeServerUrl() {
-
-        //   Toast.makeText(this, edit_developer_server_url.text.toString(), Toast.LENGTH_SHORT).show()
-        Preferences.serverURL = edit_developer_server_url.text.toString()
     }
 
 //

@@ -1,8 +1,8 @@
 <?xml version="1.0" encoding="utf-8"?>
-<resources>
+<resources xmlns:tools="http://schemas.android.com/tools">
     <string name="app_name">Qdrive</string>
-    <string name="app_nation">Singapore</string>
-    <string name="app_nation_code">+65</string>
+    <string name="app_nation" tools:ignore="MissingTranslation">Singapore</string>
+    <string name="app_nation_code" tools:ignore="MissingTranslation">+65</string>
 
     <string name="navi_home">HOME</string>
     <string name="navi_scan">SCAN</string>
@@ -12,7 +12,7 @@
 
     <string name="navi_sub_confirm_delivery">Confirm my delivery order</string>
     <string name="navi_sub_delivery_done">Delivery Done</string>
-    <string name="navi_sub_delivery_fail">Delivery Failed</string>
+    <string name="navi_sub_delivery_fail" tools:ignore="MissingTranslation">Delivery Failed</string>
     <string name="navi_sub_pickup">Pickup C&amp;R Parcels</string>
     <string name="navi_sub_self">Self-collection</string>
     <string name="navi_sub_in_progress">In Progress</string>
@@ -36,7 +36,7 @@
     <string name="text_title_sms_verification">SMS Verification</string>
     <string name="text_title_scan_setting">Scan Setting</string>
     <string name="text_title_fl_pickup">Locker Alliance Pickup</string>
-    <string name="text_title_locker_user_info">Locker Alliance User Information</string>
+    <string name="text_title_locker_user_info">Locker Information</string>
     <string name="text_title_delivery_scan">Delivery Scan</string>
     <string name="text_title_language_setting">Language Setting</string>
     <string name="text_title_scan_barcode">(Step1) Scan Barcode</string>

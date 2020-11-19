@@ -9,9 +9,6 @@ import com.giosis.library.BR
 import com.giosis.library.BaseActivity
 import com.giosis.library.R
 import com.giosis.library.databinding.ActivityNoticeDetailBinding
-import com.giosis.library.server.APIModel
-import com.giosis.library.util.dialog.DialogUiConfig
-import com.giosis.library.util.dialog.DialogViewModel
 import kotlinx.android.synthetic.main.activity_notice_detail.*
 import kotlinx.android.synthetic.main.top_title.*
 
@@ -52,12 +49,34 @@ class NoticeDetailActivity : BaseActivity<ActivityNoticeDetailBinding, NoticeDet
 
         getViewModel().content.observe(this) {
 
-          //  text_notice_detail_content.text = it
+            text_notice_detail_content.text = it
         }
 
         getViewModel().date.observe(this) {
 
-          //  text_notice_detail_date.text = it
+            text_notice_detail_date.text = it
+        }
+
+        getViewModel().prevNo.observe(this) {
+
+            if (it.isEmpty()) {
+
+                layout_notice_detail_prev.visibility = View.GONE
+            } else {
+
+                layout_notice_detail_prev.visibility = View.VISIBLE
+            }
+        }
+
+        getViewModel().nextNo.observe(this) {
+
+            if (it.isEmpty()) {
+
+                layout_notice_detail_next.visibility = View.GONE
+            } else {
+
+                layout_notice_detail_next.visibility = View.VISIBLE
+            }
         }
 
 
@@ -70,7 +89,7 @@ class NoticeDetailActivity : BaseActivity<ActivityNoticeDetailBinding, NoticeDet
 
         getViewModel().resultAlert.observe(this) {
 
-            if(it is String || it is Int) {
+            if (it is String || it is Int) {
 
                 Log.e("krm0219", "$tag  - String or Int ")
                 layout_notice_detail_reload.visibility = View.VISIBLE
@@ -80,14 +99,9 @@ class NoticeDetailActivity : BaseActivity<ActivityNoticeDetailBinding, NoticeDet
                 Log.e("krm0219", "$tag  - No String  ")
                 layout_notice_detail_reload.visibility = View.GONE
                 layout_notice_detail.visibility = View.VISIBLE
-
-
-//                text_notice_detail_content.text = (it as APIModel).
-//                text_notice_detail_date.text = it
-
-
             }
         }
+
 
     }
 }

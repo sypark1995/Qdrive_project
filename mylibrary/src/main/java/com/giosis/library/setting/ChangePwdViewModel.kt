@@ -17,10 +17,6 @@ import java.util.regex.Pattern
 
 class ChangePwdViewModel : BaseViewModel() {
 
-    private val _confirmPwd = MutableLiveData<String>()
-    val confirmPwd: MutableLiveData<String>
-        get() = _confirmPwd
-
     private val _oldPwd = MutableLiveData<String>()
     val oldPwd: MutableLiveData<String>
         get() = _oldPwd
@@ -28,6 +24,11 @@ class ChangePwdViewModel : BaseViewModel() {
     private val _newPwd = MutableLiveData<String>()
     val newPwd: MutableLiveData<String>
         get() = _newPwd
+
+    private val _confirmPwd = MutableLiveData<String>()
+    val confirmPwd: MutableLiveData<String>
+        get() = _confirmPwd
+
 
     private val _checkAlert = MutableLiveData<Pair<DialogUiConfig, DialogViewModel>>()
     val checkAlert: LiveData<Pair<DialogUiConfig, DialogViewModel>>
@@ -37,22 +38,23 @@ class ChangePwdViewModel : BaseViewModel() {
     val errorAlert: LiveData<Int>
         get() = _errorAlert
 
+    private val _resultAlert = SingleLiveEvent<Any>()
+    val resultAlert: LiveData<Any>
+        get() = _resultAlert
+
+
     fun onClickConfirm() {
         val text = DialogUiConfig(
                 title = R.string.text_title_change_password,
-                message = R.string.msg_want_change_password,
-                positiveButtonText = R.string.button_ok,
-                negativeButtonText = R.string.button_cancel,
-                cancelVisible = true
+                message = R.string.msg_want_change_password
         )
 
         val listener = DialogViewModel(
                 positiveClick = {
-                    Log.e("TAG", "positiveClick")
+
                     alertOkClick()
                     _checkAlert.value = null
                 },
-                //negativeClick = ::onErrorCancel
                 negativeClick = {
                     _checkAlert.value = null
                 }
@@ -83,32 +85,21 @@ class ChangePwdViewModel : BaseViewModel() {
                     .subscribeOn(Schedulers.io())
                     .observeOn(AndroidSchedulers.mainThread())
                     .subscribe({
-                        progressVisible.value = false
 
+                        progressVisible.value = false
+                        Log.e(RetrofitClient.TAG, "${it.resultCode} / ${it.resultMsg}")
+
+                        if (it.resultCode == 0) {
+
+                            Preferences.userPw = newPassword
+                        }
+
+                        _resultAlert.value = it
                     }, {
+
                         progressVisible.value = false
-
+                        _errorAlert.value = R.string.msg_network_connect_error
                     })
-
-//                    .enqueue(object : Callback<APIModel> {
-//
-//                override fun onFailure(call: Call<APIModel>, t: Throwable) {
-////                        progressBar.visibility = View.GONE
-//
-//                }
-//
-//                override fun onResponse(call: Call<APIModel>, response: Response<APIModel>) {
-//
-//                    if (response.isSuccessful) {
-//                        if (response.body() != null && response.body()!!.resultCode == 0) {
-////                                val loginData = Gson().fromJson(response.body()!!.resultObject, LoginInfo::class.java)
-//// TODO kjyoo
-//                        }
-//                    }
-//
-////                        progressBar.visibility = View.GONE
-//                }
-//            })
         }
     }
 
@@ -138,7 +129,6 @@ class ChangePwdViewModel : BaseViewModel() {
                 } else {
                     // 비밀번호 유효성 틀림
                     _errorAlert.value = R.string.msg_password_symbols_error
-
                 }
             } else {
                 // 새로운 패스워드 11자리 이상 입력하지 않음
@@ -147,10 +137,8 @@ class ChangePwdViewModel : BaseViewModel() {
         } else {
             // 현재 패스워드 입력하지 않음
             _errorAlert.value = R.string.msg_empty_password_error
-
         }
 
         return isValid
     }
-
 }

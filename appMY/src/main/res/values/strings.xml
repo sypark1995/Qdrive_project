@@ -31,7 +31,7 @@
     <string name="text_title_sms_verification">SMS Verification</string>
     <string name="text_title_scan_setting">Scan Setting</string>
     <string name="text_title_fl_pickup">Locker Alliance Pickup</string>
-    <string name="text_title_locker_user_info">Locker Alliance User Information</string>
+    <string name="text_title_locker_user_info">Locker Information</string>
     <string name="text_title_delivery_scan">Delivery Scan</string>
     <string name="text_title_language_setting">Language Setting</string>
     <string name="text_title_scan_barcode">(Step1) Scan Barcode</string>

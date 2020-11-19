@@ -133,6 +133,9 @@ class LoginActivity : AppCompatActivity() {
                             .observeOn(AndroidSchedulers.mainThread())
                             .subscribe({
 
+                                progressBar.visibility = View.GONE
+                                Log.e("krm0219", "result  ${it.resultCode}")
+
                                 if (it.resultObject != null && it.resultCode == 0) {
                                     val loginData = Gson().fromJson(it.resultObject, LoginInfo::class.java)
                                     Log.e(RetrofitClient.TAG, "response : ${it.resultObject}")
@@ -141,7 +144,7 @@ class LoginActivity : AppCompatActivity() {
 
                                         if (!loginData.version.isNullOrEmpty()) {
                                             if (MyApplication.preferences.appVersion < loginData.version!!) {
-                                                progressBar.visibility = View.GONE
+
                                                 val msg = java.lang.String.format(resources.getString(R.string.msg_update_version),
                                                         loginData.version!!, MyApplication.preferences.appVersion)
                                                 goGooglePlay(msg)
@@ -230,10 +233,19 @@ class LoginActivity : AppCompatActivity() {
                                     }
 
                                 } else {
-                                    showDialog(it.resultMsg)
+                                    if(it.resultCode == -10) {
+
+                                        showDialog("You Qdrive account has been deactivated")
+                                    } else if(it.resultMsg != "") {
+
+                                        showDialog(it.resultMsg)
+                                    } else {
+
+                                        showDialog("Sorry, your sign-in information is not valid. Please try again with your correct ID and password.")
+                                    }
+
+                                    edit_login_password.setText("")
                                 }
-
-
                             }, {
                                 Log.e(RetrofitClient.TAG, it.message.toString())
                                 progressBar.visibility = View.GONE
