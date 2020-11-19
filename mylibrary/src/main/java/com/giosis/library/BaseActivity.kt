@@ -1,5 +1,7 @@
 package com.giosis.library
 
+import android.app.Activity
+import android.content.Intent
 import android.os.Bundle
 import android.view.View
 import androidx.annotation.LayoutRes
@@ -39,6 +41,39 @@ abstract class BaseActivity<T : ViewDataBinding, V : BaseViewModel> : AppCompatA
                 View.GONE
             }
         }
+
+        mViewModel.activityStart.observe(this) {
+            runOnUiThread {
+                val intent = Intent(this, it.first.java)
+                if (it.second != null) {
+                    intent.putExtras(it.second!!)
+                }
+
+                if (it.third != 0) {
+                    startActivityForResult(intent, it.third)
+                } else {
+                    startActivity(intent)
+                }
+            }
+        }
+
+        mViewModel.finishActivity.observe(this) {
+            runOnUiThread {
+                val intent = Intent()
+                if (it != null) {
+                    intent.putExtras(it)
+                    setResult(Activity.RESULT_OK, intent)
+                    finish()
+                } else {
+                    setResult(Activity.RESULT_OK)
+                    finish()
+                }
+            }
+        }
+    }
+
+    fun getStringResID(resId: Int): String {
+        return resources.getString(resId)
     }
 
 }
