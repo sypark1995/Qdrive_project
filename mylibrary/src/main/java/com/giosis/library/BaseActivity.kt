@@ -45,7 +45,8 @@ abstract class BaseActivity<T : ViewDataBinding, V : BaseViewModel> : AppCompatA
 
         mViewModel.activityStart.observe(this) {
             runOnUiThread {
-                val intent = Intent(this, it.first.java)
+                // TODO flags 추가 해야 함
+                val intent = Intent(this, it.first)
                 if (it.second != null) {
                     intent.putExtras(it.second!!)
                 }

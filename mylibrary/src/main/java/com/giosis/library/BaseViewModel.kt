@@ -14,23 +14,23 @@ open class BaseViewModel() : ViewModel() {
     val progressVisible: MutableLiveData<Boolean>
         get() = _progressVisible
 
-    private val _activityStart = SingleLiveEvent<Triple<KClass<*>, Bundle?, Int>>()
-    val activityStart: SingleLiveEvent<Triple<KClass<*>, Bundle?, Int>>
+    private val _activityStart = SingleLiveEvent<Triple<Class<*>, Bundle?, Int>>()
+    val activityStart: SingleLiveEvent<Triple<Class<*>, Bundle?, Int>>
         get() = _activityStart
 
     private val _finishActivity = SingleLiveEvent<Bundle?>()
     val finishActivity: SingleLiveEvent<Bundle?>
         get() = _finishActivity
 
-    fun startActivity(cls: KClass<*>) {
+    fun startActivity(cls: Class<*>) {
         activityStart.value = Triple(cls, null, 0)
     }
 
-    fun startActivity(cls: KClass<*>, bundle: Bundle) {
+    fun startActivity(cls: Class<*>, bundle: Bundle) {
         activityStart.value = Triple(cls, bundle, 0)
     }
 
-    fun startActivity(cls: KClass<*>, bundle: Bundle, request: Int) {
+    fun startActivity(cls: Class<*>, bundle: Bundle, request: Int) {
         activityStart.value = Triple(cls, bundle, request)
     }
 
