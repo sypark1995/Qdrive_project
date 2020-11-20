@@ -41,7 +41,7 @@ class ProgressDialog @JvmOverloads constructor(
                 true
         )
 
-        dialog = Dialog(context, android.R.style.Theme_Translucent_NoTitleBar_Fullscreen).apply {
+        dialog = Dialog(context, android.R.style.Theme_Translucent_NoTitleBar).apply {
             setContentView(frameLayout)
             setCancelable(true)
         }
