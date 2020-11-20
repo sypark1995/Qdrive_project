@@ -1,6 +1,8 @@
 package com.giosis.library
 
+import android.graphics.Bitmap
 import android.view.View
+import android.widget.ImageView
 import android.widget.TextView
 import androidx.databinding.BindingAdapter
 
@@ -20,3 +22,11 @@ fun TextView.setText(resource: Int, string: String) {
         setText(resource)
     }
 }
+
+
+@BindingAdapter("imageBitmap")
+fun loadImage(iv: ImageView, bitmap: Bitmap?) {
+
+    iv.setImageBitmap(bitmap)
+}
+
