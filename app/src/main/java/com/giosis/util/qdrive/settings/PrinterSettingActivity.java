@@ -216,8 +216,11 @@ public class PrinterSettingActivity extends AppCompatActivity {
         list_setting_printer_connected_device.setAdapter(BluetoothDeviceData.printerConnectedListAdapter);
         list_setting_printer_available_device.setAdapter(BluetoothDeviceData.printerAvailableListAdapter);
 
-        discoveryDevice();
-        getDeviceList();
+        if (BluetoothDeviceData.mBluetoothAdapter != null) {
+            discoveryDevice();
+            getDeviceList();
+        }
+
     }
 
     private void discoveryDevice() {
