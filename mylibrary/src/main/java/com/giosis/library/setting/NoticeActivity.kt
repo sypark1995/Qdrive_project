@@ -10,6 +10,9 @@ import com.giosis.library.R
 import com.giosis.library.databinding.ActivityNoticeBinding
 import kotlinx.android.synthetic.main.activity_notice.*
 import kotlinx.android.synthetic.main.top_title.*
+import org.greenrobot.eventbus.EventBus
+import org.greenrobot.eventbus.Subscribe
+import org.greenrobot.eventbus.ThreadMode
 
 class NoticeActivity : BaseActivity<ActivityNoticeBinding, NoticeViewModel>() {
     val tag = "NoticeDetailActivity"
@@ -26,8 +29,9 @@ class NoticeActivity : BaseActivity<ActivityNoticeBinding, NoticeViewModel>() {
         return ViewModelProvider(this).get(NoticeViewModel::class.java)
     }
 
-
-    lateinit var adapter: NoticeAdapter
+    val adapter: NoticeAdapter by lazy {
+        NoticeAdapter(mViewModel)
+    }
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -38,16 +42,7 @@ class NoticeActivity : BaseActivity<ActivityNoticeBinding, NoticeViewModel>() {
             finish()
         }
 
-
-        adapter = NoticeAdapter(this@NoticeActivity)
         recycler_notice.adapter = adapter
-
-
-        getViewModel().noticeItems.observe(this) {
-
-            adapter.setItems(it)
-        }
-
 
         getViewModel().errorMsg.observe(this) {
 
@@ -59,11 +54,31 @@ class NoticeActivity : BaseActivity<ActivityNoticeBinding, NoticeViewModel>() {
                 Toast.makeText(this, resources.getString(it), Toast.LENGTH_SHORT).show()
             }
         }
+
     }
+
 
     override fun onResume() {
         super.onResume()
-
         getViewModel().callServer()
     }
+
+
+    override fun onStart() {
+        super.onStart()
+        EventBus.getDefault().register(this)
+    }
+
+
+    @Subscribe(threadMode = ThreadMode.MAIN)
+    fun noti(event: String?) {
+        adapter.notifyDataSetChanged()
+    }
+
+
+    override fun onStop() {
+        super.onStop()
+        EventBus.getDefault().unregister(this)
+    }
+
 }

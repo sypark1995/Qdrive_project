@@ -1,61 +1,43 @@
 package com.giosis.library.setting
 
-import android.content.Context
-import android.content.Intent
 import android.view.LayoutInflater
-import android.view.View
 import android.view.ViewGroup
+import androidx.databinding.DataBindingUtil
+import androidx.databinding.ViewDataBinding
+import androidx.databinding.library.baseAdapters.BR
 import androidx.recyclerview.widget.RecyclerView
-import com.giosis.library.R
+import com.giosis.library.*
 import com.giosis.library.server.data.NoticeResult
-import kotlinx.android.synthetic.main.item_notice.view.*
 
-class NoticeAdapter(val context: Context) : RecyclerView.Adapter<RecyclerView.ViewHolder>() {
+class NoticeAdapter(private val viewModel: NoticeViewModel) : BaseRecyclerAdapter<NoticeAdapter.ViewHolder, NoticeResult.NoticeItem>() {
 
-    var noticeItems: ArrayList<NoticeResult.NoticeItem> = ArrayList()
-
-
-    override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): RecyclerView.ViewHolder {
-
-        val view = LayoutInflater.from(context).inflate(R.layout.item_notice, parent, false)
-        return NoticeHolder(view)
+    override fun getListModel(): ListViewModel<NoticeResult.NoticeItem> {
+        return viewModel
     }
 
-    override fun getItemCount(): Int {
-        return noticeItems.size
-    }
+    override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): NoticeAdapter.ViewHolder {
 
-    override fun onBindViewHolder(holder: RecyclerView.ViewHolder, position: Int) {
-
-        val item = noticeItems[position]
-
-        val viewHolder = holder as NoticeHolder
-        viewHolder.bind(item)
-    }
-
-    fun setItems(listData: ArrayList<NoticeResult.NoticeItem>) {
-
-        this.noticeItems = listData
-        notifyDataSetChanged()
+        val layoutInflater = LayoutInflater.from(parent.context)
+        val binding = DataBindingUtil.inflate<ViewDataBinding>(layoutInflater, R.layout.item_notice, parent, false)
+        return ViewHolder(binding)
     }
 
 
-    inner class NoticeHolder(v: View) : RecyclerView.ViewHolder(v) {
+    override fun onBindViewHolder(holder: NoticeAdapter.ViewHolder, position: Int) {
+        holder.bind(viewModel, position)
+    }
 
-        private var view: View = v
+    inner class ViewHolder(private val binding: ViewDataBinding) : RecyclerView.ViewHolder(binding.root) {
 
-        fun bind(item: NoticeResult.NoticeItem) {
+        fun bind(viewModel: NoticeViewModel, position: Int) {
+            binding.setVariable(BR.viewModel, viewModel)
+            binding.setVariable(BR.item, viewModel.items.value!![position])
+            binding.setVariable(BR.position, position)
 
-            view.text_notice_list_item_title.text = item.title
-            view.text_notice_list_item_date.text = item.shortDate
-
-            view.layout_notice_list_item.setOnClickListener {
-
-                val intent = Intent(context, NoticeDetailActivity::class.java)
-                intent.putExtra("notice_no", item.seqNo)
-                intent.flags = Intent.FLAG_ACTIVITY_NEW_TASK
-                context.startActivity(intent)
-            }
+            binding.executePendingBindings()
         }
     }
+
+
+
 }

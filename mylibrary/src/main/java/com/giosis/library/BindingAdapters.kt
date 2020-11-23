@@ -17,7 +17,7 @@ fun View.onClick(listener: (() -> Unit)?) {
 @BindingAdapter("set_text_resource", "set_text_string")
 fun TextView.setText(resource: Int, string: String) {
     if (resource == 0) {
-        setText(string)
+        text = string
     } else {
         setText(resource)
     }
@@ -26,7 +26,6 @@ fun TextView.setText(resource: Int, string: String) {
 
 @BindingAdapter("imageBitmap")
 fun loadImage(iv: ImageView, bitmap: Bitmap?) {
-
     iv.setImageBitmap(bitmap)
 }
 

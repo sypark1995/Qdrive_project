@@ -6,7 +6,6 @@ import androidx.lifecycle.ViewModel
 import com.giosis.library.util.SingleLiveEvent
 import io.reactivex.rxjava3.disposables.CompositeDisposable
 import io.reactivex.rxjava3.disposables.Disposable
-import kotlin.reflect.KClass
 
 open class BaseViewModel() : ViewModel() {
 
@@ -14,8 +13,8 @@ open class BaseViewModel() : ViewModel() {
     val progressVisible: MutableLiveData<Boolean>
         get() = _progressVisible
 
-    private val _activityStart = SingleLiveEvent<Triple<Class<*>, Bundle?, Int>>()
-    val activityStart: SingleLiveEvent<Triple<Class<*>, Bundle?, Int>>
+    private val _activityStart = SingleLiveEvent<StartActivityData>()
+    val activityStart: SingleLiveEvent<StartActivityData>
         get() = _activityStart
 
     private val _finishActivity = SingleLiveEvent<Bundle?>()
@@ -23,15 +22,41 @@ open class BaseViewModel() : ViewModel() {
         get() = _finishActivity
 
     fun startActivity(cls: Class<*>) {
-        activityStart.value = Triple(cls, null, 0)
+        val activityModel = StartActivityData()
+        activityModel.cls = cls
+        activityStart.value = activityModel
     }
 
     fun startActivity(cls: Class<*>, bundle: Bundle) {
-        activityStart.value = Triple(cls, bundle, 0)
+        val activityModel = StartActivityData()
+        activityModel.cls = cls
+        activityModel.params = bundle
+        activityStart.value = activityModel
     }
 
     fun startActivity(cls: Class<*>, bundle: Bundle, request: Int) {
-        activityStart.value = Triple(cls, bundle, request)
+        val activityModel = StartActivityData()
+        activityModel.cls = cls
+        activityModel.params = bundle
+        activityModel.requestCode = request
+        activityStart.value = activityModel
+    }
+
+    fun startActivityAddFlag(cls: Class<*>, bundle: Bundle, flag: Int) {
+        val activityModel = StartActivityData()
+        activityModel.cls = cls
+        activityModel.params = bundle
+        activityModel.flag = flag
+        activityStart.value = activityModel
+    }
+
+    fun startActivity(cls: Class<*>, bundle: Bundle, flag: Int, request: Int) {
+        val activityModel = StartActivityData()
+        activityModel.cls = cls
+        activityModel.params = bundle
+        activityModel.flag = flag
+        activityModel.requestCode = request
+        activityStart.value = activityModel
     }
 
     fun finish() {

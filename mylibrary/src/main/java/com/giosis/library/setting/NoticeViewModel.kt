@@ -1,9 +1,9 @@
 package com.giosis.library.setting
 
+import android.os.Bundle
 import android.util.Log
 import androidx.lifecycle.LiveData
-import androidx.lifecycle.MutableLiveData
-import com.giosis.library.BaseViewModel
+import com.giosis.library.ListViewModel
 import com.giosis.library.R
 import com.giosis.library.server.RetrofitClient
 import com.giosis.library.server.data.NoticeResult
@@ -14,12 +14,7 @@ import com.google.gson.reflect.TypeToken
 import io.reactivex.rxjava3.android.schedulers.AndroidSchedulers
 import io.reactivex.rxjava3.schedulers.Schedulers
 
-class NoticeViewModel : BaseViewModel() {
-
-    private val _noticeItems = MutableLiveData<ArrayList<NoticeResult.NoticeItem>>()
-    val noticeItems: MutableLiveData<ArrayList<NoticeResult.NoticeItem>>
-        get() = _noticeItems
-
+class NoticeViewModel : ListViewModel<NoticeResult.NoticeItem>() {
 
     private val _errorMsg = SingleLiveEvent<Any>()
     val errorMsg: LiveData<Any>
@@ -36,25 +31,32 @@ class NoticeViewModel : BaseViewModel() {
                 .observeOn(AndroidSchedulers.mainThread())
                 .subscribe({
 
-                    progressVisible.value = false
-
                     try {
-
                         val result = Gson().fromJson<ArrayList<NoticeResult.NoticeItem>>(
                                 it.resultObject.toString(), object : TypeToken<ArrayList<NoticeResult.NoticeItem>>() {}.type
                         )
                         Log.e("krm0219", it.resultObject.toString())
 
-                        _noticeItems.value = result
+                        setItemList(result)
+                        notifyChange()
+
                     } catch (e: Exception) {
 
                         Log.e("Exception", "requestGetNoticeData  $e")
                         _errorMsg.value = e.toString()
                     }
+
+                    progressVisible.value = false
                 }, {
 
                     progressVisible.value = false
                     _errorMsg.value = R.string.msg_network_connect_error
                 })
+    }
+
+    fun clickItem(pos: Int) {
+        val bundle = Bundle()
+        bundle.putString("notice_no", getItem(pos).seqNo)
+        startActivity(NoticeDetailActivity::class.java, bundle)
     }
 }
