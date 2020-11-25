@@ -26,6 +26,14 @@ public class DataUtil {
     public static String locker_pin_url = "https://www.lockeralliance.net/pin";
     public static String smart_route_url = "http://xrouter.qxpress.asia/api";
 
+
+
+    public static String requestSetUploadDeliveryData = "SetDeliveryUploadData";
+    public static String requestSetUploadPickupData = "SetPickupUploadData";
+
+
+
+
     // Main Service
     public static Intent fusedProviderService = null;
     public static Intent locationManagerService = null;

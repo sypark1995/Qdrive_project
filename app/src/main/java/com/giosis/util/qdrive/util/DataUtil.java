@@ -66,6 +66,7 @@ public class DataUtil {
     public static int inProgressListPosition = 0;
     public static int uploadFailedListPosition = 0;
 
+
     // 2019.04 FA(Firebase Analytics)
     public static FirebaseAnalytics mFirebaseAnalytics;
 
@@ -75,8 +76,8 @@ public class DataUtil {
 
             Bundle params = new Bundle();
             params.putString("Activity", activity);
-            params.putString("method", "SetDeliveryUploadData/SetPickupUploadData");
-            mFirebaseAnalytics.logEvent("button_click", params);
+            params.putString("method", method);
+            mFirebaseAnalytics.logEvent(event, params);
         } catch (Exception ignored) {
         }
     }
