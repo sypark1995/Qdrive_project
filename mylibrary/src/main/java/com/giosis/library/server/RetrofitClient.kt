@@ -86,5 +86,20 @@ object RetrofitClient {
         return instanceDynamic
     }
 
+    fun instanceImageUpload(): RetrofitService {
+
+        val imageUrl = "http://encoding.image-gmkt.com/"
+
+        val retrofit = Retrofit.Builder()
+                .baseUrl(imageUrl)
+                .client(provideOkHttpClient(AppInterceptor()))
+                .addConverterFactory(GsonConverterFactory.create())
+                .addCallAdapterFactory(RxJava3CallAdapterFactory.create())
+                .build()
+
+        instanceDynamic = retrofit.create(RetrofitService::class.java)
+        return instanceDynamic
+    }
+
 
 }
