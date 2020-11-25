@@ -15,12 +15,13 @@ import android.provider.Settings;
 import android.util.Log;
 import android.view.View;
 
-import com.gc.android.market.api.Base64;
+import com.giosis.library.server.ImageUpload;
 import com.giosis.util.qdrive.gps.GPSTrackerManager;
 import com.giosis.util.qdrive.list.RowItem;
 import com.giosis.util.qdrive.message.AdminMessageListDetailActivity;
 import com.giosis.util.qdrive.message.CustomerMessageListDetailActivity;
 import com.giosis.util.qdrive.message.MessageListActivity;
+import com.giosis.util.qdrive.singapore.MyApplication;
 import com.giosis.util.qdrive.singapore.R;
 import com.google.firebase.analytics.FirebaseAnalytics;
 import com.google.zxing.BarcodeFormat;
@@ -31,7 +32,9 @@ import com.google.zxing.datamatrix.encoder.SymbolShapeHint;
 
 import java.io.ByteArrayOutputStream;
 import java.io.File;
+import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
+import java.io.IOException;
 import java.util.Comparator;
 import java.util.Hashtable;
 
@@ -191,25 +194,40 @@ public class DataUtil {
 
     public static String bitmapToString(Bitmap bitmap) {
 
-        String pngImage = "";
+        String imagePath = "";
 
         try {
+            File outputDir = MyApplication.getContext().getCacheDir();
+            File tempFile = File.createTempFile("temp", ".jpg", outputDir);
 
-            ByteArrayOutputStream stream = new ByteArrayOutputStream();
-            bitmap.compress(Bitmap.CompressFormat.PNG, 100, stream);
-            byte[] byteArray = stream.toByteArray();
-            String imgToString = Base64.encodeBytes(byteArray);
+            if (tempFile != null) {
+                ByteArrayOutputStream bos = new ByteArrayOutputStream();
+                bitmap.compress(Bitmap.CompressFormat.JPEG, 100, bos);
+                byte[] bitmapdata = bos.toByteArray();
 
-            StringBuilder sb = new StringBuilder();
-            sb.append("data:image/png;base64,");
-            sb.append(imgToString);
-            pngImage = sb.toString();
+                FileOutputStream fos = null;
+                try {
+                    fos = new FileOutputStream(tempFile);
+                } catch (FileNotFoundException e) {
+                    e.printStackTrace();
+                }
+
+                try {
+                    fos.write(bitmapdata);
+                    fos.flush();
+                    fos.close();
+                } catch (IOException e) {
+                    e.printStackTrace();
+                }
+
+                imagePath = ImageUpload.INSTANCE.upload(tempFile);
+            }
+
         } catch (Exception e) {
 
-            e.printStackTrace();
         }
 
-        return pngImage;
+        return imagePath;
     }
 
 
