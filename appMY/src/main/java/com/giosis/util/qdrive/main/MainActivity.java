@@ -523,16 +523,7 @@ public class MainActivity extends AppBaseActivity {
 
         if (0 < songjanglist.size()) {
 
-            try {
-
-                Bundle params = new Bundle();
-                params.putString("Activity", TAG);
-                params.putString("method", "SetDeliveryUploadData/SetPickupUploadData");
-                DataUtil.mFirebaseAnalytics.logEvent("button_click", params);
-            } catch (Exception e) {
-
-                Log.e("FA", TAG + "  FirebaseAnalytics Upload Exception : " + e.toString());
-            }
+            DataUtil.logEvent("button_click", TAG, com.giosis.library.util.DataUtil.requestSetUploadDeliveryData + "/" + com.giosis.library.util.DataUtil.requestSetUploadPickupData);
 
             new DeviceDataUploadHelper.Builder(this, opID, officeCode, deviceID, songjanglist, "QH", latitude, longitude).
                     setOnServerEventListener(new OnServerEventListener() {

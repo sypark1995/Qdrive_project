@@ -43,6 +43,7 @@ import com.giosis.util.qdrive.list.OutletInfo;
 import com.giosis.util.qdrive.list.SigningView;
 import com.giosis.util.qdrive.singapore.MyApplication;
 import com.giosis.util.qdrive.singapore.R;
+import com.giosis.util.qdrive.util.BarcodeType;
 import com.giosis.util.qdrive.util.Camera2APIs;
 import com.giosis.util.qdrive.util.Custom_JsonParser;
 import com.giosis.util.qdrive.util.DataUtil;
@@ -63,12 +64,11 @@ import java.util.ArrayList;
  * @author jtpark
  * @editor krm0219
  * LIST, In Progress > 'Delivered'  // SCAN > Delivery Done
- * 2020.06 Visit Log 추가
+ * 2020.06 사진 추가
  */
 public class DeliveryDoneActivity extends AppCompatActivity implements Camera2APIs.Camera2Interface, TextureView.SurfaceTextureListener {
     String TAG = "DeliveryDoneActivity";
 
-    private static String RECEIVE_TYPE_SELF = "RC";
 
     FrameLayout layout_top_back;
     TextView text_top_title;
@@ -115,8 +115,8 @@ public class DeliveryDoneActivity extends AppCompatActivity implements Camera2AP
     String deviceID = "";
 
     String mStrWaybillNo = "";
-    String mReceiveType = RECEIVE_TYPE_SELF;
-    String mType = "";
+    String mReceiveType = "RC";
+    String mType = BarcodeType.TYPE_DELIVERY;
     String routeNumber;
 
     ArrayList<BarcodeData> songjanglist;
@@ -130,11 +130,13 @@ public class DeliveryDoneActivity extends AppCompatActivity implements Camera2AP
     private static final int RESULT_LOAD_IMAGE = 3;
     boolean isGalleryActivate = false;
 
+    // GPS
     GPSTrackerManager gpsTrackerManager;
     boolean gpsEnable = false;
     double latitude = 0;
     double longitude = 0;
 
+    // Outlet
     OutletInfo outletInfo;
     String jobID;
     String vendorCode;
@@ -209,18 +211,11 @@ public class DeliveryDoneActivity extends AppCompatActivity implements Camera2AP
         //
         context = getApplicationContext();
         camera2 = new Camera2APIs(this);
-//        opID = SharedPreferencesHelper.getSigninOpID(context);
-//        officeCode = SharedPreferencesHelper.getSigninOfficeCode(context);
-//        deviceID = SharedPreferencesHelper.getSigninDeviceID(context);
         opID = MyApplication.preferences.getUserId();
         officeCode = MyApplication.preferences.getOfficeCode();
         deviceID = MyApplication.preferences.getDeviceUUID();
 
-        String strTitle = getIntent().getStringExtra("title");
-        String strReceiverName = getIntent().getStringExtra("receiverName");
-        String strSenderName = getIntent().getStringExtra("senderName");
         mStrWaybillNo = getIntent().getStringExtra("waybillNo");
-        mType = getIntent().getStringExtra("type");     // 'D' Fix!!
         ArrayList<CaptureActivity.BarcodeListData> barcodeList = (ArrayList<CaptureActivity.BarcodeListData>) getIntent().getSerializableExtra("data");
 
 
@@ -280,14 +275,14 @@ public class DeliveryDoneActivity extends AppCompatActivity implements Camera2AP
         getDeliveryInfo(songjanglist.get(0).getBarcode());
         outletInfo = getOutletInfo(songjanglist.get(0).getBarcode());
 
-        text_top_title.setText(strTitle);
+        text_top_title.setText(R.string.text_delivered);
         text_sign_d_receiver.setText(receiverName);
         text_sign_d_sender.setText(senderName);
         DisplayUtil.setPreviewCamera(img_sign_d_preview_bg);
 
         Log.e("krm0219", TAG + "  Outlet info Route : " + outletInfo.route.substring(0, 2) + " / " + outletInfo.route);
 
-        // NOTI - Outlet Delivery
+        // NOTIFICATION.  Outlet Delivery
         if (outletInfo.route.substring(0, 2).contains("7E") || outletInfo.route.substring(0, 2).contains("FL")) {
 
             layout_sign_d_outlet_address.setVisibility(View.VISIBLE);
@@ -541,6 +536,7 @@ public class DeliveryDoneActivity extends AppCompatActivity implements Camera2AP
         cancelSigning();
     }
 
+
     public void cancelSigning() {
 
         new AlertDialog.Builder(this)
@@ -578,7 +574,7 @@ public class DeliveryDoneActivity extends AppCompatActivity implements Camera2AP
             saveOutletDeliveryDone();
         } else {
 
-            saveServerUploadSign();  // 실시간 Upload 처리
+            saveServerUploadSign();
         }
     }
 
@@ -619,15 +615,13 @@ public class DeliveryDoneActivity extends AppCompatActivity implements Camera2AP
         alert_internet_status.setTitle(title);
         alert_internet_status.setMessage(msg);
         alert_internet_status.setPositiveButton(btnText,
-                new DialogInterface.OnClickListener() {
-                    public void onClick(DialogInterface dialog, int which) {
+                (dialog, which) -> {
 
-                        if (title.contains("Result")) {
+                    if (title.contains("Result")) {
 
-                        } else {
-                            dialog.dismiss(); // 닫기
-                            finish();
-                        }
+                    } else {
+                        dialog.dismiss(); // 닫기
+                        finish();
                     }
                 });
         alert_internet_status.show();
@@ -652,7 +646,6 @@ public class DeliveryDoneActivity extends AppCompatActivity implements Camera2AP
 
                 latitude = gpsTrackerManager.getLatitude();
                 longitude = gpsTrackerManager.getLongitude();
-
                 Log.e("Location", TAG + " saveServerUploadSign  GPSTrackerManager : " + latitude + "  " + longitude + "  ");
             }
 
@@ -666,8 +659,7 @@ public class DeliveryDoneActivity extends AppCompatActivity implements Camera2AP
 
             if (!hasSignImage && !hasVisitImage) {
 
-                String msg = context.getResources().getString(R.string.msg_signature_require) + " or \n" +
-                        context.getResources().getString(R.string.msg_visit_photo_require);
+                String msg = context.getResources().getString(R.string.msg_signature_require) + " or \n" + context.getResources().getString(R.string.msg_visit_photo_require);
 
                 Toast.makeText(this.getApplicationContext(), msg, Toast.LENGTH_SHORT).show();
                 return;
@@ -679,31 +671,22 @@ public class DeliveryDoneActivity extends AppCompatActivity implements Camera2AP
                 return;
             }
 
-            try {
 
-                Bundle params = new Bundle();
-                params.putString("Activity", TAG);
-                params.putString("method", "SetDeliveryUploadData");
-                DataUtil.mFirebaseAnalytics.logEvent("button_click", params);
-            } catch (Exception e) {
+            DataUtil.logEvent("button_click", TAG, com.giosis.library.util.DataUtil.requestSetUploadDeliveryData);
 
-                Log.e("Firebase", "mFirebaseAnalytics error : " + e.toString());
-            }
+//            DataUtil.captureSign("/Qdrive", songjanglist.get(0).getBarcode(), sign_view_sign_d_signature);
+//            DataUtil.captureSign("/Qdrive", songjanglist.get(0).getBarcode() + "_1", img_sign_d_visit_log);
 
             new DeliveryDoneUploadHelper.Builder(this, opID, officeCode, deviceID,
                     songjanglist, mReceiveType, driverMemo,
                     sign_view_sign_d_signature, hasSignImage, img_sign_d_visit_log, hasVisitImage,
                     MemoryStatus.getAvailableInternalMemorySize(), latitude, longitude)
-                    .setOnServerUploadEventListener(new DeliveryDoneUploadHelper.OnServerUploadEventListener() {
+                    .setOnServerUploadEventListener(() -> {
 
-                        @Override
-                        public void onPostResult() {
+                        DataUtil.inProgressListPosition = 0;
 
-                            DataUtil.inProgressListPosition = 0;
-
-                            setResult(Activity.RESULT_OK);
-                            finish();
-                        }
+                        setResult(Activity.RESULT_OK);
+                        finish();
                     }).build().execute();
         } catch (Exception e) {
 
@@ -757,16 +740,7 @@ public class DeliveryDoneActivity extends AppCompatActivity implements Camera2AP
 
             String driverMemo = edit_sign_d_memo.getText().toString();
 
-            try {
-
-                Bundle params = new Bundle();
-                params.putString("Activity", TAG + "- OUTLET");
-                params.putString("method", "SetOutletDeliveryUploadData");
-                DataUtil.mFirebaseAnalytics.logEvent("button_click", params);
-            } catch (Exception e) {
-
-                Log.e("Firebase", "mFirebaseAnalytics error : " + e.toString());
-            }
+            DataUtil.logEvent("button_click", TAG + "_OUTLET", "SetOutletDeliveryUploadData");
 
             // 2019.02 - stat : D3 로..   서버에서 outlet stat 변경
             new OutletDeliveryDoneHelper.Builder(this, opID, officeCode, deviceID,
@@ -808,7 +782,7 @@ public class DeliveryDoneActivity extends AppCompatActivity implements Camera2AP
                     img_sign_d_receiver_substitute.setBackgroundResource(R.drawable.qdrive_btn_icon_check_off);
                     img_sign_d_receiver_other.setBackgroundResource(R.drawable.qdrive_btn_icon_check_off);
 
-                    mReceiveType = RECEIVE_TYPE_SELF;
+                    mReceiveType = "RC";
                 }
                 break;
 

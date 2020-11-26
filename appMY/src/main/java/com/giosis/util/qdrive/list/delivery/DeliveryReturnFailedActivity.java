@@ -355,16 +355,8 @@ public class DeliveryReturnFailedActivity extends CommonActivity implements Came
                 return;
             }
 
-            try {
 
-                Bundle params = new Bundle();
-                params.putString("Activity", TAG);
-                params.putString("method", "setDeliveryRTNDPTypeUploadData");
-                DataUtil.mFirebaseAnalytics.logEvent("button_click", params);
-            } catch (Exception e) {
-
-                Log.e("Firebase", "mFirebaseAnalytics error : " + e.toString());
-            }
+            DataUtil.logEvent("button_click", TAG, "setDeliveryRTNDPTypeUploadData");
 
             new DeliveryReturnFailedUploadHelper.Builder(this, opID, officeCode, deviceID,
                     mStrWaybillNo, img_sign_d_r_f_visit_log, driverMemo, mReceiveType,

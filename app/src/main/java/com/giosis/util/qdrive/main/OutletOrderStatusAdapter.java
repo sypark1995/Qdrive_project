@@ -38,7 +38,6 @@ import com.giosis.util.qdrive.list.pickup.OutletPickupScanActivity;
 import com.giosis.util.qdrive.message.CustomerMessageListDetailActivity;
 import com.giosis.util.qdrive.singapore.MyApplication;
 import com.giosis.util.qdrive.singapore.R;
-import com.giosis.util.qdrive.util.BarcodeType;
 import com.giosis.util.qdrive.util.Custom_JsonParser;
 import com.giosis.util.qdrive.util.DataUtil;
 import com.giosis.util.qdrive.util.DatabaseHelper;
@@ -502,13 +501,9 @@ public class OutletOrderStatusAdapter extends BaseExpandableListAdapter {
                 if (type.equals("D")) {
 
                     Intent intent = new Intent(context, DeliveryDoneActivity.class);
-                    intent.putExtra("title", "Signature");
-                    intent.putExtra("type", BarcodeType.TYPE_DELIVERY);
-                    intent.putExtra("receiverName", name);
-                    intent.putExtra("senderName", sender);
                     intent.putExtra("waybillNo", tracking_no);
+                    intent.putExtra("route", route);
                     ((Activity) context).startActivityForResult(intent, 1);
-
                 } else if (type.equals("P")) {
 
                     Intent intent = new Intent(context, OutletPickupScanActivity.class);

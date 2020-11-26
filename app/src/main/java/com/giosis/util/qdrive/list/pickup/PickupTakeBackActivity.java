@@ -244,16 +244,7 @@ public class PickupTakeBackActivity extends AppCompatActivity {
             }
 
 
-            try {
-
-                Bundle params = new Bundle();
-                params.putString("Activity", TAG);
-                params.putString("method", "SetPickupUploadData_TakeBack");
-                DataUtil.mFirebaseAnalytics.logEvent("button_click", params);
-            } catch (Exception e) {
-
-                Log.e("Firebase", "mFirebaseAnalytics error : " + e.toString());
-            }
+            DataUtil.logEvent("button_click", TAG, "SetPickupUploadData_TakeBack");
 
             new PickupTakeBackUploadHelper.Builder(this, opID, officeCode, deviceID,
                     pickup_no, packing_no_list, result_total_qty, sign_view_sign_p_tb_applicant_signature, sign_view_sign_p_tb_collector_signature,

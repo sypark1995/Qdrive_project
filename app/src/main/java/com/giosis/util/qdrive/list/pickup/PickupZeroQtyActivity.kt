@@ -195,17 +195,7 @@ class PickupZeroQtyActivity : AppCompatActivity() {
             }
 
 
-            try {
-
-                val params = Bundle()
-                params.putString("Activity", tag)
-                params.putString("method", "SetPickupUploadData")
-                DataUtil.mFirebaseAnalytics.logEvent("button_click", params)
-            } catch (e: java.lang.Exception) {
-
-                Log.e("Firebase", "mFirebaseAnalytics  Exception : $e")
-            }
-
+            DataUtil.logEvent("button_click", tag, com.giosis.library.util.DataUtil.requestSetUploadPickupData);
 
             PickupZeroQtyUploadHelper.Builder(this, userId, officeCode, deviceId,
                     pickupNo, sign_view_sign_p_applicant_signature, sign_view_sign_p_collector_signature, driverMemo,

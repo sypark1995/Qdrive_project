@@ -192,17 +192,8 @@ class PickupDoneActivity : CommonActivity() {
             Log.e(tag, "  Location $latitude / $longitude")
 
 
-            try {
 
-                val params = Bundle()
-                params.putString("Activity", tag)
-                params.putString("method", "SetPickupUploadData_ScanAll")
-                DataUtil.mFirebaseAnalytics.logEvent("button_click", params)
-            } catch (e: java.lang.Exception) {
-
-                Log.e("Firebase", "mFirebaseAnalytics  Exception : $e")
-            }
-
+            DataUtil.logEvent("button_click", tag, "SetPickupUploadData_ScanAll")
 
             PickupDoneUploadHelper.Builder(this, userId, officeCode, deviceId,
                     pickupNo, scannedList, text_sign_p_total_qty.text.toString(),

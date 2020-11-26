@@ -9,6 +9,7 @@ import android.content.DialogInterface;
 import android.content.Intent;
 import android.graphics.Bitmap;
 import android.graphics.Color;
+import android.os.Bundle;
 import android.os.Environment;
 import android.provider.Settings;
 import android.util.Log;
@@ -66,6 +67,18 @@ public class DataUtil {
 
     // 2019.04 FA(Firebase Analytics)
     public static FirebaseAnalytics mFirebaseAnalytics;
+
+    public static void logEvent(String event, String activity, String method) {
+
+        try {
+
+            Bundle params = new Bundle();
+            params.putString("Activity", activity);
+            params.putString("method", method);
+            mFirebaseAnalytics.logEvent(event, params);
+        } catch (Exception ignored) {
+        }
+    }
 
 
     public static Intent getFusedProviderService() {

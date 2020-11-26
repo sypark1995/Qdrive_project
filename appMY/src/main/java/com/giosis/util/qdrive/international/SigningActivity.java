@@ -264,14 +264,8 @@ public class SigningActivity extends CommonActivity {
 
         //--------------------
 
-        try {
-            Bundle params = new Bundle();
-            params.putString("Activity", TAG);
-            params.putString("method", "GetContrInfo");
-            DataUtil.mFirebaseAnalytics.logEvent("button_click", params);
-        } catch (Exception e) {
 
-        }
+        DataUtil.logEvent("button_click", TAG, "GetContrInfo");
 
         //2016-09-12 eylee
         // 배송정보 Self_Collector의 경우  배송상태값에 따른 정보 습득
@@ -393,16 +387,8 @@ public class SigningActivity extends CommonActivity {
 
             String driverMemo = edit_sign_memo.getText().toString();
 
-            try {
 
-                Bundle params = new Bundle();
-                params.putString("Activity", TAG);
-                params.putString("method", "SetSelfCollectorData");
-                DataUtil.mFirebaseAnalytics.logEvent("button_click", params);
-            } catch (Exception e) {
-
-                Log.e("Firebase", "mFirebaseAnalytics error : " + e.toString());
-            }
+            DataUtil.logEvent("button_click", TAG, "SetSelfCollectorData");
 
             new ManualSelfCollectorHelper.Builder(this, MyApplication.preferences.getUserId(), MyApplication.preferences.getOfficeCode(), MyApplication.preferences.getDeviceUUID(),
                     songjanglist, sign_view_sign_signature, driverMemo, mReceiveType)

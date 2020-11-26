@@ -650,16 +650,7 @@ public class DeliveryDoneActivity extends CommonActivity implements Camera2APIs.
             }
 
 
-            try {
-
-                Bundle params = new Bundle();
-                params.putString("Activity", TAG);
-                params.putString("method", "SetDeliveryUploadData");
-                DataUtil.mFirebaseAnalytics.logEvent("button_click", params);
-            } catch (Exception e) {
-
-                Log.e("Firebase", "mFirebaseAnalytics error : " + e.toString());
-            }
+            DataUtil.logEvent("button_click", TAG, com.giosis.library.util.DataUtil.requestSetUploadDeliveryData);
 
             new DeliveryDoneUploadHelper.Builder(this, opID, officeCode, deviceID,
                     songjanglist, driverMemo, mReceiveType,
@@ -727,16 +718,7 @@ public class DeliveryDoneActivity extends CommonActivity implements Camera2APIs.
 
             String driverMemo = edit_sign_d_memo.getText().toString();
 
-            try {
-
-                Bundle params = new Bundle();
-                params.putString("Activity", TAG + "- OUTLET");
-                params.putString("method", "SetOutletDeliveryUploadData");
-                DataUtil.mFirebaseAnalytics.logEvent("button_click", params);
-            } catch (Exception e) {
-
-                Log.e("Firebase", "mFirebaseAnalytics error : " + e.toString());
-            }
+            DataUtil.logEvent("button_click", TAG + "- OUTLET", "SetOutletDeliveryUploadData");
 
             // 2019.02 - stat : D3 로..   서버에서 outlet stat 변경
             new OutletDeliveryDoneHelper.Builder(this, opID, officeCode, deviceID, songjanglist, sign_view_sign_d_signature, driverMemo, mReceiveType,

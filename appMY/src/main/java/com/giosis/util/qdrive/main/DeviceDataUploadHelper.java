@@ -276,7 +276,9 @@ public class DeviceDataUploadHelper extends ManualHelper {
                 if (uploadData.getType().equals("D")) {
 
                     String bitmapString = "";
+                    String bitmapString1 = "";
 
+                    // 2020.11  - sign, picture 업로드
                     if (uploadData.getStat().equals(BarcodeType.DELIVERY_DONE)) {
 
                         String dirPath = Environment.getExternalStorageDirectory().toString() + "/Qdrive";
@@ -287,8 +289,17 @@ public class DeviceDataUploadHelper extends ManualHelper {
                             bitmapString = DataUtil.bitmapToString(myBitmap);
                         }
 
+                        dirPath = Environment.getExternalStorageDirectory().toString() + "/Qdrive";
+                        filePath = dirPath + "/" + uploadData.getNoSongjang() + "_1.png";
+                        imgFile = new File(filePath);
+                        if (imgFile.exists()) {
+                            Bitmap myBitmap = BitmapFactory.decodeFile(imgFile.getAbsolutePath());
+                            bitmapString1 = DataUtil.bitmapToString(myBitmap);
+                        }
+
+
                         // 사인 이미지 없으면 업로드 실패
-                        if (bitmapString.equals("")) {
+                        if (bitmapString.equals("") && bitmapString1.equals("")) {
                             result.setResultCode(-14);
                             result.setResultMsg("");
                             return result;
@@ -318,6 +329,7 @@ public class DeviceDataUploadHelper extends ManualHelper {
                     job.accumulate("network_type", networkType);
                     job.accumulate("no_songjang", uploadData.getNoSongjang());
                     job.accumulate("fileData", bitmapString);
+                    job.accumulate("photo_data", bitmapString1);
                     job.accumulate("remark", uploadData.getDriverMemo());  // 드라이버 메세지 driver_memo	== remark
                     job.accumulate("disk_size", "999999");  // 남은디스크용량(임의의 숫자) - 실시간 업로드 시에만 체크	해서 넘어옴
                     job.accumulate("lat", latitude);  // 위도
@@ -327,8 +339,7 @@ public class DeviceDataUploadHelper extends ManualHelper {
                     job.accumulate("app_id", DataUtil.appID);
                     job.accumulate("nation_cd", DataUtil.nationCode);
 
-                    methodName = "SetDeliveryUploadData";
-
+                    methodName = com.giosis.library.util.DataUtil.requestSetUploadDeliveryData;
                 } else if (uploadData.getType().equals("P")) {
 
                     String bitmapString = "";

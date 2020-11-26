@@ -78,16 +78,7 @@ public final class CameraActivity extends CommonActivity implements Camera2APIs.
         setContentView(R.layout.activity_camera);
 
 
-        try {
-            Bundle params = new Bundle();
-            params.putString("Activity", TAG);
-            params.putString("method", "CameraActivity");
-            DataUtil.mFirebaseAnalytics.logEvent("button_click", params);
-        } catch (Exception e) {
-
-            Log.e("Firebase", "mFirebaseAnalytics error : " + e.toString());
-        }
-
+        DataUtil.logEvent("button_click", TAG, "CameraActivity");
 
         layout_top_back = findViewById(R.id.layout_top_back);
         text_top_title = findViewById(R.id.text_top_title);

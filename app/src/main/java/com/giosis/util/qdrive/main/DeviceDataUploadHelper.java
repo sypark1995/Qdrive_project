@@ -4,8 +4,6 @@ import android.app.AlertDialog;
 import android.app.ProgressDialog;
 import android.content.ContentValues;
 import android.content.Context;
-import android.content.DialogInterface;
-import android.content.DialogInterface.OnClickListener;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.os.AsyncTask;
@@ -126,16 +124,12 @@ public class DeviceDataUploadHelper {
         AlertDialog dialog = new AlertDialog.Builder(context)
                 .setTitle(context.getResources().getString(R.string.text_upload_result))
                 .setCancelable(false)
-                .setPositiveButton(context.getResources().getString(R.string.button_ok), new OnClickListener() {
+                .setPositiveButton(context.getResources().getString(R.string.button_ok), (dialog1, which) -> {
+                    if (dialog1 != null)
+                        dialog1.dismiss();
 
-                    @Override
-                    public void onClick(DialogInterface dialog, int which) {
-                        if (dialog != null)
-                            dialog.dismiss();
-
-                        if (eventListener != null) {
-                            eventListener.onPostResult();
-                        }
+                    if (eventListener != null) {
+                        eventListener.onPostResult();
                     }
                 })
                 .create();
@@ -274,7 +268,9 @@ public class DeviceDataUploadHelper {
                 if (uploadData.getType().equals("D")) {
 
                     String bitmapString = "";
+                    String bitmapString1 = "";
 
+                    // 2020.11  - sign, picture 업로드
                     if (uploadData.getStat().equals("D4")) {
 
                         String dirPath = Environment.getExternalStorageDirectory().toString() + "/Qdrive";
@@ -286,10 +282,21 @@ public class DeviceDataUploadHelper {
                             bitmapString = DataUtil.bitmapToString(myBitmap);
                         }
 
-                        Log.e("krm0219", " RE-Upload DATA : " + bitmapString);
+                        dirPath = Environment.getExternalStorageDirectory().toString() + "/Qdrive";
+                        filePath = dirPath + "/" + uploadData.getNoSongjang() + "_1.png";
+                        imgFile = new File(filePath);
+                        if (imgFile.exists()) {
 
-                        // 사인, visit log 이미지가 다 없으면 업로드 불가능
-                        if (bitmapString.equals("")) {
+                            Bitmap myBitmap = BitmapFactory.decodeFile(imgFile.getAbsolutePath());
+                            bitmapString1 = DataUtil.bitmapToString(myBitmap);
+                        }
+
+                        Log.e("krm0219", " RE-Upload DATA 1 : " + bitmapString);
+                        Log.e("krm0219", " RE-Upload DATA 2 : " + bitmapString1);
+
+
+                        // sign, picture 다 없으면 업로드 불가능
+                        if (bitmapString.equals("") && bitmapString1.equals("")) {
                             result.setResultCode(-14);
                             result.setResultMsg("");
                             return result;
@@ -317,6 +324,7 @@ public class DeviceDataUploadHelper {
                     job.accumulate("network_type", networkType);
                     job.accumulate("no_songjang", uploadData.getNoSongjang());
                     job.accumulate("fileData", bitmapString);
+                    job.accumulate("photo_data", bitmapString1);
                     job.accumulate("remark", uploadData.getDriverMemo());  // 드라이버 메세지 driver_memo	== remark
                     job.accumulate("disk_size", "999999");  // 남은디스크용량(임의의 숫자) - 실시간 업로드 시에만 체크	해서 넘어옴
                     job.accumulate("lat", latitude);  // 위도
@@ -326,7 +334,7 @@ public class DeviceDataUploadHelper {
                     job.accumulate("app_id", DataUtil.appID);
                     job.accumulate("nation_cd", DataUtil.nationCode);
 
-                    methodName = "SetDeliveryUploadData";
+                    methodName = com.giosis.library.util.DataUtil.requestSetUploadDeliveryData;
                 } else if (uploadData.getType().equals("P")) {
 
                     String bitmapString = "";

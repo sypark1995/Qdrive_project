@@ -9,7 +9,6 @@ import android.database.Cursor;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.net.Uri;
-import android.os.Bundle;
 import android.os.Environment;
 import android.text.SpannableString;
 import android.text.style.UnderlineSpan;
@@ -555,16 +554,8 @@ public class UploadFailedExpandableListAdapter extends BaseExpandableListAdapter
 
                 if (0 < songjanglist.size()) {
 
-                    try {
 
-                        Bundle params = new Bundle();
-                        params.putString("Activity", TAG);
-                        params.putString("method", "SetDeliveryUploadData/SetPickupUploadData");
-                        DataUtil.mFirebaseAnalytics.logEvent("button_click", params);
-                    } catch (Exception e) {
-
-                        Log.e("FA", TAG + "  FirebaseAnalytics UploadFailed Exception : " + e.toString());
-                    }
+                    DataUtil.logEvent("button_click", TAG, com.giosis.library.util.DataUtil.requestSetUploadDeliveryData + "/" + com.giosis.library.util.DataUtil.requestSetUploadPickupData);
 
                     new DeviceDataUploadHelper.Builder(context, opID, officeCode, deviceID, songjanglist, "QL", latitude, longitude).
                             setOnServerEventListener(new OnServerEventListener() {

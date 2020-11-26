@@ -279,17 +279,8 @@ class DeliveryFailedActivity : CommonActivity(), Camera2APIs.Camera2Interface, S
             Log.e(tag, "  Location $latitude / $longitude")
 
 
-            try {
 
-                val params = Bundle()
-                params.putString("Activity", tag)
-                params.putString("method", "SetDeliveryUploadData")
-                DataUtil.mFirebaseAnalytics.logEvent("button_click", params)
-            } catch (e: java.lang.Exception) {
-
-                Log.e("Firebase", "mFirebaseAnalytics  Exception : $e")
-            }
-
+            DataUtil.logEvent("button_click", tag, com.giosis.library.util.DataUtil.requestSetUploadDeliveryData)
 
             DeliveryFailedUploadHelper.Builder(this, userId, officeCode, deviceId,
                     trackingNo, img_sign_d_f_visit_log, driverMemo, "RC",

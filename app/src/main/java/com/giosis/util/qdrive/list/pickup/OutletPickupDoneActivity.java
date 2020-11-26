@@ -328,16 +328,7 @@ public class OutletPickupDoneActivity extends AppCompatActivity {
 
             mDriverMemo = edit_sign_p_outlet_memo.getText().toString();
 
-            try {
-
-                Bundle params = new Bundle();
-                params.putString("Activity", TAG);
-                params.putString("method", "SetOutletPickupUploadData");
-                DataUtil.mFirebaseAnalytics.logEvent("button_click", params);
-            } catch (Exception e) {
-
-                Log.e("Firebase", "mFirebaseAnalytics error : " + e.toString());
-            }
+            DataUtil.logEvent("button_click", TAG, "SetOutletPickupUploadData");
 
             new OutletPickupDoneHelper.Builder(this, opID, officeCode, deviceID, mPickupNo,
                     sign_view_sign_p_outlet_signature, mDriverMemo,

@@ -115,9 +115,6 @@
             android:screenOrientation="portrait"
             android:windowSoftInputMode="stateAlwaysHidden|adjustPan" />
         <activity
-            android:name="com.giosis.util.qdrive.main.MainTestVisitLog"
-            android:screenOrientation="portrait" />
-        <activity
             android:name="com.giosis.util.qdrive.barcodescanner.CaptureActivity"
             android:configChanges="orientation|keyboardHidden"
             android:screenOrientation="portrait"

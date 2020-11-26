@@ -1781,15 +1781,7 @@ public final class CaptureActivity extends AppCompatActivity implements SurfaceH
 
         if (mScanType.equals(BarcodeType.CONFIRM_MY_DELIVERY_ORDER)) {
 
-            try {
-
-                Bundle params = new Bundle();
-                params.putString("Activity", TAG);
-                params.putString("method", "SetShippingStatDpc3out");
-                DataUtil.mFirebaseAnalytics.logEvent("button_click", params);
-            } catch (Exception ignored) {
-
-            }
+            DataUtil.logEvent("button_click", TAG, "SetShippingStatDpc3out");
 
             new ConfirmMyOrderHelper.Builder(this, opID, officeCode, deviceID, scanBarcodeArrayList)
                     .setOnDriverAssignEventListener(stdResult -> {
@@ -1819,15 +1811,7 @@ public final class CaptureActivity extends AppCompatActivity implements SurfaceH
                     }).build().execute();
         } else if (mScanType.equals(BarcodeType.CHANGE_DELIVERY_DRIVER)) {
 
-            try {
-
-                Bundle params = new Bundle();
-                params.putString("Activity", TAG);
-                params.putString("method", "SetChangeDeliveryDriver");
-                DataUtil.mFirebaseAnalytics.logEvent("button_click", params);
-            } catch (Exception ignored) {
-
-            }
+            DataUtil.logEvent("button_click", TAG, "SetChangeDeliveryDriver");
 
             if (gpsEnable && gpsTrackerManager != null) {
 
@@ -1917,8 +1901,6 @@ public final class CaptureActivity extends AppCompatActivity implements SurfaceH
         if (0 < deliveryBarcodeList.size()) {
 
             Intent intent = new Intent(this, DeliveryDoneActivity.class);
-            intent.putExtra("title", title);
-            intent.putExtra("type", BarcodeType.TYPE_DELIVERY);
             intent.putExtra("data", deliveryBarcodeList);
             this.startActivityForResult(intent, REQUEST_DELIVERY_DONE);
         } else {

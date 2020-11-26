@@ -167,35 +167,26 @@ public class MainActivity extends AppBaseActivity {
         setTopTitle(mContext.getResources().getString(R.string.navi_home));
 
 
-        // TEST.
-        String imgDirName = "/QdrivePickup";
-        String signName = "123";
-
-        String dirPath = Environment.getExternalStorageDirectory().toString() + imgDirName;
-        String filePath = dirPath + "/" + signName + ".png";
-        String saveAbsolutePath = "file://" + Environment.getExternalStorageDirectory().getAbsolutePath() + "/" +
-                imgDirName + "/" + signName + ".png";
-        Log.e("krm0219", "PATH 1 : " + dirPath + " / " + filePath + " / " + saveAbsolutePath);
-
-        // FIXME.  API 29  deprecated
-        String path = Environment.getExternalStorageDirectory().getAbsolutePath();
-        String path1 = getApplication().getExternalFilesDir(Environment.DIRECTORY_PICTURES).toString();
-        Log.e("krm0219", "PATH 2 : " + path + " / " + path1);
-        // ---
+//        // TEST.
+//        String imgDirName = "/QdrivePickup";
+//        String signName = "123";
+//
+//        String dirPath = Environment.getExternalStorageDirectory().toString() + imgDirName;
+//        String filePath = dirPath + "/" + signName + ".png";
+//        String saveAbsolutePath = "file://" + Environment.getExternalStorageDirectory().getAbsolutePath() + "/" +
+//                imgDirName + "/" + signName + ".png";
+//        Log.e("krm0219", "PATH 1 : " + dirPath + " / " + filePath + " / " + saveAbsolutePath);
+//
+//        // FIXME.  API 29  deprecated
+//        String path = Environment.getExternalStorageDirectory().getAbsolutePath();
+//        String path1 = getApplication().getExternalFilesDir(Environment.DIRECTORY_PICTURES).toString();
+//        Log.e("krm0219", "PATH 2 : " + path + " / " + path1);
+//        // ---
 
 
         dbHelper = DatabaseHelper.getInstance();
 
-//        opID = SharedPreferencesHelper.getSigninOpID(getApplicationContext());
-//        opName = SharedPreferencesHelper.getSigninOpName(getApplicationContext());
-//        officeCode = SharedPreferencesHelper.getSigninOfficeCode(getApplicationContext());
-//        officeName = SharedPreferencesHelper.getSigninOfficeName(getApplicationContext());
-//        opDefault = SharedPreferencesHelper.getSigninOpDefaultYN(getApplicationContext());
-//        deviceID = SharedPreferencesHelper.getSigninDeviceID(getApplicationContext());
-//        authNo = SharedPreferencesHelper.getSigninAuthNo(getApplicationContext());
-//        pickup_driver_yn = SharedPreferencesHelper.getSigninPickupDriverYN(getApplicationContext());
         opID = MyApplication.preferences.getUserId();
-        opName = MyApplication.preferences.getUserName();
         officeCode = MyApplication.preferences.getOfficeCode();
         officeName = MyApplication.preferences.getOfficeName();
         opDefault = MyApplication.preferences.getDefault();
@@ -203,7 +194,6 @@ public class MainActivity extends AppBaseActivity {
         authNo = MyApplication.preferences.getAuthNo();
         pickup_driver_yn = MyApplication.preferences.getPickupDriver();
 
-        setNaviHeader(opName, officeName);
 
         // Outlet
         String outletDriverYN;
@@ -252,8 +242,6 @@ public class MainActivity extends AppBaseActivity {
             Download();
         }
 
-        text_home_driver_name.setText(opName);
-        text_home_driver_office.setText(officeName);
 
         layout_home_list_count.setOnClickListener(clickListener);
         layout_home_download.setOnClickListener(clickListener);
@@ -326,6 +314,12 @@ public class MainActivity extends AppBaseActivity {
     @Override
     protected void onResume() {
         super.onResume();
+
+        opName = MyApplication.preferences.getUserName();
+        setNaviHeader(opName, officeName);
+
+        text_home_driver_name.setText(opName);
+        text_home_driver_office.setText(officeName);
 
         Log.e("krm0219", "MainActivity onResume()  URL : " + MyApplication.preferences.getServerURL());
         try {
@@ -556,7 +550,7 @@ public class MainActivity extends AppBaseActivity {
 
         if (songjanglist.size() > 0) {
 
-            DataUtil.logEvent("button_click", TAG, "SetDeliveryUploadData/SetPickupUploadData");
+            DataUtil.logEvent("button_click", TAG, com.giosis.library.util.DataUtil.requestSetUploadDeliveryData + "/" + com.giosis.library.util.DataUtil.requestSetUploadPickupData);
 
             new DeviceDataUploadHelper.Builder(this, opID, officeCode, deviceID,
                     songjanglist, "QH", latitude, longitude).

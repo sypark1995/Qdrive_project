@@ -390,17 +390,7 @@ class PickupFailedActivity : CommonActivity(), Camera2APIs.Camera2Interface, Tex
             val failCode = failReasonCode[spinner_p_f_failed_reason.selectedItemPosition]
 
 
-            try {
-
-                val params = Bundle()
-                params.putString("Activity", tag)
-                params.putString("method", "SetPickupUploadData")
-                DataUtil.mFirebaseAnalytics.logEvent("button_click", params)
-            } catch (e: java.lang.Exception) {
-
-                Log.e("Firebase", "mFirebaseAnalytics  Exception : $e")
-            }
-
+            DataUtil.logEvent("button_click", tag, com.giosis.library.util.DataUtil.requestSetUploadPickupData)
 /*
             // NOTIFICATION.
             PickupFailedUploadAsyncTask(this,

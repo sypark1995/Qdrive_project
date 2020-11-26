@@ -273,15 +273,7 @@ public class QuickReturnedActivity extends AppCompatActivity {
             }
 
 
-            try {
-                Bundle params = new Bundle();
-                params.putString("Activity", TAG);
-                params.putString("method", "setDeliveryRTNDPTypeUploadData");
-                DataUtil.mFirebaseAnalytics.logEvent("button_click", params);
-            } catch (Exception e) {
-
-                Log.e("Firebase", "mFirebaseAnalytics error : " + e.toString());
-            }
+            DataUtil.logEvent("button_click", TAG, "setDeliveryRTNDPTypeUploadData");
 
             new QuickReturnedUploadHelper.Builder(this, opID, officeCode, deviceID,
                     mStrWaybillNo, mReceiveType, sign_view_sign_d_r_signature, driverMemo,

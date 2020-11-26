@@ -369,16 +369,7 @@ public class DeliveryFailedActivity extends AppCompatActivity implements Camera2
             }
 
 
-            try {
-
-                Bundle params = new Bundle();
-                params.putString("Activity", TAG);
-                params.putString("method", "SetDeliveryUploadData");
-                DataUtil.mFirebaseAnalytics.logEvent("button_click", params);
-            } catch (Exception e) {
-
-                Log.e("Firebase", "mFirebaseAnalytics error : " + e.toString());
-            }
+            DataUtil.logEvent("button_click", TAG, com.giosis.library.util.DataUtil.requestSetUploadDeliveryData);
 
             new DeliveryFailedUploadHelper.Builder(DeliveryFailedActivity.this, opID, officeCode, deviceID,
                     mStrWaybillNo, driverMemo, img_sign_d_f_visit_log,

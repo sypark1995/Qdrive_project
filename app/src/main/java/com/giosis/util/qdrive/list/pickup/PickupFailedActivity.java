@@ -526,16 +526,8 @@ public class PickupFailedActivity extends AppCompatActivity implements Camera2AP
             String fail_code = failReasonCode[spinner_p_f_failed_reason.getSelectedItemPosition()];
             String retry_day = text_sign_p_f_retry_date.getText().toString();
 
-            try {
 
-                Bundle params = new Bundle();
-                params.putString("Activity", TAG + "_" + pickupType);
-                params.putString("method", "SetPickupUploadData");
-                DataUtil.mFirebaseAnalytics.logEvent("button_click", params);
-            } catch (Exception e) {
-
-                Log.e("Firebase", "mFirebaseAnalytics error : " + e.toString());
-            }
+            DataUtil.logEvent("button_click", TAG, com.giosis.library.util.DataUtil.requestSetUploadPickupData);
 
             new PickupFailedUploadHelper.Builder(this, opID, officeCode, deviceID,
                     rcvType, pickupNo, fail_code, retry_day, driverMemo, img_sign_p_f_visit_log,

@@ -280,6 +280,7 @@ public class DeliveryDoneUploadHelper extends ManualHelper {
         private StdResult requestServerUpload(String assignNo) {
 
             String bitmapString = "";
+            String bitmapString1 = "";
 
             if (hasSignImage) {
                 Log.e("krm0219", " save  sign");
@@ -288,13 +289,15 @@ public class DeliveryDoneUploadHelper extends ManualHelper {
                 signingView.buildDrawingCache();
                 Bitmap signBitmap = signingView.getDrawingCache();
                 bitmapString = DataUtil.bitmapToString(signBitmap);
-            } else if (hasVisitImage) {
+            }
+
+            if (hasVisitImage) {
                 Log.e("krm0219", " save  visit log");
-                DataUtil.captureSign("/Qdrive", assignNo, imageView);
+                DataUtil.captureSign("/Qdrive", assignNo + "_1", imageView);
 
                 imageView.buildDrawingCache();
                 Bitmap visitBitmap = imageView.getDrawingCache();
-                bitmapString = DataUtil.bitmapToString(visitBitmap);
+                bitmapString1 = DataUtil.bitmapToString(visitBitmap);
             }
 
             SimpleDateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
@@ -343,6 +346,7 @@ public class DeliveryDoneUploadHelper extends ManualHelper {
                 job.accumulate("network_type", networkType);
                 job.accumulate("no_songjang", assignNo);
                 job.accumulate("fileData", bitmapString);
+                job.accumulate("photo_data", bitmapString1);
                 job.accumulate("remark", driverMemo);           // 드라이버 메세지 driver_memo	== remark
                 job.accumulate("disk_size", disk_size);
                 job.accumulate("lat", lat);
@@ -353,8 +357,7 @@ public class DeliveryDoneUploadHelper extends ManualHelper {
                 job.accumulate("nation_cd", DataUtil.nationCode);
 
 
-                String methodName = "SetDeliveryUploadData";
-                String jsonString = Custom_JsonParser.requestServerDataReturnJSON(MOBILE_SERVER_URL, methodName, job);
+                String jsonString = Custom_JsonParser.requestServerDataReturnJSON(MOBILE_SERVER_URL, com.giosis.library.util.DataUtil.requestSetUploadDeliveryData, job);
                 // {"ResultCode":0,"ResultMsg":"SUCCESS"}
                 // {"ResultCode":-11,"ResultMsg":"Upload Failed."}
 
@@ -376,7 +379,7 @@ public class DeliveryDoneUploadHelper extends ManualHelper {
                 }
             } catch (Exception e) {
 
-                Log.e("Exception", TAG + "  SetDeliveryUploadData Exception : " + e.toString());
+                Log.e("Exception", TAG + "  Upload Exception : " + e.toString());
                 result.setResultCode(-15);
                 result.setResultMsg(context.getResources().getString(R.string.msg_upload_fail_15));
             }

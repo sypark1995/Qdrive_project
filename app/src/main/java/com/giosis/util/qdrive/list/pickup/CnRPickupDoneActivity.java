@@ -298,16 +298,8 @@ public class CnRPickupDoneActivity extends AppCompatActivity {
                 return;
             }
 
-            try {
 
-                Bundle params = new Bundle();
-                params.putString("Activity", TAG);
-                params.putString("method", "SetPickupUploadData");
-                DataUtil.mFirebaseAnalytics.logEvent("button_click", params);
-            } catch (Exception e) {
-
-                Log.e("Firebase", "mFirebaseAnalytics error : " + e.toString());
-            }
+            DataUtil.logEvent("button_click", TAG, com.giosis.library.util.DataUtil.requestSetUploadPickupData);
 
             new CnRPickupUploadHelper.Builder(this, opID, officeCode, deviceID,
                     "P3", PickupNoList, sign_view_sign_p_applicant_signature, sign_view_sign_p_collector_signature,

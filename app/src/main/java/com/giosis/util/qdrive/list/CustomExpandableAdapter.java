@@ -40,6 +40,7 @@ import android.widget.Toast;
 import com.giosis.util.qdrive.barcodescanner.CaptureActivity;
 import com.giosis.util.qdrive.barcodescanner.StdResult;
 import com.giosis.util.qdrive.list.delivery.DeliveryDoneActivity;
+import com.giosis.util.qdrive.list.delivery.DeliveryDoneActivity1;
 import com.giosis.util.qdrive.list.delivery.DeliveryFailedActivity;
 import com.giosis.util.qdrive.list.delivery.QuickReturnFailedActivity;
 import com.giosis.util.qdrive.list.delivery.QuickReturnedActivity;
@@ -853,11 +854,8 @@ public class CustomExpandableAdapter extends BaseExpandableListAdapter implement
             @Override
             public void onClick(View v) {
 
-                Intent intent = new Intent(context, DeliveryDoneActivity.class);
-                intent.putExtra("title", context.getResources().getString(R.string.text_signature));
-                intent.putExtra("type", BarcodeType.TYPE_DELIVERY);
-                intent.putExtra("receiverName", receiver);
-                intent.putExtra("senderName", sender);
+             //   Intent intent = new Intent(context, DeliveryDoneActivity.class);
+                Intent intent = new Intent(context, DeliveryDoneActivity1.class);
                 intent.putExtra("waybillNo", tracking_no);
                 intent.putExtra("route", route);
                 context.startActivity(intent);

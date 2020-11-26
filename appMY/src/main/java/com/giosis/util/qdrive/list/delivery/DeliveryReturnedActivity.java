@@ -277,16 +277,8 @@ public class DeliveryReturnedActivity extends CommonActivity {
                 return;
             }
 
-            try {
-
-                Bundle params = new Bundle();
-                params.putString("Activity", TAG);
-                params.putString("method", "setDeliveryRTNDPTypeUploadData");
-                DataUtil.mFirebaseAnalytics.logEvent("button_click", params);
-            } catch (Exception e) {
-
-                Log.e("Firebase", "mFirebaseAnalytics error : " + e.toString());
-            }
+            
+            DataUtil.logEvent("button_click", TAG, "setDeliveryRTNDPTypeUploadData");
 
             new DeliveryReturnedUploadHelper.Builder(this, opID, officeCode, deviceID,
                     mStrWaybillNo, sign_view_sign_d_r_signature, driverMemo, mReceiveType,

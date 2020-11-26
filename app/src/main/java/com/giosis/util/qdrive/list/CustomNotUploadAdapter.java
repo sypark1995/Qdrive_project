@@ -195,34 +195,30 @@ public class CustomNotUploadAdapter extends BaseExpandableListAdapter {
 
         layout_list_item_menu_icon.setTag(row_pos.getShipping()); // 퀵메뉴 아이콘에 shipping no
 
-        layout_list_item_menu_icon.setOnClickListener(new OnClickListener() {
+        layout_list_item_menu_icon.setOnClickListener(v -> {
 
-            @Override
-            public void onClick(View v) {
+            PopupMenu popup = new PopupMenu(context, layout_list_item_menu_icon);
+            popup.getMenuInflater().inflate(R.menu.quickmenu_failed, popup.getMenu());
+            popup.setOnMenuItemClickListener(new PopupMenu.OnMenuItemClickListener() {
 
-                PopupMenu popup = new PopupMenu(context, layout_list_item_menu_icon);
-                popup.getMenuInflater().inflate(R.menu.quickmenu_failed, popup.getMenu());
-                popup.setOnMenuItemClickListener(new PopupMenu.OnMenuItemClickListener() {
+                @Override
+                public boolean onMenuItemClick(MenuItem item) {
 
-                    @Override
-                    public boolean onMenuItemClick(MenuItem item) {
+                    Cursor cs3 = dbHelper.get("SELECT address FROM " + DatabaseHelper.DB_TABLE_INTEGRATION_LIST + " WHERE invoice_no='" + layout_list_item_menu_icon.getTag().toString() + "' LIMIT 1");
+                    if (cs3 != null) {
 
-                        Cursor cs3 = dbHelper.get("SELECT address FROM " + DatabaseHelper.DB_TABLE_INTEGRATION_LIST + " WHERE invoice_no='" + layout_list_item_menu_icon.getTag().toString() + "' LIMIT 1");
-                        if (cs3 != null) {
-
-                            cs3.moveToFirst();
-                            String address = cs3.getString(cs3.getColumnIndex("address"));
-                            Uri uri = Uri.parse("http://maps.google.co.in/maps?q=" + address);
-                            Intent it = new Intent(Intent.ACTION_VIEW, uri);
-                            context.startActivity(it);
-                        }
-
-                        return true;
+                        cs3.moveToFirst();
+                        String address = cs3.getString(cs3.getColumnIndex("address"));
+                        Uri uri = Uri.parse("http://maps.google.co.in/maps?q=" + address);
+                        Intent it = new Intent(Intent.ACTION_VIEW, uri);
+                        context.startActivity(it);
                     }
-                });
 
-                popup.show();
-            }
+                    return true;
+                }
+            });
+
+            popup.show();
         });
 
         return convertView;
@@ -261,9 +257,7 @@ public class CustomNotUploadAdapter extends BaseExpandableListAdapter {
 
         Button btn_list_item_child_upload = convertView.findViewById(R.id.btn_list_item_child_upload);
 
-//        opID = SharedPreferencesHelper.getSigninOpID(context);
-//        officeCode = SharedPreferencesHelper.getSigninOfficeCode(context);
-//        deviceID = SharedPreferencesHelper.getSigninDeviceID(context);
+
         opID = MyApplication.preferences.getUserId();
         officeCode = MyApplication.preferences.getOfficeCode();
         deviceID = MyApplication.preferences.getDeviceUUID();
@@ -433,175 +427,139 @@ public class CustomNotUploadAdapter extends BaseExpandableListAdapter {
         }
 
 
-        text_list_item_child_telephone_number.setOnClickListener(new OnClickListener() {
+        text_list_item_child_telephone_number.setOnClickListener(v -> {
 
-            @Override
-            public void onClick(View v) {
-
-                Uri callUri = Uri.parse("tel:" + child.getTel());
-                Intent intent = new Intent(Intent.ACTION_DIAL, callUri);
-                context.startActivity(intent);
-            }
-
+            Uri callUri = Uri.parse("tel:" + child.getTel());
+            Intent intent = new Intent(Intent.ACTION_DIAL, callUri);
+            context.startActivity(intent);
         });
 
-        text_list_item_child_mobile_number.setOnClickListener(new OnClickListener() {
+        text_list_item_child_mobile_number.setOnClickListener(v -> {
 
-            @Override
-            public void onClick(View v) {
-
-                Uri callUri = Uri.parse("tel:" + child.getHp());
-                Intent intent = new Intent(Intent.ACTION_DIAL, callUri);
-                context.startActivity(intent);
-            }
-
+            Uri callUri = Uri.parse("tel:" + child.getHp());
+            Intent intent = new Intent(Intent.ACTION_DIAL, callUri);
+            context.startActivity(intent);
         });
 
-        img_list_item_child_sms.setOnClickListener(new OnClickListener() {
+        img_list_item_child_sms.setOnClickListener(v -> {
 
-            @Override
-            public void onClick(View v) {
+            String smsBody = String.format(context.getResources().getString(R.string.msg_delivery_start_sms), receiver);
+            Uri smsUri = Uri.parse("sms:" + child.getHp());
+            Intent intent = new Intent(Intent.ACTION_SENDTO, smsUri);
+            intent.putExtra("sms_body", smsBody);
+            context.startActivity(intent);
+        });
 
-                String smsBody = String.format(context.getResources().getString(R.string.msg_delivery_start_sms), receiver);
-                Uri smsUri = Uri.parse("sms:" + child.getHp());
-                Intent intent = new Intent(Intent.ACTION_SENDTO, smsUri);
-                intent.putExtra("sms_body", smsBody);
+        img_list_item_child_live10.setOnClickListener(v -> {
+
+            AlertDialog.Builder alert = new AlertDialog.Builder(context);
+
+            String msg = String.format(context.getResources().getString(R.string.msg_delivery_start_sms), receiver);
+            alert.setTitle(context.getResources().getString(R.string.text_qpost_message));
+
+            final EditText input = new EditText(context);
+            input.setText(msg);
+            alert.setView(input);
+
+            alert.setPositiveButton(context.getResources().getString(R.string.button_send), (dialog, whichButton) -> {
+                String value = input.getText().toString();
+                // Qtalk sms 전송
+                Intent intent = new Intent();
+                intent.setAction(Intent.ACTION_VIEW);
+                intent.setData(Uri.parse("qtalk://link?qnumber=" + child.getSecretNo() + "&msg=" + value + "&link=&execurl="));
                 context.startActivity(intent);
-            }
+            });
+            alert.setNegativeButton(context.getResources().getString(R.string.button_cancel),
+                    (dialog, whichButton) -> {
+                        // Canceled.
+                    });
 
+            alert.show();
         });
 
 
-        img_list_item_child_live10.setOnClickListener(new OnClickListener() {
+        btn_list_item_child_upload.setOnClickListener(v -> {
 
-            @Override
-            public void onClick(View v) {
+            ArrayList<UploadData> songjanglist = new ArrayList<>();
+            // 업로드 대상건 로컬 DB 조회
+            String selectQuery = "SELECT invoice_no" +
+                    " , stat " +
+                    " , ifnull(rcv_type, '')  as rcv_type" +
+                    " , ifnull(fail_reason, '')  as fail_reason" +
+                    " , ifnull(driver_memo, '') as driver_memo" +
+                    " , ifnull(real_qty, '') as real_qty" +
+                    " , ifnull(retry_dt , '') as retry_dt" +
+                    " , type " +
+                    " FROM " + DatabaseHelper.DB_TABLE_INTEGRATION_LIST +
+                    " WHERE reg_id= '" + opID + "'" +
+                    " and invoice_no = '" + tracking_no + "'" +
+                    " and punchOut_stat <> 'S' ";
+            Cursor cs = dbHelper.get(selectQuery);
 
-                AlertDialog.Builder alert = new AlertDialog.Builder(context);
+            if (cs.moveToFirst()) {
+                do {
+                    UploadData data = new UploadData();
+                    data.setNoSongjang(cs.getString(cs.getColumnIndex("invoice_no")));
+                    data.setStat(cs.getString(cs.getColumnIndex("stat")));
+                    data.setReceiveType(cs.getString(cs.getColumnIndex("rcv_type")));
+                    data.setFailReason(cs.getString(cs.getColumnIndex("fail_reason")));
+                    data.setDriverMemo(cs.getString(cs.getColumnIndex("driver_memo")));
+                    data.setRealQty(cs.getString(cs.getColumnIndex("real_qty")));
+                    data.setRetryDay(cs.getString(cs.getColumnIndex("retry_dt")));
+                    data.setType(cs.getString(cs.getColumnIndex("type")));
+                    songjanglist.add(data);
+                } while (cs.moveToNext());
+            }
 
-                String msg = String.format(context.getResources().getString(R.string.msg_delivery_start_sms), receiver);
-                alert.setTitle(context.getResources().getString(R.string.text_qpost_message));
 
-                final EditText input = new EditText(context);
-                input.setText(msg);
-                alert.setView(input);
+            double latitude = 0;
+            double longitude = 0;
 
-                alert.setPositiveButton(context.getResources().getString(R.string.button_send), new DialogInterface.OnClickListener() {
-                    public void onClick(DialogInterface dialog, int whichButton) {
-                        String value = input.getText().toString();
-                        // Qtalk sms 전송
-                        Intent intent = new Intent();
-                        intent.setAction(Intent.ACTION_VIEW);
-                        intent.setData(Uri.parse("qtalk://link?qnumber=" + child.getSecretNo() + "&msg=" + value + "&link=&execurl="));
-                        context.startActivity(intent);
-                    }
-                });
-                alert.setNegativeButton(context.getResources().getString(R.string.button_cancel),
-                        new DialogInterface.OnClickListener() {
-                            public void onClick(DialogInterface dialog, int whichButton) {
-                                // Canceled.
+            if (gpsEnable && gpsTrackerManager != null) {
+
+                latitude = gpsTrackerManager.getLatitude();
+                longitude = gpsTrackerManager.getLongitude();
+                Log.e("Location", TAG + " btn_list_item_upload  GPSTrackerManager : " + latitude + "  " + longitude + "  ");
+            }
+
+
+            if (songjanglist.size() > 0) {
+
+                DataUtil.logEvent("button_click", TAG, com.giosis.library.util.DataUtil.requestSetUploadDeliveryData + "/" + com.giosis.library.util.DataUtil.requestSetUploadPickupData);
+
+                new DeviceDataUploadHelper.Builder(context, opID, officeCode, deviceID, songjanglist, "QL", latitude, longitude).
+                        setOnServerEventListener(new OnServerEventListener() {
+
+                            @Override
+                            public void onPostResult() {
+
+                                try {
+                                    rowItem.remove(groupPosition);
+                                } catch (Exception ignored) {
+
+                                }
+
+                                DataUtil.uploadFailedListPosition = 0;
+                                originalRowItem = rowItem;
+                                notifyDataSetChanged();
+                                mCountListener.getFailedCountRefresh();
                             }
-                        });
 
-                alert.show();
-            }
-        });
+                            @Override
+                            public void onPostFailList() {
+                            }
 
+                        }).build().execute();
+            } else {
 
-        btn_list_item_child_upload.setOnClickListener(new OnClickListener() {
-
-            @Override
-            public void onClick(View v) {
-
-                ArrayList<UploadData> songjanglist = new ArrayList<>();
-                // 업로드 대상건 로컬 DB 조회
-                String selectQuery = "SELECT invoice_no" +
-                        " , stat " +
-                        " , ifnull(rcv_type, '')  as rcv_type" +
-                        " , ifnull(fail_reason, '')  as fail_reason" +
-                        " , ifnull(driver_memo, '') as driver_memo" +
-                        " , ifnull(real_qty, '') as real_qty" +
-                        " , ifnull(retry_dt , '') as retry_dt" +
-                        " , type " +
-                        " FROM " + DatabaseHelper.DB_TABLE_INTEGRATION_LIST +
-                        " WHERE reg_id= '" + opID + "'" +
-                        " and invoice_no = '" + tracking_no + "'" +
-                        " and punchOut_stat <> 'S' ";
-                Cursor cs = dbHelper.get(selectQuery);
-
-                if (cs.moveToFirst()) {
-                    do {
-                        UploadData data = new UploadData();
-                        data.setNoSongjang(cs.getString(cs.getColumnIndex("invoice_no")));
-                        data.setStat(cs.getString(cs.getColumnIndex("stat")));
-                        data.setReceiveType(cs.getString(cs.getColumnIndex("rcv_type")));
-                        data.setFailReason(cs.getString(cs.getColumnIndex("fail_reason")));
-                        data.setDriverMemo(cs.getString(cs.getColumnIndex("driver_memo")));
-                        data.setRealQty(cs.getString(cs.getColumnIndex("real_qty")));
-                        data.setRetryDay(cs.getString(cs.getColumnIndex("retry_dt")));
-                        data.setType(cs.getString(cs.getColumnIndex("type")));
-                        songjanglist.add(data);
-                    } while (cs.moveToNext());
-                }
-
-
-                double latitude = 0;
-                double longitude = 0;
-
-                if (gpsEnable && gpsTrackerManager != null) {
-
-                    latitude = gpsTrackerManager.getLatitude();
-                    longitude = gpsTrackerManager.getLongitude();
-
-                    Log.e("Location", TAG + " btn_list_item_upload  GPSTrackerManager : " + latitude + "  " + longitude + "  ");
-                }
-
-                if (songjanglist.size() > 0) {
-
-                    try {
-
-                        Bundle params = new Bundle();
-                        params.putString("Activity", TAG);
-                        params.putString("method", "SetDeliveryUploadData/SetPickupUploadData");
-                        DataUtil.mFirebaseAnalytics.logEvent("button_click", params);
-                    } catch (Exception ignored) {
-
+                new AlertDialog.Builder(context)
+                        .setMessage(context.getResources().getString(R.string.text_data_error))
+                        .setTitle("[" + context.getResources().getString(R.string.button_upload) + "]")
+                        .setCancelable(false).setPositiveButton(context.getResources().getString(R.string.button_ok), new DialogInterface.OnClickListener() {
+                    @Override
+                    public void onClick(DialogInterface dialog, int which) {
                     }
-
-                    new DeviceDataUploadHelper.Builder(context, opID, officeCode, deviceID, songjanglist, "QL", latitude, longitude).
-                            setOnServerEventListener(new OnServerEventListener() {
-
-                                @Override
-                                public void onPostResult() {
-
-                                    try {
-                                        rowItem.remove(groupPosition);
-                                    } catch (Exception ignored) {
-
-                                    }
-
-                                    DataUtil.uploadFailedListPosition = 0;
-                                    originalRowItem = rowItem;
-                                    notifyDataSetChanged();
-                                    mCountListener.getFailedCountRefresh();
-                                }
-
-                                @Override
-                                public void onPostFailList() {
-                                }
-
-                            }).build().execute();
-                } else {
-
-                    new AlertDialog.Builder(context)
-                            .setMessage(context.getResources().getString(R.string.text_data_error))
-                            .setTitle("[" + context.getResources().getString(R.string.button_upload) + "]")
-                            .setCancelable(false).setPositiveButton(context.getResources().getString(R.string.button_ok), new DialogInterface.OnClickListener() {
-                        @Override
-                        public void onClick(DialogInterface dialog, int which) {
-                        }
-                    }).show();
-                }
+                }).show();
             }
         });
 

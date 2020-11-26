@@ -172,17 +172,7 @@ class PickupTakeBackActivity : CommonActivity() {
             }
 
 
-            try {
-
-                val params = Bundle()
-                params.putString("Activity", tag)
-                params.putString("method", "SetPickupUploadData_TakeBack")
-                DataUtil.mFirebaseAnalytics.logEvent("button_click", params)
-            } catch (e: java.lang.Exception) {
-
-                Log.e("Firebase", "mFirebaseAnalytics  Exception : $e")
-            }
-
+            DataUtil.logEvent("button_click", tag, "SetPickupUploadData_TakeBack")
 
             PickupTakeBackUploadHelper.Builder(this, userId, officeCode, deviceId,
                     pickupNo, scannedList, sign_view_sign_p_tb_applicant_signature, sign_view_sign_p_tb_collector_signature,
