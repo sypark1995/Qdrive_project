@@ -19,12 +19,12 @@ object ImageUpload {
 
             Log.e("ImageUpload", "start upload image")
 
+            // Dayil yyyyMMdd
             val result = RetrofitClient.instanceImageUpload().upload(
                     size = "50000000",
                     ext = "image",
                     folder = "qx/test",
                     basepath = "dpimage_upload",
-                    callback = "upload_profileImg",
                     width = "0",
                     height = "0",
                     quality = "100",
@@ -34,12 +34,10 @@ object ImageUpload {
                     id = "uc_file_upload",
                     commitYn = "Y",
                     custNo = "100061082",
-                    regId = "system",
                     upload_channel = "QxFront",
-                    pickerType = "A",
-                    crop_yn = "N",
                     png_compress = "N",
                     inc_org_size = "N",
+                    date = "N",
                     result_flag = "JSON",
                     file = mpFile
             ).execute().body()

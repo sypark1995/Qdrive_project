@@ -86,7 +86,6 @@ interface RetrofitService {
             @Query("ext") ext: String,
             @Query("folder") folder: String,
             @Query("basepath") basepath: String,
-            @Query("callback") callback: String,
             @Query("width") width: String,
             @Query("height") height: String,
             @Query("quality") quality: String,
@@ -96,12 +95,10 @@ interface RetrofitService {
             @Query("id") id: String,
             @Query("commitYn") commitYn: String,
             @Query("custNo") custNo: String,
-            @Query("regId") regId: String,
             @Query("upload_channel") upload_channel: String,
-            @Query("pickerType") pickerType: String,
-            @Query("crop_yn") crop_yn: String,
             @Query("png_compress") png_compress: String,
             @Query("inc_org_size") inc_org_size: String,
+            @Query("date") date: String,
             @Query("result_flag") result_flag: String,
             @Part file: MultipartBody.Part
     ): Call<Array<ImageResult>>
