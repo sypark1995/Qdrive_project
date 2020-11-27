@@ -8,7 +8,7 @@
 
         <variable
             name="viewModel"
-            type="com.giosis.library.CreatePickupOrderViewModel" />
+            type="com.giosis.library.pickup.CreatePickupOrderViewModel" />
     </data>
 
     <RelativeLayout

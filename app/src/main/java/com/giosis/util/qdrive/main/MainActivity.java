@@ -32,7 +32,7 @@ import androidx.core.content.ContextCompat;
 import androidx.core.graphics.drawable.RoundedBitmapDrawable;
 import androidx.core.graphics.drawable.RoundedBitmapDrawableFactory;
 
-import com.giosis.library.CreatePickupOrderActivity;
+import com.giosis.library.pickup.CreatePickupOrderActivity;
 import com.giosis.util.qdrive.barcodescanner.CaptureActivity;
 import com.giosis.util.qdrive.barcodescanner.FailListActivity;
 import com.giosis.util.qdrive.gps.FusedProviderService;

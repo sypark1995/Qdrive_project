@@ -32,7 +32,7 @@
             android:name=".setting.ScanSettingActivity"
             android:screenOrientation="portrait" />
 
-        <activity android:name=".CreatePickupOrderActivity"
+        <activity android:name=".pickup.CreatePickupOrderActivity"
             android:screenOrientation="portrait" />
 
         <activity

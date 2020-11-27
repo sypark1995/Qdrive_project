@@ -1,7 +1,10 @@
-package com.giosis.library
+package com.giosis.library.pickup
 
 import android.os.Bundle
 import androidx.lifecycle.ViewModelProvider
+import com.giosis.library.BR
+import com.giosis.library.BaseActivity
+import com.giosis.library.R
 import com.giosis.library.databinding.ActivityCreatePickupOrderBinding
 import kotlinx.android.synthetic.main.top_title.*
 
