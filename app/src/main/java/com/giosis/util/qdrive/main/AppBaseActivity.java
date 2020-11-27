@@ -16,9 +16,9 @@ import androidx.appcompat.widget.Toolbar;
 import androidx.core.content.ContextCompat;
 import androidx.drawerlayout.widget.DrawerLayout;
 
+import com.giosis.library.CreatePickupOrderActivity;
 import com.giosis.util.qdrive.barcodescanner.CaptureActivity;
 import com.giosis.util.qdrive.list.ListActivity;
-import com.giosis.util.qdrive.main.pickupOrder.ChoosePickupTypeActivity;
 import com.giosis.util.qdrive.message.MessageListActivity;
 import com.giosis.util.qdrive.settings.SettingActivity;
 import com.giosis.util.qdrive.singapore.MyApplication;
@@ -184,7 +184,7 @@ public class AppBaseActivity extends AppCompatActivity {
                 } else if (title.equals(getString(R.string.text_create_pickup_order))) {
 
                     drawerLayout.closeDrawers();
-                    Intent intent = new Intent(AppBaseActivity.this, ChoosePickupTypeActivity.class);
+                    Intent intent = new Intent(AppBaseActivity.this, CreatePickupOrderActivity.class);
                     startActivity(intent);
 
                     if (!(top_title_string.contains(getString(R.string.navi_home)))) {

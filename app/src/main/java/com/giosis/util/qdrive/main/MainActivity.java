@@ -32,6 +32,7 @@ import androidx.core.content.ContextCompat;
 import androidx.core.graphics.drawable.RoundedBitmapDrawable;
 import androidx.core.graphics.drawable.RoundedBitmapDrawableFactory;
 
+import com.giosis.library.CreatePickupOrderActivity;
 import com.giosis.util.qdrive.barcodescanner.CaptureActivity;
 import com.giosis.util.qdrive.barcodescanner.FailListActivity;
 import com.giosis.util.qdrive.gps.FusedProviderService;
@@ -39,7 +40,6 @@ import com.giosis.util.qdrive.gps.GPSTrackerManager;
 import com.giosis.util.qdrive.gps.LocationManagerService;
 import com.giosis.util.qdrive.gps.QuickAppUserInfoUploadHelper;
 import com.giosis.util.qdrive.list.ListActivity;
-import com.giosis.util.qdrive.main.pickupOrder.ChoosePickupTypeActivity;
 import com.giosis.util.qdrive.settings.BluetoothDeviceData;
 import com.giosis.util.qdrive.singapore.LoginActivity;
 import com.giosis.util.qdrive.singapore.MyApplication;
@@ -907,7 +907,7 @@ public class MainActivity extends AppBaseActivity {
 
                 case R.id.btn_home_create_pickup_order: {
 
-                    Intent intent = new Intent(MainActivity.this, ChoosePickupTypeActivity.class);
+                    Intent intent = new Intent(MainActivity.this, CreatePickupOrderActivity.class);
                     startActivity(intent);
                 }
             }
