@@ -6,7 +6,6 @@ import android.app.AlertDialog;
 import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
-import android.content.SharedPreferences;
 import android.content.pm.PackageManager;
 import android.content.pm.ResolveInfo;
 import android.database.Cursor;
@@ -19,7 +18,6 @@ import android.location.LocationManager;
 import android.os.AsyncTask;
 import android.os.Build;
 import android.os.Bundle;
-import android.os.Environment;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -81,7 +79,6 @@ import java.util.List;
 import java.util.TimeZone;
 
 /**
- * @author wontae
  * @editor krm0219
  */
 public class MainActivity extends AppBaseActivity {
@@ -252,11 +249,11 @@ public class MainActivity extends AppBaseActivity {
         RoundedBitmapDrawable roundedImageDrawable = createRoundedBitmapImageDrawableWithBorder(mBitmap);
         img_home_driver_profile.setImageDrawable(roundedImageDrawable);
 
-       /* if ("Y".equals(pickup_driver_yn)) {
+        if ("Y".equals(pickup_driver_yn)) {
             btn_home_create_pickup_order.setVisibility(View.VISIBLE);
         } else {
             btn_home_create_pickup_order.setVisibility(View.GONE);
-        }*/
+        }
 
         if (outletDriverYN.equals("Y")) {
 

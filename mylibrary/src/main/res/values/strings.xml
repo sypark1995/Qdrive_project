@@ -58,6 +58,15 @@
     <string name="text_upload_fail_count3">Upload Success : %1$d\nUpload Failed : %2$d</string>
     <string name="text_location_setting">Location setting</string>
 
+    <string name="text_create_pickup_order">Create Pickup Order</string>
+    <string name="text_seller_id">Seller ID</string>
+    <string name="symbol_star">*</string>
+    <string name="text_applicant_name">Applicant Name</string>
+    <string name="text_pickup_address">Pickup Address</string>
+    <string name="text_remarks">Remarks</string>
+    <string name="text_register">Register</string>
+    <string name="text_sender_info">Sender Information</string>
+
     <string name="text_upload_failed">Upload Failed</string>
     <string name="text_today_done">Today Done</string>
     <string name="text_search">Search</string>
