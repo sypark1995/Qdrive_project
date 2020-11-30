@@ -4,6 +4,7 @@ import android.app.Activity
 import android.content.Intent
 import android.os.Bundle
 import android.view.View
+import android.widget.Toast
 import androidx.annotation.LayoutRes
 import androidx.appcompat.app.AppCompatActivity
 import androidx.databinding.DataBindingUtil
@@ -34,6 +35,7 @@ abstract class BaseActivity<T : ViewDataBinding, V : BaseViewModel> : AppCompatA
         mViewModel = getViewModel()
         mViewDataBinding.setVariable(getBindingVariable(), mViewModel)
         mViewDataBinding.executePendingBindings()
+        mViewDataBinding.lifecycleOwner = this
 
         mViewModel.progressVisible.observe(this) {
             progressBar.visibility = if (it) {
@@ -71,6 +73,13 @@ abstract class BaseActivity<T : ViewDataBinding, V : BaseViewModel> : AppCompatA
                     setResult(Activity.RESULT_OK)
                     finish()
                 }
+            }
+        }
+
+        mViewModel.toastString.observe(this) {
+            runOnUiThread {
+                val text = resources.getText(it)
+                Toast.makeText(this@BaseActivity, text, Toast.LENGTH_SHORT).show()
             }
         }
     }

@@ -21,6 +21,10 @@ open class BaseViewModel() : ViewModel() {
     val finishActivity: SingleLiveEvent<Bundle?>
         get() = _finishActivity
 
+    private val _toastString =  SingleLiveEvent<Int>()
+    val toastString: SingleLiveEvent<Int>
+        get() = _toastString
+
     fun startActivity(cls: Class<*>) {
         val activityModel = StartActivityData()
         activityModel.cls = cls
@@ -34,7 +38,7 @@ open class BaseViewModel() : ViewModel() {
         activityStart.value = activityModel
     }
 
-    fun startActivity(cls: Class<*>, bundle: Bundle, request: Int) {
+    fun startActivity(cls: Class<*>, bundle: Bundle?, request: Int) {
         val activityModel = StartActivityData()
         activityModel.cls = cls
         activityModel.params = bundle

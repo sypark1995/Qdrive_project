@@ -66,6 +66,12 @@
     <string name="text_remarks">Remarks</string>
     <string name="text_register">Register</string>
     <string name="text_sender_info">Sender Information</string>
+    <string name="pickup_order_seller">Qoo10 Seller\'s Pickup Order</string>
+    <string name="pickup_order_general">General Pickup Order</string>
+    <string name="enter_seller_id">Enter Seller id </string>
+    <string name="enter_pickup_no">Enter Pickup No.</string>
+    <string name="search_pickup_no">%s 로 검색하시겠습니까</string>
+
 
     <string name="text_upload_failed">Upload Failed</string>
     <string name="text_today_done">Today Done</string>

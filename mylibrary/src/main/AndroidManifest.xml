@@ -35,6 +35,9 @@
         <activity android:name=".pickup.CreatePickupOrderActivity"
             android:screenOrientation="portrait" />
 
+        <activity android:name=".pickup.AddressDialogActivity"
+            android:screenOrientation="portrait" />
+
         <activity
             android:name=".TestActivity"
             android:screenOrientation="portrait" />
