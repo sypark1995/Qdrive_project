@@ -5,14 +5,23 @@ import okhttp3.MediaType.Companion.toMediaTypeOrNull
 import okhttp3.MultipartBody
 import okhttp3.RequestBody.Companion.asRequestBody
 import java.io.File
+import java.text.SimpleDateFormat
+import java.util.*
 
 
 object ImageUpload {
-// http://dp.image-gmkt.com"
+    // http://dp.image-gmkt.com"
+    const val QXPOD = "QXPOD"
+    const val QXPOP = "QXPOP"
 
-    fun upload(file: File): String {
+    fun upload(file: File, basePath: String, path: String, trackNo: String): String {
 
         try {
+            val dateFormat = SimpleDateFormat("yyyyMMdd")
+            dateFormat.timeZone = TimeZone.getTimeZone("GMT")
+            val date = dateFormat.format(Date())
+
+            val folder = "$path/$date/$trackNo"
 
             val rqFile = file.asRequestBody("image/jpeg".toMediaTypeOrNull())
             val mpFile = MultipartBody.Part.createFormData("photo", file.name, rqFile)
@@ -23,8 +32,8 @@ object ImageUpload {
             val result = RetrofitClient.instanceImageUpload().upload(
                     size = "50000000",
                     ext = "image",
-                    folder = "qx/test",
-                    basepath = "dpimage_upload",
+                    folder = folder,
+                    basepath = basePath,
                     width = "0",
                     height = "0",
                     quality = "100",

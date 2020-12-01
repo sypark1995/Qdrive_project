@@ -7,6 +7,7 @@ import android.content.ContentValues
 import android.os.AsyncTask
 import android.util.Log
 import android.widget.ImageView
+import com.giosis.library.server.ImageUpload
 import com.giosis.util.qdrive.barcodescanner.ManualHelper
 import com.giosis.util.qdrive.barcodescanner.StdResult
 import com.giosis.util.qdrive.international.MyApplication
@@ -75,7 +76,7 @@ class PickupFailedUploadAsyncTask(val activity: Activity,
 
             imageView.buildDrawingCache()
             val captureBitmap = imageView.getDrawingCache()
-            val bitmapString = DataUtil.bitmapToString(captureBitmap)
+            val bitmapString = DataUtil.bitmapToString(captureBitmap, ImageUpload.QXPOP, "qdriver/sign", pickupNo)
 
 
             val job = JSONObject()

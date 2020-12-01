@@ -11,6 +11,7 @@ import android.os.AsyncTask;
 import android.text.TextUtils;
 import android.util.Log;
 
+import com.giosis.library.server.ImageUpload;
 import com.giosis.util.qdrive.barcodescanner.StdResult;
 import com.giosis.util.qdrive.list.BarcodeData;
 import com.giosis.util.qdrive.list.SigningView;
@@ -352,8 +353,8 @@ public class CnRPickupUploadHelper {
                     collectorSigningView.buildDrawingCache();
                     Bitmap captureView = signingView.getDrawingCache();
                     Bitmap captureView2 = collectorSigningView.getDrawingCache();
-                    bitmapString = DataUtil.bitmapToString(captureView);
-                    bitmapString2 = DataUtil.bitmapToString(captureView2);
+                    bitmapString = DataUtil.bitmapToString(captureView, ImageUpload.QXPOP, "qdriver/sign", assignNo);
+                    bitmapString2 = DataUtil.bitmapToString(captureView2, ImageUpload.QXPOP, "qdriver/sign", assignNo);
                 }
 
                 JSONObject job = new JSONObject();

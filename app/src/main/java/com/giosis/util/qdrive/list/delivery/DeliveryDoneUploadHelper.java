@@ -12,6 +12,7 @@ import android.text.TextUtils;
 import android.util.Log;
 import android.widget.ImageView;
 
+import com.giosis.library.server.ImageUpload;
 import com.giosis.util.qdrive.barcodescanner.StdResult;
 import com.giosis.util.qdrive.list.BarcodeData;
 import com.giosis.util.qdrive.list.SigningView;
@@ -288,7 +289,7 @@ public class DeliveryDoneUploadHelper {
 
                 signingView.buildDrawingCache();
                 Bitmap signBitmap = signingView.getDrawingCache();
-                bitmapString = DataUtil.bitmapToString(signBitmap);
+                bitmapString = DataUtil.bitmapToString(signBitmap, ImageUpload.QXPOD, "qdriver/sign", assignNo);
             }
 
             if (hasVisitImage) {
@@ -297,7 +298,7 @@ public class DeliveryDoneUploadHelper {
 
                 imageView.buildDrawingCache();
                 Bitmap visitBitmap = imageView.getDrawingCache();
-                bitmapString1 = DataUtil.bitmapToString(visitBitmap);
+                bitmapString1 = DataUtil.bitmapToString(visitBitmap, ImageUpload.QXPOD, "qdriver/delivery", assignNo);
             }
 
             Log.e("krm0219", TAG + "  DATA " + bitmapString + " / " + bitmapString1);

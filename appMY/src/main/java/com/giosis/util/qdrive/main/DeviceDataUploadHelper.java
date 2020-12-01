@@ -19,6 +19,7 @@ import android.os.Environment;
 import android.text.TextUtils;
 import android.util.Log;
 
+import com.giosis.library.server.ImageUpload;
 import com.giosis.util.qdrive.barcodescanner.ManualHelper;
 import com.giosis.util.qdrive.barcodescanner.StdResult;
 import com.giosis.util.qdrive.international.OnServerEventListener;
@@ -286,7 +287,7 @@ public class DeviceDataUploadHelper extends ManualHelper {
                         File imgFile = new File(filePath);
                         if (imgFile.exists()) {
                             Bitmap myBitmap = BitmapFactory.decodeFile(imgFile.getAbsolutePath());
-                            bitmapString = DataUtil.bitmapToString(myBitmap);
+                            bitmapString = DataUtil.bitmapToString(myBitmap, ImageUpload.QXPOD, "qdriver/sign", uploadData.getNoSongjang());
                         }
 
                         dirPath = Environment.getExternalStorageDirectory().toString() + "/Qdrive";
@@ -294,7 +295,7 @@ public class DeviceDataUploadHelper extends ManualHelper {
                         imgFile = new File(filePath);
                         if (imgFile.exists()) {
                             Bitmap myBitmap = BitmapFactory.decodeFile(imgFile.getAbsolutePath());
-                            bitmapString1 = DataUtil.bitmapToString(myBitmap);
+                            bitmapString1 = DataUtil.bitmapToString(myBitmap, ImageUpload.QXPOD, "qdriver/delivery", uploadData.getNoSongjang());
                         }
 
 
@@ -312,7 +313,7 @@ public class DeviceDataUploadHelper extends ManualHelper {
 
                         if (imgFile.exists()) {
                             Bitmap myBitmap = BitmapFactory.decodeFile(imgFile.getAbsolutePath());
-                            bitmapString = DataUtil.bitmapToString(myBitmap);
+                            bitmapString = DataUtil.bitmapToString(myBitmap, ImageUpload.QXPOD, "qdriver/sign", uploadData.getNoSongjang());
                         }
                     }
 
@@ -356,7 +357,7 @@ public class DeviceDataUploadHelper extends ManualHelper {
 
                         if (imgFile.exists()) {
                             Bitmap myBitmap = BitmapFactory.decodeFile(imgFile.getAbsolutePath());
-                            bitmapString = DataUtil.bitmapToString(myBitmap);
+                            bitmapString = DataUtil.bitmapToString(myBitmap, ImageUpload.QXPOD, "qdriver/sign", uploadData.getNoSongjang());
                         } else {
                             result.setResultCode(-14);
                             result.setResultMsg("");
@@ -365,7 +366,7 @@ public class DeviceDataUploadHelper extends ManualHelper {
 
                         if (imgFile2.exists()) {
                             Bitmap myBitmap2 = BitmapFactory.decodeFile(imgFile2.getAbsolutePath());
-                            bitmapString2 = DataUtil.bitmapToString(myBitmap2);
+                            bitmapString2 = DataUtil.bitmapToString(myBitmap2, ImageUpload.QXPOD, "qdriver/delivery", uploadData.getNoSongjang());
                         } else {
                             result.setResultCode(-14);
                             result.setResultMsg("");
@@ -379,7 +380,7 @@ public class DeviceDataUploadHelper extends ManualHelper {
 
                         if (imgFile.exists()) {
                             Bitmap myBitmap = BitmapFactory.decodeFile(imgFile.getAbsolutePath());
-                            bitmapString = DataUtil.bitmapToString(myBitmap);
+                            bitmapString = DataUtil.bitmapToString(myBitmap, ImageUpload.QXPOD, "qdriver/sign", uploadData.getNoSongjang());
                         }
                     }
 

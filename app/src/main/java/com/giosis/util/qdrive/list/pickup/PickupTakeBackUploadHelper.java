@@ -10,6 +10,7 @@ import android.graphics.Bitmap;
 import android.os.AsyncTask;
 import android.util.Log;
 
+import com.giosis.library.server.ImageUpload;
 import com.giosis.util.qdrive.barcodescanner.StdResult;
 import com.giosis.util.qdrive.list.SigningView;
 import com.giosis.util.qdrive.singapore.OnServerEventListener;
@@ -274,8 +275,8 @@ public class PickupTakeBackUploadHelper {
                 collectorSigningView.buildDrawingCache();
                 Bitmap captureView = signingView.getDrawingCache();
                 Bitmap captureView2 = collectorSigningView.getDrawingCache();
-                String bitmapString = DataUtil.bitmapToString(captureView);
-                String bitmapString2 = DataUtil.bitmapToString(captureView2);
+                String bitmapString = DataUtil.bitmapToString(captureView, ImageUpload.QXPOP, "qdriver/sign", pickup_no);
+                String bitmapString2 = DataUtil.bitmapToString(captureView2, ImageUpload.QXPOP, "qdriver/sign", pickup_no);
 
                 JSONObject job = new JSONObject();
                 job.accumulate("rcv_type", "SC_TAKEBACK");

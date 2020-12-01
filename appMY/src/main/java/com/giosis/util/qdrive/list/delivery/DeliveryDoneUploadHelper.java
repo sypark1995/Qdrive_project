@@ -7,11 +7,13 @@ import android.content.Context;
 import android.content.DialogInterface;
 import android.content.DialogInterface.OnClickListener;
 import android.graphics.Bitmap;
+import android.media.Image;
 import android.os.AsyncTask;
 import android.text.TextUtils;
 import android.util.Log;
 import android.widget.ImageView;
 
+import com.giosis.library.server.ImageUpload;
 import com.giosis.util.qdrive.barcodescanner.ManualHelper;
 import com.giosis.util.qdrive.barcodescanner.StdResult;
 import com.giosis.util.qdrive.international.R;
@@ -288,7 +290,7 @@ public class DeliveryDoneUploadHelper extends ManualHelper {
 
                 signingView.buildDrawingCache();
                 Bitmap signBitmap = signingView.getDrawingCache();
-                bitmapString = DataUtil.bitmapToString(signBitmap);
+                bitmapString = DataUtil.bitmapToString(signBitmap, ImageUpload.QXPOD, "qdriver/sign", assignNo);
             }
 
             if (hasVisitImage) {
@@ -297,7 +299,7 @@ public class DeliveryDoneUploadHelper extends ManualHelper {
 
                 imageView.buildDrawingCache();
                 Bitmap visitBitmap = imageView.getDrawingCache();
-                bitmapString1 = DataUtil.bitmapToString(visitBitmap);
+                bitmapString1 = DataUtil.bitmapToString(visitBitmap, ImageUpload.QXPOD, "qdriver/delivery", assignNo);
             }
 
             SimpleDateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");

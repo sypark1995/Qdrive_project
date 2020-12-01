@@ -10,6 +10,7 @@ import android.graphics.Bitmap;
 import android.os.AsyncTask;
 import android.util.Log;
 
+import com.giosis.library.server.ImageUpload;
 import com.giosis.util.qdrive.barcodescanner.ManualHelper;
 import com.giosis.util.qdrive.barcodescanner.StdResult;
 import com.giosis.util.qdrive.international.OnServerEventListener;
@@ -289,8 +290,8 @@ public class PickupDoneUploadHelper extends ManualHelper {
                 signingView.buildDrawingCache();
                 Bitmap captureView = signingView.getDrawingCache();
                 Bitmap captureView2 = collectorSigningView.getDrawingCache();
-                String bitmapString = DataUtil.bitmapToString(captureView);
-                String bitmapString2 = DataUtil.bitmapToString(captureView2);
+                String bitmapString = DataUtil.bitmapToString(captureView, ImageUpload.QXPOP, "qdriver/sign", pickupNo);
+                String bitmapString2 = DataUtil.bitmapToString(captureView2, ImageUpload.QXPOP, "qdriver/sign", pickupNo);
 
                 JSONObject job = new JSONObject();
                 job.accumulate("opId", opID);

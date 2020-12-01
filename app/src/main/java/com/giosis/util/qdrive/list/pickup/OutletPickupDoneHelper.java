@@ -10,6 +10,7 @@ import android.graphics.Bitmap;
 import android.os.AsyncTask;
 import android.util.Log;
 
+import com.giosis.library.server.ImageUpload;
 import com.giosis.util.qdrive.barcodescanner.StdResult;
 import com.giosis.util.qdrive.list.SigningView;
 import com.giosis.util.qdrive.list.delivery.OnOutletDataUploadEventListener;
@@ -277,7 +278,7 @@ public class OutletPickupDoneHelper {
 
                         signingView.buildDrawingCache();
                         Bitmap captureView = signingView.getDrawingCache();
-                        bitmapString = DataUtil.bitmapToString(captureView);
+                        bitmapString = DataUtil.bitmapToString(captureView, ImageUpload.QXPOP, "qdriver/sign", pickup_no);
                     }
                 } catch (Exception e) {
 

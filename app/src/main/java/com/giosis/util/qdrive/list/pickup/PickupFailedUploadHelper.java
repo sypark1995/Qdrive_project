@@ -11,6 +11,7 @@ import android.os.AsyncTask;
 import android.util.Log;
 import android.widget.ImageView;
 
+import com.giosis.library.server.ImageUpload;
 import com.giosis.util.qdrive.barcodescanner.StdResult;
 import com.giosis.util.qdrive.singapore.OnServerEventListener;
 import com.giosis.util.qdrive.singapore.R;
@@ -288,7 +289,7 @@ public class PickupFailedUploadHelper {
 
                 imageView.buildDrawingCache();
                 Bitmap captureView = imageView.getDrawingCache();
-                String bitmapString = DataUtil.bitmapToString(captureView);
+                String bitmapString = DataUtil.bitmapToString(captureView, ImageUpload.QXPOP, "qdriver/sign", assignNo);
 
                 JSONObject job = new JSONObject();
                 job.accumulate("rcv_type", rcvType);        // VL, RC
