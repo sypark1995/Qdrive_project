@@ -21,8 +21,8 @@ open class BaseViewModel() : ViewModel() {
     val finishActivity: SingleLiveEvent<Bundle?>
         get() = _finishActivity
 
-    private val _toastString =  SingleLiveEvent<Int>()
-    val toastString: SingleLiveEvent<Int>
+    private val _toastString =  SingleLiveEvent<Any>()
+    val toastString: SingleLiveEvent<Any>
         get() = _toastString
 
     fun startActivity(cls: Class<*>) {

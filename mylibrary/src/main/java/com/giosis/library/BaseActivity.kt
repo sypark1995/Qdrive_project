@@ -78,7 +78,14 @@ abstract class BaseActivity<T : ViewDataBinding, V : BaseViewModel> : AppCompatA
 
         mViewModel.toastString.observe(this) {
             runOnUiThread {
-                val text = resources.getText(it)
+                var text = ""
+
+                if (it is String) {
+                    text = it
+                } else if (it is Int) {
+                    text = resources.getText(it).toString()
+                }
+
                 Toast.makeText(this@BaseActivity, text, Toast.LENGTH_SHORT).show()
             }
         }
