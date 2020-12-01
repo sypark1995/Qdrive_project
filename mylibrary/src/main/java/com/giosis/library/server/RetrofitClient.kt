@@ -41,7 +41,7 @@ object RetrofitClient {
         // BASIC
         // HEADERS
         // BODY
-        return interceptor.setLevel(HttpLoggingInterceptor.Level.BASIC)
+        return interceptor.setLevel(HttpLoggingInterceptor.Level.BODY)
     }
 
     private fun provideOkHttpClient(interceptor: AppInterceptor): OkHttpClient =

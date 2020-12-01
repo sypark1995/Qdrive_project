@@ -5,6 +5,11 @@ import androidx.lifecycle.MutableLiveData
 import com.giosis.library.ActivityRequestCode
 import com.giosis.library.BaseViewModel
 import com.giosis.library.R
+import com.giosis.library.server.RetrofitClient
+import com.giosis.library.server.data.CustomSellerInfo
+import com.google.gson.Gson
+import io.reactivex.rxjava3.android.schedulers.AndroidSchedulers
+import io.reactivex.rxjava3.schedulers.Schedulers
 
 class CreatePickupOrderViewModel : BaseViewModel() {
 
@@ -24,13 +29,29 @@ class CreatePickupOrderViewModel : BaseViewModel() {
     val pickupNo: MutableLiveData<String>
         get() = _pickupNo
 
+    private val _zipCode = MutableLiveData<String>()
+    val zipCode: MutableLiveData<String>
+        get() = _zipCode
+
+    private val _addressFront = MutableLiveData<String>()
+    val addressFront: MutableLiveData<String>
+        get() = _addressFront
+
+    private val _addressLast = MutableLiveData<String>()
+    val addressLast: MutableLiveData<String>
+        get() = _addressLast
+
     val _phoneNo = MutableLiveData<String>()
     val phoneNo: MutableLiveData<String>
         get() = _phoneNo
 
+    val _remarks = MutableLiveData<String>()
+    val remarks: MutableLiveData<String>
+        get() = _remarks
 
     fun setVisiblePickupLayout() {
         _visiblePickupLayout.value = !((_visiblePickupLayout.value)!!)
+
     }
 
 
@@ -40,8 +61,37 @@ class CreatePickupOrderViewModel : BaseViewModel() {
             if (_sellerId.value.isNullOrEmpty()) {
                 toastString.postValue(R.string.enter_seller_id)
             } else {
-                Log.e("TAG", "api 호 " + sellerId.value)
-                // TODO
+                RetrofitClient.instanceDynamic().requestGetCustomSellerInfo("SellerID", _sellerId.value!!).subscribeOn(Schedulers.io())
+                        .subscribeOn(Schedulers.io())
+                        .observeOn(AndroidSchedulers.mainThread())
+                        .subscribe({
+                            try {
+                                if (it.resultCode == 0) {
+                                    val info: CustomSellerInfo = Gson().fromJson(it.resultObject, CustomSellerInfo::class.java)
+
+                                    if (!info.resultRows.isNullOrEmpty()) {
+                                        _zipCode.value = info.resultRows!![0].zip_code
+                                        _addressFront.value = info.resultRows!![0].addr_front
+                                        _addressLast.value = info.resultRows!![0].addr_last
+
+                                        if (info.resultRows!![0].hp_no.contains("-")) {
+                                            val phoneSplit = info.resultRows!![0].hp_no.split("-")
+                                            _phoneNo.value = phoneSplit[1] + "-" + phoneSplit[2]
+                                        } else {
+                                            _phoneNo.value = info.resultRows!![0].hp_no
+                                        }
+                                    }
+                                } else {
+
+                                }
+                            } catch (e: Exception) {
+                                e.stackTrace
+                            }
+
+
+                        }, {
+
+                        })
             }
         }
     }
@@ -50,11 +100,40 @@ class CreatePickupOrderViewModel : BaseViewModel() {
         if (_pickupNo.value.isNullOrEmpty()) {
             toastString.postValue(R.string.enter_pickup_no)
         } else {
-            // TODO
+            RetrofitClient.instanceDynamic().requestGetCustomSellerInfo("PickupNo", _pickupNo.value!!).subscribeOn(Schedulers.io())
+                    .subscribeOn(Schedulers.io())
+                    .observeOn(AndroidSchedulers.mainThread())
+                    .subscribe({
+                        Log.e("TAG", "")
+                        // TODO
+                    }, {
+
+                    })
         }
     }
 
     fun addressLayout() {
         startActivity(AddressDialogActivity::class.java, null, ActivityRequestCode.ADDRESS_REQUEST.ordinal)
+    }
+
+    fun clickRegister() {
+        if (_sellerId.value.isNullOrEmpty()) {
+            toastString.postValue(R.string.enter_seller_id)
+        } else {
+            if (_sellerId.value.isNullOrEmpty() && _pickupNo.value.isNullOrEmpty()) {
+                toastString.postValue(R.string.enter_pickup_no)
+            } else {
+                if (_zipCode.value.isNullOrEmpty() || _addressLast.value.isNullOrEmpty()) {
+                    toastString.postValue(R.string.enter_address)
+                } else {
+                    if (_phoneNo.value.isNullOrEmpty()) {
+                        toastString.postValue(R.string.enter_phone_no)
+                    } else {
+// TODO 알람......!!!!!
+
+                    }
+                }
+            }
+        }
     }
 }

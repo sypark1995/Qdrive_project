@@ -78,7 +78,6 @@ interface RetrofitService {
     ): Single<ResponseBody>
 
 
-
     @Multipart
     @POST("GMKT.INC.FileUpload/Upload.aspx?")
     fun upload(
@@ -102,4 +101,13 @@ interface RetrofitService {
             @Query("result_flag") result_flag: String,
             @Part file: MultipartBody.Part
     ): Call<Array<ImageResult>>
+
+
+    @POST("GetCustomSellerInfo")
+    @FormUrlEncoded
+    fun requestGetCustomSellerInfo(
+            @Field("search_kind") kind: String,
+            @Field("search_value") value: String,
+            @Field("nation_cd") nation_cd: String = Preferences.userNation
+    ): Single<APIModel>
 }

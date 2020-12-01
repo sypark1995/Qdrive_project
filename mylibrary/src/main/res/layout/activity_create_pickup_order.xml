@@ -69,7 +69,7 @@
                                 android:layout_toStartOf="@id/layout_seller_id_search"
                                 android:background="@drawable/back_1_e1e1e1"
                                 android:maxLines="1"
-                                android:paddingStart="8dp"
+                                android:paddingStart="10dp"
                                 android:text="@={viewModel.sellerId}"
                                 android:textColor="@color/color_232323"
                                 android:textSize="@dimen/text_size_28px"
@@ -104,9 +104,11 @@
                         </RelativeLayout>
 
                         <LinearLayout
-                            android:layout_width="match_parent"
+                            android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
-                            android:onClick="@{()->viewModel.setVisiblePickupLayout()}">
+                            android:onClick="@{()->viewModel.setVisiblePickupLayout()}"
+                            android:paddingRight="30dp"
+                            android:paddingBottom="2dp">
 
                             <TextView
                                 android:id="@+id/text_pickup_no"
@@ -116,7 +118,15 @@
                                 android:paddingBottom="1dp"
                                 android:textColor="@color/color_232323"
                                 android:textSize="@dimen/text_size_28px"
-                                tools:text="" />
+                                tools:text="Pickup no" />
+
+                            <ImageView
+                                android:id="@+id/pickup_image"
+                                android:layout_width="26dp"
+                                android:layout_height="26dp"
+                                android:layout_marginLeft="5dp"
+                                android:layout_marginTop="13dp"
+                                android:src="@drawable/pickup_down_icon" />
                         </LinearLayout>
 
                         <RelativeLayout
@@ -134,9 +144,8 @@
                                 android:layout_toStartOf="@id/layout_pick_no_id_search"
                                 android:background="@drawable/back_1_e1e1e1"
                                 android:maxLines="1"
-                                android:paddingStart="8dp"
-                                android:text="@{viewModel.pickupNo}"
-                                android:textColor="@color/color_232323"
+                                android:paddingStart="10dp"
+                                android:text="@={viewModel.pickupNo}"
                                 android:textSize="@dimen/text_size_28px"
                                 tools:text="P1234456666" />
 
@@ -186,6 +195,7 @@
                             android:textColor="@color/color_232323"
                             android:textSize="@dimen/text_size_24px" />
 
+
                     </LinearLayout>
 
                     <LinearLayout
@@ -222,10 +232,11 @@
                                     android:background="@drawable/back_1_e1e1e1"
                                     android:gravity="center_vertical"
                                     android:maxLines="1"
-                                    android:paddingStart="8dp"
+                                    android:paddingStart="10dp"
+                                    android:text="@{viewModel.zipCode}"
                                     android:textColor="@color/color_232323"
                                     android:textSize="@dimen/text_size_28px"
-                                    tools:text="P1234456666" />
+                                    tools:text="12345" />
 
                                 <LinearLayout
                                     android:id="@+id/layout_address_search"
@@ -279,14 +290,26 @@
                                 android:layout_width="match_parent"
                                 android:layout_height="40dp"
                                 android:layout_marginTop="4dp"
-                                android:background="@drawable/back_1_e1e1e1" />
-
-                            <TextView
-                                android:layout_width="match_parent"
-                                android:layout_height="40dp"
-                                android:layout_marginTop="4dp"
-                                android:background="@drawable/back_1_e1e1e1" />
+                                android:background="@drawable/back_1_e1e1e1"
+                                android:gravity="center_vertical"
+                                android:paddingStart="10dp"
+                                android:text="@{viewModel.addressFront}"
+                                android:textColor="@color/color_232323"
+                                android:textSize="@dimen/text_size_28px"
+                                tools:text="12345" />
                         </LinearLayout>
+
+                        <EditText
+                            android:layout_width="match_parent"
+                            android:layout_height="40dp"
+                            android:layout_marginTop="4dp"
+                            android:background="@drawable/back_1_e1e1e1"
+                            android:gravity="center_vertical"
+                            android:paddingStart="10dp"
+                            android:text="@={viewModel.addressLast}"
+                            android:textColor="@color/color_232323"
+                            android:textSize="@dimen/text_size_28px"
+                            tools:text="testest" />
 
                         <LinearLayout
                             android:layout_width="wrap_content"
@@ -308,7 +331,7 @@
                             android:layout_width="match_parent"
                             android:layout_height="40dp"
                             android:orientation="horizontal"
-                            android:weightSum="2">
+                            android:weightSum="3">
 
                             <TextView
                                 android:id="@+id/text_nation_code"
@@ -331,7 +354,7 @@
                                 android:layout_width="0dp"
                                 android:layout_height="match_parent"
                                 android:layout_marginStart="1.5dp"
-                                android:layout_weight="1"
+                                android:layout_weight="2"
                                 android:background="@drawable/back_1_e1e1e1"
                                 android:gravity="center_vertical"
                                 android:inputType="phone"
@@ -361,13 +384,14 @@
                             android:lineSpacingMultiplier="1.2"
                             android:maxLines="2"
                             android:minHeight="40dp"
-                            android:paddingStart="16dp"
+                            android:paddingStart="10dp"
                             android:paddingTop="10dp"
                             android:paddingEnd="16dp"
                             android:paddingBottom="10dp"
+                            android:text="@={viewModel.remarks}"
                             android:textColor="@color/color_232323"
                             android:textSize="@dimen/text_size_24px"
-                            tools:text="remarks" />
+                            tools:text="remark" />
 
                     </LinearLayout>
 
@@ -380,6 +404,7 @@
                         android:layout_marginBottom="100dp"
                         android:background="@drawable/back_round_20_4fb648"
                         android:gravity="center"
+                        android:onClick="@{()->viewModel.clickRegister()}"
                         android:text="@string/text_register"
                         android:textAllCaps="false"
                         android:textColor="@color/white"

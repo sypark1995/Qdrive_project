@@ -70,6 +70,8 @@
     <string name="pickup_order_general">General Pickup Order</string>
     <string name="enter_seller_id">Enter Seller id </string>
     <string name="enter_pickup_no">Enter Pickup No.</string>
+    <string name="enter_address">Enter Address</string>
+    <string name="enter_phone_no">Enter Phone Number</string>
     <string name="search_pickup_no">%s 로 검색하시겠습니까</string>
 
 
