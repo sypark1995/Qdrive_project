@@ -45,13 +45,12 @@ class CreatePickupOrderViewModel : BaseViewModel() {
     val phoneNo: MutableLiveData<String>
         get() = _phoneNo
 
-    val _remarks = MutableLiveData<String>()
+    val _remarks = MutableLiveData("")
     val remarks: MutableLiveData<String>
         get() = _remarks
 
     fun setVisiblePickupLayout() {
         _visiblePickupLayout.value = !((_visiblePickupLayout.value)!!)
-
     }
 
 
@@ -70,6 +69,7 @@ class CreatePickupOrderViewModel : BaseViewModel() {
                                     val info: CustomSellerInfo = Gson().fromJson(it.resultObject, CustomSellerInfo::class.java)
 
                                     if (!info.resultRows.isNullOrEmpty()) {
+                                        custNo = info.resultRows!![0].cust_no
                                         _zipCode.value = info.resultRows!![0].zip_code
                                         _addressFront.value = info.resultRows!![0].addr_front
                                         _addressLast.value = info.resultRows!![0].addr_last
@@ -82,13 +82,11 @@ class CreatePickupOrderViewModel : BaseViewModel() {
                                         }
                                     }
                                 } else {
-
+                                    toastString.value = it.resultMsg
                                 }
                             } catch (e: Exception) {
                                 e.stackTrace
                             }
-
-
                         }, {
 
                         })
@@ -97,6 +95,10 @@ class CreatePickupOrderViewModel : BaseViewModel() {
     }
 
     fun pickupSearchClick() {
+        // sample pickup No
+        // C3548661SGSG
+        // C3507265SGSG
+        // C3507262SGSG
         if (_pickupNo.value.isNullOrEmpty()) {
             toastString.postValue(R.string.enter_pickup_no)
         } else {
@@ -104,8 +106,29 @@ class CreatePickupOrderViewModel : BaseViewModel() {
                     .subscribeOn(Schedulers.io())
                     .observeOn(AndroidSchedulers.mainThread())
                     .subscribe({
-                        Log.e("TAG", "")
-                        // TODO
+                        try {
+                            if (it.resultCode == 0) {
+                                val info: CustomSellerInfo = Gson().fromJson(it.resultObject, CustomSellerInfo::class.java)
+
+                                if (!info.resultRows.isNullOrEmpty()) {
+                                    custNo = info.resultRows!![0].cust_no
+                                    _zipCode.value = info.resultRows!![0].zip_code
+                                    _addressFront.value = info.resultRows!![0].addr_front
+                                    _addressLast.value = info.resultRows!![0].addr_last
+
+                                    if (info.resultRows!![0].hp_no.contains("-")) {
+                                        val phoneSplit = info.resultRows!![0].hp_no.split("-")
+                                        _phoneNo.value = phoneSplit[1] + "-" + phoneSplit[2]
+                                    } else {
+                                        _phoneNo.value = info.resultRows!![0].hp_no
+                                    }
+                                }
+                            } else {
+                                toastString.value = it.resultMsg
+                            }
+                        } catch (e: Exception) {
+                            e.stackTrace
+                        }
                     }, {
 
                     })
@@ -116,24 +139,41 @@ class CreatePickupOrderViewModel : BaseViewModel() {
         startActivity(AddressDialogActivity::class.java, null, ActivityRequestCode.ADDRESS_REQUEST.ordinal)
     }
 
-    fun clickRegister() {
-        if (_sellerId.value.isNullOrEmpty()) {
-            toastString.postValue(R.string.enter_seller_id)
-        } else {
-            if (_sellerId.value.isNullOrEmpty() && _pickupNo.value.isNullOrEmpty()) {
-                toastString.postValue(R.string.enter_pickup_no)
-            } else {
-                if (_zipCode.value.isNullOrEmpty() || _addressLast.value.isNullOrEmpty()) {
-                    toastString.postValue(R.string.enter_address)
-                } else {
-                    if (_phoneNo.value.isNullOrEmpty()) {
-                        toastString.postValue(R.string.enter_phone_no)
-                    } else {
-// TODO 알람......!!!!!
+    private var custNo = ""
 
-                    }
+    fun clickRegister() {
+
+        if (_sellerId.value.isNullOrEmpty() && _pickupNo.value.isNullOrEmpty()) {
+            toastString.value = R.string.enter_seller_id
+        } else {
+            if (_zipCode.value.isNullOrEmpty() || _addressLast.value.isNullOrEmpty()) {
+                toastString.value = R.string.enter_address
+            } else {
+                if (_phoneNo.value.isNullOrEmpty()) {
+                    toastString.value = R.string.enter_phone_no
+                } else {
+
+                    // TODO 다이얼로그 추가 하기!!!!
+
+                    RetrofitClient.instanceDynamic().requestSetSelfPickupOrder(
+                            custNo = custNo,
+                            zipcode = _zipCode.value!!,
+                            addr1 = _addressFront.value!!,
+                            addr2 = _addressLast.value!!,
+                            mobileNo = "+65-" + _phoneNo.value,
+                            requestMemo = _remarks.value!!
+                    ).subscribeOn(Schedulers.io())
+                            .observeOn(AndroidSchedulers.mainThread())
+                            .subscribe({
+                                if (it.resultCode == 0) {
+                                    Log.e("TAG", "adfasdfasdfsa")
+                                }
+                            }, {
+
+                            })
                 }
             }
+
         }
     }
 }
