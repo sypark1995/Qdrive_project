@@ -22,7 +22,7 @@ object ImageUpload {
             dateFormat.timeZone = TimeZone.getTimeZone("GMT")
             val date = dateFormat.format(Date())
 
-            val folder = "$basePath/$path/$date/$trackNo"
+            val folder = "$path/$date/$trackNo"
 
             val rqFile = file.asRequestBody("image/jpeg".toMediaTypeOrNull())
             val mpFile = MultipartBody.Part.createFormData("photo", file.name, rqFile)
