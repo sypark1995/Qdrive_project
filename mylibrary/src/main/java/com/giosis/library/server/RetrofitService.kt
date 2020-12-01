@@ -93,7 +93,6 @@ interface RetrofitService {
             @Query("extent") extent: String,
             @Query("id") id: String,
             @Query("commitYn") commitYn: String,
-            @Query("custNo") custNo: String,
             @Query("upload_channel") upload_channel: String,
             @Query("png_compress") png_compress: String,
             @Query("inc_org_size") inc_org_size: String,
@@ -109,6 +108,25 @@ interface RetrofitService {
             @Field("search_kind") kind: String,
             @Field("search_value") value: String,
             @Field("nation_cd") nation_cd: String = Preferences.userNation
+    ): Single<APIModel>
+
+
+    @POST("SetSelfPickupOrder")
+    @FormUrlEncoded
+    fun requestSetSelfPickupOrder(
+            @Field("custNo") custNo: String,
+            @Field("rcvName") rcvName: String = Preferences.userName,
+            @Field("pickupDate") pickupDate: String = "",
+            @Field("pickupTime") pickupTime: String = "",
+            @Field("country") country: String = "SG",
+            @Field("zipcode") zipcode: String,
+            @Field("addr1") addr1: String,
+            @Field("addr2") addr2: String,
+            @Field("mobileNo") mobileNo: String,
+            @Field("telNo") telNo: String = "",
+            @Field("quantity") quantity: String = "1",
+            @Field("requestMemo") requestMemo: String,
+            @Field("regId") regId: String = Preferences.userId
     ): Single<APIModel>
 
 
@@ -131,3 +149,4 @@ interface RetrofitService {
 //            @Field("zip_code") zip_code: String,
 //            @Field("id") id: String = Preferences.userId
 //    ): Single<Address
+}

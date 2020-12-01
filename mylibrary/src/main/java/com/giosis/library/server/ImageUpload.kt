@@ -1,6 +1,7 @@
 package com.giosis.library.server
 
 import android.util.Log
+import com.giosis.library.util.Preferences
 import okhttp3.MediaType.Companion.toMediaTypeOrNull
 import okhttp3.MultipartBody
 import okhttp3.RequestBody.Companion.asRequestBody
@@ -11,8 +12,8 @@ import java.util.*
 
 object ImageUpload {
     // http://dp.image-gmkt.com"
-    const val QXPOD = "QXPOD"
-    const val QXPOP = "QXPOP"
+    const val QXPOD = "qxpod"
+    const val QXPOP = "qxpop"
 
     fun upload(file: File, basePath: String, path: String, trackNo: String): String {
 
@@ -21,7 +22,7 @@ object ImageUpload {
             dateFormat.timeZone = TimeZone.getTimeZone("GMT")
             val date = dateFormat.format(Date())
 
-            val folder = "$path/$date/$trackNo"
+            val folder = "$basePath/$path/$date/$trackNo"
 
             val rqFile = file.asRequestBody("image/jpeg".toMediaTypeOrNull())
             val mpFile = MultipartBody.Part.createFormData("photo", file.name, rqFile)
@@ -33,7 +34,7 @@ object ImageUpload {
                     size = "50000000",
                     ext = "image",
                     folder = folder,
-                    basepath = basePath,
+                    basepath = "qxpod",
                     width = "0",
                     height = "0",
                     quality = "100",
@@ -42,8 +43,7 @@ object ImageUpload {
                     extent = "N",
                     id = "uc_file_upload",
                     commitYn = "Y",
-                    custNo = "100061082",
-                    upload_channel = "QxFront",
+                    upload_channel = "Qdrive/" + Preferences.userNation,
                     png_compress = "N",
                     inc_org_size = "N",
                     date = "N",

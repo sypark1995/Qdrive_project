@@ -3,6 +3,7 @@ package com.giosis.library.server
 import android.util.Log
 import com.giosis.library.util.DataUtil
 import com.giosis.library.util.Preferences
+import com.google.gson.GsonBuilder
 import okhttp3.Interceptor
 import okhttp3.OkHttpClient
 import okhttp3.Response
@@ -103,12 +104,14 @@ object RetrofitClient {
 
     fun instanceImageUpload(): RetrofitService {
 
+        val gson = GsonBuilder().setLenient().create()
+
         val imageUrl = "http://encoding.image-gmkt.com/"
 
         val retrofit = Retrofit.Builder()
                 .baseUrl(imageUrl)
                 .client(provideOkHttpClient(AppInterceptor()))
-                .addConverterFactory(GsonConverterFactory.create())
+                .addConverterFactory(GsonConverterFactory.create(gson))
                 .addCallAdapterFactory(RxJava3CallAdapterFactory.create())
                 .build()
 

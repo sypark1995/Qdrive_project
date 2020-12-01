@@ -12,7 +12,7 @@ class CustomSellerInfo : Serializable {
     class SellerInfo {
 
         @SerializedName("cust_no")
-        var cust_no = "-1"
+        var cust_no = "0"
 
         @SerializedName("cust_nm")
         var cust_nm = ""
