@@ -110,7 +110,12 @@ abstract class ListViewModel<T> : BaseViewModel() {
 
     fun notifyChange() {
         Log.e("TAG", "notifyChange value = 1")
-        EventBus.getDefault().post("notif")
+        EventBus.getDefault().post("noti")
+    }
+
+    fun notifyChange1() {
+        Log.e("TAG", "notifyChange value = 2")
+        EventBus.getDefault().post("addressNoti")
     }
 
 }

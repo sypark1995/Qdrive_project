@@ -36,6 +36,7 @@
             android:screenOrientation="portrait" />
 
         <activity android:name=".pickup.AddressDialogActivity"
+            android:theme="@style/CustomDialog"
             android:screenOrientation="portrait" />
 
         <activity

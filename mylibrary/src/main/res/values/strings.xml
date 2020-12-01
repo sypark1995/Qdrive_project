@@ -57,6 +57,8 @@
     <string name="text_upload_fail_count">Upload Success : %1$d\nUpload Failed : %2$d\nFail Reason : %3$s</string>
     <string name="text_upload_fail_count3">Upload Success : %1$d\nUpload Failed : %2$d</string>
     <string name="text_location_setting">Location setting</string>
+    <string name="text_search_address" translatable="false">Search Address</string>
+    <string name="text_zip_code_or_address" translatable="false">Postal Code or Detail Address</string>
 
     <string name="text_create_pickup_order">Create Pickup Order</string>
     <string name="text_seller_id">Seller ID</string>
@@ -303,6 +305,8 @@
     <string name="msg_check_date_range">Please check the date range. Max 1 month</string>
 
     <string name="msg_back_camera_required">Back camera is required.(LENS_FACING_BACK) \n Please use the \'Gallery\' button.</string>
+
+    <string name="msg_please_input_data" translatable="false">Please enter ZipCode or Address</string>
 
     <!-- Button -->
     <string name="button_download">Download</string>

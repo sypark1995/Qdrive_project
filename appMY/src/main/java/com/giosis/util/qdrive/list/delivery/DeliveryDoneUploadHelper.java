@@ -348,7 +348,7 @@ public class DeliveryDoneUploadHelper extends ManualHelper {
                 job.accumulate("network_type", networkType);
                 job.accumulate("no_songjang", assignNo);
                 job.accumulate("fileData", bitmapString);
-                job.accumulate("photo_data", bitmapString1);
+                job.accumulate("delivery_photo_url", bitmapString1);
                 job.accumulate("remark", driverMemo);           // 드라이버 메세지 driver_memo	== remark
                 job.accumulate("disk_size", disk_size);
                 job.accumulate("lat", lat);

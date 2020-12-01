@@ -57,6 +57,21 @@ object RetrofitClient {
         val serverURL = Preferences.serverURL + DataUtil.API_ADDRESS
         Log.e("Server", "Server URL  $serverURL")
 
+        val retrofit = Retrofit.Builder()
+                .baseUrl(serverURL)
+                .client(provideOkHttpClient(AppInterceptor()))
+                .addConverterFactory(GsonConverterFactory.create())
+                .addCallAdapterFactory(RxJava3CallAdapterFactory.create())
+                .build()
+
+        instanceDynamic = retrofit.create(RetrofitService::class.java)
+        return instanceDynamic
+    }
+
+    fun instanceTestServer(): RetrofitService {
+
+        val serverURL = DataUtil.SERVER_TEST + DataUtil.API_ADDRESS
+        Log.e("Server", "Server URL  $serverURL")
 
         val retrofit = Retrofit.Builder()
                 .baseUrl(serverURL)
@@ -101,5 +116,20 @@ object RetrofitClient {
         return instanceDynamic
     }
 
+    fun instanceXRoute(): RetrofitService {
+
+        //val xRouteUrl = "http://xrouter.qxpress.net/"
+        val xRouteUrl = "http://211.115.100.24/"
+
+        val retrofit = Retrofit.Builder()
+                .baseUrl(xRouteUrl)
+                .client(provideOkHttpClient(AppInterceptor()))
+                .addConverterFactory(GsonConverterFactory.create())
+                .addCallAdapterFactory(RxJava3CallAdapterFactory.create())
+                .build()
+
+        instanceDynamic = retrofit.create(RetrofitService::class.java)
+        return instanceDynamic
+    }
 
 }
