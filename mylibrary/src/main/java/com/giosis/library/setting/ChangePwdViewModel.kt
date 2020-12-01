@@ -90,11 +90,11 @@ class ChangePwdViewModel : BaseViewModel() {
                         Log.e(RetrofitClient.TAG, "${it.resultCode} / ${it.resultMsg}")
 
                         if (it.resultCode == 0) {
-
                             Preferences.userPw = newPassword
                         }
 
                         _resultAlert.value = it
+
                     }, {
 
                         progressVisible.value = false

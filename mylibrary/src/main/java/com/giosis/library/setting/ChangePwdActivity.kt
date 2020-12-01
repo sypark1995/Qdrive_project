@@ -108,8 +108,7 @@ class ChangePwdActivity : BaseActivity<ActivityChangePwdBinding, ChangePwdViewMo
 
                         resultDialog.visibility = View.GONE
 
-                        if(it.resultCode == 0) {
-
+                        if (it.resultCode == 0) {
                             finish()
                         }
                     }
