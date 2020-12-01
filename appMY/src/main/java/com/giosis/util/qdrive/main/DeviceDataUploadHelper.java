@@ -329,7 +329,7 @@ public class DeviceDataUploadHelper extends ManualHelper {
                     job.accumulate("network_type", networkType);
                     job.accumulate("no_songjang", uploadData.getNoSongjang());
                     job.accumulate("fileData", bitmapString);
-                    job.accumulate("photo_data", bitmapString1);
+                    job.accumulate("delivery_photo_url", bitmapString1);
                     job.accumulate("remark", uploadData.getDriverMemo());  // 드라이버 메세지 driver_memo	== remark
                     job.accumulate("disk_size", "999999");  // 남은디스크용량(임의의 숫자) - 실시간 업로드 시에만 체크	해서 넘어옴
                     job.accumulate("lat", latitude);  // 위도

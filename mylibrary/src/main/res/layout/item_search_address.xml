@@ -1,0 +1,54 @@
+<?xml version="1.0" encoding="utf-8"?>
+<layout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools">
+
+    <data>
+
+        <import type="android.view.View" />
+
+        <variable
+            name="viewModel"
+            type="com.giosis.library.pickup.AddressDialogViewModel" />
+
+        <variable
+            name="position"
+            type="Integer" />
+
+        <variable
+            name="item"
+            type="com.giosis.library.server.data.AddressResult.AddressResultObject.AddressItem" />
+    </data>
+
+    <RelativeLayout
+        android:id="@+id/layout_search_address_item"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:background="@drawable/selector_search_address_item"
+        android:onClick="@{()->viewModel.clickItem(position)}"
+        android:paddingVertical="10dp">
+
+        <TextView
+            android:id="@+id/text_search_address_item_zip_code"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_centerVertical="true"
+            android:text="abc"
+            android:textColor="@color/color_4fb648"
+            android:textSize="@dimen/text_size_28px"
+            tools:text="189722" />
+<!-- android:text="@{item.zipCode}"
+  android:text="@{item.frontAddress}"
+-->
+        <TextView
+            android:id="@+id/text_search_address_item_address"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_centerVertical="true"
+            android:layout_marginStart="10dp"
+            android:layout_toEndOf="@id/text_search_address_item_zip_code"
+            android:text="@{item.frontAddress}"
+            android:textColor="@color/color_767676"
+            android:textSize="@dimen/text_size_32px"
+            tools:text="Beach Road 159\nBeach Road 159" />
+    </RelativeLayout>
+</layout>
