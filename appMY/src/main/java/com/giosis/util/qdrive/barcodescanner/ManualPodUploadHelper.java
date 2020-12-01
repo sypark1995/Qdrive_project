@@ -13,6 +13,7 @@ import android.os.Environment;
 import android.text.TextUtils;
 import android.util.Log;
 
+import com.giosis.library.server.ImageUpload;
 import com.giosis.util.qdrive.international.R;
 import com.giosis.util.qdrive.international.UploadData;
 import com.giosis.util.qdrive.util.Custom_JsonParser;
@@ -268,7 +269,7 @@ public class ManualPodUploadHelper extends ManualHelper {
 
                     if (imgFile.exists()) {
                         Bitmap myBitmap = BitmapFactory.decodeFile(imgFile.getAbsolutePath());
-                        bitmapString = DataUtil.bitmapToString(myBitmap);
+                        bitmapString = DataUtil.bitmapToString(myBitmap, ImageUpload.QXPOP, "qdriver/sign", uploadData.getNoSongjang());
                     }
 
                     if (bitmapString.equals("")) {

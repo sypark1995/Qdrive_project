@@ -11,6 +11,7 @@ import android.os.AsyncTask;
 import android.util.Log;
 import android.widget.ImageView;
 
+import com.giosis.library.server.ImageUpload;
 import com.giosis.util.qdrive.barcodescanner.StdResult;
 import com.giosis.util.qdrive.singapore.MyApplication;
 import com.giosis.util.qdrive.singapore.OnServerEventListener;
@@ -243,7 +244,7 @@ public class QuickReturnFailedUploadHelper {
 
                 imageView.buildDrawingCache();
                 Bitmap captureView = imageView.getDrawingCache();
-                String bitmapString = DataUtil.bitmapToString(captureView);
+                String bitmapString = DataUtil.bitmapToString(captureView, ImageUpload.QXPOD, "qdriver/sign", assignNo);
 
                 JSONObject job = new JSONObject();
 

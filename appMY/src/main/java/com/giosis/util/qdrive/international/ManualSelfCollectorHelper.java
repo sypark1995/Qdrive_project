@@ -10,6 +10,7 @@ import android.os.AsyncTask;
 import android.text.TextUtils;
 import android.util.Log;
 
+import com.giosis.library.server.ImageUpload;
 import com.giosis.util.qdrive.barcodescanner.ManualHelper;
 import com.giosis.util.qdrive.list.BarcodeData;
 import com.giosis.util.qdrive.list.SigningView;
@@ -297,7 +298,7 @@ public class ManualSelfCollectorHelper extends ManualHelper {
 
                 signingView.buildDrawingCache();
                 Bitmap captureView = signingView.getDrawingCache();
-                String bitmapString = DataUtil.bitmapToString(captureView);
+                String bitmapString = DataUtil.bitmapToString(captureView, ImageUpload.QXPOP, "qdriver/sign", assignNo);
 
                 JSONObject job = new JSONObject();
                 job.accumulate("rcv_type", receiveType);

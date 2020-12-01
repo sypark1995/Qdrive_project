@@ -192,7 +192,7 @@ public class DataUtil {
         }
     }
 
-    public static String bitmapToString(Bitmap bitmap) {
+    public static String bitmapToString(Bitmap bitmap, String basePath, String path, String trackNo) {
 
         String imagePath = "";
 
@@ -220,7 +220,7 @@ public class DataUtil {
                     e.printStackTrace();
                 }
 
-                imagePath = ImageUpload.INSTANCE.upload(tempFile);
+                imagePath = ImageUpload.INSTANCE.upload(tempFile, basePath, path, trackNo);
             }
 
         } catch (Exception e) {
