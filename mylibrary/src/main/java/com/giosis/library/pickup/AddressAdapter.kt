@@ -6,10 +6,14 @@ import android.view.ViewGroup
 import androidx.databinding.DataBindingUtil
 import androidx.databinding.ViewDataBinding
 import androidx.recyclerview.widget.RecyclerView
-import com.giosis.library.*
+import com.giosis.library.BR
+import com.giosis.library.BaseRecyclerAdapter
+import com.giosis.library.ListViewModel
+import com.giosis.library.R
 import com.giosis.library.server.data.AddressResult
 
-class AddressAdapter(private val viewModel: AddressDialogViewModel) : BaseRecyclerAdapter<AddressAdapter.ViewHolder, AddressResult.AddressResultObject.AddressItem>() {
+class AddressAdapter(private val viewModel: AddressDialogViewModel)
+    : BaseRecyclerAdapter<AddressAdapter.ViewHolder, AddressResult.AddressResultObject.AddressItem>() {
 
     override fun getListModel(): ListViewModel<AddressResult.AddressResultObject.AddressItem> {
         return viewModel
@@ -18,7 +22,7 @@ class AddressAdapter(private val viewModel: AddressDialogViewModel) : BaseRecycl
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): AddressAdapter.ViewHolder {
 
         val layoutInflater = LayoutInflater.from(parent.context)
-        val binding = DataBindingUtil.inflate<ViewDataBinding>(layoutInflater, R.layout.item_search_address, parent, false)
+        val binding = DataBindingUtil.inflate<ViewDataBinding>(layoutInflater, R.layout.item_search_addr, parent, false)
         return ViewHolder(binding)
     }
 

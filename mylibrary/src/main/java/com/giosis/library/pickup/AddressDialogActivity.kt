@@ -85,7 +85,7 @@ class AddressDialogActivity : BaseActivity<ActivityAddressDialogBinding, Address
     }
 
     @Subscribe(threadMode = ThreadMode.MAIN)
-    fun addressNoti(event: String?) {
+    fun noti(event: String?) {
         adapter.notifyDataSetChanged()
     }
 
