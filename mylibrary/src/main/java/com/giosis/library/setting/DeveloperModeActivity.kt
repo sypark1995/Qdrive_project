@@ -55,6 +55,10 @@ class DeveloperModeActivity : BaseActivity<ActivityDeveloperModeBinding, Develop
 
                     getViewModel().changeServer(DataUtil.SERVER_REAL)
                 }
+                R.id.rb_developer_server_url_local -> {
+
+                    getViewModel().changeServer(DataUtil.SERVER_LOCAL)
+                }
             }
         }
 

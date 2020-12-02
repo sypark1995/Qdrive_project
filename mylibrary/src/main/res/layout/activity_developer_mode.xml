@@ -59,6 +59,15 @@
                     <!--                    android:checkedButton="@={viewModel.checkedId}"-->
 
                     <RadioButton
+                        android:id="@+id/rb_developer_server_url_local"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:buttonTint="@color/radio_colors"
+                        android:text="@{viewModel.urlLocal}"
+                        android:textColor="#303030"
+                        android:textSize="14sp" />
+
+                    <RadioButton
                         android:id="@+id/rb_developer_server_url_test"
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"

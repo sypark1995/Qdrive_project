@@ -22,6 +22,8 @@ class DeveloperModeViewModel : BaseViewModel() {
     private val _urlTest = MutableLiveData(DataUtil.SERVER_TEST)
     val urlTest: MutableLiveData<String> = _urlTest
 
+    private val _urlLocal = MutableLiveData(DataUtil.SERVER_LOCAL)
+    val urlLocal: MutableLiveData<String> = _urlLocal
 
     private val _checkedId = MutableLiveData<Int>()
     val checkedId: MutableLiveData<Int>
@@ -44,6 +46,10 @@ class DeveloperModeViewModel : BaseViewModel() {
             DataUtil.SERVER_TEST -> {
 
                 _checkedId.value = R.id.rb_developer_server_url_test
+            }
+            DataUtil.SERVER_LOCAL -> {
+
+                _checkedId.value = R.id.rb_developer_server_url_local
             }
         }
     }
