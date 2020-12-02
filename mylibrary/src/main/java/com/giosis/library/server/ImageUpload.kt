@@ -22,14 +22,14 @@ object ImageUpload {
             dateFormat.timeZone = TimeZone.getTimeZone("GMT")
             val date = dateFormat.format(Date())
 
-            val folder = "$path/$date/$trackNo"
+            val folder = "$basePath/$path/$date/$trackNo"
 
             val rqFile = file.asRequestBody("image/jpeg".toMediaTypeOrNull())
             val mpFile = MultipartBody.Part.createFormData("photo", file.name, rqFile)
 
             Log.e("ImageUpload", "start upload image")
 
-            // Dayil yyyyMMdd
+            // Daily  yyyyMMdd
             val result = RetrofitClient.instanceImageUpload().upload(
                     size = "50000000",
                     ext = "image",
@@ -54,7 +54,7 @@ object ImageUpload {
             var returnValue = ""
             if (result != null) {
                 for (imageResult in result) {
-                    returnValue = "http://dp.image-gmkt.com" + imageResult.path
+                    returnValue = imageResult.path
                 }
             }
             Log.e("ImageUpload", "end upload url  $returnValue")
