@@ -1,6 +1,5 @@
 package com.giosis.library.pickup
 
-import android.util.Log
 import android.view.LayoutInflater
 import android.view.ViewGroup
 import androidx.databinding.DataBindingUtil
@@ -22,7 +21,7 @@ class AddressAdapter(private val viewModel: AddressDialogViewModel)
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): AddressAdapter.ViewHolder {
 
         val layoutInflater = LayoutInflater.from(parent.context)
-        val binding = DataBindingUtil.inflate<ViewDataBinding>(layoutInflater, R.layout.item_search_addr, parent, false)
+        val binding = DataBindingUtil.inflate<ViewDataBinding>(layoutInflater, R.layout.item_search_address, parent, false)
         return ViewHolder(binding)
     }
 
@@ -35,9 +34,6 @@ class AddressAdapter(private val viewModel: AddressDialogViewModel)
     inner class ViewHolder(private val binding: ViewDataBinding) : RecyclerView.ViewHolder(binding.root) {
 
         fun bind(viewModel: AddressDialogViewModel, position: Int) {
-
-            Log.e("krm0219", "Adapter  $position //  ${viewModel.items.value!![position].zipCode}")
-
 
             binding.setVariable(BR.viewModel, viewModel)
             binding.setVariable(BR.item, viewModel.items.value!![position])

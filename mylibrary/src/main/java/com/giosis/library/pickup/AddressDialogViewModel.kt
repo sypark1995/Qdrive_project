@@ -52,10 +52,17 @@ class AddressDialogViewModel : ListViewModel<AddressResult.AddressResultObject.A
                         val result1 = Gson().fromJson(it.resultObject.toString(), AddressResult.AddressResultObject::class.java)
                         val result = result1.resultRows!!
 
-                        Log.e("krm0219", "Server  ${result.size}  ${result[0].zipCode}  ${result[0].frontAddress}")
-                        setItemList(result)
-                        notifyChange()
-                        //    notifyChange()
+                        if (result.size == 0) {
+
+                            clearList()
+                            notifyChange()
+                            _errorMsg.value = R.string.msg_no_results
+                        } else {
+
+                            //    Log.e("krm0219", "Server  ${result.size}  ${result[0].zipCode}  ${result[0].frontAddress}")
+                            setItemList(result)
+                            notifyChange()
+                        }
                     } catch (e: Exception) {
 
                         Log.e("Exception", "requestGetAddressInfo  $e")
@@ -65,7 +72,7 @@ class AddressDialogViewModel : ListViewModel<AddressResult.AddressResultObject.A
                     progressVisible.value = false
                 }, {
 
-                    Log.e("krm0219", it.message.toString())
+                    Log.e("Exception", it.message.toString())
                     progressVisible.value = false
                     _errorMsg.value = R.string.msg_network_connect_error
                 })

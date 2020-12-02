@@ -23,6 +23,7 @@
         android:id="@+id/layout_search_address_item"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
+        android:background="@drawable/selector_search_address_item"
         android:onClick="@{()->viewModel.clickItem(position)}"
         android:paddingVertical="10dp">
         <!--        android:background="@drawable/selector_search_address_item"-->
@@ -32,7 +33,7 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_centerVertical="true"
-            android:text="abc"
+            android:text="@{item.zipCode}"
             android:textColor="@color/color_4fb648"
             android:textSize="@dimen/text_size_28px"
             tools:text="189722" />

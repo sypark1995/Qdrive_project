@@ -15,7 +15,7 @@ public class DataUtil {
 
     public static String appID = "QDRIVE";
 
-   public static String SERVER_LOCAL = "http://172.30.88.73";
+    public static String SERVER_LOCAL = "http://172.30.88.73";
     public static String SERVER_TEST = "https://test-api.qxpress.net";
     public static String SERVER_STAGING = "http://staging-qxapi.qxpress.net";
     public static String SERVER_REAL = "https://qxapi.qxpress.net";
@@ -28,11 +28,8 @@ public class DataUtil {
     public static String smart_route_url = "http://xrouter.qxpress.asia/api";
 
 
-
     public static String requestSetUploadDeliveryData = "SetDeliveryUploadData";
     public static String requestSetUploadPickupData = "SetPickupUploadData";
-
-
 
 
     // Main Service

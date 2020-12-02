@@ -301,7 +301,7 @@ public class DeliveryDoneUploadHelper {
                 bitmapString1 = DataUtil.bitmapToString(visitBitmap, ImageUpload.QXPOD, "qdriver/delivery", assignNo);
             }
 
-            Log.e("krm0219", TAG + "  DATA " + bitmapString + " / " + bitmapString1);
+            Log.e("krm0219", TAG + " DATA  :  " + bitmapString + " / " + bitmapString1);
 
             SimpleDateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
             Date date = new Date();

@@ -70,15 +70,6 @@ class AddressDialogActivity : BaseActivity<ActivityAddressDialogBinding, Address
         }
     }
 
-
-    override fun onResume() {
-        super.onResume()
-
-        mViewModel.searchText.value = "048616"
-        mViewModel.clickSearch()
-    }
-
-
     override fun onStart() {
         super.onStart()
         EventBus.getDefault().register(this)

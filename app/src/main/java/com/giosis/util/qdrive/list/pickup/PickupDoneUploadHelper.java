@@ -280,6 +280,8 @@ public class PickupDoneUploadHelper {
                 Bitmap captureView2 = collectorSigningView.getDrawingCache();
                 String bitmapString = DataUtil.bitmapToString(captureView, ImageUpload.QXPOP, "qdriver/sign", pickup_no);
                 String bitmapString2 = DataUtil.bitmapToString(captureView2, ImageUpload.QXPOP, "qdriver/sign", pickup_no);
+//                String bitmapString = DataUtil.bitmapToString(captureView);
+//                String bitmapString2 = DataUtil.bitmapToString(captureView2);
 
                 JSONObject job = new JSONObject();
                 job.accumulate("rcv_type", "SC");

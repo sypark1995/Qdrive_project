@@ -96,6 +96,20 @@ abstract class ListViewModel<T> : BaseViewModel() {
         _items.value!!.removeAll(items)
     }
 
+
+    fun clearList() {
+
+        try {
+
+            if (0 < _items.value!!.size)
+                _items.value!!.clear()
+        } catch (e: Exception) {
+
+            Log.e("Exception", " ListViewModel  ${e.message}")
+        }
+    }
+
+
     fun getLastItem(): T {
         return if (_items.value!!.size > 0) {
             getItem(_items.value!!.size - 1)
@@ -112,10 +126,4 @@ abstract class ListViewModel<T> : BaseViewModel() {
         Log.e("TAG", "notifyChange value = 1")
         EventBus.getDefault().post("noti")
     }
-
-    fun notifyChange1() {
-        Log.e("TAG", "notifyChange value = 2")
-        EventBus.getDefault().post("addressNoti")
-    }
-
 }

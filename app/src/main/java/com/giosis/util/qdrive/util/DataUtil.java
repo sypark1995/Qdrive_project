@@ -15,6 +15,7 @@ import android.provider.Settings;
 import android.util.Log;
 import android.view.View;
 
+import com.gc.android.market.api.Base64;
 import com.giosis.library.server.ImageUpload;
 import com.giosis.util.qdrive.gps.GPSTrackerManager;
 import com.giosis.util.qdrive.list.RowItem;
@@ -191,6 +192,25 @@ public class DataUtil {
             e.printStackTrace();
         }
     }
+
+    // TEST
+    public static String bitmapToString(Bitmap bitmap) {
+        String pngImage = "";
+        try {
+            ByteArrayOutputStream stream = new ByteArrayOutputStream();
+            bitmap.compress(Bitmap.CompressFormat.PNG, 100, stream);
+            byte[] byteArray = stream.toByteArray();
+            String imgToString = Base64.encodeBytes(byteArray);
+            StringBuilder sb = new StringBuilder();
+            sb.append("data:image/png;base64,");
+            sb.append(imgToString);
+            pngImage = sb.toString();
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+        return pngImage;
+    }
+
 
     public static String bitmapToString(Bitmap bitmap, String basePath, String path, String trackNo) {
 

@@ -6,6 +6,7 @@ import android.os.Bundle
 import android.text.Spannable
 import android.text.SpannableString
 import android.text.style.UnderlineSpan
+import android.util.Log
 import android.view.View
 import android.widget.AdapterView
 import androidx.lifecycle.ViewModelProvider
@@ -20,6 +21,8 @@ import kotlinx.android.synthetic.main.top_title.*
 
 
 class CreatePickupOrderActivity : BaseActivity<ActivityCreatePickupOrderBinding, CreatePickupOrderViewModel>() {
+    val tag = "CreatePickupOrder"
+
     override fun getLayoutId(): Int {
         return R.layout.activity_create_pickup_order
     }
@@ -99,7 +102,13 @@ class CreatePickupOrderActivity : BaseActivity<ActivityCreatePickupOrderBinding,
 
         when (ActivityRequestCode.values()[requestCode]) {
             ActivityRequestCode.ADDRESS_REQUEST -> {
-// TODO !!!
+
+                val zipCode = data!!.extras!!.getString("zipCode")
+                val frontAddress = data.extras!!.getString("frontAddress")
+                Log.e(tag, "zonActivityResult data - $zipCode  /  $frontAddress")
+
+                mViewModel.zipCode.value = zipCode
+                mViewModel.addressFront.value = frontAddress
             }
             else -> {
             }
