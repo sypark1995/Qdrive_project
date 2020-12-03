@@ -61,10 +61,6 @@
     <string name="text_zip_code_or_address" translatable="false">Postal Code or Detail Address</string>
 
     <string name="text_create_pickup_order">Create Pickup Order</string>
-    <string name="text_seller_id">Seller ID</string>
-    <string name="symbol_star">*</string>
-    <string name="text_applicant_name">Applicant Name</string>
-    <string name="text_pickup_address">Pickup Address</string>
     <string name="text_remarks">Remarks</string>
     <string name="text_register">Register</string>
     <string name="text_sender_info">Sender Information</string>
