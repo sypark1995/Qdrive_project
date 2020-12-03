@@ -12,6 +12,7 @@ import java.util.*
 
 object ImageUpload {
     // http://dp.image-gmkt.com"
+    // http://pod.qxpress.net
     const val QXPOD = "qxpod"
     const val QXPOP = "qxpop"
 
