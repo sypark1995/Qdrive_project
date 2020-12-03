@@ -1,12 +1,15 @@
 package com.giosis.library.pickup
 
-import android.util.Log
+import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import com.giosis.library.ActivityRequestCode
 import com.giosis.library.BaseViewModel
 import com.giosis.library.R
 import com.giosis.library.server.RetrofitClient
 import com.giosis.library.server.data.CustomSellerInfo
+import com.giosis.library.util.SingleLiveEvent
+import com.giosis.library.util.dialog.DialogUiConfig
+import com.giosis.library.util.dialog.DialogViewModel
 import com.google.gson.Gson
 import io.reactivex.rxjava3.android.schedulers.AndroidSchedulers
 import io.reactivex.rxjava3.schedulers.Schedulers
@@ -17,7 +20,7 @@ class CreatePickupOrderViewModel : BaseViewModel() {
     val visiblePickupLayout: MutableLiveData<Boolean>
         get() = _visiblePickupLayout
 
-    val _orderType = MutableLiveData(0)
+    private val _orderType = MutableLiveData(0)
     val orderType: MutableLiveData<Int>
         get() = _orderType
 
@@ -41,13 +44,22 @@ class CreatePickupOrderViewModel : BaseViewModel() {
     val addressLast: MutableLiveData<String>
         get() = _addressLast
 
-    val _phoneNo = MutableLiveData<String>()
+    private val _phoneNo = MutableLiveData<String>()
     val phoneNo: MutableLiveData<String>
         get() = _phoneNo
 
-    val _remarks = MutableLiveData("")
+    private val _remarks = MutableLiveData("")
     val remarks: MutableLiveData<String>
         get() = _remarks
+
+    private val _checkAlert = SingleLiveEvent<Pair<DialogUiConfig, DialogViewModel>>()
+    val checkAlert: LiveData<Pair<DialogUiConfig, DialogViewModel>>
+        get() = _checkAlert
+
+    private val _confirmAlert = SingleLiveEvent<Pair<DialogUiConfig, DialogViewModel>>()
+    val confirmAlert: LiveData<Pair<DialogUiConfig, DialogViewModel>>
+        get() = _confirmAlert
+
 
     fun setVisiblePickupLayout() {
         _visiblePickupLayout.value = !((_visiblePickupLayout.value)!!)
@@ -60,6 +72,8 @@ class CreatePickupOrderViewModel : BaseViewModel() {
             if (_sellerId.value.isNullOrEmpty()) {
                 toastString.postValue(R.string.enter_seller_id)
             } else {
+                progressVisible.value = true
+
                 RetrofitClient.instanceDynamic().requestGetCustomSellerInfo("SellerID", _sellerId.value!!).subscribeOn(Schedulers.io())
                         .subscribeOn(Schedulers.io())
                         .observeOn(AndroidSchedulers.mainThread())
@@ -87,8 +101,11 @@ class CreatePickupOrderViewModel : BaseViewModel() {
                             } catch (e: Exception) {
                                 e.stackTrace
                             }
-                        }, {
 
+                            progressVisible.value = false
+
+                        }, {
+                            progressVisible.value = false
                         })
             }
         }
@@ -102,6 +119,9 @@ class CreatePickupOrderViewModel : BaseViewModel() {
         if (_pickupNo.value.isNullOrEmpty()) {
             toastString.postValue(R.string.enter_pickup_no)
         } else {
+
+            progressVisible.value = true
+
             RetrofitClient.instanceDynamic().requestGetCustomSellerInfo("PickupNo", _pickupNo.value!!).subscribeOn(Schedulers.io())
                     .subscribeOn(Schedulers.io())
                     .observeOn(AndroidSchedulers.mainThread())
@@ -126,11 +146,16 @@ class CreatePickupOrderViewModel : BaseViewModel() {
                             } else {
                                 toastString.value = it.resultMsg
                             }
+
+
                         } catch (e: Exception) {
                             e.stackTrace
                         }
-                    }, {
 
+                        progressVisible.value = false
+
+                    }, {
+                        progressVisible.value = false
                     })
         }
     }
@@ -153,27 +178,78 @@ class CreatePickupOrderViewModel : BaseViewModel() {
                     toastString.value = R.string.enter_phone_no
                 } else {
 
-                    // TODO 다이얼로그 추가 하기!!!!
+                    val text = DialogUiConfig(
+                            title = R.string.text_alert,
+                            message = R.string.regist_pickup_order
+                    )
 
-                    RetrofitClient.instanceDynamic().requestSetSelfPickupOrder(
-                            custNo = custNo,
-                            zipcode = _zipCode.value!!,
-                            addr1 = _addressFront.value!!,
-                            addr2 = _addressLast.value!!,
-                            mobileNo = "+65-" + _phoneNo.value,
-                            requestMemo = _remarks.value!!
-                    ).subscribeOn(Schedulers.io())
-                            .observeOn(AndroidSchedulers.mainThread())
-                            .subscribe({
-                                if (it.resultCode == 0) {
-                                    Log.e("TAG", "adfasdfasdfsa")
-                                }
-                            }, {
+                    val listener = DialogViewModel(
+                            positiveClick = {
+                                callServerSelfPickupOrder()
+                                _checkAlert.value = null
+                            },
+                            negativeClick = {
+                                _checkAlert.value = null
+                            }
+                    )
 
-                            })
+                    _checkAlert.value = Pair(text, listener)
                 }
             }
 
         }
+    }
+
+    private fun callServerSelfPickupOrder() {
+
+        if (_orderType.value == 1) {
+            custNo = ""
+        }
+
+        val type = if (_orderType.value == 0) {
+            "QSELF"
+        } else {
+            "NSELF"
+        }
+
+        progressVisible.value = true
+
+        RetrofitClient.instanceDynamic().requestSetSelfPickupOrder(
+                custNo = custNo,
+                zipcode = _zipCode.value!!,
+                addr1 = _addressFront.value!!,
+                addr2 = _addressLast.value!!,
+                mobileNo = "+65-" + _phoneNo.value,
+                requestMemo = _remarks.value!!,
+                type = type
+        ).subscribeOn(Schedulers.io())
+                .observeOn(AndroidSchedulers.mainThread())
+                .subscribe({
+                    if (it.resultCode == 0) {
+                        val text = DialogUiConfig(
+                                title = R.string.text_alert,
+                                message = R.string.confirm_pickup_order,
+                                cancelVisible = false
+                        )
+
+                        val listener = DialogViewModel(
+                                positiveClick = {
+                                    _checkAlert.value = null
+                                    finish()
+                                },
+                                negativeClick = {
+                                    _checkAlert.value = null
+                                }
+                        )
+
+                        _confirmAlert.value = Pair(text, listener)
+                    }
+
+                    progressVisible.value = false
+
+                }, {
+
+                    progressVisible.value = false
+                })
     }
 }

@@ -126,7 +126,8 @@ interface RetrofitService {
             @Field("telNo") telNo: String = "",
             @Field("quantity") quantity: String = "1",
             @Field("requestMemo") requestMemo: String,
-            @Field("regId") regId: String = Preferences.userId
+            @Field("regId") regId: String = Preferences.userId,
+            @Field("type") type: String
     ): Single<APIModel>
 
 

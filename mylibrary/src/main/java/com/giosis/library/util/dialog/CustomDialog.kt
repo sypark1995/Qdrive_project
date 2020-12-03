@@ -17,6 +17,7 @@ import com.giosis.library.R
 @SuppressLint("Recycle")
 class CustomDialog @JvmOverloads constructor(
         context: Context,
+        layoutId: Int = R.layout.layout_dialog,
         attrs: AttributeSet? = null,
         @AttrRes defStyleAttr: Int = 0
 ) : View(context, attrs) {
@@ -63,16 +64,16 @@ class CustomDialog @JvmOverloads constructor(
 //
 //        }
 
-        createDialog(context)
+        createDialog(context, layoutId)
 
     }
 
-    private fun createDialog(context: Context) {
+    private fun createDialog(context: Context, layoutId: Int) {
         val frameLayout = FrameLayout(context)
 
         binding = DataBindingUtil.inflate(
                 LayoutInflater.from(context),
-                R.layout.layout_dialog,
+                layoutId,
                 frameLayout,
                 true
         )

@@ -16,6 +16,7 @@ import com.giosis.library.BaseActivity
 import com.giosis.library.R
 import com.giosis.library.databinding.ActivityCreatePickupOrderBinding
 import com.giosis.library.util.Preferences
+import com.giosis.library.util.dialog.CustomDialog
 import kotlinx.android.synthetic.main.activity_create_pickup_order.*
 import kotlinx.android.synthetic.main.top_title.*
 
@@ -34,6 +35,10 @@ class CreatePickupOrderActivity : BaseActivity<ActivityCreatePickupOrderBinding,
     override fun getViewModel(): CreatePickupOrderViewModel {
         return ViewModelProvider(this).get(CreatePickupOrderViewModel::class.java)
     }
+
+    private val dialog by lazy { CustomDialog(this@CreatePickupOrderActivity, R.layout.custom_dialog) }
+    private val confirmDialog by lazy { CustomDialog(this@CreatePickupOrderActivity) }
+
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -69,7 +74,12 @@ class CreatePickupOrderActivity : BaseActivity<ActivityCreatePickupOrderBinding,
                     layout_seller_id_search.background = resources.getDrawable(R.drawable.back_round_3_border_4fb648_disable)
                 }
 
-                mViewModel._orderType.value = position
+                mViewModel.orderType.value = position
+                mViewModel.zipCode.value = ""
+                mViewModel.addressFront.value = ""
+                mViewModel.addressLast.value = ""
+                mViewModel.phoneNo.value = ""
+                mViewModel.remarks.value = ""
             }
         }
 
@@ -88,6 +98,24 @@ class CreatePickupOrderActivity : BaseActivity<ActivityCreatePickupOrderBinding,
                 pickup_image.setImageDrawable(resources.getDrawable(R.drawable.pickup_up_icon))
             } else {
                 pickup_image.setImageDrawable(resources.getDrawable(R.drawable.pickup_down_icon))
+            }
+        }
+
+        mViewModel.checkAlert.observe(this) {
+            if (it != null) {
+                dialog.bindingData = it
+                dialog.visibility = View.VISIBLE
+            } else {
+                dialog.visibility = View.GONE
+            }
+        }
+
+        mViewModel.confirmAlert.observe(this) {
+            if (it != null) {
+                confirmDialog.bindingData = it
+                confirmDialog.visibility = View.VISIBLE
+            } else {
+                confirmDialog.visibility = View.GONE
             }
         }
     }
