@@ -234,11 +234,11 @@ class CreatePickupOrderViewModel : BaseViewModel() {
 
                         val listener = DialogViewModel(
                                 positiveClick = {
-                                    _checkAlert.value = null
+                                    _confirmAlert.value = null
                                     finish()
                                 },
                                 negativeClick = {
-                                    _checkAlert.value = null
+                                    _confirmAlert.value = null
                                 }
                         )
 
