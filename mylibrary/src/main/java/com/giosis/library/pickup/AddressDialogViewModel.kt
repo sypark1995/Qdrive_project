@@ -42,7 +42,7 @@ class AddressDialogViewModel : ListViewModel<AddressResult.AddressResultObject.A
 
         progressVisible.value = true
 
-        RetrofitClient.instanceTestServer().requestGetAddressInfo(data)
+        RetrofitClient.instanceDynamic().requestGetAddressInfo(data)
                 .subscribeOn(Schedulers.io())
                 .observeOn(AndroidSchedulers.mainThread())
                 .subscribe({
