@@ -70,9 +70,9 @@
     <string name="enter_pickup_no">Enter Pickup No.</string>
     <string name="enter_address">Enter Address</string>
     <string name="enter_phone_no">Enter Phone Number</string>
-    <string name="search_pickup_no">Would you like to Search for %s</string>
+    <string name="search_pickup_no">Do you want to search by %s</string>
     <string name="regist_pickup_order">Do you want to register pickup order?</string>
-    <string name="confirm_pickup_order"> Your pickup order has been registered.</string>
+    <string name="confirm_pickup_order">Your pickup order has been registered.</string>
 
     <string name="text_upload_failed">Upload Failed</string>
     <string name="text_today_done">Today Done</string>
