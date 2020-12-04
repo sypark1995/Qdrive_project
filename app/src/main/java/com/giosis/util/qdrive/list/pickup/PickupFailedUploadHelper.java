@@ -291,6 +291,13 @@ public class PickupFailedUploadHelper {
                 Bitmap captureView = imageView.getDrawingCache();
                 String bitmapString = DataUtil.bitmapToString(captureView, ImageUpload.QXPOP, "qdriver/sign", assignNo);
 
+                if (bitmapString.equals("")) {
+                    result.setResultCode(-100);
+                    result.setResultMsg(context.getResources().getString(R.string.msg_upload_fail_image));
+                    return result;
+                }
+
+
                 JSONObject job = new JSONObject();
                 job.accumulate("rcv_type", rcvType);        // VL, RC
                 job.accumulate("stat", "PF");

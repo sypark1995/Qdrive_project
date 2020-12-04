@@ -283,6 +283,13 @@ public class PickupDoneUploadHelper {
 //                String bitmapString = DataUtil.bitmapToString(captureView);
 //                String bitmapString2 = DataUtil.bitmapToString(captureView2);
 
+                if (bitmapString.equals("") || bitmapString2.equals("")) {
+                    result.setResultCode(-100);
+                    result.setResultMsg(context.getResources().getString(R.string.msg_upload_fail_image));
+                    return result;
+                }
+
+
                 JSONObject job = new JSONObject();
                 job.accumulate("rcv_type", "SC");
                 job.accumulate("stat", "P3");

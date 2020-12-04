@@ -61,7 +61,6 @@ object ImageUpload {
             Log.e("ImageUpload", "end upload url  $returnValue")
 
             return returnValue
-
         } catch (e: Exception) {
             Log.e("TAG", e.localizedMessage)
             return ""

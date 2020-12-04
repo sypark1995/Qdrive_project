@@ -280,6 +280,8 @@ public class DeliveryDoneUploadHelper {
 
         private StdResult requestServerUpload(String assignNo) {
 
+            StdResult result = new StdResult();
+
             String bitmapString = "";
             String bitmapString1 = "";
 
@@ -290,6 +292,12 @@ public class DeliveryDoneUploadHelper {
                 signingView.buildDrawingCache();
                 Bitmap signBitmap = signingView.getDrawingCache();
                 bitmapString = DataUtil.bitmapToString(signBitmap, ImageUpload.QXPOD, "qdriver/sign", assignNo);
+
+                if (bitmapString.equals("")) {
+                    result.setResultCode(-100);
+                    result.setResultMsg(context.getResources().getString(R.string.msg_upload_fail_image));
+                    return result;
+                }
             }
 
             if (hasVisitImage) {
@@ -299,6 +307,12 @@ public class DeliveryDoneUploadHelper {
                 imageView.buildDrawingCache();
                 Bitmap visitBitmap = imageView.getDrawingCache();
                 bitmapString1 = DataUtil.bitmapToString(visitBitmap, ImageUpload.QXPOD, "qdriver/delivery", assignNo);
+
+                if (bitmapString1.equals("")) {
+                    result.setResultCode(-100);
+                    result.setResultMsg(context.getResources().getString(R.string.msg_upload_fail_image));
+                    return result;
+                }
             }
 
             Log.e("krm0219", TAG + " DATA  :  " + bitmapString + " / " + bitmapString1);
@@ -319,8 +333,6 @@ public class DeliveryDoneUploadHelper {
                     "invoice_no=? COLLATE NOCASE " + "and reg_id = ?", new String[]{assignNo, opID});
 
 
-            StdResult result = new StdResult();
-
             if (!NetworkUtil.isNetworkAvailable(context)) {
 
                 result.setResultCode(-16);
@@ -328,6 +340,7 @@ public class DeliveryDoneUploadHelper {
                 return result;
             }
 
+            
 //            // TEST.  Upload Failed
 //            if (true) {
 //
@@ -336,6 +349,7 @@ public class DeliveryDoneUploadHelper {
 //
 //                return result;
 //            }
+
 
             try {
 

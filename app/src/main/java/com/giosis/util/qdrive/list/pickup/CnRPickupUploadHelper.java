@@ -355,6 +355,12 @@ public class CnRPickupUploadHelper {
                     Bitmap captureView2 = collectorSigningView.getDrawingCache();
                     bitmapString = DataUtil.bitmapToString(captureView, ImageUpload.QXPOP, "qdriver/sign", assignNo);
                     bitmapString2 = DataUtil.bitmapToString(captureView2, ImageUpload.QXPOP, "qdriver/sign", assignNo);
+
+                    if (bitmapString.equals("") || bitmapString2.equals("")) {
+                        result.setResultCode(-100);
+                        result.setResultMsg(context.getResources().getString(R.string.msg_upload_fail_image));
+                        return result;
+                    }
                 }
 
                 JSONObject job = new JSONObject();

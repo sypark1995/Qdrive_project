@@ -307,6 +307,7 @@
     <string name="msg_upload_fail_16"> The upload job is failed (network disconnected). This data moved to [UPLOAD FAILED] tab. You can upload it at the [UPLOAD FAILED] tab.</string>
     <string name="msg_upload_fail_etc"> The upload job is failed (err code : %d). This data moved to [UPLOAD FAILED] tab. You can upload it at the [UPLOAD FAILED] tab.</string>
     <string name="msg_location_off">Location is off.\nYou should turn on Location.</string>
+    <string name="msg_upload_fail_image" translatable="false">ImageServer Error.\nPlease try again..</string>
 
     <string name="msg_delivery_start_sms">Dear %1$s, Your parcels has been started to delivery by Qxpress. Thank you.</string>
     <string name="msg_send_sms_error">SMS Send Error</string>

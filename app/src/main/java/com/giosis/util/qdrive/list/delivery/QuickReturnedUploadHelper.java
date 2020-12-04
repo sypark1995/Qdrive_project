@@ -253,6 +253,12 @@ public class QuickReturnedUploadHelper {
                 Bitmap captureView = signingView.getDrawingCache();
                 String bitmapString = DataUtil.bitmapToString(captureView, ImageUpload.QXPOD, "qdriver/sign", assignNo);
 
+                if (bitmapString.equals("")) {
+                    result.setResultCode(-100);
+                    result.setResultMsg(context.getResources().getString(R.string.msg_upload_fail_image));
+                    return result;
+                }
+
                 JSONObject job = new JSONObject();
                 job.accumulate("rcv_type", receiveType);
                 job.accumulate("stat", "RT");

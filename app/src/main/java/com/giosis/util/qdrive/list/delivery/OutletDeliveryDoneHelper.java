@@ -302,6 +302,12 @@ public class OutletDeliveryDoneHelper {
                         signingView.buildDrawingCache();
                         Bitmap captureView = signingView.getDrawingCache();
                         bitmapString = DataUtil.bitmapToString(captureView, ImageUpload.QXPOD, "qdriver/sign", assignNo);
+
+                        if (bitmapString.equals("")) {
+                            result.setResultCode(-100);
+                            result.setResultMsg(context.getResources().getString(R.string.msg_upload_fail_image));
+                            return result;
+                        }
                     }
                 } catch (Exception e) {
 

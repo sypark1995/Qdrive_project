@@ -304,6 +304,7 @@
     <string name="msg_back_camera_required">Back camera is required.(LENS_FACING_BACK) \n Please use the \'Gallery\' button.</string>
 
     <string name="msg_please_input_data" translatable="false">Please enter ZipCode or Address</string>
+    <string name="msg_upload_fail_image" translatable="false">ImageServer Error.\nPlease try again..</string>
 
     <!-- Button -->
     <string name="button_download">Download</string>

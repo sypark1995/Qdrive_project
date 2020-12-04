@@ -295,7 +295,6 @@ public class DeviceDataUploadHelper {
                         Log.e("krm0219", " RE-Upload DATA 1 : " + bitmapString);
                         Log.e("krm0219", " RE-Upload DATA 2 : " + bitmapString1);
 
-
                         // sign, picture 다 없으면 업로드 불가능
                         if (bitmapString.equals("") && bitmapString1.equals("")) {
                             result.setResultCode(-14);
@@ -311,6 +310,12 @@ public class DeviceDataUploadHelper {
                         if (imgFile.exists()) {
                             Bitmap myBitmap = BitmapFactory.decodeFile(imgFile.getAbsolutePath());
                             bitmapString = DataUtil.bitmapToString(myBitmap, ImageUpload.QXPOD, "qdriver/sign", uploadData.getNoSongjang());
+
+                            if (bitmapString.equals("")) {
+                                result.setResultCode(-100);
+                                result.setResultMsg(context.getResources().getString(R.string.msg_upload_fail_image));
+                                return result;
+                            }
                         }
                     }
 
@@ -353,6 +358,12 @@ public class DeviceDataUploadHelper {
                         if (imgFile.exists()) {
                             Bitmap myBitmap = BitmapFactory.decodeFile(imgFile.getAbsolutePath());
                             bitmapString = DataUtil.bitmapToString(myBitmap, ImageUpload.QXPOD, "qdriver/sign", uploadData.getNoSongjang());
+
+                            if (bitmapString.equals("")) {
+                                result.setResultCode(-100);
+                                result.setResultMsg(context.getResources().getString(R.string.msg_upload_fail_image));
+                                return result;
+                            }
                         } else {
 
                             result.setResultCode(-14);
@@ -363,6 +374,12 @@ public class DeviceDataUploadHelper {
                         if (imgFile2.exists()) {
                             Bitmap myBitmap2 = BitmapFactory.decodeFile(imgFile2.getAbsolutePath());
                             bitmapString2 = DataUtil.bitmapToString(myBitmap2, ImageUpload.QXPOD, "qdriver/delivery", uploadData.getNoSongjang());
+
+                            if (bitmapString2.equals("")) {
+                                result.setResultCode(-100);
+                                result.setResultMsg(context.getResources().getString(R.string.msg_upload_fail_image));
+                                return result;
+                            }
                         } else {
 
                             result.setResultCode(-14);
@@ -378,6 +395,12 @@ public class DeviceDataUploadHelper {
                         if (imgFile.exists()) {
                             Bitmap myBitmap = BitmapFactory.decodeFile(imgFile.getAbsolutePath());
                             bitmapString = DataUtil.bitmapToString(myBitmap, ImageUpload.QXPOD, "qdriver/sign", uploadData.getNoSongjang());
+
+                            if (bitmapString.equals("")) {
+                                result.setResultCode(-100);
+                                result.setResultMsg(context.getResources().getString(R.string.msg_upload_fail_image));
+                                return result;
+                            }
                         }
                     }
 

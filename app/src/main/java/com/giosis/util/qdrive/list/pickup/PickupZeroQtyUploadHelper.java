@@ -285,6 +285,12 @@ public class PickupZeroQtyUploadHelper {
                 String bitmapString = DataUtil.bitmapToString(captureView, ImageUpload.QXPOP, "qdriver/sign", pickupNo);
                 String bitmapString2 = DataUtil.bitmapToString(captureView2, ImageUpload.QXPOP, "qdriver/sign", pickupNo);
 
+                if (bitmapString.equals("") || bitmapString2.equals("")) {
+                    result.setResultCode(-100);
+                    result.setResultMsg(context.getResources().getString(R.string.msg_upload_fail_image));
+                    return result;
+                }
+
 
                 JSONObject job = new JSONObject();
                 job.accumulate("rcv_type", "ZQ");        // ZQ : Zero Qty

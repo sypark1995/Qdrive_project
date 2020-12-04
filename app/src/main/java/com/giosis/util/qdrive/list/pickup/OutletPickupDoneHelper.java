@@ -279,6 +279,12 @@ public class OutletPickupDoneHelper {
                         signingView.buildDrawingCache();
                         Bitmap captureView = signingView.getDrawingCache();
                         bitmapString = DataUtil.bitmapToString(captureView, ImageUpload.QXPOP, "qdriver/sign", pickup_no);
+
+                        if (bitmapString.equals("")) {
+                            result.setResultCode(-100);
+                            result.setResultMsg(context.getResources().getString(R.string.msg_upload_fail_image));
+                            return result;
+                        }
                     }
                 } catch (Exception e) {
 
