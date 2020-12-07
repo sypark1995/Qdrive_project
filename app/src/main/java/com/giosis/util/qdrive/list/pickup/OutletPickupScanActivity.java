@@ -230,8 +230,8 @@ public class OutletPickupScanActivity extends AppCompatActivity {
         try {
             if (result != null) {
 
-                for (int i = 0; i < result.getTrackingNoList().size(); i++) {
-                    result.getTrackingNoList().get(i).setScanned(false);
+                for (int i = 0; i < result.getResultObject().getTrackingNoList().size(); i++) {
+                    result.getResultObject().getTrackingNoList().get(i).setScanned(false);
                 }
             }
         } catch (Exception e) {
@@ -306,11 +306,11 @@ public class OutletPickupScanActivity extends AppCompatActivity {
 
                 case R.id.btn_sign_p_outlet_next: {
 
-                    Log.e("krm0219", "count : " + result.getTrackingNoList().size());
+                    Log.e("krm0219", "count : " + result.getResultObject().getTrackingNoList().size());
 
                     if (showQRCode) {        // QR Code Show
 
-                        if (0 < result.getTrackingNoList().size()) {
+                        if (0 < result.getResultObject().getTrackingNoList().size()) {
 
                             Intent intent = new Intent(OutletPickupScanActivity.this, CaptureActivity.class);
                             intent.putExtra("title", mTitle);
@@ -380,10 +380,14 @@ public class OutletPickupScanActivity extends AppCompatActivity {
 
                 result = gson.fromJson(jsonString, OutletPickupDoneResult.class);
 
+                Log.e("krm0219", "111");
 
                 if (result != null && outlet_type.equals("7E")) {
 
-                    JSONObject jsonObject = new JSONObject(result.getQRCode());
+                    Log.e("krm0219", "222   " + result.getResultObject().TrackingNumbers);
+
+                    result.getResultObject().setTrackingNumbers(result.getResultObject().getTrackingNumbers());
+                    JSONObject jsonObject = new JSONObject(result.getResultObject().getQRCode());
                     String type = jsonObject.getString("Q");
 
                     if (!type.equals("C")) {
@@ -419,7 +423,7 @@ public class OutletPickupScanActivity extends AppCompatActivity {
 
                     if (outlet_type.equals("7E")) {
 
-                        QRCodeAsyncTask qrCodeAsyncTask = new QRCodeAsyncTask(result.getQRCode());
+                        QRCodeAsyncTask qrCodeAsyncTask = new QRCodeAsyncTask(result.getResultObject().getQRCode());
                         qrCodeAsyncTask.execute();
                     } else if (outlet_type.equals("FL")) {
 
@@ -433,7 +437,7 @@ public class OutletPickupScanActivity extends AppCompatActivity {
 
                     if (mQty.equals("0")) {
 
-                        mQty = Integer.toString(result.getTrackingNoList().size());
+                        mQty = Integer.toString(result.getResultObject().getTrackingNoList().size());
                         text_sign_p_outlet_total_qty.setText(mQty);
                     }
 

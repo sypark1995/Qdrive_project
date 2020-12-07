@@ -355,7 +355,7 @@ public final class CaptureActivity extends AppCompatActivity implements SurfaceH
                 }
 
 
-                ArrayList<OutletPickupDoneResult.OutletPickupDoneTrackingNoItem> listItem = resultData.getTrackingNoList();
+                ArrayList<OutletPickupDoneResult.OutletPickupDoneItem.OutletPickupDoneTrackingNoItem> listItem = resultData.getResultObject().getTrackingNoList();
 
                 for (int i = 0; i < listItem.size(); i++) {
 
@@ -648,7 +648,7 @@ public final class CaptureActivity extends AppCompatActivity implements SurfaceH
 
                     if (resultData != null) {
 
-                        ArrayList<OutletPickupDoneResult.OutletPickupDoneTrackingNoItem> listItem = resultData.getTrackingNoList();
+                        ArrayList<OutletPickupDoneResult.OutletPickupDoneItem.OutletPickupDoneTrackingNoItem> listItem = resultData.getResultObject().getTrackingNoList();
 
                         for (int i = 0; i < listItem.size(); i++) {
 
@@ -1617,7 +1617,7 @@ public final class CaptureActivity extends AppCompatActivity implements SurfaceH
                 break;
             case BarcodeType.OUTLET_PICKUP_SCAN:
 
-                ArrayList<OutletPickupDoneResult.OutletPickupDoneTrackingNoItem> listItem = resultData.getTrackingNoList();
+                ArrayList<OutletPickupDoneResult.OutletPickupDoneItem.OutletPickupDoneTrackingNoItem> listItem = resultData.getResultObject().getTrackingNoList();
                 int position = -400;
 
                 for (int i = 0; i < listItem.size(); i++) {
@@ -1919,9 +1919,9 @@ public final class CaptureActivity extends AppCompatActivity implements SurfaceH
 
             boolean isScanned = false;
 
-            for (int i = 0; i < resultData.getTrackingNoList().size(); i++) {
+            for (int i = 0; i < resultData.getResultObject().getTrackingNoList().size(); i++) {
 
-                if (resultData.getTrackingNoList().get(i).isScanned()) {
+                if (resultData.getResultObject().getTrackingNoList().get(i).isScanned()) {
                     isScanned = true;
                 }
             }
@@ -2008,23 +2008,23 @@ public final class CaptureActivity extends AppCompatActivity implements SurfaceH
             case BarcodeType.OUTLET_PICKUP_SCAN: {
 
                 int scanned_qty = 0;
-                for (int i = 0; i < resultData.getTrackingNoList().size(); i++) {
-                    if (resultData.getTrackingNoList().get(i).isScanned()) {
+                for (int i = 0; i < resultData.getResultObject().getTrackingNoList().size(); i++) {
+                    if (resultData.getResultObject().getTrackingNoList().get(i).isScanned()) {
 
                         scanned_qty++;
                     }
                 }
 
                 String scanned_list = "";
-                for (int i = 0; i < resultData.getTrackingNoList().size(); i++) {
+                for (int i = 0; i < resultData.getResultObject().getTrackingNoList().size(); i++) {
 
-                    if (resultData.getTrackingNoList().get(i).isScanned()) {
+                    if (resultData.getResultObject().getTrackingNoList().get(i).isScanned()) {
 
                         if (!scanned_list.equals("")) {
                             scanned_list += ",";
                         }
 
-                        scanned_list += resultData.getTrackingNoList().get(i).getTrackingNo();
+                        scanned_list += resultData.getResultObject().getTrackingNoList().get(i).getTrackingNo();
                     }
                 }
                 Log.e(TAG, "Outlet Pickup Scanned List : " + scanned_list);
@@ -2061,7 +2061,7 @@ public final class CaptureActivity extends AppCompatActivity implements SurfaceH
 
             if (mScanType.equals(BarcodeType.OUTLET_PICKUP_SCAN)) {
 
-                ArrayList<OutletPickupDoneResult.OutletPickupDoneTrackingNoItem> listItem = resultData.getTrackingNoList();
+                ArrayList<OutletPickupDoneResult.OutletPickupDoneItem.OutletPickupDoneTrackingNoItem> listItem = resultData.getResultObject().getTrackingNoList();
 
                 for (int i = 0; i < listItem.size(); i++) {
 
