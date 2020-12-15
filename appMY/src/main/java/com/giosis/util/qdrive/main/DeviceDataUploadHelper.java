@@ -298,6 +298,8 @@ public class DeviceDataUploadHelper extends ManualHelper {
                             bitmapString1 = DataUtil.bitmapToString(myBitmap, ImageUpload.QXPOD, "qdriver/delivery", uploadData.getNoSongjang());
                         }
 
+                        Log.e("krm0219", " RE-Upload DATA 1 : " + bitmapString);
+                        Log.e("krm0219", " RE-Upload DATA 2 : " + bitmapString1);
 
                         // 사인 이미지 없으면 업로드 실패
                         if (bitmapString.equals("") && bitmapString1.equals("")) {
@@ -314,6 +316,12 @@ public class DeviceDataUploadHelper extends ManualHelper {
                         if (imgFile.exists()) {
                             Bitmap myBitmap = BitmapFactory.decodeFile(imgFile.getAbsolutePath());
                             bitmapString = DataUtil.bitmapToString(myBitmap, ImageUpload.QXPOD, "qdriver/sign", uploadData.getNoSongjang());
+
+                            if (bitmapString.equals("")) {
+                                result.setResultCode(-100);
+                                result.setResultMsg(context.getResources().getString(R.string.msg_upload_fail_image));
+                                return result;
+                            }
                         }
                     }
 
@@ -358,6 +366,12 @@ public class DeviceDataUploadHelper extends ManualHelper {
                         if (imgFile.exists()) {
                             Bitmap myBitmap = BitmapFactory.decodeFile(imgFile.getAbsolutePath());
                             bitmapString = DataUtil.bitmapToString(myBitmap, ImageUpload.QXPOD, "qdriver/sign", uploadData.getNoSongjang());
+
+                            if (bitmapString.equals("")) {
+                                result.setResultCode(-100);
+                                result.setResultMsg(context.getResources().getString(R.string.msg_upload_fail_image));
+                                return result;
+                            }
                         } else {
                             result.setResultCode(-14);
                             result.setResultMsg("");
@@ -367,6 +381,12 @@ public class DeviceDataUploadHelper extends ManualHelper {
                         if (imgFile2.exists()) {
                             Bitmap myBitmap2 = BitmapFactory.decodeFile(imgFile2.getAbsolutePath());
                             bitmapString2 = DataUtil.bitmapToString(myBitmap2, ImageUpload.QXPOD, "qdriver/delivery", uploadData.getNoSongjang());
+
+                            if (bitmapString2.equals("")) {
+                                result.setResultCode(-100);
+                                result.setResultMsg(context.getResources().getString(R.string.msg_upload_fail_image));
+                                return result;
+                            }
                         } else {
                             result.setResultCode(-14);
                             result.setResultMsg("");
@@ -381,6 +401,12 @@ public class DeviceDataUploadHelper extends ManualHelper {
                         if (imgFile.exists()) {
                             Bitmap myBitmap = BitmapFactory.decodeFile(imgFile.getAbsolutePath());
                             bitmapString = DataUtil.bitmapToString(myBitmap, ImageUpload.QXPOD, "qdriver/sign", uploadData.getNoSongjang());
+
+                            if (bitmapString.equals("")) {
+                                result.setResultCode(-100);
+                                result.setResultMsg(context.getResources().getString(R.string.msg_upload_fail_image));
+                                return result;
+                            }
                         }
                     }
 
@@ -410,7 +436,7 @@ public class DeviceDataUploadHelper extends ManualHelper {
                 }
 
 
-                String jsonString = Custom_JsonParser.requestServerDataReturnJSON(MOBILE_SERVER_URL, methodName, job);
+                String jsonString = Custom_JsonParser.requestServerDataReturnJSON(methodName, job);
                 // {"ResultCode":0,"ResultMsg":"SUCCESS"}
                 // {"ResultCode":-11,"ResultMsg":"SUCCESS"}
 

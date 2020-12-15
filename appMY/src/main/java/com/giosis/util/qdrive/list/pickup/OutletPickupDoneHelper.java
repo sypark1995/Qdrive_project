@@ -288,6 +288,12 @@ public class OutletPickupDoneHelper extends ManualHelper {
                         signingView.buildDrawingCache();
                         Bitmap captureView = signingView.getDrawingCache();
                         bitmapString = DataUtil.bitmapToString(captureView, ImageUpload.QXPOP, "qdirver/sign", pickup_no);
+
+                        if (bitmapString.equals("")) {
+                            result.setResultCode(-100);
+                            result.setResultMsg(context.getResources().getString(R.string.msg_upload_fail_image));
+                            return result;
+                        }
                     }
                 } catch (Exception e) {
 
@@ -321,7 +327,7 @@ public class OutletPickupDoneHelper extends ManualHelper {
 
 
                 String methodName = "SetOutletPickupUploadData";
-                String jsonString = Custom_JsonParser.requestServerDataReturnJSON(MOBILE_SERVER_URL, methodName, job);
+                String jsonString = Custom_JsonParser.requestServerDataReturnJSON(methodName, job);
                 // {"ResultCode":-11,"ResultMsg":"Failed"}
 
                 JSONObject jsonObject = new JSONObject(jsonString);

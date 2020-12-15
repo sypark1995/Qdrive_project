@@ -259,6 +259,12 @@ public class DeliveryFailedUploadHelper extends ManualHelper {
                 Bitmap captureView = imageView.getDrawingCache();
                 String bitmapString = DataUtil.bitmapToString(captureView, ImageUpload.QXPOD, "qdriver/sign", assignNo);
 
+                if (bitmapString.equals("")) {
+                    result.setResultCode(-100);
+                    result.setResultMsg(context.getResources().getString(R.string.msg_upload_fail_image));
+                    return result;
+                }
+
                 JSONObject job = new JSONObject();
                 job.accumulate("rcv_type", receiveType);
                 job.accumulate("stat", "DX");
@@ -281,7 +287,7 @@ public class DeliveryFailedUploadHelper extends ManualHelper {
                 job.accumulate("nation_cd", DataUtil.nationCode);
 
 
-                String jsonString = Custom_JsonParser.requestServerDataReturnJSON(MOBILE_SERVER_URL, com.giosis.library.util.DataUtil.requestSetUploadDeliveryData, job);
+                String jsonString = Custom_JsonParser.requestServerDataReturnJSON(com.giosis.library.util.DataUtil.requestSetUploadDeliveryData, job);
                 // {"ResultCode":0,"ResultMsg":"SUCCESS"}
                 // {"ResultCode":-11,"ResultMsg":"Upload Failed."}
 

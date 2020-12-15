@@ -46,8 +46,6 @@ import javax.net.ssl.SSLContext;
 import javax.net.ssl.TrustManager;
 import javax.net.ssl.X509TrustManager;
 
-import static com.giosis.util.qdrive.barcodescanner.ManualHelper.MOBILE_SERVER_URL;
-
 /**
  * @author krm0219
  * LIST > In-Progress > Outlet Pickup Done (Step 1)
@@ -215,8 +213,8 @@ public class OutletPickupScanActivity extends CommonActivity {
         try {
             if (result != null) {
 
-                for (int i = 0; i < result.getTrackingNoList().size(); i++) {
-                    result.getTrackingNoList().get(i).setScanned(false);
+                for (int i = 0; i < result.getResultObject().getTrackingNoList().size(); i++) {
+                    result.getResultObject().getTrackingNoList().get(i).setScanned(false);
                 }
             }
         } catch (Exception e) {
@@ -291,11 +289,11 @@ public class OutletPickupScanActivity extends CommonActivity {
 
                 case R.id.btn_sign_p_outlet_next: {
 
-                    Log.e("krm0219", "count : " + result.getTrackingNoList().size());
+                    Log.e("krm0219", "count : " + result.getResultObject().getTrackingNoList().size());
 
                     if (showQRCode) {        // QR Code Show
 
-                        if (0 < result.getTrackingNoList().size()) {
+                        if (0 < result.getResultObject().getTrackingNoList().size()) {
 
                             CaptureActivity.removeBarcodeListInstance();
 
@@ -364,14 +362,15 @@ public class OutletPickupScanActivity extends CommonActivity {
 
 
                 String methodName = "GetCollectionPickupNoList";
-                String jsonString = Custom_JsonParser.requestServerDataReturnJSON(MOBILE_SERVER_URL, methodName, job);
+                String jsonString = Custom_JsonParser.requestServerDataReturnJSON(methodName, job);
 
                 result = gson.fromJson(jsonString, OutletPickupDoneResult.class);
 
 
                 if (result != null && outlet_type.equals("7E")) {
 
-                    JSONObject jsonObject = new JSONObject(result.getQRCode());
+                    result.getResultObject().setTrackingNumbers(result.getResultObject().getTrackingNumbers());
+                    JSONObject jsonObject = new JSONObject(result.getResultObject().getQRCode());
                     String type = jsonObject.getString("Q");
 
                     if (!type.equals("C")) {
@@ -406,7 +405,7 @@ public class OutletPickupScanActivity extends CommonActivity {
 
                     if (outlet_type.equals("7E")) {
 
-                        QRCodeAsyncTask qrCodeAsyncTask = new QRCodeAsyncTask(result.getQRCode());
+                        QRCodeAsyncTask qrCodeAsyncTask = new QRCodeAsyncTask(result.getResultObject().getQRCode());
                         qrCodeAsyncTask.execute();
                     } else if (outlet_type.equals("FL")) {
 
@@ -420,7 +419,7 @@ public class OutletPickupScanActivity extends CommonActivity {
 
                     if (mQty.equals("0")) {
 
-                        mQty = Integer.toString(result.getTrackingNoList().size());
+                        mQty = Integer.toString(result.getResultObject().getTrackingNoList().size());
                         text_sign_p_outlet_total_qty.setText(mQty);
                     }
 

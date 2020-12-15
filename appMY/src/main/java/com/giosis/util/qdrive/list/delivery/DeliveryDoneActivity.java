@@ -56,8 +56,6 @@ import org.json.JSONObject;
 
 import java.util.ArrayList;
 
-import static com.giosis.util.qdrive.barcodescanner.ManualHelper.MOBILE_SERVER_URL;
-
 
 /***************
  * @author jtpark
@@ -1014,7 +1012,7 @@ public class DeliveryDoneActivity extends CommonActivity implements Camera2APIs.
 
 
                 String methodName = "QRCodeForQStationDelivery";
-                String jsonString = Custom_JsonParser.requestServerDataReturnJSON(MOBILE_SERVER_URL, methodName, job);
+                String jsonString = Custom_JsonParser.requestServerDataReturnJSON(methodName, job);
 
                 resultObj = gson.fromJson(jsonString, QRCodeResult.class);
             } catch (Exception e) {

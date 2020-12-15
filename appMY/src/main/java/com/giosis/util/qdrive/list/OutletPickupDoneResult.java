@@ -13,18 +13,8 @@ public class OutletPickupDoneResult implements Serializable {
     @SerializedName("ResultMsg")
     String resultMsg;
 
-
-    @SerializedName("PickupNo")
-    String pickupNo;
-
-    @SerializedName("JobNumber")
-    String jobNumber;
-
-    @SerializedName("QRCode")
-    String QRCode;
-
-    @SerializedName("ListTrackingNo")
-    String TrackingNumbers;
+    @SerializedName("ResultObject")
+    OutletPickupDoneItem resultObject;
 
 
     public String getResultCode() {
@@ -43,104 +33,128 @@ public class OutletPickupDoneResult implements Serializable {
         this.resultMsg = resultMsg;
     }
 
-
-    public String getPickupNo() {
-        return pickupNo;
+    public OutletPickupDoneItem getResultObject() {
+        return resultObject;
     }
 
-    public void setPickupNo(String pickupNo) {
-        this.pickupNo = pickupNo;
+    public void setResultObject(OutletPickupDoneItem resultObject) {
+        this.resultObject = resultObject;
     }
 
-    public String getJobNumber() {
-        return jobNumber;
-    }
 
-    public void setJobNumber(String jobNumber) {
-        this.jobNumber = jobNumber;
-    }
+    public class OutletPickupDoneItem implements Serializable {
 
-    public String getQRCode() {
-        return QRCode;
-    }
+        @SerializedName("PickupNo")
+        String pickupNo;
 
-    public void setQRCode(String QRCode) {
-        this.QRCode = QRCode;
-    }
+        @SerializedName("JobNumber")
+        String jobNumber;
 
-    public String getTrackingNumbers() {
-        return TrackingNumbers;
-    }
+        @SerializedName("QRCode")
+        String QRCode;
 
-    public void setTrackingNumbers(String trackingNumbers) {
-        TrackingNumbers = trackingNumbers;
-
-        TrackingNumbers = TrackingNumbers.replace("[", "");
-        TrackingNumbers = TrackingNumbers.replace("]", "");
-        TrackingNumbers = TrackingNumbers.replace("\"", "");
-
-        splitString(TrackingNumbers);
-    }
-
-    void splitString(String tracking_no_list) {
-
-        ArrayList<OutletPickupDoneTrackingNoItem> list = new ArrayList<>();
+        @SerializedName("ListTrackingNo")
+        String TrackingNumbers;
 
 
-        String[] strings = tracking_no_list.split(",");
-
-
-        for (int i = 0; i < strings.length; i++) {
-
-            OutletPickupDoneTrackingNoItem item = new OutletPickupDoneTrackingNoItem();
-            item.setTrackingNo(strings[i]);
-            item.setScanned(false);
-
-            list.add(item);
+        public String getPickupNo() {
+            return pickupNo;
         }
 
-        setTrackingNoList(list);
-    }
-
-
-    ArrayList<OutletPickupDoneTrackingNoItem> trackingNoList = new ArrayList<>();
-
-    public ArrayList<OutletPickupDoneTrackingNoItem> getTrackingNoList() {
-        return trackingNoList;
-    }
-
-    public void setTrackingNoList(ArrayList<OutletPickupDoneTrackingNoItem> trackingNoList) {
-        this.trackingNoList = trackingNoList;
-    }
-
-    public static class OutletPickupDoneTrackingNoItem implements Serializable {
-
-        String trackingNo;
-        String receiver;
-        boolean isScanned;
-
-        public String getTrackingNo() {
-            return trackingNo;
+        public void setPickupNo(String pickupNo) {
+            this.pickupNo = pickupNo;
         }
 
-        public void setTrackingNo(String trackingNo) {
-            this.trackingNo = trackingNo;
+        public String getJobNumber() {
+            return jobNumber;
         }
 
-        public String getReceiver() {
-            return receiver;
+        public void setJobNumber(String jobNumber) {
+            this.jobNumber = jobNumber;
         }
 
-        public void setReceiver(String receiver) {
-            this.receiver = receiver;
+        public String getQRCode() {
+            return QRCode;
         }
 
-        public boolean isScanned() {
-            return isScanned;
+        public void setQRCode(String QRCode) {
+            this.QRCode = QRCode;
         }
 
-        public void setScanned(boolean scanned) {
-            isScanned = scanned;
+        public String getTrackingNumbers() {
+            return TrackingNumbers;
+        }
+
+        public void setTrackingNumbers(String trackingNumbers) {
+            TrackingNumbers = trackingNumbers;
+
+            TrackingNumbers = TrackingNumbers.replace("[", "");
+            TrackingNumbers = TrackingNumbers.replace("]", "");
+            TrackingNumbers = TrackingNumbers.replace("\"", "");
+
+            splitString(TrackingNumbers);
+        }
+
+        void splitString(String tracking_no_list) {
+
+            ArrayList<OutletPickupDoneTrackingNoItem> list = new ArrayList<>();
+
+
+            String[] strings = tracking_no_list.split(",");
+
+
+            for (int i = 0; i < strings.length; i++) {
+
+                OutletPickupDoneTrackingNoItem item = new OutletPickupDoneTrackingNoItem();
+                item.setTrackingNo(strings[i]);
+                item.setScanned(false);
+
+                list.add(item);
+            }
+
+            setTrackingNoList(list);
+        }
+
+
+        ArrayList<OutletPickupDoneTrackingNoItem> trackingNoList = new ArrayList<>();
+
+        public ArrayList<OutletPickupDoneTrackingNoItem> getTrackingNoList() {
+            return trackingNoList;
+        }
+
+        public void setTrackingNoList(ArrayList<OutletPickupDoneTrackingNoItem> trackingNoList) {
+            this.trackingNoList = trackingNoList;
+        }
+
+        public class OutletPickupDoneTrackingNoItem implements Serializable {
+
+            String trackingNo;
+            String receiver;
+            boolean isScanned;
+
+            public String getTrackingNo() {
+                return trackingNo;
+            }
+
+            public void setTrackingNo(String trackingNo) {
+                this.trackingNo = trackingNo;
+            }
+
+            public String getReceiver() {
+                return receiver;
+            }
+
+            public void setReceiver(String receiver) {
+                this.receiver = receiver;
+            }
+
+            public boolean isScanned() {
+                return isScanned;
+            }
+
+            public void setScanned(boolean scanned) {
+                isScanned = scanned;
+            }
         }
     }
 }

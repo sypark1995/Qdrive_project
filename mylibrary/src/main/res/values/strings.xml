@@ -60,19 +60,20 @@
     <string name="text_search_address" translatable="false">Search Address</string>
     <string name="text_zip_code_or_address" translatable="false">Postal Code or Detail Address</string>
 
-    <string name="text_create_pickup_order">Create Pickup Order</string>
-    <string name="text_remarks">Remarks</string>
-    <string name="text_register">Register</string>
-    <string name="text_sender_info">Sender Information</string>
-    <string name="pickup_order_seller">Qoo10 Seller\'s Pickup Order</string>
-    <string name="pickup_order_general">General Pickup Order</string>
-    <string name="enter_seller_id">Enter Seller id </string>
-    <string name="enter_pickup_no">Enter Pickup No.</string>
-    <string name="enter_address">Enter Address</string>
-    <string name="enter_phone_no">Enter Phone Number</string>
-    <string name="search_pickup_no">Do you want to search by %s</string>
-    <string name="regist_pickup_order">Do you want to register pickup order?</string>
-    <string name="confirm_pickup_order">Your pickup order has been registered.</string>
+    <string name="text_pickup_address" translatable="false">Pickup Address</string>
+    <string name="text_create_pickup_order" translatable="false">Create Pickup Order</string>
+    <string name="text_remarks" translatable="false">Remarks</string>
+    <string name="text_register" translatable="false">Register</string>
+    <string name="text_sender_info" translatable="false">Sender Information</string>
+    <string name="pickup_order_seller" translatable="false">Qoo10 Seller\'s Pickup Order</string>
+    <string name="pickup_order_general" translatable="false">General Pickup Order</string>
+    <string name="enter_seller_id" translatable="false">Enter Seller id </string>
+    <string name="enter_pickup_no" translatable="false">Enter Pickup No.</string>
+    <string name="enter_address" translatable="false">Enter Address</string>
+    <string name="enter_phone_no" translatable="false">Enter Phone Number</string>
+    <string name="search_pickup_no" translatable="false">Do you want to search by %s</string>
+    <string name="regist_pickup_order" translatable="false">Do you want to register pickup order?</string>
+    <string name="confirm_pickup_order" translatable="false">Your pickup order has been registered.</string>
 
     <string name="text_upload_failed">Upload Failed</string>
     <string name="text_today_done">Today Done</string>

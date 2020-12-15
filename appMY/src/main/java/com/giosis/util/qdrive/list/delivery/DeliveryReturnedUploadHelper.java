@@ -264,6 +264,12 @@ public class DeliveryReturnedUploadHelper extends ManualHelper {
                 Bitmap captureView = signingView.getDrawingCache();
                 String bitmapString = DataUtil.bitmapToString(captureView, ImageUpload.QXPOD, "qdriver/sign", assignNo);
 
+                if (bitmapString.equals("")) {
+                    result.setResultCode(-100);
+                    result.setResultMsg(context.getResources().getString(R.string.msg_upload_fail_image));
+                    return result;
+                }
+
                 JSONObject job = new JSONObject();
                 job.accumulate("rcv_type", receiveType);
                 job.accumulate("stat", "RT");
@@ -284,7 +290,7 @@ public class DeliveryReturnedUploadHelper extends ManualHelper {
 
 
                 String methodName = "setDeliveryRTNDPTypeUploadData";
-                String jsonString = Custom_JsonParser.requestServerDataReturnJSON(MOBILE_SERVER_URL, methodName, job);
+                String jsonString = Custom_JsonParser.requestServerDataReturnJSON(methodName, job);
                 // {"ResultCode":-32,"ResultMsg":"SUCCESS"}
 
                 JSONObject jsonObject = new JSONObject(jsonString);

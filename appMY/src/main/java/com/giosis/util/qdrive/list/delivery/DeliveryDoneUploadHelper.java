@@ -7,7 +7,6 @@ import android.content.Context;
 import android.content.DialogInterface;
 import android.content.DialogInterface.OnClickListener;
 import android.graphics.Bitmap;
-import android.media.Image;
 import android.os.AsyncTask;
 import android.text.TextUtils;
 import android.util.Log;
@@ -281,6 +280,8 @@ public class DeliveryDoneUploadHelper extends ManualHelper {
 
         private StdResult requestServerUpload(String assignNo) {
 
+            StdResult result = new StdResult();
+
             String bitmapString = "";
             String bitmapString1 = "";
 
@@ -291,6 +292,12 @@ public class DeliveryDoneUploadHelper extends ManualHelper {
                 signingView.buildDrawingCache();
                 Bitmap signBitmap = signingView.getDrawingCache();
                 bitmapString = DataUtil.bitmapToString(signBitmap, ImageUpload.QXPOD, "qdriver/sign", assignNo);
+
+                if (bitmapString.equals("")) {
+                    result.setResultCode(-100);
+                    result.setResultMsg(context.getResources().getString(R.string.msg_upload_fail_image));
+                    return result;
+                }
             }
 
             if (hasVisitImage) {
@@ -300,7 +307,15 @@ public class DeliveryDoneUploadHelper extends ManualHelper {
                 imageView.buildDrawingCache();
                 Bitmap visitBitmap = imageView.getDrawingCache();
                 bitmapString1 = DataUtil.bitmapToString(visitBitmap, ImageUpload.QXPOD, "qdriver/delivery", assignNo);
+
+                if (bitmapString1.equals("")) {
+                    result.setResultCode(-100);
+                    result.setResultMsg(context.getResources().getString(R.string.msg_upload_fail_image));
+                    return result;
+                }
             }
+            Log.e("krm0219", TAG + " DATA  :  " + bitmapString + " / " + bitmapString1);
+
 
             SimpleDateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
             Date date = new Date();
@@ -317,8 +332,6 @@ public class DeliveryDoneUploadHelper extends ManualHelper {
             dbHelper.update(DatabaseHelper.DB_TABLE_INTEGRATION_LIST, contentVal,
                     "invoice_no=? COLLATE NOCASE and reg_id = ?", new String[]{assignNo, opID});
 
-
-            StdResult result = new StdResult();
 
             if (!NetworkUtil.isNetworkAvailable(context)) {
 
@@ -359,7 +372,7 @@ public class DeliveryDoneUploadHelper extends ManualHelper {
                 job.accumulate("nation_cd", DataUtil.nationCode);
 
 
-                String jsonString = Custom_JsonParser.requestServerDataReturnJSON(MOBILE_SERVER_URL, com.giosis.library.util.DataUtil.requestSetUploadDeliveryData, job);
+                String jsonString = Custom_JsonParser.requestServerDataReturnJSON(com.giosis.library.util.DataUtil.requestSetUploadDeliveryData, job);
                 // {"ResultCode":0,"ResultMsg":"SUCCESS"}
                 // {"ResultCode":-11,"ResultMsg":"Upload Failed."}
 

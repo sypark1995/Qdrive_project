@@ -21,8 +21,6 @@ import com.giosis.util.qdrive.util.ui.CommonActivity;
 
 import org.json.JSONObject;
 
-import static com.giosis.util.qdrive.barcodescanner.ManualHelper.MOBILE_SERVER_URL;
-
 /**
  * @author krm0219
  */
@@ -138,7 +136,7 @@ public class ListNotInHousedActivity extends CommonActivity {
                 job.accumulate("nation_cd", DataUtil.nationCode);
 
                 String methodName = "GetOutStandingInhousedPickupList";
-                String jsonString = Custom_JsonParser.requestServerDataReturnJSON(MOBILE_SERVER_URL, methodName, job);
+                String jsonString = Custom_JsonParser.requestServerDataReturnJSON(methodName, job);
                 // Result : {"ResultObject":[{"contr_no":"55004095","partner_ref_no":"P42319N","invoice_no":"P42319N","stat":"P3","req_nm":"KARAM","req_dt":"2019-10-0109:00-17:00","tel_no":"01012345678","hp_no":"01012345678","zip_code":"48780","address":"50 PEKIN STREET#958","pickup_hopeday":"2019-10-01","pickup_hopetime":"09:00-17:00","sender_nm":"","del_memo":"pickup","driver_memo":"(by Qdrive RealTime-Upload)","fail_reason":"  ","qty":"1","cust_nm":"Qxpress","partner_id":"qxpress.sg","dr_assign_requestor":null,"dr_assign_req_dt":null,"dr_assign_stat":null,"dr_req_no":null,"failed_count":null,"route":null,"del_driver_id":null,"cust_no":"100012253","real_qty":"2","not_processed_qty":"2","pickup_cmpl_dt":"Oct  1 2019  1:58PM","qdriveOutstandingInhousedPickupLists":[{"packing_no":"SG19611942","shipping_no":"","tracking_no":"SG19611942","purchased_amt":"25.00","purchased_currency":"SGD","stat":"P3"},{"packing_no":"SG19611941","shipping_no":"","tracking_no":"SG19611941","purchased_amt":"25.00","purchased_currency":"SGD","stat":"P3"}]},{"contr_no":"55004087","partner_ref_no":"P42314N","invoice_no":"P42314N","stat":"P3","req_nm":"KARAM","req_dt":"2019-09-2709:00-17:00","tel_no":"01012345678","hp_no":"01012345678","zip_code":"88702","address":"10 RAEBURN PARK#10-50","pickup_hopeday":"2019-09-27","pickup_hopetime":"09:00-17:00","sender_nm":"","del_memo":"test","driver_memo":"(by Qdrive RealTime-Upload)","fail_reason":"  ","qty":"1","cust_nm":"Qxpress","partner_id":"qxpress.sg","dr_assign_requestor":null,"dr_assign_req_dt":null,"dr_assign_stat":null,"dr_req_no":null,"failed_count":null,"route":null,"del_driver_id":null,"cust_no":"100012253","real_qty":"2","not_processed_qty":"2","pickup_cmpl_dt":"Sep 27 2019 10:51AM","qdriveOutstandingInhousedPickupLists":[{"packing_no":"SG19611931","shipping_no":"","tracking_no":"SG19611931","purchased_amt":"25.00","purchased_currency":"SGD","stat":"P3"},{"packing_no":"SG19611932","shipping_no":"","tracking_no":"SG19611932","purchased_amt":"25.00","purchased_currency":"SGD","stat":"P3"}]}],"ResultCode":0,"ResultMsg":"SUCCESS"}
 
                 result = Custom_JsonParser.getNotInHousedList(jsonString);

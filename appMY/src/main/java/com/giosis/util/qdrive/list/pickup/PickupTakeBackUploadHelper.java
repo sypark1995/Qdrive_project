@@ -283,6 +283,13 @@ public class PickupTakeBackUploadHelper extends ManualHelper {
                 String bitmapString = DataUtil.bitmapToString(captureView, ImageUpload.QXPOP, "qdriver/sign", pickup_no);
                 String bitmapString2 = DataUtil.bitmapToString(captureView2, ImageUpload.QXPOP, "qdriver/sign", pickup_no);
 
+                if (bitmapString.equals("") || bitmapString2.equals("")) {
+                    result.setResultCode(-100);
+                    result.setResultMsg(context.getResources().getString(R.string.msg_upload_fail_image));
+                    return result;
+                }
+
+
                 JSONObject job = new JSONObject();
                 job.accumulate("rcv_type", "SC_TAKEBACK");
                 job.accumulate("pickup_no", pickup_no);
@@ -304,7 +311,7 @@ public class PickupTakeBackUploadHelper extends ManualHelper {
 
 
                 String methodName = "SetPickupUploadData_TakeBack";
-                String jsonString = Custom_JsonParser.requestServerDataReturnJSON(MOBILE_SERVER_URL, methodName, job);
+                String jsonString = Custom_JsonParser.requestServerDataReturnJSON(methodName, job);
                 // {"ResultCode":10,"ResultMsg":"Success"}
                 // {"ResultCode":-1,"ResultMsg":"Scanned number is too short"}
 

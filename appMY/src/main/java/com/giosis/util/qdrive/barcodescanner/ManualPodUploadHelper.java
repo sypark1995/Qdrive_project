@@ -270,6 +270,10 @@ public class ManualPodUploadHelper extends ManualHelper {
                     if (imgFile.exists()) {
                         Bitmap myBitmap = BitmapFactory.decodeFile(imgFile.getAbsolutePath());
                         bitmapString = DataUtil.bitmapToString(myBitmap, ImageUpload.QXPOP, "qdriver/sign", uploadData.getNoSongjang());
+
+                        if (bitmapString.equals("")) {
+                            return -100;
+                        }
                     }
 
                     if (bitmapString.equals("")) {
@@ -291,7 +295,7 @@ public class ManualPodUploadHelper extends ManualHelper {
                 }
 
                 String methodName = "SetScanTransportDataRefac";
-                String jsonString = Custom_JsonParser.requestServerDataReturnJSON(MOBILE_SERVER_URL, methodName, job);
+                String jsonString = Custom_JsonParser.requestServerDataReturnJSON(methodName, job);
                 // {"ResultCode":-12,"ResultMsg":"SUCCESS"}
 
                 JSONObject jsonObject = new JSONObject(jsonString);

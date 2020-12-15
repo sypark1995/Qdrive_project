@@ -156,7 +156,7 @@ public class PickupAssignCheckHelper extends ManualHelper {
 
 
             String methodName = "GetManualAssignCount";
-            String jsonString = Custom_JsonParser.requestServerDataReturnJSON(MOBILE_SERVER_URL, methodName, job);
+            String jsonString = Custom_JsonParser.requestServerDataReturnJSON(methodName, job);
             // {"ResultCode":0,"ResultMsg":"SUCCESS"}
 
             JSONObject jsonObject = new JSONObject(jsonString);

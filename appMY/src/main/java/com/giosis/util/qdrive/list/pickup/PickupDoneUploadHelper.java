@@ -293,6 +293,13 @@ public class PickupDoneUploadHelper extends ManualHelper {
                 String bitmapString = DataUtil.bitmapToString(captureView, ImageUpload.QXPOP, "qdriver/sign", pickupNo);
                 String bitmapString2 = DataUtil.bitmapToString(captureView2, ImageUpload.QXPOP, "qdriver/sign", pickupNo);
 
+                if (bitmapString.equals("") || bitmapString2.equals("")) {
+                    result.setResultCode(-100);
+                    result.setResultMsg(context.getResources().getString(R.string.msg_upload_fail_image));
+                    return result;
+                }
+
+
                 JSONObject job = new JSONObject();
                 job.accumulate("opId", opID);
                 job.accumulate("chg_id", opID);
@@ -318,7 +325,7 @@ public class PickupDoneUploadHelper extends ManualHelper {
 
 
                 String methodName = "SetPickupUploadData_ScanAll";
-                String jsonString = Custom_JsonParser.requestServerDataReturnJSON(MOBILE_SERVER_URL, methodName, job);
+                String jsonString = Custom_JsonParser.requestServerDataReturnJSON(methodName, job);
                 // {"ResultCode":0,"ResultMsg":"Success"}
                 // {"ResultCode":-11,"ResultMsg":"Failed"}
 

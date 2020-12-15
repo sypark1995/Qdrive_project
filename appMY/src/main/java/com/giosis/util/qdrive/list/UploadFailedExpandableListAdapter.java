@@ -390,6 +390,20 @@ public class UploadFailedExpandableListAdapter extends BaseExpandableListAdapter
                     text_list_item_child_requestor.setText(context.getResources().getString(R.string.text_receiver));
                     img_list_item_child_requestor_sign.setImageBitmap(myBitmap);
                     layout_list_item_child_driver.setVisibility(View.GONE);
+                } else {
+
+                    dirPath = Environment.getExternalStorageDirectory().toString() + deliverySign;
+                    filePath = dirPath + "/" + tracking_no + "_1.png";
+                    imgFile = new File(filePath);
+
+                    if (imgFile.exists()) {
+
+                        myBitmap = BitmapFactory.decodeFile(imgFile.getAbsolutePath());
+
+                        text_list_item_child_requestor.setText(context.getResources().getString(R.string.text_receiver));
+                        img_list_item_child_requestor_sign.setImageBitmap(myBitmap);
+                        layout_list_item_child_driver.setVisibility(View.GONE);
+                    }
                 }
                 break;
             }

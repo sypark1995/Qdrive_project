@@ -176,7 +176,7 @@ public class DriverPerformanceLogUploadHelper extends ManualHelper {
 
 
                 String methodName = "setDriverPerformanceLog";
-                String jsonString = Custom_JsonParser.requestServerDataReturnJSON(MOBILE_SERVER_URL, methodName, job);
+                String jsonString = Custom_JsonParser.requestServerDataReturnJSON(methodName, job);
                 // {"ResultCode":0,"ResultMsg":"Success"}
 
                 JSONObject jsonObject = new JSONObject(jsonString);

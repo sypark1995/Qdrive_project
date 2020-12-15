@@ -47,8 +47,6 @@ import org.json.JSONObject;
 
 import java.util.ArrayList;
 
-import static com.giosis.util.qdrive.barcodescanner.ManualHelper.MOBILE_SERVER_URL;
-
 
 public class OutletOrderStatusAdapter extends BaseExpandableListAdapter {
     String TAG = "OutletOrderStatusAdapter";
@@ -701,7 +699,7 @@ public class OutletOrderStatusAdapter extends BaseExpandableListAdapter {
 
 
             String methodName = "SetSendQtalkMessagebyQsign";
-            String jsonString = Custom_JsonParser.requestServerDataReturnJSON(MOBILE_SERVER_URL, methodName, job);
+            String jsonString = Custom_JsonParser.requestServerDataReturnJSON(methodName, job);
             // {"ResultCode":-99,"ResultMsg":"Cannot send a content-body with this verb-type."}
 
             JSONObject jsonObject = new JSONObject(jsonString);

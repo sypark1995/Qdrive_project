@@ -29,8 +29,6 @@ import org.json.JSONObject;
 
 import java.util.ArrayList;
 
-import static com.giosis.util.qdrive.barcodescanner.ManualHelper.MOBILE_SERVER_URL;
-
 
 /**
  * @author krm0219
@@ -196,7 +194,7 @@ public class AdminMessageListFragment extends Fragment {
                 job.accumulate("nation_cd", DataUtil.nationCode);
 
                 String methodName = "GetQdriverMessageListFromMessenger";
-                String jsonString = Custom_JsonParser.requestServerDataReturnJSON(MOBILE_SERVER_URL, methodName, job);
+                String jsonString = Custom_JsonParser.requestServerDataReturnJSON(methodName, job);
                 // Result : {"ResultObject":[{"total_count":null,"total_page":null,"rownum":"1","sender_id":"driver4","tracking_No":null,"question_seq_no":"1","seq_no":"11933","contr_no":null,"svc_nation_cd":null,"read_yn":"Y","contents":"Rgdgdgd","send_dt":"2018-08-30 14:52:02"},{"total_count":null,"total_page":null,"rownum":"1","sender_id":"eylee","tracking_No":null,"question_seq_no":"1","seq_no":"12229","contr_no":null,"svc_nation_cd":null,"read_yn":"N","contents":"test msg","send_dt":"2018-11-23 14:12:21"},{"total_count":null,"total_page":null,"rownum":"1","sender_id":"karam.kim","tracking_No":null,"question_seq_no":"1","seq_no":"12243","contr_no":null,"svc_nation_cd":null,"read_yn":"N","contents":"ttt","send_dt":"2019-10-10 12:54:07"}],"ResultCode":0,"ResultMsg":"OK"}
                 new_resultString = jsonString;
 

@@ -232,12 +232,6 @@
             android:windowSoftInputMode="stateAlwaysHidden|adjustPan" />
 
         <activity
-            android:name="com.giosis.util.qdrive.list.pickup.CnRPickupFailedActivity"
-            android:configChanges="orientation|keyboardHidden"
-            android:screenOrientation="portrait"
-            android:windowSoftInputMode="stateAlwaysHidden|adjustPan" />
-
-        <activity
             android:name="com.giosis.util.qdrive.list.pickup.OutletPickupScanActivity"
             android:configChanges="orientation|keyboardHidden"
             android:screenOrientation="portrait"

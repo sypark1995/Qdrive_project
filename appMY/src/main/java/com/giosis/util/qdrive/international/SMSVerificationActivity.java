@@ -33,8 +33,6 @@ import org.json.JSONObject;
 
 import java.util.regex.Pattern;
 
-import static com.giosis.util.qdrive.barcodescanner.ManualHelper.MOBILE_SERVER_URL;
-
 public class SMSVerificationActivity extends CommonActivity {
     String TAG = "SMSVerificationActivity";
 
@@ -522,7 +520,7 @@ public class SMSVerificationActivity extends CommonActivity {
 
 
             String methodName = "GetAuthCodeRequest";
-            String jsonString = Custom_JsonParser.requestServerDataReturnJSON(MOBILE_SERVER_URL, methodName, job);
+            String jsonString = Custom_JsonParser.requestServerDataReturnJSON(methodName, job);
             // {"ResultCode":-1,"ResultMsg":"InvalidMobileNo"}
             // {"ResultCode":-5,"ResultMsg":"\r\nThis mobile number is already registered by another Qsign ID."}
             // {"ResultCode":0,"ResultMsg":"{\"umid\":\"6a3628ec-64bd-e911-8153-022a22cc1c71\",\"clientMessageId\":null,\"destination\":\"621083357170\",\"encoding\":\"GSM7\",\"status\":{\"code\":\"QUEUED\",\"description\":\"SMS is accepted and queued for processing\"}}"}
@@ -628,7 +626,7 @@ public class SMSVerificationActivity extends CommonActivity {
 
 
             String methodName = "SetAuthCodeCheck";
-            String jsonString = Custom_JsonParser.requestServerDataReturnJSON(MOBILE_SERVER_URL, methodName, job);
+            String jsonString = Custom_JsonParser.requestServerDataReturnJSON(methodName, job);
             // {"ResultCode":-10,"ResultMsg":"The number is not matched"}
 
             JSONObject jsonObject = new JSONObject(jsonString);

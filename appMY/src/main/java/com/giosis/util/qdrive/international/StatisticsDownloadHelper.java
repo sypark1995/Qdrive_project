@@ -212,7 +212,7 @@ public class StatisticsDownloadHelper extends ManualHelper {
             job.accumulate("nation_cd", DataUtil.nationCode);
 
             String methodName = "GetStaticDeliverySummary";
-            String jsonString = Custom_JsonParser.requestServerDataReturnJSON(MOBILE_SERVER_URL, methodName, job);
+            String jsonString = Custom_JsonParser.requestServerDataReturnJSON(methodName, job);
             //  {"ResultObject":[],"ResultCode":0,"ResultMsg":"SUCCESS"}
 
             JSONObject jsonObject = new JSONObject(jsonString);
@@ -286,7 +286,7 @@ public class StatisticsDownloadHelper extends ManualHelper {
             job.accumulate("nation_cd", DataUtil.nationCode);
 
             String methodName = "GetStaticDeliveryDetail";
-            String jsonString = Custom_JsonParser.requestServerDataReturnJSON(MOBILE_SERVER_URL, methodName, job);
+            String jsonString = Custom_JsonParser.requestServerDataReturnJSON(methodName, job);
             //  {"ResultObject":[],"ResultCode":0,"ResultMsg":"SUCCESS"}
 
             JSONObject jsonObject = new JSONObject(jsonString);
@@ -359,7 +359,7 @@ public class StatisticsDownloadHelper extends ManualHelper {
             job.accumulate("nation_cd", DataUtil.nationCode);
 
             String methodName = "GetStaticPickupSummary";
-            String jsonString = Custom_JsonParser.requestServerDataReturnJSON(MOBILE_SERVER_URL, methodName, job);
+            String jsonString = Custom_JsonParser.requestServerDataReturnJSON(methodName, job);
             //  {"ResultObject":[],"ResultCode":0,"ResultMsg":"SUCCESS"}
 
             JSONObject jsonObject = new JSONObject(jsonString);
@@ -434,7 +434,7 @@ public class StatisticsDownloadHelper extends ManualHelper {
             job.accumulate("nation_cd", DataUtil.nationCode);
 
             String methodName = "GetStaticPickupDetail";
-            String jsonString = Custom_JsonParser.requestServerDataReturnJSON(MOBILE_SERVER_URL, methodName, job);
+            String jsonString = Custom_JsonParser.requestServerDataReturnJSON(methodName, job);
             //  {"ResultObject":[],"ResultCode":0,"ResultMsg":"SUCCESS"}
 
             JSONObject jsonObject = new JSONObject(jsonString);

@@ -300,6 +300,12 @@ public class ManualSelfCollectorHelper extends ManualHelper {
                 Bitmap captureView = signingView.getDrawingCache();
                 String bitmapString = DataUtil.bitmapToString(captureView, ImageUpload.QXPOP, "qdriver/sign", assignNo);
 
+                if (bitmapString.equals("")) {
+                    result = context.getResources().getString(R.string.msg_upload_fail_image);
+                    return result;
+                }
+
+
                 JSONObject job = new JSONObject();
                 job.accumulate("rcv_type", receiveType);
                 job.accumulate("stat", BarcodeType.DELIVERY_DONE);
@@ -317,7 +323,7 @@ public class ManualSelfCollectorHelper extends ManualHelper {
 
 
                 String methodName = "SetSelfCollectorData";
-                String jsonString = Custom_JsonParser.requestServerDataReturnJSON(MOBILE_SERVER_URL, methodName, job);
+                String jsonString = Custom_JsonParser.requestServerDataReturnJSON(methodName, job);
                 // {"ResultCode":-12,"ResultMsg":"This shipping no (SG19611681) is not exist."}
 
                 result = jsonString;

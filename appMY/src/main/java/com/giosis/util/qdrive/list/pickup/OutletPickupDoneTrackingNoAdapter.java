@@ -38,7 +38,7 @@ public class OutletPickupDoneTrackingNoAdapter extends BaseAdapter {
     public int getCount() {
 
         if (result != null) {
-            return result.getTrackingNoList().size();
+            return result.getResultObject().getTrackingNoList().size();
         }
 
         return 0;
@@ -46,7 +46,7 @@ public class OutletPickupDoneTrackingNoAdapter extends BaseAdapter {
 
     @Override
     public Object getItem(int position) {
-        return result.getTrackingNoList().get(position);
+        return result.getResultObject().getTrackingNoList().get(position);
     }
 
     @Override
@@ -72,7 +72,7 @@ public class OutletPickupDoneTrackingNoAdapter extends BaseAdapter {
         TextView text_outlet_pickup_done_tracking_no_item = view.findViewById(R.id.text_outlet_pickup_done_tracking_no_item);
         Button img_outlet_pickup_done_tracking_no_item_check = view.findViewById(R.id.img_outlet_pickup_done_tracking_no_item_check);
 
-        final OutletPickupDoneResult.OutletPickupDoneTrackingNoItem item = result.getTrackingNoList().get(position);
+        final OutletPickupDoneResult.OutletPickupDoneItem.OutletPickupDoneTrackingNoItem item = result.getResultObject().getTrackingNoList().get(position);
 
         text_outlet_pickup_done_tracking_no_item.setText(item.getTrackingNo());
 

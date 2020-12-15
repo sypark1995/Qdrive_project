@@ -156,7 +156,7 @@ public class Dpc3OutValidationCheckHelper extends ManualHelper {
 
 
                 String methodName = "GetValidationCheckDpc3Out";
-                String jsonString = Custom_JsonParser.requestServerDataReturnJSON(MOBILE_SERVER_URL, methodName, job);
+                String jsonString = Custom_JsonParser.requestServerDataReturnJSON(methodName, job);
                 // {"ResultCode":0,"ResultMsg":"Success"}
                 // {"ResultCode":-25,"ResultMsg":"[SG19611818]  booking failed order. Pls return to DPC."}
 

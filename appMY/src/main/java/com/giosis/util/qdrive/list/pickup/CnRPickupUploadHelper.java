@@ -18,7 +18,6 @@ import com.giosis.util.qdrive.international.OnServerEventListener;
 import com.giosis.util.qdrive.international.R;
 import com.giosis.util.qdrive.list.BarcodeData;
 import com.giosis.util.qdrive.list.SigningView;
-import com.giosis.util.qdrive.util.BarcodeType;
 import com.giosis.util.qdrive.util.Custom_JsonParser;
 import com.giosis.util.qdrive.util.DataUtil;
 import com.giosis.util.qdrive.util.DatabaseHelper;
@@ -366,6 +365,13 @@ public class CnRPickupUploadHelper extends ManualHelper {
 
                     bitmapString = DataUtil.bitmapToString(captureView, ImageUpload.QXPOP, "qdriver/sign", assignNo);
                     bitmapString2 = DataUtil.bitmapToString(captureView2, ImageUpload.QXPOP, "qdriver/sign", assignNo);
+
+
+                    if (bitmapString.equals("") || bitmapString2.equals("")) {
+                        result.setResultCode(-100);
+                        result.setResultMsg(context.getResources().getString(R.string.msg_upload_fail_image));
+                        return result;
+                    }
                 }
 
                 JSONObject job = new JSONObject();
@@ -392,7 +398,7 @@ public class CnRPickupUploadHelper extends ManualHelper {
 
 
                 String methodName = "SetPickupUploadData";
-                String jsonString = Custom_JsonParser.requestServerDataReturnJSON(MOBILE_SERVER_URL, methodName, job);
+                String jsonString = Custom_JsonParser.requestServerDataReturnJSON(methodName, job);
                 // {"ResultCode":0,"ResultMsg":"SUCCESS"}
                 // {"ResultCode":-11,"ResultMsg":"SUCCESS"}
 

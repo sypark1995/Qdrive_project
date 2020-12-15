@@ -149,7 +149,7 @@ public class PickupTakeBackValidationCheckHelper extends ManualHelper {
                 Log.e("Server", TAG + "  DATA : " + pickup_no + " / " + scan_no + " / ");
 
                 String methodName = "SetAddScanNo_TakeBack";
-                String jsonString = Custom_JsonParser.requestServerDataReturnJSON(MOBILE_SERVER_URL, methodName, job);
+                String jsonString = Custom_JsonParser.requestServerDataReturnJSON(methodName, job);
                 // {"ResultCode":10,"ResultMsg":"Success"}
                 // {"ResultCode":-2,"ResultMsg":"Scanned number is not take back"}
 

@@ -210,7 +210,7 @@ public class QuickAppUserInfoUploadHelper extends ManualHelper {
 
 
                 String methodName = "setQuickAppUserInfo";
-                String jsonString = Custom_JsonParser.requestServerDataReturnJSON(MOBILE_SERVER_URL, methodName, job);
+                String jsonString = Custom_JsonParser.requestServerDataReturnJSON(methodName, job);
                 // {"ResultCode":0,"ResultMsg":"OK"}
 
                 JSONObject jsonObject = new JSONObject(jsonString);

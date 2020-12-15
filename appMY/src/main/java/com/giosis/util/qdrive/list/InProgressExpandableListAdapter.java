@@ -66,8 +66,6 @@ import org.json.JSONObject;
 import java.util.ArrayList;
 import java.util.Vector;
 
-import static com.giosis.util.qdrive.barcodescanner.ManualHelper.MOBILE_SERVER_URL;
-
 /**
  * @author jtpark_eurasia
  * List 클릭 시 확장
@@ -1209,7 +1207,7 @@ public class InProgressExpandableListAdapter extends BaseExpandableListAdapter i
 
 
             String methodName = "SetSendQtalkMessagebyQsign";
-            String jsonString = Custom_JsonParser.requestServerDataReturnJSON(MOBILE_SERVER_URL, methodName, job);
+            String jsonString = Custom_JsonParser.requestServerDataReturnJSON(methodName, job);
             // {"ResultCode":-99,"ResultMsg":"Cannot send a content-body with this verb-type."}
 
             JSONObject jsonObject = new JSONObject(jsonString);

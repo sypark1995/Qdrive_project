@@ -290,6 +290,12 @@ public class PickupZeroQtyUploadHelper extends ManualHelper {
                 String bitmapString = DataUtil.bitmapToString(captureView, ImageUpload.QXPOP, "qdriver/sign", pickupNo);
                 String bitmapString2 = DataUtil.bitmapToString(captureView2, ImageUpload.QXPOP, "qdriver/sign", pickupNo);
 
+                if (bitmapString.equals("") || bitmapString2.equals("")) {
+                    result.setResultCode(-100);
+                    result.setResultMsg(context.getResources().getString(R.string.msg_upload_fail_image));
+                    return result;
+                }
+
 
                 JSONObject job = new JSONObject();
                 job.accumulate("rcv_type", receiveType);        // ZQ : Zero Qty
@@ -315,7 +321,7 @@ public class PickupZeroQtyUploadHelper extends ManualHelper {
 
 
                 String methodName = "SetPickupUploadData";
-                String jsonString = Custom_JsonParser.requestServerDataReturnJSON(MOBILE_SERVER_URL, methodName, job);
+                String jsonString = Custom_JsonParser.requestServerDataReturnJSON(methodName, job);
                 // {"ResultCode":0,"ResultMsg":"SUCCESS"}
                 // {"ResultCode":-11,"ResultMsg":"SUCCESS"}
 

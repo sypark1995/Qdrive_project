@@ -159,7 +159,7 @@ public class FusedProviderListenerUploadHelper extends ManualHelper {
 
                 // ship.dbo.gps_location_history 위/경도 저장
                 String methodName = "setGPSLocationVersion2";
-                String jsonString = Custom_JsonParser.requestServerDataReturnJSON(MOBILE_SERVER_URL, methodName, job);
+                String jsonString = Custom_JsonParser.requestServerDataReturnJSON(methodName, job);
                 // {"ResultCode":0,"ResultMsg":"OK"}
 
                 JSONObject jsonObject = new JSONObject(jsonString);
