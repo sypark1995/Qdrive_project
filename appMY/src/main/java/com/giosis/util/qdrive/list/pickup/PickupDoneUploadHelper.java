@@ -288,6 +288,7 @@ public class PickupDoneUploadHelper extends ManualHelper {
             try {
 
                 signingView.buildDrawingCache();
+                collectorSigningView.buildDrawingCache();
                 Bitmap captureView = signingView.getDrawingCache();
                 Bitmap captureView2 = collectorSigningView.getDrawingCache();
                 String bitmapString = DataUtil.bitmapToString(captureView, ImageUpload.QXPOP, "qdriver/sign", pickupNo);
