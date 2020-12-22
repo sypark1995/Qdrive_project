@@ -167,7 +167,6 @@
     <string name="text_wrong_address">Wrong Address</string>
     <string name="text_request_to_cancel">Request to Cancel</string>
     <string name="text_pickup_cancel_success">&#160;Pickup Cancel - Success&#160;</string>
-    <string name="text_pickup_failed_reason">Pickup Failed Reason</string>
     <string name="text_pickup_date_retried">Pickup date will be retried</string>
     <string name="text_select">Select</string>
     <string name="text_pickup_fail_success">&#160;Pickup Fail - Success&#160;</string>
@@ -342,29 +341,6 @@
     <string name="button_done">Done</string>
     <string name="button_confirm">Confirm</string>
     <string name="button_next">Next</string>
-
-
-    <string-array name="delivery_fail_reason_array">
-        <item>Delivery attempted: No one available</item>
-        <item>Undeliverable: Inaccurate address</item>
-        <item>Undeliverable: Consignee refused</item>
-        <item>Undeliverable: Misrouted</item>
-        <item>Undeliverable: etc</item>
-    </string-array>
-    <string-array name="fail_reason_array">
-        <item>Wrong address</item>
-        <item>Wrong phone number</item>
-        <item>No answer</item>
-        <item>No one available</item>
-        <item>Not ready for parcel</item>
-        <item>No Quantity</item>
-        <item>Others</item>
-    </string-array>
-    <string-array name="cancel_reason_array">
-        <item>Wrong Address</item>
-        <item>Request to Cancel</item>
-        <item>Others</item>
-    </string-array>
 
 
     <string name="permission_title">Help</string>

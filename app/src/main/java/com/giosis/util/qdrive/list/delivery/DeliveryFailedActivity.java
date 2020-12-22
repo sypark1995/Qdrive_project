@@ -2,7 +2,6 @@ package com.giosis.util.qdrive.list.delivery;
 
 import android.app.AlertDialog;
 import android.content.Context;
-import android.content.DialogInterface;
 import android.content.Intent;
 import android.graphics.Bitmap;
 import android.graphics.SurfaceTexture;
@@ -20,16 +19,21 @@ import android.view.Surface;
 import android.view.TextureView;
 import android.view.View;
 import android.view.WindowManager;
+import android.widget.AdapterView;
+import android.widget.ArrayAdapter;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.FrameLayout;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
+import android.widget.RelativeLayout;
+import android.widget.Spinner;
 import android.widget.TextView;
 import android.widget.Toast;
 
 import androidx.appcompat.app.AppCompatActivity;
 
+import com.giosis.library.server.data.FailedCodeResult;
 import com.giosis.util.qdrive.gps.GPSTrackerManager;
 import com.giosis.util.qdrive.singapore.MyApplication;
 import com.giosis.util.qdrive.singapore.OnServerEventListener;
@@ -42,23 +46,32 @@ import com.giosis.util.qdrive.util.NetworkUtil;
 import com.giosis.util.qdrive.util.PermissionActivity;
 import com.giosis.util.qdrive.util.PermissionChecker;
 
+import java.util.ArrayList;
+import java.util.HashMap;
+
 /***
- *
  * @author eylee
  * @date 2017-06-23
  * Delivery failed -> Visit log 로 기능 개선
+ *
+ * @editor krm0219
+ * 2020.12  Failed Reason 추가
  */
 public class DeliveryFailedActivity extends AppCompatActivity implements Camera2APIs.Camera2Interface, TextureView.SurfaceTextureListener {
     private static final String TAG = "DeliveryFailedActivity";
 
 
-    // krm0219
     FrameLayout layout_top_back;
     TextView text_top_title;
 
     TextView text_sign_d_f_tracking_no;
     TextView text_sign_d_f_receiver;
     TextView text_sign_d_f_sender;
+
+    // 2020.12
+    RelativeLayout layout_sign_d_f_failed_reason;
+    TextView text_sign_d_f_failed_reason;
+    Spinner spinner_d_f_failed_reason;
     EditText edit_sign_d_f_memo;
 
     LinearLayout layout_sign_d_f_take_photo;
@@ -92,6 +105,10 @@ public class DeliveryFailedActivity extends AppCompatActivity implements Camera2
     private static final String[] PERMISSIONS = new String[]{PermissionChecker.ACCESS_FINE_LOCATION, PermissionChecker.ACCESS_COARSE_LOCATION,
             PermissionChecker.READ_EXTERNAL_STORAGE, PermissionChecker.WRITE_EXTERNAL_STORAGE, PermissionChecker.CAMERA};
 
+    ArrayList<FailedCodeResult.FailedCode> arrayList;
+    ArrayList<String> failedCodeArrayList;
+    ArrayAdapter<String> failedCodeArrayAdapter;
+
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
@@ -109,6 +126,10 @@ public class DeliveryFailedActivity extends AppCompatActivity implements Camera2
         text_sign_d_f_tracking_no = findViewById(R.id.text_sign_d_f_tracking_no);
         text_sign_d_f_receiver = findViewById(R.id.text_sign_d_f_receiver);
         text_sign_d_f_sender = findViewById(R.id.text_sign_d_f_sender);
+
+        layout_sign_d_f_failed_reason = findViewById(R.id.layout_sign_d_f_failed_reason);
+        text_sign_d_f_failed_reason = findViewById(R.id.text_sign_d_f_failed_reason);
+        spinner_d_f_failed_reason = findViewById(R.id.spinner_d_f_failed_reason);
         edit_sign_d_f_memo = findViewById(R.id.edit_sign_d_f_memo);
 
         layout_sign_d_f_take_photo = findViewById(R.id.layout_sign_d_f_take_photo);
@@ -122,9 +143,6 @@ public class DeliveryFailedActivity extends AppCompatActivity implements Camera2
         //
         context = getApplicationContext();
         camera2 = new Camera2APIs(this);
-//        opID = SharedPreferencesHelper.getSigninOpID(getApplicationContext());
-//        officeCode = SharedPreferencesHelper.getSigninOfficeCode(getApplicationContext());
-//        deviceID = SharedPreferencesHelper.getSigninDeviceID(getApplicationContext());
         opID = MyApplication.preferences.getUserId();
         officeCode = MyApplication.preferences.getOfficeCode();
         deviceID = MyApplication.preferences.getDeviceUUID();
@@ -142,47 +160,50 @@ public class DeliveryFailedActivity extends AppCompatActivity implements Camera2
         DisplayUtil.setPreviewCamera(img_sign_d_f_preview_bg);
 
 
-        layout_top_back.setOnClickListener(new View.OnClickListener() {
+        // 202012.  Delivery Failed Reason 추가  (for Lazada)
+        setFailedCode();
+
+        layout_sign_d_f_failed_reason.setOnClickListener(v -> {
+
+            spinner_d_f_failed_reason.setVisibility(View.INVISIBLE);
+            spinner_d_f_failed_reason.performClick();
+        });
+
+
+        spinner_d_f_failed_reason.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
 
             @Override
-            public void onClick(View view) {
+            public void onItemSelected(AdapterView<?> parentView, View arg1, int position, long arg3) {
 
-                cancelSigning();
+                String selected_text = parentView.getItemAtPosition(position).toString();
+                text_sign_d_f_failed_reason.setText(selected_text);
+            }
+
+            @Override
+            public void onNothingSelected(AdapterView<?> arg0) {
             }
         });
 
-        layout_sign_d_f_take_photo.setOnClickListener(new View.OnClickListener() {
 
-            @Override
-            public void onClick(View view) {
+        layout_top_back.setOnClickListener(view -> cancelSigning());
 
-                if (cameraId != null) {
 
-                    camera2.takePhoto(texture_sign_d_f_preview, img_sign_d_f_visit_log);
-                } else {
+        layout_sign_d_f_take_photo.setOnClickListener(view -> {
 
-                    Toast.makeText(DeliveryFailedActivity.this, context.getResources().getString(R.string.msg_back_camera_required), Toast.LENGTH_SHORT).show();
-                }
+            if (cameraId != null) {
+
+                camera2.takePhoto(texture_sign_d_f_preview, img_sign_d_f_visit_log);
+            } else {
+
+                Toast.makeText(DeliveryFailedActivity.this, context.getResources().getString(R.string.msg_back_camera_required), Toast.LENGTH_SHORT).show();
             }
         });
 
-        layout_sign_d_f_gallery.setOnClickListener(new View.OnClickListener() {
+        layout_sign_d_f_gallery.setOnClickListener(view -> getImageFromAlbum());
 
-            @Override
-            public void onClick(View view) {
 
-                getImageFromAlbum();
-            }
-        });
+        btn_sign_d_f_save.setOnClickListener(v -> saveServerUploadSign());
 
-        btn_sign_d_f_save.setOnClickListener(new View.OnClickListener() {
-
-            @Override
-            public void onClick(View v) {
-
-                saveServerUploadSign();
-            }
-        });
 
         // Memo 입력제한
         edit_sign_d_f_memo.addTextChangedListener(new TextWatcher() {
@@ -208,7 +229,6 @@ public class DeliveryFailedActivity extends AppCompatActivity implements Camera2
 
         //
         PermissionChecker checker = new PermissionChecker(this);
-
         // 권한 여부 체크 (없으면 true, 있으면 false)
         if (checker.lacksPermissions(PERMISSIONS)) {
 
@@ -221,6 +241,29 @@ public class DeliveryFailedActivity extends AppCompatActivity implements Camera2
         }
     }
 
+    private void setFailedCode() {
+
+        arrayList = DataUtil.getFailCode("D");
+
+        if (arrayList == null) {
+
+            AlertShow(context.getResources().getString(R.string.msg_failed_code_error));
+        } else {
+
+            failedCodeArrayList = new ArrayList<>();
+
+            for (int i = 0; i < arrayList.size(); i++) {
+
+                FailedCodeResult.FailedCode failedCode = arrayList.get(i);
+                failedCodeArrayList.add(failedCode.getFailedString());
+            }
+
+            spinner_d_f_failed_reason.setPrompt(context.getResources().getString(R.string.text_failed_reason));
+            failedCodeArrayAdapter = new ArrayAdapter<>(context, android.R.layout.simple_spinner_item, failedCodeArrayList);
+            failedCodeArrayAdapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
+            spinner_d_f_failed_reason.setAdapter(failedCodeArrayAdapter);
+        }
+    }
 
     @Override
     protected void onResume() {
@@ -313,21 +356,10 @@ public class DeliveryFailedActivity extends AppCompatActivity implements Camera2
 
         new AlertDialog.Builder(this)
                 .setMessage(R.string.msg_delivered_sign_cancel)
-                .setPositiveButton(R.string.button_ok, new DialogInterface.OnClickListener() {
-                    @Override
-                    public void onClick(DialogInterface dialog, int which) {
-
-                        finish();
-                    }
-                })
-                .setNegativeButton(R.string.button_cancel, new DialogInterface.OnClickListener() {
-
-                    @Override
-                    public void onClick(DialogInterface dialog, int which) {
-                        dialog.dismiss();
-                    }
-                }).show();
+                .setPositiveButton(R.string.button_ok, (dialog, which) -> finish())
+                .setNegativeButton(R.string.button_cancel, (dialog, which) -> dialog.dismiss()).show();
     }
+
 
     /*
      * 실시간 Upload 처리
@@ -348,7 +380,6 @@ public class DeliveryFailedActivity extends AppCompatActivity implements Camera2
 
                 latitude = gpsTrackerManager.getLatitude();
                 longitude = gpsTrackerManager.getLongitude();
-
                 Log.e("Location", TAG + " saveServerUploadSign  GPSTrackerManager : " + latitude + "  " + longitude + "  ");
             }
 
@@ -368,11 +399,14 @@ public class DeliveryFailedActivity extends AppCompatActivity implements Camera2
                 return;
             }
 
+            FailedCodeResult.FailedCode code = arrayList.get(spinner_d_f_failed_reason.getSelectedItemPosition());
+            String failedCode = code.getFailedCode();
+            Log.e("krm0219", "DeliveryFailedUploadHelper   failedCode  " + failedCode);
 
             DataUtil.logEvent("button_click", TAG, com.giosis.library.util.DataUtil.requestSetUploadDeliveryData);
 
             new DeliveryFailedUploadHelper.Builder(DeliveryFailedActivity.this, opID, officeCode, deviceID,
-                    mStrWaybillNo, driverMemo, img_sign_d_f_visit_log,
+                    mStrWaybillNo, failedCode, driverMemo, img_sign_d_f_visit_log,
                     MemoryStatus.getAvailableInternalMemorySize(), latitude, longitude)
                     .setOnServerEventListener(new OnServerEventListener() {
 
@@ -389,22 +423,21 @@ public class DeliveryFailedActivity extends AppCompatActivity implements Camera2
                     }).build().execute();
         } catch (Exception e) {
 
-            Log.e("krm0219", TAG + "  Exception : " + e.toString());
+            Log.e("Server", TAG + "  Exception : " + e.toString());
             Toast.makeText(this.getApplicationContext(), context.getResources().getString(R.string.text_error) + " - " + e.toString(), Toast.LENGTH_SHORT).show();
         }
     }
 
 
     private void AlertShow(String msg) {
+
         AlertDialog.Builder alert_internet_status = new AlertDialog.Builder(this);
         alert_internet_status.setTitle(context.getResources().getString(R.string.text_warning));
         alert_internet_status.setMessage(msg);
         alert_internet_status.setPositiveButton(context.getResources().getString(R.string.button_close),
-                new DialogInterface.OnClickListener() {
-                    public void onClick(DialogInterface dialog, int which) {
-                        dialog.dismiss(); // 닫기
-                        finish();
-                    }
+                (dialog, which) -> {
+                    dialog.dismiss(); // 닫기
+                    finish();
                 });
         alert_internet_status.show();
     }
@@ -435,8 +468,7 @@ public class DeliveryFailedActivity extends AppCompatActivity implements Camera2
 
         CameraManager cameraManager = camera2.getCameraManager(this);
         cameraId = camera2.getCameraCharacteristics(cameraManager);
-
-        Log.e("krm0219", TAG + "  openCamera " + cameraId);
+        Log.i("krm0219", TAG + "  openCamera " + cameraId);
 
         if (cameraId != null) {
 

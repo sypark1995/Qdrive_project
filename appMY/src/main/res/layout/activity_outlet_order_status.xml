@@ -121,7 +121,6 @@
                 android:layout_height="35dp"
                 android:layout_alignParentEnd="true"
                 android:layout_centerVertical="true"
-                android:layout_toEndOf="@id/text_sign_cnr_f_failed_reason_title"
                 android:background="@drawable/border_radius_5_cccccc_ffffff">
 
                 <TextView
@@ -174,7 +173,6 @@
                     android:layout_height="35dp"
                     android:layout_alignParentEnd="true"
                     android:layout_centerVertical="true"
-                    android:layout_toEndOf="@id/text_sign_cnr_f_failed_reason_title"
                     android:background="@drawable/border_radius_5_cccccc_ffffff"
                     android:orientation="horizontal">
 

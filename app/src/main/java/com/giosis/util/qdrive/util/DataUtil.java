@@ -16,7 +16,9 @@ import android.util.Log;
 import android.view.View;
 
 import com.gc.android.market.api.Base64;
+import com.giosis.library.server.CallServer;
 import com.giosis.library.server.ImageUpload;
+import com.giosis.library.server.data.FailedCodeResult;
 import com.giosis.util.qdrive.gps.GPSTrackerManager;
 import com.giosis.util.qdrive.list.RowItem;
 import com.giosis.util.qdrive.message.AdminMessageListDetailActivity;
@@ -25,18 +27,23 @@ import com.giosis.util.qdrive.message.MessageListActivity;
 import com.giosis.util.qdrive.singapore.MyApplication;
 import com.giosis.util.qdrive.singapore.R;
 import com.google.firebase.analytics.FirebaseAnalytics;
+import com.google.gson.Gson;
 import com.google.zxing.BarcodeFormat;
 import com.google.zxing.EncodeHintType;
 import com.google.zxing.MultiFormatWriter;
 import com.google.zxing.common.BitMatrix;
 import com.google.zxing.datamatrix.encoder.SymbolShapeHint;
 
+import org.jetbrains.annotations.NotNull;
+
 import java.io.ByteArrayOutputStream;
 import java.io.File;
 import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
 import java.io.IOException;
+import java.util.ArrayList;
 import java.util.Comparator;
+import java.util.HashMap;
 import java.util.Hashtable;
 
 public class DataUtil {
@@ -340,4 +347,80 @@ public class DataUtil {
             return o1.getZip_code().compareTo(o2.getZip_code());
         }
     }
+
+
+    // NOTIFICATION. 202012  Failed Reason
+    public static void requestServerPickupFailedCode() {
+        CallServer.INSTANCE.getFailedCode(CallServer.PFC, MyApplication.preferences.getUserNation(), new CallServer.GetFailedCodeCallback() {
+
+            @Override
+            public void onServerError(int value) {
+            }
+
+            @Override
+            public void onServerResult(@NotNull FailedCodeResult value) {
+
+                if (value.getResultCode() == 10) {
+
+                    Gson gson = new Gson();
+                    String json = gson.toJson(value);
+                    Log.e("krm0219", "P  getFailedCode  " + json);
+                    MyApplication.preferences.setPFailedCode(json);
+                }
+            }
+        });
+    }
+
+    public static void requestServerDeliveryFailedCode() {
+
+        CallServer.INSTANCE.getFailedCode(CallServer.DFC, MyApplication.preferences.getUserNation(), new CallServer.GetFailedCodeCallback() {
+
+            @Override
+            public void onServerError(int value) {
+            }
+
+            @Override
+            public void onServerResult(@NotNull FailedCodeResult value) {
+
+                if (value.getResultCode() == 10) {
+
+                    Gson gson = new Gson();
+                    String json = gson.toJson(value);
+                    Log.e("krm0219", "D  getFailedCode  " + json);
+                    MyApplication.preferences.setDFailedCode(json);
+                }
+            }
+        });
+    }
+
+
+    public static ArrayList<FailedCodeResult.FailedCode> getFailCode(String type) {
+
+        ArrayList<FailedCodeResult.FailedCode> arrayList;
+        String json = "";
+
+        if (type.equals("D")) {
+
+            json = MyApplication.preferences.getDFailedCode();
+
+
+        } else if (type.equals("P")) {
+
+            json = MyApplication.preferences.getPFailedCode();
+        }
+
+
+        if (json.equals("")) {
+
+            return null;
+        } else {
+
+            Gson gson = new Gson();
+            FailedCodeResult result = gson.fromJson(json, FailedCodeResult.class);
+            arrayList = new ArrayList<>(result.getResultObject());
+        }
+
+        return arrayList;
+    }
+
 }

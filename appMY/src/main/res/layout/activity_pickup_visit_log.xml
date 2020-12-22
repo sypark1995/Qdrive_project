@@ -137,7 +137,7 @@
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:layout_centerVertical="true"
-                        android:text="@string/text_pickup_failed_reason"
+                        android:text="@string/text_failed_reason"
                         android:textColor="@color/color_303030"
                         android:textSize="@dimen/text_size_30px" />
 
@@ -154,30 +154,35 @@
 
                         <TextView
                             android:id="@+id/text_sign_p_f_failed_reason"
-                            android:layout_width="wrap_content"
+                            android:layout_width="match_parent"
                             android:layout_height="wrap_content"
                             android:layout_centerVertical="true"
                             android:layout_marginStart="10dp"
                             android:layout_marginEnd="5dp"
+                            android:layout_toStartOf="@id/img_p_f_failed_arrow"
                             android:text="@string/text_select"
                             android:textColor="@color/color_303030"
                             android:textSize="@dimen/text_size_26px" />
 
                         <ImageView
+                            android:id="@+id/img_p_f_failed_arrow"
                             android:layout_width="10dp"
                             android:layout_height="6dp"
                             android:layout_alignParentEnd="true"
                             android:layout_centerVertical="true"
+                            android:layout_marginStart="4dp"
                             android:layout_marginEnd="10dp"
                             android:background="@drawable/qdrive_btn_icon_down" />
                     </RelativeLayout>
 
                     <Spinner
                         android:id="@+id/spinner_p_f_failed_reason"
-                        android:layout_width="0dp"
+                        android:layout_width="match_parent"
                         android:layout_height="wrap_content"
                         android:layout_below="@id/layout_sign_p_f_failed_reason"
                         android:layout_alignParentEnd="true"
+                        android:layout_marginStart="10dp"
+                        android:layout_toEndOf="@id/text_sign_p_f_failed_reason_title"
                         android:background="#FFFFFF"
                         android:prompt="@string/text_select"
                         android:visibility="invisible" />

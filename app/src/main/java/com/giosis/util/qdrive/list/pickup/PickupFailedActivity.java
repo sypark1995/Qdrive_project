@@ -3,7 +3,6 @@ package com.giosis.util.qdrive.list.pickup;
 import android.app.AlertDialog;
 import android.app.DatePickerDialog;
 import android.content.Context;
-import android.content.DialogInterface;
 import android.content.Intent;
 import android.database.Cursor;
 import android.graphics.Bitmap;
@@ -26,7 +25,6 @@ import android.view.WindowManager;
 import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
 import android.widget.Button;
-import android.widget.DatePicker;
 import android.widget.EditText;
 import android.widget.FrameLayout;
 import android.widget.ImageView;
@@ -38,6 +36,7 @@ import android.widget.Toast;
 
 import androidx.appcompat.app.AppCompatActivity;
 
+import com.giosis.library.server.data.FailedCodeResult;
 import com.giosis.util.qdrive.gps.GPSTrackerManager;
 import com.giosis.util.qdrive.singapore.MyApplication;
 import com.giosis.util.qdrive.singapore.OnServerEventListener;
@@ -53,15 +52,16 @@ import com.giosis.util.qdrive.util.PermissionActivity;
 import com.giosis.util.qdrive.util.PermissionChecker;
 
 import java.text.SimpleDateFormat;
+import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.Locale;
 
 /***
- *
  * @author eylee
  * @date 2016-09-30
  * Pickup Cancel -> Visit log 로 기능 개선
- * <p></p>
+ *
+ *
  * @editor krm0219
  * 2019.12 - Fail Reason / Retry Date 추가
  * 2020.06  CNR Failed 합치기
@@ -102,7 +102,6 @@ public class PickupFailedActivity extends AppCompatActivity implements Camera2AP
     String pickupNo;
     String rcvType;         // VL, RC
 
-    String[] failReasonCode = {"WA", "WP", "NA", "NO", "NR", "NQ", "ET"}; //Wrong address, Wrong phone number,No answer,No one available,Not ready for parcel,Others
 
     DatePickerDialog datePickerDialog;
     Calendar mCalendar;
@@ -124,6 +123,11 @@ public class PickupFailedActivity extends AppCompatActivity implements Camera2AP
     private static final int PERMISSION_REQUEST_CODE = 1000;
     private static final String[] PERMISSIONS = new String[]{PermissionChecker.ACCESS_FINE_LOCATION, PermissionChecker.ACCESS_COARSE_LOCATION,
             PermissionChecker.READ_EXTERNAL_STORAGE, PermissionChecker.WRITE_EXTERNAL_STORAGE, PermissionChecker.CAMERA};
+
+
+    ArrayList<FailedCodeResult.FailedCode> arrayList;
+    ArrayList<String> failedCodeArrayList;
+    ArrayAdapter<String> failedCodeArrayAdapter;
 
 
     @Override
@@ -162,9 +166,6 @@ public class PickupFailedActivity extends AppCompatActivity implements Camera2AP
         //------------
         context = getApplicationContext();
         camera2 = new Camera2APIs(this);
-//        opID = SharedPreferencesHelper.getSigninOpID(getApplicationContext());
-//        officeCode = SharedPreferencesHelper.getSigninOfficeCode(getApplicationContext());
-//        deviceID = SharedPreferencesHelper.getSigninDeviceID(getApplicationContext());
         opID = MyApplication.preferences.getUserId();
         officeCode = MyApplication.preferences.getOfficeCode();
         deviceID = MyApplication.preferences.getDeviceUUID();
@@ -195,39 +196,28 @@ public class PickupFailedActivity extends AppCompatActivity implements Camera2AP
         //
         mCalendar = Calendar.getInstance();
 
-        dateListener = new DatePickerDialog.OnDateSetListener() {
+        dateListener = (view, year, monthOfYear, dayOfMonth) -> {
+            Log.i("krm0219", "DATE : " + year + " / " + monthOfYear + " / " + dayOfMonth);
 
-            @Override
-            public void onDateSet(DatePicker view, int year, int monthOfYear, int dayOfMonth) {
-                Log.e("krm0219", "DATE : " + year + " / " + monthOfYear + " / " + dayOfMonth);
+            mCalendar.set(Calendar.YEAR, year);
+            mCalendar.set(Calendar.MONTH, monthOfYear);
+            mCalendar.set(Calendar.DAY_OF_MONTH, dayOfMonth);
 
-                mCalendar.set(Calendar.YEAR, year);
-                mCalendar.set(Calendar.MONTH, monthOfYear);
-                mCalendar.set(Calendar.DAY_OF_MONTH, dayOfMonth);
+            String restDay = getRestDay(year, monthOfYear + 1, dayOfMonth);
 
-                String restDay = getRestDay(year, monthOfYear + 1, dayOfMonth);
+            // NOTIFICATION
+            // 2020.06  SG 일요일도 픽업 업무 시작  --> 일요일도 재시도 날짜에 포함 및 재시도 날짜선택 D+3일로 수정
+            if (!restDay.isEmpty()) {    //휴무일 선택 시
 
-                // NOTIFICATION.
-                // 2020.06  SG 일요일도 픽업 업무 시작  --> 일요일도 재시도 날짜에 포함 및 재시도 날짜선택 D+3일로 수정
-               /* if (mCalendar.get(Calendar.DAY_OF_WEEK) == Calendar.SUNDAY) {
+                Toast calToast = Toast.makeText(PickupFailedActivity.this, restDay + context.getResources().getString(R.string.msg_choose_another_day), Toast.LENGTH_SHORT);
+                calToast.setGravity(Gravity.CENTER, 0, 10);
+                calToast.show();
+                text_sign_p_f_retry_date.setText(getString(R.string.text_select));
+            } else {
 
-                    Toast calToast = Toast.makeText(PickupFailedActivity.this, context.getResources().getString(R.string.msg_choose_sunday_error), Toast.LENGTH_SHORT);
-                    calToast.setGravity(Gravity.CENTER, 0, 10);
-                    calToast.show();
-                    text_sign_p_f_retry_date.setText(getString(R.string.text_select));
-                } else*/
-                if (!restDay.isEmpty()) {    //휴무일 선택 시
-
-                    Toast calToast = Toast.makeText(PickupFailedActivity.this, restDay + context.getResources().getString(R.string.msg_choose_another_day), Toast.LENGTH_SHORT);
-                    calToast.setGravity(Gravity.CENTER, 0, 10);
-                    calToast.show();
-                    text_sign_p_f_retry_date.setText(getString(R.string.text_select));
-                } else {
-
-                    String myFormat = "yyyy-MM-dd";
-                    SimpleDateFormat sdf = new SimpleDateFormat(myFormat, Locale.US);
-                    text_sign_p_f_retry_date.setText(sdf.format(mCalendar.getTime()));
-                }
+                String myFormat = "yyyy-MM-dd";
+                SimpleDateFormat sdf = new SimpleDateFormat(myFormat, Locale.US);
+                text_sign_p_f_retry_date.setText(sdf.format(mCalendar.getTime()));
             }
         };
 
@@ -242,8 +232,8 @@ public class PickupFailedActivity extends AppCompatActivity implements Camera2AP
         Calendar minDate = Calendar.getInstance();
         minDate.add(Calendar.DAY_OF_YEAR, 1);
         Calendar maxDate = Calendar.getInstance();
-        maxDate.add(Calendar.DAY_OF_YEAR, 3);       // 2020.06  재시도 날짜 D+3일로 수정
-
+        maxDate.add(Calendar.DAY_OF_YEAR, 3);
+        // 2020.06  재시도 날짜 D+3일로 수정
         /* //TEST
         minDate.set(2020, 8-1, 8);
         maxDate.set(2020, 8-1, 10);*/
@@ -251,32 +241,16 @@ public class PickupFailedActivity extends AppCompatActivity implements Camera2AP
         datePickerDialog.getDatePicker().setMinDate(minDate.getTimeInMillis());
         datePickerDialog.getDatePicker().setMaxDate(maxDate.getTimeInMillis());
 
-        layout_sign_p_f_retry_date.setOnClickListener(new View.OnClickListener() {
+        layout_sign_p_f_retry_date.setOnClickListener(v -> datePickerDialog.show());
 
-            @Override
-            public void onClick(View v) {
 
-                datePickerDialog.show();
-            }
+        // 2020.12  Pickup Failed Code
+        setFailedCode();
+
+        layout_sign_p_f_failed_reason.setOnClickListener(v -> {
+
+            spinner_p_f_failed_reason.performClick();
         });
-
-
-        ArrayAdapter<CharSequence> spin_adapter = ArrayAdapter.createFromResource(this, R.array.fail_reason_array, android.R.layout.simple_spinner_item);
-        spin_adapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
-        spinner_p_f_failed_reason.setAdapter(spin_adapter);
-        spinner_p_f_failed_reason.setPrompt(context.getResources().getString(R.string.text_failed_reason));
-
-        layout_sign_p_f_failed_reason.setOnClickListener(new View.OnClickListener() {
-
-            @Override
-            public void onClick(View v) {
-
-                spinner_p_f_failed_reason.setVisibility(View.INVISIBLE);
-                spinner_p_f_failed_reason.performClick();
-            }
-
-        });
-
 
         spinner_p_f_failed_reason.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
 
@@ -284,6 +258,8 @@ public class PickupFailedActivity extends AppCompatActivity implements Camera2AP
             public void onItemSelected(AdapterView<?> parentView, View arg1, int position, long arg3) {
 
                 String selected_text = parentView.getItemAtPosition(position).toString();
+                Log.e("krm0219", "spinner  " + position + " / " + selected_text);
+
                 text_sign_p_f_failed_reason.setText(selected_text);
             }
 
@@ -294,47 +270,24 @@ public class PickupFailedActivity extends AppCompatActivity implements Camera2AP
 
 
         //
-        layout_top_back.setOnClickListener(new View.OnClickListener() {
+        layout_top_back.setOnClickListener(view -> cancelSigning());
 
-            @Override
-            public void onClick(View view) {
+        layout_sign_p_f_take_photo.setOnClickListener(view -> {
 
-                cancelSigning();
+            if (cameraId != null) {
+
+                camera2.takePhoto(texture_sign_p_f_preview, img_sign_p_f_visit_log);
+            } else {
+
+                Toast.makeText(PickupFailedActivity.this, context.getResources().getString(R.string.msg_back_camera_required), Toast.LENGTH_SHORT).show();
             }
         });
 
-        layout_sign_p_f_take_photo.setOnClickListener(new View.OnClickListener() {
+        layout_sign_p_f_gallery.setOnClickListener(view -> getImageFromAlbum());
 
-            @Override
-            public void onClick(View view) {
 
-                if (cameraId != null) {
+        btn_sign_p_f_save.setOnClickListener(v -> saveServerUploadSign());
 
-                    camera2.takePhoto(texture_sign_p_f_preview, img_sign_p_f_visit_log);
-                } else {
-
-                    Toast.makeText(PickupFailedActivity.this, context.getResources().getString(R.string.msg_back_camera_required), Toast.LENGTH_SHORT).show();
-                }
-            }
-        });
-
-        layout_sign_p_f_gallery.setOnClickListener(new View.OnClickListener() {
-
-            @Override
-            public void onClick(View view) {
-
-                getImageFromAlbum();
-            }
-        });
-
-        btn_sign_p_f_save.setOnClickListener(new View.OnClickListener() {
-
-            @Override
-            public void onClick(View v) {
-
-                saveServerUploadSign();
-            }
-        });
 
         // Memo 입력제한
         edit_sign_p_f_memo.addTextChangedListener(new TextWatcher() {
@@ -355,9 +308,9 @@ public class PickupFailedActivity extends AppCompatActivity implements Camera2AP
             }
         });
 
+
         //
         PermissionChecker checker = new PermissionChecker(this);
-
         // 권한 여부 체크 (없으면 true, 있으면 false)
         if (checker.lacksPermissions(PERMISSIONS)) {
 
@@ -369,6 +322,32 @@ public class PickupFailedActivity extends AppCompatActivity implements Camera2AP
             isPermissionTrue = true;
         }
     }
+
+
+    private void setFailedCode() {
+
+        arrayList = DataUtil.getFailCode("P");
+
+        if (arrayList == null) {
+
+            AlertShow(context.getResources().getString(R.string.msg_failed_code_error));
+        } else {
+
+            failedCodeArrayList = new ArrayList<>();
+
+            for (int i = 0; i < arrayList.size(); i++) {
+
+                FailedCodeResult.FailedCode failedCode = arrayList.get(i);
+                failedCodeArrayList.add(failedCode.getFailedString());
+            }
+
+            spinner_p_f_failed_reason.setPrompt(context.getResources().getString(R.string.text_failed_reason));
+            failedCodeArrayAdapter = new ArrayAdapter<>(context, android.R.layout.simple_spinner_item, failedCodeArrayList);
+            failedCodeArrayAdapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
+            spinner_p_f_failed_reason.setAdapter(failedCodeArrayAdapter);
+        }
+    }
+
 
     @Override
     protected void onResume() {
@@ -404,6 +383,7 @@ public class PickupFailedActivity extends AppCompatActivity implements Camera2AP
             }
         }
     }
+
 
     @Override
     protected void onActivityResult(int requestCode, int resultCode, Intent data) {
@@ -459,20 +439,8 @@ public class PickupFailedActivity extends AppCompatActivity implements Camera2AP
 
         new AlertDialog.Builder(this)
                 .setMessage(R.string.msg_delivered_sign_cancel)
-                .setPositiveButton(R.string.button_ok, new DialogInterface.OnClickListener() {
-                    @Override
-                    public void onClick(DialogInterface dialog, int which) {
-
-                        finish();
-                    }
-                })
-                .setNegativeButton(R.string.button_cancel, new DialogInterface.OnClickListener() {
-
-                    @Override
-                    public void onClick(DialogInterface dialog, int which) {
-                        dialog.dismiss();
-                    }
-                }).show();
+                .setPositiveButton(R.string.button_ok, (dialog, which) -> finish())
+                .setNegativeButton(R.string.button_cancel, (dialog, which) -> dialog.dismiss()).show();
     }
 
     /*
@@ -523,14 +491,16 @@ public class PickupFailedActivity extends AppCompatActivity implements Camera2AP
             }
 
 
-            String fail_code = failReasonCode[spinner_p_f_failed_reason.getSelectedItemPosition()];
+            FailedCodeResult.FailedCode code = arrayList.get(spinner_p_f_failed_reason.getSelectedItemPosition());
+            String failedCode = code.getFailedCode();
+            Log.e("krm0219", "PickupFailedUploadHelper   failedCode  " + failedCode);
             String retry_day = text_sign_p_f_retry_date.getText().toString();
 
 
             DataUtil.logEvent("button_click", TAG, com.giosis.library.util.DataUtil.requestSetUploadPickupData);
 
             new PickupFailedUploadHelper.Builder(this, opID, officeCode, deviceID,
-                    rcvType, pickupNo, fail_code, retry_day, driverMemo, img_sign_p_f_visit_log,
+                    rcvType, pickupNo, failedCode, retry_day, driverMemo, img_sign_p_f_visit_log,
                     MemoryStatus.getAvailableInternalMemorySize(), latitude, longitude)
                     .setOnServerEventListener(new OnServerEventListener() {
 
@@ -547,21 +517,20 @@ public class PickupFailedActivity extends AppCompatActivity implements Camera2AP
                     }).build().execute();
         } catch (Exception e) {
 
-            Log.e("krm0219", TAG + "  Exception : " + e.toString());
+            Log.e("Server", TAG + "  Exception : " + e.toString());
             Toast.makeText(this.getApplicationContext(), context.getResources().getString(R.string.text_error) + " - " + e.toString(), Toast.LENGTH_SHORT).show();
         }
     }
 
     private void AlertShow(String msg) {
+
         AlertDialog.Builder alert_internet_status = new AlertDialog.Builder(this);
         alert_internet_status.setTitle(context.getResources().getString(R.string.text_warning));
         alert_internet_status.setMessage(msg);
         alert_internet_status.setPositiveButton(context.getResources().getString(R.string.button_close),
-                new DialogInterface.OnClickListener() {
-                    public void onClick(DialogInterface dialog, int which) {
-                        dialog.dismiss(); // 닫기
-                        finish();
-                    }
+                (dialog, which) -> {
+                    dialog.dismiss(); // 닫기
+                    finish();
                 });
         alert_internet_status.show();
     }
@@ -581,7 +550,7 @@ public class PickupFailedActivity extends AppCompatActivity implements Camera2AP
             s_day = "0" + s_day;
         }
         rest_dt = s_year + "-" + s_month + "-" + s_day;
-        Log.e("krm0219", TAG + "  RestDay 1 : " + rest_dt);
+        Log.i("krm0219", TAG + "  RestDay 1 : " + rest_dt);
 
         Cursor cs = DatabaseHelper.getInstance().get("SELECT title FROM " + DatabaseHelper.DB_TABLE_REST_DAYS + " WHERE rest_dt = '" + rest_dt + "'");
 
@@ -589,7 +558,7 @@ public class PickupFailedActivity extends AppCompatActivity implements Camera2AP
             rtn = cs.getString(cs.getColumnIndex("title"));
         }
 
-        Log.e("krm0219", TAG + "  RestDay 2 : " + rtn);
+        Log.i("krm0219", TAG + "  RestDay 2 : " + rtn);
 
         return rtn;
     }
@@ -617,8 +586,7 @@ public class PickupFailedActivity extends AppCompatActivity implements Camera2AP
 
         CameraManager cameraManager = camera2.getCameraManager(this);
         cameraId = camera2.getCameraCharacteristics(cameraManager);
-
-        Log.e("krm0219", TAG + "  openCamera " + cameraId);
+        Log.i("krm0219", TAG + "  openCamera " + cameraId);
 
         if (cameraId != null) {
 

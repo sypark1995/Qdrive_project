@@ -595,6 +595,10 @@ public class MainActivity extends AppBaseActivity {
             return;
         }
 
+        // 2020.12  Failed Code 가져오기
+        DataUtil.requestServerPickupFailedCode();
+        DataUtil.requestServerDeliveryFailedCode();
+
 
         // 2020.02 NOTIFICATION.  login.js 삭제 - 휴무일 가져오기
         int delete = DatabaseHelper.getInstance().delete(DatabaseHelper.DB_TABLE_REST_DAYS, "");

@@ -132,4 +132,17 @@ class MySharedPreferences(context: Context) {
     var localeLanguage: String
         get() = prefs.getString(PREF_KEY_LOCALE, Locale.getDefault().language).toString()
         set(value) = prefs.edit().putString(PREF_KEY_LOCALE, value).apply()
+
+
+    // 202012. Failed Code
+    private val PREF_KEY_DELIVERY_FAILED_CODE = "dFailedCode"
+    private val PREF_KEY_PICKUP_FAILED_CODE = "pFailedCode"
+
+    var dFailedCode: String
+        get() = prefs.getString(PREF_KEY_DELIVERY_FAILED_CODE, "").toString()
+        set(value) = prefs.edit().putString(PREF_KEY_DELIVERY_FAILED_CODE, value).apply()
+
+    var pFailedCode: String
+        get() = prefs.getString(PREF_KEY_PICKUP_FAILED_CODE, "").toString()
+        set(value) = prefs.edit().putString(PREF_KEY_PICKUP_FAILED_CODE, value).apply()
 }

@@ -38,7 +38,7 @@ public class PickupFailedUploadHelper {
 
     private final String rcvType;
     private final String pickupNo;
-    private final String cancelCode;
+    private final String failedCode;
     private final String retryDay;
     private final String driverMemo;
     private final ImageView imageView;
@@ -61,7 +61,7 @@ public class PickupFailedUploadHelper {
 
         private final String rcvType;
         private final String pickupNo;
-        private final String cancelCode;
+        private final String failedCode;
         private final String retryDay;
         private final String driverMemo;
         private final ImageView imageView;
@@ -74,7 +74,7 @@ public class PickupFailedUploadHelper {
         private OnServerEventListener eventListener;
 
         public Builder(Context context, String opID, String officeCode, String deviceID,
-                       String rcvType, String pickupNo, String cancelCode, String retryDay, String driverMemo, ImageView imageView,
+                       String rcvType, String pickupNo, String failedCode, String retryDay, String driverMemo, ImageView imageView,
                        long disk_size, double lat, double lon) {
 
             this.context = context;
@@ -85,7 +85,7 @@ public class PickupFailedUploadHelper {
 
             this.rcvType = rcvType;
             this.pickupNo = pickupNo;
-            this.cancelCode = cancelCode;
+            this.failedCode = failedCode;
             this.retryDay = retryDay;
             this.driverMemo = driverMemo;
             this.imageView = imageView;
@@ -115,7 +115,7 @@ public class PickupFailedUploadHelper {
 
         this.rcvType = builder.rcvType;
         this.pickupNo = builder.pickupNo;
-        this.cancelCode = builder.cancelCode;
+        this.failedCode = builder.failedCode;
         this.retryDay = builder.retryDay;
         this.driverMemo = builder.driverMemo;
         this.imageView = builder.imageView;
@@ -259,7 +259,7 @@ public class PickupFailedUploadHelper {
             contentVal.put("real_qty", "0");
             contentVal.put("chg_id", opID);
             contentVal.put("chg_dt", dateFormat.format(date));
-            contentVal.put("fail_reason", cancelCode);
+            contentVal.put("fail_reason", failedCode);
             contentVal.put("retry_dt", retryDay);
             contentVal.put("driver_memo", driverMemo);
 
@@ -276,13 +276,14 @@ public class PickupFailedUploadHelper {
                 return result;
             }
 
-           /* // TEST.  Upload Failed
-            if (true) {
 
-                result.setResultCode(-15);
-                result.setResultMsg("Exception : error - test");
-                return result;
-            }*/
+//            // TEST.  Upload Failed
+//            if (true) {
+//
+//                result.setResultCode(-15);
+//                result.setResultMsg("Exception : error - test");
+//                return result;
+//            }
 
 
             try {
@@ -315,7 +316,7 @@ public class PickupFailedUploadHelper {
                 job.accumulate("lat", lat);
                 job.accumulate("lon", lon);
                 job.accumulate("real_qty", "0");
-                job.accumulate("fail_reason", cancelCode);
+                job.accumulate("fail_reason", failedCode);
                 job.accumulate("retry_day", retryDay);
                 job.accumulate("app_id", DataUtil.appID);
                 job.accumulate("nation_cd", DataUtil.nationCode);

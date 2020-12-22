@@ -164,6 +164,10 @@ public class MainActivity extends AppBaseActivity {
         setTopTitle(mContext.getResources().getString(R.string.navi_home));
 
 
+//        // TEST Outlet
+//        MyApplication.preferences.setOutletDriver("Y");
+//        MyApplication.preferences.setUserId("7Eleven.Ajib");
+
 //        // TEST.
 //        String imgDirName = "/QdrivePickup";
 //        String signName = "123";
@@ -229,6 +233,7 @@ public class MainActivity extends AppBaseActivity {
         btn_home_change_delivery_driver = findViewById(R.id.btn_home_change_delivery_driver);
         btn_home_outlet_order_status = findViewById(R.id.btn_home_outlet_order_status);    // 19.01 krm0219
         btn_home_create_pickup_order = findViewById(R.id.btn_home_create_pickup_order);
+
 
         getLocalCount();
         if (DownloadCheck()) {
@@ -614,16 +619,17 @@ public class MainActivity extends AppBaseActivity {
 
     private void Download() {
 
-       /* // TEST.  많은 데이터필요 / 하루에 한번만 데이터받고 테스트하기 !
-        if (opID.equals("YuMin.Dwl"))
-            return;*/
-
         //
         if (!NetworkUtil.isNetworkAvailable(MainActivity.this)) {
 
             Toast.makeText(MainActivity.this, getString(R.string.msg_network_connect_error), Toast.LENGTH_SHORT).show();
             return;
         }
+
+        // 2020.12  Failed Code 가져오기
+        DataUtil.requestServerPickupFailedCode();
+        DataUtil.requestServerDeliveryFailedCode();
+
 
         //  NOTIFICATION. 2020.02 login.js 삭제대비 - 휴무일 가져오기
         int delete = DatabaseHelper.getInstance().delete(DatabaseHelper.DB_TABLE_REST_DAYS, "");

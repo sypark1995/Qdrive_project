@@ -14,9 +14,13 @@ import android.util.Log
 import android.util.Size
 import android.view.Surface
 import android.view.TextureView.SurfaceTextureListener
+import android.view.View
 import android.view.WindowManager
+import android.widget.AdapterView
+import android.widget.ArrayAdapter
 import android.widget.ImageView
 import android.widget.Toast
+import com.giosis.library.server.data.FailedCodeResult
 import com.giosis.util.qdrive.gps.GPSTrackerManager
 import com.giosis.util.qdrive.international.MyApplication
 import com.giosis.util.qdrive.international.OnServerEventListener
@@ -24,7 +28,9 @@ import com.giosis.util.qdrive.international.R
 import com.giosis.util.qdrive.util.*
 import com.giosis.util.qdrive.util.ui.CommonActivity
 import kotlinx.android.synthetic.main.activity_delivery_visit_log.*
+import kotlinx.android.synthetic.main.activity_pickup_visit_log.*
 import kotlinx.android.synthetic.main.top_title.*
+import java.util.*
 
 
 class DeliveryFailedActivity : CommonActivity(), Camera2APIs.Camera2Interface, SurfaceTextureListener {
@@ -51,6 +57,11 @@ class DeliveryFailedActivity : CommonActivity(), Camera2APIs.Camera2Interface, S
     val PERMISSIONS = arrayOf(PermissionChecker.ACCESS_FINE_LOCATION, PermissionChecker.ACCESS_COARSE_LOCATION,
             PermissionChecker.READ_EXTERNAL_STORAGE, PermissionChecker.WRITE_EXTERNAL_STORAGE, PermissionChecker.CAMERA)
 
+    //
+    var arrayList: ArrayList<FailedCodeResult.FailedCode>? = null
+    var failedCodeArrayList: ArrayList<String>? = null
+
+
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
 
@@ -75,6 +86,25 @@ class DeliveryFailedActivity : CommonActivity(), Camera2APIs.Camera2Interface, S
         text_sign_d_f_receiver.text = intent.getStringExtra("receiverName")
         text_sign_d_f_sender.text = intent.getStringExtra("senderName")
 
+
+        // 2020.12  Delivery Failed Code
+        setFailedCode()
+
+        layout_sign_d_f_failed_reason.setOnClickListener {
+
+            spinner_d_f_failed_reason.performClick()
+        }
+
+        spinner_d_f_failed_reason.onItemSelectedListener = object : AdapterView.OnItemSelectedListener {
+            override fun onNothingSelected(p0: AdapterView<*>?) {
+            }
+
+            override fun onItemSelected(p0: AdapterView<*>, p1: View?, p2: Int, p3: Long) {
+
+                val reason = p0.getItemAtPosition(p2).toString()
+                text_sign_d_f_failed_reason.text = reason
+            }
+        }
 
         edit_sign_d_f_memo.addTextChangedListener(object : TextWatcher {
             override fun afterTextChanged(p0: Editable?) {
@@ -131,6 +161,30 @@ class DeliveryFailedActivity : CommonActivity(), Camera2APIs.Camera2Interface, S
         } else {
 
             isPermissionTrue = true
+        }
+    }
+
+
+    private fun setFailedCode() {
+
+        arrayList = DataUtil.getFailCode("P")
+
+        if (arrayList == null) {
+
+            DisplayUtil.AlertDialog(this@DeliveryFailedActivity, context.resources.getString(R.string.msg_failed_code_error))
+        } else {
+
+            failedCodeArrayList = ArrayList()
+
+            for (i in arrayList!!.indices) {
+                val failedCode: FailedCodeResult.FailedCode = arrayList!![i]
+                failedCodeArrayList!!.add(failedCode.failedString)
+            }
+
+            spinner_d_f_failed_reason.prompt = context.resources.getString(R.string.text_failed_reason)
+            val failedCodeArrayAdapter = ArrayAdapter<String>(context, android.R.layout.simple_spinner_item, failedCodeArrayList!!)
+            failedCodeArrayAdapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item)
+            spinner_d_f_failed_reason.adapter = failedCodeArrayAdapter
         }
     }
 
@@ -279,11 +333,13 @@ class DeliveryFailedActivity : CommonActivity(), Camera2APIs.Camera2Interface, S
             Log.e(tag, "  Location $latitude / $longitude")
 
 
-
+            val code: FailedCodeResult.FailedCode = arrayList!![spinner_d_f_failed_reason.selectedItemPosition]
+            val failedCode: String = code.failedCode
+            Log.e("krm0219", "Fail Reason Code  >  $failedCode")
             DataUtil.logEvent("button_click", tag, com.giosis.library.util.DataUtil.requestSetUploadDeliveryData)
 
             DeliveryFailedUploadHelper.Builder(this, userId, officeCode, deviceId,
-                    trackingNo, img_sign_d_f_visit_log, driverMemo, "RC",
+                    trackingNo, img_sign_d_f_visit_log, failedCode, driverMemo, "RC",
                     MemoryStatus.getAvailableInternalMemorySize(), latitude, longitude)
                     .setOnServerEventListener(object : OnServerEventListener {
                         override fun onPostResult() {

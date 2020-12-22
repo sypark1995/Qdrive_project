@@ -1,5 +1,6 @@
 package com.giosis.library.server
 
+import com.giosis.library.server.data.FailedCodeResult
 import com.giosis.library.server.data.ImageResult
 import com.giosis.library.util.Preferences
 import io.reactivex.rxjava3.core.Single
@@ -142,12 +143,11 @@ interface RetrofitService {
             @Field("course_type") course_type: String = ""
     ): Single<APIModel>
 
-//
-//    @Headers("Content-Type: application/json")
-//    @POST("api/get_zip_code_info.qx")
-//    @FormUrlEncoded
-//    fun requestGetAddressInfo1(
-//            @Field("zip_code") zip_code: String,
-//            @Field("id") id: String = Preferences.userId
-//    ): Single<Address
+
+    @POST("GetCommonCodeData")
+    @FormUrlEncoded
+    fun requestGetFailedCode(
+            @Field("cd_type") cd_type: String,
+            @Field("nation_cd") nation_cd: String
+    ): Single<FailedCodeResult>
 }

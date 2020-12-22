@@ -150,7 +150,6 @@
     <string name="text_wrong_address">Salah Alamat</string>
     <string name="text_request_to_cancel">Meminta Untuk Batal</string>
     <string name="text_pickup_cancel_success">&#160;Pengambilan Batal - Berjaya&#160;</string>
-    <string name="text_pickup_failed_reason">Sebab Pengambilan Gagal</string>
     <string name="text_pickup_date_retried">Tarikh Pickup akan dicuba semula</string>
     <string name="text_select">Pilih</string>
     <string name="text_pickup_fail_success">&#160;Pengambilan Gagal - Berjaya&#160;</string>
@@ -322,30 +321,6 @@
     <string name="button_done">Selesai</string>
     <string name="button_confirm">Sahkan</string>
     <string name="button_next">Seterusnya</string>
-
-
-    <string-array name="delivery_fail_reason_array">
-        <item>Telah dihantar, tiada penerima</item>
-        <item>Tidak dapat dihantar: Alamat tidak tepat</item>
-        <item>Tidak dapat dihantar: Penerima ditolak</item>
-        <item>Tidak dapat dihantar</item>
-        <item>Tidak dapat dihantar: dsb</item>
-    </string-array>
-    <string-array name="fail_reason_array">
-        <item>Salah alamat</item>
-        <item>Nombor telefon salah</item>
-        <item>Tiada jawapan</item>
-        <item>Tiada siapa yang boleh didapati</item>
-        <item>Tidak bersedia untuk bungkusan</item>
-        <item>Tiada Kuantiti</item>
-        <item>Lain - lain</item>
-    </string-array>
-    <string-array name="cancel_reason_array">
-        <item>Salah Alamat</item>
-        <item>Permintaan untuk Batal</item>
-        <item>Lain - lain</item>
-    </string-array>
-
 
     <string name="permission_title">Tolong</string>
     <string name="permission_content">Anda menafikan permintaan kebenaran.  Jadi, anda tidak boleh menggunakan fungsi ini.\nTab \'Re-Try\', then the Android permission dialog will be appear again.</string>

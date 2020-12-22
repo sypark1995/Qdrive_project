@@ -19,6 +19,7 @@ import android.view.View
 import android.view.WindowManager
 import android.widget.*
 import android.widget.AdapterView.OnItemSelectedListener
+import com.giosis.library.server.data.FailedCodeResult
 import com.giosis.util.qdrive.gps.GPSTrackerManager
 import com.giosis.util.qdrive.international.MyApplication
 import com.giosis.util.qdrive.international.OnServerEventListener
@@ -45,9 +46,6 @@ class PickupFailedActivity : CommonActivity(), Camera2APIs.Camera2Interface, Tex
     private lateinit var pickupNo: String
     private lateinit var rcvType: String        // VL, RC
 
-    private val failReasonCode = listOf("WA", "WP", "NA", "NO", "NR", "NQ", "ET")
-    // Wrong Address, Wrong Phone number, No Answer, No one available, Not ready for Parcels, No Quantity, Others
-
     // Location
     private var gpsTrackerManager: GPSTrackerManager? = GPSTrackerManager(context)
 
@@ -62,9 +60,14 @@ class PickupFailedActivity : CommonActivity(), Camera2APIs.Camera2Interface, Tex
     val PERMISSIONS = arrayOf(PermissionChecker.ACCESS_FINE_LOCATION, PermissionChecker.ACCESS_COARSE_LOCATION,
             PermissionChecker.READ_EXTERNAL_STORAGE, PermissionChecker.WRITE_EXTERNAL_STORAGE, PermissionChecker.CAMERA)
 
+    //
+    var arrayList: ArrayList<FailedCodeResult.FailedCode>? = null
+    var failedCodeArrayList: ArrayList<String>? = null
+
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
+
 
         /* setShowWhenLocked(true)
          setTurnScreenOn(true)*/
@@ -149,10 +152,8 @@ class PickupFailedActivity : CommonActivity(), Camera2APIs.Camera2Interface, Tex
         datePickupDialog.datePicker.maxDate = maxCalendar.timeInMillis
 
 
-        //
-        val reasonAdapter = ArrayAdapter.createFromResource(this, R.array.fail_reason_array, android.R.layout.simple_spinner_item)
-        reasonAdapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item)
-        spinner_p_f_failed_reason.adapter = reasonAdapter
+        // 2020.12  Pickup Failed Code
+        setFailedCode()
 
         spinner_p_f_failed_reason.onItemSelectedListener = object : OnItemSelectedListener {
             override fun onNothingSelected(p0: AdapterView<*>?) {
@@ -230,6 +231,30 @@ class PickupFailedActivity : CommonActivity(), Camera2APIs.Camera2Interface, Tex
         } else {
 
             isPermissionTrue = true
+        }
+    }
+
+
+    private fun setFailedCode() {
+
+        arrayList = DataUtil.getFailCode("P")
+
+        if (arrayList == null) {
+
+            DisplayUtil.AlertDialog(this@PickupFailedActivity, context.resources.getString(R.string.msg_failed_code_error))
+        } else {
+
+            failedCodeArrayList = ArrayList()
+
+            for (i in arrayList!!.indices) {
+                val failedCode: FailedCodeResult.FailedCode = arrayList!![i]
+                failedCodeArrayList!!.add(failedCode.failedString)
+            }
+
+            spinner_p_f_failed_reason.prompt = context.resources.getString(R.string.text_failed_reason)
+            val failedCodeArrayAdapter = ArrayAdapter(context, android.R.layout.simple_spinner_item, failedCodeArrayList!!)
+            failedCodeArrayAdapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item)
+            spinner_p_f_failed_reason.adapter = failedCodeArrayAdapter
         }
     }
 
@@ -387,29 +412,15 @@ class PickupFailedActivity : CommonActivity(), Camera2APIs.Camera2Interface, Tex
             }
             Log.i(tag, "  Location $latitude / $longitude")
 
-            val failCode = failReasonCode[spinner_p_f_failed_reason.selectedItemPosition]
 
-
+            val code: FailedCodeResult.FailedCode = arrayList!![spinner_p_f_failed_reason.selectedItemPosition]
+            val failedCode: String = code.failedCode
+            Log.e("krm0219", "Fail Reason Code  >  $failedCode")
             DataUtil.logEvent("button_click", tag, com.giosis.library.util.DataUtil.requestSetUploadPickupData)
-/*
-            // NOTIFICATION.
-            PickupFailedUploadAsyncTask(this,
-                    pickupNo, failCode, retryDay, driverMemo, img_sign_p_f_visit_log,
-                    MemoryStatus.getAvailableInternalMemorySize(), latitude, longitude,
-                    object : onEventListner {
-                        override fun onSuccess() {
 
-                            DataUtil.inProgressListPosition = 0
-                            finish()
-                        }
-
-                        override fun onFailure() {
-                        }
-
-                    }).execute()*/
 
             PickupFailedUploadHelper.Builder(this, userId, officeCode, deviceId,
-                    rcvType, pickupNo, failCode, retryDay, driverMemo, img_sign_p_f_visit_log,
+                    rcvType, pickupNo, failedCode, retryDay, driverMemo, img_sign_p_f_visit_log,
                     MemoryStatus.getAvailableInternalMemorySize(), latitude, longitude)
                     .setOnServerEventListener(object : OnServerEventListener {
                         override fun onPostResult() {

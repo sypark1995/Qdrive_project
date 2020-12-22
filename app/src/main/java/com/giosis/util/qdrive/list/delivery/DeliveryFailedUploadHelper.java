@@ -41,6 +41,7 @@ public class DeliveryFailedUploadHelper {
     private final String deviceID;
 
     private final String trackingNo;
+    private final String failedCode;
     private final String driverMemo;
     private final ImageView imageView;
 
@@ -61,6 +62,7 @@ public class DeliveryFailedUploadHelper {
         private final String deviceID;
 
         private final String trackingNo;
+        private final String failedCode;
         private final String driverMemo;
         private final ImageView imageView;
 
@@ -72,7 +74,7 @@ public class DeliveryFailedUploadHelper {
         private OnServerEventListener eventListener;
 
         public Builder(Context context, String opID, String officeCode, String deviceID,
-                       String trackingNo, String driverMemo, ImageView imageView,
+                       String trackingNo, String failedCode, String driverMemo, ImageView imageView,
                        long disk_size, double lat, double lon) {
 
             this.context = context;
@@ -82,6 +84,7 @@ public class DeliveryFailedUploadHelper {
             this.networkType = NetworkUtil.getNetworkType(context);
 
             this.trackingNo = trackingNo;
+            this.failedCode = failedCode;
             this.driverMemo = driverMemo;
             this.imageView = imageView;
 
@@ -110,6 +113,7 @@ public class DeliveryFailedUploadHelper {
         this.deviceID = builder.deviceID;
 
         this.trackingNo = builder.trackingNo;
+        this.failedCode = builder.failedCode;
         this.driverMemo = builder.driverMemo;
         this.imageView = builder.imageView;
 
@@ -227,7 +231,7 @@ public class DeliveryFailedUploadHelper {
             contentVal.put("stat", "DX");
             contentVal.put("chg_id", opID);
             contentVal.put("chg_dt", dateFormat.format(date));
-            contentVal.put("fail_reason", "");
+            contentVal.put("fail_reason", failedCode);
             contentVal.put("driver_memo", driverMemo);
 
             DatabaseHelper dbHelper = DatabaseHelper.getInstance();
@@ -243,13 +247,14 @@ public class DeliveryFailedUploadHelper {
                 return result;
             }
 
-          /*  // TEST.  Upload Failed
-            if (true) {
 
-                result.setResultCode(-15);
-                result.setResultMsg("Exception : error - test");
-                return result;
-            }*/
+//            // TEST.  Upload Failed
+//            if (true) {
+//
+//                result.setResultCode(-15);
+//                result.setResultMsg("Exception : error - test");
+//                return result;
+//            }
 
 
             try {
@@ -281,7 +286,7 @@ public class DeliveryFailedUploadHelper {
                 job.accumulate("disk_size", disk_size);
                 job.accumulate("lat", lat);
                 job.accumulate("lon", lon);
-                job.accumulate("stat_reason", "");
+                job.accumulate("stat_reason", failedCode);
                 job.accumulate("del_channel", "QDRIVE");
                 job.accumulate("app_id", DataUtil.appID);
                 job.accumulate("nation_cd", DataUtil.nationCode);
@@ -342,7 +347,7 @@ public class DeliveryFailedUploadHelper {
         contentVal.put("chg_id", opId);
         contentVal.put("chg_dt", dateFormat.format(date));
         contentVal.put("real_qty", "0");            // 업로드시 값 Parse 시 에러나서 0 넘김
-        contentVal.put("fail_reason", "");
+        contentVal.put("fail_reason", failedCode);
         contentVal.put("driver_memo", driverMemo);
         contentVal.put("retry_dt", "");
         contentVal.put("rev_type", "VL");

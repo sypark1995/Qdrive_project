@@ -1047,7 +1047,7 @@ public class List_InProgressFragment extends Fragment implements OnQueryTextList
         ArrayList<RowItem> tempArrayList = getSortList(orderbyQuery[0]);
         Collections.sort(tempArrayList, new TripMultiComparator());
 
-        /*// 1차 정렬   우편번호, 번호, Tracking No
+        /*// 1차 정렬   우편번호, 핸드폰번호, Tracking No
         for (int i = 0; i < tempArrayList.size(); i++) {
 
             RowItem item = tempArrayList.get(i);

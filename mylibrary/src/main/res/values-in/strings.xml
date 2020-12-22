@@ -150,7 +150,6 @@
     <string name="text_wrong_address">Salah alamat</string>
     <string name="text_request_to_cancel">Permintaan pembatalan</string>
     <string name="text_pickup_cancel_success">&#160;Penjemputan batal- sukses&#160;</string>
-    <string name="text_pickup_failed_reason">Alasan penjemputan gagal</string>
     <string name="text_pickup_date_retried">Tanggal Pickup akan dicoba</string>
     <string name="text_select">Memilih</string>
     <string name="text_pickup_fail_success">&#160;Penjemputan gagal -sukses&#160;</string>
@@ -322,29 +321,6 @@
     <string name="button_done">Selesai</string>
     <string name="button_confirm">Konfirmasi</string>
     <string name="button_next">Selanjutnya</string>
-
-
-    <string-array name="delivery_fail_reason_array">
-        <item>Upaya pengiriman : Tidak ada yang tersedia</item>
-        <item>Tidak terkirim : Alamat tidak lengkap</item>
-        <item>Tidak terkirim : Penerima menolak</item>
-        <item>Tidak terkirim : Salah tujuan</item>
-        <item>Tidak terkirim : Lainnya</item>
-    </string-array>
-    <string-array name="fail_reason_array">
-        <item>Salah alamat</item>
-        <item>Salah nomor telepon</item>
-        <item>Tidak ada jawaban</item>
-        <item>Tidak ada yang tersedia</item>
-        <item>Paket belum siap</item>
-        <item>Tidak ada kuantitas</item>
-        <item>Lainnya</item>
-    </string-array>
-    <string-array name="cancel_reason_array">
-        <item>Salah alamat</item>
-        <item>Permintaan pembatalan</item>
-        <item>Lainnya</item>
-    </string-array>
 
 
     <string name="permission_title">Bantuan</string>
