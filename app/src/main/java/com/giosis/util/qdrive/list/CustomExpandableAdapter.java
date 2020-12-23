@@ -37,6 +37,7 @@ import android.widget.RelativeLayout;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import com.giosis.library.server.data.FailedCodeResult;
 import com.giosis.util.qdrive.barcodescanner.CaptureActivity;
 import com.giosis.util.qdrive.barcodescanner.StdResult;
 import com.giosis.util.qdrive.list.delivery.DeliveryDoneActivity;
@@ -577,14 +578,37 @@ public class CustomExpandableAdapter extends BaseExpandableListAdapter implement
 
             if (child.getStat().equals("DX")) {
 
+                ArrayList<FailedCodeResult.FailedCode> arrayList = DataUtil.getFailCode("D");
+
+                if (arrayList != null) {
+
+                    for (int i = 0; i < arrayList.size(); i++) {
+
+                        FailedCodeResult.FailedCode failedCode = arrayList.get(i);
+
+                        if (failedCode.getFailedCode().equals(reasonCode)) {
+
+                            reasonText = failedCode.getFailedString();
+                        }
+                    }
+                }
+
                 layout_list_item_child_failed.setVisibility(View.VISIBLE);
                 text_list_item_child_failed_reason.setText(reasonText);
             } else if (child.getStat().equals("PF")) {
 
-                String[] pfStringArray = context.getResources().getStringArray(R.array.fail_reason_array);
-                for (int i = 0; i < pickup_failed_reason_array.length; i++) {
-                    if (pickup_failed_reason_array[i].equals(reasonCode)) {
-                        reasonText = pfStringArray[i];
+                ArrayList<FailedCodeResult.FailedCode> arrayList = DataUtil.getFailCode("P");
+
+                if (arrayList != null) {
+
+                    for (int i = 0; i < arrayList.size(); i++) {
+
+                        FailedCodeResult.FailedCode failedCode = arrayList.get(i);
+
+                        if (failedCode.getFailedCode().equals(reasonCode)) {
+
+                            reasonText = failedCode.getFailedString();
+                        }
                     }
                 }
 
