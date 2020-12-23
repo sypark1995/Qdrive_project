@@ -9,7 +9,6 @@ import android.database.Cursor;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.net.Uri;
-import android.os.Bundle;
 import android.os.Environment;
 import android.text.SpannableString;
 import android.text.style.UnderlineSpan;
@@ -17,7 +16,6 @@ import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.MenuItem;
 import android.view.View;
-import android.view.View.OnClickListener;
 import android.view.ViewGroup;
 import android.widget.BaseExpandableListAdapter;
 import android.widget.Button;
@@ -29,6 +27,7 @@ import android.widget.PopupMenu;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
 
+import com.giosis.library.server.data.FailedCodeResult;
 import com.giosis.util.qdrive.gps.GPSTrackerManager;
 import com.giosis.util.qdrive.main.DeviceDataUploadHelper;
 import com.giosis.util.qdrive.singapore.MyApplication;
@@ -315,36 +314,47 @@ public class CustomNotUploadAdapter extends BaseExpandableListAdapter {
             layout_list_item_child_failed_reason.setVisibility(View.VISIBLE);
 
             switch (child.getStat()) {
-                case DELIVERY_FAIL:
+                case DELIVERY_FAIL: {
 
-                    String[] dxStringArray = context.getResources().getStringArray(R.array.delivery_fail_reason_array);
-                    for (int i = 0; i < dx_array.length; i++) {
-                        if (dx_array[i].equals(reasonCode)) {
-                            reasonText = dxStringArray[i];
+                    ArrayList<FailedCodeResult.FailedCode> arrayList = DataUtil.getFailCode("D");
+
+                    if (arrayList != null) {
+
+                        for (int i = 0; i < arrayList.size(); i++) {
+
+                            FailedCodeResult.FailedCode failedCode = arrayList.get(i);
+
+                            if (failedCode.getFailedCode().equals(reasonCode)) {
+
+                                reasonText = failedCode.getFailedString();
+                            }
                         }
                     }
-                    text_list_item_child_failed_reason.setText(reasonText);
-                    break;
-                case PICKUP_CANCEL:
 
-                    String[] pxStringArray = context.getResources().getStringArray(R.array.cancel_reason_array);
-                    for (int i = 0; i < px_array.length; i++) {
-                        if (px_array[i].equals(reasonCode)) {
-                            reasonText = pxStringArray[i];
+                    text_list_item_child_failed_reason.setText(reasonText);
+                }
+                break;
+
+                case PICKUP_FAIL: {
+
+                    ArrayList<FailedCodeResult.FailedCode> arrayList = DataUtil.getFailCode("P");
+
+                    if (arrayList != null) {
+
+                        for (int i = 0; i < arrayList.size(); i++) {
+
+                            FailedCodeResult.FailedCode failedCode = arrayList.get(i);
+
+                            if (failedCode.getFailedCode().equals(reasonCode)) {
+
+                                reasonText = failedCode.getFailedString();
+                            }
                         }
                     }
-                    text_list_item_child_failed_reason.setText(reasonText);
-                    break;
-                case PICKUP_FAIL:
 
-                    String[] pfStringArray = context.getResources().getStringArray(R.array.fail_reason_array);
-                    for (int i = 0; i < pf_array.length; i++) {
-                        if (pf_array[i].equals(reasonCode)) {
-                            reasonText = pfStringArray[i];
-                        }
-                    }
                     text_list_item_child_failed_reason.setText(reasonText);
-                    break;
+                }
+                break;
             }
         } else {
 
@@ -390,9 +400,9 @@ public class CustomNotUploadAdapter extends BaseExpandableListAdapter {
                     layout_list_item_child_driver.setVisibility(View.GONE);
                 } else {
 
-                     dirPath = Environment.getExternalStorageDirectory().toString() + deliverySign;
-                     filePath = dirPath + "/" + tracking_no + "_1.png";
-                     imgFile = new File(filePath);
+                    dirPath = Environment.getExternalStorageDirectory().toString() + deliverySign;
+                    filePath = dirPath + "/" + tracking_no + "_1.png";
+                    imgFile = new File(filePath);
 
                     if (imgFile.exists()) {
 

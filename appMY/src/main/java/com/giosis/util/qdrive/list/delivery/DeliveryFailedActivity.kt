@@ -167,7 +167,7 @@ class DeliveryFailedActivity : CommonActivity(), Camera2APIs.Camera2Interface, S
 
     private fun setFailedCode() {
 
-        arrayList = DataUtil.getFailCode("P")
+        arrayList = DataUtil.getFailCode("D")
 
         if (arrayList == null) {
 

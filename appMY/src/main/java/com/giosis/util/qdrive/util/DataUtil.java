@@ -253,7 +253,8 @@ public class DataUtil {
 
     // NOTIFICATION. 202012  Failed Reason
     public static void requestServerPickupFailedCode() {
-        CallServer.INSTANCE.getFailedCode(CallServer.PFC, MyApplication.preferences.getUserNation(), new CallServer.GetFailedCodeCallback() {
+
+        CallServer.INSTANCE.getFailedCode(CallServer.PFC, "", new CallServer.GetFailedCodeCallback() {
 
             @Override
             public void onServerError(int value) {
@@ -275,7 +276,7 @@ public class DataUtil {
 
     public static void requestServerDeliveryFailedCode() {
 
-        CallServer.INSTANCE.getFailedCode(CallServer.DFC, MyApplication.preferences.getUserNation(), new CallServer.GetFailedCodeCallback() {
+        CallServer.INSTANCE.getFailedCode(CallServer.DFC, "", new CallServer.GetFailedCodeCallback() {
 
             @Override
             public void onServerError(int value) {
@@ -304,8 +305,6 @@ public class DataUtil {
         if (type.equals("D")) {
 
             json = MyApplication.preferences.getDFailedCode();
-
-
         } else if (type.equals("P")) {
 
             json = MyApplication.preferences.getPFailedCode();
