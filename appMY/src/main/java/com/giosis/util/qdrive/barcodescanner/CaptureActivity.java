@@ -54,6 +54,7 @@ import com.giosis.util.qdrive.barcodescanner.bluetooth.KTSyncData;
 import com.giosis.util.qdrive.barcodescanner.camera.CameraManager;
 import com.giosis.util.qdrive.barcodescanner.history.HistoryManager;
 import com.giosis.util.qdrive.gps.GPSTrackerManager;
+import com.giosis.util.qdrive.international.BuildConfig;
 import com.giosis.util.qdrive.international.MyApplication;
 import com.giosis.util.qdrive.international.R;
 import com.giosis.util.qdrive.international.SigningActivity;
@@ -437,7 +438,7 @@ public final class CaptureActivity extends CommonActivity implements SurfaceHold
         mBluetoothAdapter = BluetoothAdapter.getDefaultAdapter();
 
         // Bluetooth 지원하지 않음
-        if (mBluetoothAdapter == null) {
+        if (mBluetoothAdapter == null && !BuildConfig.DEBUG) {
 
             Toast.makeText(this, context.getResources().getString(R.string.msg_bluetooth_not_supported), Toast.LENGTH_LONG).show();
             finish();
@@ -508,7 +509,7 @@ public final class CaptureActivity extends CommonActivity implements SurfaceHold
     public void onStart() {
         super.onStart();
 
-        if (mBluetoothAdapter.isEnabled()) {
+        if (mBluetoothAdapter != null && mBluetoothAdapter.isEnabled()) {
             if (KTSyncData.mChatService == null)
                 setupChat();
         }

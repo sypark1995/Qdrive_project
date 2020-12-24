@@ -33,7 +33,7 @@ public class IntroActivity extends Activity {
 
         // Live10 설치 여부 확인
         Intent intent = getPackageManager().getLaunchIntentForPackage("net.giosis.qpost");
-        if (intent == null) {
+        if (intent == null && !BuildConfig.DEBUG) {
             new AlertDialog.Builder(this)
                     .setMessage(context.getResources().getString(R.string.msg_live10_installed))
                     .setCancelable(false).setPositiveButton(context.getResources().getString(R.string.button_ok),

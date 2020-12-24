@@ -82,6 +82,7 @@ import com.giosis.util.qdrive.list.pickup.PickupAddScanActivity;
 import com.giosis.util.qdrive.list.pickup.PickupDoneActivity;
 import com.giosis.util.qdrive.list.pickup.PickupTakeBackActivity;
 import com.giosis.util.qdrive.main.SelfCollectionDoneActivity;
+import com.giosis.util.qdrive.singapore.BuildConfig;
 import com.giosis.util.qdrive.singapore.LoginActivity;
 import com.giosis.util.qdrive.singapore.MyApplication;
 import com.giosis.util.qdrive.singapore.R;
@@ -447,12 +448,13 @@ public final class CaptureActivity extends AppCompatActivity implements SurfaceH
         mBluetoothAdapter = BluetoothAdapter.getDefaultAdapter();
 
         // If the adapter is null, then Bluetooth is not supported          // Bluetooth 지원하지 않음
-        if (mBluetoothAdapter == null) {
+        if (mBluetoothAdapter == null && !BuildConfig.DEBUG) {
 
             Toast.makeText(this, context.getResources().getString(R.string.msg_bluetooth_not_supported), Toast.LENGTH_LONG).show();
             finish();
             return;
         }
+
 
         KTSyncData.mKScan = new KScan(this, bluetoothHandler);
 
@@ -1143,7 +1145,7 @@ public final class CaptureActivity extends AppCompatActivity implements SurfaceH
                 || mScanType.equals(BarcodeType.OUTLET_PICKUP_SCAN) || mScanType.equals(BarcodeType.PICKUP_TAKE_BACK)) {
 
             // TEST.
-            if (opID.equals("karam.kim")) {
+            if (opID.equals("karam.kim") || (opID.equals("YuMin.Dwl") && BuildConfig.DEBUG)) {
 
                 Log.e(TAG, "  EditText onTouch  > karam !!");
                 inputMethodManager.showSoftInput(edit_capture_type_number, InputMethodManager.SHOW_IMPLICIT);
