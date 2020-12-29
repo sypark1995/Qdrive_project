@@ -6,6 +6,7 @@ import android.content.ContentValues;
 import android.content.Context;
 import android.content.DialogInterface;
 import android.content.DialogInterface.OnClickListener;
+import android.database.Cursor;
 import android.graphics.Bitmap;
 import android.os.AsyncTask;
 import android.util.Log;
@@ -331,6 +332,35 @@ public class PickupDoneUploadHelper {
 
                     dbHelper.update(DatabaseHelper.DB_TABLE_INTEGRATION_LIST, contentVal2,
                             "invoice_no=? COLLATE NOCASE " + "and reg_id = ?", new String[]{pickup_no, opID});
+
+
+                    // CnR, Lazada Data Scan시 함께 Done 처리
+                    String[] scannedList = scanned_str.split(",");
+                    for (String s : scannedList) {
+
+                        Log.e("krm0219", "Scanned List > " + s);
+
+                        Cursor cursor = DatabaseHelper.getInstance().get("SELECT rcv_nm, sender_nm FROM " + DatabaseHelper.DB_TABLE_INTEGRATION_LIST + " WHERE invoice_no='" + s + "' COLLATE NOCASE");
+
+                        if(cursor != null && cursor.moveToFirst()) {
+
+                            Log.e("krm0219", "Exist Data");
+
+                            ContentValues contentVal3 = new ContentValues();
+                            contentVal3.put("stat", "P3");
+                            contentVal3.put("real_qty", "1");
+                            contentVal3.put("chg_id", opID);
+                            contentVal3.put("chg_dt", dateFormat.format(date));
+                            contentVal3.put("fail_reason", "");
+                            contentVal3.put("retry_dt", "");
+                            contentVal3.put("driver_memo", driverMemo);
+                            contentVal3.put("reg_id", opID);
+                            contentVal3.put("punchOut_stat", "S");
+
+                            dbHelper.update(DatabaseHelper.DB_TABLE_INTEGRATION_LIST, contentVal3,
+                                    "invoice_no=? COLLATE NOCASE " + "and reg_id = ?", new String[]{s, opID});
+                        }
+                    }
                 }
             } catch (Exception e) {
 
