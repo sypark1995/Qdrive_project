@@ -84,6 +84,7 @@ public class PickupFailedActivity extends AppCompatActivity implements Camera2AP
     RelativeLayout layout_sign_p_f_retry_date;
     TextView text_sign_p_f_retry_date;
 
+    LinearLayout layout_sign_p_f_memo;
     EditText edit_sign_p_f_memo;
     LinearLayout layout_sign_p_f_take_photo;
     LinearLayout layout_sign_p_f_gallery;
@@ -154,6 +155,7 @@ public class PickupFailedActivity extends AppCompatActivity implements Camera2AP
         layout_sign_p_f_retry_date = findViewById(R.id.layout_sign_p_f_retry_date);
         text_sign_p_f_retry_date = findViewById(R.id.text_sign_p_f_retry_date);
 
+        layout_sign_p_f_memo = findViewById(R.id.layout_sign_p_f_memo);
         edit_sign_p_f_memo = findViewById(R.id.edit_sign_p_f_memo);
         layout_sign_p_f_take_photo = findViewById(R.id.layout_sign_p_f_take_photo);
         layout_sign_p_f_gallery = findViewById(R.id.layout_sign_p_f_gallery);
@@ -257,10 +259,19 @@ public class PickupFailedActivity extends AppCompatActivity implements Camera2AP
             @Override
             public void onItemSelected(AdapterView<?> parentView, View arg1, int position, long arg3) {
 
-                String selected_text = parentView.getItemAtPosition(position).toString();
-                Log.e("krm0219", "spinner  " + position + " / " + selected_text);
+                String selectedText = parentView.getItemAtPosition(position).toString();
+                Log.e("krm0219", "spinner  " + position + " / " + selectedText);
 
-                text_sign_p_f_failed_reason.setText(selected_text);
+
+                if (selectedText.toUpperCase().contains(context.getResources().getString(R.string.text_other).toUpperCase())) {
+
+                    layout_sign_p_f_memo.setVisibility(View.VISIBLE);
+                } else {
+
+                    layout_sign_p_f_memo.setVisibility(View.GONE);
+                }
+
+                text_sign_p_f_failed_reason.setText(selectedText);
             }
 
             @Override
@@ -474,11 +485,22 @@ public class PickupFailedActivity extends AppCompatActivity implements Camera2AP
                 return;
             }
 
+
+            // other 선택시에만 메모 필수
+            FailedCodeResult.FailedCode code = arrayList.get(spinner_p_f_failed_reason.getSelectedItemPosition());
+            String failedCode = code.getFailedCode();
+            Log.e("krm0219", "PickupFailedUploadHelper   failedCode  " + failedCode);
+            String retry_day = text_sign_p_f_retry_date.getText().toString();
+
             String driverMemo = edit_sign_p_f_memo.getText().toString().trim();
-            if (driverMemo.equals("")) {
-                Toast.makeText(this.getApplicationContext(), context.getResources().getString(R.string.msg_must_enter_memo1), Toast.LENGTH_SHORT).show();
-                return;
+
+            if (code.getFailedString().toUpperCase().contains(context.getResources().getString(R.string.text_other).toUpperCase())) {
+                if (driverMemo.equals("")) {
+                    Toast.makeText(this.getApplicationContext(), context.getResources().getString(R.string.msg_must_enter_memo1), Toast.LENGTH_SHORT).show();
+                    return;
+                }
             }
+
 
             if (!camera2.hasImage(img_sign_p_f_visit_log)) {
                 Toast.makeText(this.getApplicationContext(), context.getResources().getString(R.string.msg_visit_photo_require), Toast.LENGTH_SHORT).show();
@@ -489,12 +511,6 @@ public class PickupFailedActivity extends AppCompatActivity implements Camera2AP
                 AlertShow(context.getResources().getString(R.string.msg_disk_size_error));
                 return;
             }
-
-
-            FailedCodeResult.FailedCode code = arrayList.get(spinner_p_f_failed_reason.getSelectedItemPosition());
-            String failedCode = code.getFailedCode();
-            Log.e("krm0219", "PickupFailedUploadHelper   failedCode  " + failedCode);
-            String retry_day = text_sign_p_f_retry_date.getText().toString();
 
 
             DataUtil.logEvent("button_click", TAG, com.giosis.library.util.DataUtil.requestSetUploadPickupData);

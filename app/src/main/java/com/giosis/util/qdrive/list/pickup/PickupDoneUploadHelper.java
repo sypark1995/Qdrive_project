@@ -360,6 +360,8 @@ public class PickupDoneUploadHelper {
                             dbHelper.update(DatabaseHelper.DB_TABLE_INTEGRATION_LIST, contentVal3,
                                     "invoice_no=? COLLATE NOCASE " + "and reg_id = ?", new String[]{s, opID});
                         }
+
+                        cursor.close();
                     }
                 }
             } catch (Exception e) {

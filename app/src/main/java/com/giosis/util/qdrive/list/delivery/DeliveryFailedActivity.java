@@ -47,7 +47,6 @@ import com.giosis.util.qdrive.util.PermissionActivity;
 import com.giosis.util.qdrive.util.PermissionChecker;
 
 import java.util.ArrayList;
-import java.util.HashMap;
 
 /***
  * @author eylee
@@ -72,6 +71,7 @@ public class DeliveryFailedActivity extends AppCompatActivity implements Camera2
     RelativeLayout layout_sign_d_f_failed_reason;
     TextView text_sign_d_f_failed_reason;
     Spinner spinner_d_f_failed_reason;
+    LinearLayout layout_sign_d_f_memo;
     EditText edit_sign_d_f_memo;
 
     LinearLayout layout_sign_d_f_take_photo;
@@ -130,6 +130,7 @@ public class DeliveryFailedActivity extends AppCompatActivity implements Camera2
         layout_sign_d_f_failed_reason = findViewById(R.id.layout_sign_d_f_failed_reason);
         text_sign_d_f_failed_reason = findViewById(R.id.text_sign_d_f_failed_reason);
         spinner_d_f_failed_reason = findViewById(R.id.spinner_d_f_failed_reason);
+        layout_sign_d_f_memo = findViewById(R.id.layout_sign_d_f_memo);
         edit_sign_d_f_memo = findViewById(R.id.edit_sign_d_f_memo);
 
         layout_sign_d_f_take_photo = findViewById(R.id.layout_sign_d_f_take_photo);
@@ -175,8 +176,19 @@ public class DeliveryFailedActivity extends AppCompatActivity implements Camera2
             @Override
             public void onItemSelected(AdapterView<?> parentView, View arg1, int position, long arg3) {
 
-                String selected_text = parentView.getItemAtPosition(position).toString();
-                text_sign_d_f_failed_reason.setText(selected_text);
+                String selectedText = parentView.getItemAtPosition(position).toString();
+                Log.e("krm0219", "spinner  " + position + " / " + selectedText);
+
+
+                if (selectedText.toUpperCase().contains(context.getResources().getString(R.string.text_other).toUpperCase())) {
+
+                    layout_sign_d_f_memo.setVisibility(View.VISIBLE);
+                } else {
+
+                    layout_sign_d_f_memo.setVisibility(View.GONE);
+                }
+
+                text_sign_d_f_failed_reason.setText(selectedText);
             }
 
             @Override
@@ -383,11 +395,20 @@ public class DeliveryFailedActivity extends AppCompatActivity implements Camera2
                 Log.e("Location", TAG + " saveServerUploadSign  GPSTrackerManager : " + latitude + "  " + longitude + "  ");
             }
 
+            // other 선택시에만 메모 필수
+            FailedCodeResult.FailedCode code = arrayList.get(spinner_d_f_failed_reason.getSelectedItemPosition());
+            String failedCode = code.getFailedCode();
+            Log.e("krm0219", "DeliveryFailedUploadHelper   failedCode  " + failedCode);
+
             String driverMemo = edit_sign_d_f_memo.getText().toString().trim();
-            if (driverMemo.equals("")) {
-                Toast.makeText(this.getApplicationContext(), context.getResources().getString(R.string.msg_must_enter_memo1), Toast.LENGTH_SHORT).show();
-                return;
+
+            if (code.getFailedString().toUpperCase().contains(context.getResources().getString(R.string.text_other).toUpperCase())) {
+                if (driverMemo.equals("")) {
+                    Toast.makeText(this.getApplicationContext(), context.getResources().getString(R.string.msg_must_enter_memo1), Toast.LENGTH_SHORT).show();
+                    return;
+                }
             }
+
 
             if (!camera2.hasImage(img_sign_d_f_visit_log)) {
                 Toast.makeText(this.getApplicationContext(), context.getResources().getString(R.string.msg_visit_photo_require), Toast.LENGTH_SHORT).show();
@@ -399,9 +420,6 @@ public class DeliveryFailedActivity extends AppCompatActivity implements Camera2
                 return;
             }
 
-            FailedCodeResult.FailedCode code = arrayList.get(spinner_d_f_failed_reason.getSelectedItemPosition());
-            String failedCode = code.getFailedCode();
-            Log.e("krm0219", "DeliveryFailedUploadHelper   failedCode  " + failedCode);
 
             DataUtil.logEvent("button_click", TAG, com.giosis.library.util.DataUtil.requestSetUploadDeliveryData);
 
