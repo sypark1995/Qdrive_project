@@ -492,9 +492,11 @@ public class PickupFailedActivity extends AppCompatActivity implements Camera2AP
             Log.e("krm0219", "PickupFailedUploadHelper   failedCode  " + failedCode);
             String retry_day = text_sign_p_f_retry_date.getText().toString();
 
-            String driverMemo = edit_sign_p_f_memo.getText().toString().trim();
+            String driverMemo = "";
 
             if (code.getFailedString().toUpperCase().contains(context.getResources().getString(R.string.text_other).toUpperCase())) {
+                driverMemo = edit_sign_p_f_memo.getText().toString().trim();
+
                 if (driverMemo.equals("")) {
                     Toast.makeText(this.getApplicationContext(), context.getResources().getString(R.string.msg_must_enter_memo1), Toast.LENGTH_SHORT).show();
                     return;

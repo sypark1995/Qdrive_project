@@ -400,9 +400,11 @@ public class DeliveryFailedActivity extends AppCompatActivity implements Camera2
             String failedCode = code.getFailedCode();
             Log.e("krm0219", "DeliveryFailedUploadHelper   failedCode  " + failedCode);
 
-            String driverMemo = edit_sign_d_f_memo.getText().toString().trim();
+            String driverMemo = "";
 
             if (code.getFailedString().toUpperCase().contains(context.getResources().getString(R.string.text_other).toUpperCase())) {
+                driverMemo = edit_sign_d_f_memo.getText().toString().trim();
+
                 if (driverMemo.equals("")) {
                     Toast.makeText(this.getApplicationContext(), context.getResources().getString(R.string.msg_must_enter_memo1), Toast.LENGTH_SHORT).show();
                     return;
