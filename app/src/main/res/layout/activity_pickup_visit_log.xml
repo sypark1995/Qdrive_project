@@ -331,7 +331,7 @@
 
             <LinearLayout
                 android:layout_width="match_parent"
-                android:layout_height="wrap_content"
+                android:layout_height="300dp"
                 android:orientation="horizontal">
 
                 <RelativeLayout
@@ -346,7 +346,7 @@
                     <ImageView
                         android:id="@+id/img_sign_p_f_preview_bg"
                         android:layout_width="match_parent"
-                        android:layout_height="wrap_content"
+                        android:layout_height="300dp"
                         android:background="@drawable/capture_bg" />
                 </RelativeLayout>
             </LinearLayout>
