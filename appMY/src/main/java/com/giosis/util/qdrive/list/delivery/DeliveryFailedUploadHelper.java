@@ -12,7 +12,6 @@ import android.util.Log;
 import android.widget.ImageView;
 
 import com.giosis.library.server.ImageUpload;
-import com.giosis.util.qdrive.barcodescanner.ManualHelper;
 import com.giosis.util.qdrive.barcodescanner.StdResult;
 import com.giosis.util.qdrive.international.OnServerEventListener;
 import com.giosis.util.qdrive.international.R;
@@ -28,7 +27,7 @@ import java.text.SimpleDateFormat;
 import java.util.Date;
 
 
-public class DeliveryFailedUploadHelper extends ManualHelper {
+public class DeliveryFailedUploadHelper {
     private String TAG = "DeliveryFailedUploadHelper";
 
     private final Context context;

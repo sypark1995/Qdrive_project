@@ -11,7 +11,6 @@ import android.widget.Toast;
 
 import com.giosis.util.qdrive.barcodescanner.ChangeDriverResult;
 import com.giosis.util.qdrive.barcodescanner.DriverAssignResult;
-import com.giosis.util.qdrive.barcodescanner.ManualHelper;
 import com.giosis.util.qdrive.barcodescanner.StdResult;
 import com.giosis.util.qdrive.international.R;
 import com.giosis.util.qdrive.util.Custom_JsonParser;
@@ -29,7 +28,7 @@ import java.util.Date;
 import java.util.List;
 import java.util.TimeZone;
 
-public class ManualChangeDelDriverHelper extends ManualHelper {
+public class ManualChangeDelDriverHelper {
     String TAG = "ManualChangeDelDriverHelper";
 
     private final Context context;

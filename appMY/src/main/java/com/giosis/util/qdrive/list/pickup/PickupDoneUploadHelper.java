@@ -11,7 +11,6 @@ import android.os.AsyncTask;
 import android.util.Log;
 
 import com.giosis.library.server.ImageUpload;
-import com.giosis.util.qdrive.barcodescanner.ManualHelper;
 import com.giosis.util.qdrive.barcodescanner.StdResult;
 import com.giosis.util.qdrive.international.OnServerEventListener;
 import com.giosis.util.qdrive.international.R;
@@ -29,7 +28,7 @@ import java.util.Date;
 
 
 // Pickup - Start to Scan
-public class PickupDoneUploadHelper extends ManualHelper {
+public class PickupDoneUploadHelper {
     String TAG = "PickupDoneUploadHelper";
 
     private final Context context;

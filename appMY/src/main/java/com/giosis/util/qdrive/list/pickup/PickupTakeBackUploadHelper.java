@@ -12,7 +12,6 @@ import android.util.Log;
 import android.widget.Toast;
 
 import com.giosis.library.server.ImageUpload;
-import com.giosis.util.qdrive.barcodescanner.ManualHelper;
 import com.giosis.util.qdrive.barcodescanner.StdResult;
 import com.giosis.util.qdrive.international.OnServerEventListener;
 import com.giosis.util.qdrive.international.R;
@@ -28,7 +27,7 @@ import org.json.JSONObject;
 import java.text.SimpleDateFormat;
 import java.util.Date;
 
-public class PickupTakeBackUploadHelper extends ManualHelper {
+public class PickupTakeBackUploadHelper {
     String TAG = "PickupTakeBackUploadHelper";
 
     private final Context context;

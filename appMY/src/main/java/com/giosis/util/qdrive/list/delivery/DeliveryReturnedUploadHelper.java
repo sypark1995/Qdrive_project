@@ -11,7 +11,6 @@ import android.os.AsyncTask;
 import android.util.Log;
 
 import com.giosis.library.server.ImageUpload;
-import com.giosis.util.qdrive.barcodescanner.ManualHelper;
 import com.giosis.util.qdrive.barcodescanner.StdResult;
 import com.giosis.util.qdrive.international.OnServerEventListener;
 import com.giosis.util.qdrive.international.R;
@@ -27,7 +26,7 @@ import org.json.JSONObject;
 import java.text.SimpleDateFormat;
 import java.util.Date;
 
-public class DeliveryReturnedUploadHelper extends ManualHelper {
+public class DeliveryReturnedUploadHelper {
     private String TAG = "DeliveryReturnedUploadHelper";
 
     private final Context context;

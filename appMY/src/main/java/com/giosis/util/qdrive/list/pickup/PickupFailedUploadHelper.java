@@ -12,7 +12,6 @@ import android.util.Log;
 import android.widget.ImageView;
 
 import com.giosis.library.server.ImageUpload;
-import com.giosis.util.qdrive.barcodescanner.ManualHelper;
 import com.giosis.util.qdrive.barcodescanner.StdResult;
 import com.giosis.util.qdrive.international.OnServerEventListener;
 import com.giosis.util.qdrive.international.R;
@@ -32,7 +31,7 @@ import java.util.Date;
  * @editor krm0219
  * 일반 픽업, CNR 픽업 실패
  */
-public class PickupFailedUploadHelper extends ManualHelper {
+public class PickupFailedUploadHelper {
     String TAG = "PickupVisitLogUploadHelper";
 
     private final Context context;

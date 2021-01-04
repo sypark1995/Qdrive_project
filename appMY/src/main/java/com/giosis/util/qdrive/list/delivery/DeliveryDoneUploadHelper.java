@@ -13,7 +13,6 @@ import android.util.Log;
 import android.widget.ImageView;
 
 import com.giosis.library.server.ImageUpload;
-import com.giosis.util.qdrive.barcodescanner.ManualHelper;
 import com.giosis.util.qdrive.barcodescanner.StdResult;
 import com.giosis.util.qdrive.international.R;
 import com.giosis.util.qdrive.list.BarcodeData;
@@ -33,7 +32,7 @@ import java.util.Date;
 
 
 // Delivery Done
-public class DeliveryDoneUploadHelper extends ManualHelper {
+public class DeliveryDoneUploadHelper {
     private String TAG = "DeliveryDoneUploadHelper";
 
     private final Context context;

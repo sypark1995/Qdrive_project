@@ -22,7 +22,7 @@ import java.text.SimpleDateFormat;
 import java.util.Date;
 import java.util.TimeZone;
 
-public class CnRPickupValidationCheckHelper extends ManualHelper {
+public class CnRPickupValidationCheckHelper {
     String TAG = "CnRPickupValidationCheckHelper";
 
     private final Context context;

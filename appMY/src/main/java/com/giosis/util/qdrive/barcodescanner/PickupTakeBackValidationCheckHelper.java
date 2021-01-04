@@ -17,7 +17,7 @@ import com.giosis.util.qdrive.util.DisplayUtil;
 
 import org.json.JSONObject;
 
-public class PickupTakeBackValidationCheckHelper extends ManualHelper {
+public class PickupTakeBackValidationCheckHelper {
     String TAG = "ManualPickupTakeBackValidationCheckHelper";
 
     private final Context context;

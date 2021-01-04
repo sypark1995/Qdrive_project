@@ -8,7 +8,6 @@ import android.os.AsyncTask;
 import android.util.Log;
 import android.widget.Toast;
 
-import com.giosis.util.qdrive.barcodescanner.ManualHelper;
 import com.giosis.util.qdrive.barcodescanner.StdResult;
 import com.giosis.util.qdrive.international.R;
 import com.giosis.util.qdrive.util.Custom_JsonParser;
@@ -17,7 +16,7 @@ import com.giosis.util.qdrive.util.NetworkUtil;
 
 import org.json.JSONObject;
 
-public class Dpc3OutValidationCheckHelper extends ManualHelper {
+public class Dpc3OutValidationCheckHelper {
     String TAG = "Dpc3OutValidationCheckHelper";
 
     private final Context context;

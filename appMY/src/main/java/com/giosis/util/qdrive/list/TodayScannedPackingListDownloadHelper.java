@@ -4,7 +4,6 @@ import android.content.Context;
 import android.os.AsyncTask;
 import android.util.Log;
 
-import com.giosis.util.qdrive.barcodescanner.ManualHelper;
 import com.giosis.util.qdrive.util.Custom_JsonParser;
 import com.giosis.util.qdrive.util.DataUtil;
 import com.google.gson.Gson;
@@ -12,7 +11,7 @@ import com.google.gson.Gson;
 import org.json.JSONObject;
 
 
-public class TodayScannedPackingListDownloadHelper extends ManualHelper {
+public class TodayScannedPackingListDownloadHelper {
     String TAG = "TodayScannedPackingListDownloadHelper";
 
     private final Context context;

@@ -7,7 +7,6 @@ import android.content.DialogInterface.OnClickListener;
 import android.os.AsyncTask;
 import android.util.Log;
 
-import com.giosis.util.qdrive.barcodescanner.ManualHelper;
 import com.giosis.util.qdrive.barcodescanner.StdResult;
 import com.giosis.util.qdrive.international.R;
 import com.giosis.util.qdrive.util.Custom_JsonParser;
@@ -19,7 +18,7 @@ import org.json.JSONObject;
 import java.text.SimpleDateFormat;
 import java.util.Date;
 
-public class QuickAppUserInfoUploadHelper extends ManualHelper {
+public class QuickAppUserInfoUploadHelper {
     String TAG = "QuickAppUserInfoUploadHelper";
 
     private final Context context;

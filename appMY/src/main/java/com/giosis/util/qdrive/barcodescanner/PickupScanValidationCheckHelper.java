@@ -15,7 +15,7 @@ import com.giosis.util.qdrive.util.NetworkUtil;
 
 import org.json.JSONObject;
 
-public class PickupScanValidationCheckHelper extends ManualHelper {
+public class PickupScanValidationCheckHelper {
     String TAG = "PickupScanValidationCheckHelper";
 
     private final Context context;

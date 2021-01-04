@@ -85,10 +85,6 @@ public class InProgressExpandableListAdapter extends BaseExpandableListAdapter i
     private ArrayList<RowItem> rowItem;
     private ArrayList<RowItem> originalRowItem;
 
-    private String[] delivery_failed_reason_array = {"NH", "IA", "CR", "MR", "ET"};
-    private String[] pickup_failed_reason_array = {"WA", "WP", "NA", "NO", "NR", "NQ", "ET"};
-
-
     public InProgressExpandableListAdapter(Context context, ArrayList<RowItem> rowItem) {
 
         this.context = context;             // getActivity()

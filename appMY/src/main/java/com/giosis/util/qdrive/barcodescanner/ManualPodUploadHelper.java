@@ -28,7 +28,7 @@ import java.io.File;
 import java.util.ArrayList;
 
 
-public class ManualPodUploadHelper extends ManualHelper {
+public class ManualPodUploadHelper {
     String TAG = "ManualPodUploadHelper";
 
     private final Context context;

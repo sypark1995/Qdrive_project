@@ -76,7 +76,6 @@ import java.util.Date;
 import java.util.List;
 import java.util.TimeZone;
 
-import static com.giosis.util.qdrive.barcodescanner.ManualHelper.MOBILE_SERVER_URL;
 
 /**
  * @author wontae
@@ -969,7 +968,8 @@ public class MainActivity extends AppBaseActivity {
 
         try {
 
-            URL url = new URL(MOBILE_SERVER_URL + "/SetGCMUserKeyRegister");
+            String apiURL = MyApplication.preferences.getServerURL() + DataUtil.API_ADDRESS;
+            URL url = new URL(apiURL + "/SetGCMUserKeyRegister");
 
             HttpURLConnection http = (HttpURLConnection) url.openConnection(); // 접속
             http.setDefaultUseCaches(false);

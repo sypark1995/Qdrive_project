@@ -4,7 +4,6 @@ import android.content.Context;
 import android.os.AsyncTask;
 import android.util.Log;
 
-import com.giosis.util.qdrive.barcodescanner.ManualHelper;
 import com.giosis.util.qdrive.international.R;
 import com.giosis.util.qdrive.list.PrintDataResult;
 import com.giosis.util.qdrive.util.Custom_JsonParser;
@@ -14,7 +13,7 @@ import com.google.gson.Gson;
 
 import org.json.JSONObject;
 
-public class ManualCnRPrintDataHelper extends ManualHelper {
+public class ManualCnRPrintDataHelper {
     String TAG = "ManualCnRPrintDataHelper";
 
     private final Context context;

@@ -7,7 +7,6 @@ import android.content.DialogInterface.OnClickListener;
 import android.os.AsyncTask;
 import android.util.Log;
 
-import com.giosis.util.qdrive.barcodescanner.ManualHelper;
 import com.giosis.util.qdrive.barcodescanner.StdResult;
 import com.giosis.util.qdrive.gps.OnFusedProviderListenerUploadEventListener;
 import com.giosis.util.qdrive.international.R;
@@ -17,7 +16,7 @@ import com.giosis.util.qdrive.util.NetworkUtil;
 
 import org.json.JSONObject;
 
-public class DriverPerformanceLogUploadHelper extends ManualHelper {
+public class DriverPerformanceLogUploadHelper {
     String TAG = "DriverPerformanceLogUploadHelper";
 
     private final Context context;

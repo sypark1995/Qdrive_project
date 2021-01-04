@@ -40,7 +40,6 @@ import android.widget.Toast;
 import com.giosis.library.server.data.FailedCodeResult;
 import com.giosis.util.qdrive.barcodescanner.CaptureActivity;
 import com.giosis.util.qdrive.barcodescanner.StdResult;
-import com.giosis.util.qdrive.list.delivery.DeliveryDoneActivity;
 import com.giosis.util.qdrive.list.delivery.DeliveryDoneActivity1;
 import com.giosis.util.qdrive.list.delivery.DeliveryFailedActivity;
 import com.giosis.util.qdrive.list.delivery.QuickReturnFailedActivity;
@@ -86,7 +85,6 @@ public class CustomExpandableAdapter extends BaseExpandableListAdapter implement
 
     private ArrayList<RowItem> rowItem;
     private ArrayList<RowItem> originalRowItem;
-    private String[] pickup_failed_reason_array = {"WA", "WP", "NA", "NO", "NR", "NQ", "ET"};
 
 
     public CustomExpandableAdapter(Context context, ArrayList<RowItem> rowItem) {
@@ -878,7 +876,7 @@ public class CustomExpandableAdapter extends BaseExpandableListAdapter implement
             @Override
             public void onClick(View v) {
 
-             //   Intent intent = new Intent(context, DeliveryDoneActivity.class);
+                //   Intent intent = new Intent(context, DeliveryDoneActivity.class);
                 Intent intent = new Intent(context, DeliveryDoneActivity1.class);
                 intent.putExtra("waybillNo", tracking_no);
                 intent.putExtra("route", route);

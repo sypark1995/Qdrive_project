@@ -7,7 +7,6 @@ import android.os.AsyncTask;
 import android.util.Log;
 
 import com.giosis.util.qdrive.barcodescanner.DriverAssignResult;
-import com.giosis.util.qdrive.barcodescanner.ManualHelper;
 import com.giosis.util.qdrive.international.R;
 import com.giosis.util.qdrive.list.ChildItem;
 import com.giosis.util.qdrive.list.RowItem;
@@ -27,7 +26,7 @@ import java.util.Date;
 import java.util.TimeZone;
 
 // Outlet Order Status
-public class OutletOrderStatusDownloadHelper extends ManualHelper {
+public class OutletOrderStatusDownloadHelper {
     String TAG = "OutletStatusDownloadHelper";
 
     Gson gson = new Gson();

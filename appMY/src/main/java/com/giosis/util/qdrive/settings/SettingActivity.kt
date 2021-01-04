@@ -13,7 +13,6 @@ import android.widget.Toast
 import androidx.core.graphics.drawable.RoundedBitmapDrawable
 import androidx.core.graphics.drawable.RoundedBitmapDrawableFactory
 import com.giosis.library.setting.*
-import com.giosis.util.qdrive.barcodescanner.ManualHelper
 import com.giosis.util.qdrive.international.LoginActivity
 import com.giosis.util.qdrive.international.MyApplication
 import com.giosis.util.qdrive.international.R
@@ -148,11 +147,12 @@ class SettingActivity : CommonActivity() {
 
 
         when {
-            ManualHelper.MOBILE_SERVER_URL.contains("test") -> {
+
+            MyApplication.preferences.serverURL.contains("test") -> {
 
                 text_setting_app_version.text = "${MyApplication.preferences.appVersion} _ test"
             }
-            ManualHelper.MOBILE_SERVER_URL.contains("staging") -> {
+            MyApplication.preferences.serverURL.contains("staging") -> {
 
                 text_setting_app_version.text = "${MyApplication.preferences.appVersion} _ staging"
             }

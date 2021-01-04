@@ -9,7 +9,6 @@ import android.text.TextUtils;
 import android.util.Log;
 
 import com.giosis.util.qdrive.barcodescanner.DriverAssignResult;
-import com.giosis.util.qdrive.barcodescanner.ManualHelper;
 import com.giosis.util.qdrive.international.R;
 import com.giosis.util.qdrive.list.BarcodeData;
 import com.giosis.util.qdrive.util.Custom_JsonParser;
@@ -27,7 +26,7 @@ import java.util.Date;
 import java.util.List;
 import java.util.TimeZone;
 
-public class ManualDriverAssignHelper extends ManualHelper {
+public class ManualDriverAssignHelper {
     String TAG = "ManualDriverAssignHelper";
 
     private final Context context;

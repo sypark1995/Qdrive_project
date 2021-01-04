@@ -111,10 +111,7 @@ public final class BeepManager {
 
 
                 // TODO TEST  테스트하기 (시끌~)
-                if (MyApplication.preferences.getUserId().equals("karam.kim") && ManualHelper.MOBILE_SERVER_URL.contains("test")) {
-
-                    Log.e("krm0219", "Sound Start");
-                } else if (MyApplication.preferences.getUserId().equals("jay.cho") && ManualHelper.MOBILE_SERVER_URL.contains("staging")) {
+                if (MyApplication.preferences.getUserId().equals("karam.kim")) {
 
                     Log.e("krm0219", "Sound Start");
                 } else {

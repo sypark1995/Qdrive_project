@@ -5,7 +5,6 @@ import android.content.Context;
 import android.os.AsyncTask;
 import android.util.Log;
 
-import com.giosis.util.qdrive.barcodescanner.ManualHelper;
 import com.giosis.util.qdrive.util.Custom_JsonParser;
 import com.giosis.util.qdrive.util.DataUtil;
 import com.giosis.util.qdrive.util.DisplayUtil;
@@ -17,7 +16,7 @@ import org.json.JSONObject;
 import java.util.ArrayList;
 
 
-public class StatisticsDownloadHelper extends ManualHelper {
+public class StatisticsDownloadHelper {
     private String TAG = "StatisticsDownloadHelper";
 
     private final Context context;

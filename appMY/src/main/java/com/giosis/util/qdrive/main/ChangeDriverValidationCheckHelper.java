@@ -8,7 +8,6 @@ import android.os.AsyncTask;
 import android.util.Log;
 
 import com.giosis.util.qdrive.barcodescanner.ChangeDriverResult;
-import com.giosis.util.qdrive.barcodescanner.ManualHelper;
 import com.giosis.util.qdrive.international.R;
 import com.giosis.util.qdrive.util.Custom_JsonParser;
 import com.giosis.util.qdrive.util.DataUtil;
@@ -17,7 +16,7 @@ import com.google.gson.Gson;
 
 import org.json.JSONObject;
 
-public class ChangeDriverValidationCheckHelper extends ManualHelper {
+public class ChangeDriverValidationCheckHelper {
     String TAG = "ChangeDriverValidationCheckHelper";
 
     private final Context context;

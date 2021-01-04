@@ -20,7 +20,6 @@ import android.text.TextUtils;
 import android.util.Log;
 
 import com.giosis.library.server.ImageUpload;
-import com.giosis.util.qdrive.barcodescanner.ManualHelper;
 import com.giosis.util.qdrive.barcodescanner.StdResult;
 import com.giosis.util.qdrive.international.OnServerEventListener;
 import com.giosis.util.qdrive.international.R;
@@ -37,7 +36,7 @@ import org.json.JSONObject;
 import java.io.File;
 import java.util.ArrayList;
 
-public class DeviceDataUploadHelper extends ManualHelper {
+public class DeviceDataUploadHelper {
     String TAG = "DeviceDataUploadHelper";
 
     private final Context context;

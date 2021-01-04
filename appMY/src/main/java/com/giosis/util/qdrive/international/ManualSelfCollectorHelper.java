@@ -11,7 +11,6 @@ import android.text.TextUtils;
 import android.util.Log;
 
 import com.giosis.library.server.ImageUpload;
-import com.giosis.util.qdrive.barcodescanner.ManualHelper;
 import com.giosis.util.qdrive.list.BarcodeData;
 import com.giosis.util.qdrive.list.SigningView;
 import com.giosis.util.qdrive.util.BarcodeType;
@@ -25,7 +24,7 @@ import org.json.JSONObject;
 import java.util.ArrayList;
 
 
-public class ManualSelfCollectorHelper extends ManualHelper {
+public class ManualSelfCollectorHelper {
     String TAG = "ManualSelfCollectorHelper";
 
     private final Context context;
