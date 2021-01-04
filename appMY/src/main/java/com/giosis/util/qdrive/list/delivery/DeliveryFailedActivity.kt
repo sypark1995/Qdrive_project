@@ -28,7 +28,6 @@ import com.giosis.util.qdrive.international.R
 import com.giosis.util.qdrive.util.*
 import com.giosis.util.qdrive.util.ui.CommonActivity
 import kotlinx.android.synthetic.main.activity_delivery_visit_log.*
-import kotlinx.android.synthetic.main.activity_pickup_visit_log.*
 import kotlinx.android.synthetic.main.top_title.*
 import java.util.*
 
@@ -99,9 +98,18 @@ class DeliveryFailedActivity : CommonActivity(), Camera2APIs.Camera2Interface, S
             override fun onNothingSelected(p0: AdapterView<*>?) {
             }
 
-            override fun onItemSelected(p0: AdapterView<*>, p1: View?, p2: Int, p3: Long) {
+            override fun onItemSelected(parentView: AdapterView<*>, arg1: View?, position: Int, arg3: Long) {
 
-                val reason = p0.getItemAtPosition(p2).toString()
+                val reason = parentView.getItemAtPosition(position).toString()
+
+                if (reason.toUpperCase().contains(context.resources.getString(R.string.text_other).toUpperCase())) {
+
+                    layout_sign_d_f_memo.visibility = View.VISIBLE
+                } else {
+
+                    layout_sign_d_f_memo.visibility = View.GONE
+                }
+
                 text_sign_d_f_failed_reason.text = reason
             }
         }
@@ -302,12 +310,24 @@ class DeliveryFailedActivity : CommonActivity(), Camera2APIs.Camera2Interface, S
                 return
             }
 
-            val driverMemo = edit_sign_d_f_memo.text.toString()
-            if (driverMemo.isEmpty()) {
 
-                Toast.makeText(this@DeliveryFailedActivity, context.resources.getString(R.string.msg_must_enter_memo1), Toast.LENGTH_SHORT).show()
-                return
+            // other 선택시에만 메모 필수
+            val code: FailedCodeResult.FailedCode = arrayList!![spinner_d_f_failed_reason.selectedItemPosition]
+            val failedCode: String = code.failedCode
+            Log.e("krm0219", "Fail Reason Code  >  $failedCode")
+
+            var driverMemo = ""
+            if (code.failedString.toUpperCase().contains(context.resources.getString(R.string.text_other).toUpperCase())) {
+
+                driverMemo = edit_sign_d_f_memo.text.toString()
+
+                if (driverMemo.isEmpty()) {
+
+                    Toast.makeText(this@DeliveryFailedActivity, context.resources.getString(R.string.msg_must_enter_memo1), Toast.LENGTH_SHORT).show()
+                    return
+                }
             }
+            Log.e("krm0219", "Memo  >  $driverMemo")
 
             if (!camera2.hasImage(img_sign_d_f_visit_log)) {
 
@@ -332,10 +352,6 @@ class DeliveryFailedActivity : CommonActivity(), Camera2APIs.Camera2Interface, S
 
             Log.e(tag, "  Location $latitude / $longitude")
 
-
-            val code: FailedCodeResult.FailedCode = arrayList!![spinner_d_f_failed_reason.selectedItemPosition]
-            val failedCode: String = code.failedCode
-            Log.e("krm0219", "Fail Reason Code  >  $failedCode")
             DataUtil.logEvent("button_click", tag, com.giosis.library.util.DataUtil.requestSetUploadDeliveryData)
 
             DeliveryFailedUploadHelper.Builder(this, userId, officeCode, deviceId,

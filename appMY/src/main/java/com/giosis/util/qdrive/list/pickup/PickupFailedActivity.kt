@@ -159,9 +159,18 @@ class PickupFailedActivity : CommonActivity(), Camera2APIs.Camera2Interface, Tex
             override fun onNothingSelected(p0: AdapterView<*>?) {
             }
 
-            override fun onItemSelected(p0: AdapterView<*>, p1: View?, p2: Int, p3: Long) {
+            override fun onItemSelected(parentView: AdapterView<*>, arg1: View?, position: Int, arg3: Long) {
 
-                val reason = p0.getItemAtPosition(p2).toString()
+                val reason = parentView.getItemAtPosition(position).toString()
+
+                if (reason.toUpperCase().contains(context.resources.getString(R.string.text_other).toUpperCase())) {
+
+                    layout_sign_p_f_memo.visibility = View.VISIBLE
+                } else {
+
+                    layout_sign_p_f_memo.visibility = View.GONE
+                }
+
                 text_sign_p_f_failed_reason.text = reason
             }
         }
@@ -370,12 +379,6 @@ class PickupFailedActivity : CommonActivity(), Camera2APIs.Camera2Interface, Tex
                 return
             }
 
-            if (text_sign_p_f_failed_reason.text == context.resources.getString(R.string.text_select)) {
-
-                Toast.makeText(this@PickupFailedActivity, context.resources.getString(R.string.msg_select_fail_reason), Toast.LENGTH_SHORT).show()
-                return
-            }
-
             val retryDay = text_sign_p_f_retry_date.text.toString()
             if (retryDay == context.resources.getString(R.string.text_select)) {
 
@@ -383,12 +386,23 @@ class PickupFailedActivity : CommonActivity(), Camera2APIs.Camera2Interface, Tex
                 return
             }
 
-            val driverMemo = edit_sign_p_f_memo.text.toString()
-            if (driverMemo.isEmpty()) {
 
-                Toast.makeText(this@PickupFailedActivity, context.resources.getString(R.string.msg_must_enter_memo1), Toast.LENGTH_SHORT).show()
-                return
+            val code: FailedCodeResult.FailedCode = arrayList!![spinner_p_f_failed_reason.selectedItemPosition]
+            val failedCode: String = code.failedCode
+            Log.e("krm0219", "Fail Reason Code  >  $failedCode  ${code.failedString}")
+
+            var driverMemo = ""
+            if (code.failedString.toUpperCase().contains(context.resources.getString(R.string.text_other).toUpperCase())) {
+
+                driverMemo = edit_sign_p_f_memo.text.toString()
+                if (driverMemo.isEmpty()) {
+
+                    Toast.makeText(this@PickupFailedActivity, context.resources.getString(R.string.msg_must_enter_memo1), Toast.LENGTH_SHORT).show()
+                    return
+                }
             }
+            Log.e("krm0219", "Memo  >  $driverMemo")
+
 
             if (!camera2.hasImage(img_sign_p_f_visit_log)) {
 
@@ -413,9 +427,6 @@ class PickupFailedActivity : CommonActivity(), Camera2APIs.Camera2Interface, Tex
             Log.i(tag, "  Location $latitude / $longitude")
 
 
-            val code: FailedCodeResult.FailedCode = arrayList!![spinner_p_f_failed_reason.selectedItemPosition]
-            val failedCode: String = code.failedCode
-            Log.e("krm0219", "Fail Reason Code  >  $failedCode")
             DataUtil.logEvent("button_click", tag, com.giosis.library.util.DataUtil.requestSetUploadPickupData)
 
 
