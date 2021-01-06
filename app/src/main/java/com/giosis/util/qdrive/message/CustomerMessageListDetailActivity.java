@@ -23,14 +23,13 @@ import android.widget.ListView;
 import android.widget.TextView;
 import android.widget.Toast;
 
-import androidx.appcompat.app.AppCompatActivity;
-
 import com.giosis.util.qdrive.singapore.MyApplication;
 import com.giosis.util.qdrive.singapore.R;
 import com.giosis.util.qdrive.util.Custom_JsonParser;
 import com.giosis.util.qdrive.util.DataUtil;
 import com.giosis.util.qdrive.util.DisplayUtil;
 import com.giosis.util.qdrive.util.NetworkUtil;
+import com.giosis.util.qdrive.util.ui.CommonActivity;
 import com.google.gson.Gson;
 
 import org.json.JSONObject;
@@ -42,7 +41,7 @@ import java.util.Calendar;
 /**
  * @author krm0219
  */
-public class CustomerMessageListDetailActivity extends AppCompatActivity {
+public class CustomerMessageListDetailActivity extends CommonActivity {
     String TAG = "CustomerMessageListDetailActivity";
 
     FrameLayout layout_top_back;

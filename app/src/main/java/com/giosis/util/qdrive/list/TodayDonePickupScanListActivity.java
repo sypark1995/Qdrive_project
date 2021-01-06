@@ -13,12 +13,11 @@ import android.widget.ListAdapter;
 import android.widget.ListView;
 import android.widget.TextView;
 
-import androidx.appcompat.app.AppCompatActivity;
-
 import com.giosis.util.qdrive.barcodescanner.CaptureActivity;
 import com.giosis.util.qdrive.singapore.MyApplication;
 import com.giosis.util.qdrive.singapore.R;
 import com.giosis.util.qdrive.util.BarcodeType;
+import com.giosis.util.qdrive.util.ui.CommonActivity;
 
 import java.util.ArrayList;
 
@@ -27,7 +26,7 @@ import java.util.ArrayList;
  * @editor LIST > TODAY DONE > 'ADD SCAN' Button
  * LIST > TODAY DONE > 'Take Back' Button
  */
-public class TodayDonePickupScanListActivity extends AppCompatActivity {
+public class TodayDonePickupScanListActivity extends CommonActivity {
     String TAG = "TodayDonePickupScanListActivity";
 
     FrameLayout layout_top_back;

@@ -11,7 +11,6 @@ import android.widget.RelativeLayout;
 import android.widget.TextView;
 
 import androidx.annotation.NonNull;
-import androidx.appcompat.app.AppCompatActivity;
 import androidx.fragment.app.Fragment;
 import androidx.fragment.app.FragmentManager;
 import androidx.fragment.app.FragmentStatePagerAdapter;
@@ -19,12 +18,13 @@ import androidx.viewpager.widget.ViewPager;
 
 import com.giosis.util.qdrive.singapore.R;
 import com.giosis.util.qdrive.util.DataUtil;
+import com.giosis.util.qdrive.util.ui.CommonActivity;
 
 /**
  * @author krm0219
  */
 
-public class MessageListActivity extends AppCompatActivity {
+public class MessageListActivity extends CommonActivity {
     String TAG = "MessageListActivity";
 
     public final static int FRAGMENT_PAGE1 = 0;

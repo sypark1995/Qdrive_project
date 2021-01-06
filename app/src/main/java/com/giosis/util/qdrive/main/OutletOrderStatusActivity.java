@@ -19,12 +19,12 @@ import android.widget.Spinner;
 import android.widget.TextView;
 
 import androidx.annotation.Nullable;
-import androidx.appcompat.app.AppCompatActivity;
 
 import com.giosis.util.qdrive.list.RowItem;
 import com.giosis.util.qdrive.singapore.MyApplication;
 import com.giosis.util.qdrive.singapore.R;
 import com.giosis.util.qdrive.util.DatabaseHelper;
+import com.giosis.util.qdrive.util.ui.CommonActivity;
 
 import java.lang.reflect.Field;
 import java.util.ArrayList;
@@ -36,7 +36,7 @@ import java.util.Comparator;
  * @author krm0219
  * HOME > Outlet Order Status
  */
-public class OutletOrderStatusActivity extends AppCompatActivity implements SearchView.OnQueryTextListener, SearchView.OnCloseListener {
+public class OutletOrderStatusActivity extends CommonActivity implements SearchView.OnQueryTextListener, SearchView.OnCloseListener {
     String TAG = "OutletOrderStatusActivity";
 
 

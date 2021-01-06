@@ -65,8 +65,6 @@ import android.widget.TextView;
 import android.widget.Toast;
 import android.widget.ToggleButton;
 
-import androidx.appcompat.app.AppCompatActivity;
-
 import com.giosis.util.qdrive.barcodescanner.bluetooth.BluetoothChatService;
 import com.giosis.util.qdrive.barcodescanner.bluetooth.DeviceListActivity;
 import com.giosis.util.qdrive.barcodescanner.bluetooth.KScan;
@@ -93,6 +91,7 @@ import com.giosis.util.qdrive.util.MemoryStatus;
 import com.giosis.util.qdrive.util.NetworkUtil;
 import com.giosis.util.qdrive.util.PermissionActivity;
 import com.giosis.util.qdrive.util.PermissionChecker;
+import com.giosis.util.qdrive.util.ui.CommonActivity;
 import com.google.zxing.Result;
 
 import java.io.Serializable;
@@ -107,7 +106,7 @@ import java.util.regex.Pattern;
  * @author Sean Owen
  */
 
-public final class CaptureActivity extends AppCompatActivity implements SurfaceHolder.Callback, OnTouchListener,
+public final class CaptureActivity extends CommonActivity implements SurfaceHolder.Callback, OnTouchListener,
         OnFocusChangeListener, TextWatcher, SensorEventListener, OnKeyListener {
     private static final String TAG = "CaptureActivity";
 

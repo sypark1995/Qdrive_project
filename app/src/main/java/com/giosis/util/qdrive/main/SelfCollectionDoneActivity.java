@@ -21,7 +21,6 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import androidx.annotation.Nullable;
-import androidx.appcompat.app.AppCompatActivity;
 
 import com.giosis.util.qdrive.barcodescanner.CaptureActivity;
 import com.giosis.util.qdrive.list.BarcodeData;
@@ -34,11 +33,12 @@ import com.giosis.util.qdrive.util.MemoryStatus;
 import com.giosis.util.qdrive.util.NetworkUtil;
 import com.giosis.util.qdrive.util.PermissionActivity;
 import com.giosis.util.qdrive.util.PermissionChecker;
+import com.giosis.util.qdrive.util.ui.CommonActivity;
 
 import java.util.ArrayList;
 
 
-public class SelfCollectionDoneActivity extends AppCompatActivity {
+public class SelfCollectionDoneActivity extends CommonActivity {
     String TAG = "SelfCollectionDoneActivity";
 
 

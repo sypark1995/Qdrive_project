@@ -34,8 +34,6 @@ import android.widget.Spinner;
 import android.widget.TextView;
 import android.widget.Toast;
 
-import androidx.appcompat.app.AppCompatActivity;
-
 import com.giosis.library.server.data.FailedCodeResult;
 import com.giosis.util.qdrive.gps.GPSTrackerManager;
 import com.giosis.util.qdrive.singapore.MyApplication;
@@ -50,6 +48,7 @@ import com.giosis.util.qdrive.util.MemoryStatus;
 import com.giosis.util.qdrive.util.NetworkUtil;
 import com.giosis.util.qdrive.util.PermissionActivity;
 import com.giosis.util.qdrive.util.PermissionChecker;
+import com.giosis.util.qdrive.util.ui.CommonActivity;
 
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
@@ -66,7 +65,7 @@ import java.util.Locale;
  * 2019.12 - Fail Reason / Retry Date 추가
  * 2020.06  CNR Failed 합치기
  */
-public class PickupFailedActivity extends AppCompatActivity implements Camera2APIs.Camera2Interface, TextureView.SurfaceTextureListener {
+public class PickupFailedActivity extends CommonActivity implements Camera2APIs.Camera2Interface, TextureView.SurfaceTextureListener {
     String TAG = "PickupFailedActivity";
 
     //

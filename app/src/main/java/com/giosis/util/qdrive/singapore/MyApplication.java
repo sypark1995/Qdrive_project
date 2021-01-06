@@ -11,6 +11,7 @@ import android.util.Log;
 import androidx.multidex.MultiDexApplication;
 
 import com.giosis.library.util.Preferences;
+import com.giosis.util.qdrive.util.LocaleManager;
 import com.giosis.util.qdrive.util.MySharedPreferences;
 
 import java.util.Calendar;
@@ -24,6 +25,8 @@ import java.util.Calendar;
 public class MyApplication extends MultiDexApplication {
     String TAG = "MyApplication";
 
+
+    public static LocaleManager localeManager;
     public static MySharedPreferences preferences;
     private static Context context;
 
@@ -55,6 +58,13 @@ public class MyApplication extends MultiDexApplication {
                 PackageManager.DONT_KILL_APP);
     }
 
+    @Override
+    protected void attachBaseContext(Context base) {
+
+        localeManager = new LocaleManager(base);
+        super.attachBaseContext(localeManager.setLocale(base));
+    }
+
 
     public static Context getContext() {
         return context;
@@ -81,8 +91,6 @@ public class MyApplication extends MultiDexApplication {
         Intent intent = new Intent(context, AlarmReceiver.class);
         PendingIntent pendingIntent = PendingIntent.getBroadcast(context, 123, intent, 0);
         AlarmManager alarmManager = (AlarmManager) context.getSystemService(Context.ALARM_SERVICE);
-
-
         Log.e("Alarm", "Auto Logout Setting? " + preferences.getAutoLogoutSetting());
         Log.e("Alarm", "Auto Logout Time? " + hour + ":" + minute);
 

@@ -21,8 +21,6 @@ import android.widget.RelativeLayout;
 import android.widget.TextView;
 import android.widget.Toast;
 
-import androidx.appcompat.app.AppCompatActivity;
-
 import com.giosis.util.qdrive.barcodescanner.CaptureActivity;
 import com.giosis.util.qdrive.list.OutletInfo;
 import com.giosis.util.qdrive.singapore.MyApplication;
@@ -32,6 +30,7 @@ import com.giosis.util.qdrive.util.Custom_JsonParser;
 import com.giosis.util.qdrive.util.DataUtil;
 import com.giosis.util.qdrive.util.DatabaseHelper;
 import com.giosis.util.qdrive.util.DisplayUtil;
+import com.giosis.util.qdrive.util.ui.CommonActivity;
 import com.google.gson.Gson;
 
 import org.json.JSONObject;
@@ -51,7 +50,7 @@ import javax.net.ssl.X509TrustManager;
  * @author krm0219
  * LIST > In-Progress > Outlet Pickup Done (Step 1)
  */
-public class OutletPickupScanActivity extends AppCompatActivity {
+public class OutletPickupScanActivity extends CommonActivity {
     String TAG = "OutletPickupScanActivity";
 
     //krm0219

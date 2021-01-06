@@ -7,15 +7,16 @@ import android.content.pm.PackageManager;
 import android.net.Uri;
 import android.os.Build;
 import android.os.Bundle;
-import androidx.annotation.NonNull;
-import androidx.core.app.ActivityCompat;
-import androidx.appcompat.app.AlertDialog;
-import androidx.appcompat.app.AppCompatActivity;
 import android.util.Log;
 
-import com.giosis.util.qdrive.singapore.R;
+import androidx.annotation.NonNull;
+import androidx.appcompat.app.AlertDialog;
+import androidx.core.app.ActivityCompat;
 
-public class PermissionActivity extends AppCompatActivity {
+import com.giosis.util.qdrive.singapore.R;
+import com.giosis.util.qdrive.util.ui.CommonActivity;
+
+public class PermissionActivity extends CommonActivity {
     String TAG = "PermissionActivity";
 
     public static final int PERMISSIONS_GRANTED = 200;

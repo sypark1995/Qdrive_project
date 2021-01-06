@@ -1,5 +1,6 @@
 package com.giosis.util.qdrive.util.ui
 
+import android.content.Context
 import android.content.Intent
 import android.util.Log
 import android.widget.Toast
@@ -8,7 +9,7 @@ import com.giosis.util.qdrive.singapore.LoginActivity
 import com.giosis.util.qdrive.singapore.MyApplication
 import com.giosis.util.qdrive.singapore.R
 
-class CommonActivity : AppCompatActivity() {
+open class CommonActivity : AppCompatActivity() {
 
     var progressDialog: QProgressDialog = QProgressDialog(this)
     private var progressCount = 0
@@ -56,7 +57,7 @@ class CommonActivity : AppCompatActivity() {
 
 
     // Multi Language
-//    override fun attachBaseContext(newBase: Context?) {
-//        super.attachBaseContext(MyApplication.localeManager.setLocale(newBase));
-//    }
+    override fun attachBaseContext(newBase: Context?) {
+        super.attachBaseContext(MyApplication.localeManager.setLocale(newBase));
+    }
 }

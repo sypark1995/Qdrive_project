@@ -13,7 +13,6 @@ import android.view.inputmethod.InputMethodManager
 import android.widget.LinearLayout
 import android.widget.ProgressBar
 import androidx.appcompat.app.AlertDialog
-import androidx.appcompat.app.AppCompatActivity
 import com.giosis.library.server.RetrofitClient
 import com.giosis.library.setting.DeveloperModeActivity
 import com.giosis.util.qdrive.gps.GPSTrackerManager
@@ -23,13 +22,14 @@ import com.giosis.util.qdrive.util.DataUtil
 import com.giosis.util.qdrive.util.DatabaseHelper
 import com.giosis.util.qdrive.util.PermissionActivity
 import com.giosis.util.qdrive.util.PermissionChecker
+import com.giosis.util.qdrive.util.ui.CommonActivity
 import com.google.gson.Gson
 import io.reactivex.rxjava3.android.schedulers.AndroidSchedulers
 import io.reactivex.rxjava3.schedulers.Schedulers
 import kotlinx.android.synthetic.main.activity_login.*
 import java.io.File
 
-class LoginActivity : AppCompatActivity() {
+class LoginActivity : CommonActivity() {
 
     val tag = "LoginActivity"
     private val progressBar by lazy {
@@ -233,10 +233,10 @@ class LoginActivity : AppCompatActivity() {
                                     }
 
                                 } else {
-                                    if(it.resultCode == -10) {
+                                    if (it.resultCode == -10) {
 
                                         showDialog("You Qdrive account has been deactivated")
-                                    } else if(it.resultMsg != "") {
+                                    } else if (it.resultMsg != "") {
 
                                         showDialog(it.resultMsg)
                                     } else {

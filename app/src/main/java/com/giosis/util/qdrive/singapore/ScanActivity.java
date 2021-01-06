@@ -9,15 +9,14 @@ import android.widget.LinearLayout;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
 
-import androidx.appcompat.app.AppCompatActivity;
-
 import com.giosis.util.qdrive.barcodescanner.CaptureActivity;
 import com.giosis.util.qdrive.util.BarcodeType;
+import com.giosis.util.qdrive.util.ui.CommonActivity;
 
 /**
  * @author krm0219
  **/
-public class ScanActivity extends AppCompatActivity {
+public class ScanActivity extends CommonActivity {
     String TAG = "ScanActivity";
 
 

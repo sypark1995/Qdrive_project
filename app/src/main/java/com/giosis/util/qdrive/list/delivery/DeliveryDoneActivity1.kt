@@ -6,7 +6,6 @@ import android.app.ProgressDialog
 import android.content.Context
 import android.content.DialogInterface
 import android.content.Intent
-import android.graphics.Bitmap
 import android.graphics.SurfaceTexture
 import android.hardware.camera2.CameraDevice
 import android.os.AsyncTask
@@ -22,7 +21,6 @@ import android.view.View
 import android.widget.ImageView
 import android.widget.ListView
 import android.widget.Toast
-import androidx.appcompat.app.AppCompatActivity
 import com.giosis.util.qdrive.barcodescanner.CaptureActivity.BarcodeListData
 import com.giosis.util.qdrive.gps.GPSTrackerManager
 import com.giosis.util.qdrive.list.BarcodeData
@@ -30,13 +28,14 @@ import com.giosis.util.qdrive.list.OutletInfo
 import com.giosis.util.qdrive.singapore.MyApplication
 import com.giosis.util.qdrive.singapore.R
 import com.giosis.util.qdrive.util.*
+import com.giosis.util.qdrive.util.ui.CommonActivity
 import com.google.gson.Gson
 import kotlinx.android.synthetic.main.activity_delivered.*
 import kotlinx.android.synthetic.main.top_title.*
 import org.json.JSONObject
 import java.util.*
 
-class DeliveryDoneActivity1 : AppCompatActivity(), Camera2APIs.Camera2Interface, SurfaceTextureListener {
+class DeliveryDoneActivity1 : CommonActivity(), Camera2APIs.Camera2Interface, SurfaceTextureListener {
     var TAG = "DeliveryDoneActivity1"
 
     //

@@ -19,7 +19,6 @@ import android.widget.FrameLayout;
 import android.widget.TextView;
 
 import androidx.annotation.Nullable;
-import androidx.appcompat.app.AppCompatActivity;
 import androidx.core.app.ActivityCompat;
 
 import com.giosis.util.qdrive.main.MainActivity;
@@ -28,13 +27,14 @@ import com.giosis.util.qdrive.util.DataUtil;
 import com.giosis.util.qdrive.util.NetworkUtil;
 import com.giosis.util.qdrive.util.PermissionActivity;
 import com.giosis.util.qdrive.util.PermissionChecker;
+import com.giosis.util.qdrive.util.ui.CommonActivity;
 
 import org.json.JSONObject;
 
 import java.util.HashMap;
 import java.util.regex.Pattern;
 
-public class SMSVerificationActivity extends AppCompatActivity {
+public class SMSVerificationActivity extends CommonActivity {
     private static final String TAG = "SMSVerificationActivity";
 
     // krm0219

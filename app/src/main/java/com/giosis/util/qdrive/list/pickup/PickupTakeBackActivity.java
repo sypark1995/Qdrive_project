@@ -16,7 +16,6 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import androidx.annotation.Nullable;
-import androidx.appcompat.app.AppCompatActivity;
 
 import com.giosis.util.qdrive.gps.GPSTrackerManager;
 import com.giosis.util.qdrive.list.SigningView;
@@ -28,6 +27,7 @@ import com.giosis.util.qdrive.util.MemoryStatus;
 import com.giosis.util.qdrive.util.NetworkUtil;
 import com.giosis.util.qdrive.util.PermissionActivity;
 import com.giosis.util.qdrive.util.PermissionChecker;
+import com.giosis.util.qdrive.util.ui.CommonActivity;
 
 /**
  * @author krm0219
@@ -35,7 +35,7 @@ import com.giosis.util.qdrive.util.PermissionChecker;
  * LIST > TODAY DONE > Take Back
  */
 
-public class PickupTakeBackActivity extends AppCompatActivity {
+public class PickupTakeBackActivity extends CommonActivity {
     String TAG = "PickupTakeBackActivity";
 
     // krm0219

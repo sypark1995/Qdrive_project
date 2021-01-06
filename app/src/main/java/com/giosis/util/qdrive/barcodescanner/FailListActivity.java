@@ -4,7 +4,6 @@ package com.giosis.util.qdrive.barcodescanner;
 import android.content.Context;
 import android.content.Intent;
 import android.os.Bundle;
-import androidx.appcompat.app.AppCompatActivity;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -14,11 +13,12 @@ import android.widget.ListView;
 import android.widget.TextView;
 
 import com.giosis.util.qdrive.singapore.R;
+import com.giosis.util.qdrive.util.ui.CommonActivity;
 
 import java.util.ArrayList;
 
 
-public class FailListActivity extends AppCompatActivity {
+public class FailListActivity extends CommonActivity {
     String TAG = "FailListActivity";
 
 

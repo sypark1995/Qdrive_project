@@ -15,7 +15,6 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import androidx.annotation.Nullable;
-import androidx.appcompat.app.AppCompatActivity;
 
 import com.giosis.util.qdrive.gps.GPSTrackerManager;
 import com.giosis.util.qdrive.list.BarcodeData;
@@ -28,6 +27,7 @@ import com.giosis.util.qdrive.util.MemoryStatus;
 import com.giosis.util.qdrive.util.NetworkUtil;
 import com.giosis.util.qdrive.util.PermissionActivity;
 import com.giosis.util.qdrive.util.PermissionChecker;
+import com.giosis.util.qdrive.util.ui.CommonActivity;
 
 import java.util.ArrayList;
 
@@ -35,7 +35,7 @@ import java.util.ArrayList;
  * @editor krm0219
  * SCAN > CNR DONE
  */
-public class CnRPickupDoneActivity extends AppCompatActivity {
+public class CnRPickupDoneActivity extends CommonActivity {
     String TAG = "CnRPickupDoneActivity";
 
     //

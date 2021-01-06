@@ -18,7 +18,7 @@ import android.widget.Spinner;
 import android.widget.TextView;
 import android.widget.Toast;
 
-import androidx.appcompat.app.AppCompatActivity;
+import com.giosis.util.qdrive.util.ui.CommonActivity;
 
 import java.text.SimpleDateFormat;
 import java.util.Calendar;
@@ -28,7 +28,7 @@ import java.util.Locale;
  * @author krm0219
  * Statistics
  */
-public class StatisticsActivity extends AppCompatActivity {
+public class StatisticsActivity extends CommonActivity {
     String TAG = "StatisticsActivity";
 
 

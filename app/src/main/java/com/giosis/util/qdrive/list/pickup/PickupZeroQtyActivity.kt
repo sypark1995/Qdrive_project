@@ -7,12 +7,12 @@ import android.text.Editable
 import android.text.TextWatcher
 import android.util.Log
 import android.widget.Toast
-import androidx.appcompat.app.AppCompatActivity
 import com.giosis.util.qdrive.gps.GPSTrackerManager
 import com.giosis.util.qdrive.singapore.MyApplication
 import com.giosis.util.qdrive.singapore.OnServerEventListener
 import com.giosis.util.qdrive.singapore.R
 import com.giosis.util.qdrive.util.*
+import com.giosis.util.qdrive.util.ui.CommonActivity
 import kotlinx.android.synthetic.main.activity_pickup_start_to_scan.*
 import kotlinx.android.synthetic.main.top_title.*
 
@@ -22,7 +22,7 @@ import kotlinx.android.synthetic.main.top_title.*
  * LIST > In-Progress > 'ZERO Q'TY'
  * */
 
-class PickupZeroQtyActivity : AppCompatActivity() {
+class PickupZeroQtyActivity : CommonActivity() {
 
     val tag = "PickupZeroQtyActivity"
     private val context = MyApplication.getContext()

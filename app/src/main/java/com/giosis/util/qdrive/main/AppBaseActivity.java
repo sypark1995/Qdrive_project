@@ -11,7 +11,6 @@ import android.widget.RelativeLayout;
 import android.widget.TextView;
 
 import androidx.appcompat.app.ActionBarDrawerToggle;
-import androidx.appcompat.app.AppCompatActivity;
 import androidx.appcompat.widget.Toolbar;
 import androidx.core.content.ContextCompat;
 import androidx.drawerlayout.widget.DrawerLayout;
@@ -26,11 +25,12 @@ import com.giosis.util.qdrive.singapore.R;
 import com.giosis.util.qdrive.singapore.ScanActivity;
 import com.giosis.util.qdrive.singapore.StatisticsActivity;
 import com.giosis.util.qdrive.util.BarcodeType;
+import com.giosis.util.qdrive.util.ui.CommonActivity;
 
 import java.util.ArrayList;
 import java.util.Arrays;
 
-public class AppBaseActivity extends AppCompatActivity {
+public class AppBaseActivity extends CommonActivity {
     String TAG = "AppBaseActivity";
 
     public DrawerLayout drawerLayout;

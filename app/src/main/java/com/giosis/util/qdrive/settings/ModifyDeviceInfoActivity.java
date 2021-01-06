@@ -10,14 +10,13 @@ import android.widget.FrameLayout;
 import android.widget.TextView;
 import android.widget.Toast;
 
-import androidx.appcompat.app.AppCompatActivity;
-
 import com.giosis.util.qdrive.singapore.MyApplication;
 import com.giosis.util.qdrive.singapore.R;
+import com.giosis.util.qdrive.util.ui.CommonActivity;
 
 import java.lang.reflect.Method;
 
-public class ModifyDeviceInfoActivity extends AppCompatActivity {
+public class ModifyDeviceInfoActivity extends CommonActivity {
     String TAG = "ModifyUserInfoActivity";
 
 

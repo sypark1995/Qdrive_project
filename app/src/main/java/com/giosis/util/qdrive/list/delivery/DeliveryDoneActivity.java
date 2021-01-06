@@ -34,7 +34,6 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import androidx.annotation.Nullable;
-import androidx.appcompat.app.AppCompatActivity;
 
 import com.giosis.util.qdrive.barcodescanner.CaptureActivity;
 import com.giosis.util.qdrive.gps.GPSTrackerManager;
@@ -53,6 +52,7 @@ import com.giosis.util.qdrive.util.MemoryStatus;
 import com.giosis.util.qdrive.util.NetworkUtil;
 import com.giosis.util.qdrive.util.PermissionActivity;
 import com.giosis.util.qdrive.util.PermissionChecker;
+import com.giosis.util.qdrive.util.ui.CommonActivity;
 import com.google.gson.Gson;
 
 import org.json.JSONObject;
@@ -66,7 +66,7 @@ import java.util.ArrayList;
  * LIST, In Progress > 'Delivered'  // SCAN > Delivery Done
  * 2020.06 사진 추가
  */
-public class DeliveryDoneActivity extends AppCompatActivity implements Camera2APIs.Camera2Interface, TextureView.SurfaceTextureListener {
+public class DeliveryDoneActivity extends CommonActivity implements Camera2APIs.Camera2Interface, TextureView.SurfaceTextureListener {
     String TAG = "DeliveryDoneActivity";
 
 

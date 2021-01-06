@@ -20,7 +20,6 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import androidx.annotation.Nullable;
-import androidx.appcompat.app.AppCompatActivity;
 
 import com.giosis.util.qdrive.gps.GPSTrackerManager;
 import com.giosis.util.qdrive.list.ListActivity;
@@ -33,12 +32,13 @@ import com.giosis.util.qdrive.util.MemoryStatus;
 import com.giosis.util.qdrive.util.NetworkUtil;
 import com.giosis.util.qdrive.util.PermissionActivity;
 import com.giosis.util.qdrive.util.PermissionChecker;
+import com.giosis.util.qdrive.util.ui.CommonActivity;
 
 /**
  * @author krm0219
  * LIST > In-Progress > Outlet Pickup (Step 3)
  */
-public class OutletPickupDoneActivity extends AppCompatActivity {
+public class OutletPickupDoneActivity extends CommonActivity {
     String TAG = "OutletPickupDoneActivity";
 
     //krm0219

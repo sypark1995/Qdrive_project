@@ -18,7 +18,6 @@ import android.widget.Toast;
 
 import androidx.annotation.NonNull;
 import androidx.fragment.app.Fragment;
-import androidx.fragment.app.FragmentActivity;
 import androidx.fragment.app.FragmentManager;
 import androidx.fragment.app.FragmentStatePagerAdapter;
 import androidx.viewpager.widget.ViewPager;
@@ -31,6 +30,7 @@ import com.giosis.util.qdrive.singapore.R;
 import com.giosis.util.qdrive.util.DataUtil;
 import com.giosis.util.qdrive.util.DatabaseHelper;
 import com.giosis.util.qdrive.util.ServerResult;
+import com.giosis.util.qdrive.util.ui.CommonActivity;
 
 import java.text.SimpleDateFormat;
 import java.util.Date;
@@ -40,7 +40,7 @@ import java.util.Date;
  * In progress  // Not Upload  //  Today Done
  */
 
-public class ListActivity extends FragmentActivity implements OnClickListener, List_InProgressFragment.OnCountListener,
+public class ListActivity extends CommonActivity implements OnClickListener, List_InProgressFragment.OnCountListener,
         List_UploadFailedFragment.OnFailedCountListener, List_TodayDoneFragment.OnTodayDoneCountListener, List_InProgressFragment.OnTodayDoneCountListener {
     String TAG = "ListActivity";
 

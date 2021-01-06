@@ -11,14 +11,13 @@ import android.widget.FrameLayout;
 import android.widget.TextView;
 import android.widget.Toast;
 
-import androidx.appcompat.app.AppCompatActivity;
-
 import com.giosis.util.qdrive.singapore.MyApplication;
 import com.giosis.util.qdrive.singapore.R;
 import com.giosis.util.qdrive.util.Custom_JsonParser;
 import com.giosis.util.qdrive.util.DataUtil;
 import com.giosis.util.qdrive.util.DisplayUtil;
 import com.giosis.util.qdrive.util.NetworkUtil;
+import com.giosis.util.qdrive.util.ui.CommonActivity;
 import com.google.gson.Gson;
 
 import org.json.JSONObject;
@@ -26,7 +25,7 @@ import org.json.JSONObject;
 /**
  * @author krm0219  2018.07.26
  */
-public class ListNotInHousedActivity extends AppCompatActivity {
+public class ListNotInHousedActivity extends CommonActivity {
     String TAG = "ListNotInHousedActivity";
 
 

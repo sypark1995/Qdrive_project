@@ -16,13 +16,12 @@ import android.widget.ListView;
 import android.widget.TextView;
 import android.widget.Toast;
 
-import androidx.appcompat.app.AppCompatActivity;
-
 import com.giosis.util.qdrive.portableprinter.bluetooth.GPrinterData;
 import com.giosis.util.qdrive.singapore.MyApplication;
 import com.giosis.util.qdrive.singapore.R;
 import com.giosis.util.qdrive.util.PermissionActivity;
 import com.giosis.util.qdrive.util.PermissionChecker;
+import com.giosis.util.qdrive.util.ui.CommonActivity;
 
 import java.lang.reflect.Method;
 import java.util.ArrayList;
@@ -35,7 +34,7 @@ import java.util.Set;
  * 2. 프린터 연결 (Paired Devices > Connected Device => 1개 가능)
  * <p>
  */
-public class PrinterSettingActivity extends AppCompatActivity {
+public class PrinterSettingActivity extends CommonActivity {
     private String TAG = "PrinterSettingActivity";
 
     FrameLayout layout_top_back;

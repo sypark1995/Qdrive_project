@@ -2,6 +2,7 @@ package com.giosis.util.qdrive.util
 
 import android.content.Context
 import android.content.SharedPreferences
+import java.util.*
 
 class MySharedPreferences(context: Context) {
 
@@ -27,6 +28,7 @@ class MySharedPreferences(context: Context) {
 
     private val PREF_KEY_LIST_SORT_INDEX = "sortIndex"
     private val PREF_KEY_SCAN_VIBRATION = "scanVibration"
+    private val PREF_KEY_LOCALE = "localeLanguage"
 
 
     var userId: String
@@ -96,6 +98,12 @@ class MySharedPreferences(context: Context) {
     var authNo: String
         get() = prefs.getString(PREF_KEY_AUTH_NO, "").toString()
         set(value) = prefs.edit().putString(PREF_KEY_AUTH_NO, value).apply()
+
+
+    var localeLanguage: String
+        get() = prefs.getString(PREF_KEY_LOCALE, Locale.getDefault().language).toString()
+        set(value) = prefs.edit().putString(PREF_KEY_LOCALE, value).apply()
+
 
 
     // 202008.  Auto Logout
