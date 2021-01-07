@@ -15,10 +15,10 @@ import androidx.appcompat.widget.Toolbar;
 import androidx.core.content.ContextCompat;
 import androidx.drawerlayout.widget.DrawerLayout;
 
+import com.giosis.library.message.MessageListActivity;
 import com.giosis.library.pickup.CreatePickupOrderActivity;
 import com.giosis.util.qdrive.barcodescanner.CaptureActivity;
 import com.giosis.util.qdrive.list.ListActivity;
-import com.giosis.util.qdrive.message.MessageListActivity;
 import com.giosis.util.qdrive.settings.SettingActivity;
 import com.giosis.util.qdrive.singapore.MyApplication;
 import com.giosis.util.qdrive.singapore.R;

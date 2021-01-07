@@ -30,6 +30,7 @@ import android.widget.RelativeLayout;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import com.giosis.library.message.CustomerMessageListDetailActivity;
 import com.giosis.util.qdrive.barcodescanner.StdResult;
 import com.giosis.util.qdrive.international.MyApplication;
 import com.giosis.util.qdrive.international.R;
@@ -37,7 +38,6 @@ import com.giosis.util.qdrive.list.ChildItem;
 import com.giosis.util.qdrive.list.RowItem;
 import com.giosis.util.qdrive.list.delivery.DeliveryDoneActivity;
 import com.giosis.util.qdrive.list.pickup.OutletPickupScanActivity;
-import com.giosis.util.qdrive.message.CustomerMessageListDetailActivity;
 import com.giosis.util.qdrive.util.Custom_JsonParser;
 import com.giosis.util.qdrive.util.DataUtil;
 import com.giosis.util.qdrive.util.DatabaseHelper;

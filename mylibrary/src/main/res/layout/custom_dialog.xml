@@ -19,7 +19,7 @@
     <androidx.constraintlayout.widget.ConstraintLayout
         android:layout_width="300dp"
         android:layout_height="wrap_content"
-        android:background="@drawable/back_round_3_border">
+        android:background="@drawable/bg_round_15_ffffff">
 
         <TextView
             android:id="@+id/title"

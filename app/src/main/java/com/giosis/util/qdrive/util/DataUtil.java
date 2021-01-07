@@ -16,14 +16,14 @@ import android.util.Log;
 import android.view.View;
 
 import com.gc.android.market.api.Base64;
+import com.giosis.library.message.AdminMessageListDetailActivity;
+import com.giosis.library.message.CustomerMessageListDetailActivity;
+import com.giosis.library.message.MessageListActivity;
 import com.giosis.library.server.CallServer;
 import com.giosis.library.server.ImageUpload;
 import com.giosis.library.server.data.FailedCodeResult;
 import com.giosis.util.qdrive.gps.GPSTrackerManager;
 import com.giosis.util.qdrive.list.RowItem;
-import com.giosis.util.qdrive.message.AdminMessageListDetailActivity;
-import com.giosis.util.qdrive.message.CustomerMessageListDetailActivity;
-import com.giosis.util.qdrive.message.MessageListActivity;
 import com.giosis.util.qdrive.singapore.MyApplication;
 import com.giosis.util.qdrive.singapore.R;
 import com.google.firebase.analytics.FirebaseAnalytics;
@@ -43,7 +43,6 @@ import java.io.FileOutputStream;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Comparator;
-import java.util.HashMap;
 import java.util.Hashtable;
 
 public class DataUtil {

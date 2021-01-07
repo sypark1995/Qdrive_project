@@ -10,6 +10,7 @@ import android.util.Log
 import android.view.View
 import android.widget.AdapterView
 import androidx.lifecycle.ViewModelProvider
+import androidx.lifecycle.observe
 import com.giosis.library.ActivityRequestCode
 import com.giosis.library.BR
 import com.giosis.library.BaseActivity
@@ -63,7 +64,7 @@ class CreatePickupOrderActivity : BaseActivity<ActivityCreatePickupOrderBinding,
 
                     edit_seller_id.setText("")
                     edit_seller_id.isEnabled = true
-                    edit_seller_id.background = resources.getDrawable(R.drawable.back_1_e1e1e1)
+                    edit_seller_id.background = resources.getDrawable(R.drawable.border_e6e6e6)
                     layout_seller_id_search.background = resources.getDrawable(R.drawable.back_round_3_border_4fb648)
 
                 } else {
@@ -95,9 +96,9 @@ class CreatePickupOrderActivity : BaseActivity<ActivityCreatePickupOrderBinding,
 
         mViewModel.visiblePickupLayout.observe(this) {
             if (it) {
-                pickup_image.setImageDrawable(resources.getDrawable(R.drawable.pickup_up_icon))
+                pickup_image.setImageDrawable(resources.getDrawable(R.drawable.icon_round_arrow_up))
             } else {
-                pickup_image.setImageDrawable(resources.getDrawable(R.drawable.pickup_down_icon))
+                pickup_image.setImageDrawable(resources.getDrawable(R.drawable.icon_round_arrow_down))
             }
         }
 

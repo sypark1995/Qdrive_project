@@ -69,22 +69,6 @@ object RetrofitClient {
         return instanceDynamic
     }
 
-    fun instanceTestServer(): RetrofitService {
-
-        val serverURL = DataUtil.SERVER_TEST + DataUtil.API_ADDRESS
-        Log.e("Server", "Server URL  $serverURL")
-
-        val retrofit = Retrofit.Builder()
-                .baseUrl(serverURL)
-                .client(provideOkHttpClient(AppInterceptor()))
-                .addConverterFactory(GsonConverterFactory.create())
-                .addCallAdapterFactory(RxJava3CallAdapterFactory.create())
-                .build()
-
-        instanceDynamic = retrofit.create(RetrofitService::class.java)
-        return instanceDynamic
-    }
-
 
     fun instanceBarcode(): RetrofitService {
 

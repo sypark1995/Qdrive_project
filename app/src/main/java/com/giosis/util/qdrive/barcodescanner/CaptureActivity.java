@@ -718,9 +718,9 @@ public final class CaptureActivity extends CommonActivity implements SurfaceHold
 
                 case R.id.layout_capture_camera: {
 
-                    layout_capture_camera.setBackgroundResource(R.drawable.custom_tab_selected);
-                    layout_capture_scanner.setBackgroundResource(R.drawable.custom_tab_unselected);
-                    layout_capture_bluetooth.setBackgroundResource(R.drawable.custom_tab_unselected);
+                    layout_capture_camera.setBackgroundResource(R.drawable.bg_tab_bottom_46a73f);
+                    layout_capture_scanner.setBackgroundResource(R.drawable.bg_ffffff);
+                    layout_capture_bluetooth.setBackgroundResource(R.drawable.bg_ffffff);
                     text_capture_camera.setTextColor(getResources().getColor(R.color.color_ff0000));
                     text_capture_camera.setTypeface(text_capture_camera.getTypeface(), Typeface.BOLD);
                     text_capture_scanner.setTextColor(getResources().getColor(R.color.color_303030));
@@ -743,9 +743,9 @@ public final class CaptureActivity extends CommonActivity implements SurfaceHold
 
                 case R.id.layout_capture_scanner: {
 
-                    layout_capture_camera.setBackgroundResource(R.drawable.custom_tab_unselected);
-                    layout_capture_scanner.setBackgroundResource(R.drawable.custom_tab_selected);
-                    layout_capture_bluetooth.setBackgroundResource(R.drawable.custom_tab_unselected);
+                    layout_capture_camera.setBackgroundResource(R.drawable.bg_ffffff);
+                    layout_capture_scanner.setBackgroundResource(R.drawable.bg_tab_bottom_46a73f);
+                    layout_capture_bluetooth.setBackgroundResource(R.drawable.bg_ffffff);
                     text_capture_camera.setTextColor(getResources().getColor(R.color.color_303030));
                     text_capture_camera.setTypeface(text_capture_camera.getTypeface(), Typeface.NORMAL);
                     text_capture_scanner.setTextColor(getResources().getColor(R.color.color_ff0000));
@@ -772,9 +772,9 @@ public final class CaptureActivity extends CommonActivity implements SurfaceHold
 
                 case R.id.layout_capture_bluetooth: {
 
-                    layout_capture_camera.setBackgroundResource(R.drawable.custom_tab_unselected);
-                    layout_capture_scanner.setBackgroundResource(R.drawable.custom_tab_unselected);
-                    layout_capture_bluetooth.setBackgroundResource(R.drawable.custom_tab_selected);
+                    layout_capture_camera.setBackgroundResource(R.drawable.bg_ffffff);
+                    layout_capture_scanner.setBackgroundResource(R.drawable.bg_ffffff);
+                    layout_capture_bluetooth.setBackgroundResource(R.drawable.bg_tab_bottom_46a73f);
                     text_capture_camera.setTextColor(getResources().getColor(R.color.color_303030));
                     text_capture_camera.setTypeface(text_capture_camera.getTypeface(), Typeface.NORMAL);
                     text_capture_scanner.setTextColor(getResources().getColor(R.color.color_303030));

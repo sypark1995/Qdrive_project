@@ -21,9 +21,6 @@ import com.giosis.library.server.data.FailedCodeResult;
 import com.giosis.util.qdrive.gps.GPSTrackerManager;
 import com.giosis.util.qdrive.international.MyApplication;
 import com.giosis.util.qdrive.international.R;
-import com.giosis.util.qdrive.message.AdminMessageListDetailActivity;
-import com.giosis.util.qdrive.message.CustomerMessageListDetailActivity;
-import com.giosis.util.qdrive.message.MessageListActivity;
 import com.google.firebase.analytics.FirebaseAnalytics;
 import com.google.gson.Gson;
 import com.google.zxing.BarcodeFormat;
@@ -59,12 +56,6 @@ public class DataUtil {
     // Main Service
     public static Intent fusedProviderService = null;
     public static Intent locationManagerService = null;
-
-    // push Message 이동
-    public static MessageListActivity messageListActivity = null;
-    public static CustomerMessageListDetailActivity customerMessageListDetailActivity = null;
-    public static AdminMessageListDetailActivity adminMessageListDetailActivity = null;
-
 
     //
     public static int inProgressListPosition = 0;
@@ -102,30 +93,6 @@ public class DataUtil {
         DataUtil.locationManagerService = locationManagerService;
     }
 
-
-    public static MessageListActivity getMessageListActivity() {
-        return messageListActivity;
-    }
-
-    public static void setMessageListActivity(MessageListActivity messageListActivity) {
-        DataUtil.messageListActivity = messageListActivity;
-    }
-
-    public static CustomerMessageListDetailActivity getCustomerMessageListDetailActivity() {
-        return customerMessageListDetailActivity;
-    }
-
-    public static void setCustomerMessageListDetailActivity(CustomerMessageListDetailActivity customerMessageListDetailActivity) {
-        DataUtil.customerMessageListDetailActivity = customerMessageListDetailActivity;
-    }
-
-    public static AdminMessageListDetailActivity getAdminMessageListDetailActivity() {
-        return adminMessageListDetailActivity;
-    }
-
-    public static void setAdminMessageListDetailActivity(AdminMessageListDetailActivity adminMessageListDetailActivity) {
-        DataUtil.adminMessageListDetailActivity = adminMessageListDetailActivity;
-    }
 
     public static void copyClipBoard(Context context, String data) {
 

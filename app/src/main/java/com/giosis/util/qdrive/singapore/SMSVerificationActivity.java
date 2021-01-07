@@ -132,7 +132,7 @@ public class SMSVerificationActivity extends CommonActivity {
 
                 if (1 <= charSequence.length()) {
 
-                    btn_verify_submit.setBackgroundResource(R.drawable.back_round_20_4fb648);
+                    btn_verify_submit.setBackgroundResource(R.drawable.bg_round_20_4fb648);
                 } else {
 
                     btn_verify_submit.setBackgroundResource(R.drawable.back_round_20_cccccc);

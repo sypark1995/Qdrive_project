@@ -2,7 +2,7 @@
 <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
     android:layout_height="40dp"
-    android:background="@drawable/back_1_e1e1e1"
+    android:background="@drawable/border_e6e6e6"
     android:gravity="center_vertical"
     android:orientation="horizontal"
     android:padding="1dp"
@@ -24,5 +24,5 @@
         android:layout_centerInParent="true"
         android:layout_marginEnd="6dp"
         android:gravity="center"
-        android:src="@drawable/select_arrow_icon" />
+        android:src="@drawable/icon_arrow_down" />
 </RelativeLayout>

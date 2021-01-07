@@ -19,9 +19,9 @@ import android.util.Log;
 
 import androidx.core.app.NotificationCompat;
 
+import com.giosis.library.message.MessageListActivity;
 import com.giosis.util.qdrive.list.ListActivity;
 import com.giosis.util.qdrive.main.MainActivity;
-import com.giosis.util.qdrive.message.MessageListActivity;
 import com.giosis.util.qdrive.util.DataUtil;
 import com.giosis.util.qdrive.util.DatabaseHelper;
 import com.google.firebase.messaging.FirebaseMessagingService;
@@ -228,45 +228,15 @@ public class FCMIntentService extends FirebaseMessagingService {
             notificationIntent = new Intent(context, MainActivity.class);
         }
 
-        //krm0219  Admin Message
-        if (action_key.equalsIgnoreCase("QXMSG")) {
 
+        if (action_key.equalsIgnoreCase("QXMSG")) {
+            //  Admin Message
             notificationIntent = new Intent(context, MessageListActivity.class);
             notificationIntent.putExtra("position", 1);
-
-            // FCM thread 안에서 refreshData > RuntimeException 이중 스레드가 됨.
-            /*if (topClassname.contains("AdminMessageListDetailActivity")) {
-
-                if (DataUtil.getAdminMessageListDetailActivity() != null) {
-
-                    DataUtil.getAdminMessageListDetailActivity().refreshData();
-                }
-            } else if (topClassname.contains("MessageListActivity")) {
-
-                if (DataUtil.getMessageListActivity() != null) {
-
-                    DataUtil.getMessageListActivity().refreshAdminData();
-                }
-            }*/
         } else if (action_key.equalsIgnoreCase("QST")) {
-            // krm0219  Customer Message
-
+            //   Customer Message
             notificationIntent = new Intent(context, MessageListActivity.class);
             notificationIntent.putExtra("position", 0);
-
-            /*if (topClassname.contains("CustomerMessageListDetailActivity")) {
-
-                if (DataUtil.getCustomerMessageListDetailActivity() != null) {
-
-                    DataUtil.getCustomerMessageListDetailActivity().refreshData();
-                }
-            } else if (topClassname.contains("MessageListActivity")) {
-
-                if (DataUtil.getMessageListActivity() != null) {
-
-                    DataUtil.getMessageListActivity().refreshCustomerData();
-                }
-            }*/
         } else if (action_key.equals("LAE")) {
 
             if (action_value != null) {

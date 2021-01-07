@@ -4,7 +4,6 @@ import android.util.Log;
 
 import com.giosis.util.qdrive.international.MyApplication;
 import com.giosis.util.qdrive.main.ListNotInHousedResult;
-import com.giosis.util.qdrive.message.MessageListResult;
 
 import org.json.JSONArray;
 import org.json.JSONObject;
@@ -102,7 +101,6 @@ public class Custom_JsonParser {
     }
 
 
-
     /**
      * 데이터 가공
      */
@@ -158,47 +156,6 @@ public class Custom_JsonParser {
         } catch (Exception e) {
 
             Log.e("Exception", TAG + "  getNotInHousedList Exception : " + e.toString());
-
-            result.setResultCode(-15);
-            result.setResultMsg(e.toString());
-        }
-
-        return result;
-    }
-
-
-    // Main - Navigation - Message
-    public static MessageListResult getAdminMessageList(String jsonString) {
-
-        MessageListResult result = new MessageListResult();
-
-        try {
-
-            JSONObject jsonObject = new JSONObject(jsonString);
-            result.setResultCode(jsonObject.getInt("ResultCode"));
-            result.setResultMsg(jsonObject.getString("ResultMsg"));
-
-
-            JSONArray jsonArray = jsonObject.getJSONArray("ResultObject");
-            List<MessageListResult.MessageList> messageLists = new ArrayList<>();
-
-            for (int i = 0; i < jsonArray.length(); i++) {
-
-                JSONObject resultObject = jsonArray.getJSONObject(i);
-
-                MessageListResult.MessageList messageListItem = new MessageListResult.MessageList();
-                messageListItem.setSender_id(resultObject.getString("sender_id"));
-                messageListItem.setMessage(resultObject.getString("contents"));
-                messageListItem.setTime(resultObject.getString("send_dt"));
-                messageListItem.setRead_yn(resultObject.getString("read_yn"));
-                messageListItem.setQuestion_seq_no(resultObject.getInt("question_seq_no"));
-                messageLists.add(messageListItem);
-            }
-
-            result.setResultObject(messageLists);
-        } catch (Exception e) {
-
-            Log.e("Exception", TAG + "  getAdminMessageList Exception : " + e.toString());
 
             result.setResultCode(-15);
             result.setResultMsg(e.toString());

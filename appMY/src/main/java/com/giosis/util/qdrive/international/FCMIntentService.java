@@ -18,8 +18,8 @@ import android.util.Log;
 
 import androidx.core.app.NotificationCompat;
 
+import com.giosis.library.message.MessageListActivity;
 import com.giosis.util.qdrive.main.MainActivity;
-import com.giosis.util.qdrive.message.MessageListActivity;
 import com.giosis.util.qdrive.util.DataUtil;
 import com.giosis.util.qdrive.util.DatabaseHelper;
 import com.google.firebase.messaging.FirebaseMessagingService;
@@ -216,14 +216,13 @@ public class FCMIntentService extends FirebaseMessagingService {
             notificationIntent = new Intent(context, MainActivity.class);
         }
 
-        //krm0219  Admin Message
-        if (action_key.equalsIgnoreCase("QXMSG")) {
 
+        if (action_key.equalsIgnoreCase("QXMSG")) {
+            //  Admin Message
             notificationIntent = new Intent(context, MessageListActivity.class);
             notificationIntent.putExtra("position", 1);
         } else if (action_key.equalsIgnoreCase("QST")) {
-            // krm0219  Customer Message
-
+            //   Customer Message
             notificationIntent = new Intent(context, MessageListActivity.class);
             notificationIntent.putExtra("position", 0);
         } else if (action_key.equals("LAE")) {

@@ -15,7 +15,7 @@
             android:layout_width="17dp"
             android:layout_height="21dp"
             android:layout_gravity="center_vertical"
-            android:background="@drawable/qdrive_setting_icon_arrow_l" />
+            android:background="@drawable/icon_white_arrow_l" />
     </FrameLayout>
 
     <TextView
@@ -61,7 +61,7 @@
                 android:layout_width="17dp"
                 android:layout_height="21dp"
                 android:layout_gravity="center_vertical"
-                android:background="@drawable/qdrive_setting_icon_signout" />
+                android:background="@drawable/icon_singout" />
         </FrameLayout>
 
         <FrameLayout

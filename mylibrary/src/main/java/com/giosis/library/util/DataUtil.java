@@ -8,6 +8,10 @@ import android.graphics.Bitmap;
 import android.os.Environment;
 import android.view.View;
 
+import com.giosis.library.message.AdminMessageListDetailActivity;
+import com.giosis.library.message.CustomerMessageListDetailActivity;
+import com.giosis.library.message.MessageListActivity;
+
 import java.io.File;
 import java.io.FileOutputStream;
 
@@ -95,4 +99,34 @@ public class DataUtil {
         }
     }
 
+
+
+   // push Message 이동
+   public static MessageListActivity messageListActivity = null;
+    public static CustomerMessageListDetailActivity customerMessageListDetailActivity = null;
+    public static AdminMessageListDetailActivity adminMessageListDetailActivity = null;
+
+    public static MessageListActivity getMessageListActivity() {
+        return messageListActivity;
+    }
+
+    public static void setMessageListActivity(MessageListActivity messageListActivity) {
+        DataUtil.messageListActivity = messageListActivity;
+    }
+
+    public static CustomerMessageListDetailActivity getCustomerMessageListDetailActivity() {
+        return customerMessageListDetailActivity;
+    }
+
+    public static void setCustomerMessageListDetailActivity(CustomerMessageListDetailActivity customerMessageListDetailActivity) {
+        DataUtil.customerMessageListDetailActivity = customerMessageListDetailActivity;
+    }
+
+    public static AdminMessageListDetailActivity getAdminMessageListDetailActivity() {
+        return adminMessageListDetailActivity;
+    }
+
+    public static void setAdminMessageListDetailActivity(AdminMessageListDetailActivity adminMessageListDetailActivity) {
+        DataUtil.adminMessageListDetailActivity = adminMessageListDetailActivity;
+    }
 }

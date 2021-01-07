@@ -5,7 +5,6 @@ import android.graphics.Color;
 import android.os.Bundle;
 import android.view.View;
 import android.widget.ExpandableListView;
-import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
@@ -21,7 +20,6 @@ import com.giosis.util.qdrive.international.R;
 import com.giosis.util.qdrive.international.ScanActivity;
 import com.giosis.util.qdrive.international.StatisticsActivity;
 import com.giosis.util.qdrive.list.ListActivity;
-import com.giosis.util.qdrive.message.MessageListActivity;
 import com.giosis.util.qdrive.settings.SettingActivity;
 import com.giosis.util.qdrive.util.BarcodeType;
 import com.giosis.util.qdrive.util.ui.CommonActivity;
@@ -47,9 +45,6 @@ public class AppBaseActivity extends CommonActivity {
     NavigationListAdapter adapter;
     TextView text_nav_header_driver_name;
     TextView text_nav_header_driver_office;
-    RelativeLayout layout_message;
-    ImageView btn_message;
-    TextView text_message_count;
 
     String top_title_string;
 
@@ -92,11 +87,6 @@ public class AppBaseActivity extends CommonActivity {
         View header = getLayoutInflater().inflate(R.layout.nav_list_header, null, false);
         text_nav_header_driver_name = header.findViewById(R.id.text_nav_header_driver_name);
         text_nav_header_driver_office = header.findViewById(R.id.text_nav_header_driver_office);
-        layout_message = header.findViewById(R.id.layout_message);
-        btn_message = header.findViewById(R.id.btn_message);
-        text_message_count = header.findViewById(R.id.text_message_count);
-
-        btn_message.setOnClickListener(clickListener);
 
         nav_list.addHeaderView(header);
         nav_list.setAdapter(adapter);
@@ -294,37 +284,12 @@ public class AppBaseActivity extends CommonActivity {
         text_nav_header_driver_office.setText(office);
     }
 
-    public void setMessageCount(int customer_count, int admin_count) {
-
-        customerMessageCount = customer_count;
-        adminMessageCount = admin_count;
-
-        int count = customer_count + admin_count;
-        text_message_count.setVisibility(View.VISIBLE);
-        text_message_count.setText(Integer.toString(count));
-    }
-
-    public void goneMessageCount() {
-
-        text_message_count.setVisibility(View.GONE);
-    }
-
 
     View.OnClickListener clickListener = new View.OnClickListener() {
         @Override
         public void onClick(View view) {
 
             switch (view.getId()) {
-                case R.id.btn_message: {
-
-                    Intent intent = new Intent(AppBaseActivity.this, MessageListActivity.class);
-                    intent.putExtra("customer_count", customerMessageCount);
-                    intent.putExtra("admin_count", adminMessageCount);
-                    startActivity(intent);
-
-                    drawerLayout.closeDrawers();
-                }
-                break;
 
                 case R.id.layout_bottom_bar_home: {
 

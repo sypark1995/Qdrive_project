@@ -18,7 +18,7 @@
             android:layout_width="0dp"
             android:layout_height="match_parent"
             android:layout_weight="1"
-            android:background="@drawable/custom_tab_selector"
+            android:background="@drawable/selector_tab_bottom"
             android:gravity="center"
             android:orientation="vertical">
 
@@ -26,7 +26,7 @@
                 android:id="@+id/text_list_in_progress_count"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:textColor="@drawable/custom_tab_text_selector"
+                android:textColor="@drawable/selector_tab_text"
                 android:textSize="@dimen/text_size_48px"
                 android:textStyle="bold"
                 tools:text="1" />
@@ -36,7 +36,7 @@
                 android:layout_height="wrap_content"
                 android:text="@string/text_in_progress"
                 android:textAllCaps="true"
-                android:textColor="@drawable/custom_tab_text_selector"
+                android:textColor="@drawable/selector_tab_text"
                 android:textSize="@dimen/text_size_28px"
                 android:textStyle="bold" />
         </LinearLayout>
@@ -46,7 +46,7 @@
             android:layout_width="0dp"
             android:layout_height="match_parent"
             android:layout_weight="1"
-            android:background="@drawable/custom_tab_selector"
+            android:background="@drawable/selector_tab_bottom"
             android:gravity="center"
             android:orientation="vertical">
 
@@ -54,7 +54,7 @@
                 android:id="@+id/text_list_upload_failed_count"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:textColor="@drawable/custom_tab_text_selector"
+                android:textColor="@drawable/selector_tab_text"
                 android:textSize="@dimen/text_size_48px"
                 android:textStyle="bold"
                 tools:text="1" />
@@ -64,7 +64,7 @@
                 android:layout_height="wrap_content"
                 android:text="@string/text_upload_failed"
                 android:textAllCaps="true"
-                android:textColor="@drawable/custom_tab_text_selector"
+                android:textColor="@drawable/selector_tab_text"
                 android:textSize="@dimen/text_size_28px"
                 android:textStyle="bold" />
         </LinearLayout>
@@ -74,7 +74,7 @@
             android:layout_width="0dp"
             android:layout_height="match_parent"
             android:layout_weight="1"
-            android:background="@drawable/custom_tab_selector"
+            android:background="@drawable/selector_tab_bottom"
             android:gravity="center"
             android:orientation="vertical">
 
@@ -83,7 +83,7 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:text="0"
-                android:textColor="@drawable/custom_tab_text_selector"
+                android:textColor="@drawable/selector_tab_text"
                 android:textSize="@dimen/text_size_48px"
                 android:textStyle="bold" />
 
@@ -92,7 +92,7 @@
                 android:layout_height="wrap_content"
                 android:text="@string/text_today_done"
                 android:textAllCaps="true"
-                android:textColor="@drawable/custom_tab_text_selector"
+                android:textColor="@drawable/selector_tab_text"
                 android:textSize="@dimen/text_size_28px"
                 android:textStyle="bold" />
         </LinearLayout>

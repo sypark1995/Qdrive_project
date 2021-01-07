@@ -19,7 +19,7 @@
             android:layout_width="0dp"
             android:layout_height="match_parent"
             android:layout_weight="1"
-            android:background="@drawable/custom_tab_selected"
+            android:background="@drawable/bg_tab_bottom_46a73f"
             android:gravity="center"
             android:orientation="vertical">
 
@@ -38,7 +38,7 @@
             android:layout_width="0dp"
             android:layout_height="match_parent"
             android:layout_weight="1"
-            android:background="@drawable/custom_tab_unselected"
+            android:background="@drawable/bg_ffffff"
             android:gravity="center"
             android:orientation="vertical">
 
@@ -56,7 +56,7 @@
             android:layout_width="0dp"
             android:layout_height="match_parent"
             android:layout_weight="1"
-            android:background="@drawable/custom_tab_unselected"
+            android:background="@drawable/bg_ffffff"
             android:gravity="center"
             android:orientation="vertical">
 

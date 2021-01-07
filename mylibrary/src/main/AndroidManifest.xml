@@ -32,17 +32,31 @@
             android:name=".setting.ScanSettingActivity"
             android:screenOrientation="portrait" />
 
-        <activity android:name=".pickup.CreatePickupOrderActivity"
+        <activity
+            android:name=".pickup.CreatePickupOrderActivity"
             android:screenOrientation="portrait" />
 
-        <activity android:name=".pickup.AddressDialogActivity"
-            android:theme="@style/CustomDialog"
-            android:screenOrientation="portrait" />
+        <activity
+            android:name=".pickup.AddressDialogActivity"
+            android:screenOrientation="portrait"
+            android:theme="@style/CustomDialog" />
 
         <activity
             android:name=".TestActivity"
             android:screenOrientation="portrait" />
 
+
+        <activity
+            android:name=".message.MessageListActivity"
+            android:screenOrientation="portrait" />
+
+        <activity
+            android:name=".message.CustomerMessageListDetailActivity"
+            android:screenOrientation="portrait" />
+
+        <activity
+            android:name=".message.AdminMessageListDetailActivity"
+            android:screenOrientation="portrait" />
 
     </application>
 

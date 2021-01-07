@@ -311,21 +311,7 @@
         <activity
             android:name="com.giosis.util.qdrive.settings.ModifyDeviceInfoActivity"
             android:screenOrientation="portrait" />
-
-        <!--  NOTIFICATION.  Message  -->
-        <activity
-            android:name="com.giosis.util.qdrive.message.AdminMessageListDetailActivity"
-            android:screenOrientation="portrait" />
-
-        <activity
-            android:name="com.giosis.util.qdrive.message.CustomerMessageListDetailActivity"
-            android:screenOrientation="portrait" />
-
-        <activity
-            android:name="com.giosis.util.qdrive.message.MessageListActivity"
-            android:screenOrientation="portrait" />
-
-
+        
         <!-- NOTIFICATION.  ETC  -->
 
         <activity
