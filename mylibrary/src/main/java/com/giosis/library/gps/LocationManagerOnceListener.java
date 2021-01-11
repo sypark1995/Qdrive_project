@@ -1,4 +1,4 @@
-package com.giosis.util.qdrive.gps;
+package com.giosis.library.gps;
 
 import android.Manifest;
 import android.content.Context;
@@ -23,20 +23,19 @@ public class LocationManagerOnceListener implements LocationListener {
     private int count = 0;
 
 
-    LocationManagerOnceListener(Context context) {
+    public LocationManagerOnceListener(Context context) {
 
         count = 0;
         this.context = context;
     }
 
-    LocationManager getLocationManager() {
+    public LocationManager getLocationManager() {
 
         locationManager = (LocationManager) context.getSystemService(Context.LOCATION_SERVICE);
         return locationManager;
     }
 
-
-    void getLastLocation() {
+    public void getLastLocation() {
 
         if (ActivityCompat.checkSelfPermission(context, Manifest.permission.ACCESS_FINE_LOCATION) != PackageManager.PERMISSION_GRANTED
                 && ActivityCompat.checkSelfPermission(context, Manifest.permission.ACCESS_COARSE_LOCATION) != PackageManager.PERMISSION_GRANTED) {
@@ -67,6 +66,7 @@ public class LocationManagerOnceListener implements LocationListener {
             }
         }
     }
+
 
     @Override
     public void onLocationChanged(Location location) {
@@ -101,6 +101,7 @@ public class LocationManagerOnceListener implements LocationListener {
     public double getAccuracy() {
         return this.accuracy;
     }
+
 
     @Override
     public void onStatusChanged(String provider, int status, Bundle extras) {

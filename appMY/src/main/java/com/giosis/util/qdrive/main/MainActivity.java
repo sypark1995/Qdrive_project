@@ -1,5 +1,4 @@
 package com.giosis.util.qdrive.main;
-
 import android.app.Activity;
 import android.app.AlertDialog;
 import android.content.Context;
@@ -31,13 +30,12 @@ import androidx.core.content.ContextCompat;
 import androidx.core.graphics.drawable.RoundedBitmapDrawable;
 import androidx.core.graphics.drawable.RoundedBitmapDrawableFactory;
 
+import com.giosis.library.gps.GPSTrackerManager;
+import com.giosis.library.gps.QuickAppUserInfoUploadHelper;
 import com.giosis.util.qdrive.barcodescanner.CaptureActivity;
 import com.giosis.util.qdrive.barcodescanner.PodListActivity;
 import com.giosis.util.qdrive.gps.FusedProviderService;
-import com.giosis.util.qdrive.gps.GPSTrackerManager;
 import com.giosis.util.qdrive.gps.LocationManagerService;
-import com.giosis.util.qdrive.gps.OnFusedProviderListenerUploadEventListener;
-import com.giosis.util.qdrive.gps.QuickAppUserInfoUploadHelper;
 import com.giosis.util.qdrive.international.MyApplication;
 import com.giosis.util.qdrive.international.OnServerEventListener;
 import com.giosis.util.qdrive.international.R;
@@ -45,7 +43,6 @@ import com.giosis.util.qdrive.international.UploadData;
 import com.giosis.util.qdrive.list.ListActivity;
 import com.giosis.util.qdrive.settings.BluetoothDeviceData;
 import com.giosis.util.qdrive.util.BarcodeType;
-import com.giosis.util.qdrive.util.Custom_JsonParser;
 import com.giosis.util.qdrive.util.DataUtil;
 import com.giosis.util.qdrive.util.DatabaseHelper;
 import com.giosis.util.qdrive.util.DisplayUtil;
@@ -60,15 +57,12 @@ import com.google.firebase.analytics.FirebaseAnalytics;
 import com.google.firebase.iid.FirebaseInstanceId;
 import com.google.firebase.iid.InstanceIdResult;
 
-import org.json.JSONObject;
-
 import java.io.BufferedReader;
 import java.io.InputStreamReader;
 import java.io.OutputStreamWriter;
 import java.io.PrintWriter;
 import java.net.HttpURLConnection;
 import java.net.URL;
-import java.net.URLEncoder;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Calendar;
@@ -744,12 +738,10 @@ public class MainActivity extends AppBaseActivity {
                 .setOnQuickQppUserInfoUploadEventListener(new QuickAppUserInfoUploadHelper.OnQuickAppUserInfoUploadEventListener() {
 
                     @Override
-                    public void onPostResult() {
+                    public void onServerResult() {
+
                     }
 
-                    @Override
-                    public void onPostFailList() {
-                    }
                 }).build().execute();
 
         double accuracy = 0;
@@ -772,15 +764,13 @@ public class MainActivity extends AppBaseActivity {
 
 
         new DriverPerformanceLogUploadHelper.Builder(mContext, opID, latitude, longitude, accuracy, "killapp")
-                .setOnFusedProviderListenerUploadEventListener(new OnFusedProviderListenerUploadEventListener() {
+                .setOnDriverPerformanceLogUploadEventListener(new DriverPerformanceLogUploadHelper.OnDriverPerformanceLogUploadEventListener() {
 
                     @Override
-                    public void onPostResult() {
+                    public void onServerResult() {
+
                     }
 
-                    @Override
-                    public void onPostFailList() {
-                    }
                 }).build().execute();
     }
 
@@ -1009,116 +999,6 @@ public class MainActivity extends AppBaseActivity {
         } catch (Exception e) {
 
             Log.e("Exception", TAG + "  HttpPostData Exception : " + e.toString());
-        }
-    }
-
-    public void initMessageCount(String driver_id) {
-
-        if (NetworkUtil.isNetworkAvailable(MainActivity.this)) {
-
-            MessageCountAsyncTask messageCountAsynctask = new MessageCountAsyncTask(driver_id);
-            messageCountAsynctask.execute();
-        } else {
-
-            Toast.makeText(MainActivity.this, getString(R.string.msg_network_connect_error), Toast.LENGTH_SHORT).show();
-        }
-    }
-
-    // NOTIFICATION.  Message Count
-    private class MessageCountAsyncTask extends AsyncTask<Void, Void, ArrayList<Integer>> {
-
-        String qdriver_id;
-
-        MessageCountAsyncTask(String driverID) {
-
-            qdriver_id = driverID;
-        }
-
-        @Override
-        protected ArrayList<Integer> doInBackground(Void... params) {
-
-            ArrayList<Integer> resultArray = new ArrayList<>();
-
-            resultArray.add(getCustomerMessageCount());
-            resultArray.add(getAdminMessageCount());
-
-            return resultArray;
-        }
-
-        @Override
-        protected void onPostExecute(ArrayList<Integer> results) {
-
-            int customer_message_count = results.get(0);
-            int admin_message_count = results.get(1);
-
-            if (0 < customer_message_count || 0 < admin_message_count) {
-
-                setMessageCount(customer_message_count, admin_message_count);
-            } else {
-
-                goneMessageCount();
-            }
-        }
-
-
-        int getCustomerMessageCount() {
-
-            int result = 0;
-
-            try {
-
-                Calendar cal = Calendar.getInstance();
-                cal.setTime(new Date());
-                cal.add(Calendar.DATE, -1); //minus number would decrement the days
-                Date yDate = cal.getTime();
-                SimpleDateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd");
-                String yesterday = dateFormat.format(yDate) + " 00:00:00";
-
-                JSONObject job = new JSONObject();
-                job.accumulate("qdriver_id", qdriver_id);
-                job.accumulate("start_date", URLEncoder.encode(yesterday, "UTF-8"));
-                job.accumulate("app_id", DataUtil.appID);
-                job.accumulate("nation_cd", DataUtil.nationCode);
-
-
-                String methodName = "GetNewMessageCount";
-                String jsonString = Custom_JsonParser.requestServerDataReturnJSON(methodName, job);
-                // {"ResultObject":0,"ResultCode":0,"ResultMsg":"OK"}
-
-                JSONObject jsonObject = new JSONObject(jsonString);
-                result = jsonObject.getInt("ResultObject");
-            } catch (Exception e) {
-
-                Log.e("Exception", TAG + "  GetNewMessageCount Exception : " + e.toString());
-            }
-
-            return result;
-        }
-
-        int getAdminMessageCount() {
-
-            int result = 0;
-
-            try {
-
-                JSONObject job = new JSONObject();
-                job.accumulate("qdriver_id", qdriver_id);
-                job.accumulate("app_id", DataUtil.appID);
-                job.accumulate("nation_cd", DataUtil.nationCode);
-
-
-                String methodName = "GetNewMessageCountFromQxSystem";
-                String jsonString = Custom_JsonParser.requestServerDataReturnJSON(methodName, job);
-                // {"ResultObject":5,"ResultCode":0,"ResultMsg":"OK"}
-
-                JSONObject jsonObject = new JSONObject(jsonString);
-                result = jsonObject.getInt("ResultObject");
-            } catch (Exception e) {
-
-                Log.e("Exception", TAG + "  GetNewMessageCountFromQxSystem Exception : " + e.toString());
-            }
-
-            return result;
         }
     }
 

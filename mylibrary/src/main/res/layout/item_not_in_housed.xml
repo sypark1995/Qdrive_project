@@ -12,7 +12,7 @@
         android:layout_height="wrap_content"
         android:layout_marginTop="10dp"
         android:animateLayoutChanges="true"
-        android:background="@drawable/bg_radius_10_ffffff_shadows"
+        android:background="@drawable/bg_round_10_ffffff_shadow"
         android:minHeight="100dp"
         android:orientation="vertical"
         android:paddingBottom="15dp"
@@ -53,7 +53,7 @@
                 android:layout_alignParentEnd="true"
                 android:layout_centerVertical="true"
                 android:layout_marginStart="6dp"
-                android:background="@drawable/qdrive_btn_icon_up"
+                android:background="@drawable/icon_arrow_up_orange"
                 android:visibility="visible" />
         </RelativeLayout>
 
@@ -83,7 +83,7 @@
                     android:layout_width="3dp"
                     android:layout_height="13dp"
                     android:layout_gravity="end"
-                    android:background="@drawable/qdrive_btn_icon_etc" />
+                    android:background="@drawable/icon_menu_dot" />
             </FrameLayout>
         </RelativeLayout>
 
@@ -104,14 +104,14 @@
                     android:layout_height="match_parent"
                     android:text="@string/text_pickup_date"
                     android:textColor="@color/color_666666"
-                    android:textSize="@dimen/text_size_24px" />
+                    android:textSize="@dimen/text_size_26px" />
 
                 <TextView
                     android:id="@+id/text_not_in_parcels_item_desired_date"
                     android:layout_width="wrap_content"
                     android:layout_height="match_parent"
                     android:textColor="@color/color_666666"
-                    android:textSize="@dimen/text_size_24px"
+                    android:textSize="@dimen/text_size_26px"
                     tools:text="YYYY-MM-DD" />
             </LinearLayout>
 
@@ -127,14 +127,14 @@
                     android:layout_height="match_parent"
                     android:text="@string/text_qty"
                     android:textColor="@color/color_303030"
-                    android:textSize="@dimen/text_size_24px" />
+                    android:textSize="@dimen/text_size_26px" />
 
                 <TextView
                     android:id="@+id/text_not_in_parcels_item_qty"
                     android:layout_width="wrap_content"
                     android:layout_height="match_parent"
                     android:textColor="@color/color_363BE7"
-                    android:textSize="@dimen/text_size_24px"
+                    android:textSize="@dimen/text_size_26px"
                     android:textStyle="bold"
                     tools:text="3" />
             </LinearLayout>
@@ -150,7 +150,7 @@
                 android:layout_height="wrap_content"
                 android:text="@string/text_not_processed"
                 android:textColor="@color/color_666666"
-                android:textSize="@dimen/text_size_24px" />
+                android:textSize="@dimen/text_size_26px" />
 
             <LinearLayout
                 android:layout_width="wrap_content"
@@ -163,14 +163,14 @@
                     android:layout_height="match_parent"
                     android:text="@string/text_qty"
                     android:textColor="@color/color_303030"
-                    android:textSize="@dimen/text_size_24px" />
+                    android:textSize="@dimen/text_size_26px" />
 
                 <TextView
                     android:id="@+id/text_not_in_parcels_item_not_processed_qty"
                     android:layout_width="wrap_content"
                     android:layout_height="match_parent"
                     android:textColor="@color/color_ff0000"
-                    android:textSize="@dimen/text_size_24px"
+                    android:textSize="@dimen/text_size_26px"
                     android:textStyle="bold"
                     tools:text="3" />
             </LinearLayout>

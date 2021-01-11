@@ -27,8 +27,8 @@ import android.widget.PopupMenu;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
 
+import com.giosis.library.gps.GPSTrackerManager;
 import com.giosis.library.server.data.FailedCodeResult;
-import com.giosis.util.qdrive.gps.GPSTrackerManager;
 import com.giosis.util.qdrive.main.DeviceDataUploadHelper;
 import com.giosis.util.qdrive.singapore.MyApplication;
 import com.giosis.util.qdrive.singapore.OnServerEventListener;
@@ -125,11 +125,11 @@ public class CustomNotUploadAdapter extends BaseExpandableListAdapter {
 
         if (isExpanded) {
 
-            layout_list_item_card_view.setBackgroundResource(R.drawable.custom_background_card_view_top);
+            layout_list_item_card_view.setBackgroundResource(R.drawable.bg_top_round_10_ffffff);
             img_list_item_up_icon.setVisibility(View.VISIBLE);
         } else {
 
-            layout_list_item_card_view.setBackgroundResource(R.drawable.custom_background_card_view_shadow);
+            layout_list_item_card_view.setBackgroundResource(R.drawable.bg_round_10_ffffff_shadow);
             img_list_item_up_icon.setVisibility(View.GONE);
         }
 

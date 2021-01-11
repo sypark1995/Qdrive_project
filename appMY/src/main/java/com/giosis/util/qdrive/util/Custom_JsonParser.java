@@ -3,9 +3,7 @@ package com.giosis.util.qdrive.util;
 import android.util.Log;
 
 import com.giosis.util.qdrive.international.MyApplication;
-import com.giosis.util.qdrive.main.ListNotInHousedResult;
 
-import org.json.JSONArray;
 import org.json.JSONObject;
 
 import java.io.ByteArrayOutputStream;
@@ -13,8 +11,6 @@ import java.io.InputStream;
 import java.io.OutputStream;
 import java.net.HttpURLConnection;
 import java.net.URL;
-import java.util.ArrayList;
-import java.util.List;
 
 public class Custom_JsonParser {
     static String TAG = "Custom_JsonParser";
@@ -100,67 +96,4 @@ public class Custom_JsonParser {
         return response;
     }
 
-
-    /**
-     * 데이터 가공
-     */
-    // Main - Navigation - Not In Parcels
-    public static ListNotInHousedResult getNotInHousedList(String jsonString) {
-
-        ListNotInHousedResult result = new ListNotInHousedResult();
-
-        try {
-
-            JSONObject jsonObject = new JSONObject(jsonString);
-            result.setResultCode(jsonObject.getInt("ResultCode"));
-            result.setResultMsg(jsonObject.getString("ResultMsg"));
-
-
-            JSONArray jsonArray = jsonObject.getJSONArray("ResultObject");
-            List<ListNotInHousedResult.NotInhousedList> notInhousedLists = new ArrayList<>();
-
-            for (int i = 0; i < jsonArray.length(); i++) {
-
-                JSONObject resultObject = jsonArray.getJSONObject(i);
-
-                ListNotInHousedResult.NotInhousedList notInhousedListItem = new ListNotInHousedResult.NotInhousedList();
-                notInhousedListItem.setInvoiceNo(resultObject.getString("invoice_no"));
-                notInhousedListItem.setReqName(resultObject.getString("req_nm"));
-                notInhousedListItem.setPartner_id(resultObject.getString("partner_id"));
-                notInhousedListItem.setZipCode(resultObject.getString("zip_code"));
-                notInhousedListItem.setAddress(resultObject.getString("address"));
-                notInhousedListItem.setPickup_date(resultObject.getString("pickup_cmpl_dt"));
-                notInhousedListItem.setReal_qty(resultObject.getString("real_qty"));
-                notInhousedListItem.setNot_processed_qty(resultObject.getString("not_processed_qty"));
-
-
-                JSONArray resultArray = resultObject.getJSONArray("qdriveOutstandingInhousedPickupLists");
-                List<ListNotInHousedResult.NotInhousedList.NotInhousedSubList> notInhousedSubLists = new ArrayList<>();
-
-                for (int j = 0; j < resultArray.length(); j++) {
-
-                    JSONObject resultObject1 = resultArray.getJSONObject(j);
-
-                    ListNotInHousedResult.NotInhousedList.NotInhousedSubList notInhousedSubListItem = new ListNotInHousedResult.NotInhousedList.NotInhousedSubList();
-                    notInhousedSubListItem.setPackingNo(resultObject1.getString("packing_no"));
-                    notInhousedSubListItem.setPurchasedAmount(resultObject1.getString("purchased_amt"));
-                    notInhousedSubListItem.setPurchaseCurrency(resultObject1.getString("purchased_currency"));
-                    notInhousedSubLists.add(notInhousedSubListItem);
-                }
-
-                notInhousedListItem.setSubLists(notInhousedSubLists);
-                notInhousedLists.add(notInhousedListItem);
-            }
-
-            result.setResultObject(notInhousedLists);
-        } catch (Exception e) {
-
-            Log.e("Exception", TAG + "  getNotInHousedList Exception : " + e.toString());
-
-            result.setResultCode(-15);
-            result.setResultMsg(e.toString());
-        }
-
-        return result;
-    }
 }

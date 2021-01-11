@@ -30,7 +30,7 @@ import android.widget.Spinner;
 
 import androidx.fragment.app.Fragment;
 
-import com.giosis.util.qdrive.gps.GPSTrackerManager;
+import com.giosis.library.gps.GPSTrackerManager;
 import com.giosis.util.qdrive.international.MyApplication;
 import com.giosis.util.qdrive.international.R;
 import com.giosis.util.qdrive.util.DataUtil;

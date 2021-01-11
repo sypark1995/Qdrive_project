@@ -1,4 +1,4 @@
-package com.giosis.util.qdrive.gps;
+package com.giosis.library.gps;
 
 import android.app.AlertDialog;
 import android.content.Context;
@@ -7,10 +7,11 @@ import android.content.DialogInterface.OnClickListener;
 import android.os.AsyncTask;
 import android.util.Log;
 
-import com.giosis.util.qdrive.international.R;
-import com.giosis.util.qdrive.util.Custom_JsonParser;
-import com.giosis.util.qdrive.util.DataUtil;
-import com.giosis.util.qdrive.util.NetworkUtil;
+import com.giosis.library.R;
+import com.giosis.library.server.Custom_JsonParser;
+import com.giosis.library.util.DataUtil;
+import com.giosis.library.util.NetworkUtil;
+import com.giosis.library.util.Preferences;
 
 import org.json.JSONObject;
 
@@ -142,7 +143,7 @@ public class FusedProviderListenerUploadHelper {
             try {
 
                 JSONObject job = new JSONObject();
-                job.accumulate("channel", "QDRIVE_V2");  // qdrive service
+                job.accumulate("channel", "QDRIVE");  // qdrive service
                 job.accumulate("op_id", opID);
                 job.accumulate("device_id", deviceID);
                 job.accumulate("network_type", networkType);
@@ -154,7 +155,7 @@ public class FusedProviderListenerUploadHelper {
                 job.accumulate("chg_id", opID);
                 job.accumulate("log_desc", provider);
                 job.accumulate("app_id", DataUtil.appID);
-                job.accumulate("nation_cd", DataUtil.nationCode);
+                job.accumulate("nation_cd", Preferences.INSTANCE.getUserNation());
 
                 // ship.dbo.gps_location_history 위/경도 저장
                 String methodName = "setGPSLocationVersion2";

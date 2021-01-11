@@ -14,6 +14,7 @@ import android.util.Log;
 
 import androidx.core.app.NotificationCompat;
 
+import com.giosis.library.gps.LocationManagerListener;
 import com.giosis.util.qdrive.main.MainActivity;
 import com.giosis.util.qdrive.singapore.MyApplication;
 import com.giosis.util.qdrive.singapore.R;
@@ -97,7 +98,7 @@ public class LocationManagerService extends Service {
     public void onDestroy() {
         super.onDestroy();
 
-        Log.e("krm0219", TAG + "   onDestroy");
+        Log.e("Location", TAG + "   onDestroy");
 
         mLocationManager1.removeUpdates(locationMngTimeListener);
         mLocationManager2.removeUpdates(locationMngDistanceListener);

@@ -13,9 +13,9 @@ import android.view.inputmethod.InputMethodManager
 import android.widget.LinearLayout
 import android.widget.ProgressBar
 import androidx.appcompat.app.AlertDialog
+import com.giosis.library.gps.GPSTrackerManager
 import com.giosis.library.server.RetrofitClient
 import com.giosis.library.setting.DeveloperModeActivity
-import com.giosis.util.qdrive.gps.GPSTrackerManager
 import com.giosis.util.qdrive.main.MainActivity
 import com.giosis.util.qdrive.server.data.LoginInfo
 import com.giosis.util.qdrive.util.DataUtil

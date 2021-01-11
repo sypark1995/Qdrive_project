@@ -1,4 +1,4 @@
-package com.giosis.util.qdrive.main;
+package com.giosis.library.main;
 
 import android.app.ProgressDialog;
 import android.content.Context;
@@ -11,13 +11,13 @@ import android.widget.FrameLayout;
 import android.widget.TextView;
 import android.widget.Toast;
 
-import com.giosis.util.qdrive.singapore.MyApplication;
-import com.giosis.util.qdrive.singapore.R;
-import com.giosis.util.qdrive.util.Custom_JsonParser;
-import com.giosis.util.qdrive.util.DataUtil;
-import com.giosis.util.qdrive.util.DisplayUtil;
-import com.giosis.util.qdrive.util.NetworkUtil;
-import com.giosis.util.qdrive.util.ui.CommonActivity;
+import com.giosis.library.R;
+import com.giosis.library.server.Custom_JsonParser;
+import com.giosis.library.util.CommonActivity;
+import com.giosis.library.util.DataUtil;
+import com.giosis.library.util.DisplayUtil;
+import com.giosis.library.util.NetworkUtil;
+import com.giosis.library.util.Preferences;
 import com.google.gson.Gson;
 
 import org.json.JSONObject;
@@ -50,7 +50,6 @@ public class ListNotInHousedActivity extends CommonActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_not_in_housed);
 
-
         layout_top_back = findViewById(R.id.layout_top_back);
         text_top_title = findViewById(R.id.text_top_title);
 
@@ -62,35 +61,35 @@ public class ListNotInHousedActivity extends CommonActivity {
         //
         context = getApplicationContext();
 
-//        opID = SharedPreferencesHelper.getSigninOpID(context);
-//        officeCode = SharedPreferencesHelper.getSigninOfficeCode(context);
-//        deviceID = SharedPreferencesHelper.getSigninDeviceID(context);
-        opID = MyApplication.preferences.getUserId();
-        officeCode = MyApplication.preferences.getOfficeCode();
-        deviceID = MyApplication.preferences.getDeviceUUID();
+        opID = Preferences.INSTANCE.getUserId();
+        officeCode = Preferences.INSTANCE.getOfficeCode();
+        deviceID = Preferences.INSTANCE.getDeviceUUID();
 
         networkType = NetworkUtil.getNetworkType(context);
 
 
         text_top_title.setText(R.string.navi_sub_not_in_housed);
 
-        layout_top_back.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
+//        text_top_title.setOnClickListener(v -> {
+//            try {
+//
+//                Intent intent = new Intent(context, Class.forName("com.giosis.util.qdrive.list.ListActivity"));
+//                startActivity(intent);
+//            } catch (Exception e) {
+//
+//                Log.e("Exception", "Exception  " + e.toString());
+//            }
+//        });
 
-                finish();
-            }
-        });
 
-        exlist_not_in_housed_list.setOnGroupExpandListener(new ExpandableListView.OnGroupExpandListener() {
-            @Override
-            public void onGroupExpand(int groupPosition) {
-                int group_count = listNotInHousedAdapter.getGroupCount();
+        layout_top_back.setOnClickListener(view -> finish());
 
-                for (int i = 0; i < group_count; i++) {
-                    if (i != groupPosition)
-                        exlist_not_in_housed_list.collapseGroup(i);
-                }
+        exlist_not_in_housed_list.setOnGroupExpandListener(groupPosition -> {
+            int group_count = listNotInHousedAdapter.getGroupCount();
+
+            for (int i = 0; i < group_count; i++) {
+                if (i != groupPosition)
+                    exlist_not_in_housed_list.collapseGroup(i);
             }
         });
     }
@@ -106,7 +105,7 @@ public class ListNotInHousedActivity extends CommonActivity {
             asyncTask.execute();
         } else {
 
-            Toast.makeText(ListNotInHousedActivity.this, getString(R.string.wifi_connect_failed), Toast.LENGTH_SHORT).show();
+            Toast.makeText(ListNotInHousedActivity.this, getString(R.string.msg_network_connect_error), Toast.LENGTH_SHORT).show();
         }
     }
 
@@ -152,7 +151,7 @@ public class ListNotInHousedActivity extends CommonActivity {
                 job.accumulate("device_id", device_id);
                 job.accumulate("network_type", network_type);
                 job.accumulate("app_id", DataUtil.appID);
-                job.accumulate("nation_cd", DataUtil.nationCode);
+                job.accumulate("nation_cd", Preferences.INSTANCE.getUserNation());
 
 
                 String methodName = "GetOutStandingInhousedPickupList";
@@ -176,12 +175,9 @@ public class ListNotInHousedActivity extends CommonActivity {
 
             try {
 
-//                NotInHousedResult result = Custom_XmlPullParser.getNotInHousedList(resultString);
-//                Log.e("krm0219", TAG + " Size : " + result.getResultObject().size());
-
                 if (result.getResultObject().size() == 0) {
 
-                    text_not_in_housed_empty.setText("Empty");
+                    text_not_in_housed_empty.setText(context.getResources().getString(R.string.text_empty));
                     text_not_in_housed_empty.setVisibility(View.VISIBLE);
                     exlist_not_in_housed_list.setVisibility(View.GONE);
                 } else {
@@ -195,7 +191,7 @@ public class ListNotInHousedActivity extends CommonActivity {
             } catch (Exception e) {
 
                 Log.e("Exception", TAG + "  onPostExecute Exception : " + e.toString());
-                text_not_in_housed_empty.setText("Error.\nPlease try again..");
+                text_not_in_housed_empty.setText(context.getResources().getString(R.string.msg_please_try_again));
                 text_not_in_housed_empty.setVisibility(View.VISIBLE);
                 exlist_not_in_housed_list.setVisibility(View.GONE);
             }

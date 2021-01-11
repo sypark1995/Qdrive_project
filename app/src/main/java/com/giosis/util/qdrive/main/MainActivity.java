@@ -32,13 +32,13 @@ import androidx.core.content.ContextCompat;
 import androidx.core.graphics.drawable.RoundedBitmapDrawable;
 import androidx.core.graphics.drawable.RoundedBitmapDrawableFactory;
 
+import com.giosis.library.gps.GPSTrackerManager;
+import com.giosis.library.gps.QuickAppUserInfoUploadHelper;
 import com.giosis.library.pickup.CreatePickupOrderActivity;
 import com.giosis.util.qdrive.barcodescanner.CaptureActivity;
 import com.giosis.util.qdrive.barcodescanner.FailListActivity;
 import com.giosis.util.qdrive.gps.FusedProviderService;
-import com.giosis.util.qdrive.gps.GPSTrackerManager;
 import com.giosis.util.qdrive.gps.LocationManagerService;
-import com.giosis.util.qdrive.gps.QuickAppUserInfoUploadHelper;
 import com.giosis.util.qdrive.list.ListActivity;
 import com.giosis.util.qdrive.settings.BluetoothDeviceData;
 import com.giosis.util.qdrive.singapore.LoginActivity;

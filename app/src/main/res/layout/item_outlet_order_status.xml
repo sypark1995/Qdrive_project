@@ -12,7 +12,7 @@
         android:layout_height="wrap_content"
         android:layout_marginTop="10dp"
         android:animateLayoutChanges="true"
-        android:background="@drawable/custom_background_card_view_shadow"
+        android:background="@drawable/bg_round_10_ffffff_shadow"
         android:minHeight="100dp"
         android:orientation="vertical"
         android:paddingBottom="15dp"
@@ -84,7 +84,7 @@
                 android:layout_alignParentEnd="true"
                 android:layout_centerVertical="true"
                 android:layout_marginStart="6dp"
-                android:background="@drawable/qdrive_btn_icon_up"
+                android:background="@drawable/icon_arrow_up_orange"
                 android:visibility="gone" />
         </RelativeLayout>
 
@@ -130,7 +130,7 @@
                     android:layout_width="3dp"
                     android:layout_height="13dp"
                     android:layout_gravity="end"
-                    android:background="@drawable/qdrive_btn_icon_etc" />
+                    android:background="@drawable/icon_menu_dot" />
             </FrameLayout>
         </RelativeLayout>
 

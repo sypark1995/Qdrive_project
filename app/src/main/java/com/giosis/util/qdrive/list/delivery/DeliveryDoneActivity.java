@@ -35,8 +35,8 @@ import android.widget.Toast;
 
 import androidx.annotation.Nullable;
 
+import com.giosis.library.gps.GPSTrackerManager;
 import com.giosis.util.qdrive.barcodescanner.CaptureActivity;
-import com.giosis.util.qdrive.gps.GPSTrackerManager;
 import com.giosis.util.qdrive.list.BarcodeData;
 import com.giosis.util.qdrive.list.OutletInfo;
 import com.giosis.util.qdrive.list.SigningView;

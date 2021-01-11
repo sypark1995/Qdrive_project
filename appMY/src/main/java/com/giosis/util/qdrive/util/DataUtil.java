@@ -15,10 +15,10 @@ import android.provider.Settings;
 import android.util.Log;
 import android.view.View;
 
+import com.giosis.library.gps.GPSTrackerManager;
 import com.giosis.library.server.CallServer;
 import com.giosis.library.server.ImageUpload;
 import com.giosis.library.server.data.FailedCodeResult;
-import com.giosis.util.qdrive.gps.GPSTrackerManager;
 import com.giosis.util.qdrive.international.MyApplication;
 import com.giosis.util.qdrive.international.R;
 import com.google.firebase.analytics.FirebaseAnalytics;

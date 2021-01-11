@@ -91,9 +91,6 @@
             </intent-filter>
         </activity>
         <activity
-            android:name="com.giosis.util.qdrive.main.ListNotInHousedActivity"
-            android:screenOrientation="portrait" />
-        <activity
             android:name="com.giosis.util.qdrive.barcodescanner.FailListActivity"
             android:configChanges="orientation|keyboardHidden"
             android:label="@string/app_name"

@@ -8,7 +8,6 @@ import android.os.AsyncTask;
 import android.util.Log;
 
 import com.giosis.util.qdrive.barcodescanner.StdResult;
-import com.giosis.util.qdrive.gps.OnFusedProviderListenerUploadEventListener;
 import com.giosis.util.qdrive.international.R;
 import com.giosis.util.qdrive.util.Custom_JsonParser;
 import com.giosis.util.qdrive.util.DataUtil;
@@ -27,43 +26,28 @@ public class DriverPerformanceLogUploadHelper {
     private final double accuracy;
     private String action;
 
-    private final OnFusedProviderListenerUploadEventListener eventListener;
+    private final OnDriverPerformanceLogUploadEventListener eventListener;
     private final AlertDialog resultDialog;
 
+    private AlertDialog getResultAlertDialog(final Context context) {
 
-    public static class Builder {
+        AlertDialog dialog = new AlertDialog.Builder(context)
+                .setTitle(context.getResources().getString(R.string.text_upload_result))
+                .setCancelable(true).setPositiveButton(context.getResources().getString(R.string.button_ok), new OnClickListener() {
 
-        private final Context context;
-        private final String opID;
+                    @Override
+                    public void onClick(DialogInterface dialog, int which) {
 
-        private final double latitude;
-        private final double longitude;
-        private final double accuracy;
-        private final String action;
+                        if (dialog != null)
+                            dialog.dismiss();
 
-        private OnFusedProviderListenerUploadEventListener eventListener;
+                        if (eventListener != null) {
+                            eventListener.onServerResult();
+                        }
+                    }
+                }).create();
 
-
-        public Builder(Context context, String opID, double latitude, double longitude, double accuracy, String action) {
-
-            this.context = context;
-            this.opID = opID;
-
-            this.latitude = latitude;
-            this.longitude = longitude;
-            this.accuracy = accuracy;
-            this.action = action;
-        }
-
-        public DriverPerformanceLogUploadHelper build() {
-            return new DriverPerformanceLogUploadHelper(this);
-        }
-
-        Builder setOnFusedProviderListenerUploadEventListener(OnFusedProviderListenerUploadEventListener eventListener) {
-            this.eventListener = eventListener;
-
-            return this;
-        }
+        return dialog;
     }
 
     private DriverPerformanceLogUploadHelper(Builder builder) {
@@ -81,25 +65,8 @@ public class DriverPerformanceLogUploadHelper {
     }
 
 
-    private AlertDialog getResultAlertDialog(final Context context) {
-
-        AlertDialog dialog = new AlertDialog.Builder(context)
-                .setTitle(context.getResources().getString(R.string.text_upload_result))
-                .setCancelable(true).setPositiveButton(context.getResources().getString(R.string.button_ok), new OnClickListener() {
-
-                    @Override
-                    public void onClick(DialogInterface dialog, int which) {
-
-                        if (dialog != null)
-                            dialog.dismiss();
-
-                        if (eventListener != null) {
-                            eventListener.onPostResult();
-                        }
-                    }
-                }).create();
-
-        return dialog;
+    public interface OnDriverPerformanceLogUploadEventListener {
+        void onServerResult();
     }
 
     private void showResultDialog(String message) {
@@ -198,5 +165,40 @@ public class DriverPerformanceLogUploadHelper {
         DriverPerformanceLogUploadTask DriverPerformanceLogUploadTask = new DriverPerformanceLogUploadTask();
         DriverPerformanceLogUploadTask.execute();
         return this;
+    }
+
+    public static class Builder {
+
+        private final Context context;
+        private final String opID;
+
+        private final double latitude;
+        private final double longitude;
+        private final double accuracy;
+        private final String action;
+
+        private OnDriverPerformanceLogUploadEventListener eventListener;
+
+
+        public Builder(Context context, String opID, double latitude, double longitude, double accuracy, String action) {
+
+            this.context = context;
+            this.opID = opID;
+
+            this.latitude = latitude;
+            this.longitude = longitude;
+            this.accuracy = accuracy;
+            this.action = action;
+        }
+
+        public DriverPerformanceLogUploadHelper build() {
+            return new DriverPerformanceLogUploadHelper(this);
+        }
+
+        Builder setOnDriverPerformanceLogUploadEventListener(OnDriverPerformanceLogUploadEventListener eventListener) {
+            this.eventListener = eventListener;
+
+            return this;
+        }
     }
 }

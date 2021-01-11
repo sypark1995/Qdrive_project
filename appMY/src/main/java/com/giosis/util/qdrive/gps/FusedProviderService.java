@@ -14,6 +14,7 @@ import android.util.Log;
 
 import androidx.core.app.NotificationCompat;
 
+import com.giosis.library.gps.FusedProviderWorker;
 import com.giosis.util.qdrive.international.R;
 import com.giosis.util.qdrive.main.MainActivity;
 import com.google.android.gms.common.api.GoogleApiClient;

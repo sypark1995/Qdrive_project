@@ -85,6 +85,7 @@ class MessageListActivity : CommonActivity() {
 
         //
         layout_top_back.setOnClickListener {
+
             finish()
         }
 
@@ -110,6 +111,7 @@ class MessageListActivity : CommonActivity() {
 
     override fun onBackPressed() {
         super.onBackPressed()
+
         finish()
     }
 

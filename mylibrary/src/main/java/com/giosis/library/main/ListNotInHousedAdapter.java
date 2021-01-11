@@ -1,11 +1,10 @@
-package com.giosis.util.qdrive.main;
+package com.giosis.library.main;
 
 import android.content.Context;
 import android.content.Intent;
 import android.net.Uri;
 import android.util.Log;
 import android.view.LayoutInflater;
-import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.BaseExpandableListAdapter;
@@ -15,7 +14,7 @@ import android.widget.LinearLayout;
 import android.widget.PopupMenu;
 import android.widget.TextView;
 
-import com.giosis.util.qdrive.international.R;
+import com.giosis.library.R;
 
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
@@ -30,10 +29,10 @@ public class ListNotInHousedAdapter extends BaseExpandableListAdapter {
     String TAG = "ListNotInHousedAdapter";
 
     Context context;
-    ListNotInHousedResult result;
+    NotInHousedResult result;
 
 
-    ListNotInHousedAdapter(Context context, ListNotInHousedResult result) {
+    public ListNotInHousedAdapter(Context context, NotInHousedResult result) {
 
         this.context = context;
         this.result = result;
@@ -66,7 +65,7 @@ public class ListNotInHousedAdapter extends BaseExpandableListAdapter {
 
         if (convertView == null) {
             LayoutInflater inflater = (LayoutInflater) context.getSystemService(Context.LAYOUT_INFLATER_SERVICE);
-            view = inflater.inflate(R.layout.not_in_housed_item, null);
+            view = inflater.inflate(R.layout.item_not_in_housed, null);
         } else {
             view = convertView;
         }
@@ -82,16 +81,16 @@ public class ListNotInHousedAdapter extends BaseExpandableListAdapter {
         TextView text_not_in_parcels_item_not_processed_qty = view.findViewById(R.id.text_not_in_parcels_item_not_processed_qty);
 
 
-        final ListNotInHousedResult.NotInhousedList item = result.getResultObject().get(group_position);
+        final NotInHousedResult.NotInHousedList item = result.getResultObject().get(group_position);
         final int position = group_position;
 
         if (isExpanded && result.getResultObject().get(group_position).getSubLists() != null) {
 
-            layout_not_in_parcels_item_card_view.setBackgroundResource(R.drawable.bg_top_radius_10_ffffff);
+            layout_not_in_parcels_item_card_view.setBackgroundResource(R.drawable.bg_top_round_10_ffffff);
             img_not_in_parcels_item_up_icon.setVisibility(View.VISIBLE);
         } else {
 
-            layout_not_in_parcels_item_card_view.setBackgroundResource(R.drawable.bg_radius_10_ffffff_shadows);
+            layout_not_in_parcels_item_card_view.setBackgroundResource(R.drawable.bg_round_10_ffffff_shadow);
             img_not_in_parcels_item_up_icon.setVisibility(View.GONE);
         }
 
@@ -99,7 +98,15 @@ public class ListNotInHousedAdapter extends BaseExpandableListAdapter {
         text_not_in_parcels_item_seller_name.setText(item.getReqName());
         text_not_in_parcels_item_address.setText("(" + item.getZipCode() + ") " + item.getAddress());
         text_not_in_parcels_item_qty.setText(item.getReal_qty());
-        text_not_in_parcels_item_not_processed_qty.setText(item.getNot_processed_qty());
+
+        if (item.getSubLists().size() == 0) {
+
+            text_not_in_parcels_item_not_processed_qty.setText("0");
+        } else {
+
+            text_not_in_parcels_item_not_processed_qty.setText(item.getNot_processed_qty());
+        }
+
 
         try {
 
@@ -109,65 +116,48 @@ public class ListNotInHousedAdapter extends BaseExpandableListAdapter {
         } catch (ParseException e) {
 
             Log.e("krm0219", TAG + " Exception : " + e.toString());
-            text_not_in_parcels_item_desired_date.setText(context.getResources().getString(R.string.text_error));
+            text_not_in_parcels_item_desired_date.setText("Error");
             e.printStackTrace();
         }
 
 
-        layout_not_in_parcels_item_menu_icon.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
+        layout_not_in_parcels_item_menu_icon.setOnClickListener(view1 -> {
 
-                PopupMenu popupMenu = new PopupMenu(context, layout_not_in_parcels_item_menu_icon);
-                popupMenu.getMenuInflater().inflate(R.menu.quickmenu_pickup, popupMenu.getMenu());
-                popupMenu.show();
+            PopupMenu popupMenu = new PopupMenu(context, layout_not_in_parcels_item_menu_icon);
+            popupMenu.getMenuInflater().inflate(R.menu.quickmenu_pickup, popupMenu.getMenu());
+            popupMenu.show();
 
-                popupMenu.setOnMenuItemClickListener(new PopupMenu.OnMenuItemClickListener() {
-                    @Override
-                    public boolean onMenuItemClick(MenuItem menuItem) {
+            popupMenu.setOnMenuItemClickListener(menuItem -> {
 
-                        switch (menuItem.getItemId()) {
-                            case R.id.menu_one: {
+                int itemId = menuItem.getItemId();
+                if (itemId == R.id.menu_one) {
+                    String map_addr = item.getAddress().trim();
 
-                                String map_addr = item.getAddress().trim();
+                    if (map_addr != null && !map_addr.equals("")) {
 
-                                if (!map_addr.equals("")) {
-
-                                    // 구글맵 이동
-                                    Uri uri = Uri.parse("http://maps.google.co.in/maps?q=" + map_addr);
-                                    Intent it = new Intent(Intent.ACTION_VIEW, uri);
-                                    context.startActivity(it);
-                                }
-                            }
-                            break;
-
-                            case R.id.menu_up: {
-
-                                if (0 < position) {
-
-                                    ListNotInHousedResult.NotInhousedList upItem = result.getResultObject().remove(position);
-                                    result.getResultObject().add(position - 1, upItem);
-                                    notifyDataSetChanged();
-                                }
-                            }
-                            break;
-
-                            case R.id.menu_down: {
-
-                                if (position < result.getResultObject().size() - 1) {
-
-                                    ListNotInHousedResult.NotInhousedList downItem = result.getResultObject().remove(position);
-                                    result.getResultObject().add(position + 1, downItem);
-                                    notifyDataSetChanged();
-                                }
-                            }
-                            break;
-                        }
-
-                        return false;
+                        // 구글맵 이동
+                        Uri uri = Uri.parse("http://maps.google.co.in/maps?q=" + map_addr);
+                        Intent it = new Intent(Intent.ACTION_VIEW, uri);
+                        context.startActivity(it);
                     }
-                });
-            }
+                } else if (itemId == R.id.menu_up) {
+                    if (position > 0) {
+
+                        NotInHousedResult.NotInHousedList upItem = result.getResultObject().remove(position);
+                        result.getResultObject().add(position - 1, upItem);
+                        notifyDataSetChanged();
+                    }
+                } else if (itemId == R.id.menu_down) {
+                    if (position < result.getResultObject().size() - 1) {
+
+                        NotInHousedResult.NotInHousedList downItem = result.getResultObject().remove(position);
+                        result.getResultObject().add(position + 1, downItem);
+                        notifyDataSetChanged();
+                    }
+                }
+
+                return false;
+            });
         });
 
         return view;
@@ -208,7 +198,7 @@ public class ListNotInHousedAdapter extends BaseExpandableListAdapter {
         if (convertView == null) {
 
             LayoutInflater inflater = (LayoutInflater) context.getSystemService(Context.LAYOUT_INFLATER_SERVICE);
-            view = inflater.inflate(R.layout.not_in_housed_child_item, null);
+            view = inflater.inflate(R.layout.item_not_in_housed_child, null);
         } else {
 
             view = convertView;
@@ -221,16 +211,14 @@ public class ListNotInHousedAdapter extends BaseExpandableListAdapter {
         TextView text_not_in_parcels_child_currency = view.findViewById(R.id.text_not_in_parcels_child_currency);
 
 
-        ListNotInHousedResult.NotInhousedList.NotInhousedSubList subitem = result.getResultObject().get(group_position).getSubLists().get(child_position);
+        NotInHousedResult.NotInHousedList.NotInHousedSubList subitem = result.getResultObject().get(group_position).getSubLists().get(child_position);
         int sub_size = result.getResultObject().get(group_position).getSubLists().size();
+        Log.e("krm0219", result.getResultObject().get(group_position).getSubLists().size() + "  " + child_position);
 
         if (sub_size - 1 == child_position) {
 
-           /* LinearLayout.LayoutParams lp = new LinearLayout.LayoutParams(LinearLayout.LayoutParams.MATCH_PARENT, LinearLayout.LayoutParams.WRAP_CONTENT);
-            lp.setMargins(0, 0, 0, 40);
-            layout_not_in_parcels_child_view.setLayoutParams(lp);*/
             layout_not_in_parcels_child_view.setPadding(0, 0, 0, 40);
-            layout_not_in_parcels_child_view.setBackgroundResource(R.drawable.bg_bottom_radius_10_ffffff_shadows);
+            layout_not_in_parcels_child_view.setBackgroundResource(R.drawable.bg_bottom_round_10_ffffff);
         } else {
 
             layout_not_in_parcels_child_view.setPadding(0, 0, 0, 0);
@@ -240,7 +228,7 @@ public class ListNotInHousedAdapter extends BaseExpandableListAdapter {
 
         text_not_in_parcels_child_scanned_no.setText(subitem.getPackingNo());
         text_not_in_parcels_child_amount.setText(subitem.getPurchasedAmount());
-        text_not_in_parcels_child_currency.setText(" (" + subitem.getPurchaseCurrency() + ")");
+        text_not_in_parcels_child_currency.setText("(" + subitem.getPurchaseCurrency() + ")");
 
         return view;
     }

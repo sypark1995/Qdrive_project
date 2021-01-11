@@ -1,4 +1,4 @@
-package com.giosis.util.qdrive.gps;
+package com.giosis.library.gps;
 
 import android.app.AlertDialog;
 import android.content.Context;
@@ -7,11 +7,12 @@ import android.content.DialogInterface.OnClickListener;
 import android.os.AsyncTask;
 import android.util.Log;
 
-import com.giosis.util.qdrive.barcodescanner.StdResult;
-import com.giosis.util.qdrive.singapore.R;
-import com.giosis.util.qdrive.util.Custom_JsonParser;
-import com.giosis.util.qdrive.util.DataUtil;
-import com.giosis.util.qdrive.util.NetworkUtil;
+import com.giosis.library.R;
+import com.giosis.library.server.Custom_JsonParser;
+import com.giosis.library.server.data.DefaultResult;
+import com.giosis.library.util.DataUtil;
+import com.giosis.library.util.NetworkUtil;
+import com.giosis.library.util.Preferences;
 
 import org.json.JSONObject;
 
@@ -126,21 +127,21 @@ public class QuickAppUserInfoUploadHelper {
     }
 
 
-    class UserInfoUploadTask extends AsyncTask<Void, Void, StdResult> {
+    class UserInfoUploadTask extends AsyncTask<Void, Void, DefaultResult> {
 
         @Override
-        protected StdResult doInBackground(Void... params) {
+        protected DefaultResult doInBackground(Void... params) {
 
             return requestServerUpload();
         }
 
         @Override
-        protected void onPostExecute(StdResult result) {
+        protected void onPostExecute(DefaultResult result) {
             super.onPostExecute(result);
 
             try {
 
-                int resultCode = result.getResultCode();
+                int resultCode = Integer.parseInt(result.getResultCode());
 
                 if (resultCode < 0) {
 
@@ -153,13 +154,13 @@ public class QuickAppUserInfoUploadHelper {
         }
 
 
-        private StdResult requestServerUpload() {
+        private DefaultResult requestServerUpload() {
 
-            StdResult result = new StdResult();
+            DefaultResult result = new DefaultResult();
 
             if (!NetworkUtil.isNetworkAvailable(context)) {
 
-                result.setResultCode(-16);
+                result.setResultCode("-16");
                 result.setResultMsg(context.getResources().getString(R.string.msg_network_connect_error));
 
                 return result;
@@ -205,7 +206,7 @@ public class QuickAppUserInfoUploadHelper {
                 job.accumulate("reg_id", opID);
                 job.accumulate("chg_id", opID);
                 job.accumulate("app_id", DataUtil.appID);
-                job.accumulate("nation_cd", DataUtil.nationCode);
+                job.accumulate("nation_cd", Preferences.INSTANCE.getUserNation());
 
                 String methodName = "setQuickAppUserInfo";
                 String jsonString = Custom_JsonParser.requestServerDataReturnJSON(methodName, job);
@@ -213,12 +214,12 @@ public class QuickAppUserInfoUploadHelper {
 
                 JSONObject jsonObject = new JSONObject(jsonString);
 
-                result.setResultCode(jsonObject.getInt("ResultCode"));
+                result.setResultCode(jsonObject.getString("ResultCode"));
                 result.setResultMsg(jsonObject.getString("ResultMsg"));
             } catch (Exception e) {
 
                 Log.e("Exception", TAG + "  setQuickAppUserInfo Exception : " + e.toString());
-                result.setResultCode(-15);
+                result.setResultCode("-15");
                 result.setResultMsg("Exception Error.\n" + e.toString());
             }
 

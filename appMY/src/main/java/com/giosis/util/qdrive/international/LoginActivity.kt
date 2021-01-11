@@ -16,8 +16,8 @@ import android.view.inputmethod.InputMethodManager
 import android.widget.AdapterView
 import android.widget.LinearLayout
 import android.widget.ProgressBar
+import com.giosis.library.gps.GPSTrackerManager
 import com.giosis.library.setting.DeveloperModeActivity
-import com.giosis.util.qdrive.gps.GPSTrackerManager
 import com.giosis.util.qdrive.main.GetRestDaysAsyncTask
 import com.giosis.util.qdrive.main.MainActivity
 import com.giosis.util.qdrive.util.*

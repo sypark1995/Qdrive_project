@@ -1,4 +1,4 @@
-package com.giosis.util.qdrive.gps;
+package com.giosis.library.gps;
 
 import android.Manifest;
 import android.content.Context;
@@ -7,7 +7,6 @@ import android.location.Location;
 import android.os.Bundle;
 import android.util.Log;
 
-import androidx.annotation.NonNull;
 import androidx.core.app.ActivityCompat;
 
 import com.google.android.gms.common.ConnectionResult;
@@ -18,6 +17,7 @@ import com.google.android.gms.location.LocationRequest;
 import com.google.android.gms.location.LocationResult;
 import com.google.android.gms.location.LocationServices;
 import com.google.android.gms.tasks.OnSuccessListener;
+
 
 public class FusedProviderOnceListener implements GoogleApiClient.ConnectionCallbacks, GoogleApiClient.OnConnectionFailedListener {
     private String TAG = "FusedProviderOnceListener";
@@ -32,7 +32,7 @@ public class FusedProviderOnceListener implements GoogleApiClient.ConnectionCall
     private double accuracy = 0;
 
 
-    FusedProviderOnceListener(Context context) {
+    public FusedProviderOnceListener(Context context) {
 
         count = 0;
         this.context = context;
@@ -40,14 +40,13 @@ public class FusedProviderOnceListener implements GoogleApiClient.ConnectionCall
     }
 
 
-    GoogleApiClient getGoogleApiClient() {
+    public GoogleApiClient getGoogleApiClient() {
 
         return new GoogleApiClient.Builder(context)
                 .addApi(LocationServices.API)
                 .addConnectionCallbacks(this)
                 .addOnConnectionFailedListener(this).build();
     }
-
 
     @Override
     public void onConnected(Bundle bundle) {
@@ -74,8 +73,9 @@ public class FusedProviderOnceListener implements GoogleApiClient.ConnectionCall
             }
         });
 
+
         LocationRequest locationRequest = new LocationRequest();
-        locationRequest.setPriority(LocationRequest.PRIORITY_BALANCED_POWER_ACCURACY);
+        locationRequest.setPriority(LocationRequest.PRIORITY_BALANCED_POWER_ACCURACY); // PRIORITY_HIGH_ACCURACY
         locationRequest.setInterval(0);
         locationRequest.setFastestInterval(0);
 
@@ -111,35 +111,38 @@ public class FusedProviderOnceListener implements GoogleApiClient.ConnectionCall
     public double getLatitude() {
 
         Log.e("Location", TAG + "  getLatitude : " + latitude);
-        return this.latitude;
+        return latitude;
     }
 
     public double getLongitude() {
 
         Log.e("Location", TAG + "  getLongitude : " + longitude);
-        return this.longitude;
+        return longitude;
     }
 
-
     public double getAccuracy() {
-        return this.accuracy;
+
+        return accuracy;
     }
 
 
     @Override
     public void onConnectionSuspended(int arg0) {
+
         Log.e("Location", TAG + "  onConnectionSuspended");
     }
 
+
     @Override
-    public void onConnectionFailed(@NonNull ConnectionResult connectionResult) {
+    public void onConnectionFailed(ConnectionResult connectionResult) {
 
         Log.e("Location", TAG + "  onConnectionFailed");
     }
 
-    void removeLocationUpdates() {
+    public void removeLocationUpdates() {
 
         Log.e("Location", TAG + "  removeLocationUpdates");
         fusedLocationProviderClient.removeLocationUpdates(locationCallback);
     }
+
 }

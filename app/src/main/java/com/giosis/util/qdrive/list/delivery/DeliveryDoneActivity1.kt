@@ -21,8 +21,8 @@ import android.view.View
 import android.widget.ImageView
 import android.widget.ListView
 import android.widget.Toast
+import com.giosis.library.gps.GPSTrackerManager
 import com.giosis.util.qdrive.barcodescanner.CaptureActivity.BarcodeListData
-import com.giosis.util.qdrive.gps.GPSTrackerManager
 import com.giosis.util.qdrive.list.BarcodeData
 import com.giosis.util.qdrive.list.OutletInfo
 import com.giosis.util.qdrive.singapore.MyApplication

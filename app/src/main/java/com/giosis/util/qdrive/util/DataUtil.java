@@ -16,13 +16,13 @@ import android.util.Log;
 import android.view.View;
 
 import com.gc.android.market.api.Base64;
+import com.giosis.library.gps.GPSTrackerManager;
 import com.giosis.library.message.AdminMessageListDetailActivity;
 import com.giosis.library.message.CustomerMessageListDetailActivity;
 import com.giosis.library.message.MessageListActivity;
 import com.giosis.library.server.CallServer;
 import com.giosis.library.server.ImageUpload;
 import com.giosis.library.server.data.FailedCodeResult;
-import com.giosis.util.qdrive.gps.GPSTrackerManager;
 import com.giosis.util.qdrive.list.RowItem;
 import com.giosis.util.qdrive.singapore.MyApplication;
 import com.giosis.util.qdrive.singapore.R;

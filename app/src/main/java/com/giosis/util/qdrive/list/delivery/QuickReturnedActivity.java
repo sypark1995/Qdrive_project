@@ -20,7 +20,7 @@ import android.widget.Toast;
 
 import androidx.annotation.Nullable;
 
-import com.giosis.util.qdrive.gps.GPSTrackerManager;
+import com.giosis.library.gps.GPSTrackerManager;
 import com.giosis.util.qdrive.list.SigningView;
 import com.giosis.util.qdrive.singapore.MyApplication;
 import com.giosis.util.qdrive.singapore.OnServerEventListener;

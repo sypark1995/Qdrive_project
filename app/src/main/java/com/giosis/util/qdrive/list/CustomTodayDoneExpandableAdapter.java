@@ -87,10 +87,10 @@ public class CustomTodayDoneExpandableAdapter extends BaseExpandableListAdapter 
 
         if (isExpanded) {
 
-            layout_list_item_card_view.setBackgroundResource(R.drawable.custom_background_card_view_top);
+            layout_list_item_card_view.setBackgroundResource(R.drawable.bg_top_round_10_ffffff);
         } else {
 
-            layout_list_item_card_view.setBackgroundResource(R.drawable.custom_background_card_view_shadow);
+            layout_list_item_card_view.setBackgroundResource(R.drawable.bg_round_10_ffffff_shadow);
         }
 
         if (groupPosition == 0) {

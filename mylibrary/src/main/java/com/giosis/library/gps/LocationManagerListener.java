@@ -1,4 +1,4 @@
-package com.giosis.util.qdrive.gps;
+package com.giosis.library.gps;
 
 import android.Manifest;
 import android.content.Context;
@@ -11,7 +11,7 @@ import android.util.Log;
 
 import androidx.core.app.ActivityCompat;
 
-import com.giosis.util.qdrive.international.MyApplication;
+import com.giosis.library.util.Preferences;
 
 public class LocationManagerListener implements LocationListener {
     private String TAG = "LocationManagerListener";
@@ -19,17 +19,21 @@ public class LocationManagerListener implements LocationListener {
     private Context context;
     private LocationManager locationManager;
 
-    private String reference;
     private String opID;
+    private String deviceID;
+    private String reference;
     private long minTime;
     private float minDistance;
     private String provider = "";
 
-    LocationManagerListener(Context context, String reference) {
+
+    public LocationManagerListener(Context context, String reference) {
 
         this.context = context;
+        opID = Preferences.INSTANCE.getUserId();
+        deviceID = Preferences.INSTANCE.getDeviceUUID();
+
         this.reference = reference;
-        opID = MyApplication.preferences.getUserId();
 
 
         if (reference.equals("time_location")) {
@@ -47,13 +51,13 @@ public class LocationManagerListener implements LocationListener {
     }
 
 
-    LocationManager getLocationManager() {
+    public LocationManager getLocationManager() {
 
         locationManager = (LocationManager) context.getSystemService(Context.LOCATION_SERVICE);
         return locationManager;
     }
 
-    void getLastLocation() {
+    public void getLastLocation() {
 
         if (ActivityCompat.checkSelfPermission(context, Manifest.permission.ACCESS_FINE_LOCATION) != PackageManager.PERMISSION_GRANTED
                 && ActivityCompat.checkSelfPermission(context, Manifest.permission.ACCESS_COARSE_LOCATION) != PackageManager.PERMISSION_GRANTED) {
@@ -78,7 +82,6 @@ public class LocationManagerListener implements LocationListener {
                     provider = "GPS_PROVIDER";
                     locationManager.requestLocationUpdates(LocationManager.GPS_PROVIDER, minTime, minDistance, this);
                 }
-
             } catch (Exception e) {
                 Log.e("Location", "fail to request location update, ignore " + e.toString());
             }
@@ -89,22 +92,21 @@ public class LocationManagerListener implements LocationListener {
     @Override
     public void onLocationChanged(Location location) {
 
-
         double latitude = Double.parseDouble(String.format("%.7f", location.getLatitude()));
         double longitude = Double.parseDouble(String.format("%.7f", location.getLongitude()));
-
         Log.e("Location", TAG + "  onLocationChanged : " + latitude + " / " + longitude);
 
-        new FusedProviderListenerUploadHelper.Builder(context, opID, MyApplication.preferences.getDeviceUUID(),
-                latitude, longitude, 0, reference, provider).build().execute();
+        new FusedProviderListenerUploadHelper.Builder(context, opID, deviceID, latitude, longitude, 0, reference, provider).build().execute();
     }
 
     @Override
     public void onStatusChanged(String provider, int status, Bundle extras) {
+
     }
 
     @Override
     public void onProviderEnabled(String provider) {
+
     }
 
     @Override

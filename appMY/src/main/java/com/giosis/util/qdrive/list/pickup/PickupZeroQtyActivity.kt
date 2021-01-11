@@ -7,7 +7,7 @@ import android.text.Editable
 import android.text.TextWatcher
 import android.util.Log
 import android.widget.Toast
-import com.giosis.util.qdrive.gps.GPSTrackerManager
+import com.giosis.library.gps.GPSTrackerManager
 import com.giosis.util.qdrive.international.MyApplication
 import com.giosis.util.qdrive.international.OnServerEventListener
 import com.giosis.util.qdrive.international.R

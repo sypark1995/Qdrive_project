@@ -1,4 +1,4 @@
-package com.giosis.util.qdrive.gps;
+package com.giosis.library.gps;
 
 import android.Manifest;
 import android.content.Context;
@@ -10,7 +10,7 @@ import android.util.Log;
 
 import androidx.core.app.ActivityCompat;
 
-import com.giosis.util.qdrive.singapore.MyApplication;
+import com.giosis.library.util.Preferences;
 import com.google.android.gms.common.ConnectionResult;
 import com.google.android.gms.common.api.GoogleApiClient;
 import com.google.android.gms.location.FusedLocationProviderClient;
@@ -48,15 +48,15 @@ public class FusedProviderWorker implements GoogleApiClient.ConnectionCallbacks,
     private double accuracy = 0;
 
 
-    FusedProviderWorker(Context context, String reference) {
+    public FusedProviderWorker(Context context, String reference) {
 
         this.context = context;
         fusedLocationProviderClient = LocationServices.getFusedLocationProviderClient(context);
 
         this.reference = reference;
 
-        opID = MyApplication.preferences.getUserId();
-        deviceID = MyApplication.preferences.getDeviceUUID();
+        opID = Preferences.INSTANCE.getUserId();
+        deviceID = Preferences.INSTANCE.getDeviceUUID();
 
         if (reference.equals("time_fused")) {
 
@@ -75,14 +75,14 @@ public class FusedProviderWorker implements GoogleApiClient.ConnectionCallbacks,
         }
 
         api_level = Integer.toString(Build.VERSION.SDK_INT);   // API Level
-        device_info = android.os.Build.DEVICE;           // Device
-        device_model = android.os.Build.MODEL;            // Model
-        device_product = android.os.Build.PRODUCT;          // Product
+        device_info = Build.DEVICE;           // Device
+        device_model = Build.MODEL;            // Model
+        device_product = Build.PRODUCT;          // Product
         device_os_version = System.getProperty("os.version"); // OS version
     }
 
 
-    GoogleApiClient getGoogleApiClient() {
+    public GoogleApiClient getGoogleApiClient() {
 
         return new GoogleApiClient.Builder(context)
                 .addApi(LocationServices.API)
@@ -190,7 +190,7 @@ public class FusedProviderWorker implements GoogleApiClient.ConnectionCallbacks,
         Log.e("Location", TAG + "  onConnectionFailed");
     }
 
-    void removeLocationUpdates() {
+    public void removeLocationUpdates() {
 
         Log.e("Location", TAG + "  removeLocationUpdates");
         fusedLocationProviderClient.removeLocationUpdates(locationCallback);

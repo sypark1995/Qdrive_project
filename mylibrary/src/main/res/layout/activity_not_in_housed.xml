@@ -30,8 +30,7 @@
             android:divider="@null"
             android:groupIndicator="@null"
             android:listSelector="@android:color/transparent"
-            android:paddingEnd="20dp"
             android:paddingStart="20dp"
-            android:scrollbars="none" />
+            android:paddingEnd="20dp" />
     </RelativeLayout>
 </LinearLayout>
