@@ -195,23 +195,19 @@
             android:name=".StatisticsActivity"
             android:screenOrientation="portrait" />
 
-        <activity
-            android:name="com.giosis.util.qdrive.settings.SettingActivity"
-            android:screenOrientation="portrait" />
+<!--        <activity-->
+<!--            android:name="com.giosis.util.qdrive.settings.SettingActivity"-->
+<!--            android:screenOrientation="portrait" />-->
 
+<!--        <activity-->
+<!--            android:name="com.giosis.util.qdrive.settings.ModifyDeviceInfoActivity"-->
+<!--            android:screenOrientation="portrait" />-->
 
-        <activity
-            android:name="com.giosis.util.qdrive.settings.LanguageSettingActivity"
-            android:screenOrientation="portrait" />
+<!--        <activity-->
+<!--            android:name="com.giosis.util.qdrive.settings.PrinterSettingActivity"-->
+<!--            android:label="@string/app_name"-->
+<!--            android:screenOrientation="portrait" />-->
 
-        <activity
-            android:name="com.giosis.util.qdrive.settings.ModifyDeviceInfoActivity"
-            android:screenOrientation="portrait" />
-
-        <activity
-            android:name="com.giosis.util.qdrive.settings.PrinterSettingActivity"
-            android:label="@string/app_name"
-            android:screenOrientation="portrait" />
         <activity
             android:name="com.giosis.util.qdrive.list.TodayDonePickupScanListActivity"
             android:configChanges="orientation|keyboardHidden"

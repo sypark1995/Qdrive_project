@@ -1,20 +1,28 @@
 <?xml version="1.0" encoding="utf-8"?>
-<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<layout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:tools="http://schemas.android.com/tools"
-    android:layout_width="match_parent"
-    android:layout_height="match_parent"
-    android:orientation="vertical">
+    tools:context="com.giosis.library.setting.SettingActivity">
 
-    <include layout="@layout/top_title" />
+    <data>
 
-    <RelativeLayout
+        <import type="android.view.View" />
+
+        <variable
+            name="viewModel"
+            type="com.giosis.library.setting.SettingViewModel" />
+    </data>
+
+    <LinearLayout
         android:layout_width="match_parent"
-        android:layout_height="wrap_content">
+        android:layout_height="match_parent"
+        android:background="@color/color_f6f6f6"
+        android:orientation="vertical">
+
+        <include layout="@layout/top_title" />
 
         <ScrollView
             android:layout_width="match_parent"
             android:layout_height="match_parent">
-            <!-- android:layout_marginBottom="56dp"-->
 
             <LinearLayout
                 android:layout_width="match_parent"
@@ -52,6 +60,7 @@
                             android:includeFontPadding="false"
                             android:maxLength="20"
                             android:maxLines="1"
+                            android:text="@{viewModel.name}"
                             android:textColor="@color/color_1f1f1f"
                             android:textSize="@dimen/text_size_36px"
                             android:textStyle="bold"
@@ -86,6 +95,7 @@
                             android:layout_height="wrap_content"
                             android:layout_alignParentEnd="true"
                             android:layout_centerVertical="true"
+                            android:text="@={viewModel.id}"
                             android:textColor="@color/color_303030"
                             android:textSize="@dimen/text_size_32px"
                             tools:text="gottable516" />
@@ -123,6 +133,7 @@
                             android:layout_height="wrap_content"
                             android:layout_alignParentEnd="true"
                             android:layout_centerVertical="true"
+                            android:text="@={viewModel.email}"
                             android:textColor="@color/color_303030"
                             android:textSize="@dimen/text_size_32px"
                             tools:text="gottable516@naver.com" />
@@ -160,9 +171,57 @@
                             android:layout_height="wrap_content"
                             android:layout_alignParentEnd="true"
                             android:layout_centerVertical="true"
+                            android:text="@={viewModel.officeName}"
                             android:textColor="@color/color_303030"
                             android:textSize="@dimen/text_size_32px"
                             tools:text="gottable516" />
+                    </RelativeLayout>
+
+                    <RelativeLayout
+                        android:id="@+id/layout_setting_account"
+                        android:layout_width="match_parent"
+                        android:layout_height="50dp"
+                        android:background="@color/white"
+                        android:paddingStart="20dp"
+                        android:paddingEnd="20dp"
+                        android:visibility="gone">
+
+                        <FrameLayout
+                            android:layout_width="match_parent"
+                            android:layout_height="1dp">
+
+                            <View
+                                android:layout_width="match_parent"
+                                android:layout_height="match_parent"
+                                android:background="@color/color_ebebeb" />
+                        </FrameLayout>
+
+                        <TextView
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:layout_centerVertical="true"
+                            android:gravity="center_vertical"
+                            android:text="@string/text_qoo10_account"
+                            android:textColor="@color/color_767676"
+                            android:textSize="@dimen/text_size_28px" />
+
+                        <TextView
+                            android:id="@+id/text_setting_account"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:layout_alignParentEnd="true"
+                            android:layout_centerVertical="true"
+                            android:layout_marginEnd="20dp"
+                            android:textColor="@color/color_303030"
+                            android:textSize="@dimen/text_size_32px"
+                            tools:text="[Singapore] sh5000" />
+
+                        <Button
+                            android:layout_width="6dp"
+                            android:layout_height="11dp"
+                            android:layout_alignParentEnd="true"
+                            android:layout_centerVertical="true"
+                            android:background="@drawable/qdrive_setting_icon_arrow_r" />
                     </RelativeLayout>
 
                     <FrameLayout
@@ -181,13 +240,20 @@
                         android:id="@+id/text_setting_change_password"
                         android:layout_width="match_parent"
                         android:layout_height="50dp"
+                        android:layout_gravity=""
                         android:background="@color/white"
                         android:gravity="center_vertical"
+                        android:onClick="@{()->viewModel.changePassword()}"
                         android:paddingStart="20dp"
                         android:paddingEnd="20dp"
                         android:text="@string/text_title_change_password"
                         android:textColor="@color/color_6092ec"
                         android:textSize="@dimen/text_size_26px" />
+
+                    <View
+                        android:layout_width="match_parent"
+                        android:layout_height="1dp"
+                        android:background="@color/color_ebebeb" />
                 </LinearLayout>
 
                 <TextView
@@ -224,6 +290,7 @@
                         android:layout_alignParentEnd="true"
                         android:layout_centerVertical="true"
                         android:gravity="center_vertical"
+                        android:onClick="@{()->viewModel.deleteData()}"
                         android:text="@string/button_delete"
                         android:textColor="@color/color_6092ec"
                         android:textSize="@dimen/text_size_26px" />
@@ -247,6 +314,7 @@
                     android:layout_width="match_parent"
                     android:layout_height="50dp"
                     android:background="@color/white"
+                    android:onClick="@{()->viewModel.goNotiActivity()}"
                     android:paddingStart="20dp"
                     android:paddingEnd="20dp">
 
@@ -288,6 +356,7 @@
                     android:layout_width="match_parent"
                     android:layout_height="50dp"
                     android:background="@color/white"
+                    android:onClick="@{()->viewModel.printerSetting()}"
                     android:paddingStart="20dp"
                     android:paddingEnd="20dp">
 
@@ -326,6 +395,7 @@
                     android:layout_width="match_parent"
                     android:layout_height="50dp"
                     android:background="@color/white"
+                    android:onClick="@{()->viewModel.scanSetting()}"
                     android:paddingStart="20dp"
                     android:paddingEnd="20dp">
 
@@ -351,7 +421,8 @@
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:orientation="vertical"
-                    android:visibility="visible">
+                    android:onClick="@{()->viewModel.languageSetting()}"
+                    android:visibility="@{viewModel.visibleChangeLanguage ? View.VISIBLE:View.GONE}">
 
                     <FrameLayout
                         android:layout_width="match_parent"
@@ -396,8 +467,9 @@
                     android:id="@+id/layout_setting_locker"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
+                    android:onClick="@{()->viewModel.settingLocker()}"
                     android:orientation="vertical"
-                    android:visibility="gone">
+                    android:visibility="@{viewModel.visibleSetLocker? View.VISIBLE: View.GONE}">
 
                     <FrameLayout
                         android:layout_width="match_parent"
@@ -462,6 +534,7 @@
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:layout_marginStart="10dp"
+                        android:text="@{viewModel.version}"
                         android:textColor="@color/color_767676"
                         android:textSize="@dimen/text_size_22px"
                         tools:text="3.2.7" />
@@ -470,21 +543,17 @@
                 <Button
                     android:id="@+id/btn_setting_developer_mode"
                     android:layout_width="match_parent"
-                    android:visibility="gone"
                     android:layout_height="50dp"
-                    android:text="@string/text_developer_mode"
                     android:background="@color/color_4fb648"
+                    android:onClick="@{()->viewModel.goDeveloperActivity()}"
+                    android:text="@string/text_developer_mode"
                     android:textColor="@color/black"
                     android:textSize="@dimen/text_size_30px"
-                    android:textStyle="bold" />
+                    android:textStyle="bold"
+                    android:visibility="gone" />
             </LinearLayout>
         </ScrollView>
 
-        <include
-            layout="@layout/bottom_menu"
-            android:layout_width="match_parent"
-            android:layout_height="56dp"
-            android:layout_alignParentBottom="true"
-            android:visibility="gone" />
-    </RelativeLayout>
-</LinearLayout>
+
+    </LinearLayout>
+</layout>

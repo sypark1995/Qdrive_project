@@ -291,22 +291,19 @@
 
         <!--  NOTIFICATION. Settings  -->
 
-        <activity
-            android:name="com.giosis.util.qdrive.settings.PrinterSettingActivity"
-            android:screenOrientation="portrait" />
+<!--        <activity-->
+<!--            android:name="com.giosis.util.qdrive.settings.PrinterSettingActivity"-->
+<!--            android:screenOrientation="portrait" />-->
 
-        <!--  NOTIFICATION. Settings  kotlin -->
-        <activity
-            android:name="com.giosis.util.qdrive.settings.SettingActivity"
-            android:screenOrientation="portrait" />
+<!--        &lt;!&ndash;  NOTIFICATION. Settings  kotlin &ndash;&gt;-->
 
-        <activity
-            android:name="com.giosis.util.qdrive.settings.LanguageSettingActivity"
-            android:screenOrientation="portrait" />
+<!--        <activity-->
+<!--            android:name="com.giosis.util.qdrive.settings.LanguageSettingActivity"-->
+<!--            android:screenOrientation="portrait" />-->
 
-        <activity
-            android:name="com.giosis.util.qdrive.settings.ModifyDeviceInfoActivity"
-            android:screenOrientation="portrait" />
+<!--        <activity-->
+<!--            android:name="com.giosis.util.qdrive.settings.ModifyDeviceInfoActivity"-->
+<!--            android:screenOrientation="portrait" />-->
 
         <!-- NOTIFICATION.  ETC  -->
 
