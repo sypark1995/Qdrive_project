@@ -12,7 +12,7 @@ import android.widget.TextView;
 
 import com.giosis.util.qdrive.barcodescanner.CaptureActivity;
 import com.giosis.util.qdrive.list.ListActivity;
-import com.giosis.util.qdrive.settings.SettingActivity;
+import com.giosis.library.setting.SettingActivity;
 import com.giosis.util.qdrive.util.BarcodeType;
 import com.giosis.util.qdrive.util.ui.CommonActivity;
 

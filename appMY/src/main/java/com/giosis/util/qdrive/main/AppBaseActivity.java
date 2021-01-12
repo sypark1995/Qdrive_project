@@ -15,6 +15,7 @@ import androidx.appcompat.widget.Toolbar;
 import androidx.core.content.ContextCompat;
 import androidx.drawerlayout.widget.DrawerLayout;
 
+import com.giosis.library.setting.SettingActivity;
 import com.giosis.util.qdrive.barcodescanner.CaptureActivity;
 import com.giosis.util.qdrive.international.MyApplication;
 import com.giosis.util.qdrive.international.R;
@@ -22,7 +23,7 @@ import com.giosis.util.qdrive.international.ScanActivity;
 import com.giosis.util.qdrive.international.StatisticsActivity;
 import com.giosis.util.qdrive.list.ListActivity;
 import com.giosis.util.qdrive.message.MessageListActivity;
-import com.giosis.util.qdrive.settings.SettingActivity;
+//import com.giosis.util.qdrive.settings.SettingActivity;
 import com.giosis.util.qdrive.util.BarcodeType;
 import com.giosis.util.qdrive.util.ui.CommonActivity;
 

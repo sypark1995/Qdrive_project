@@ -2,6 +2,9 @@
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
     package="com.giosis.library">
 
+    <uses-permission android:name="android.permission.BLUETOOTH" />
+    <uses-permission android:name="android.permission.BLUETOOTH_ADMIN" />
+
     <application>
 
         <activity
@@ -32,11 +35,25 @@
             android:name=".setting.ScanSettingActivity"
             android:screenOrientation="portrait" />
 
-        <activity android:name=".pickup.CreatePickupOrderActivity"
+        <activity
+            android:name=".setting.bluetooth.PrinterSettingActivity"
             android:screenOrientation="portrait" />
 
-        <activity android:name=".pickup.AddressDialogActivity"
-            android:theme="@style/CustomDialog"
+        <activity
+            android:name=".setting.bluetooth.ModifyDeviceInfoActivity"
+            android:screenOrientation="portrait" />
+
+        <activity
+            android:name=".pickup.CreatePickupOrderActivity"
+            android:screenOrientation="portrait" />
+
+        <activity
+            android:name=".pickup.AddressDialogActivity"
+            android:screenOrientation="portrait"
+            android:theme="@style/CustomDialog" />
+
+        <activity
+            android:name=".setting.SettingActivity"
             android:screenOrientation="portrait" />
 
         <activity

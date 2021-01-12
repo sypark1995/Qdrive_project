@@ -40,7 +40,6 @@ class ScanSettingActivity : BaseActivity<ActivityScanSettingBinding, ScanSetting
         }
 
 
-
         getViewModel().vibration.observe(this) {
 
             Preferences.scanVibration = it

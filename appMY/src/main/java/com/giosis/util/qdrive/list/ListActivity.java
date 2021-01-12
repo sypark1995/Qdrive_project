@@ -19,10 +19,10 @@ import androidx.fragment.app.FragmentManager;
 import androidx.fragment.app.FragmentStatePagerAdapter;
 import androidx.viewpager.widget.ViewPager;
 
+import com.giosis.library.setting.SettingActivity;
 import com.giosis.util.qdrive.international.MyApplication;
 import com.giosis.util.qdrive.international.R;
 import com.giosis.util.qdrive.main.MainActivity;
-import com.giosis.util.qdrive.settings.SettingActivity;
 import com.giosis.util.qdrive.util.DataUtil;
 import com.giosis.util.qdrive.util.ui.CommonActivity;
 
