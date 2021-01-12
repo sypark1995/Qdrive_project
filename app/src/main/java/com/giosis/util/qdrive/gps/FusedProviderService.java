@@ -15,6 +15,7 @@ import android.util.Log;
 import androidx.core.app.NotificationCompat;
 
 import com.giosis.library.gps.FusedProviderWorker;
+import com.giosis.util.qdrive.main.MainActivity;
 import com.giosis.util.qdrive.singapore.R;
 import com.google.android.gms.common.api.GoogleApiClient;
 
@@ -61,21 +62,17 @@ public class FusedProviderService extends Service {
             NotificationManager notificationManager = getSystemService(NotificationManager.class);
             notificationManager.createNotificationChannel(serviceChannel);
 
-            try {
 
-                Intent notificationIntent = new Intent(this, Class.forName("com.giosis.util.qdrive.main.MainActivity"));
-                PendingIntent pendingIntent = PendingIntent.getActivity(this, 0, notificationIntent, 0);
+            Intent notificationIntent = new Intent(this, MainActivity.class);
+            PendingIntent pendingIntent = PendingIntent.getActivity(this, 0, notificationIntent, 0);
 
-                NotificationCompat.Builder builder = new NotificationCompat.Builder(this, Channel_ID)
-                        .setContentTitle(getResources().getString(R.string.text_gps_service))
-                        .setSmallIcon(R.drawable.qdrive_icon)
-                        .setContentIntent(pendingIntent);
+            NotificationCompat.Builder builder = new NotificationCompat.Builder(this, Channel_ID)
+                    .setContentTitle(getResources().getString(R.string.text_gps_service))
+                    .setSmallIcon(R.drawable.qdrive_icon)
+                    .setContentIntent(pendingIntent);
 
-                Notification notification = builder.build();
-                startForeground(1, notification);
-            } catch (Exception e) {
-
-            }
+            Notification notification = builder.build();
+            startForeground(1, notification);
         }
 
         return super.onStartCommand(intent, flags, startId);

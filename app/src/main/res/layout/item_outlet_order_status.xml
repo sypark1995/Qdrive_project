@@ -15,10 +15,10 @@
         android:background="@drawable/bg_round_10_ffffff_shadow"
         android:minHeight="100dp"
         android:orientation="vertical"
-        android:paddingBottom="15dp"
-        android:paddingEnd="10dp"
         android:paddingStart="10dp"
-        android:paddingTop="15dp">
+        android:paddingTop="15dp"
+        android:paddingEnd="10dp"
+        android:paddingBottom="15dp">
 
         <RelativeLayout
             android:layout_width="match_parent"
@@ -35,8 +35,8 @@
                     android:layout_height="20dp"
                     android:background="@drawable/custom_background_d_day"
                     android:gravity="center"
-                    android:paddingEnd="7dp"
                     android:paddingStart="7dp"
+                    android:paddingEnd="7dp"
                     android:textColor="@color/color_303030"
                     android:textSize="@dimen/text_size_26px"
                     android:textStyle="bold"
@@ -58,7 +58,6 @@
                 android:layout_centerVertical="true"
                 android:layout_marginStart="7dp"
                 android:layout_toEndOf="@id/img_list_item_station_icon"
-                android:layout_toStartOf="@id/text_list_item_pickup_state"
                 android:textColor="@color/color_32bd87"
                 android:textSize="@dimen/text_size_32px"
                 android:textStyle="bold"
@@ -123,8 +122,8 @@
                 android:id="@+id/layout_list_item_menu_icon"
                 android:layout_width="10dp"
                 android:layout_height="23dp"
-                android:layout_alignParentEnd="true"
-                android:layout_alignParentTop="true">
+                android:layout_alignParentTop="true"
+                android:layout_alignParentEnd="true">
 
                 <ImageView
                     android:layout_width="3dp"

@@ -70,18 +70,6 @@ public class ListNotInHousedActivity extends CommonActivity {
 
         text_top_title.setText(R.string.navi_sub_not_in_housed);
 
-//        text_top_title.setOnClickListener(v -> {
-//            try {
-//
-//                Intent intent = new Intent(context, Class.forName("com.giosis.util.qdrive.list.ListActivity"));
-//                startActivity(intent);
-//            } catch (Exception e) {
-//
-//                Log.e("Exception", "Exception  " + e.toString());
-//            }
-//        });
-
-
         layout_top_back.setOnClickListener(view -> finish());
 
         exlist_not_in_housed_list.setOnGroupExpandListener(groupPosition -> {

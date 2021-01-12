@@ -58,7 +58,6 @@
                 android:layout_centerVertical="true"
                 android:layout_marginStart="7dp"
                 android:layout_toEndOf="@id/img_list_item_station_icon"
-                android:layout_toStartOf="@id/text_list_item_pickup_state"
                 android:textColor="@color/color_32bd87"
                 android:textSize="@dimen/text_size_32px"
                 android:textStyle="bold"
