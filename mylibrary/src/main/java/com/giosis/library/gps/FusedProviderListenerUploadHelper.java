@@ -2,8 +2,6 @@ package com.giosis.library.gps;
 
 import android.app.AlertDialog;
 import android.content.Context;
-import android.content.DialogInterface;
-import android.content.DialogInterface.OnClickListener;
 import android.os.AsyncTask;
 import android.util.Log;
 
@@ -16,7 +14,7 @@ import com.giosis.library.util.Preferences;
 import org.json.JSONObject;
 
 public class FusedProviderListenerUploadHelper {
-    private String TAG = "FusedProviderListenerUploadHelper";
+    private final String TAG = "FusedProviderListenerUploadHelper";
 
     private final Context context;
     private final String opID;
@@ -31,6 +29,31 @@ public class FusedProviderListenerUploadHelper {
     private final String networkType;
     private final AlertDialog resultDialog;
 
+    private AlertDialog getResultAlertDialog(final Context context) {
+
+        return new AlertDialog.Builder(context)
+                .setTitle(context.getResources().getString(R.string.text_upload_result))
+                .setCancelable(true).setPositiveButton(context.getResources().getString(R.string.button_ok), (dialog1, which) -> {
+                    if (dialog1 != null)
+                        dialog1.dismiss();
+                }).create();
+    }
+
+    private FusedProviderListenerUploadHelper(Builder builder) {
+
+        this.context = builder.context;
+        this.opID = builder.opID;
+        this.deviceID = builder.deviceID;
+
+        this.latitude = builder.latitude;
+        this.longitude = builder.longitude;
+        this.accuracy = builder.accuracy;
+        this.reference = builder.reference;
+        this.provider = builder.provider;
+
+        this.networkType = builder.networkType;
+        this.resultDialog = getResultAlertDialog(this.context);
+    }
 
     public static class Builder {
 
@@ -44,7 +67,7 @@ public class FusedProviderListenerUploadHelper {
         private final String reference;
         private final String provider;
 
-        private String networkType;
+        private final String networkType;
 
 
         public Builder(Context context, String opID, String deviceID, double latitude, double longitude, double accuracy, String reference, String provider) {
@@ -64,38 +87,6 @@ public class FusedProviderListenerUploadHelper {
         public FusedProviderListenerUploadHelper build() {
             return new FusedProviderListenerUploadHelper(this);
         }
-    }
-
-    private FusedProviderListenerUploadHelper(Builder builder) {
-
-        this.context = builder.context;
-        this.opID = builder.opID;
-        this.deviceID = builder.deviceID;
-
-        this.latitude = builder.latitude;
-        this.longitude = builder.longitude;
-        this.accuracy = builder.accuracy;
-        this.reference = builder.reference;
-        this.provider = builder.provider;
-
-        this.networkType = builder.networkType;
-        this.resultDialog = getResultAlertDialog(this.context);
-    }
-
-    private AlertDialog getResultAlertDialog(final Context context) {
-
-        AlertDialog dialog = new AlertDialog.Builder(context)
-                .setTitle(context.getResources().getString(R.string.text_upload_result))
-                .setCancelable(true).setPositiveButton(context.getResources().getString(R.string.button_ok), new OnClickListener() {
-
-                    @Override
-                    public void onClick(DialogInterface dialog, int which) {
-                        if (dialog != null)
-                            dialog.dismiss();
-                    }
-                }).create();
-
-        return dialog;
     }
 
     private void showResultDialog(String message) {

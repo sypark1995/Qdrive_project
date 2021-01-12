@@ -14,14 +14,15 @@ import androidx.core.app.ActivityCompat;
 import com.giosis.library.util.Preferences;
 
 public class LocationManagerListener implements LocationListener {
-    private String TAG = "LocationManagerListener";
+    private final String TAG = "LocationManagerListener";
 
-    private Context context;
+    private final Context context;
     private LocationManager locationManager;
 
-    private String opID;
-    private String deviceID;
-    private String reference;
+    private final String opID;
+    private final String deviceID;
+    private final String reference;
+
     private long minTime;
     private float minDistance;
     private String provider = "";

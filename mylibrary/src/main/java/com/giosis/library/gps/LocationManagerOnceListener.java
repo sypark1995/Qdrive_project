@@ -12,15 +12,15 @@ import android.util.Log;
 import androidx.core.app.ActivityCompat;
 
 public class LocationManagerOnceListener implements LocationListener {
-    private String TAG = "LocationManagerOnceListener";
+    private final String TAG = "LocationManagerOnceListener";
 
-    private Context context;
+    private final Context context;
     private LocationManager locationManager;
 
     private double latitude = 0;
     private double longitude = 0;
     private double accuracy = 0;
-    private int count = 0;
+    private int count;
 
 
     public LocationManagerOnceListener(Context context) {

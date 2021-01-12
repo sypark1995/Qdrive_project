@@ -16,16 +16,16 @@ import com.google.android.gms.location.LocationCallback;
 import com.google.android.gms.location.LocationRequest;
 import com.google.android.gms.location.LocationResult;
 import com.google.android.gms.location.LocationServices;
-import com.google.android.gms.tasks.OnSuccessListener;
+
+import org.jetbrains.annotations.NotNull;
 
 
 public class FusedProviderOnceListener implements GoogleApiClient.ConnectionCallbacks, GoogleApiClient.OnConnectionFailedListener {
-    private String TAG = "FusedProviderOnceListener";
+    private final String TAG = "FusedProviderOnceListener";
 
-    private Context context;
-    private int count;          // TEST.
-
-    private FusedLocationProviderClient fusedLocationProviderClient;
+    private final Context context;
+    private final FusedLocationProviderClient fusedLocationProviderClient;
+    private int count;
 
     private double latitude = 0;
     private double longitude = 0;
@@ -47,42 +47,7 @@ public class FusedProviderOnceListener implements GoogleApiClient.ConnectionCall
                 .addConnectionCallbacks(this)
                 .addOnConnectionFailedListener(this).build();
     }
-
-    @Override
-    public void onConnected(Bundle bundle) {
-
-        if (ActivityCompat.checkSelfPermission(context, Manifest.permission.ACCESS_FINE_LOCATION) != PackageManager.PERMISSION_GRANTED &&
-                ActivityCompat.checkSelfPermission(context, Manifest.permission.ACCESS_COARSE_LOCATION) != PackageManager.PERMISSION_GRANTED) {
-
-            return;
-        }
-
-        fusedLocationProviderClient.getLastLocation().addOnSuccessListener(new OnSuccessListener<Location>() {
-
-            @Override
-            public void onSuccess(Location location) {
-
-                if (location != null) {
-
-                    latitude = location.getLatitude();
-                    longitude = location.getLongitude();
-                    accuracy = location.getAccuracy();
-
-                    Log.e("Location", TAG + " onConnected  getLastLocation : " + location.getLatitude() + "  /  " + location.getLongitude());
-                }
-            }
-        });
-
-
-        LocationRequest locationRequest = new LocationRequest();
-        locationRequest.setPriority(LocationRequest.PRIORITY_BALANCED_POWER_ACCURACY); // PRIORITY_HIGH_ACCURACY
-        locationRequest.setInterval(0);
-        locationRequest.setFastestInterval(0);
-
-        fusedLocationProviderClient.requestLocationUpdates(locationRequest, locationCallback, null);
-    }
-
-    private LocationCallback locationCallback = new LocationCallback() {
+    private final LocationCallback locationCallback = new LocationCallback() {
         @Override
         public void onLocationResult(LocationResult locationResult) {
 
@@ -106,6 +71,36 @@ public class FusedProviderOnceListener implements GoogleApiClient.ConnectionCall
             }
         }
     };
+
+    @Override
+    public void onConnected(Bundle bundle) {
+
+        if (ActivityCompat.checkSelfPermission(context, Manifest.permission.ACCESS_FINE_LOCATION) != PackageManager.PERMISSION_GRANTED &&
+                ActivityCompat.checkSelfPermission(context, Manifest.permission.ACCESS_COARSE_LOCATION) != PackageManager.PERMISSION_GRANTED) {
+
+            return;
+        }
+
+        fusedLocationProviderClient.getLastLocation().addOnSuccessListener(location -> {
+
+            if (location != null) {
+
+                latitude = location.getLatitude();
+                longitude = location.getLongitude();
+                accuracy = location.getAccuracy();
+
+                Log.e("Location", TAG + " onConnected  getLastLocation : " + location.getLatitude() + "  /  " + location.getLongitude());
+            }
+        });
+
+
+        LocationRequest locationRequest = new LocationRequest();
+        locationRequest.setPriority(LocationRequest.PRIORITY_BALANCED_POWER_ACCURACY);
+        locationRequest.setInterval(0);
+        locationRequest.setFastestInterval(0);
+
+        fusedLocationProviderClient.requestLocationUpdates(locationRequest, locationCallback, null);
+    }
 
 
     public double getLatitude() {
@@ -132,9 +127,8 @@ public class FusedProviderOnceListener implements GoogleApiClient.ConnectionCall
         Log.e("Location", TAG + "  onConnectionSuspended");
     }
 
-
     @Override
-    public void onConnectionFailed(ConnectionResult connectionResult) {
+    public void onConnectionFailed(@NotNull ConnectionResult connectionResult) {
 
         Log.e("Location", TAG + "  onConnectionFailed");
     }
@@ -144,5 +138,4 @@ public class FusedProviderOnceListener implements GoogleApiClient.ConnectionCall
         Log.e("Location", TAG + "  removeLocationUpdates");
         fusedLocationProviderClient.removeLocationUpdates(locationCallback);
     }
-
 }

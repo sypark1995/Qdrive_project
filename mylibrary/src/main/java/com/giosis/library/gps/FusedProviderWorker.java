@@ -18,30 +18,28 @@ import com.google.android.gms.location.LocationCallback;
 import com.google.android.gms.location.LocationRequest;
 import com.google.android.gms.location.LocationResult;
 import com.google.android.gms.location.LocationServices;
-import com.google.android.gms.tasks.OnSuccessListener;
+
+import org.jetbrains.annotations.NotNull;
 
 public class FusedProviderWorker implements GoogleApiClient.ConnectionCallbacks, GoogleApiClient.OnConnectionFailedListener {
-    private String TAG = "FusedProviderWorker";
+    private final String TAG = "FusedProviderWorker";
 
-    private Context context;
+    private final Context context;
 
-    private FusedLocationProviderClient fusedLocationProviderClient;
-    private int count = 0;      // TEST.
-
-    private String opID;
-    private String deviceID;
-    private String reference;
+    private final FusedLocationProviderClient fusedLocationProviderClient;
+    private final String opID;
+    private final String deviceID;
+    private final String reference;
+    private final String api_level;
 
     private long MIN_TIME_BW_UPDATES;
     private long MIN_FAST_INTERVAL_UPDATES;
     private long MIN_DISTANCE_CHANGE_FOR_UPDATES;
-
-
-    private String api_level;
-    private String device_info;
-    private String device_model;
-    private String device_product;
-    private String device_os_version;
+    private final String device_info;
+    private final String device_model;
+    private final String device_product;
+    private final String device_os_version;
+    private int count = 0;
 
     private double latitude = 0;
     private double longitude = 0;
@@ -89,45 +87,7 @@ public class FusedProviderWorker implements GoogleApiClient.ConnectionCallbacks,
                 .addConnectionCallbacks(this)
                 .addOnConnectionFailedListener(this).build();
     }
-
-
-    @Override
-    public void onConnected(Bundle bundle) {
-
-
-        if (ActivityCompat.checkSelfPermission(context, Manifest.permission.ACCESS_FINE_LOCATION) != PackageManager.PERMISSION_GRANTED
-                && ActivityCompat.checkSelfPermission(context, Manifest.permission.ACCESS_COARSE_LOCATION) != PackageManager.PERMISSION_GRANTED) {
-
-            return;
-        }
-
-        fusedLocationProviderClient.getLastLocation().addOnSuccessListener(new OnSuccessListener<Location>() {
-
-            @Override
-            public void onSuccess(Location location) {
-
-                if (location != null) {
-
-                    latitude = location.getLatitude();
-                    longitude = location.getLongitude();
-                    accuracy = location.getAccuracy();
-
-                    Log.e("Location", TAG + " onConnected  getLastLocation : " + location.getLatitude() + "  /  " + location.getLongitude());
-                }
-            }
-        });
-
-        LocationRequest locationRequest = new LocationRequest();
-        locationRequest.setPriority(LocationRequest.PRIORITY_BALANCED_POWER_ACCURACY);
-        locationRequest.setInterval(MIN_TIME_BW_UPDATES);
-        locationRequest.setFastestInterval(MIN_FAST_INTERVAL_UPDATES);
-        locationRequest.setSmallestDisplacement(MIN_DISTANCE_CHANGE_FOR_UPDATES);
-
-
-        fusedLocationProviderClient.requestLocationUpdates(locationRequest, locationCallback, null);
-    }
-
-    private LocationCallback locationCallback = new LocationCallback() {
+    private final LocationCallback locationCallback = new LocationCallback() {
         @Override
         public void onLocationResult(LocationResult locationResult) {
 
@@ -158,23 +118,50 @@ public class FusedProviderWorker implements GoogleApiClient.ConnectionCallbacks,
         }
     };
 
+    @Override
+    public void onConnected(Bundle bundle) {
+
+
+        if (ActivityCompat.checkSelfPermission(context, Manifest.permission.ACCESS_FINE_LOCATION) != PackageManager.PERMISSION_GRANTED
+                && ActivityCompat.checkSelfPermission(context, Manifest.permission.ACCESS_COARSE_LOCATION) != PackageManager.PERMISSION_GRANTED) {
+
+            return;
+        }
+
+        fusedLocationProviderClient.getLastLocation().addOnSuccessListener(location -> {
+
+            if (location != null) {
+
+                latitude = location.getLatitude();
+                longitude = location.getLongitude();
+                accuracy = location.getAccuracy();
+
+                Log.e("Location", TAG + " onConnected  getLastLocation : " + location.getLatitude() + "  /  " + location.getLongitude());
+            }
+        });
+
+        LocationRequest locationRequest = new LocationRequest();
+        locationRequest.setPriority(LocationRequest.PRIORITY_BALANCED_POWER_ACCURACY);
+        locationRequest.setInterval(MIN_TIME_BW_UPDATES);
+        locationRequest.setFastestInterval(MIN_FAST_INTERVAL_UPDATES);
+        locationRequest.setSmallestDisplacement(MIN_DISTANCE_CHANGE_FOR_UPDATES);
+
+
+        fusedLocationProviderClient.requestLocationUpdates(locationRequest, locationCallback, null);
+    }
+
 
     private void uploadGPSData(double latitude, double longitude, double accuracy, String provider) {
 
         new FusedProviderListenerUploadHelper.Builder(context, opID, deviceID, latitude, longitude, accuracy, reference, provider).build().execute();
     }
 
-
     private void uploadGPSFailedLogData() {
 
         new QuickAppUserInfoUploadHelper.Builder(context, opID, "FusedProvider Location is null", api_level, device_info,
                 device_model, device_product, device_os_version, "")
-                .setOnQuickQppUserInfoUploadEventListener(new QuickAppUserInfoUploadHelper.OnQuickAppUserInfoUploadEventListener() {
+                .setOnQuickQppUserInfoUploadEventListener(() -> {
 
-                    @Override
-                    public void onServerResult() {
-
-                    }
                 }).build().execute();
     }
 
@@ -185,7 +172,7 @@ public class FusedProviderWorker implements GoogleApiClient.ConnectionCallbacks,
 
 
     @Override
-    public void onConnectionFailed(ConnectionResult connectionResult) {
+    public void onConnectionFailed(@NotNull ConnectionResult connectionResult) {
 
         Log.e("Location", TAG + "  onConnectionFailed");
     }

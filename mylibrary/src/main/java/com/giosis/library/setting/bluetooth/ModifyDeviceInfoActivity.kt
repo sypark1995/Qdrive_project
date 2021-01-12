@@ -2,13 +2,13 @@ package com.giosis.library.setting.bluetooth
 
 import android.bluetooth.BluetoothDevice
 import android.os.Bundle
-import android.widget.*
-import androidx.appcompat.app.AppCompatActivity
+import android.widget.Toast
 import com.giosis.library.R
+import com.giosis.library.util.CommonActivity
 import kotlinx.android.synthetic.main.activity_modify_device_info.*
 import kotlinx.android.synthetic.main.top_title.*
 
-class ModifyDeviceInfoActivity : AppCompatActivity() {
+class ModifyDeviceInfoActivity : CommonActivity() {
 
     var opId: String? = null
     var device: BluetoothDevice? = null

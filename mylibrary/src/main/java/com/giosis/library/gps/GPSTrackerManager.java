@@ -12,7 +12,7 @@ import com.google.android.gms.common.api.GoogleApiClient;
 
 // 일회성으로 위/경도 필요
 public class GPSTrackerManager {
-    private String TAG = "GPSTrackerManager";
+    private final String TAG = "GPSTrackerManager";
 
 
     public GPSTrackerManager(Context context) {
@@ -21,7 +21,7 @@ public class GPSTrackerManager {
     }
 
 
-    private Context context;
+    private final Context context;
 
     private LocationManager locationManager;
     private boolean isGooglePlayService = false;

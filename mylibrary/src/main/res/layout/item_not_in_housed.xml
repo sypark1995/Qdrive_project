@@ -15,10 +15,10 @@
         android:background="@drawable/bg_round_10_ffffff_shadow"
         android:minHeight="100dp"
         android:orientation="vertical"
-        android:paddingBottom="15dp"
-        android:paddingEnd="10dp"
         android:paddingStart="10dp"
-        android:paddingTop="15dp">
+        android:paddingTop="15dp"
+        android:paddingEnd="10dp"
+        android:paddingBottom="15dp">
 
         <RelativeLayout
             android:layout_width="match_parent"
@@ -39,10 +39,11 @@
                 android:id="@+id/text_not_in_parcels_item_seller_name"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:layout_centerVertical="true"
                 android:layout_marginStart="7dp"
                 android:layout_toEndOf="@id/text_not_in_parcels_item_pickup_no"
+                android:ellipsize="end"
                 android:gravity="center"
+                android:singleLine="true"
                 android:textColor="@color/color_ff7611"
                 tools:text="Name" />
 
@@ -66,25 +67,10 @@
                 android:id="@+id/text_not_in_parcels_item_address"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:layout_toStartOf="@id/layout_not_in_parcels_item_menu_icon"
                 android:gravity="center_vertical"
                 android:textColor="@color/color_303030"
                 android:textSize="@dimen/text_size_32px"
                 tools:text="(089816) 12 BUKIT MUGLISTON\n(089816) 12 BUKIT MUGLISTON" />
-
-            <FrameLayout
-                android:id="@+id/layout_not_in_parcels_item_menu_icon"
-                android:layout_width="10dp"
-                android:layout_height="23dp"
-                android:layout_alignParentEnd="true"
-                android:layout_alignParentTop="true">
-
-                <ImageView
-                    android:layout_width="3dp"
-                    android:layout_height="13dp"
-                    android:layout_gravity="end"
-                    android:background="@drawable/icon_menu_dot" />
-            </FrameLayout>
         </RelativeLayout>
 
         <RelativeLayout

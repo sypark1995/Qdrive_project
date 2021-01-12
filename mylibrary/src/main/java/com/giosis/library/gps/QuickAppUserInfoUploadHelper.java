@@ -2,8 +2,6 @@ package com.giosis.library.gps;
 
 import android.app.AlertDialog;
 import android.content.Context;
-import android.content.DialogInterface;
-import android.content.DialogInterface.OnClickListener;
 import android.os.AsyncTask;
 import android.util.Log;
 
@@ -20,7 +18,7 @@ import java.text.SimpleDateFormat;
 import java.util.Date;
 
 public class QuickAppUserInfoUploadHelper {
-    private String TAG = "QuickAppUserInfoUploadHelper";
+    private final String TAG = "QuickAppUserInfoUploadHelper";
 
     private final Context context;
     private final String opID;
@@ -37,6 +35,40 @@ public class QuickAppUserInfoUploadHelper {
     private final AlertDialog resultDialog;
     private final OnQuickAppUserInfoUploadEventListener eventListener;
 
+    private AlertDialog getResultAlertDialog(final Context context) {
+
+        AlertDialog dialog = new AlertDialog.Builder(context)
+                .setTitle(context.getResources().getString(R.string.text_upload_result))
+                .setCancelable(true).setPositiveButton(context.getResources().getString(R.string.button_ok), (dialog1, which) -> {
+                    if (dialog1 != null)
+                        dialog1.dismiss();
+
+                    if (eventListener != null) {
+                        eventListener.onServerResult();
+                    }
+                })
+                .create();
+
+        return dialog;
+    }
+
+    private QuickAppUserInfoUploadHelper(Builder builder) {
+
+        this.context = builder.context;
+        this.opID = builder.opID;
+        this.failed_reason = builder.failed_reason;
+        this.type = builder.type;
+
+        this.api_level = builder.api_level;
+        this.device_info = builder.device_info;
+        this.device_model = builder.device_model;
+        this.device_product = builder.device_product;
+        this.device_os_version = builder.device_os_version;
+
+        this.networkType = builder.networkType;
+        this.eventListener = builder.eventListener;
+        this.resultDialog = getResultAlertDialog(this.context);
+    }
 
     public static class Builder {
 
@@ -51,7 +83,7 @@ public class QuickAppUserInfoUploadHelper {
         private final String device_product;
         private final String device_os_version;
 
-        private String networkType;
+        private final String networkType;
         private OnQuickAppUserInfoUploadEventListener eventListener;
 
 
@@ -80,45 +112,6 @@ public class QuickAppUserInfoUploadHelper {
 
             return this;
         }
-    }
-
-    private QuickAppUserInfoUploadHelper(Builder builder) {
-
-        this.context = builder.context;
-        this.opID = builder.opID;
-        this.failed_reason = builder.failed_reason;
-        this.type = builder.type;
-
-        this.api_level = builder.api_level;
-        this.device_info = builder.device_info;
-        this.device_model = builder.device_model;
-        this.device_product = builder.device_product;
-        this.device_os_version = builder.device_os_version;
-
-        this.networkType = builder.networkType;
-        this.eventListener = builder.eventListener;
-        this.resultDialog = getResultAlertDialog(this.context);
-    }
-
-    private AlertDialog getResultAlertDialog(final Context context) {
-
-        AlertDialog dialog = new AlertDialog.Builder(context)
-                .setTitle(context.getResources().getString(R.string.text_upload_result))
-                .setCancelable(true).setPositiveButton(context.getResources().getString(R.string.button_ok), new OnClickListener() {
-
-                    @Override
-                    public void onClick(DialogInterface dialog, int which) {
-                        if (dialog != null)
-                            dialog.dismiss();
-
-                        if (eventListener != null) {
-                            eventListener.onServerResult();
-                        }
-                    }
-                })
-                .create();
-
-        return dialog;
     }
 
     private void showResultDialog(String message) {

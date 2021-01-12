@@ -72,6 +72,8 @@ class PrinterPairedListAdapter internal constructor(private val context: Context
             AlertDialog.Builder(context).setTitle(context.resources.getString(R.string.text_alert))
                     .setMessage(context.resources.getString(R.string.msg_sure_disconnect_bluetooth) + " " + _name + "?")
                     .setPositiveButton(context.resources.getString(R.string.button_ok)) { dialog, which ->
+
+                        // TODO_kjyoo :  Delete 버튼 누르면, Available Devices 리스트에 나타나야함
                         deleteDevice(_address)
                     }
                     .setNegativeButton(context.resources.getString(R.string.button_cancel)) { dialog, which -> }.show()

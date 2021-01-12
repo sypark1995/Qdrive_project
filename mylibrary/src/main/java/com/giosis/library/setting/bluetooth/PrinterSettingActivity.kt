@@ -17,6 +17,7 @@ import android.view.View
 import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
 import com.giosis.library.R
+import com.giosis.library.util.CommonActivity
 import com.giosis.library.util.PermissionActivity
 import com.giosis.library.util.PermissionChecker
 import kotlinx.android.synthetic.main.activity_printer_setting.*
@@ -33,7 +34,7 @@ import java.util.*
  *
  */
 
-class PrinterSettingActivity : AppCompatActivity() {
+class PrinterSettingActivity : CommonActivity() {
     private val TAG = "PrinterSettingActivity"
 
     companion object {
