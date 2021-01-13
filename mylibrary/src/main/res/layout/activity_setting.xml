@@ -72,7 +72,8 @@
                             android:layout_height="18dp"
                             android:layout_gravity="center_vertical"
                             android:layout_marginStart="3dp"
-                            android:background="@drawable/qdrive_setting_icon_edit" />
+                            android:background="@drawable/qdrive_setting_icon_edit"
+                            android:onClick="@{()->viewModel.editUserInfo()}" />
                     </LinearLayout>
 
                     <RelativeLayout
@@ -420,8 +421,8 @@
                     android:id="@+id/layout_setting_language"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:orientation="vertical"
                     android:onClick="@{()->viewModel.languageSetting()}"
+                    android:orientation="vertical"
                     android:visibility="@{viewModel.visibleChangeLanguage ? View.VISIBLE:View.GONE}">
 
                     <FrameLayout

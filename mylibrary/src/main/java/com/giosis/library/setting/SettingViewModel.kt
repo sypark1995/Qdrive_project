@@ -7,7 +7,6 @@ import com.giosis.library.setting.bluetooth.PrinterSettingActivity
 import com.giosis.library.util.Preferences
 import com.giosis.library.util.SingleLiveEvent
 
-// TODO_kjyoo : 상단에 연필버튼 누르면 user info 수정으로 이동
 class SettingViewModel : BaseViewModel() {
 
     private val _name = MutableLiveData<String>()
@@ -107,5 +106,9 @@ class SettingViewModel : BaseViewModel() {
 
     fun languageSetting() {
         startActivity(LanguageSettingActivity::class.java)
+    }
+
+    fun editUserInfo(){
+        startActivity(ModifyUserInfoActivity::class.java)
     }
 }
