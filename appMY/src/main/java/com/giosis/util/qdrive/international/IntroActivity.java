@@ -9,8 +9,8 @@ import android.net.Uri;
 import android.os.Bundle;
 import android.os.Handler;
 
+import com.giosis.library.setting.bluetooth.BluetoothDeviceData;
 import com.giosis.library.util.LocaleManager;
-import com.giosis.util.qdrive.settings.BluetoothDeviceData;
 
 public class IntroActivity extends Activity {
 

@@ -39,6 +39,8 @@ import android.widget.Toast;
 
 import com.giosis.library.message.CustomerMessageListDetailActivity;
 import com.giosis.library.server.data.FailedCodeResult;
+import com.giosis.library.setting.bluetooth.BluetoothDeviceData;
+import com.giosis.library.setting.bluetooth.PrinterSettingActivity;
 import com.giosis.library.util.DatabaseHelper;
 import com.giosis.util.qdrive.barcodescanner.CaptureActivity;
 import com.giosis.util.qdrive.barcodescanner.StdResult;
@@ -54,8 +56,6 @@ import com.giosis.util.qdrive.portableprinter.bluetooth.GPrinterBroadcastReceive
 import com.giosis.util.qdrive.portableprinter.bluetooth.GPrinterData;
 import com.giosis.util.qdrive.portableprinter.bluetooth.GPrinterHandler;
 import com.giosis.util.qdrive.portableprinter.bluetooth.PrinterConnManager;
-import com.giosis.util.qdrive.settings.BluetoothDeviceData;
-import com.giosis.util.qdrive.settings.PrinterSettingActivity;
 import com.giosis.util.qdrive.singapore.MyApplication;
 import com.giosis.util.qdrive.singapore.R;
 import com.giosis.util.qdrive.util.BarcodeType;
@@ -1287,6 +1287,7 @@ public class CustomExpandableAdapter extends BaseExpandableListAdapter implement
 
         Log.e("trip", "click Dialog Item : " + tracking_no);
         //   BluetoothDeviceData.connectedPrinterAddress = "DC:1D:30:92:0A:5C";
+
         // 연결된 print 없으면..
         if (BluetoothDeviceData.connectedPrinterAddress == null) {
 

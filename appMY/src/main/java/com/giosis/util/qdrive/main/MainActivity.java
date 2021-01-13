@@ -33,6 +33,7 @@ import androidx.core.graphics.drawable.RoundedBitmapDrawableFactory;
 
 import com.giosis.library.gps.GPSTrackerManager;
 import com.giosis.library.gps.QuickAppUserInfoUploadHelper;
+import com.giosis.library.setting.bluetooth.BluetoothDeviceData;
 import com.giosis.util.qdrive.barcodescanner.CaptureActivity;
 import com.giosis.util.qdrive.barcodescanner.PodListActivity;
 import com.giosis.util.qdrive.gps.FusedProviderService;
@@ -43,7 +44,6 @@ import com.giosis.util.qdrive.international.OnServerEventListener;
 import com.giosis.util.qdrive.international.R;
 import com.giosis.util.qdrive.international.UploadData;
 import com.giosis.util.qdrive.list.ListActivity;
-import com.giosis.util.qdrive.settings.BluetoothDeviceData;
 import com.giosis.util.qdrive.util.BarcodeType;
 import com.giosis.util.qdrive.util.DataUtil;
 import com.giosis.library.util.DatabaseHelper;

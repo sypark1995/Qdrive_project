@@ -42,9 +42,6 @@ class PrinterSettingActivity : CommonActivity() {
         private val PERMISSIONS = arrayOf(PermissionChecker.ACCESS_FINE_LOCATION, PermissionChecker.ACCESS_COARSE_LOCATION)
     }
 
-    // Printer Setting 에서 [Connected Device] 주소
-    var connectedPrinterAddress: String? = null
-
     // connect
     var socket: BluetoothSocket? = null
 
@@ -263,7 +260,7 @@ class PrinterSettingActivity : CommonActivity() {
                             try {
                                 socket!!.close()
                                 socket = null
-                                connectedPrinterAddress = null
+                               BluetoothDeviceData.connectedPrinterAddress = null
                                 connectedItem.clear()
                                 nullConnectedDevice()
 
@@ -274,11 +271,11 @@ class PrinterSettingActivity : CommonActivity() {
                             } catch (e: Exception) {
                                 Log.e("Exception", "$TAG  ACTION_ACL_DISCONNECTED  Exception : $e")
                             }
-                        } else if (connectedPrinterAddress != null) {
+                        } else if (BluetoothDeviceData.connectedPrinterAddress != null) {
                             // [Connected Device] 연결이 끊어졌을 때 ('Disconnect')
                             Toast.makeText(context, device!!.name + " " + resources.getString(R.string.msg_is_disconnected), Toast.LENGTH_SHORT).show()
                             Log.e("print", "$TAG  Disconnect Button click")
-                            connectedPrinterAddress = null
+                            BluetoothDeviceData.connectedPrinterAddress = null
 
                             // [Connected Device] 에서 삭제
                             connectedItem.clear()
@@ -351,7 +348,7 @@ class PrinterSettingActivity : CommonActivity() {
                                 // [Connected Device] 추가
                                 connectedItem.add(PrinterDeviceItem(deviceName!!, deviceAddress!!, true, true))
                                 printerConnectedListAdapter?.notifyDataSetChanged()
-                                connectedPrinterAddress = deviceAddress
+                                BluetoothDeviceData.connectedPrinterAddress = deviceAddress
                                 notnullConnectedDevice()
                             }
 
@@ -482,7 +479,7 @@ class PrinterSettingActivity : CommonActivity() {
             }
 
             override fun getConnectedPrinterAddress(): String? {
-                return connectedPrinterAddress
+                return BluetoothDeviceData.connectedPrinterAddress
             }
 
             override fun closeSocket() {
@@ -507,7 +504,7 @@ class PrinterSettingActivity : CommonActivity() {
                 if (socket != null) {
                     Toast.makeText(this@PrinterSettingActivity, resources.getString(R.string.msg_only_one_device_connected), Toast.LENGTH_SHORT).show()
 
-                } else if (connectedPrinterAddress != null) {
+                } else if (BluetoothDeviceData.connectedPrinterAddress != null) {
                     Toast.makeText(this@PrinterSettingActivity, resources.getString(R.string.msg_disconnecting_old_device), Toast.LENGTH_SHORT).show()
 
                 } else {
@@ -573,7 +570,7 @@ class PrinterSettingActivity : CommonActivity() {
     private val deviceList: Unit
         private get() {
             val pairedDevices = mBluetoothAdapter!!.bondedDevices
-            Log.e("print", TAG + "  getDeviceList  " + connectedPrinterAddress + " / " + pairedDevices.size)
+            Log.e("print", TAG + "  getDeviceList  " + BluetoothDeviceData.connectedPrinterAddress + " / " + pairedDevices.size)
             if (0 < pairedDevices.size) {
                 for (device in pairedDevices) {
                     var deviceName = device.name
@@ -587,7 +584,7 @@ class PrinterSettingActivity : CommonActivity() {
                     } catch (e: Exception) {
                         e.printStackTrace()
                     }
-                    if (connectedPrinterAddress != null && connectedPrinterAddress == deviceAddress) {
+                    if (BluetoothDeviceData.connectedPrinterAddress != null && BluetoothDeviceData.connectedPrinterAddress == deviceAddress) {
 
                         Log.e("print", TAG + "  connected Device : " + device.name + " / " + device.address)
 

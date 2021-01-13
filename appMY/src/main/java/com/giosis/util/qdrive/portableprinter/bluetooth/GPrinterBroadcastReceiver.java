@@ -13,8 +13,8 @@ import android.os.Message;
 import android.util.Log;
 import android.widget.Toast;
 
+import com.giosis.library.setting.bluetooth.BluetoothDeviceData;
 import com.giosis.util.qdrive.international.R;
-import com.giosis.util.qdrive.settings.BluetoothDeviceData;
 
 /**
  * @author eylee 2018-04-03

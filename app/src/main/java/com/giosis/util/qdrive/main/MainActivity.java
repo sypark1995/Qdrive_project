@@ -35,12 +35,13 @@ import androidx.core.graphics.drawable.RoundedBitmapDrawableFactory;
 import com.giosis.library.gps.GPSTrackerManager;
 import com.giosis.library.gps.QuickAppUserInfoUploadHelper;
 import com.giosis.library.pickup.CreatePickupOrderActivity;
+import com.giosis.library.setting.bluetooth.BluetoothDeviceData;
 import com.giosis.util.qdrive.barcodescanner.CaptureActivity;
 import com.giosis.util.qdrive.barcodescanner.FailListActivity;
 import com.giosis.util.qdrive.gps.FusedProviderService;
 import com.giosis.util.qdrive.gps.LocationManagerService;
 import com.giosis.util.qdrive.list.ListActivity;
-import com.giosis.util.qdrive.settings.BluetoothDeviceData;
+
 import com.giosis.util.qdrive.singapore.LoginActivity;
 import com.giosis.util.qdrive.singapore.MyApplication;
 import com.giosis.util.qdrive.singapore.OnServerEventListener;
@@ -779,7 +780,6 @@ public class MainActivity extends AppBaseActivity {
             isHomeBtnClick = false;
             setDestroyUserInfo();
         }
-
 
         //Bluetooth Setting 화면 connection 없애기
         BluetoothDeviceData.connectedPrinterAddress = null;

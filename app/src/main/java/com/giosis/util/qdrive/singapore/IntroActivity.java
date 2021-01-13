@@ -11,7 +11,7 @@ import android.os.Bundle;
 import android.os.Handler;
 import android.util.Log;
 
-import com.giosis.util.qdrive.settings.BluetoothDeviceData;
+import com.giosis.library.setting.bluetooth.BluetoothDeviceData;
 
 public class IntroActivity extends Activity {
 
@@ -52,21 +52,20 @@ public class IntroActivity extends Activity {
                     }).show();
         } else {
 
-            try {
-
-                BluetoothDeviceData.connectedPrinterAddress = null;
-
-                if (BluetoothDeviceData.socket != null) {
-
-                    BluetoothDeviceData.socket.close();
-                    BluetoothDeviceData.socket = null;
-                }
-
-                Log.e("print", "IntroActivity  init()");
-            } catch (Exception e) {
-
-                Log.e("Exception", "IntroActivity  Bluetooth socket Exception : " + e.toString());
-            }
+//            try {
+//                BluetoothDeviceData.connectedPrinterAddress = null;
+//
+//                if (BluetoothDeviceData.socket != null) {
+//
+//                    BluetoothDeviceData.socket.close();
+//                    BluetoothDeviceData.socket = null;
+//                }
+//
+//                Log.e("print", "IntroActivity  init()");
+//            } catch (Exception e) {
+//
+//                Log.e("Exception", "IntroActivity  Bluetooth socket Exception : " + e.toString());
+//            }
 
 
             new Handler().postDelayed(new Runnable() {

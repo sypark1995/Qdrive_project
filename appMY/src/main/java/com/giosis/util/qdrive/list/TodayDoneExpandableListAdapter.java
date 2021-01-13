@@ -25,6 +25,8 @@ import android.widget.PopupMenu;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import com.giosis.library.setting.bluetooth.BluetoothDeviceData;
+import com.giosis.library.setting.bluetooth.PrinterSettingActivity;
 import com.giosis.util.qdrive.international.MyApplication;
 import com.giosis.util.qdrive.international.R;
 import com.giosis.util.qdrive.list.pickup.ManualCnRPrintDataHelper;
@@ -32,8 +34,6 @@ import com.giosis.util.qdrive.portableprinter.bluetooth.GPrinterBroadcastReceive
 import com.giosis.util.qdrive.portableprinter.bluetooth.GPrinterData;
 import com.giosis.util.qdrive.portableprinter.bluetooth.GPrinterHandler;
 import com.giosis.util.qdrive.portableprinter.bluetooth.PrinterConnManager;
-import com.giosis.util.qdrive.settings.BluetoothDeviceData;
-import com.giosis.util.qdrive.settings.PrinterSettingActivity;
 import com.giosis.util.qdrive.util.DataUtil;
 import com.giosis.util.qdrive.util.NetworkUtil;
 import com.gprinter.command.EscCommand;
