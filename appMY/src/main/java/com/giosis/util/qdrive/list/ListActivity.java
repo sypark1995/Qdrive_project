@@ -20,6 +20,7 @@ import androidx.fragment.app.FragmentStatePagerAdapter;
 import androidx.viewpager.widget.ViewPager;
 
 import com.giosis.library.setting.SettingActivity;
+import com.giosis.library.util.LocaleManager;
 import com.giosis.util.qdrive.international.MyApplication;
 import com.giosis.util.qdrive.international.R;
 import com.giosis.util.qdrive.main.MainActivity;
@@ -238,7 +239,7 @@ public class ListActivity extends CommonActivity implements OnClickListener, InP
     @Override
     protected void attachBaseContext(Context base) {
 
-        super.attachBaseContext(MyApplication.localeManager.setLocale(base));
+        super.attachBaseContext(LocaleManager.Companion.getInstance(base).setLocale(base));
     }
 
     void initBottomMenu() {

@@ -34,6 +34,7 @@ object Preferences {
 
     private val PREF_KEY_LIST_SORT_INDEX = "sortIndex"
     private val PREF_KEY_SCAN_VIBRATION = "scanVibration"
+    private val PREF_KEY_LANGUAGE = "PREF_LANGUAGE_SETTING"
 
     // SG , MY 둘중 하나 만 넣고 빼기로....
     var appInfo: String
@@ -112,6 +113,17 @@ object Preferences {
         get() = preferences.getString(PREF_KEY_AUTH_NO, "").toString()
         set(value) = preferences.edit().putString(PREF_KEY_AUTH_NO, value).apply()
 
+
+    const val LANGUAGE_ENGLISH = "en"
+    const val LANGUAGE_MALAY = "ms"
+    const val LANGUAGE_INDONESIA = "in"
+
+    var language: String
+        get() = preferences.getString(PREF_KEY_LANGUAGE, "").toString()
+        set(value) {
+            // commit 으로 처리 해야 함.!!!!! 바로 리스타트 되면서 적용안되는 케이스 있음
+            preferences.edit().putString(PREF_KEY_LANGUAGE, value).commit()
+        }
 
     // 202008.  Auto Logout
     private val PREF_KEY_AUTO_LOGOUT = "autoLogout"

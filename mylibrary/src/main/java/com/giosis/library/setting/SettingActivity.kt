@@ -1,6 +1,7 @@
 package com.giosis.library.setting
 
 import android.app.AlertDialog
+import android.content.Intent
 import android.os.Bundle
 import android.util.Log
 import android.view.View
@@ -121,8 +122,6 @@ class SettingActivity : BaseActivity<ActivitySettingBinding, SettingViewModel>()
 
     private fun signOut() {
 
-        Log.e(tag, " clicked signOut")
-
         val alertBuilder = AlertDialog.Builder(this)
         alertBuilder.setTitle(resources.getString(R.string.button_confirm))
         alertBuilder.setMessage(resources.getString(R.string.msg_want_sign_out))
@@ -130,17 +129,11 @@ class SettingActivity : BaseActivity<ActivitySettingBinding, SettingViewModel>()
 
         alertBuilder.setPositiveButton(resources.getString(R.string.button_ok)) { _, _ ->
 
-            // TODO_kjyoo LoginActivity???? 어떻게 하지????
+            val intent = Intent()
+            intent.putExtra("method", "signOut")
+            setResult(RESULT_OK, intent)
+            finish()
 
-//            val intent = if (Preferences.userNation == "SG") {
-//                Intent(this, com.giosis.util.qdrive.singapore.LoginActivity::class.java)
-//            } else {
-//                Intent(this, com.giosis.util.qdrive.international.LoginActivity::class.java)
-//            }
-//
-//            intent.putExtra("method", "signOut")
-//            intent.flags = Intent.FLAG_ACTIVITY_CLEAR_TOP or Intent.FLAG_ACTIVITY_SINGLE_TOP
-//            startActivity(intent)
         }
 
         alertBuilder.setNegativeButton(resources.getString(R.string.button_cancel)) { dialogInterface, _ ->

@@ -6,14 +6,14 @@ import android.os.Bundle
 import android.view.View
 import android.widget.Toast
 import androidx.annotation.LayoutRes
-import androidx.appcompat.app.AppCompatActivity
 import androidx.databinding.DataBindingUtil
 import androidx.databinding.ViewDataBinding
 import androidx.lifecycle.observe
+import com.giosis.library.util.CommonActivity
 import com.giosis.library.util.dialog.ProgressDialog
 
 
-abstract class BaseActivity<T : ViewDataBinding, V : BaseViewModel> : AppCompatActivity() {
+abstract class BaseActivity<T : ViewDataBinding, V : BaseViewModel> : CommonActivity() {
 
     private lateinit var mViewDataBinding: T
     lateinit var mViewModel: V
@@ -94,4 +94,5 @@ abstract class BaseActivity<T : ViewDataBinding, V : BaseViewModel> : AppCompatA
     fun getStringResID(resId: Int): String {
         return resources.getString(resId)
     }
+
 }

@@ -9,6 +9,7 @@ import android.net.Uri;
 import android.os.Bundle;
 import android.os.Handler;
 
+import com.giosis.library.util.LocaleManager;
 import com.giosis.util.qdrive.settings.BluetoothDeviceData;
 
 public class IntroActivity extends Activity {
@@ -74,6 +75,6 @@ public class IntroActivity extends Activity {
     @Override
     protected void attachBaseContext(Context base) {
 
-        super.attachBaseContext(MyApplication.localeManager.setLocale(base));
+        super.attachBaseContext(LocaleManager.Companion.getInstance(base).setLocale(base));
     }
 }

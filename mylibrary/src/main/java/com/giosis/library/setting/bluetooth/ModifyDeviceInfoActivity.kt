@@ -19,9 +19,6 @@ class ModifyDeviceInfoActivity : CommonActivity() {
 
         text_top_title.setText(R.string.text_title_device_info)
 
-        val strDevice = intent.getStringExtra(BluetoothDeviceData.DEVICE_ID)
-
-        // TODO_kjyoo device 확인 필요
         device = intent.getParcelableExtra("device")
 
         if (device != null) {

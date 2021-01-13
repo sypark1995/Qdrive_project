@@ -425,6 +425,17 @@ public class MainActivity extends AppBaseActivity {
                 isPermissionTrue = true;
                 GPSTrackerServiceStart();
             }
+        } else if (requestCode == 1010) { // setting activity result
+            if (resultCode == Activity.RESULT_OK) {
+                String login = intent.getStringExtra("method");
+
+                if ("signOut".equals(login)) {
+                    Intent loginIntent = new Intent(this, LoginActivity.class);
+                    loginIntent.putExtra("method", "signOut");
+                    loginIntent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP | Intent.FLAG_ACTIVITY_SINGLE_TOP);
+                    startActivity(loginIntent);
+                }
+            }
         }
     }
 

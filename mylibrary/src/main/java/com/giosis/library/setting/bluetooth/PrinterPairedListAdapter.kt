@@ -21,6 +21,7 @@ class PrinterPairedListAdapter internal constructor(private val context: Context
     : BaseAdapter() {
 
     private val TAG = "PairedListBaseAdapter"
+
     override fun getCount(): Int {
         return if (pairedDevicesArrayList != null && pairedDevicesArrayList.size > 0) {
             pairedDevicesArrayList.size

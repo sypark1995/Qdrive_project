@@ -107,6 +107,5 @@ class SettingViewModel : BaseViewModel() {
 
     fun languageSetting() {
         startActivity(LanguageSettingActivity::class.java)
-
     }
 }
