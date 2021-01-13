@@ -288,25 +288,6 @@
             android:screenOrientation="portrait"
             android:windowSoftInputMode="stateAlwaysHidden|adjustPan" />
 
-
-        <!--  NOTIFICATION. Settings  -->
-
-<!--        <activity-->
-<!--            android:name="com.giosis.util.qdrive.settings.PrinterSettingActivity"-->
-<!--            android:screenOrientation="portrait" />-->
-
-<!--        &lt;!&ndash;  NOTIFICATION. Settings  kotlin &ndash;&gt;-->
-
-<!--        <activity-->
-<!--            android:name="com.giosis.util.qdrive.settings.LanguageSettingActivity"-->
-<!--            android:screenOrientation="portrait" />-->
-
-<!--        <activity-->
-<!--            android:name="com.giosis.util.qdrive.settings.ModifyDeviceInfoActivity"-->
-<!--            android:screenOrientation="portrait" />-->
-
-        <!-- NOTIFICATION.  ETC  -->
-
         <activity
             android:name=".MainTestVisitLog"
             android:screenOrientation="portrait" />
@@ -314,7 +295,6 @@
         <activity
             android:name="com.giosis.util.qdrive.capture.LivePreviewActivity"
             android:screenOrientation="portrait" />
-
 
         <meta-data
             android:name="com.google.android.maps.v2.API_KEY"

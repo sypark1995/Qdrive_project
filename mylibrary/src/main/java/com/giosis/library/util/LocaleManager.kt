@@ -9,12 +9,22 @@ import java.util.*
 /**
  * @author krm0219
  */
-class LocaleManager(context: Context) {
-    private val systemLocale: Locale
+class LocaleManager private constructor(val context: Context){
 
     companion object {
         var TAG = "LocaleManager"
+
+        @Volatile private var instance: LocaleManager? = null
+
+         fun getInstance(context: Context): LocaleManager =
+                instance ?: synchronized(this) {
+                    instance ?: LocaleManager(context).also {
+                        instance = it
+                    }
+                }
     }
+
+    private val systemLocale: Locale
 
     init {
         systemLocale = getLocale(context.resources)
@@ -26,7 +36,7 @@ class LocaleManager(context: Context) {
     }
 
     fun setLocale(c: Context): Context {
-        return updateResources(c, language)
+        return updateResources(c, Preferences.language)
     }
 
     fun setNewLocale(c: Context, language: String) {
@@ -34,8 +44,8 @@ class LocaleManager(context: Context) {
         updateResources(c, language)
     }
 
-    val language: String
-        get() = Preferences.language
+//    val language: String
+//        get() =
 
     private fun persistLanguage(language: String) {
         // use commit() instead of apply(), because sometimes we kill the application process immediately

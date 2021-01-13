@@ -15,6 +15,7 @@ import androidx.fragment.app.FragmentManager;
 import androidx.fragment.app.FragmentStatePagerAdapter;
 import androidx.viewpager.widget.ViewPager;
 
+import com.giosis.library.util.LocaleManager;
 import com.giosis.util.qdrive.international.MyApplication;
 import com.giosis.util.qdrive.international.R;
 
@@ -139,6 +140,6 @@ public class RpcListActivity extends FragmentActivity {
     @Override
     protected void attachBaseContext(Context base) {
 
-        super.attachBaseContext(MyApplication.localeManager.setLocale(base));
+        super.attachBaseContext(LocaleManager.Companion.getInstance(base).setLocale(base));
     }
 }

@@ -20,7 +20,7 @@ import android.widget.Button;
 import android.widget.ListView;
 import android.widget.TextView;
 
-import com.giosis.util.qdrive.international.MyApplication;
+import com.giosis.library.util.LocaleManager;
 import com.giosis.util.qdrive.international.R;
 
 import java.util.Set;
@@ -210,6 +210,6 @@ public class DeviceListActivity extends Activity {
     @Override
     protected void attachBaseContext(Context base) {
 
-        super.attachBaseContext(MyApplication.localeManager.setLocale(base));
+        super.attachBaseContext(LocaleManager.Companion.getInstance(base).setLocale(base));
     }
 }

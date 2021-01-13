@@ -15,6 +15,7 @@ import android.widget.TextView;
 
 import androidx.core.app.NotificationManagerCompat;
 
+import com.giosis.library.util.LocaleManager;
 import com.giosis.util.qdrive.main.MainActivity;
 import com.giosis.util.qdrive.util.DataUtil;
 
@@ -112,7 +113,7 @@ public class AlertDialogActivity extends Activity {
     @Override
     protected void attachBaseContext(Context base) {
 
-        super.attachBaseContext(MyApplication.localeManager.setLocale(base));
+        super.attachBaseContext(LocaleManager.Companion.getInstance(base).setLocale(base));
     }
 }
 

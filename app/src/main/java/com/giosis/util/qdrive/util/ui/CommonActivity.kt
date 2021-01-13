@@ -5,6 +5,7 @@ import android.content.Intent
 import android.util.Log
 import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
+import com.giosis.library.util.LocaleManager
 import com.giosis.util.qdrive.singapore.LoginActivity
 import com.giosis.util.qdrive.singapore.MyApplication
 import com.giosis.util.qdrive.singapore.R
@@ -59,7 +60,7 @@ open class CommonActivity : AppCompatActivity() {
     // Multi Language
     override fun attachBaseContext(newBase: Context?) {
         if (newBase != null) {
-            super.attachBaseContext(MyApplication.localeManager.setLocale(newBase))
+            super.attachBaseContext(LocaleManager.getInstance(newBase).setLocale(newBase))
         }
     }
 }

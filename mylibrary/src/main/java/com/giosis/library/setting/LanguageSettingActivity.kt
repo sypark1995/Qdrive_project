@@ -2,6 +2,9 @@ package com.giosis.library.setting
 
 import android.annotation.SuppressLint
 import android.app.AlertDialog
+import android.content.Intent
+import android.content.Intent.makeRestartActivityTask
+import android.content.pm.PackageManager
 import android.os.Bundle
 import android.util.Log
 import androidx.appcompat.app.AppCompatActivity
@@ -14,13 +17,10 @@ import kotlinx.android.synthetic.main.activity_language_setting1.*
 import kotlinx.android.synthetic.main.top_title.*
 import kotlin.system.exitProcess
 
+
 class LanguageSettingActivity : AppCompatActivity() {
 
     val tag = "LanguageSettingActivity"
-
-    val localeManager by lazy {
-        LocaleManager(this@LanguageSettingActivity)
-    }
 
     private val languageList by lazy {
         listOf(resources.getString(R.string.text_language_en),
@@ -61,12 +61,15 @@ class LanguageSettingActivity : AppCompatActivity() {
 
             alertBuilder.setPositiveButton(resources.getString(R.string.button_ok)) { _, _ ->
 
-                localeManager.setNewLocale(this@LanguageSettingActivity, code)
-                Preferences.language = code
+                LocaleManager.getInstance(this@LanguageSettingActivity).setNewLocale(this@LanguageSettingActivity, code)
                 finish()
 
+                val packageManager: PackageManager = packageManager
+                val intent = packageManager.getLaunchIntentForPackage(packageName)
+                val componentName = intent!!.component
+                val mainIntent: Intent = makeRestartActivityTask(componentName)
+                startActivity(mainIntent)
                 exitProcess(0)
-                //System.exit(0)
             }
 
             alertBuilder.setNegativeButton(resources.getString(R.string.button_cancel)) { _, _ ->

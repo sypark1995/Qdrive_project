@@ -25,7 +25,6 @@ import java.util.Calendar;
 public class MyApplication extends MultiDexApplication {
     String TAG = "MyApplication";
 
-    public static LocaleManager localeManager;
     public static MySharedPreferences preferences;
     private static Context context;
 
@@ -36,6 +35,7 @@ public class MyApplication extends MultiDexApplication {
         super.onCreate();
 
         preferences = new MySharedPreferences(getApplicationContext());
+        LocaleManager.Companion.getInstance(this);
 
         Preferences.INSTANCE.init(this);
         Preferences.INSTANCE.setAppInfo("MY");
@@ -60,8 +60,7 @@ public class MyApplication extends MultiDexApplication {
     @Override
     protected void attachBaseContext(Context base) {
         Preferences.INSTANCE.init(base);
-        localeManager = new LocaleManager(base);
-        super.attachBaseContext(localeManager.setLocale(base));
+        super.attachBaseContext(LocaleManager.Companion.getInstance(base).setLocale(base));
     }
 
     public static Context getContext() {
