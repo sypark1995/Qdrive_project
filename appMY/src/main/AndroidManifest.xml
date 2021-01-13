@@ -136,10 +136,6 @@
             android:screenOrientation="portrait" />
 
         <activity
-            android:name="com.giosis.util.qdrive.international.StatisticsActivity"
-            android:screenOrientation="portrait" />
-
-        <activity
             android:name="com.giosis.util.qdrive.main.OutletOrderStatusActivity"
             android:screenOrientation="portrait" />
 
@@ -162,9 +158,6 @@
 
 
         <!-- NOTIFICATION. Scan -->
-        <activity
-            android:name="com.giosis.util.qdrive.international.ScanActivity"
-            android:screenOrientation="portrait" />
 
         <activity
             android:name="com.giosis.util.qdrive.barcodescanner.CaptureActivity"
