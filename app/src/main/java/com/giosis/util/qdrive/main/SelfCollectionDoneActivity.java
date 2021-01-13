@@ -28,7 +28,7 @@ import com.giosis.util.qdrive.list.SigningView;
 import com.giosis.util.qdrive.singapore.MyApplication;
 import com.giosis.util.qdrive.singapore.R;
 import com.giosis.util.qdrive.util.DataUtil;
-import com.giosis.util.qdrive.util.DatabaseHelper;
+import com.giosis.library.util.DatabaseHelper;
 import com.giosis.util.qdrive.util.MemoryStatus;
 import com.giosis.util.qdrive.util.NetworkUtil;
 import com.giosis.util.qdrive.util.PermissionActivity;

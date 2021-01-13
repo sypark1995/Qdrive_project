@@ -66,6 +66,7 @@ import android.widget.Toast;
 import android.widget.ToggleButton;
 
 import com.giosis.library.gps.GPSTrackerManager;
+import com.giosis.library.util.DatabaseHelper;
 import com.giosis.util.qdrive.barcodescanner.bluetooth.BluetoothChatService;
 import com.giosis.util.qdrive.barcodescanner.bluetooth.DeviceListActivity;
 import com.giosis.util.qdrive.barcodescanner.bluetooth.KScan;
@@ -86,7 +87,6 @@ import com.giosis.util.qdrive.singapore.MyApplication;
 import com.giosis.util.qdrive.singapore.R;
 import com.giosis.util.qdrive.util.BarcodeType;
 import com.giosis.util.qdrive.util.DataUtil;
-import com.giosis.util.qdrive.util.DatabaseHelper;
 import com.giosis.util.qdrive.util.MemoryStatus;
 import com.giosis.util.qdrive.util.NetworkUtil;
 import com.giosis.util.qdrive.util.PermissionActivity;

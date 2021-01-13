@@ -39,6 +39,7 @@ import android.widget.Toast;
 
 import com.giosis.library.message.CustomerMessageListDetailActivity;
 import com.giosis.library.server.data.FailedCodeResult;
+import com.giosis.library.util.DatabaseHelper;
 import com.giosis.util.qdrive.barcodescanner.CaptureActivity;
 import com.giosis.util.qdrive.barcodescanner.StdResult;
 import com.giosis.util.qdrive.list.delivery.DeliveryDoneActivity1;
@@ -60,7 +61,6 @@ import com.giosis.util.qdrive.singapore.R;
 import com.giosis.util.qdrive.util.BarcodeType;
 import com.giosis.util.qdrive.util.Custom_JsonParser;
 import com.giosis.util.qdrive.util.DataUtil;
-import com.giosis.util.qdrive.util.DatabaseHelper;
 import com.giosis.util.qdrive.util.NetworkUtil;
 import com.gprinter.command.EscCommand;
 import com.gprinter.command.LabelCommand;

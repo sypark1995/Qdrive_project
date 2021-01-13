@@ -29,13 +29,13 @@ import android.widget.TextView;
 
 import com.giosis.library.gps.GPSTrackerManager;
 import com.giosis.library.server.data.FailedCodeResult;
+import com.giosis.library.util.DatabaseHelper;
 import com.giosis.util.qdrive.main.DeviceDataUploadHelper;
 import com.giosis.util.qdrive.singapore.MyApplication;
 import com.giosis.util.qdrive.singapore.OnServerEventListener;
 import com.giosis.util.qdrive.singapore.R;
 import com.giosis.util.qdrive.singapore.UploadData;
 import com.giosis.util.qdrive.util.DataUtil;
-import com.giosis.util.qdrive.util.DatabaseHelper;
 import com.giosis.util.qdrive.util.DisplayUtil;
 
 import java.io.File;

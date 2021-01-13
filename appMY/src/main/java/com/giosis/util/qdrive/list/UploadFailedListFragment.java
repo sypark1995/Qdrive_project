@@ -34,7 +34,7 @@ import com.giosis.library.gps.GPSTrackerManager;
 import com.giosis.util.qdrive.international.MyApplication;
 import com.giosis.util.qdrive.international.R;
 import com.giosis.util.qdrive.util.DataUtil;
-import com.giosis.util.qdrive.util.DatabaseHelper;
+import com.giosis.library.util.DatabaseHelper;
 import com.giosis.util.qdrive.util.PermissionActivity;
 import com.giosis.util.qdrive.util.PermissionChecker;
 

@@ -40,7 +40,7 @@ import com.giosis.util.qdrive.singapore.MyApplication;
 import com.giosis.util.qdrive.singapore.R;
 import com.giosis.util.qdrive.util.Custom_JsonParser;
 import com.giosis.util.qdrive.util.DataUtil;
-import com.giosis.util.qdrive.util.DatabaseHelper;
+import com.giosis.library.util.DatabaseHelper;
 import com.giosis.util.qdrive.util.NetworkUtil;
 
 import org.json.JSONObject;

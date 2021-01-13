@@ -23,7 +23,7 @@ import androidx.annotation.Nullable;
 import com.giosis.util.qdrive.list.RowItem;
 import com.giosis.util.qdrive.singapore.MyApplication;
 import com.giosis.util.qdrive.singapore.R;
-import com.giosis.util.qdrive.util.DatabaseHelper;
+import com.giosis.library.util.DatabaseHelper;
 import com.giosis.util.qdrive.util.ui.CommonActivity;
 
 import java.lang.reflect.Field;

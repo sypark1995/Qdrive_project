@@ -3,7 +3,6 @@ package com.giosis.library.setting
 import android.app.AlertDialog
 import android.content.Intent
 import android.os.Bundle
-import android.util.Log
 import android.view.View
 import android.widget.Toast
 import androidx.lifecycle.ViewModelProvider
@@ -11,6 +10,7 @@ import com.giosis.library.BR
 import com.giosis.library.BaseActivity
 import com.giosis.library.R
 import com.giosis.library.databinding.ActivitySettingBinding
+import com.giosis.library.util.DatabaseHelper
 import com.giosis.library.util.Preferences
 import com.giosis.library.util.dialog.CustomDialog
 import com.giosis.library.util.dialog.DialogUiConfig
@@ -84,19 +84,17 @@ class SettingActivity : BaseActivity<ActivitySettingBinding, SettingViewModel>()
 
                             deleteAlert.visibility = View.GONE
 
-                            // TODO_kjyoo
+                            DatabaseHelper.getInstance().delete(DatabaseHelper.DB_TABLE_INTEGRATION_LIST, "")
 
-//                           com.giosis. DatabaseHelper.getInstance().delete(DatabaseHelper.DB_TABLE_INTEGRATION_LIST, "")
-//
-//                            val builder = AlertDialog.Builder(this)
-//                            builder.setTitle(resources.getString(com.giosis.util.qdrive.international.R.string.text_alert))
-//                            builder.setMessage(resources.getString(com.giosis.util.qdrive.international.R.string.msg_deleted_data))
-//                            builder.setPositiveButton(resources.getString(com.giosis.util.qdrive.international.R.string.button_ok)) { dialogInterface, _ ->
-//
-//                                dialogInterface.cancel()
-//                            }
-//
-//                            builder.show()
+                            val builder = AlertDialog.Builder(this)
+                            builder.setTitle(resources.getString(R.string.text_alert))
+                            builder.setMessage(resources.getString(R.string.msg_deleted_data))
+                            builder.setPositiveButton(resources.getString(R.string.button_ok)) { dialogInterface, _ ->
+
+                                dialogInterface.cancel()
+                            }
+
+                            builder.show()
 
                         },
                         negativeClick = {

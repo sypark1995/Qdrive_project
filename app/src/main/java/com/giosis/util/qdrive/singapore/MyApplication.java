@@ -10,6 +10,7 @@ import android.util.Log;
 
 import androidx.multidex.MultiDexApplication;
 
+import com.giosis.library.util.DatabaseHelper;
 import com.giosis.library.util.LocaleManager;
 import com.giosis.library.util.Preferences;
 import com.giosis.util.qdrive.util.MySharedPreferences;
@@ -35,6 +36,7 @@ public class MyApplication extends MultiDexApplication {
         super.onCreate();
 
         preferences = new MySharedPreferences(getApplicationContext());
+        DatabaseHelper.getInstance(this);
         LocaleManager.Companion.getInstance(this);
 
         Preferences.INSTANCE.init(this);

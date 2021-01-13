@@ -57,7 +57,7 @@ import com.giosis.util.qdrive.settings.PrinterSettingActivity;
 import com.giosis.util.qdrive.util.BarcodeType;
 import com.giosis.util.qdrive.util.Custom_JsonParser;
 import com.giosis.util.qdrive.util.DataUtil;
-import com.giosis.util.qdrive.util.DatabaseHelper;
+import com.giosis.library.util.DatabaseHelper;
 import com.giosis.util.qdrive.util.NetworkUtil;
 import com.gprinter.command.EscCommand;
 import com.gprinter.command.LabelCommand;

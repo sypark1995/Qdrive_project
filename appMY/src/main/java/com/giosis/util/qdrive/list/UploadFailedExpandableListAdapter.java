@@ -37,7 +37,7 @@ import com.giosis.util.qdrive.international.UploadData;
 import com.giosis.util.qdrive.main.DeviceDataUploadHelper;
 import com.giosis.util.qdrive.util.BarcodeType;
 import com.giosis.util.qdrive.util.DataUtil;
-import com.giosis.util.qdrive.util.DatabaseHelper;
+import com.giosis.library.util.DatabaseHelper;
 
 import java.io.File;
 import java.util.ArrayList;

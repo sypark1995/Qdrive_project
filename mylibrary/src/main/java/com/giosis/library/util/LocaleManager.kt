@@ -16,7 +16,7 @@ class LocaleManager private constructor(val context: Context){
 
         @Volatile private var instance: LocaleManager? = null
 
-         fun getInstance(context: Context): LocaleManager =
+        @JvmStatic fun getInstance(context: Context): LocaleManager =
                 instance ?: synchronized(this) {
                     instance ?: LocaleManager(context).also {
                         instance = it

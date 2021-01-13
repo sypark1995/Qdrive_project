@@ -25,7 +25,7 @@ import com.giosis.library.util.LocaleManager;
 import com.giosis.util.qdrive.international.MyApplication;
 import com.giosis.util.qdrive.international.R;
 import com.giosis.util.qdrive.international.UploadData;
-import com.giosis.util.qdrive.util.DatabaseHelper;
+import com.giosis.library.util.DatabaseHelper;
 import com.giosis.util.qdrive.util.PermissionActivity;
 import com.giosis.util.qdrive.util.PermissionChecker;
 

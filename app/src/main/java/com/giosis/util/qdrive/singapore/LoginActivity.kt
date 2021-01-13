@@ -19,7 +19,7 @@ import com.giosis.library.setting.DeveloperModeActivity
 import com.giosis.util.qdrive.main.MainActivity
 import com.giosis.util.qdrive.server.data.LoginInfo
 import com.giosis.util.qdrive.util.DataUtil
-import com.giosis.util.qdrive.util.DatabaseHelper
+import com.giosis.library.util.DatabaseHelper
 import com.giosis.util.qdrive.util.PermissionActivity
 import com.giosis.util.qdrive.util.PermissionChecker
 import com.giosis.util.qdrive.util.ui.CommonActivity

@@ -5,7 +5,7 @@ import android.os.AsyncTask
 import android.util.Log
 import com.giosis.util.qdrive.international.onEventListner
 import com.giosis.util.qdrive.util.Custom_JsonParser
-import com.giosis.util.qdrive.util.DatabaseHelper
+import com.giosis.library.util.DatabaseHelper
 import org.json.JSONObject
 
 class GetRestDaysAsyncTask(private val nation: String, private val year: Int, private val eventListener: onEventListner?) : AsyncTask<Void, Void, String>() {

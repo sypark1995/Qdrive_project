@@ -18,6 +18,7 @@ import android.widget.LinearLayout
 import android.widget.ProgressBar
 import com.giosis.library.gps.GPSTrackerManager
 import com.giosis.library.setting.DeveloperModeActivity
+import com.giosis.library.util.DatabaseHelper
 import com.giosis.util.qdrive.main.GetRestDaysAsyncTask
 import com.giosis.util.qdrive.main.MainActivity
 import com.giosis.util.qdrive.util.*
@@ -55,14 +56,11 @@ class LoginActivity : CommonActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_login)
-        DatabaseHelper.getInstance()            // DB 생성
-
 
         // Image Shake Animation
         img_login_top_bg.startAnimation(AnimationUtils.loadAnimation(this, R.anim.shake_animation))
 
         img_login_top_logo.setOnClickListener {
-
             img_login_top_bg.startAnimation(AnimationUtils.loadAnimation(this, R.anim.shake_animation))
         }
 

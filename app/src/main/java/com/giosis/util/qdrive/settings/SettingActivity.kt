@@ -13,7 +13,7 @@ package com.giosis.util.qdrive.settings
 //import com.giosis.util.qdrive.singapore.LoginActivity
 //import com.giosis.util.qdrive.singapore.MyApplication
 //import com.giosis.util.qdrive.singapore.R
-//import com.giosis.util.qdrive.util.DatabaseHelper
+//import com.giosis.library.util.DatabaseHelper
 //import com.giosis.util.qdrive.util.DisplayUtil
 import com.giosis.util.qdrive.util.ui.CommonActivity
 //import kotlinx.android.synthetic.main.activity_setting.*
