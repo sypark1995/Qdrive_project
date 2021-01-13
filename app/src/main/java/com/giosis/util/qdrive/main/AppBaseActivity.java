@@ -15,13 +15,12 @@ import androidx.appcompat.widget.Toolbar;
 import androidx.core.content.ContextCompat;
 import androidx.drawerlayout.widget.DrawerLayout;
 
-import com.giosis.library.main.ListNotInHousedActivity;
+import com.giosis.library.main.submenu.ListNotInHousedActivity;
 import com.giosis.library.message.MessageListActivity;
 import com.giosis.library.pickup.CreatePickupOrderActivity;
 import com.giosis.library.setting.SettingActivity;
 import com.giosis.util.qdrive.barcodescanner.CaptureActivity;
 import com.giosis.util.qdrive.list.ListActivity;
-//import com.giosis.util.qdrive.message.MessageListActivity;
 import com.giosis.util.qdrive.singapore.MyApplication;
 import com.giosis.util.qdrive.singapore.R;
 import com.giosis.util.qdrive.singapore.ScanActivity;
@@ -178,7 +177,7 @@ public class AppBaseActivity extends CommonActivity {
                     //Intent intent = new Intent(AppBaseActivity.this, SMSVerificationActivity.class);
                     // Intent intent = new Intent(AppBaseActivity.this, MyRouteActivity.class);
 
-                    startActivity(intent);
+                    startActivityForResult(intent, 1010);
 
                     if (!(top_title_string.contains(getString(R.string.navi_home)))) {
                         finish();
@@ -366,7 +365,7 @@ public class AppBaseActivity extends CommonActivity {
                 case R.id.layout_bottom_bar_setting: {
 
                     Intent intent = new Intent(AppBaseActivity.this, SettingActivity.class);
-                    startActivity(intent);
+                    startActivityForResult(intent, 1010);
                 }
                 break;
             }

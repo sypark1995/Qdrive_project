@@ -61,6 +61,8 @@ open class CommonActivity : AppCompatActivity() {
     }
 
     override fun attachBaseContext(base: Context?) {
-        super.attachBaseContext(MyApplication.localeManager.setLocale(base))
+        if (base != null) {
+            super.attachBaseContext(MyApplication.localeManager.setLocale(base))
+        }
     }
 }

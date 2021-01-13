@@ -58,6 +58,8 @@ open class CommonActivity : AppCompatActivity() {
 
     // Multi Language
     override fun attachBaseContext(newBase: Context?) {
-        super.attachBaseContext(MyApplication.localeManager.setLocale(newBase));
+        if (newBase != null) {
+            super.attachBaseContext(MyApplication.localeManager.setLocale(newBase))
+        }
     }
 }

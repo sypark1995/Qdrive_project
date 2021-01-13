@@ -14,7 +14,7 @@ import androidx.appcompat.widget.Toolbar;
 import androidx.core.content.ContextCompat;
 import androidx.drawerlayout.widget.DrawerLayout;
 
-import com.giosis.library.main.ListNotInHousedActivity;
+import com.giosis.library.main.submenu.ListNotInHousedActivity;
 import com.giosis.library.setting.SettingActivity;
 import com.giosis.util.qdrive.barcodescanner.CaptureActivity;
 import com.giosis.util.qdrive.international.MyApplication;
@@ -168,7 +168,7 @@ public class AppBaseActivity extends CommonActivity {
                         //Intent intent = new Intent(AppBaseActivity.this, MainTestVisitLog.class);
 
                         Intent intent = new Intent(AppBaseActivity.this, SettingActivity.class);
-                        startActivity(intent);
+                        startActivityForResult(intent, 1010);
                     }
                     break;
                 }

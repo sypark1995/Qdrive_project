@@ -1,6 +1,7 @@
 package com.giosis.library
 
 import android.app.Activity
+import android.content.Context
 import android.content.Intent
 import android.os.Bundle
 import android.view.View
@@ -10,6 +11,7 @@ import androidx.appcompat.app.AppCompatActivity
 import androidx.databinding.DataBindingUtil
 import androidx.databinding.ViewDataBinding
 import androidx.lifecycle.observe
+import com.giosis.library.util.LocaleManager
 import com.giosis.library.util.dialog.ProgressDialog
 
 
@@ -94,4 +96,11 @@ abstract class BaseActivity<T : ViewDataBinding, V : BaseViewModel> : AppCompatA
     fun getStringResID(resId: Int): String {
         return resources.getString(resId)
     }
+
+//    // Multi Language
+//    override fun attachBaseContext(newBase: Context?) {
+//        if (newBase != null) {
+//            super.attachBaseContext(LocaleManager.setLocale(newBase))
+//        }
+//    }
 }

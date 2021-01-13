@@ -1,4 +1,5 @@
 package com.giosis.util.qdrive.main;
+
 import android.app.Activity;
 import android.app.AlertDialog;
 import android.content.Context;
@@ -36,6 +37,7 @@ import com.giosis.util.qdrive.barcodescanner.CaptureActivity;
 import com.giosis.util.qdrive.barcodescanner.PodListActivity;
 import com.giosis.util.qdrive.gps.FusedProviderService;
 import com.giosis.util.qdrive.gps.LocationManagerService;
+import com.giosis.util.qdrive.international.LoginActivity;
 import com.giosis.util.qdrive.international.MyApplication;
 import com.giosis.util.qdrive.international.OnServerEventListener;
 import com.giosis.util.qdrive.international.R;
@@ -383,7 +385,19 @@ public class MainActivity extends AppBaseActivity {
                 isPermissionTrue = true;
                 GPSTrackerServiceStart();
             }
+        } else if (requestCode == 1010) { // setting activity result
+            if (resultCode == Activity.RESULT_OK) {
+                String login = intent.getStringExtra("method");
+
+                if ("signOut".equals(login)) {
+                    Intent loginIntent = new Intent(this, LoginActivity.class);
+                    loginIntent.putExtra("method", "signOut");
+                    loginIntent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP | Intent.FLAG_ACTIVITY_SINGLE_TOP);
+                    startActivity(loginIntent);
+                }
+            }
         }
+
     }
 
 
