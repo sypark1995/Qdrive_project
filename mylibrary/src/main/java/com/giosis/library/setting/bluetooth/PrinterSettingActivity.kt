@@ -135,7 +135,7 @@ class PrinterSettingActivity : CommonActivity() {
                             if (!device.name.isNullOrEmpty()) {
 
                                 // NOTIFICATION.  2019.11 - Print 기계만 선택되도록 'Major' 추가   (Q80 프린트의 경우 IMAGING, UNCATEGORIZED 두가지로 검색됨)
-//                                if (device.bluetoothClass.majorDeviceClass == BluetoothClass.Device.Major.IMAGING) {
+                                if (device.bluetoothClass.majorDeviceClass == BluetoothClass.Device.Major.IMAGING) {
                                     Log.e("print", TAG + "  ACTION_FOUND Not Pairing  " + device.name + "  " + device.address +
                                             " / " + device.bluetoothClass.deviceClass + " / " + device.bluetoothClass.majorDeviceClass)
 
@@ -158,7 +158,7 @@ class PrinterSettingActivity : CommonActivity() {
                                     } else {
                                         notnullAvailableDevices()
                                     }
-//                                }
+                                }
                             }
                         } else if (device != null && device.bondState == BluetoothDevice.BOND_BONDED) {
                             // 찾아진 디바이스가 페어링 되어 있는 경우    Data update
