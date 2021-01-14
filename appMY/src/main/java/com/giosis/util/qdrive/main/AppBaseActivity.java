@@ -15,12 +15,12 @@ import androidx.core.content.ContextCompat;
 import androidx.drawerlayout.widget.DrawerLayout;
 
 import com.giosis.library.main.submenu.ListNotInHousedActivity;
+import com.giosis.library.main.submenu.ScanActivity;
+import com.giosis.library.main.submenu.StatisticsActivity;
 import com.giosis.library.setting.SettingActivity;
 import com.giosis.util.qdrive.barcodescanner.CaptureActivity;
 import com.giosis.util.qdrive.international.MyApplication;
 import com.giosis.util.qdrive.international.R;
-import com.giosis.util.qdrive.international.ScanActivity;
-import com.giosis.util.qdrive.international.StatisticsActivity;
 import com.giosis.util.qdrive.list.ListActivity;
 import com.giosis.util.qdrive.util.BarcodeType;
 import com.giosis.util.qdrive.util.ui.CommonActivity;
@@ -168,7 +168,7 @@ public class AppBaseActivity extends CommonActivity {
                         //Intent intent = new Intent(AppBaseActivity.this, MainTestVisitLog.class);
 
                         Intent intent = new Intent(AppBaseActivity.this, SettingActivity.class);
-                        startActivityForResult(intent, 1010);
+                        startActivity(intent);
                     }
                     break;
                 }

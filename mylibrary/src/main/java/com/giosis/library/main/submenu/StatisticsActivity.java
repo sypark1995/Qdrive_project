@@ -1,4 +1,4 @@
-package com.giosis.util.qdrive.singapore;
+package com.giosis.library.main.submenu;
 
 import android.annotation.SuppressLint;
 import android.app.DatePickerDialog;
@@ -18,7 +18,10 @@ import android.widget.Spinner;
 import android.widget.TextView;
 import android.widget.Toast;
 
-import com.giosis.util.qdrive.util.ui.CommonActivity;
+import com.giosis.library.R;
+import com.giosis.library.server.data.StatisticsResult;
+import com.giosis.library.util.CommonActivity;
+import com.giosis.library.util.Preferences;
 
 import java.text.SimpleDateFormat;
 import java.util.Calendar;
@@ -104,7 +107,240 @@ public class StatisticsActivity extends CommonActivity {
     int confirmedCount = 0;
 
     StatisticsResultListAdapter listAdapter;
+    View.OnClickListener clickListener = new View.OnClickListener() {
+        @Override
+        public void onClick(View view) {
 
+            int id = view.getId();
+            if (id == R.id.layout_top_back) {
+
+                finish();
+            } else if (id == R.id.layout_statistics_type) {
+
+                spinner_statistics_type.performClick();
+            } else if (id == R.id.layout_statistics_result_type) {
+
+                spinner_statistics_result_type.performClick();
+            } else if (id == R.id.layout_statistics_delivery_type1) {
+
+                spinner_statistics_delivery_type.performClick();
+            } else if (id == R.id.text_statistics_start_date) {
+
+                DatePickerDialog datePickerDialog = new DatePickerDialog(
+                        StatisticsActivity.this,
+                        new DatePickerDialog.OnDateSetListener() {
+                            @Override
+                            public void onDateSet(DatePicker datePicker, int year, int month, int dayOfMonth) {
+
+                                startCalendar.set(Calendar.YEAR, year);
+                                startCalendar.set(Calendar.MONTH, month);
+                                startCalendar.set(Calendar.DAY_OF_MONTH, dayOfMonth);
+
+                                text_statistics_start_date.setText(sdf.format(startCalendar.getTime()));
+                            }
+                        },
+                        startCalendar.get(Calendar.YEAR),
+                        startCalendar.get(Calendar.MONTH),
+                        startCalendar.get(Calendar.DAY_OF_MONTH));
+
+                datePickerDialog.getDatePicker().setMaxDate(maxDate.getTimeInMillis());
+                datePickerDialog.show();
+            } else if (id == R.id.text_statistics_end_date) {
+                DatePickerDialog datePickerDialog = new DatePickerDialog(
+                        StatisticsActivity.this,
+                        new DatePickerDialog.OnDateSetListener() {
+                            @Override
+                            public void onDateSet(DatePicker datePicker, int year, int month, int dayOfMonth) {
+
+                                endCalendar.set(Calendar.YEAR, year);
+                                endCalendar.set(Calendar.MONTH, month);
+                                endCalendar.set(Calendar.DAY_OF_MONTH, dayOfMonth);
+
+                                text_statistics_end_date.setText(sdf.format(endCalendar.getTime()));
+                            }
+                        },
+                        endCalendar.get(Calendar.YEAR),
+                        endCalendar.get(Calendar.MONTH),
+                        endCalendar.get(Calendar.DAY_OF_MONTH));
+
+                datePickerDialog.getDatePicker().setMaxDate(maxDate.getTimeInMillis());
+                datePickerDialog.show();
+            } else if (id == R.id.btn_statistics_search) {// 날짜 비교
+                // 0 이면 같음. 1이면 >, -1이면 <
+                int compareDate = startCalendar.compareTo(endCalendar);
+
+                if (0 < compareDate) { // start date 가 더 크다  : Error!
+
+                    Toast.makeText(StatisticsActivity.this, context.getResources().getString(R.string.msg_check_date_range), Toast.LENGTH_SHORT).show();
+                } else {
+
+                    long dateDiff = endCalendar.getTimeInMillis() - startCalendar.getTimeInMillis();
+                    int diff = (int) (dateDiff / (24 * 60 * 60 * 1000));            // 30일 이상
+                    Log.e(TAG, TAG + "  compareDate : " + compareDate + " / diff Date : " + diff);
+
+                    if (30 < diff) {
+
+                        Toast.makeText(StatisticsActivity.this, context.getResources().getString(R.string.msg_check_date_range), Toast.LENGTH_SHORT).show();
+                    } else {
+
+                        downloadStatistics("");
+                    }
+                }
+            } else if (id == R.id.layout_statistics_d_total) {
+                downloadStatistics("total");
+            } else if (id == R.id.layout_statistics_d_delivered) {
+                downloadStatistics("delivered");
+            } else if (id == R.id.layout_statistics_d_not_delivered) {
+                downloadStatistics("not_delivered");
+            } else if (id == R.id.layout_statistics_p_total) {
+                downloadStatistics("total");
+            } else if (id == R.id.layout_statistics_p_done) {
+                downloadStatistics("done");
+            } else if (id == R.id.layout_statistics_p_failed) {
+                downloadStatistics("failed");
+            } else if (id == R.id.layout_statistics_p_confirmed) {
+                downloadStatistics("confirmed");
+            }
+        }
+    };
+
+    void initView() {
+
+        layout_statistics_type = findViewById(R.id.layout_statistics_type);
+        text_statistics_type = findViewById(R.id.text_statistics_type);
+        spinner_statistics_type = findViewById(R.id.spinner_statistics_type);
+        layout_statistics_result_type = findViewById(R.id.layout_statistics_result_type);
+        text_statistics_result_type = findViewById(R.id.text_statistics_result_type);
+        spinner_statistics_result_type = findViewById(R.id.spinner_statistics_result_type);
+
+        layout_statistics_delivery_type = findViewById(R.id.layout_statistics_delivery_type);
+        layout_statistics_delivery_type1 = findViewById(R.id.layout_statistics_delivery_type1);
+        text_statistics_delivery_type = findViewById(R.id.text_statistics_delivery_type);
+        spinner_statistics_delivery_type = findViewById(R.id.spinner_statistics_delivery_type);
+        text_statistics_start_date = findViewById(R.id.text_statistics_start_date);
+        text_statistics_end_date = findViewById(R.id.text_statistics_end_date);
+        btn_statistics_search = findViewById(R.id.btn_statistics_search);
+
+        layout_statistics_delivery_result_count = findViewById(R.id.layout_statistics_delivery_result_count);
+        layout_statistics_d_total = findViewById(R.id.layout_statistics_d_total);
+        text_statistics_d_total = findViewById(R.id.text_statistics_d_total);
+        layout_statistics_d_delivered = findViewById(R.id.layout_statistics_d_delivered);
+        text_statistics_d_delivered = findViewById(R.id.text_statistics_d_delivered);
+        layout_statistics_d_not_delivered = findViewById(R.id.layout_statistics_d_not_delivered);
+        text_statistics_d_not_delivered = findViewById(R.id.text_statistics_d_not_delivered);
+        layout_d_s_item = findViewById(R.id.layout_d_s_item);
+        text_d_s_dpc3_out_date = findViewById(R.id.text_d_s_dpc3_out_date);
+        layout_d_d_item = findViewById(R.id.layout_d_d_item);
+
+        layout_statistics_pickup_result_count = findViewById(R.id.layout_statistics_pickup_result_count);
+        layout_statistics_p_total = findViewById(R.id.layout_statistics_p_total);
+        text_statistics_p_total = findViewById(R.id.text_statistics_p_total);
+        layout_statistics_p_done = findViewById(R.id.layout_statistics_p_done);
+        text_statistics_p_done = findViewById(R.id.text_statistics_p_done);
+        layout_statistics_p_failed = findViewById(R.id.layout_statistics_p_failed);
+        text_statistics_p_failed = findViewById(R.id.text_statistics_p_failed);
+        layout_statistics_p_confirmed = findViewById(R.id.layout_statistics_p_confirmed);
+        text_statistics_p_confirmed = findViewById(R.id.text_statistics_p_confirmed);
+        layout_p_s_item = findViewById(R.id.layout_p_s_item);
+        layout_p_d_item = findViewById(R.id.layout_p_d_item);
+
+        list_statistics_result = findViewById(R.id.list_statistics_result);
+        text_statistics_orders_not = findViewById(R.id.text_statistics_orders_not);
+
+
+        layout_top_back.setOnClickListener(clickListener);
+
+        layout_statistics_type.setOnClickListener(clickListener);
+        layout_statistics_result_type.setOnClickListener(clickListener);
+        layout_statistics_delivery_type1.setOnClickListener(clickListener);
+        text_statistics_start_date.setOnClickListener(clickListener);
+        text_statistics_end_date.setOnClickListener(clickListener);
+        btn_statistics_search.setOnClickListener(clickListener);
+
+        layout_statistics_d_total.setOnClickListener(clickListener);
+        layout_statistics_d_delivered.setOnClickListener(clickListener);
+        layout_statistics_d_not_delivered.setOnClickListener(clickListener);
+        layout_statistics_p_total.setOnClickListener(clickListener);
+        layout_statistics_p_done.setOnClickListener(clickListener);
+        layout_statistics_p_failed.setOnClickListener(clickListener);
+        layout_statistics_p_confirmed.setOnClickListener(clickListener);
+    }
+
+    @Override
+    protected void onResume() {
+        super.onResume();
+
+        Log.e(TAG, TAG + "  onResume");
+
+        setDeliveryResult(null);
+        setPickupResult(null);
+    }
+
+    // NOTIFICATION.  Delivery
+    @SuppressLint("SetTextI18n")
+    void setDeliveryResult(StatisticsResult result) {
+
+        Log.e(TAG, TAG + "  setDeliveryResult  " + selectedResultType + " / " + selectedDeliveryType);
+
+        if (selectedResultType.equals("Summary")) {
+
+            layout_d_s_item.setVisibility(View.VISIBLE);
+            layout_d_d_item.setVisibility(View.GONE);
+        } else {
+
+            layout_d_s_item.setVisibility(View.GONE);
+            layout_d_d_item.setVisibility(View.VISIBLE);
+        }
+
+
+        if (result != null) {
+
+            text_statistics_d_total.setText(Integer.toString(dTotalCount));
+            text_statistics_d_delivered.setText(Integer.toString(deliveredCount));
+            text_statistics_d_not_delivered.setText(Integer.toString(dTotalCount - deliveredCount));
+
+            listAdapter = new StatisticsResultListAdapter(context, result, searchType);
+            list_statistics_result.setAdapter(listAdapter);
+        } else {
+
+            text_statistics_d_total.setText(Integer.toString(0));
+            text_statistics_d_delivered.setText(Integer.toString(0));
+            text_statistics_d_not_delivered.setText(Integer.toString(0));
+        }
+    }
+
+
+    // NOTIFICATION.  Pickup
+    @SuppressLint("SetTextI18n")
+    void setPickupResult(StatisticsResult result) {
+
+        if (selectedResultType.equals("Summary")) {
+
+            layout_p_s_item.setVisibility(View.VISIBLE);
+            layout_p_d_item.setVisibility(View.GONE);
+        } else {
+
+            layout_p_s_item.setVisibility(View.GONE);
+            layout_p_d_item.setVisibility(View.VISIBLE);
+        }
+
+        if (result != null) {
+
+            text_statistics_p_total.setText(Integer.toString(pTotalCount));
+            text_statistics_p_done.setText(Integer.toString(doneCount));
+            text_statistics_p_failed.setText(Integer.toString(failedCount));
+            text_statistics_p_confirmed.setText(Integer.toString(confirmedCount));
+
+            listAdapter = new StatisticsResultListAdapter(context, result, searchType);
+            list_statistics_result.setAdapter(listAdapter);
+        } else {
+
+            text_statistics_p_total.setText(Integer.toString(0));
+            text_statistics_p_done.setText(Integer.toString(0));
+            text_statistics_p_failed.setText(Integer.toString(0));
+            text_statistics_p_confirmed.setText(Integer.toString(0));
+        }
+    }
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
@@ -118,8 +354,7 @@ public class StatisticsActivity extends CommonActivity {
 
         //
         context = getApplicationContext();
-//        opID = SharedPreferencesHelper.getSigninOpID(context);
-        opID = MyApplication.preferences.getUserId();
+        opID = Preferences.INSTANCE.getUserId();
 
         startCalendar = Calendar.getInstance();
         endCalendar = Calendar.getInstance();
@@ -263,145 +498,6 @@ public class StatisticsActivity extends CommonActivity {
         text_statistics_end_date.setText(sdf.format(endCalendar.getTime()));
     }
 
-    void initView() {
-
-        layout_statistics_type = findViewById(R.id.layout_statistics_type);
-        text_statistics_type = findViewById(R.id.text_statistics_type);
-        spinner_statistics_type = findViewById(R.id.spinner_statistics_type);
-        layout_statistics_result_type = findViewById(R.id.layout_statistics_result_type);
-        text_statistics_result_type = findViewById(R.id.text_statistics_result_type);
-        spinner_statistics_result_type = findViewById(R.id.spinner_statistics_result_type);
-
-        layout_statistics_delivery_type = findViewById(R.id.layout_statistics_delivery_type);
-        layout_statistics_delivery_type1 = findViewById(R.id.layout_statistics_delivery_type1);
-        text_statistics_delivery_type = findViewById(R.id.text_statistics_delivery_type);
-        spinner_statistics_delivery_type = findViewById(R.id.spinner_statistics_delivery_type);
-        text_statistics_start_date = findViewById(R.id.text_statistics_start_date);
-        text_statistics_end_date = findViewById(R.id.text_statistics_end_date);
-        btn_statistics_search = findViewById(R.id.btn_statistics_search);
-
-        layout_statistics_delivery_result_count = findViewById(R.id.layout_statistics_delivery_result_count);
-        layout_statistics_d_total = findViewById(R.id.layout_statistics_d_total);
-        text_statistics_d_total = findViewById(R.id.text_statistics_d_total);
-        layout_statistics_d_delivered = findViewById(R.id.layout_statistics_d_delivered);
-        text_statistics_d_delivered = findViewById(R.id.text_statistics_d_delivered);
-        layout_statistics_d_not_delivered = findViewById(R.id.layout_statistics_d_not_delivered);
-        text_statistics_d_not_delivered = findViewById(R.id.text_statistics_d_not_delivered);
-        layout_d_s_item = findViewById(R.id.layout_d_s_item);
-        text_d_s_dpc3_out_date = findViewById(R.id.text_d_s_dpc3_out_date);
-        layout_d_d_item = findViewById(R.id.layout_d_d_item);
-
-        layout_statistics_pickup_result_count = findViewById(R.id.layout_statistics_pickup_result_count);
-        layout_statistics_p_total = findViewById(R.id.layout_statistics_p_total);
-        text_statistics_p_total = findViewById(R.id.text_statistics_p_total);
-        layout_statistics_p_done = findViewById(R.id.layout_statistics_p_done);
-        text_statistics_p_done = findViewById(R.id.text_statistics_p_done);
-        layout_statistics_p_failed = findViewById(R.id.layout_statistics_p_failed);
-        text_statistics_p_failed = findViewById(R.id.text_statistics_p_failed);
-        layout_statistics_p_confirmed = findViewById(R.id.layout_statistics_p_confirmed);
-        text_statistics_p_confirmed = findViewById(R.id.text_statistics_p_confirmed);
-        layout_p_s_item = findViewById(R.id.layout_p_s_item);
-        layout_p_d_item = findViewById(R.id.layout_p_d_item);
-
-        list_statistics_result = findViewById(R.id.list_statistics_result);
-        text_statistics_orders_not = findViewById(R.id.text_statistics_orders_not);
-
-
-        layout_top_back.setOnClickListener(clickListener);
-
-        layout_statistics_type.setOnClickListener(clickListener);
-        layout_statistics_result_type.setOnClickListener(clickListener);
-        layout_statistics_delivery_type1.setOnClickListener(clickListener);
-        text_statistics_start_date.setOnClickListener(clickListener);
-        text_statistics_end_date.setOnClickListener(clickListener);
-        btn_statistics_search.setOnClickListener(clickListener);
-
-        layout_statistics_d_total.setOnClickListener(clickListener);
-        layout_statistics_d_delivered.setOnClickListener(clickListener);
-        layout_statistics_d_not_delivered.setOnClickListener(clickListener);
-        layout_statistics_p_total.setOnClickListener(clickListener);
-        layout_statistics_p_done.setOnClickListener(clickListener);
-        layout_statistics_p_failed.setOnClickListener(clickListener);
-        layout_statistics_p_confirmed.setOnClickListener(clickListener);
-    }
-
-    @Override
-    protected void onResume() {
-        super.onResume();
-
-        Log.e(TAG, TAG + "  onResume");
-
-        setDeliveryResult(null);
-        setPickupResult(null);
-    }
-
-    // NOTIFICATION.  Delivery
-    @SuppressLint("SetTextI18n")
-    void setDeliveryResult(StatisticsResult result) {
-
-        Log.e(TAG, TAG + "  setDeliveryResult  " + selectedResultType + " / " + selectedDeliveryType);
-
-        if (selectedResultType.equals("Summary")) {
-
-            layout_d_s_item.setVisibility(View.VISIBLE);
-            layout_d_d_item.setVisibility(View.GONE);
-        } else {
-
-            layout_d_s_item.setVisibility(View.GONE);
-            layout_d_d_item.setVisibility(View.VISIBLE);
-        }
-
-
-        if (result != null) {
-
-            text_statistics_d_total.setText(Integer.toString(dTotalCount));
-            text_statistics_d_delivered.setText(Integer.toString(deliveredCount));
-            text_statistics_d_not_delivered.setText(Integer.toString(dTotalCount - deliveredCount));
-
-            listAdapter = new StatisticsResultListAdapter(context, result, searchType);
-            list_statistics_result.setAdapter(listAdapter);
-        } else {
-
-            text_statistics_d_total.setText(Integer.toString(0));
-            text_statistics_d_delivered.setText(Integer.toString(0));
-            text_statistics_d_not_delivered.setText(Integer.toString(0));
-        }
-    }
-
-
-    // NOTIFICATION.  Pickup
-    @SuppressLint("SetTextI18n")
-    void setPickupResult(StatisticsResult result) {
-
-        if (selectedResultType.equals("Summary")) {
-
-            layout_p_s_item.setVisibility(View.VISIBLE);
-            layout_p_d_item.setVisibility(View.GONE);
-        } else {
-
-            layout_p_s_item.setVisibility(View.GONE);
-            layout_p_d_item.setVisibility(View.VISIBLE);
-        }
-
-        if (result != null) {
-
-            text_statistics_p_total.setText(Integer.toString(pTotalCount));
-            text_statistics_p_done.setText(Integer.toString(doneCount));
-            text_statistics_p_failed.setText(Integer.toString(failedCount));
-            text_statistics_p_confirmed.setText(Integer.toString(confirmedCount));
-
-            listAdapter = new StatisticsResultListAdapter(context, result, searchType);
-            list_statistics_result.setAdapter(listAdapter);
-        } else {
-
-            text_statistics_p_total.setText(Integer.toString(0));
-            text_statistics_p_done.setText(Integer.toString(0));
-            text_statistics_p_failed.setText(Integer.toString(0));
-            text_statistics_p_confirmed.setText(Integer.toString(0));
-        }
-    }
-
-
     void downloadStatistics(String status) {
 
         String type = selectedType + selectedResultType;    // DeliverySummary, DeliveryDetail, PickupSummary, PickupDetail
@@ -518,152 +614,4 @@ public class StatisticsActivity extends CommonActivity {
                     }
                 }).build().execute();
     }
-
-
-    View.OnClickListener clickListener = new View.OnClickListener() {
-        @Override
-        public void onClick(View view) {
-
-            switch (view.getId()) {
-
-                case R.id.layout_top_back: {
-
-                    finish();
-                }
-                break;
-
-                case R.id.layout_statistics_type: {
-
-                    spinner_statistics_type.performClick();
-                }
-                break;
-
-                case R.id.layout_statistics_result_type: {
-
-                    spinner_statistics_result_type.performClick();
-                }
-                break;
-
-                case R.id.layout_statistics_delivery_type1: {
-
-                    spinner_statistics_delivery_type.performClick();
-                }
-                break;
-
-                case R.id.text_statistics_start_date: {
-
-                    DatePickerDialog datePickerDialog = new DatePickerDialog(
-                            StatisticsActivity.this,
-                            new DatePickerDialog.OnDateSetListener() {
-                                @Override
-                                public void onDateSet(DatePicker datePicker, int year, int month, int dayOfMonth) {
-
-                                    startCalendar.set(Calendar.YEAR, year);
-                                    startCalendar.set(Calendar.MONTH, month);
-                                    startCalendar.set(Calendar.DAY_OF_MONTH, dayOfMonth);
-
-                                    text_statistics_start_date.setText(sdf.format(startCalendar.getTime()));
-                                }
-                            },
-                            startCalendar.get(Calendar.YEAR),
-                            startCalendar.get(Calendar.MONTH),
-                            startCalendar.get(Calendar.DAY_OF_MONTH));
-
-                    datePickerDialog.getDatePicker().setMaxDate(maxDate.getTimeInMillis());
-                    datePickerDialog.show();
-                }
-                break;
-
-                case R.id.text_statistics_end_date: {
-
-                    DatePickerDialog datePickerDialog = new DatePickerDialog(
-                            StatisticsActivity.this,
-                            new DatePickerDialog.OnDateSetListener() {
-                                @Override
-                                public void onDateSet(DatePicker datePicker, int year, int month, int dayOfMonth) {
-
-                                    endCalendar.set(Calendar.YEAR, year);
-                                    endCalendar.set(Calendar.MONTH, month);
-                                    endCalendar.set(Calendar.DAY_OF_MONTH, dayOfMonth);
-
-                                    text_statistics_end_date.setText(sdf.format(endCalendar.getTime()));
-                                }
-                            },
-                            endCalendar.get(Calendar.YEAR),
-                            endCalendar.get(Calendar.MONTH),
-                            endCalendar.get(Calendar.DAY_OF_MONTH));
-
-                    datePickerDialog.getDatePicker().setMaxDate(maxDate.getTimeInMillis());
-                    datePickerDialog.show();
-                }
-                break;
-
-                case R.id.btn_statistics_search: {
-
-                    // 날짜 비교
-                    // 0 이면 같음. 1이면 >, -1이면 <
-                    int compareDate = startCalendar.compareTo(endCalendar);
-
-                    if (0 < compareDate) { // start date 가 더 크다  : Error!
-
-                        Toast.makeText(StatisticsActivity.this, context.getResources().getString(R.string.msg_check_date_range), Toast.LENGTH_SHORT).show();
-                    } else {
-
-                        long dateDiff = endCalendar.getTimeInMillis() - startCalendar.getTimeInMillis();
-                        int diff = (int) (dateDiff / (24 * 60 * 60 * 1000));            // 30일 이상
-                        Log.e(TAG, TAG + "  compareDate : " + compareDate + " / diff Date : " + diff);
-
-                        if (30 < diff) {
-
-                            Toast.makeText(StatisticsActivity.this, context.getResources().getString(R.string.msg_check_date_range), Toast.LENGTH_SHORT).show();
-                        } else {
-
-                            downloadStatistics("");
-                        }
-                    }
-                }
-                break;
-
-                case R.id.layout_statistics_d_total: {
-
-                    downloadStatistics("total");
-                }
-                break;
-
-                case R.id.layout_statistics_d_delivered: {
-
-                    downloadStatistics("delivered");
-                }
-                break;
-
-                case R.id.layout_statistics_d_not_delivered: {
-
-                    downloadStatistics("not_delivered");
-                }
-                break;
-
-                case R.id.layout_statistics_p_total: {
-
-                    downloadStatistics("total");
-                }
-                break;
-
-                case R.id.layout_statistics_p_done: {
-
-                    downloadStatistics("done");
-                }
-                break;
-                case R.id.layout_statistics_p_failed: {
-
-                    downloadStatistics("failed");
-                }
-                break;
-                case R.id.layout_statistics_p_confirmed: {
-
-                    downloadStatistics("confirmed");
-                }
-                break;
-            }
-        }
-    };
 }

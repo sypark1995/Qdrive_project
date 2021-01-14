@@ -48,7 +48,7 @@
                 <FrameLayout
                     android:layout_width="206dp"
                     android:layout_height="50dp"
-                    android:background="@drawable/back_rect_ffffff_shadows">
+                    android:background="@drawable/bg_rect_ffffff_shadows">
 
                     <EditText
                         android:id="@+id/edit_verify_phone_number"
@@ -70,7 +70,7 @@
                     android:layout_width="111dp"
                     android:layout_height="49dp"
                     android:layout_alignParentEnd="true"
-                    android:background="@drawable/back_rect_e2e2e2"
+                    android:background="@drawable/bg_rect_e2e2e2"
                     android:text="@string/button_request"
                     android:textAllCaps="false"
                     android:textColor="@color/color_fefefe"
@@ -102,7 +102,7 @@
                 android:layout_marginStart="20dp"
                 android:layout_marginTop="9dp"
                 android:layout_marginEnd="20dp"
-                android:background="@drawable/back_rect_ffffff_shadows">
+                android:background="@drawable/bg_rect_ffffff_shadows">
 
                 <EditText
                     android:id="@+id/edit_verify_4_digit"
@@ -164,7 +164,7 @@
                 android:layout_marginStart="20dp"
                 android:layout_marginTop="9dp"
                 android:layout_marginEnd="20dp"
-                android:background="@drawable/back_rect_ffffff_shadows">
+                android:background="@drawable/bg_rect_ffffff_shadows">
 
                 <EditText
                     android:id="@+id/edit_verify_name"
@@ -195,7 +195,7 @@
                 android:layout_marginStart="20dp"
                 android:layout_marginTop="9dp"
                 android:layout_marginEnd="20dp"
-                android:background="@drawable/back_rect_ffffff_shadows">
+                android:background="@drawable/bg_rect_ffffff_shadows">
 
                 <EditText
                     android:id="@+id/edit_verify_email"
@@ -217,7 +217,7 @@
                 android:layout_height="40dp"
                 android:layout_gravity="center"
                 android:layout_marginTop="20dp"
-                android:background="@drawable/back_round_20_cccccc"
+                android:background="@drawable/bg_round_20_cccccc"
                 android:text="@string/button_save"
                 android:textAllCaps="false"
                 android:textColor="@color/white"

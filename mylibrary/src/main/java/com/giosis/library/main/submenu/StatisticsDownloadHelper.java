@@ -1,14 +1,17 @@
-package com.giosis.util.qdrive.singapore;
+package com.giosis.library.main.submenu;
 
 import android.app.ProgressDialog;
 import android.content.Context;
 import android.os.AsyncTask;
 import android.util.Log;
 
-import com.giosis.util.qdrive.util.Custom_JsonParser;
-import com.giosis.util.qdrive.util.DataUtil;
-import com.giosis.util.qdrive.util.DisplayUtil;
-import com.giosis.util.qdrive.util.NetworkUtil;
+import com.giosis.library.R;
+import com.giosis.library.server.Custom_JsonParser;
+import com.giosis.library.server.data.StatisticsResult;
+import com.giosis.library.util.DataUtil;
+import com.giosis.library.util.DisplayUtil;
+import com.giosis.library.util.NetworkUtil;
+import com.giosis.library.util.Preferences;
 
 import org.json.JSONArray;
 import org.json.JSONObject;
@@ -198,7 +201,7 @@ public class StatisticsDownloadHelper {
             job.accumulate("del_driver_id", opID);
             job.accumulate("status", "");
             job.accumulate("app_id", DataUtil.appID);
-            job.accumulate("nation_cd", DataUtil.nationCode);
+            job.accumulate("nation_cd", Preferences.INSTANCE.getUserNation());
 
             String methodName = "GetStaticDeliverySummary";
             String jsonString = Custom_JsonParser.requestServerDataReturnJSON(methodName, job);
@@ -271,7 +274,7 @@ public class StatisticsDownloadHelper {
             job.accumulate("del_driver_id", opID);
             job.accumulate("status", status);
             job.accumulate("app_id", DataUtil.appID);
-            job.accumulate("nation_cd", DataUtil.nationCode);
+            job.accumulate("nation_cd", Preferences.INSTANCE.getUserNation());
 
             String methodName = "GetStaticDeliveryDetail";
             String jsonString = Custom_JsonParser.requestServerDataReturnJSON(methodName, job);
@@ -344,7 +347,7 @@ public class StatisticsDownloadHelper {
             job.accumulate("del_driver_id", opID);
             job.accumulate("status", "");
             job.accumulate("app_id", DataUtil.appID);
-            job.accumulate("nation_cd", DataUtil.nationCode);
+            job.accumulate("nation_cd", Preferences.INSTANCE.getUserNation());
 
             String methodName = "GetStaticPickupSummary";
             String jsonString = Custom_JsonParser.requestServerDataReturnJSON(methodName, job);
@@ -419,7 +422,7 @@ public class StatisticsDownloadHelper {
             job.accumulate("del_driver_id", opID);
             job.accumulate("status", status);
             job.accumulate("app_id", DataUtil.appID);
-            job.accumulate("nation_cd", DataUtil.nationCode);
+            job.accumulate("nation_cd", Preferences.INSTANCE.getUserNation());
 
             String methodName = "GetStaticPickupDetail";
             String jsonString = Custom_JsonParser.requestServerDataReturnJSON(methodName, job);

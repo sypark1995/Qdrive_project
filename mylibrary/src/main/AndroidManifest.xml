@@ -8,6 +8,8 @@
     <uses-permission android:name="android.permission.ACCESS_FINE_LOCATION" />
     <uses-permission android:name="android.permission.ACCESS_COARSE_LOCATION" />
 
+    <uses-permission android:name="android.permission.READ_PHONE_STATE" />
+
     <application>
 
         <activity
@@ -91,8 +93,26 @@
 
 
         <activity
-            android:name=".main.ListNotInHousedActivity"
+            android:name=".main.submenu.ListNotInHousedActivity"
             android:screenOrientation="portrait" />
+
+        <activity
+            android:name=".main.submenu.StatisticsActivity"
+            android:screenOrientation="portrait" />
+
+        <activity
+            android:name=".main.submenu.ScanActivity"
+            android:screenOrientation="portrait" />
+
+        <activity
+            android:name=".main.SMSVerificationActivity"
+            android:screenOrientation="portrait" />
+
+        <activity
+            android:name=".util.PermissionActivity"
+            android:configChanges="orientation|screenSize|screenLayout|keyboard|keyboardHidden"
+            android:screenOrientation="unspecified"
+            android:theme="@style/Theme.AppCompat.Transparent" />
 
 
     </application>

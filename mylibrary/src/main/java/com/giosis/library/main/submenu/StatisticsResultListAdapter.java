@@ -1,4 +1,4 @@
-package com.giosis.util.qdrive.singapore;
+package com.giosis.library.main.submenu;
 
 import android.annotation.SuppressLint;
 import android.content.Context;
@@ -7,6 +7,9 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.BaseAdapter;
 import android.widget.TextView;
+
+import com.giosis.library.R;
+import com.giosis.library.server.data.StatisticsResult;
 
 import java.util.ArrayList;
 
