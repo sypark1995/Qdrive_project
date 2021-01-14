@@ -66,18 +66,8 @@
             android:screenOrientation="portrait" />
 
         <activity
-            android:name=".pickup.CreatePickupOrderActivity"
-            android:screenOrientation="portrait" />
-
-        <activity
-            android:name=".pickup.AddressDialogActivity"
-            android:screenOrientation="portrait"
-            android:theme="@style/CustomDialog" />
-
-        <activity
             android:name=".TestActivity"
             android:screenOrientation="portrait" />
-
 
         <activity
             android:name=".message.MessageListActivity"
@@ -90,7 +80,6 @@
         <activity
             android:name=".message.AdminMessageListDetailActivity"
             android:screenOrientation="portrait" />
-
 
         <activity
             android:name=".main.submenu.ListNotInHousedActivity"
@@ -113,7 +102,6 @@
             android:configChanges="orientation|screenSize|screenLayout|keyboard|keyboardHidden"
             android:screenOrientation="unspecified"
             android:theme="@style/Theme.AppCompat.Transparent" />
-
 
     </application>
 
