@@ -43,6 +43,8 @@ class SettingViewModel : BaseViewModel() {
 
 
     init {
+
+        // TODO_Setting   ModifyUserInfo에서 name, email 수정 후 돌아오면 반영되지 않음
         _name.value = Preferences.userName
         _id.value = Preferences.userId
         _email.value = Preferences.userEmail

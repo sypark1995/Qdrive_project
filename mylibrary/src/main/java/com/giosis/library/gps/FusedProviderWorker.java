@@ -8,6 +8,7 @@ import android.os.Build;
 import android.os.Bundle;
 import android.util.Log;
 
+import androidx.annotation.NonNull;
 import androidx.core.app.ActivityCompat;
 
 import com.giosis.library.util.Preferences;
@@ -18,8 +19,6 @@ import com.google.android.gms.location.LocationCallback;
 import com.google.android.gms.location.LocationRequest;
 import com.google.android.gms.location.LocationResult;
 import com.google.android.gms.location.LocationServices;
-
-import org.jetbrains.annotations.NotNull;
 
 public class FusedProviderWorker implements GoogleApiClient.ConnectionCallbacks, GoogleApiClient.OnConnectionFailedListener {
     private final String TAG = "FusedProviderWorker";
@@ -87,6 +86,7 @@ public class FusedProviderWorker implements GoogleApiClient.ConnectionCallbacks,
                 .addConnectionCallbacks(this)
                 .addOnConnectionFailedListener(this).build();
     }
+
     private final LocationCallback locationCallback = new LocationCallback() {
         @Override
         public void onLocationResult(LocationResult locationResult) {
@@ -171,15 +171,14 @@ public class FusedProviderWorker implements GoogleApiClient.ConnectionCallbacks,
     }
 
 
-    @Override
-    public void onConnectionFailed(@NotNull ConnectionResult connectionResult) {
-
-        Log.e("Location", TAG + "  onConnectionFailed");
-    }
-
     public void removeLocationUpdates() {
 
         Log.e("Location", TAG + "  removeLocationUpdates");
         fusedLocationProviderClient.removeLocationUpdates(locationCallback);
+    }
+
+    @Override
+    public void onConnectionFailed(@NonNull ConnectionResult connectionResult) {
+        Log.e("Location", TAG + "  onConnectionFailed");
     }
 }

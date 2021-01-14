@@ -133,8 +133,15 @@ public class FusedProviderListenerUploadHelper {
 
             try {
 
+                String channel = "QDRIVE";
+
+                if (!Preferences.INSTANCE.getUserNation().equalsIgnoreCase("SG")) {
+                    channel = "QDRIVE_V2";
+                }
+
+
                 JSONObject job = new JSONObject();
-                job.accumulate("channel", "QDRIVE");  // qdrive service
+                job.accumulate("channel", channel);
                 job.accumulate("op_id", opID);
                 job.accumulate("device_id", deviceID);
                 job.accumulate("network_type", networkType);
