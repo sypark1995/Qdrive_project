@@ -97,7 +97,6 @@ class PrinterPairedListAdapter internal constructor(private val context: Context
 
     private fun modifyDevice(address: String) {
         val intent = Intent(context, ModifyDeviceInfoActivity::class.java)
-        intent.putExtra(BluetoothDeviceData.DEVICE_ID, address)
         intent.putExtra("device", listener.getRemoteDevice(address))
         (context as Activity).startActivityForResult(intent, BluetoothDeviceData.REQUEST_RENAME_PAIR_DEVICE)
     }

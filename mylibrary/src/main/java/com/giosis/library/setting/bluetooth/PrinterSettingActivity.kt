@@ -301,7 +301,7 @@ class PrinterSettingActivity : CommonActivity() {
                                 Toast.makeText(context, deviceName + " " + resources.getString(R.string.msg_is_connected), Toast.LENGTH_SHORT).show()
 
                                 // [Paired Devices] 에서 삭제
-                                if (pairedItems != null && 0 < pairedItems.size) {
+                                if (0 < pairedItems.size) {
                                     var position = -1
                                     var i = 0
                                     while (i < pairedItems.size) {
@@ -316,6 +316,7 @@ class PrinterSettingActivity : CommonActivity() {
                                         printerPairedListAdapter.notifyDataSetChanged()
                                     }
                                 }
+
                                 if (pairedItems.size == 0) {
                                     nullPairedDevices()
                                 } else {
@@ -567,7 +568,6 @@ class PrinterSettingActivity : CommonActivity() {
 
                         if (socket != null) {
                             connectedItem.add(PrinterDeviceItem(deviceName!!, deviceAddress, true, true))
-
 
                         } else {
                             try {

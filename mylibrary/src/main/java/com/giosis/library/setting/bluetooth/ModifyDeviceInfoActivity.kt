@@ -47,17 +47,21 @@ class ModifyDeviceInfoActivity : CommonActivity() {
     }
 
     private fun modifyConfirmClick() {
-        val rename = edit_setting_printer_device_rename!!.text.toString().trim { it <= ' ' }
+        val rename = edit_setting_printer_device_rename.text.toString().trim { it <= ' ' }
         if (rename == "") {
             Toast.makeText(this, resources.getString(R.string.text_device_name_info), Toast.LENGTH_SHORT).show()
             return
         }
+
         try {
-            val method = device!!.javaClass.getMethod("setAlias", String::class.java)
-            method.invoke(device, rename)
+            if (device != null) {
+                val method = device!!.javaClass.getMethod("setAlias", String::class.java)
+                method.invoke(device, rename)
+            }
         } catch (e: Exception) {
             e.printStackTrace()
         }
+
         setResult(RESULT_OK)
         finish()
     }
