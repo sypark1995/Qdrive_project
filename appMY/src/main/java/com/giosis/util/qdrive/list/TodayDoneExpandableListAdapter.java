@@ -454,8 +454,32 @@ public class TodayDoneExpandableListAdapter extends BaseExpandableListAdapter im
 
             Toast.makeText(context, context.getResources().getString(R.string.msg_first_connect_printer), Toast.LENGTH_SHORT).show();
 
+            try { // kjyoo static 임시
+                if (GPrinterData.mBluetoothAdapter != null) {
+                    GPrinterData.mBluetoothAdapter.cancelDiscovery();
+                    GPrinterData.mBluetoothAdapter = null;
+                }
+
+                if (GPrinterData.printerConnManagerList != null) {
+                    for (int i = 0; i < GPrinterData.printerConnManagerList.size(); i++) {
+                        GPrinterData.printerConnManagerList.get(i).closePort();
+                    }
+                    GPrinterData.printerConnManagerList = null;
+                }
+
+                if (GPrinterData.printerReceiver != null) {
+                    context.unregisterReceiver(GPrinterData.printerReceiver);
+                    GPrinterData.printerReceiver = null;
+                }
+
+                if (GPrinterData.gPrinterHandler != null) {
+                    GPrinterData.gPrinterHandler = null;
+                }
+            } catch (Exception e) {
+
+            }
+
             Intent intent = new Intent(context, PrinterSettingActivity.class);
-            intent.putExtra("action", "before_list");
             context.startActivity(intent);
         }
 

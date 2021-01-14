@@ -53,7 +53,7 @@ class DatabaseHelper private constructor(private val mContext: Context) : SQLite
                     }
                 }
 
-        //TODO_kjyoo 추후 컨텍스트 없을경우 처리 어떻게 해야 할지
+        // kjyoo 추후 컨텍스트 없을경우 처리 어떻게 해야 할지
         @JvmStatic
         fun getInstance(): DatabaseHelper = instance!!
 

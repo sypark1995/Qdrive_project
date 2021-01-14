@@ -71,34 +71,6 @@ class PrinterSettingActivity : CommonActivity() {
             BluetoothDeviceData.availableProgress.getIndeterminateDrawable().setColorFilter(color, PorterDuff.Mode.MULTIPLY);
         }*/
 
-        val actionType = intent.getStringExtra("action")
-        if (actionType != null && actionType == "before_list") {
-
-//            // TODO_kjyoo
-
-//            if (GPrinterData.mBluetoothAdapter != null) {
-//
-//                GPrinterData.mBluetoothAdapter.cancelDiscovery();
-//                GPrinterData.mBluetoothAdapter = null;
-//            }
-//
-//            if (GPrinterData.printerConnManagerList != null) {
-//
-//                for (int i = 0; i < GPrinterData.printerConnManagerList.size(); i++) {
-//                    GPrinterData.printerConnManagerList.get(i).closePort();
-//                }
-//                GPrinterData.printerConnManagerList = null;
-//            }
-//
-//            if (GPrinterData.printerReceiver != null) {
-//                context.unregisterReceiver(GPrinterData.printerReceiver);
-//                GPrinterData.printerReceiver = null;
-//            }
-//
-//            if (GPrinterData.gPrinterHandler != null)
-//                GPrinterData.gPrinterHandler = null;
-        }
-
         img_available_refresh.setOnClickListener {
             discoveryDevice()
         }

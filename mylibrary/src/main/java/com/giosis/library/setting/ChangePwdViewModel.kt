@@ -73,7 +73,6 @@ class ChangePwdViewModel : BaseViewModel() {
         val isValid = isValidPassword(oldPassword, newPassword, confirmPassword)
 
         if (isValid) {
-            // TODO kjyoo
             val id = Preferences.userId
             val appID = DataUtil.appID
             val nationCode = Preferences.userNation
