@@ -127,11 +127,19 @@ class SettingActivity : BaseActivity<ActivitySettingBinding, SettingViewModel>()
 
         alertBuilder.setPositiveButton(resources.getString(R.string.button_ok)) { _, _ ->
 
-            val intent = Intent()
-            intent.putExtra("method", "signOut")
-            setResult(RESULT_OK, intent)
-            finish()
+            if (Preferences.userNation == "SG") {
 
+                val intent = Intent(this@SettingActivity, Class.forName("com.giosis.util.qdrive.singapore.LoginActivity"))
+                intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP or Intent.FLAG_ACTIVITY_SINGLE_TOP)
+                startActivity(intent)
+                finish()
+            } else {
+
+                val intent = Intent(this@SettingActivity, Class.forName("com.giosis.util.qdrive.international.LoginActivity"))
+                intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP or Intent.FLAG_ACTIVITY_SINGLE_TOP)
+                startActivity(intent)
+                finish()
+            }
         }
 
         alertBuilder.setNegativeButton(resources.getString(R.string.button_cancel)) { dialogInterface, _ ->

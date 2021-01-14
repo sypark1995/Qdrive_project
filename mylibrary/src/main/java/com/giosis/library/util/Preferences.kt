@@ -119,7 +119,7 @@ object Preferences {
     const val LANGUAGE_INDONESIA = "in"
 
     var language: String
-        get() = preferences.getString(PREF_KEY_LANGUAGE, "").toString()
+        get() = preferences.getString(PREF_KEY_LANGUAGE, LANGUAGE_ENGLISH).toString()
         set(value) {
             // commit 으로 처리 해야 함.!!!!! 바로 리스타트 되면서 적용안되는 케이스 있음
             preferences.edit().putString(PREF_KEY_LANGUAGE, value).commit()

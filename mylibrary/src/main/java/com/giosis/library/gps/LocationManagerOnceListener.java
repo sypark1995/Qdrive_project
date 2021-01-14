@@ -73,8 +73,8 @@ public class LocationManagerOnceListener implements LocationListener {
 
         if (location != null) {
 
-            this.latitude = Double.parseDouble(String.format("%.7f", location.getLatitude()));
-            this.longitude = Double.parseDouble(String.format("%.7f", location.getLongitude()));
+            this.latitude = location.getLatitude();
+            this.longitude = location.getLongitude();
             this.accuracy = location.getAccuracy();
 
             if (count < 5) {

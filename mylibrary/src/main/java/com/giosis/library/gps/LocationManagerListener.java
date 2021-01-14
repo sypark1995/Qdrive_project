@@ -93,8 +93,8 @@ public class LocationManagerListener implements LocationListener {
     @Override
     public void onLocationChanged(Location location) {
 
-        double latitude = Double.parseDouble(String.format("%.7f", location.getLatitude()));
-        double longitude = Double.parseDouble(String.format("%.7f", location.getLongitude()));
+        double latitude = location.getLatitude();
+        double longitude = location.getLongitude();
         Log.e("Location", TAG + "  onLocationChanged : " + latitude + " / " + longitude);
 
         new FusedProviderListenerUploadHelper.Builder(context, opID, deviceID, latitude, longitude, 0, reference, provider).build().execute();

@@ -36,12 +36,12 @@ import com.giosis.library.gps.GPSTrackerManager;
 import com.giosis.library.gps.QuickAppUserInfoUploadHelper;
 import com.giosis.library.pickup.CreatePickupOrderActivity;
 import com.giosis.library.setting.bluetooth.BluetoothDeviceData;
+import com.giosis.library.util.DatabaseHelper;
 import com.giosis.util.qdrive.barcodescanner.CaptureActivity;
 import com.giosis.util.qdrive.barcodescanner.FailListActivity;
 import com.giosis.util.qdrive.gps.FusedProviderService;
 import com.giosis.util.qdrive.gps.LocationManagerService;
 import com.giosis.util.qdrive.list.ListActivity;
-
 import com.giosis.util.qdrive.singapore.LoginActivity;
 import com.giosis.util.qdrive.singapore.MyApplication;
 import com.giosis.util.qdrive.singapore.OnServerEventListener;
@@ -50,7 +50,6 @@ import com.giosis.util.qdrive.singapore.UploadData;
 import com.giosis.util.qdrive.util.BarcodeType;
 import com.giosis.util.qdrive.util.Custom_JsonParser;
 import com.giosis.util.qdrive.util.DataUtil;
-import com.giosis.library.util.DatabaseHelper;
 import com.giosis.util.qdrive.util.DisplayUtil;
 import com.giosis.util.qdrive.util.NetworkUtil;
 import com.giosis.util.qdrive.util.PermissionActivity;
@@ -425,17 +424,6 @@ public class MainActivity extends AppBaseActivity {
 
                 isPermissionTrue = true;
                 GPSTrackerServiceStart();
-            }
-        } else if (requestCode == 1010) { // setting activity result
-            if (resultCode == Activity.RESULT_OK) {
-                String login = intent.getStringExtra("method");
-
-                if ("signOut".equals(login)) {
-                    Intent loginIntent = new Intent(this, LoginActivity.class);
-                    loginIntent.putExtra("method", "signOut");
-                    loginIntent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP | Intent.FLAG_ACTIVITY_SINGLE_TOP);
-                    startActivity(loginIntent);
-                }
             }
         }
     }

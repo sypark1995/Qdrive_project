@@ -34,11 +34,11 @@ import androidx.core.graphics.drawable.RoundedBitmapDrawableFactory;
 import com.giosis.library.gps.GPSTrackerManager;
 import com.giosis.library.gps.QuickAppUserInfoUploadHelper;
 import com.giosis.library.setting.bluetooth.BluetoothDeviceData;
+import com.giosis.library.util.DatabaseHelper;
 import com.giosis.util.qdrive.barcodescanner.CaptureActivity;
 import com.giosis.util.qdrive.barcodescanner.PodListActivity;
 import com.giosis.util.qdrive.gps.FusedProviderService;
 import com.giosis.util.qdrive.gps.LocationManagerService;
-import com.giosis.util.qdrive.international.LoginActivity;
 import com.giosis.util.qdrive.international.MyApplication;
 import com.giosis.util.qdrive.international.OnServerEventListener;
 import com.giosis.util.qdrive.international.R;
@@ -46,7 +46,6 @@ import com.giosis.util.qdrive.international.UploadData;
 import com.giosis.util.qdrive.list.ListActivity;
 import com.giosis.util.qdrive.util.BarcodeType;
 import com.giosis.util.qdrive.util.DataUtil;
-import com.giosis.library.util.DatabaseHelper;
 import com.giosis.util.qdrive.util.DisplayUtil;
 import com.giosis.util.qdrive.util.NetworkUtil;
 import com.giosis.util.qdrive.util.PermissionActivity;
@@ -385,19 +384,7 @@ public class MainActivity extends AppBaseActivity {
                 isPermissionTrue = true;
                 GPSTrackerServiceStart();
             }
-        } else if (requestCode == 1010) { // setting activity result
-            if (resultCode == Activity.RESULT_OK) {
-                String login = intent.getStringExtra("method");
-
-                if ("signOut".equals(login)) {
-                    Intent loginIntent = new Intent(this, LoginActivity.class);
-                    loginIntent.putExtra("method", "signOut");
-                    loginIntent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP | Intent.FLAG_ACTIVITY_SINGLE_TOP);
-                    startActivity(loginIntent);
-                }
-            }
         }
-
     }
 
 
