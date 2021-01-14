@@ -19,7 +19,7 @@
             android:layout_width="0dp"
             android:layout_height="match_parent"
             android:layout_weight="1"
-            android:background="@drawable/bg_tab_bottom_46a73f"
+            android:background="@drawable/bg_tab_bottom_ff0000"
             android:gravity="center"
             android:orientation="vertical">
 
