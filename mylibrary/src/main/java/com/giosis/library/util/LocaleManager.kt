@@ -55,13 +55,17 @@ class LocaleManager private constructor(val context: Context){
 
     private fun updateResources(context: Context, language: String) :Context{
         var context = context
+
         val locale = Locale(language)
         Locale.setDefault(locale)
+
         val res = context.resources
         val config = Configuration(res.configuration)
+
         config.setLocale(locale)
         context = context.createConfigurationContext(config)
         context.resources.updateConfiguration(config, context.resources.displayMetrics)
+
         return context
     }
 

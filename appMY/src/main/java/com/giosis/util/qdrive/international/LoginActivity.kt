@@ -499,4 +499,8 @@ class LoginActivity : CommonActivity() {
             Log.e("permission", "$tag   Permission granted")
         }
     }
+
+    override fun onBackPressed() {
+        //super.onBackPressed();
+    }
 }

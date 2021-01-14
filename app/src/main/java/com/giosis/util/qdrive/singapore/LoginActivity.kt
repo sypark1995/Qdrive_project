@@ -17,10 +17,10 @@ import com.giosis.library.gps.GPSTrackerManager
 import com.giosis.library.main.SMSVerificationActivity
 import com.giosis.library.server.RetrofitClient
 import com.giosis.library.setting.DeveloperModeActivity
+import com.giosis.library.util.DatabaseHelper
 import com.giosis.util.qdrive.main.MainActivity
 import com.giosis.util.qdrive.server.data.LoginInfo
 import com.giosis.util.qdrive.util.DataUtil
-import com.giosis.library.util.DatabaseHelper
 import com.giosis.util.qdrive.util.PermissionActivity
 import com.giosis.util.qdrive.util.PermissionChecker
 import com.giosis.util.qdrive.util.ui.CommonActivity
@@ -362,5 +362,9 @@ class LoginActivity : CommonActivity() {
             isPermissionTrue = true
             Log.e("permission", "$tag   Permission granted")
         }
+    }
+
+    override fun onBackPressed() {
+        //super.onBackPressed();
     }
 }

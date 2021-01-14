@@ -3,14 +3,12 @@ package com.giosis.library.setting
 import android.annotation.SuppressLint
 import android.app.AlertDialog
 import android.content.Intent
-import android.content.Intent.makeRestartActivityTask
-import android.content.pm.PackageManager
 import android.os.Bundle
 import android.util.Log
-import androidx.appcompat.app.AppCompatActivity
 import androidx.recyclerview.widget.DividerItemDecoration
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.giosis.library.R
+import com.giosis.library.util.CommonActivity
 import com.giosis.library.util.LocaleManager
 import com.giosis.library.util.Preferences
 import kotlinx.android.synthetic.main.activity_language_setting1.*
@@ -18,7 +16,7 @@ import kotlinx.android.synthetic.main.top_title.*
 import kotlin.system.exitProcess
 
 
-class LanguageSettingActivity : AppCompatActivity() {
+class LanguageSettingActivity : CommonActivity() {
 
     val tag = "LanguageSettingActivity"
 
@@ -62,13 +60,18 @@ class LanguageSettingActivity : AppCompatActivity() {
             alertBuilder.setPositiveButton(resources.getString(R.string.button_ok)) { _, _ ->
 
                 LocaleManager.getInstance(this@LanguageSettingActivity).setNewLocale(this@LanguageSettingActivity, code)
-                finish()
+                //   finish()
 
-                val packageManager: PackageManager = packageManager
-                val intent = packageManager.getLaunchIntentForPackage(packageName)
-                val componentName = intent!!.component
-                val mainIntent: Intent = makeRestartActivityTask(componentName)
-                startActivity(mainIntent)
+//                val packageManager: PackageManager = packageManager
+//                val intent = packageManager.getLaunchIntentForPackage(packageName)
+//                val componentName = intent!!.component
+//                val mainIntent: Intent = makeRestartActivityTask(componentName)
+//                startActivity(mainIntent)
+
+
+                val intent = Intent(this@LanguageSettingActivity, Class.forName("com.giosis.util.qdrive.main.MainActivity"))
+                intent.flags = Intent.FLAG_ACTIVITY_CLEAR_TASK or Intent.FLAG_ACTIVITY_NEW_TASK
+                startActivity(intent)
                 exitProcess(0)
             }
 

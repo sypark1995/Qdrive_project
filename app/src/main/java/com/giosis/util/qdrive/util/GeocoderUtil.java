@@ -38,13 +38,13 @@ public class GeocoderUtil {
     @SuppressLint("DefaultLocale")
     public static double getLatitude() {
 
-        return Double.parseDouble(String.format("%.7f", latitude));
+        return latitude;
     }
 
     @SuppressLint("DefaultLocale")
     public static double getLongitude() {
 
-        return Double.parseDouble(String.format("%.7f", longitude));
+        return longitude;
 
     }
 

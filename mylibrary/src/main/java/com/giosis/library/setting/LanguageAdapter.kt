@@ -5,13 +5,13 @@ import android.view.View
 import android.view.ViewGroup
 import androidx.recyclerview.widget.RecyclerView
 import com.giosis.library.R
-import kotlinx.android.synthetic.main.language_setting_item.view.*
+import kotlinx.android.synthetic.main.item_language_setting.view.*
 
 class LanguageAdapter(var language: String, val items: List<String>, val codes: List<String>)
     : RecyclerView.Adapter<LanguageAdapter.Holder>() {
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): Holder {
-        val view = LayoutInflater.from(parent.context).inflate(R.layout.language_setting_item, parent, false)
+        val view = LayoutInflater.from(parent.context).inflate(R.layout.item_language_setting, parent, false)
         return Holder(view)
     }
 
