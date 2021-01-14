@@ -15,6 +15,7 @@ import android.os.Looper
 import android.util.Log
 import android.view.View
 import android.widget.Toast
+import androidx.recyclerview.widget.LinearLayoutManager
 import com.giosis.library.R
 import com.giosis.library.util.CommonActivity
 import com.giosis.library.util.PermissionActivity
@@ -51,9 +52,9 @@ class PrinterSettingActivity : CommonActivity() {
     var REQUEST_ENABLE_BT = 10001
     var mBluetoothAdapter: BluetoothAdapter? = null
 
-    lateinit var printerConnectedListAdapter: PrinterConnectedListAdapter
-    lateinit var printerPairedListAdapter: PrinterPairedListAdapter
-    lateinit var printerAvailableListAdapter: PrinterAvailableListAdapter
+    lateinit var printerConnectedAdapter: PrinterConnectedAdapter
+    lateinit var printerPairedAdapter: PrinterPairedAdapter
+    lateinit var printerAvailableAdapter: PrinterAvailableAdapter
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -131,26 +132,25 @@ class PrinterSettingActivity : CommonActivity() {
 
                         // 찾아진 디바이스가 페어링 되어 있지 않을 경우  >  [Available Devices] 리스트에 표시
                         if (device != null && device.bondState != BluetoothDevice.BOND_BONDED) {
-                            if (device.name != null && device.name != "") {
+                            if (!device.name.isNullOrEmpty()) {
 
                                 // NOTIFICATION.  2019.11 - Print 기계만 선택되도록 'Major' 추가   (Q80 프린트의 경우 IMAGING, UNCATEGORIZED 두가지로 검색됨)
-                                if (device.bluetoothClass.majorDeviceClass == BluetoothClass.Device.Major.IMAGING) {
+//                                if (device.bluetoothClass.majorDeviceClass == BluetoothClass.Device.Major.IMAGING) {
                                     Log.e("print", TAG + "  ACTION_FOUND Not Pairing  " + device.name + "  " + device.address +
                                             " / " + device.bluetoothClass.deviceClass + " / " + device.bluetoothClass.majorDeviceClass)
 
                                     // 동일한 주소가 이미 리스트에 들어 있는지 확인! 한번만 리스트에 넣기 위한 코드
-                                    var position = -1
-                                    var i = 0
-                                    while (i < newDeviceItems.size) {
-                                        if (newDeviceItems[i].deviceAddress == device.address) {
-                                            position = i
+                                    var deviceExist = false
+                                    for (newDevice in newDeviceItems) {
+                                        if (newDevice.deviceAddress == device.address) {
+                                            deviceExist = true
                                             break
                                         }
-                                        i++
                                     }
-                                    if (position < 0) {
+
+                                    if (!deviceExist) {
                                         newDeviceItems.add(PrinterDeviceItem(device.name, device.address, false, false))
-                                        printerAvailableListAdapter.notifyDataSetChanged()
+                                        printerAvailableAdapter.notifyDataSetChanged()
                                     }
 
                                     if (newDeviceItems.size == 0) {
@@ -158,7 +158,7 @@ class PrinterSettingActivity : CommonActivity() {
                                     } else {
                                         notnullAvailableDevices()
                                     }
-                                }
+//                                }
                             }
                         } else if (device != null && device.bondState == BluetoothDevice.BOND_BONDED) {
                             // 찾아진 디바이스가 페어링 되어 있는 경우    Data update
@@ -189,12 +189,12 @@ class PrinterSettingActivity : CommonActivity() {
 
                             if (0 <= pairedPosition) {
                                 pairedItems[pairedPosition].isFound = true
-                                printerPairedListAdapter.notifyDataSetChanged()
+                                printerPairedAdapter.notifyDataSetChanged()
 
                             } else if (0 <= connectedPosition) {
                                 connectedItem[connectedPosition].isFound = true
                                 connectedItem[connectedPosition].isConnected = true
-                                printerConnectedListAdapter.notifyDataSetChanged()
+                                printerConnectedAdapter.notifyDataSetChanged()
                             }
                         }
                     }
@@ -243,7 +243,7 @@ class PrinterSettingActivity : CommonActivity() {
 
                                 // [Paired Devices] 추가
                                 pairedItems.add(PrinterDeviceItem(device.name, device.address, false, false))
-                                printerPairedListAdapter.notifyDataSetChanged()
+                                printerPairedAdapter.notifyDataSetChanged()
                                 notnullPairedDevices()
                             } catch (e: Exception) {
                                 Log.e("Exception", "$TAG  ACTION_ACL_DISCONNECTED  Exception : $e")
@@ -260,7 +260,7 @@ class PrinterSettingActivity : CommonActivity() {
 
                             // [Paired Devices] 추가
                             pairedItems.add(PrinterDeviceItem(device.name, device.address, true, false))
-                            printerPairedListAdapter.notifyDataSetChanged()
+                            printerPairedAdapter.notifyDataSetChanged()
                             notnullPairedDevices()
                         }
                     }
@@ -313,7 +313,7 @@ class PrinterSettingActivity : CommonActivity() {
                                     }
                                     if (-1 < position) {
                                         pairedItems.removeAt(position)
-                                        printerPairedListAdapter.notifyDataSetChanged()
+                                        printerPairedAdapter.notifyDataSetChanged()
                                     }
                                 }
 
@@ -325,7 +325,7 @@ class PrinterSettingActivity : CommonActivity() {
 
                                 // [Connected Device] 추가
                                 connectedItem.add(PrinterDeviceItem(deviceName!!, deviceAddress!!, true, true))
-                                printerConnectedListAdapter.notifyDataSetChanged()
+                                printerConnectedAdapter.notifyDataSetChanged()
                                 BluetoothDeviceData.connectedPrinterAddress = deviceAddress
                                 notnullConnectedDevice()
                             }
@@ -359,7 +359,7 @@ class PrinterSettingActivity : CommonActivity() {
                     val device = mBluetoothAdapter!!.getRemoteDevice(macAddress)
                     Toast.makeText(this, device.name + "  " + resources.getString(R.string.msg_is_paired), Toast.LENGTH_SHORT).show()
                     pairedItems.add(PrinterDeviceItem(device.name, device.address, true, false))
-                    printerPairedListAdapter.notifyDataSetChanged()
+                    printerPairedAdapter.notifyDataSetChanged()
 
                     // 2019.11 - 갱신화면 안보임 수정
                     notnullPairedDevices()
@@ -401,7 +401,7 @@ class PrinterSettingActivity : CommonActivity() {
                 }
                 if (-1 < position) {
                     pairedItems.removeAt(position)
-                    printerPairedListAdapter.notifyDataSetChanged()
+                    printerPairedAdapter.notifyDataSetChanged()
                 }
                 if (pairedItems.size == 0) {
                     nullPairedDevices()
@@ -432,6 +432,7 @@ class PrinterSettingActivity : CommonActivity() {
         filter.addAction(BluetoothDevice.ACTION_ACL_DISCONNECTED) // 연결 끊김 확인
         filter.addAction(BluetoothDevice.ACTION_PAIRING_REQUEST) // 기기 Pairing 요구
         filter.addAction(BluetoothDevice.ACTION_BOND_STATE_CHANGED) // 기기 Pairing 상태 변화
+        filter.addAction(BluetoothDevice.ACTION_NAME_CHANGED)
         registerReceiver(bluetoothDeviceReceiver, filter)
     }
 
@@ -515,13 +516,16 @@ class PrinterSettingActivity : CommonActivity() {
 
         }
 
-        printerConnectedListAdapter = PrinterConnectedListAdapter(this@PrinterSettingActivity, connectedItem, listener)
-        printerPairedListAdapter = PrinterPairedListAdapter(this@PrinterSettingActivity, pairedItems, listener)
-        printerAvailableListAdapter = PrinterAvailableListAdapter(this@PrinterSettingActivity, newDeviceItems, listener)
+        printerPairedAdapter = PrinterPairedAdapter(pairedItems, listener)
+        printerConnectedAdapter = PrinterConnectedAdapter(connectedItem, listener)
+        printerAvailableAdapter = PrinterAvailableAdapter(newDeviceItems, listener)
 
-        list_setting_printer_paired_device.adapter = printerPairedListAdapter
-        list_setting_printer_connected_device.adapter = printerConnectedListAdapter
-        list_setting_printer_available_device.adapter = printerAvailableListAdapter
+        list_setting_printer_paired_device.adapter = printerPairedAdapter
+        list_setting_printer_paired_device.layoutManager = LinearLayoutManager(this)
+        list_setting_printer_connected_device.adapter = printerConnectedAdapter
+        list_setting_printer_connected_device.layoutManager = LinearLayoutManager(this)
+        list_setting_printer_available_device.adapter = printerAvailableAdapter
+        list_setting_printer_available_device.layoutManager = LinearLayoutManager(this)
 
         if (mBluetoothAdapter != null) {
             discoveryDevice()
@@ -591,8 +595,8 @@ class PrinterSettingActivity : CommonActivity() {
                     }
                 }
 
-                printerConnectedListAdapter.notifyDataSetChanged()
-                printerPairedListAdapter.notifyDataSetChanged()
+                printerConnectedAdapter.notifyDataSetChanged()
+                printerPairedAdapter.notifyDataSetChanged()
 
                 if (pairedItems.size == 0) {
                     nullPairedDevices()
