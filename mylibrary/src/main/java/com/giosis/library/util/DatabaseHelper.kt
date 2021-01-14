@@ -46,10 +46,8 @@ class DatabaseHelper private constructor(private val mContext: Context) : SQLite
         fun getInstance(context: Context): DatabaseHelper =
                 instance ?: synchronized(this) {
                     instance ?: DatabaseHelper(context).also {
-                        Log.e(TAG, "DB getInstance lib!!!!!!!!!")
                         instance = it
                         sqLiteDatabase = it.writableDatabase
-                        Log.e(TAG, "DB getInstance lib!!!!!!!!!end")
                     }
                 }
 
