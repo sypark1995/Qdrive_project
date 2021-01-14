@@ -15,7 +15,6 @@ import android.os.Looper
 import android.util.Log
 import android.view.View
 import android.widget.Toast
-import androidx.appcompat.app.AppCompatActivity
 import com.giosis.library.R
 import com.giosis.library.util.CommonActivity
 import com.giosis.library.util.PermissionActivity
@@ -52,6 +51,10 @@ class PrinterSettingActivity : CommonActivity() {
     var REQUEST_ENABLE_BT = 10001
     var mBluetoothAdapter: BluetoothAdapter? = null
 
+    lateinit var printerConnectedListAdapter: PrinterConnectedListAdapter
+    lateinit var printerPairedListAdapter: PrinterPairedListAdapter
+    lateinit var printerAvailableListAdapter: PrinterAvailableListAdapter
+
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_printer_setting)
@@ -72,7 +75,9 @@ class PrinterSettingActivity : CommonActivity() {
         }*/
 
         img_available_refresh.setOnClickListener {
-            discoveryDevice()
+            if (mBluetoothAdapter != null) {
+                discoveryDevice()
+            }
         }
 
         val checker = PermissionChecker(this)
@@ -145,7 +150,7 @@ class PrinterSettingActivity : CommonActivity() {
                                     }
                                     if (position < 0) {
                                         newDeviceItems.add(PrinterDeviceItem(device.name, device.address, false, false))
-                                        printerAvailableListAdapter?.notifyDataSetChanged()
+                                        printerAvailableListAdapter.notifyDataSetChanged()
                                     }
 
                                     if (newDeviceItems.size == 0) {
@@ -184,12 +189,12 @@ class PrinterSettingActivity : CommonActivity() {
 
                             if (0 <= pairedPosition) {
                                 pairedItems[pairedPosition].isFound = true
-                                printerPairedListAdapter?.notifyDataSetChanged()
+                                printerPairedListAdapter.notifyDataSetChanged()
 
                             } else if (0 <= connectedPosition) {
                                 connectedItem[connectedPosition].isFound = true
                                 connectedItem[connectedPosition].isConnected = true
-                                printerConnectedListAdapter?.notifyDataSetChanged()
+                                printerConnectedListAdapter.notifyDataSetChanged()
                             }
                         }
                     }
@@ -232,13 +237,13 @@ class PrinterSettingActivity : CommonActivity() {
                             try {
                                 socket!!.close()
                                 socket = null
-                               BluetoothDeviceData.connectedPrinterAddress = null
+                                BluetoothDeviceData.connectedPrinterAddress = null
                                 connectedItem.clear()
                                 nullConnectedDevice()
 
                                 // [Paired Devices] 추가
                                 pairedItems.add(PrinterDeviceItem(device.name, device.address, false, false))
-                                printerPairedListAdapter?.notifyDataSetChanged()
+                                printerPairedListAdapter.notifyDataSetChanged()
                                 notnullPairedDevices()
                             } catch (e: Exception) {
                                 Log.e("Exception", "$TAG  ACTION_ACL_DISCONNECTED  Exception : $e")
@@ -255,7 +260,7 @@ class PrinterSettingActivity : CommonActivity() {
 
                             // [Paired Devices] 추가
                             pairedItems.add(PrinterDeviceItem(device.name, device.address, true, false))
-                            printerPairedListAdapter?.notifyDataSetChanged()
+                            printerPairedListAdapter.notifyDataSetChanged()
                             notnullPairedDevices()
                         }
                     }
@@ -308,7 +313,7 @@ class PrinterSettingActivity : CommonActivity() {
                                     }
                                     if (-1 < position) {
                                         pairedItems.removeAt(position)
-                                        printerPairedListAdapter?.notifyDataSetChanged()
+                                        printerPairedListAdapter.notifyDataSetChanged()
                                     }
                                 }
                                 if (pairedItems.size == 0) {
@@ -319,7 +324,7 @@ class PrinterSettingActivity : CommonActivity() {
 
                                 // [Connected Device] 추가
                                 connectedItem.add(PrinterDeviceItem(deviceName!!, deviceAddress!!, true, true))
-                                printerConnectedListAdapter?.notifyDataSetChanged()
+                                printerConnectedListAdapter.notifyDataSetChanged()
                                 BluetoothDeviceData.connectedPrinterAddress = deviceAddress
                                 notnullConnectedDevice()
                             }
@@ -340,7 +345,6 @@ class PrinterSettingActivity : CommonActivity() {
         }
     }
 
-
     private var bluetoothDeviceHandler = Handler(Looper.getMainLooper()) {
 
         when (it.what) {
@@ -354,7 +358,7 @@ class PrinterSettingActivity : CommonActivity() {
                     val device = mBluetoothAdapter!!.getRemoteDevice(macAddress)
                     Toast.makeText(this, device.name + "  " + resources.getString(R.string.msg_is_paired), Toast.LENGTH_SHORT).show()
                     pairedItems.add(PrinterDeviceItem(device.name, device.address, true, false))
-                    printerPairedListAdapter?.notifyDataSetChanged()
+                    printerPairedListAdapter.notifyDataSetChanged()
 
                     // 2019.11 - 갱신화면 안보임 수정
                     notnullPairedDevices()
@@ -396,7 +400,7 @@ class PrinterSettingActivity : CommonActivity() {
                 }
                 if (-1 < position) {
                     pairedItems.removeAt(position)
-                    printerPairedListAdapter?.notifyDataSetChanged()
+                    printerPairedListAdapter.notifyDataSetChanged()
                 }
                 if (pairedItems.size == 0) {
                     nullPairedDevices()
@@ -429,10 +433,6 @@ class PrinterSettingActivity : CommonActivity() {
         filter.addAction(BluetoothDevice.ACTION_BOND_STATE_CHANGED) // 기기 Pairing 상태 변화
         registerReceiver(bluetoothDeviceReceiver, filter)
     }
-
-    var printerConnectedListAdapter: PrinterConnectedListAdapter? = null
-    var printerPairedListAdapter: PrinterPairedListAdapter? = null
-    var printerAvailableListAdapter: PrinterAvailableListAdapter? = null
 
     override fun onResume() {
         super.onResume()
@@ -529,14 +529,12 @@ class PrinterSettingActivity : CommonActivity() {
     }
 
     private fun discoveryDevice() {
-
         // startDiscovery()를 호출하여 디바이스 검색을 시작합니다.
         // 만약 이미 검색중이라면 cancelDiscovery()를 호출하여 검색을 멈춘 후 다시 검색해야 합니다.
         if (mBluetoothAdapter!!.isDiscovering) {
             mBluetoothAdapter!!.cancelDiscovery()
         }
         mBluetoothAdapter!!.startDiscovery()
-
     }
 
     private val deviceList: Unit
@@ -545,24 +543,31 @@ class PrinterSettingActivity : CommonActivity() {
             Log.e("print", TAG + "  getDeviceList  " + BluetoothDeviceData.connectedPrinterAddress + " / " + pairedDevices.size)
             if (0 < pairedDevices.size) {
                 for (device in pairedDevices) {
+
                     var deviceName = device.name
                     val deviceAddress = device.address
+
                     try {
                         val method = device.javaClass.getMethod("getAliasName")
                         if (method != null) {
                             deviceName = method.invoke(device) as String
                         }
-                        if (deviceName == null || deviceName == "") deviceName = device.name
+
+                        if (deviceName == null || deviceName == "") {
+                            deviceName = device.name
+                        }
+
                     } catch (e: Exception) {
                         e.printStackTrace()
                     }
+
                     if (BluetoothDeviceData.connectedPrinterAddress != null && BluetoothDeviceData.connectedPrinterAddress == deviceAddress) {
 
                         Log.e("print", TAG + "  connected Device : " + device.name + " / " + device.address)
 
                         if (socket != null) {
                             connectedItem.add(PrinterDeviceItem(deviceName!!, deviceAddress, true, true))
-                            printerConnectedListAdapter!!.notifyDataSetChanged()
+
 
                         } else {
                             try {
@@ -582,9 +587,12 @@ class PrinterSettingActivity : CommonActivity() {
                     } else {
                         Log.e("print", TAG + "  paired Device : " + device.name + " / " + device.address)
                         pairedItems.add(PrinterDeviceItem(deviceName!!, deviceAddress, false, false))
-                        printerPairedListAdapter!!.notifyDataSetChanged()
+
                     }
                 }
+
+                printerConnectedListAdapter.notifyDataSetChanged()
+                printerPairedListAdapter.notifyDataSetChanged()
 
                 if (pairedItems.size == 0) {
                     nullPairedDevices()
