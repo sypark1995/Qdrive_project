@@ -518,9 +518,9 @@ class PrinterSettingActivity : CommonActivity() {
         printerPairedListAdapter = PrinterPairedListAdapter(this@PrinterSettingActivity, pairedItems, listener)
         printerAvailableListAdapter = PrinterAvailableListAdapter(this@PrinterSettingActivity, newDeviceItems, listener)
 
-        list_setting_printer_paired_device!!.adapter = printerPairedListAdapter
-        list_setting_printer_connected_device!!.adapter = printerConnectedListAdapter
-        list_setting_printer_available_device!!.adapter = printerAvailableListAdapter
+        list_setting_printer_paired_device.adapter = printerPairedListAdapter
+        list_setting_printer_connected_device.adapter = printerConnectedListAdapter
+        list_setting_printer_available_device.adapter = printerAvailableListAdapter
 
         if (mBluetoothAdapter != null) {
             discoveryDevice()
@@ -584,48 +584,49 @@ class PrinterSettingActivity : CommonActivity() {
                         pairedItems.add(PrinterDeviceItem(deviceName!!, deviceAddress, false, false))
                         printerPairedListAdapter!!.notifyDataSetChanged()
                     }
-                    if (pairedItems.size == 0) {
-                        nullPairedDevices()
-                    } else {
-                        notnullPairedDevices()
-                    }
-                    if (connectedItem.size == 0) {
-                        nullConnectedDevice()
-                    } else {
-                        notnullConnectedDevice()
-                    }
+                }
+
+                if (pairedItems.size == 0) {
+                    nullPairedDevices()
+                } else {
+                    notnullPairedDevices()
+                }
+                if (connectedItem.size == 0) {
+                    nullConnectedDevice()
+                } else {
+                    notnullConnectedDevice()
                 }
             }
         }
 
     fun nullAvailableDevices() {
-        list_setting_printer_available_device!!.visibility = View.GONE
-        layout_setting_printer_no_available_device!!.visibility = View.VISIBLE
+        list_setting_printer_available_device.visibility = View.GONE
+        layout_setting_printer_no_available_device.visibility = View.VISIBLE
     }
 
     fun notnullAvailableDevices() {
-        list_setting_printer_available_device!!.visibility = View.VISIBLE
-        layout_setting_printer_no_available_device!!.visibility = View.GONE
+        list_setting_printer_available_device.visibility = View.VISIBLE
+        layout_setting_printer_no_available_device.visibility = View.GONE
     }
 
     fun nullPairedDevices() {
-        list_setting_printer_paired_device!!.visibility = View.GONE
-        layout_setting_printer_no_paired_device!!.visibility = View.VISIBLE
+        list_setting_printer_paired_device.visibility = View.GONE
+        layout_setting_printer_no_paired_device.visibility = View.VISIBLE
     }
 
     fun notnullPairedDevices() {
-        list_setting_printer_paired_device!!.visibility = View.VISIBLE
-        layout_setting_printer_no_paired_device!!.visibility = View.GONE
+        list_setting_printer_paired_device.visibility = View.VISIBLE
+        layout_setting_printer_no_paired_device.visibility = View.GONE
     }
 
     fun nullConnectedDevice() {
-        list_setting_printer_connected_device!!.visibility = View.GONE
-        layout_setting_printer_no_connected_device!!.visibility = View.VISIBLE
+        list_setting_printer_connected_device.visibility = View.GONE
+        layout_setting_printer_no_connected_device.visibility = View.VISIBLE
     }
 
     fun notnullConnectedDevice() {
-        list_setting_printer_connected_device!!.visibility = View.VISIBLE
-        layout_setting_printer_no_connected_device!!.visibility = View.GONE
+        list_setting_printer_connected_device.visibility = View.VISIBLE
+        layout_setting_printer_no_connected_device.visibility = View.GONE
     }
 
     override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
