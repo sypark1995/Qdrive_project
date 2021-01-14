@@ -52,18 +52,16 @@ class PrinterPairedAdapter(private val dataList: ArrayList<PrinterDeviceItem>, p
                     .setMessage(it.context.resources.getString(R.string.msg_sure_disconnect_bluetooth) + " " + _name + "?")
                     .setPositiveButton(it.context.resources.getString(R.string.button_ok)) { dialog, which ->
 
-                        // TODO_kjyoo :  Delete 버튼 누르면, Available Devices 리스트에 나타나야함
-
                         val device = listener.getRemoteDevice(_address)
 
                         try {
                             if (device != null) {
-                                val method = device.javaClass.getMethod("removeBond", null)
-                                method.invoke(device, null as Array<Any?>?)
+                                device::class.java.getMethod("removeBond").invoke(device)
                             }
                         } catch (e: java.lang.Exception) {
                             Log.e("Exception", "UnPairing Exception : $e")
                         }
+
                     }
                     .setNegativeButton(it.context.resources.getString(R.string.button_cancel)) { dialog, which -> }.show()
         }
