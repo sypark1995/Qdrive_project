@@ -1,5 +1,6 @@
 package com.giosis.library.util
 
+import android.content.Context
 import androidx.appcompat.app.AppCompatActivity
 
 
@@ -37,6 +38,7 @@ open class CommonActivity : AppCompatActivity() {
 //    }
 
 
+    // TODO.  Alarm Receiver 옮기면 추석 풀기
     // Auto Logout
     override fun onResume() {
         super.onResume()
@@ -52,7 +54,9 @@ open class CommonActivity : AppCompatActivity() {
 //        }
     }
 
-//    override fun attachBaseContext(base: Context?) {
-//        super.attachBaseContext(MyApplication.localeManager.setLocale(base))
-//    }
+    override fun attachBaseContext(base: Context?) {
+        if (base != null) {
+            super.attachBaseContext(LocaleManager.getInstance(base).setLocale(base))
+        }
+    }
 }

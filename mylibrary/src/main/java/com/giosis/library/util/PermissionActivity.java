@@ -11,13 +11,12 @@ import android.util.Log;
 
 import androidx.annotation.NonNull;
 import androidx.appcompat.app.AlertDialog;
-import androidx.appcompat.app.AppCompatActivity;
 import androidx.core.app.ActivityCompat;
 
 import com.giosis.library.R;
 
 
-public class PermissionActivity extends AppCompatActivity {
+public class PermissionActivity extends CommonActivity {
 
     public static final int PERMISSIONS_GRANTED = 200;
     public static final int PERMISSIONS_DENIED = 400;
