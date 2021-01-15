@@ -278,14 +278,6 @@
             android:screenOrientation="portrait"
             android:windowSoftInputMode="stateAlwaysHidden|adjustPan" />
 
-        <activity
-            android:name=".MainTestVisitLog"
-            android:screenOrientation="portrait" />
-
-        <activity
-            android:name="com.giosis.util.qdrive.capture.LivePreviewActivity"
-            android:screenOrientation="portrait" />
-
         <meta-data
             android:name="com.google.android.maps.v2.API_KEY"
             android:value="AIzaSyA1NWLPCM1Ng4go6Al3CxR36_C9Us0BTk0" />
