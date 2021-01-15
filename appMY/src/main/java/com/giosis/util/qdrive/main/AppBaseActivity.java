@@ -164,8 +164,7 @@ public class AppBaseActivity extends CommonActivity {
                         // TEST
                         //Intent intent = new Intent(AppBaseActivity.this, PodListActivity.class);
                         //Intent intent = new Intent(AppBaseActivity.this, CameraActivity.class);
-                        // Intent intent = new Intent(AppBaseActivity.this, SMSVerificationActivity.class);
-                        //Intent intent = new Intent(AppBaseActivity.this, MainTestVisitLog.class);
+                        //  Intent intent = new Intent(AppBaseActivity.this, SMSVerificationActivity.class);
 
                         Intent intent = new Intent(AppBaseActivity.this, SettingActivity.class);
                         startActivity(intent);

@@ -15,17 +15,14 @@ import androidx.appcompat.widget.Toolbar;
 import androidx.core.content.ContextCompat;
 import androidx.drawerlayout.widget.DrawerLayout;
 
-import com.giosis.library.main.SMSVerificationActivity;
 import com.giosis.library.main.submenu.ListNotInHousedActivity;
 import com.giosis.library.main.submenu.ScanActivity;
 import com.giosis.library.main.submenu.StatisticsActivity;
-import com.giosis.library.main.submenu.ListNotInHousedActivity;
 import com.giosis.library.message.MessageListActivity;
 import com.giosis.library.pickup.CreatePickupOrderActivity;
 import com.giosis.library.setting.SettingActivity;
 import com.giosis.util.qdrive.barcodescanner.CaptureActivity;
 import com.giosis.util.qdrive.list.ListActivity;
-//import com.giosis.util.qdrive.message.MessageListActivity;
 import com.giosis.util.qdrive.singapore.MyApplication;
 import com.giosis.util.qdrive.singapore.R;
 import com.giosis.util.qdrive.util.BarcodeType;
@@ -33,6 +30,7 @@ import com.giosis.util.qdrive.util.ui.CommonActivity;
 
 import java.util.ArrayList;
 import java.util.Arrays;
+
 
 public class AppBaseActivity extends CommonActivity {
     String TAG = "AppBaseActivity";
@@ -176,9 +174,7 @@ public class AppBaseActivity extends CommonActivity {
                     // TEST.
                     drawerLayout.closeDrawers();
                     Intent intent = new Intent(AppBaseActivity.this, SettingActivity.class);
-                    // Intent intent = new Intent(AppBaseActivity.this, MainTestVisitLog.class);
                     //Intent intent = new Intent(AppBaseActivity.this, SMSVerificationActivity.class);
-                    // Intent intent = new Intent(AppBaseActivity.this, MyRouteActivity.class);
 
                     startActivity(intent);
 

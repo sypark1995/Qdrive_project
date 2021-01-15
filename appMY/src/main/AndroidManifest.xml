@@ -131,9 +131,6 @@
             android:windowSoftInputMode="stateAlwaysHidden|adjustPan" />
 
         <!-- -->
-        <activity
-            android:name="com.giosis.util.qdrive.international.SMSVerificationActivity"
-            android:screenOrientation="portrait" />
 
         <activity
             android:name="com.giosis.util.qdrive.main.OutletOrderStatusActivity"

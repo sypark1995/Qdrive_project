@@ -35,7 +35,6 @@ import org.json.JSONObject;
 import java.util.HashMap;
 import java.util.regex.Pattern;
 
-// TODO.karam  string.xml  /  my,id test
 public class SMSVerificationActivity extends CommonActivity {
     private static final String TAG = "SMSVerificationActivity";
 
@@ -68,6 +67,8 @@ public class SMSVerificationActivity extends CommonActivity {
 
     String focusItem = "";
     String mPhoneNumber;
+
+
     View.OnClickListener clickListener = v -> {
 
         int id = v.getId();
@@ -80,48 +81,9 @@ public class SMSVerificationActivity extends CommonActivity {
             requestAuthNoClick();
         } else if (id == R.id.btn_verify_submit) {
 
-       //     submitAuthNoClick();
-            submitTest();
+            submitAuthNoClick();
         }
     };
-
-
-    @Override
-    protected void onResume() {
-        super.onResume();
-
-        mPhoneNumber = "";
-
-        if (isPermissionTrue) {
-            try {
-
-                mPhoneNumber = getMyPhoneNumber();
-            } catch (Exception e) {
-
-                mPhoneNumber = "";
-            }
-        }
-
-        edit_verify_phone_number.setText(mPhoneNumber);
-    }
-
-    private String getMyPhoneNumber() {
-
-        String temp_phone_no = "";
-
-        if (ActivityCompat.checkSelfPermission(this, android.Manifest.permission.READ_PHONE_STATE) != PackageManager.PERMISSION_GRANTED) {
-
-            return temp_phone_no;
-        }
-
-        TelephonyManager mTelephonyMgr = (TelephonyManager) getSystemService(Context.TELEPHONY_SERVICE);
-
-        if (!mTelephonyMgr.getLine1Number().equals("")) {
-            temp_phone_no = mTelephonyMgr.getLine1Number();
-        }
-
-        return temp_phone_no;
-    }
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -147,8 +109,8 @@ public class SMSVerificationActivity extends CommonActivity {
 
         //
         context = getApplicationContext();
-        deviceID = Preferences.INSTANCE.getDeviceUUID();
         op_id = Preferences.INSTANCE.getUserId();
+        deviceID = Preferences.INSTANCE.getDeviceUUID();
         nation = Preferences.INSTANCE.getUserNation();
         Log.e("krm0219", " DATA > " + op_id + " / " + deviceID + " / " + nation);
 
@@ -162,7 +124,7 @@ public class SMSVerificationActivity extends CommonActivity {
             @Override
             public void onTextChanged(CharSequence charSequence, int start, int before, int count) {
 
-                if(nation.equalsIgnoreCase("SG")) {
+                if (nation.equalsIgnoreCase("SG")) {
 
                     if (8 <= charSequence.length()) {
 
@@ -212,7 +174,6 @@ public class SMSVerificationActivity extends CommonActivity {
         });
 
 
-        //
         PermissionChecker checker = new PermissionChecker(this);
 
         // 권한 여부 체크 (없으면 true, 있으면 false)
@@ -227,6 +188,42 @@ public class SMSVerificationActivity extends CommonActivity {
         }
     }
 
+    @Override
+    protected void onResume() {
+        super.onResume();
+
+        mPhoneNumber = "";
+
+        if (isPermissionTrue) {
+            try {
+
+                mPhoneNumber = getMyPhoneNumber();
+            } catch (Exception e) {
+
+                mPhoneNumber = "";
+            }
+        }
+
+        edit_verify_phone_number.setText(mPhoneNumber);
+    }
+
+    private String getMyPhoneNumber() {
+
+        String temp_phone_no = "";
+
+        if (ActivityCompat.checkSelfPermission(this, android.Manifest.permission.READ_PHONE_STATE) != PackageManager.PERMISSION_GRANTED) {
+
+            return temp_phone_no;
+        }
+
+        TelephonyManager mTelephonyMgr = (TelephonyManager) getSystemService(Context.TELEPHONY_SERVICE);
+
+        if (!mTelephonyMgr.getLine1Number().equals("")) {
+            temp_phone_no = mTelephonyMgr.getLine1Number();
+        }
+
+        return temp_phone_no;
+    }
 
     @Override
     protected void onActivityResult(int requestCode, int resultCode, @Nullable Intent data) {
@@ -240,37 +237,6 @@ public class SMSVerificationActivity extends CommonActivity {
             }
         }
     }
-
-    public void submitTest() {
-
-        AlertDialog.Builder builder = new AlertDialog.Builder(SMSVerificationActivity.this);
-        builder.setTitle("Success");
-        builder.setMessage("SMS verification Success.");
-
-        builder.setPositiveButton("OK", (dialog, which) -> {
-
-            dialog.cancel();
-
-            try {
-
-                Intent intent = new Intent(context, Class.forName("com.giosis.util.qdrive.main.MainActivity"));
-                intent.addFlags(Intent.FLAG_ACTIVITY_NO_ANIMATION);
-                startActivity(intent);
-
-                overridePendingTransition(android.R.anim.fade_in, android.R.anim.fade_out);
-                finish();
-            } catch (Exception e) {
-
-                Log.e("Exception", "Exception  " + e.toString());
-            }
-        });
-
-        if (!SMSVerificationActivity.this.isFinishing()) {
-            AlertDialog alertDialog = builder.create();
-            alertDialog.show();
-        }
-    }
-
 
     // SG, MY, ID 구분
     public void requestAuthNoClick() {
@@ -292,7 +258,7 @@ public class SMSVerificationActivity extends CommonActivity {
           맨 앞자리 0을 포함한 13자리	 // 0813 11111 8569
           */
 
-        if(nation.equalsIgnoreCase("SG")) {
+        if (nation.equalsIgnoreCase("SG")) {
 
             if (phone_no.length() != 8) {
 
@@ -303,20 +269,20 @@ public class SMSVerificationActivity extends CommonActivity {
                     if (!matches) {
 
                         isvalid = false;
-                        builder.setTitle("Invalidation alert");
-                        builder.setMessage("please enter your right format number.");
+                        builder.setTitle(context.getResources().getString(R.string.text_invalidation_alert));
+                        builder.setMessage(context.getResources().getString(R.string.msg_enter_right_format_number));
                         builder.setCancelable(true);
                     } else {
 
-                        builder.setTitle("Verification");
-                        builder.setMessage("Qdrive will be verifying the phone number(" + phone_no + "). Is this OK?");
+                        builder.setTitle(context.getResources().getString(R.string.text_verification));
+                        builder.setMessage(context.getResources().getString(R.string.msg_verify_phone_number) + " (" + phone_no + "). " + context.getResources().getString(R.string.msg_is_this_ok));
                         builder.setCancelable(true);
                     }
                 } else {
 
                     isvalid = false;
-                    builder.setTitle("Invalidation alert");
-                    builder.setMessage("please enter your right number.");
+                    builder.setTitle(context.getResources().getString(R.string.text_invalidation_alert));
+                    builder.setMessage(context.getResources().getString(R.string.msg_please_enter_right_number));
                     builder.setCancelable(true);
                 }
             } else {
@@ -326,14 +292,14 @@ public class SMSVerificationActivity extends CommonActivity {
 
                 if (matches2) {
 
-                    builder.setTitle("Verification");
-                    builder.setMessage("Qdrive will be verifying the phone number(" + phone_no + "). Is this OK?");
+                    builder.setTitle(context.getResources().getString(R.string.text_verification));
+                    builder.setMessage(context.getResources().getString(R.string.msg_verify_phone_number) + " (" + phone_no + "). " + context.getResources().getString(R.string.msg_is_this_ok));
                     builder.setCancelable(true);
                 } else {
 
                     isvalid = false;
-                    builder.setTitle("Invalidation alert");
-                    builder.setMessage("please enter your right format number.");
+                    builder.setTitle(context.getResources().getString(R.string.text_invalidation_alert));
+                    builder.setMessage(context.getResources().getString(R.string.msg_enter_right_format_number));
                     builder.setCancelable(true);
                 }
             }
@@ -450,21 +416,20 @@ public class SMSVerificationActivity extends CommonActivity {
         }
 
 
-
         if (isvalid) {
 
-            builder.setPositiveButton("OK", (dialog, which) -> {
+            builder.setPositiveButton(context.getResources().getString(R.string.button_ok), (dialog, which) -> {
 
                 GetAuthSMSRequestTask getAuthSMSRequestTask = new GetAuthSMSRequestTask();
                 getAuthSMSRequestTask.execute();
                 dialog.cancel();
             });
 
-            builder.setNeutralButton("CANCEL", (dialog, id) -> dialog.cancel());
+            builder.setNeutralButton(context.getResources().getString(R.string.button_cancel), (dialog, id) -> dialog.cancel());
 
         } else {
 
-            builder.setPositiveButton("OK", (dialog, which) -> dialog.cancel());
+            builder.setPositiveButton(context.getResources().getString(R.string.button_ok), (dialog, which) -> dialog.cancel());
 
         }
 
@@ -487,13 +452,11 @@ public class SMSVerificationActivity extends CommonActivity {
             boolean isValidate = true;
 
             if (name.equals("")) {
+
                 isValidate = false;
-
-                String alertMsg = "";
                 focusItem = "name";
-                alertMsg += "name";
 
-                builder.setMessage("please enter your " + alertMsg + ".");
+                builder.setMessage(context.getResources().getString(R.string.msg_please_enter_name));
                 builder.setPositiveButton(context.getResources().getString(R.string.button_ok), (dialog, which) -> {
                     if (focusItem.equals("name")) {
                         edit_verify_name.requestFocus();
@@ -533,7 +496,7 @@ public class SMSVerificationActivity extends CommonActivity {
         if (!NetworkUtil.isNetworkAvailable(context)) {
 
             hashMap.put("ResultCode", "-16");
-            hashMap.put("ResultMsg", context.getResources().getString(R.string.msg_network_connect_error_saved));
+            hashMap.put("ResultMsg", context.getResources().getString(R.string.msg_network_connect_error));
             return hashMap;
         }
 
@@ -556,8 +519,9 @@ public class SMSVerificationActivity extends CommonActivity {
             hashMap.put("ResultMsg", jsonObject.getString("ResultMsg"));
         } catch (Exception e) {
 
+            String msg = String.format(context.getResources().getString(R.string.text_exception), e.toString());
             hashMap.put("ResultCode", "-15");
-            hashMap.put("ResultMsg", "\nException : " + e.toString());
+            hashMap.put("ResultMsg", msg);
         }
 
         return hashMap;
@@ -571,7 +535,7 @@ public class SMSVerificationActivity extends CommonActivity {
         if (!NetworkUtil.isNetworkAvailable(context)) {
 
             hashMap.put("ResultCode", "-16");
-            hashMap.put("ResultMsg", "Please check your network connection. Saved at local device");
+            hashMap.put("ResultMsg", context.getResources().getString(R.string.msg_network_connect_error));
             return hashMap;
         }
 
@@ -585,7 +549,7 @@ public class SMSVerificationActivity extends CommonActivity {
             job.accumulate("email", email);
             job.accumulate("op_id", op_id);
             job.accumulate("app_id", DataUtil.appID);
-            job.accumulate("nation_cd",Preferences.INSTANCE.getUserNation());
+            job.accumulate("nation_cd", Preferences.INSTANCE.getUserNation());
 
             String methodName = "SetAuthCodeCheck";
             String jsonString = Custom_JsonParser.requestServerDataReturnJSON(methodName, job);
@@ -596,8 +560,9 @@ public class SMSVerificationActivity extends CommonActivity {
             hashMap.put("ResultMsg", jsonObject.getString("ResultMsg"));
         } catch (Exception e) {
 
+            String msg = String.format(context.getResources().getString(R.string.text_exception), e.toString());
             hashMap.put("ResultCode", "-15");
-            hashMap.put("ResultMsg", "Exception : " + e.toString());
+            hashMap.put("ResultMsg", msg);
         }
 
         return hashMap;
@@ -661,10 +626,10 @@ public class SMSVerificationActivity extends CommonActivity {
             if (!resultCode.equals("0")) {
 
                 AlertDialog.Builder builder = new AlertDialog.Builder(SMSVerificationActivity.this);
-                builder.setTitle("alert");
-                builder.setMessage("SMS verification failed. " + resultMsg
-                        + ".\nIf you doesn't get the verification, you can not use Qdrive App.");
-                builder.setPositiveButton("OK", new OnClickListener() {
+                builder.setTitle(context.getResources().getString(R.string.text_alert));
+                builder.setMessage(context.getResources().getString(R.string.msg_sms_verification_failed) + " " + resultMsg
+                        + "\n" + context.getResources().getString(R.string.msg_verification_not_use));
+                builder.setPositiveButton(context.getResources().getString(R.string.button_ok), new OnClickListener() {
 
                     @Override
                     public void onClick(DialogInterface dialog, int which) {
@@ -679,10 +644,10 @@ public class SMSVerificationActivity extends CommonActivity {
             } else {
 
                 AlertDialog.Builder builder = new AlertDialog.Builder(SMSVerificationActivity.this);
-                builder.setTitle("Success");
-                builder.setMessage("SMS verification Success.");
+                builder.setTitle(context.getResources().getString(R.string.text_success));
+                builder.setMessage(context.getResources().getString(R.string.msg_sms_verification_success));
 
-                builder.setPositiveButton("OK", new OnClickListener() {
+                builder.setPositiveButton(context.getResources().getString(R.string.button_ok), new OnClickListener() {
 
                     @Override
                     public void onClick(DialogInterface dialog, int which) {
@@ -690,7 +655,7 @@ public class SMSVerificationActivity extends CommonActivity {
                         dialog.cancel();
 
                         Preferences.INSTANCE.setUserName(name);
-                   //     MyApplication.preferences.setUserName(name);
+                        //     MyApplication.preferences.setUserName(name);
 
                         try {
 

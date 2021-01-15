@@ -75,7 +75,6 @@ class SettingViewModel : BaseViewModel() {
         } else {
             version.value = Preferences.appVersion
         }
-
     }
 
     fun changePassword() {
@@ -110,7 +109,7 @@ class SettingViewModel : BaseViewModel() {
         startActivity(LanguageSettingActivity::class.java)
     }
 
-    fun editUserInfo(){
+    fun editUserInfo() {
         startActivity(ModifyUserInfoActivity::class.java)
     }
 }

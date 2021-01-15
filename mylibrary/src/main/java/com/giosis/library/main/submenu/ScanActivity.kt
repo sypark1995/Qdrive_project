@@ -67,7 +67,6 @@ class ScanActivity : CommonActivity() {
         layout_scan_self_collection.setOnClickListener(clickListener)
     }
 
-    // TODO.karam : Activity 이동
     var clickListener = View.OnClickListener { v ->
 
         when (v.id) {
