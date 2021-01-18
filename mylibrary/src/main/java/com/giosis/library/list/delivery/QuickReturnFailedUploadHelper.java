@@ -1,4 +1,4 @@
-package com.giosis.util.qdrive.list.delivery;
+package com.giosis.library.list.delivery;
 
 import android.app.AlertDialog;
 import android.app.ProgressDialog;
@@ -11,15 +11,16 @@ import android.os.AsyncTask;
 import android.util.Log;
 import android.widget.ImageView;
 
+import com.giosis.library.OnServerEventListener;
+import com.giosis.library.R;
+import com.giosis.library.barcodescanner.StdResult;
+import com.giosis.library.server.Custom_JsonParser;
 import com.giosis.library.server.ImageUpload;
-import com.giosis.util.qdrive.barcodescanner.StdResult;
-import com.giosis.util.qdrive.international.OnServerEventListener;
-import com.giosis.util.qdrive.international.R;
-import com.giosis.util.qdrive.util.Custom_JsonParser;
-import com.giosis.util.qdrive.util.DataUtil;
+import com.giosis.library.util.DataUtil;
 import com.giosis.library.util.DatabaseHelper;
-import com.giosis.util.qdrive.util.DisplayUtil;
-import com.giosis.util.qdrive.util.NetworkUtil;
+import com.giosis.library.util.DisplayUtil;
+import com.giosis.library.util.NetworkUtil;
+import com.giosis.library.util.Preferences;
 
 import org.json.JSONObject;
 
@@ -27,8 +28,8 @@ import java.text.SimpleDateFormat;
 import java.util.Date;
 
 
-public class DeliveryReturnFailedUploadHelper {
-    private String TAG = "DeliveryReturnedVisitLogUploadHelper";
+public class QuickReturnFailedUploadHelper {
+    String TAG = "QuickReturnFailedUploadHelper";
 
     private final Context context;
     private final String opID;
@@ -36,9 +37,8 @@ public class DeliveryReturnFailedUploadHelper {
     private final String deviceID;
 
     private final String shippingNo;
-    private final ImageView imageView;
     private final String driverMemo;
-    private final String receiveType;
+    private final ImageView imageView;
 
     private final long disk_size;
     private final double lat;
@@ -57,9 +57,8 @@ public class DeliveryReturnFailedUploadHelper {
         private final String deviceID;
 
         private final String shippingNo;
-        private final ImageView imageView;
         private final String driverMemo;
-        private final String receiveType;
+        private final ImageView imageView;
 
         private final long disk_size;
         private final double lat;
@@ -69,7 +68,7 @@ public class DeliveryReturnFailedUploadHelper {
         private OnServerEventListener eventListener;
 
         public Builder(Context context, String opID, String officeCode, String deviceID,
-                       String shippingNo, ImageView imageView, String driverMemo, String receiveType,
+                       String shippingNo, String driverMemo, ImageView imageView,
                        long disk_size, double lat, double lon) {
 
             this.context = context;
@@ -79,17 +78,16 @@ public class DeliveryReturnFailedUploadHelper {
             this.networkType = NetworkUtil.getNetworkType(context);
 
             this.shippingNo = shippingNo;
-            this.imageView = imageView;
             this.driverMemo = driverMemo;
-            this.receiveType = receiveType;
+            this.imageView = imageView;
 
             this.disk_size = disk_size;
             this.lat = lat;
             this.lon = lon;
         }
 
-        public DeliveryReturnFailedUploadHelper build() {
-            return new DeliveryReturnFailedUploadHelper(this);
+        public QuickReturnFailedUploadHelper build() {
+            return new QuickReturnFailedUploadHelper(this);
         }
 
         public Builder setOnServerEventListener(OnServerEventListener eventListener) {
@@ -99,7 +97,7 @@ public class DeliveryReturnFailedUploadHelper {
         }
     }
 
-    private DeliveryReturnFailedUploadHelper(Builder builder) {
+    private QuickReturnFailedUploadHelper(Builder builder) {
 
         this.context = builder.context;
         this.opID = builder.opID;
@@ -107,9 +105,8 @@ public class DeliveryReturnFailedUploadHelper {
         this.deviceID = builder.deviceID;
 
         this.shippingNo = builder.shippingNo;
-        this.imageView = builder.imageView;
         this.driverMemo = builder.driverMemo;
-        this.receiveType = builder.receiveType;
+        this.imageView = builder.imageView;
 
         this.disk_size = builder.disk_size;
         this.lat = builder.lat;
@@ -134,8 +131,7 @@ public class DeliveryReturnFailedUploadHelper {
 
         AlertDialog dialog = new AlertDialog.Builder(context)
                 .setTitle(context.getResources().getString(R.string.text_upload_result))
-                .setCancelable(false)
-                .setPositiveButton(context.getResources().getString(R.string.button_ok), new OnClickListener() {
+                .setCancelable(true).setPositiveButton(context.getResources().getString(R.string.button_ok), new OnClickListener() {
 
                     @Override
                     public void onClick(DialogInterface dialog, int which) {
@@ -157,7 +153,6 @@ public class DeliveryReturnFailedUploadHelper {
         resultDialog.show();
     }
 
-
     class ReturnFailUploadTask extends AsyncTask<Void, Integer, StdResult> {
         int progress = 0;
 
@@ -175,10 +170,10 @@ public class DeliveryReturnFailedUploadHelper {
         @Override
         protected StdResult doInBackground(Void... params) {
 
-            StdResult result = requestReturnedUpload(shippingNo);
+            StdResult stdResult = requestReturnFailUpload(shippingNo);
             publishProgress(1);
 
-            return result;
+            return stdResult;
         }
 
         @Override
@@ -194,32 +189,20 @@ public class DeliveryReturnFailedUploadHelper {
 
             DisplayUtil.dismissProgressDialog(progressDialog);
 
+            int resultCode = result.getResultCode();
+            String resultMsg = result.getResultMsg();
 
             try {
-
-                int resultCode = result.getResultCode();
-                String resultMsg = result.getResultMsg();
-                String fail_reason = "";
 
                 if (resultCode < 0) {
 
                     if (resultCode == -14) {
-                        fail_reason += context.getResources().getString(R.string.msg_upload_fail_14);
-                    } else if (resultCode == -15) {
-                        fail_reason += context.getResources().getString(R.string.msg_upload_fail_15);
-                    } else {
-                        //   fail_reason += String.format(context.getResources().getString(R.string.msg_upload_fail_etc), resultCode);
-                        fail_reason += resultMsg;
+
+                        resultMsg = context.getResources().getString(R.string.msg_upload_fail_14);
                     }
 
-                    if (resultCode == -16) {
-
-                        showResultDialog(fail_reason);
-                    } else {
-
-                        String msg = String.format(context.getResources().getString(R.string.text_upload_fail_count), 0, 1, fail_reason);
-                        showResultDialog(msg);
-                    }
+                    String msg = String.format(context.getResources().getString(R.string.text_upload_fail_count2), resultMsg);
+                    showResultDialog(msg);
                 } else {
 
                     String msg = String.format(context.getResources().getString(R.string.text_upload_success_count), 1);
@@ -232,7 +215,7 @@ public class DeliveryReturnFailedUploadHelper {
         }
 
 
-        private StdResult requestReturnedUpload(String assignNo) {
+        private StdResult requestReturnFailUpload(String assignNo) {
 
             SimpleDateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
             Date date = new Date();
@@ -245,7 +228,7 @@ public class DeliveryReturnFailedUploadHelper {
 
             DatabaseHelper dbHelper = DatabaseHelper.getInstance();
             dbHelper.update(DatabaseHelper.DB_TABLE_INTEGRATION_LIST, contentVal,
-                    "invoice_no=? COLLATE NOCASE and reg_id = ?", new String[]{assignNo, opID});
+                    "invoice_no=? COLLATE NOCASE " + "and reg_id = ?", new String[]{assignNo, opID});
 
 
             StdResult result = new StdResult();
@@ -253,7 +236,7 @@ public class DeliveryReturnFailedUploadHelper {
             if (!NetworkUtil.isNetworkAvailable(context)) {
 
                 result.setResultCode(-16);
-                result.setResultMsg(context.getResources().getString(R.string.msg_network_connect_error_saved));
+                result.setResultMsg(context.getResources().getString(R.string.msg_upload_fail_16));
                 return result;
             }
 
@@ -261,7 +244,7 @@ public class DeliveryReturnFailedUploadHelper {
 
                 imageView.buildDrawingCache();
                 Bitmap captureView = imageView.getDrawingCache();
-                String bitmapString = DataUtil.bitmapToString(captureView, ImageUpload.QXPOD, "qdriver/sign", assignNo);
+                String bitmapString = DataUtil.bitmapToString(context, captureView, ImageUpload.QXPOD, "qdriver/sign", assignNo);
 
                 if (bitmapString.equals("")) {
                     result.setResultCode(-100);
@@ -271,23 +254,23 @@ public class DeliveryReturnFailedUploadHelper {
 
                 JSONObject job = new JSONObject();
 
-                job.accumulate("rcv_type", receiveType);
+                job.accumulate("rcv_type", "RC");
                 job.accumulate("stat", "RF");
                 job.accumulate("chg_id", opID);
-                job.accumulate("deliv_msg", "(by Qdrive RealTime-Upload)");
+                job.accumulate("deliv_msg", "(by Qdrive RealTime-Upload)"); // 내부관리자용 메세지
                 job.accumulate("opId", opID);
                 job.accumulate("officeCd", officeCode);
                 job.accumulate("device_id", deviceID);
                 job.accumulate("network_type", networkType);
                 job.accumulate("fileData", bitmapString);
                 job.accumulate("no_songjang", assignNo);
-                job.accumulate("remark", driverMemo);       // 드라이버 메세지 driver_memo	== remark
+                job.accumulate("remark", driverMemo);               // 드라이버 메세지 driver_memo	== remark
                 job.accumulate("disk_size", disk_size);
                 job.accumulate("lat", lat);
                 job.accumulate("lon", lon);
                 job.accumulate("del_channel", "QDRIVE");
                 job.accumulate("app_id", DataUtil.appID);
-                job.accumulate("nation_cd", DataUtil.nationCode);
+                job.accumulate("nation_cd", Preferences.INSTANCE.getUserNation());
 
 
                 String methodName = "setDeliveryRTNDPTypeUploadData";
@@ -305,7 +288,7 @@ public class DeliveryReturnFailedUploadHelper {
                     contentVal2.put("punchOut_stat", "S");
 
                     dbHelper.update(DatabaseHelper.DB_TABLE_INTEGRATION_LIST, contentVal2,
-                            "invoice_no=? COLLATE NOCASE and reg_id = ?", new String[]{assignNo, opID});
+                            "invoice_no=? COLLATE NOCASE " + "and reg_id = ?", new String[]{assignNo, opID});
                 } else {
 
                     updateReceiverSign(assignNo, driverMemo);
@@ -323,31 +306,32 @@ public class DeliveryReturnFailedUploadHelper {
     }
 
 
-    public DeliveryReturnFailedUploadHelper execute() {
+    public QuickReturnFailedUploadHelper execute() {
         ReturnFailUploadTask returnFailUploadTask = new ReturnFailUploadTask();
         returnFailUploadTask.execute();
         return this;
     }
 
-
+    // SQLite UPDATE
     private void updateReceiverSign(String invoiceNo, String driverMemo) {
+
+        //        String opId = SharedPreferencesHelper.getSigninOpID(context);
+        String opId = Preferences.INSTANCE.getUserId();
 
         SimpleDateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
         Date date = new Date();
 
-
         ContentValues contentVal = new ContentValues();
         contentVal.put("stat", "RF");
-        contentVal.put("chg_id", opID);
+        contentVal.put("chg_id", opId);
         contentVal.put("chg_dt", dateFormat.format(date));
-        contentVal.put("real_qty", "0");        // 업로드시 값 Parse 시 에러나서 0 넘김
+        contentVal.put("real_qty", "0");
         contentVal.put("driver_memo", driverMemo);
         contentVal.put("retry_dt", "");
         contentVal.put("rev_type", "VL");
         contentVal.put("punchOut_stat", "S");
 
-        DatabaseHelper dbHelper = DatabaseHelper.getInstance();
-        dbHelper.update(DatabaseHelper.DB_TABLE_INTEGRATION_LIST, contentVal,
-                "invoice_no=? COLLATE NOCASE and punchOut_stat <> 'S' " + "and reg_id = ?", new String[]{invoiceNo, opID});
+        DatabaseHelper.getInstance().update(DatabaseHelper.DB_TABLE_INTEGRATION_LIST, contentVal,
+                "partner_ref_no=? COLLATE NOCASE " + "and punchOut_stat <> 'S' " + "and reg_id = ?", new String[]{invoiceNo, opId});
     }
 }

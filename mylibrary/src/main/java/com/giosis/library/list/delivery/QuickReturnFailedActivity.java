@@ -1,8 +1,7 @@
-package com.giosis.util.qdrive.list.delivery;
+package com.giosis.library.list.delivery;
 
 
 import android.app.AlertDialog;
-import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.database.Cursor;
@@ -20,7 +19,6 @@ import android.util.Size;
 import android.view.KeyEvent;
 import android.view.Surface;
 import android.view.TextureView;
-import android.view.View;
 import android.view.WindowManager;
 import android.widget.Button;
 import android.widget.EditText;
@@ -30,24 +28,23 @@ import android.widget.LinearLayout;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import com.giosis.library.MemoryStatus;
+import com.giosis.library.OnServerEventListener;
+import com.giosis.library.R;
 import com.giosis.library.gps.GPSTrackerManager;
-import com.giosis.util.qdrive.international.MyApplication;
-import com.giosis.util.qdrive.international.OnServerEventListener;
-import com.giosis.util.qdrive.international.R;
-import com.giosis.util.qdrive.util.Camera2APIs;
-import com.giosis.util.qdrive.util.DataUtil;
+import com.giosis.library.util.Camera2APIs;
+import com.giosis.library.util.CommonActivity;
+import com.giosis.library.util.DataUtil;
 import com.giosis.library.util.DatabaseHelper;
-import com.giosis.util.qdrive.util.MemoryStatus;
-import com.giosis.util.qdrive.util.NetworkUtil;
-import com.giosis.util.qdrive.util.PermissionActivity;
-import com.giosis.util.qdrive.util.PermissionChecker;
-import com.giosis.util.qdrive.util.ui.CommonActivity;
+import com.giosis.library.util.DisplayUtil;
+import com.giosis.library.util.NetworkUtil;
+import com.giosis.library.util.PermissionActivity;
+import com.giosis.library.util.PermissionChecker;
+import com.giosis.library.util.Preferences;
 
-/**
- * Native List 에서  Returned 사인
- */
-public class DeliveryReturnFailedActivity extends CommonActivity implements Camera2APIs.Camera2Interface, TextureView.SurfaceTextureListener {
-    String TAG = "DeliveryReturnFailedActivity";
+
+public class QuickReturnFailedActivity extends CommonActivity implements Camera2APIs.Camera2Interface, TextureView.SurfaceTextureListener {
+    String TAG = "QuickReturnFailedActivity";
 
     //
     FrameLayout layout_top_back;
@@ -61,21 +58,19 @@ public class DeliveryReturnFailedActivity extends CommonActivity implements Came
     LinearLayout layout_sign_d_r_f_take_photo;
     LinearLayout layout_sign_d_r_f_gallery;
     TextureView texture_sign_d_r_f_preview;
+    ImageView img_sign_d_r_f_preview_bg;
     ImageView img_sign_d_r_f_visit_log;
     Button btn_sign_d_r_f_save;
 
-
-    //
-    Context context;
     String opID = "";
     String officeCode = "";
     String deviceID = "";
 
     String mStrWaybillNo;
-    String mReceiveType = "RC";
-    String senderName;
     String receiverName;
+    String senderName;
 
+    // Camera & Gallery
     Camera2APIs camera2;
     String cameraId;
     private static final int RESULT_LOAD_IMAGE = 3;
@@ -113,20 +108,18 @@ public class DeliveryReturnFailedActivity extends CommonActivity implements Came
         layout_sign_d_r_f_take_photo = findViewById(R.id.layout_sign_d_r_f_take_photo);
         layout_sign_d_r_f_gallery = findViewById(R.id.layout_sign_d_r_f_gallery);
         texture_sign_d_r_f_preview = findViewById(R.id.texture_sign_d_r_f_preview);
+        img_sign_d_r_f_preview_bg = findViewById(R.id.img_sign_d_r_f_preview_bg);
         img_sign_d_r_f_visit_log = findViewById(R.id.img_sign_d_r_f_visit_log);
         btn_sign_d_r_f_save = findViewById(R.id.btn_sign_d_r_f_save);
 
-
         //-----
-        context = getApplicationContext();
         camera2 = new Camera2APIs(this);
-
-        opID = MyApplication.preferences.getUserId();
-        officeCode = MyApplication.preferences.getOfficeCode();
-        deviceID = MyApplication.preferences.getDeviceUUID();
+        opID = Preferences.INSTANCE.getUserId();
+        officeCode = Preferences.INSTANCE.getOfficeCode();
+        deviceID = Preferences.INSTANCE.getDeviceUUID();
 
         String strTitle = getIntent().getStringExtra("title");
-        mStrWaybillNo = getIntent().getStringExtra("trackingNo");
+        mStrWaybillNo = getIntent().getStringExtra("waybillNo");
 
         getDeliveryInfo(mStrWaybillNo);
 
@@ -134,49 +127,21 @@ public class DeliveryReturnFailedActivity extends CommonActivity implements Came
         text_sign_d_r_f_tracking_no.setText(mStrWaybillNo);
         text_sign_d_r_f_receiver.setText(receiverName);
         text_sign_d_r_f_sender.setText(senderName);
+        DisplayUtil.setPreviewCamera(img_sign_d_r_f_preview_bg);
 
+        layout_top_back.setOnClickListener(view -> cancelSigning());
 
-        //
-        layout_top_back.setOnClickListener(new View.OnClickListener() {
+        layout_sign_d_r_f_take_photo.setOnClickListener(view -> {
 
-            @Override
-            public void onClick(View view) {
-
-                cancelSigning();
+            if (cameraId != null) {
+                camera2.takePhoto(texture_sign_d_r_f_preview, img_sign_d_r_f_visit_log);
+            } else {
+                Toast.makeText(QuickReturnFailedActivity.this, getResources().getString(R.string.msg_back_camera_required), Toast.LENGTH_SHORT).show();
             }
         });
 
-        // 사진촬영 버튼 이벤트 처리
-        layout_sign_d_r_f_take_photo.setOnClickListener(new View.OnClickListener() {
-
-            @Override
-            public void onClick(View view) {
-
-                if (cameraId != null) {
-                    camera2.takePhoto(texture_sign_d_r_f_preview, img_sign_d_r_f_visit_log);
-                } else {
-                    Toast.makeText(DeliveryReturnFailedActivity.this, context.getResources().getString(R.string.msg_back_camera_required), Toast.LENGTH_SHORT).show();
-                }
-
-            }
-        });
-
-        layout_sign_d_r_f_gallery.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-
-                getImageFromAlbum();
-            }
-        });
-
-        btn_sign_d_r_f_save.setOnClickListener(new View.OnClickListener() {
-
-            @Override
-            public void onClick(View v) {
-
-                saveServerUploadSign();
-            }
-        });
+        layout_sign_d_r_f_gallery.setOnClickListener(v -> getImageFromAlbum());
+        btn_sign_d_r_f_save.setOnClickListener(v -> saveServerUploadSign());
 
         // Memo 입력제한
         edit_sign_d_r_f_memo.addTextChangedListener(new TextWatcher() {
@@ -189,7 +154,7 @@ public class DeliveryReturnFailedActivity extends CommonActivity implements Came
             public void onTextChanged(CharSequence charSequence, int i, int i1, int i2) {
 
                 if (99 <= edit_sign_d_r_f_memo.length()) {
-                    Toast.makeText(context, context.getResources().getText(R.string.msg_memo_too_long), Toast.LENGTH_SHORT).show();
+                    Toast.makeText(QuickReturnFailedActivity.this, getResources().getText(R.string.msg_memo_too_long), Toast.LENGTH_SHORT).show();
                 }
             }
 
@@ -224,27 +189,25 @@ public class DeliveryReturnFailedActivity extends CommonActivity implements Came
             camera2 = new Camera2APIs(this);
 
             if (texture_sign_d_r_f_preview.isAvailable()) {
-
                 openCamera();
             } else {
-
                 texture_sign_d_r_f_preview.setSurfaceTextureListener(this);
             }
 
             // Location
-            gpsTrackerManager = new GPSTrackerManager(context);
+            gpsTrackerManager = new GPSTrackerManager(this);
             gpsEnable = gpsTrackerManager.enableGPSSetting();
 
             if (gpsEnable && gpsTrackerManager != null) {
-
                 gpsTrackerManager.GPSTrackerStart();
 
                 latitude = gpsTrackerManager.getLatitude();
                 longitude = gpsTrackerManager.getLongitude();
-                Log.e("Location", TAG + " GPSTrackerManager : " + latitude + "  " + longitude + "  ");
+                Log.e("Location", TAG + " GPSTrackerManager onResume : " + latitude + "  " + longitude + "  ");
+
             } else {
 
-                DataUtil.enableLocationSettings(DeliveryReturnFailedActivity.this, context);
+                DataUtil.enableLocationSettings(QuickReturnFailedActivity.this);
             }
         }
     }
@@ -269,7 +232,7 @@ public class DeliveryReturnFailedActivity extends CommonActivity implements Came
                 e.printStackTrace();
             }
         } else if (resultCode == PermissionActivity.PERMISSIONS_GRANTED) {
-            Log.e("krm0219", TAG + "   onActivityResult  PERMISSIONS_GRANTED");
+            Log.e("Permission", TAG + "   onActivityResult  PERMISSIONS_GRANTED");
 
             isPermissionTrue = true;
         }
@@ -312,6 +275,7 @@ public class DeliveryReturnFailedActivity extends CommonActivity implements Came
 
                     @Override
                     public void onClick(DialogInterface dialog, int which) {
+
                         dialog.dismiss();
                     }
                 }).show();
@@ -327,8 +291,7 @@ public class DeliveryReturnFailedActivity extends CommonActivity implements Came
         try {
 
             if (!NetworkUtil.isNetworkAvailable(this)) {
-
-                AlertShow(context.getResources().getString(R.string.msg_network_connect_error));
+                AlertShow(getResources().getString(R.string.msg_network_connect_error));
                 return;
             }
 
@@ -342,24 +305,24 @@ public class DeliveryReturnFailedActivity extends CommonActivity implements Came
 
             String driverMemo = edit_sign_d_r_f_memo.getText().toString().trim();
             if (driverMemo.equals("")) {
-                Toast.makeText(this.getApplicationContext(), context.getResources().getString(R.string.msg_must_enter_memo1), Toast.LENGTH_SHORT).show();
+                Toast.makeText(this, getResources().getString(R.string.msg_must_enter_memo1), Toast.LENGTH_SHORT).show();
                 return;
             }
 
             if (!camera2.hasImage(img_sign_d_r_f_visit_log)) {
-                Toast.makeText(this.getApplicationContext(), context.getResources().getString(R.string.msg_visit_photo_require), Toast.LENGTH_SHORT).show();
-                return;
-            }
-            if (MemoryStatus.getAvailableInternalMemorySize() != MemoryStatus.ERROR && MemoryStatus.getAvailableInternalMemorySize() < MemoryStatus.PRESENT_BYTE) {
-                AlertShow(context.getResources().getString(R.string.msg_disk_size_error));
+                Toast.makeText(this, getResources().getString(R.string.msg_visit_photo_require), Toast.LENGTH_SHORT).show();
                 return;
             }
 
+            if (MemoryStatus.getAvailableInternalMemorySize() != MemoryStatus.ERROR && MemoryStatus.getAvailableInternalMemorySize() < MemoryStatus.PRESENT_BYTE) {
+                AlertShow(getResources().getString(R.string.msg_disk_size_error));
+                return;
+            }
 
             com.giosis.library.util.DataUtil.logEvent("button_click", TAG, "setDeliveryRTNDPTypeUploadData");
 
-            new DeliveryReturnFailedUploadHelper.Builder(this, opID, officeCode, deviceID,
-                    mStrWaybillNo, img_sign_d_r_f_visit_log, driverMemo, mReceiveType,
+            new QuickReturnFailedUploadHelper.Builder(this, opID, officeCode, deviceID,
+                    mStrWaybillNo, driverMemo, img_sign_d_r_f_visit_log,
                     MemoryStatus.getAvailableInternalMemorySize(), latitude, longitude)
                     .setOnServerEventListener(new OnServerEventListener() {
 
@@ -377,28 +340,26 @@ public class DeliveryReturnFailedActivity extends CommonActivity implements Came
         } catch (Exception e) {
 
             Log.e("krm0219", TAG + "  Exception : " + e.toString());
-            Toast.makeText(this.getApplicationContext(), context.getResources().getString(R.string.text_error) + " - " + e.toString(), Toast.LENGTH_SHORT).show();
+            Toast.makeText(this, getResources().getString(R.string.text_error) + " - " + e.toString(), Toast.LENGTH_SHORT).show();
         }
     }
 
     private void AlertShow(String msg) {
         AlertDialog.Builder alert_internet_status = new AlertDialog.Builder(this);
-        alert_internet_status.setTitle(context.getResources().getString(R.string.text_warning));
+        alert_internet_status.setTitle(getResources().getString(R.string.text_warning));
         alert_internet_status.setMessage(msg);
-        alert_internet_status.setPositiveButton(context.getResources().getString(R.string.button_close),
-                new DialogInterface.OnClickListener() {
-                    public void onClick(DialogInterface dialog, int which) {
-                        dialog.dismiss(); // 닫기
-                        finish();
-                    }
+        alert_internet_status.setPositiveButton(getResources().getString(R.string.button_close),
+                (dialog, which) -> {
+                    dialog.dismiss(); // 닫기
+                    finish();
                 });
         alert_internet_status.show();
     }
 
+
     public void getDeliveryInfo(String barcodeNo) {
 
-        DatabaseHelper dbHelper = DatabaseHelper.getInstance();
-        Cursor cursor = dbHelper.get("SELECT rcv_nm, sender_nm FROM " + DatabaseHelper.DB_TABLE_INTEGRATION_LIST + " WHERE invoice_no='" + barcodeNo + "' COLLATE NOCASE");
+        Cursor cursor = DatabaseHelper.getInstance().get("SELECT rcv_nm, sender_nm FROM " + DatabaseHelper.DB_TABLE_INTEGRATION_LIST + " WHERE invoice_no='" + barcodeNo + "' COLLATE NOCASE");
 
         if (cursor.moveToFirst()) {
             receiverName = cursor.getString(cursor.getColumnIndexOrThrow("rcv_nm"));
@@ -407,6 +368,7 @@ public class DeliveryReturnFailedActivity extends CommonActivity implements Came
 
         cursor.close();
     }
+
 
     // Gallery
     private void getImageFromAlbum() {
@@ -426,6 +388,7 @@ public class DeliveryReturnFailedActivity extends CommonActivity implements Came
         }
     }
 
+
     // CAMERA
     private void openCamera() {
 
@@ -437,18 +400,16 @@ public class DeliveryReturnFailedActivity extends CommonActivity implements Came
         if (cameraId != null) {
             camera2.setCameraDevice(cameraManager, cameraId);
         } else {
-            Toast.makeText(DeliveryReturnFailedActivity.this, context.getResources().getString(R.string.msg_back_camera_required), Toast.LENGTH_SHORT).show();
+            Toast.makeText(QuickReturnFailedActivity.this, getResources().getString(R.string.msg_back_camera_required), Toast.LENGTH_SHORT).show();
         }
     }
 
     private void closeCamera() {
-
         camera2.closeCamera();
     }
 
     @Override
     public void onCameraDeviceOpened(CameraDevice cameraDevice, Size cameraSize, int rotation) {
-
         texture_sign_d_r_f_preview.setRotation(rotation);
 
         SurfaceTexture texture = texture_sign_d_r_f_preview.getSurfaceTexture();
@@ -460,7 +421,6 @@ public class DeliveryReturnFailedActivity extends CommonActivity implements Came
 
     @Override
     public void onSurfaceTextureAvailable(SurfaceTexture surfaceTexture, int i, int i1) {
-
         openCamera();
     }
 
