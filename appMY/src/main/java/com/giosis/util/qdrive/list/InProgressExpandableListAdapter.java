@@ -35,6 +35,7 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import com.giosis.library.list.delivery.DeliveryDoneActivity;
+import com.giosis.library.list.delivery.DeliveryFailedActivity;
 import com.giosis.library.message.CustomerMessageListDetailActivity;
 import com.giosis.library.server.data.FailedCodeResult;
 import com.giosis.library.setting.bluetooth.BluetoothDeviceData;
@@ -43,7 +44,6 @@ import com.giosis.util.qdrive.barcodescanner.CaptureActivity;
 import com.giosis.util.qdrive.barcodescanner.StdResult;
 import com.giosis.util.qdrive.international.MyApplication;
 import com.giosis.util.qdrive.international.R;
-import com.giosis.util.qdrive.list.delivery.DeliveryFailedActivity;
 import com.giosis.util.qdrive.list.delivery.DeliveryReturnFailedActivity;
 import com.giosis.util.qdrive.list.delivery.DeliveryReturnedActivity;
 import com.giosis.util.qdrive.list.pickup.ManualCnRPrintDataHelper;

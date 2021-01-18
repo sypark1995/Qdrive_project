@@ -1,4 +1,4 @@
-package com.giosis.util.qdrive.list.delivery;
+package com.giosis.library.list.delivery;
 
 import android.app.AlertDialog;
 import android.app.ProgressDialog;
@@ -11,15 +11,16 @@ import android.os.AsyncTask;
 import android.util.Log;
 import android.widget.ImageView;
 
+import com.giosis.library.OnServerEventListener;
+import com.giosis.library.R;
+import com.giosis.library.barcodescanner.StdResult;
+import com.giosis.library.server.Custom_JsonParser;
 import com.giosis.library.server.ImageUpload;
-import com.giosis.util.qdrive.barcodescanner.StdResult;
-import com.giosis.util.qdrive.international.OnServerEventListener;
-import com.giosis.util.qdrive.international.R;
-import com.giosis.util.qdrive.util.Custom_JsonParser;
-import com.giosis.util.qdrive.util.DataUtil;
+import com.giosis.library.util.DataUtil;
 import com.giosis.library.util.DatabaseHelper;
-import com.giosis.util.qdrive.util.DisplayUtil;
-import com.giosis.util.qdrive.util.NetworkUtil;
+import com.giosis.library.util.DisplayUtil;
+import com.giosis.library.util.NetworkUtil;
+import com.giosis.library.util.Preferences;
 
 import org.json.JSONObject;
 
@@ -223,7 +224,6 @@ public class DeliveryFailedUploadHelper {
 
             DataUtil.captureSign("/QdriveFailed", trackingNo, imageView);
 
-
             SimpleDateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
             Date date = new Date();
 
@@ -260,7 +260,7 @@ public class DeliveryFailedUploadHelper {
 
                 imageView.buildDrawingCache();
                 Bitmap captureView = imageView.getDrawingCache();
-                String bitmapString = DataUtil.bitmapToString(captureView, ImageUpload.QXPOD, "qdriver/sign", assignNo);
+                String bitmapString = DataUtil.bitmapToString(context, captureView, ImageUpload.QXPOD, "qdriver/sign", assignNo);
 
                 if (bitmapString.equals("")) {
                     result.setResultCode(-100);
@@ -287,7 +287,7 @@ public class DeliveryFailedUploadHelper {
                 job.accumulate("stat_reason", failedCode);
                 job.accumulate("del_channel", "QDRIVE");
                 job.accumulate("app_id", DataUtil.appID);
-                job.accumulate("nation_cd", DataUtil.nationCode);
+                job.accumulate("nation_cd", Preferences.INSTANCE.getUserNation());
 
 
                 String jsonString = Custom_JsonParser.requestServerDataReturnJSON(com.giosis.library.util.DataUtil.requestSetUploadDeliveryData, job);

@@ -18,13 +18,16 @@ import com.giosis.library.message.AdminMessageListDetailActivity;
 import com.giosis.library.message.CustomerMessageListDetailActivity;
 import com.giosis.library.message.MessageListActivity;
 import com.giosis.library.server.ImageUpload;
+import com.giosis.library.server.data.FailedCodeResult;
 import com.google.firebase.analytics.FirebaseAnalytics;
+import com.google.gson.Gson;
 
 import java.io.ByteArrayOutputStream;
 import java.io.File;
 import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
 import java.io.IOException;
+import java.util.ArrayList;
 
 public class DataUtil {
 
@@ -216,4 +219,27 @@ public class DataUtil {
             gpsTrackerManager.stopFusedProviderService();
         }
     }
+
+    public static ArrayList<FailedCodeResult.FailedCode> getFailCode(String type) {
+
+        ArrayList<FailedCodeResult.FailedCode> arrayList;
+        String json = "";
+
+        if (type.equals("D")) {
+            json = Preferences.INSTANCE.getDFailedCode();
+        } else if (type.equals("P")) {
+            json = Preferences.INSTANCE.getPFailedCode();
+        }
+
+        if (json.equals("")) {
+            return null;
+        } else {
+            Gson gson = new Gson();
+            FailedCodeResult result = gson.fromJson(json, FailedCodeResult.class);
+            arrayList = new ArrayList<>(result.getResultObject());
+        }
+
+        return arrayList;
+    }
+
 }

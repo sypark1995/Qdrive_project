@@ -236,11 +236,6 @@
             android:windowSoftInputMode="adjustNothing" />
 
         <!--   NOTIFICATION.  List kotlin  -->
-        <activity
-            android:name="com.giosis.util.qdrive.list.delivery.DeliveryFailedActivity"
-            android:configChanges="orientation|keyboardHidden"
-            android:screenOrientation="portrait"
-            android:windowSoftInputMode="stateAlwaysHidden|adjustPan" />
 
         <activity
             android:name="com.giosis.util.qdrive.list.pickup.PickupAddScanActivity"
