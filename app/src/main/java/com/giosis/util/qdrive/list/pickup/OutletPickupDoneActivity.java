@@ -24,7 +24,6 @@ import androidx.annotation.Nullable;
 import com.giosis.library.gps.GPSTrackerManager;
 import com.giosis.util.qdrive.list.ListActivity;
 import com.giosis.util.qdrive.list.SigningView;
-import com.giosis.util.qdrive.list.delivery.OnOutletDataUploadEventListener;
 import com.giosis.util.qdrive.singapore.MyApplication;
 import com.giosis.util.qdrive.singapore.R;
 import com.giosis.util.qdrive.util.DataUtil;
