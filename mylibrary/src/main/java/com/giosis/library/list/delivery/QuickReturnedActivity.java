@@ -1,7 +1,7 @@
-package com.giosis.util.qdrive.list.delivery;
+package com.giosis.library.list.delivery;
 
+import android.app.Activity;
 import android.app.AlertDialog;
-import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.database.Cursor;
@@ -20,18 +20,19 @@ import android.widget.Toast;
 
 import androidx.annotation.Nullable;
 
+import com.giosis.library.MemoryStatus;
+import com.giosis.library.OnServerEventListener;
+import com.giosis.library.R;
 import com.giosis.library.gps.GPSTrackerManager;
-import com.giosis.util.qdrive.list.SigningView;
-import com.giosis.util.qdrive.singapore.MyApplication;
-import com.giosis.util.qdrive.singapore.OnServerEventListener;
-import com.giosis.util.qdrive.singapore.R;
-import com.giosis.util.qdrive.util.DataUtil;
+import com.giosis.library.list.SigningView;
+import com.giosis.library.util.CommonActivity;
+import com.giosis.library.util.DataUtil;
 import com.giosis.library.util.DatabaseHelper;
-import com.giosis.util.qdrive.util.MemoryStatus;
-import com.giosis.util.qdrive.util.NetworkUtil;
-import com.giosis.util.qdrive.util.PermissionActivity;
-import com.giosis.util.qdrive.util.PermissionChecker;
-import com.giosis.util.qdrive.util.ui.CommonActivity;
+import com.giosis.library.util.NetworkUtil;
+import com.giosis.library.util.PermissionActivity;
+import com.giosis.library.util.PermissionChecker;
+import com.giosis.library.util.Preferences;
+
 
 public class QuickReturnedActivity extends CommonActivity {
     String TAG = "QuickReturnedActivity";
@@ -55,9 +56,6 @@ public class QuickReturnedActivity extends CommonActivity {
     EditText edit_sign_d_r_memo;
     Button btn_sign_d_r_save;
 
-
-    //
-    Context context;
     String opID = "";
     String officeCode = "";
     String deviceID = "";
@@ -66,7 +64,6 @@ public class QuickReturnedActivity extends CommonActivity {
     String mReceiveType = "RC";
     String senderName;
     String receiverName;
-
 
     GPSTrackerManager gpsTrackerManager;
     boolean gpsEnable = false;
@@ -115,17 +112,12 @@ public class QuickReturnedActivity extends CommonActivity {
         layout_sign_d_r_sign_eraser.setOnClickListener(clickListener);
         btn_sign_d_r_save.setOnClickListener(clickListener);
 
-
-        // -----
-        context = getApplicationContext();
-//        opID = SharedPreferencesHelper.getSigninOpID(getApplicationContext());
-//        officeCode = SharedPreferencesHelper.getSigninOfficeCode(getApplicationContext());
-//        deviceID = SharedPreferencesHelper.getSigninDeviceID(getApplicationContext());
-        opID = MyApplication.preferences.getUserId();
-        officeCode = MyApplication.preferences.getOfficeCode();
-        deviceID = MyApplication.preferences.getDeviceUUID();
+        opID = Preferences.INSTANCE.getUserId();
+        officeCode = Preferences.INSTANCE.getOfficeCode();
+        deviceID = Preferences.INSTANCE.getDeviceUUID();
 
         String strTitle = getIntent().getStringExtra("title");
+
         mStrWaybillNo = getIntent().getStringExtra("waybillNo");
 
         getDeliveryInfo(mStrWaybillNo);
@@ -146,7 +138,7 @@ public class QuickReturnedActivity extends CommonActivity {
             public void onTextChanged(CharSequence charSequence, int i, int i1, int i2) {
 
                 if (99 <= edit_sign_d_r_memo.length()) {
-                    Toast.makeText(context, context.getResources().getText(R.string.msg_memo_too_long), Toast.LENGTH_SHORT).show();
+                    Toast.makeText(QuickReturnedActivity.this, getResources().getText(R.string.msg_memo_too_long), Toast.LENGTH_SHORT).show();
                 }
             }
 
@@ -156,8 +148,6 @@ public class QuickReturnedActivity extends CommonActivity {
             }
         });
 
-
-        //
         PermissionChecker checker = new PermissionChecker(this);
 
         // 권한 여부 체크 (없으면 true, 있으면 false)
@@ -179,7 +169,7 @@ public class QuickReturnedActivity extends CommonActivity {
 
         if (isPermissionTrue) {
 
-            gpsTrackerManager = new GPSTrackerManager(context);
+            gpsTrackerManager = new GPSTrackerManager(this);
             gpsEnable = gpsTrackerManager.enableGPSSetting();
 
             if (gpsEnable && gpsTrackerManager != null) {
@@ -191,7 +181,7 @@ public class QuickReturnedActivity extends CommonActivity {
                 Log.e("Location", TAG + " GPSTrackerManager onResume : " + latitude + "  " + longitude + "  ");
             } else {
 
-                DataUtil.enableLocationSettings(QuickReturnedActivity.this, context);
+                DataUtil.enableLocationSettings(QuickReturnedActivity.this);
             }
         }
     }
@@ -216,20 +206,12 @@ public class QuickReturnedActivity extends CommonActivity {
 
         new AlertDialog.Builder(this)
                 .setMessage(R.string.msg_delivered_sign_cancel)
-                .setPositiveButton(R.string.button_ok, new DialogInterface.OnClickListener() {
-                    @Override
-                    public void onClick(DialogInterface dialog, int which) {
-
-                        finish();
-                    }
+                .setPositiveButton(R.string.button_ok, (dialog, which) -> {
+                    setResult(Activity.RESULT_CANCELED);
+                    finish();
                 })
-                .setNegativeButton(R.string.button_cancel, new DialogInterface.OnClickListener() {
-
-                    @Override
-                    public void onClick(DialogInterface dialog, int which) {
-                        dialog.dismiss();
-                    }
-                }).show();
+                .setNegativeButton(R.string.button_cancel, (dialog, which) -> dialog.dismiss())
+                .show();
 
     }
 
@@ -244,7 +226,7 @@ public class QuickReturnedActivity extends CommonActivity {
 
             if (!NetworkUtil.isNetworkAvailable(this)) {
 
-                AlertShow(context.getResources().getString(R.string.msg_network_connect_error));
+                AlertShow(getResources().getString(R.string.msg_network_connect_error));
                 return;
             }
 
@@ -256,24 +238,23 @@ public class QuickReturnedActivity extends CommonActivity {
                 Log.e("Location", TAG + " saveServerUploadSign  GPSTrackerManager : " + latitude + "  " + longitude + "  ");
             }
 
-            if (!sign_view_sign_d_r_signature.getIsTouche()) {
-                Toast.makeText(this.getApplicationContext(), context.getResources().getString(R.string.msg_signature_require), Toast.LENGTH_SHORT).show();
+            if (!sign_view_sign_d_r_signature.isTouch()) {
+                Toast.makeText(this.getApplicationContext(), getResources().getString(R.string.msg_signature_require), Toast.LENGTH_SHORT).show();
                 return;
             }
 
             String driverMemo = edit_sign_d_r_memo.getText().toString().trim();
             if (driverMemo.equals("")) {
-                Toast.makeText(this.getApplicationContext(), context.getResources().getString(R.string.msg_must_enter_memo1), Toast.LENGTH_SHORT).show();
+                Toast.makeText(this.getApplicationContext(), getResources().getString(R.string.msg_must_enter_memo1), Toast.LENGTH_SHORT).show();
                 return;
             }
 
             if (MemoryStatus.getAvailableInternalMemorySize() != MemoryStatus.ERROR && MemoryStatus.getAvailableInternalMemorySize() < MemoryStatus.PRESENT_BYTE) {
-                AlertShow(context.getResources().getString(R.string.msg_disk_size_error));
+                AlertShow(getResources().getString(R.string.msg_disk_size_error));
                 return;
             }
 
-
-            com.giosis.library.util.DataUtil.logEvent("button_click", TAG, "setDeliveryRTNDPTypeUploadData");
+            DataUtil.logEvent("button_click", TAG, "setDeliveryRTNDPTypeUploadData");
 
             new QuickReturnedUploadHelper.Builder(this, opID, officeCode, deviceID,
                     mStrWaybillNo, mReceiveType, sign_view_sign_d_r_signature, driverMemo,
@@ -284,6 +265,7 @@ public class QuickReturnedActivity extends CommonActivity {
                         public void onPostResult() {
 
                             DataUtil.inProgressListPosition = 0;
+                            setResult(Activity.RESULT_OK);
                             finish();
                         }
 
@@ -295,7 +277,7 @@ public class QuickReturnedActivity extends CommonActivity {
         } catch (Exception e) {
 
             Log.e("krm0219", TAG + "  Exception : " + e.toString());
-            Toast.makeText(this.getApplicationContext(), context.getResources().getString(R.string.text_error) + " - " + e.toString(), Toast.LENGTH_SHORT).show();
+            Toast.makeText(this, getResources().getString(R.string.text_error) + " - " + e.toString(), Toast.LENGTH_SHORT).show();
         }
     }
 
@@ -315,9 +297,9 @@ public class QuickReturnedActivity extends CommonActivity {
 
     private void AlertShow(String msg) {
         AlertDialog.Builder alert_internet_status = new AlertDialog.Builder(this);
-        alert_internet_status.setTitle(context.getResources().getString(R.string.text_warning));
+        alert_internet_status.setTitle(getResources().getString(R.string.text_warning));
         alert_internet_status.setMessage(msg);
-        alert_internet_status.setPositiveButton(context.getResources().getString(R.string.button_close),
+        alert_internet_status.setPositiveButton(getResources().getString(R.string.button_close),
                 new DialogInterface.OnClickListener() {
                     public void onClick(DialogInterface dialog, int which) {
                         dialog.dismiss(); // 닫기
@@ -338,58 +320,31 @@ public class QuickReturnedActivity extends CommonActivity {
         @Override
         public void onClick(View view) {
 
-            switch (view.getId()) {
+            int id = view.getId();
+            if (id == R.id.layout_top_back) {
+                cancelSigning();
+            } else if (id == R.id.img_sign_d_r_receiver_self || id == R.id.text_sign_d_r_receiver_self) {
+                img_sign_d_r_receiver_self.setBackgroundResource(R.drawable.qdrive_btn_icon_check_on);
+                img_sign_d_r_receiver_substitute.setBackgroundResource(R.drawable.qdrive_btn_icon_check_off);
+                img_sign_d_r_receiver_other.setBackgroundResource(R.drawable.qdrive_btn_icon_check_off);
 
-                case R.id.layout_top_back: {
+                mReceiveType = "RC";
+            } else if (id == R.id.img_sign_d_r_receiver_substitute || id == R.id.text_sign_d_r_receiver_substitute) {
+                img_sign_d_r_receiver_self.setBackgroundResource(R.drawable.qdrive_btn_icon_check_off);
+                img_sign_d_r_receiver_substitute.setBackgroundResource(R.drawable.qdrive_btn_icon_check_on);
+                img_sign_d_r_receiver_other.setBackgroundResource(R.drawable.qdrive_btn_icon_check_off);
 
-                    cancelSigning();
-                }
-                break;
+                mReceiveType = "AG";
+            } else if (id == R.id.img_sign_d_r_receiver_other || id == R.id.text_sign_d_r_receiver_other) {
+                img_sign_d_r_receiver_self.setBackgroundResource(R.drawable.qdrive_btn_icon_check_off);
+                img_sign_d_r_receiver_substitute.setBackgroundResource(R.drawable.qdrive_btn_icon_check_off);
+                img_sign_d_r_receiver_other.setBackgroundResource(R.drawable.qdrive_btn_icon_check_on);
 
-                case R.id.img_sign_d_r_receiver_self:
-                case R.id.text_sign_d_r_receiver_self: {
-
-                    img_sign_d_r_receiver_self.setBackgroundResource(R.drawable.qdrive_btn_icon_check_on);
-                    img_sign_d_r_receiver_substitute.setBackgroundResource(R.drawable.qdrive_btn_icon_check_off);
-                    img_sign_d_r_receiver_other.setBackgroundResource(R.drawable.qdrive_btn_icon_check_off);
-
-                    mReceiveType = "RC";
-                }
-                break;
-
-                case R.id.img_sign_d_r_receiver_substitute:
-                case R.id.text_sign_d_r_receiver_substitute: {
-
-                    img_sign_d_r_receiver_self.setBackgroundResource(R.drawable.qdrive_btn_icon_check_off);
-                    img_sign_d_r_receiver_substitute.setBackgroundResource(R.drawable.qdrive_btn_icon_check_on);
-                    img_sign_d_r_receiver_other.setBackgroundResource(R.drawable.qdrive_btn_icon_check_off);
-
-                    mReceiveType = "AG";
-                }
-                break;
-
-                case R.id.img_sign_d_r_receiver_other:
-                case R.id.text_sign_d_r_receiver_other: {
-
-                    img_sign_d_r_receiver_self.setBackgroundResource(R.drawable.qdrive_btn_icon_check_off);
-                    img_sign_d_r_receiver_substitute.setBackgroundResource(R.drawable.qdrive_btn_icon_check_off);
-                    img_sign_d_r_receiver_other.setBackgroundResource(R.drawable.qdrive_btn_icon_check_on);
-
-                    mReceiveType = "ET";
-                }
-                break;
-
-                case R.id.layout_sign_d_r_sign_eraser: {
-
-                    sign_view_sign_d_r_signature.clearText();
-                }
-                break;
-
-                case R.id.btn_sign_d_r_save: {
-
-                    saveServerUploadSign();
-                }
-                break;
+                mReceiveType = "ET";
+            } else if (id == R.id.layout_sign_d_r_sign_eraser) {
+                sign_view_sign_d_r_signature.clearText();
+            } else if (id == R.id.btn_sign_d_r_save) {
+                saveServerUploadSign();
             }
         }
     };
