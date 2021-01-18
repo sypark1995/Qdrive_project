@@ -265,7 +265,7 @@ public class SigningActivity extends CommonActivity {
         //--------------------
 
 
-        DataUtil.logEvent("button_click", TAG, "GetContrInfo");
+        com.giosis.library.util.DataUtil.logEvent("button_click", TAG, "GetContrInfo");
 
         //2016-09-12 eylee
         // 배송정보 Self_Collector의 경우  배송상태값에 따른 정보 습득
@@ -388,7 +388,7 @@ public class SigningActivity extends CommonActivity {
             String driverMemo = edit_sign_memo.getText().toString();
 
 
-            DataUtil.logEvent("button_click", TAG, "SetSelfCollectorData");
+            com.giosis.library.util.DataUtil.logEvent("button_click", TAG, "SetSelfCollectorData");
 
             new ManualSelfCollectorHelper.Builder(this, MyApplication.preferences.getUserId(), MyApplication.preferences.getOfficeCode(), MyApplication.preferences.getDeviceUUID(),
                     songjanglist, sign_view_sign_signature, driverMemo, mReceiveType)

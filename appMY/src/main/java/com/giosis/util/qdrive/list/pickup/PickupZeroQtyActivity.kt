@@ -189,7 +189,7 @@ class PickupZeroQtyActivity : CommonActivity() {
             }
 
 
-            DataUtil.logEvent("button_click", tag, com.giosis.library.util.DataUtil.requestSetUploadPickupData);
+            com.giosis.library.util.DataUtil.logEvent("button_click", tag, com.giosis.library.util.DataUtil.requestSetUploadPickupData);
 
             PickupZeroQtyUploadHelper.Builder(this, userId, officeCode, deviceId,
                     pickupNo, sign_view_sign_p_applicant_signature, sign_view_sign_p_collector_signature, driverMemo,

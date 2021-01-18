@@ -1,19 +1,30 @@
 package com.giosis.library.util;
 
+import android.app.AlertDialog;
 import android.content.ClipData;
 import android.content.ClipboardManager;
 import android.content.Context;
 import android.content.Intent;
 import android.graphics.Bitmap;
+import android.os.Bundle;
 import android.os.Environment;
+import android.provider.Settings;
+import android.util.Log;
 import android.view.View;
 
+import com.giosis.library.R;
+import com.giosis.library.gps.GPSTrackerManager;
 import com.giosis.library.message.AdminMessageListDetailActivity;
 import com.giosis.library.message.CustomerMessageListDetailActivity;
 import com.giosis.library.message.MessageListActivity;
+import com.giosis.library.server.ImageUpload;
+import com.google.firebase.analytics.FirebaseAnalytics;
 
+import java.io.ByteArrayOutputStream;
 import java.io.File;
+import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
+import java.io.IOException;
 
 public class DataUtil {
 
@@ -99,10 +110,23 @@ public class DataUtil {
         }
     }
 
+    // 2019.04 FA(Firebase Analytics)
+    public static FirebaseAnalytics mFirebaseAnalytics;
 
+    public static void logEvent(String event, String activity, String method) {
 
-   // push Message 이동
-   public static MessageListActivity messageListActivity = null;
+        try {
+
+            Bundle params = new Bundle();
+            params.putString("Activity", activity);
+            params.putString("method", method);
+            mFirebaseAnalytics.logEvent(event, params);
+        } catch (Exception ignored) {
+        }
+    }
+
+    // push Message 이동
+    public static MessageListActivity messageListActivity = null;
     public static CustomerMessageListDetailActivity customerMessageListDetailActivity = null;
     public static AdminMessageListDetailActivity adminMessageListDetailActivity = null;
 
@@ -128,5 +152,68 @@ public class DataUtil {
 
     public static void setAdminMessageListDetailActivity(AdminMessageListDetailActivity adminMessageListDetailActivity) {
         DataUtil.adminMessageListDetailActivity = adminMessageListDetailActivity;
+    }
+
+
+    public static void enableLocationSettings(Context context) {
+
+        new AlertDialog.Builder(context)
+                .setCancelable(false)
+                .setTitle(context.getResources().getString(R.string.text_location_setting))
+                .setMessage(context.getResources().getString(R.string.msg_location_off))
+                .setPositiveButton(context.getResources().getString(R.string.button_ok), (dialog, which) -> {
+
+                    Intent intent = new Intent(Settings.ACTION_LOCATION_SOURCE_SETTINGS);
+                    intent.addCategory(Intent.CATEGORY_DEFAULT);
+                    context.startActivity(intent);
+
+                }).show();
+    }
+
+    public static String bitmapToString(Context context, Bitmap bitmap, String basePath, String path, String trackNo) {
+
+        String imagePath = "";
+
+        try {
+            File outputDir = context.getCacheDir();
+            File tempFile = File.createTempFile("temp", ".jpg", outputDir);
+
+            if (tempFile != null) {
+                ByteArrayOutputStream bos = new ByteArrayOutputStream();
+                bitmap.compress(Bitmap.CompressFormat.JPEG, 100, bos);
+                byte[] bitmapdata = bos.toByteArray();
+
+                FileOutputStream fos = null;
+                try {
+                    fos = new FileOutputStream(tempFile);
+                } catch (FileNotFoundException e) {
+                    e.printStackTrace();
+                }
+
+                try {
+                    fos.write(bitmapdata);
+                    fos.flush();
+                    fos.close();
+                } catch (IOException e) {
+                    e.printStackTrace();
+                }
+
+                imagePath = ImageUpload.INSTANCE.upload(tempFile, basePath, path, trackNo);
+            }
+
+        } catch (Exception e) {
+
+        }
+
+        return imagePath;
+    }
+
+    public static void stopGPSManager(GPSTrackerManager gpsTrackerManager) {
+
+        if (gpsTrackerManager != null) {
+
+            Log.e("Location", "Stop GPS");
+            gpsTrackerManager.stopFusedProviderService();
+        }
     }
 }

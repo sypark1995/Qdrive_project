@@ -356,7 +356,7 @@ public class DeliveryReturnFailedActivity extends CommonActivity implements Came
             }
 
 
-            DataUtil.logEvent("button_click", TAG, "setDeliveryRTNDPTypeUploadData");
+            com.giosis.library.util.DataUtil.logEvent("button_click", TAG, "setDeliveryRTNDPTypeUploadData");
 
             new DeliveryReturnFailedUploadHelper.Builder(this, opID, officeCode, deviceID,
                     mStrWaybillNo, img_sign_d_r_f_visit_log, driverMemo, mReceiveType,

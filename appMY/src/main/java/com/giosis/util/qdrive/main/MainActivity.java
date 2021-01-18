@@ -284,7 +284,7 @@ public class MainActivity extends AppBaseActivity {
 
         try {
 
-            DataUtil.mFirebaseAnalytics = FirebaseAnalytics.getInstance(this);
+            com.giosis.library.util.DataUtil.mFirebaseAnalytics = FirebaseAnalytics.getInstance(this);
         } catch (Exception e) {
 
             Log.e("FA", TAG + "  FirebaseAnalytics 초기화 Exception : " + e.toString());
@@ -517,7 +517,7 @@ public class MainActivity extends AppBaseActivity {
 
         if (0 < songjanglist.size()) {
 
-            DataUtil.logEvent("button_click", TAG, com.giosis.library.util.DataUtil.requestSetUploadDeliveryData + "/" + com.giosis.library.util.DataUtil.requestSetUploadPickupData);
+            com.giosis.library.util.DataUtil.logEvent("button_click", TAG, com.giosis.library.util.DataUtil.requestSetUploadDeliveryData + "/" + com.giosis.library.util.DataUtil.requestSetUploadPickupData);
 
             new DeviceDataUploadHelper.Builder(this, opID, officeCode, deviceID, songjanglist, "QH", latitude, longitude).
                     setOnServerEventListener(new OnServerEventListener() {
@@ -643,7 +643,7 @@ public class MainActivity extends AppBaseActivity {
                 Bundle params = new Bundle();
                 params.putString("Activity", TAG);
                 params.putString("message", "" + " DB.delete > " + e.toString());
-                DataUtil.mFirebaseAnalytics.logEvent("error_exception", params);
+                com.giosis.library.util.DataUtil.mFirebaseAnalytics.logEvent("error_exception", params);
                 Log.e("krm0219", "dbHelper.delete Exception : " + e.toString());
             } catch (Exception e1) {
 

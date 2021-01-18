@@ -48,6 +48,7 @@ import android.widget.Toast;
 import android.widget.ToggleButton;
 
 import com.giosis.library.gps.GPSTrackerManager;
+import com.giosis.library.list.delivery.DeliveryDoneActivity;
 import com.giosis.util.qdrive.barcodescanner.bluetooth.BluetoothChatService;
 import com.giosis.util.qdrive.barcodescanner.bluetooth.DeviceListActivity;
 import com.giosis.util.qdrive.barcodescanner.bluetooth.KScan;
@@ -61,7 +62,6 @@ import com.giosis.util.qdrive.international.SigningActivity;
 import com.giosis.util.qdrive.international.UploadData;
 import com.giosis.util.qdrive.list.BarcodeData;
 import com.giosis.util.qdrive.list.OutletPickupDoneResult;
-import com.giosis.util.qdrive.list.delivery.DeliveryDoneActivity;
 import com.giosis.util.qdrive.list.pickup.CnRPickupDoneActivity;
 import com.giosis.util.qdrive.list.pickup.OutletPickupDoneActivity;
 import com.giosis.util.qdrive.list.pickup.PickupAddScanActivity;

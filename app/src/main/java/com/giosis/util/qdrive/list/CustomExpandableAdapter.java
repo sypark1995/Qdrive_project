@@ -37,6 +37,7 @@ import android.widget.RelativeLayout;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import com.giosis.library.list.delivery.DeliveryDoneActivity;
 import com.giosis.library.message.CustomerMessageListDetailActivity;
 import com.giosis.library.server.data.FailedCodeResult;
 import com.giosis.library.setting.bluetooth.BluetoothDeviceData;
@@ -44,7 +45,7 @@ import com.giosis.library.setting.bluetooth.PrinterSettingActivity;
 import com.giosis.library.util.DatabaseHelper;
 import com.giosis.util.qdrive.barcodescanner.CaptureActivity;
 import com.giosis.util.qdrive.barcodescanner.StdResult;
-import com.giosis.util.qdrive.list.delivery.DeliveryDoneActivity1;
+
 import com.giosis.util.qdrive.list.delivery.DeliveryFailedActivity;
 import com.giosis.util.qdrive.list.delivery.QuickReturnFailedActivity;
 import com.giosis.util.qdrive.list.delivery.QuickReturnedActivity;
@@ -876,8 +877,7 @@ public class CustomExpandableAdapter extends BaseExpandableListAdapter implement
             @Override
             public void onClick(View v) {
 
-                //   Intent intent = new Intent(context, DeliveryDoneActivity.class);
-                Intent intent = new Intent(context, DeliveryDoneActivity1.class);
+                Intent intent = new Intent(context, DeliveryDoneActivity.class);
                 intent.putExtra("waybillNo", tracking_no);
                 intent.putExtra("route", route);
                 context.startActivity(intent);

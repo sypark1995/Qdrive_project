@@ -9,9 +9,12 @@ import android.content.ContextWrapper;
 import android.util.Log;
 import android.util.TypedValue;
 import android.view.View;
+import android.view.ViewTreeObserver;
 import android.view.Window;
 import android.view.WindowManager;
 import android.view.inputmethod.InputMethodManager;
+import android.widget.ImageView;
+import android.widget.RelativeLayout;
 
 import com.giosis.library.OnEventListener;
 import com.giosis.library.R;
@@ -139,5 +142,27 @@ public class DisplayUtil {
                     eventListener.onSuccess();
                 });
         alert_internet_status.show();
+    }
+
+    public static void setPreviewCamera(ImageView imageview) {
+        // ViewTree의 뷰가 그려질 때마다
+        imageview.getViewTreeObserver()
+                .addOnGlobalLayoutListener(new ViewTreeObserver.OnGlobalLayoutListener() {
+                    @Override
+                    public void onGlobalLayout() {
+
+                        //뷰의 생성된 후 크기와 위치 구하기
+                        int a = imageview.getWidth();
+                        int b = imageview.getHeight();
+
+                        Log.e("krm0219", "Size : " + a + " / " + b);
+
+                        RelativeLayout.LayoutParams layoutParams = new RelativeLayout.LayoutParams(a, a);
+                        imageview.setLayoutParams(layoutParams);
+
+                        //리스너 해제
+                        imageview.getViewTreeObserver().removeOnGlobalLayoutListener(this);
+                    }
+                });
     }
 }

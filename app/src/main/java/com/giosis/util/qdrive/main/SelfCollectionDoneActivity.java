@@ -248,7 +248,7 @@ public class SelfCollectionDoneActivity extends CommonActivity {
         }
 
         // Self-Collector 경우 서버로부터 수취인, 셀러명을 가지고 온다. (비동기)
-        DataUtil.logEvent("button_click", TAG, "GetContrInfo");
+        com.giosis.library.util.DataUtil.logEvent("button_click", TAG, "GetContrInfo");
 
         //2016-09-12 eylee        // 배송상태값에 따른 정보 습득
         new ManualShippingInfoHelper.Builder(this, songjanglist)
@@ -355,7 +355,7 @@ public class SelfCollectionDoneActivity extends CommonActivity {
 
             String driverMemo = edit_sign_memo.getText().toString();
 
-            DataUtil.logEvent("button_click", TAG, "SetSelfCollectorData");
+            com.giosis.library.util.DataUtil.logEvent("button_click", TAG, "SetSelfCollectorData");
 
             new ManualSelfCollectorHelper.Builder(this, opID, officeCode, deviceID, songjanglist, sign_view_sign_signature, driverMemo, mReceiveType)
                     .setOnSelfCollectorEventListener(new ManualSelfCollectorHelper.OnSelfCollectorEventListener() {

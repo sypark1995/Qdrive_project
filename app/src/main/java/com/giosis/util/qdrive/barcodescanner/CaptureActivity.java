@@ -66,6 +66,7 @@ import android.widget.Toast;
 import android.widget.ToggleButton;
 
 import com.giosis.library.gps.GPSTrackerManager;
+import com.giosis.library.list.delivery.DeliveryDoneActivity;
 import com.giosis.library.util.DatabaseHelper;
 import com.giosis.util.qdrive.barcodescanner.bluetooth.BluetoothChatService;
 import com.giosis.util.qdrive.barcodescanner.bluetooth.DeviceListActivity;
@@ -73,7 +74,6 @@ import com.giosis.util.qdrive.barcodescanner.bluetooth.KScan;
 import com.giosis.util.qdrive.barcodescanner.bluetooth.KTSyncData;
 import com.giosis.util.qdrive.barcodescanner.camera.CameraManager;
 import com.giosis.util.qdrive.barcodescanner.history.HistoryManager;
-import com.giosis.util.qdrive.list.delivery.DeliveryDoneActivity;
 import com.giosis.util.qdrive.list.pickup.CnRPickupDoneActivity;
 import com.giosis.util.qdrive.list.pickup.OutletPickupDoneActivity;
 import com.giosis.util.qdrive.list.pickup.OutletPickupDoneResult;
@@ -1782,7 +1782,7 @@ public final class CaptureActivity extends CommonActivity implements SurfaceHold
 
         if (mScanType.equals(BarcodeType.CONFIRM_MY_DELIVERY_ORDER)) {
 
-            DataUtil.logEvent("button_click", TAG, "SetShippingStatDpc3out");
+            com.giosis.library.util.DataUtil.logEvent("button_click", TAG, "SetShippingStatDpc3out");
 
             new ConfirmMyOrderHelper.Builder(this, opID, officeCode, deviceID, scanBarcodeArrayList)
                     .setOnDriverAssignEventListener(stdResult -> {
@@ -1812,7 +1812,7 @@ public final class CaptureActivity extends CommonActivity implements SurfaceHold
                     }).build().execute();
         } else if (mScanType.equals(BarcodeType.CHANGE_DELIVERY_DRIVER)) {
 
-            DataUtil.logEvent("button_click", TAG, "SetChangeDeliveryDriver");
+            com.giosis.library.util.DataUtil.logEvent("button_click", TAG, "SetChangeDeliveryDriver");
 
             if (gpsEnable && gpsTrackerManager != null) {
 

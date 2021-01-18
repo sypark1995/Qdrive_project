@@ -9,7 +9,6 @@ import android.content.DialogInterface;
 import android.content.Intent;
 import android.graphics.Bitmap;
 import android.graphics.Color;
-import android.os.Bundle;
 import android.os.Environment;
 import android.provider.Settings;
 import android.util.Log;
@@ -26,7 +25,6 @@ import com.giosis.library.server.data.FailedCodeResult;
 import com.giosis.util.qdrive.list.RowItem;
 import com.giosis.util.qdrive.singapore.MyApplication;
 import com.giosis.util.qdrive.singapore.R;
-import com.google.firebase.analytics.FirebaseAnalytics;
 import com.google.gson.Gson;
 import com.google.zxing.BarcodeFormat;
 import com.google.zxing.EncodeHintType;
@@ -75,23 +73,6 @@ public class DataUtil {
     //
     public static int inProgressListPosition = 0;
     public static int uploadFailedListPosition = 0;
-
-
-    // 2019.04 FA(Firebase Analytics)
-    public static FirebaseAnalytics mFirebaseAnalytics;
-
-    public static void logEvent(String event, String activity, String method) {
-
-        try {
-
-            Bundle params = new Bundle();
-            params.putString("Activity", activity);
-            params.putString("method", method);
-            mFirebaseAnalytics.logEvent(event, params);
-        } catch (Exception ignored) {
-        }
-    }
-
 
     // 2019.07  -  Smart Route
     public static String SHARED_PREFERENCE_FILE = "com.giosis.qdrive.sharedpreferences";

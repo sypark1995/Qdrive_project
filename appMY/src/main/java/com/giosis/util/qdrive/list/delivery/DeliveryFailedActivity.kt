@@ -352,7 +352,7 @@ class DeliveryFailedActivity : CommonActivity(), Camera2APIs.Camera2Interface, S
 
             Log.e(tag, "  Location $latitude / $longitude")
 
-            DataUtil.logEvent("button_click", tag, com.giosis.library.util.DataUtil.requestSetUploadDeliveryData)
+            com.giosis.library.util.DataUtil.logEvent("button_click", tag, com.giosis.library.util.DataUtil.requestSetUploadDeliveryData)
 
             DeliveryFailedUploadHelper.Builder(this, userId, officeCode, deviceId,
                     trackingNo, img_sign_d_f_visit_log, failedCode, driverMemo, "RC",

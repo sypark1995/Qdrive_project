@@ -1,6 +1,5 @@
-package com.giosis.util.qdrive.list.delivery;
+package com.giosis.library.list.delivery;
 
-import android.app.Activity;
 import android.app.ProgressDialog;
 import android.content.Context;
 import android.graphics.Bitmap;
@@ -18,8 +17,8 @@ import android.widget.LinearLayout;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
 
-import com.giosis.util.qdrive.singapore.R;
-import com.giosis.util.qdrive.util.DisplayUtil;
+import com.giosis.library.R;
+import com.giosis.library.util.DisplayUtil;
 
 import java.io.InputStream;
 import java.net.HttpURLConnection;
@@ -41,16 +40,11 @@ import javax.net.ssl.X509TrustManager;
 public class OutletTrackingNoAdapter extends BaseAdapter {
     String TAG = "OutletTrackingNoAdapter";
 
-    Activity activity;
-    Context context;
     ArrayList<OutletDeliveryDoneListItem> trackingNoList;
     String route;
 
+    public OutletTrackingNoAdapter(ArrayList<OutletDeliveryDoneListItem> list, String route) {
 
-    public OutletTrackingNoAdapter(Context context, ArrayList<OutletDeliveryDoneListItem> list, String route) {
-
-        this.activity = (Activity) context;
-        this.context = context;
         this.trackingNoList = list;
         this.route = route;
 
@@ -132,11 +126,11 @@ public class OutletTrackingNoAdapter extends BaseAdapter {
 
         if (convertView == null) {
 
-            LayoutInflater inflater = (LayoutInflater) context.getSystemService(Context.LAYOUT_INFLATER_SERVICE);
+            LayoutInflater inflater = (LayoutInflater) convertView.getContext().getSystemService(Context.LAYOUT_INFLATER_SERVICE);
 
             if (item.getTrackingNo().equals("1")) {
 
-                view = inflater.inflate(R.layout.item_outlet_qrcode, null);
+                view = inflater.inflate(R.layout.outlet_qrcode_item, null);
 
                 final RelativeLayout layout_sign_d_outlet_qrcode_load = view.findViewById(R.id.layout_sign_d_outlet_qrcode_load);
                 TextView text_sign_d_outlet_qrcode_date = view.findViewById(R.id.text_sign_d_outlet_qrcode_date);
@@ -177,18 +171,18 @@ public class OutletTrackingNoAdapter extends BaseAdapter {
 
                     if (trackingNoList.size() == 1) {
 
-                        layout_sign_d_outlet_item_tracking_no.setPadding(0, dpTopx(20), 0, dpTopx(20));
+                        layout_sign_d_outlet_item_tracking_no.setPadding(0, dpTopx(view.getContext(), 20), 0, dpTopx(view.getContext(), 20));
                     } else {
 
                         if (position == 0) {
 
-                            layout_sign_d_outlet_item_tracking_no.setPadding(0, dpTopx(20), 0, dpTopx(7));
+                            layout_sign_d_outlet_item_tracking_no.setPadding(0, dpTopx(view.getContext(), 20), 0, dpTopx(view.getContext(), 7));
                         } else if (position == trackingNoList.size() - 1) {
 
-                            layout_sign_d_outlet_item_tracking_no.setPadding(0, dpTopx(7), 0, dpTopx(20));
+                            layout_sign_d_outlet_item_tracking_no.setPadding(0, dpTopx(view.getContext(), 7), 0, dpTopx(view.getContext(), 20));
                         } else {
 
-                            layout_sign_d_outlet_item_tracking_no.setPadding(0, dpTopx(7), 0, dpTopx(7));
+                            layout_sign_d_outlet_item_tracking_no.setPadding(0, dpTopx(view.getContext(), 7), 0, dpTopx(view.getContext(), 7));
                         }
                     }
                 }
@@ -208,12 +202,10 @@ public class OutletTrackingNoAdapter extends BaseAdapter {
         }
     }
 
-    private int dpTopx(float dp) {
-
+    private int dpTopx(Context context, float dp) {
         int pixel = (int) TypedValue.applyDimension(TypedValue.COMPLEX_UNIT_DIP, dp, context.getResources().getDisplayMetrics());
         return pixel;
     }
-    //
 
 
     // 리스트 정렬. 1순위 Job ID / 2순위 Tracking No
@@ -247,16 +239,17 @@ public class OutletTrackingNoAdapter extends BaseAdapter {
             this.layout_sign_d_outlet_qrcode_reload = linearLayout;
             this.img_sign_d_outlet_qrcode = imageView;
             this.imgUrl = imgUrl;
+
+            progressDialog = new ProgressDialog(imageView.getContext());
+            progressDialog.setProgressStyle(ProgressDialog.STYLE_SPINNER);
+            progressDialog.setMessage(imageView.getContext().getResources().getString(R.string.text_please_wait));
+            progressDialog.setCancelable(false);
         }
 
         @Override
         protected void onPreExecute() {
             super.onPreExecute();
 
-            progressDialog = new ProgressDialog(activity);
-            progressDialog.setProgressStyle(ProgressDialog.STYLE_SPINNER);
-            progressDialog.setMessage(context.getResources().getString(R.string.text_please_wait));
-            progressDialog.setCancelable(false);
             progressDialog.show();
         }
 

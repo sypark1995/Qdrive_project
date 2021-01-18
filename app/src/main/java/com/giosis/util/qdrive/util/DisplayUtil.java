@@ -116,7 +116,7 @@ public class DisplayUtil {
             Bundle params = new Bundle();
             params.putString(FirebaseAnalytics.Param.CONTENT_TYPE, type);
             params.putString(FirebaseAnalytics.Param.ITEM_ID, id);
-            DataUtil.mFirebaseAnalytics.logEvent(FirebaseAnalytics.Event.SELECT_CONTENT, params);
+            com.giosis.library.util.DataUtil.mFirebaseAnalytics.logEvent(FirebaseAnalytics.Event.SELECT_CONTENT, params);
         } catch (Exception e) {
 
             Log.e("Firebase", "FirebaseSelectEvents error : " + e.toString());

@@ -299,7 +299,7 @@ public class CnRPickupDoneActivity extends CommonActivity {
             }
 
 
-            DataUtil.logEvent("button_click", TAG, com.giosis.library.util.DataUtil.requestSetUploadPickupData);
+            com.giosis.library.util.DataUtil.logEvent("button_click", TAG, com.giosis.library.util.DataUtil.requestSetUploadPickupData);
 
             new CnRPickupUploadHelper.Builder(this, opID, officeCode, deviceID,
                     "P3", PickupNoList, sign_view_sign_p_applicant_signature, sign_view_sign_p_collector_signature,

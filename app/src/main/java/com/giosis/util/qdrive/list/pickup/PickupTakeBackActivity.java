@@ -244,7 +244,7 @@ public class PickupTakeBackActivity extends CommonActivity {
             }
 
 
-            DataUtil.logEvent("button_click", TAG, "SetPickupUploadData_TakeBack");
+            com.giosis.library.util.DataUtil.logEvent("button_click", TAG, "SetPickupUploadData_TakeBack");
 
             new PickupTakeBackUploadHelper.Builder(this, opID, officeCode, deviceID,
                     pickup_no, packing_no_list, result_total_qty, sign_view_sign_p_tb_applicant_signature, sign_view_sign_p_tb_collector_signature,

@@ -193,7 +193,7 @@ class PickupDoneActivity : CommonActivity() {
 
 
 
-            DataUtil.logEvent("button_click", tag, "SetPickupUploadData_ScanAll")
+            com.giosis.library.util.DataUtil.logEvent("button_click", tag, "SetPickupUploadData_ScanAll")
 
             PickupDoneUploadHelper.Builder(this, userId, officeCode, deviceId,
                     pickupNo, scannedList, text_sign_p_total_qty.text.toString(),

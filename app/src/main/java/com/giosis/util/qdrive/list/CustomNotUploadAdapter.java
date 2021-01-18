@@ -550,7 +550,7 @@ public class CustomNotUploadAdapter extends BaseExpandableListAdapter {
 
             if (songjanglist.size() > 0) {
 
-                DataUtil.logEvent("button_click", TAG, com.giosis.library.util.DataUtil.requestSetUploadDeliveryData + "/" + com.giosis.library.util.DataUtil.requestSetUploadPickupData);
+                com.giosis.library.util.DataUtil.logEvent("button_click", TAG, com.giosis.library.util.DataUtil.requestSetUploadDeliveryData + "/" + com.giosis.library.util.DataUtil.requestSetUploadPickupData);
 
                 new DeviceDataUploadHelper.Builder(context, opID, officeCode, deviceID, songjanglist, "QL", latitude, longitude).
                         setOnServerEventListener(new OnServerEventListener() {

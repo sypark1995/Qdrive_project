@@ -362,7 +362,7 @@
                     </LinearLayout>
                 </RelativeLayout>
 
-                <com.giosis.util.qdrive.list.SigningView
+                <com.giosis.library.list.SigningView
                     android:id="@+id/sign_view_sign_d_signature"
                     android:layout_width="match_parent"
                     android:layout_height="140dp"

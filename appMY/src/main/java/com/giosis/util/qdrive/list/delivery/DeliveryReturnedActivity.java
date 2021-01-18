@@ -278,7 +278,7 @@ public class DeliveryReturnedActivity extends CommonActivity {
             }
 
 
-            DataUtil.logEvent("button_click", TAG, "setDeliveryRTNDPTypeUploadData");
+            com.giosis.library.util.DataUtil.logEvent("button_click", TAG, "setDeliveryRTNDPTypeUploadData");
 
             new DeliveryReturnedUploadHelper.Builder(this, opID, officeCode, deviceID,
                     mStrWaybillNo, sign_view_sign_d_r_signature, driverMemo, mReceiveType,

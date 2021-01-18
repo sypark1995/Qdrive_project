@@ -273,7 +273,7 @@ public class QuickReturnedActivity extends CommonActivity {
             }
 
 
-            DataUtil.logEvent("button_click", TAG, "setDeliveryRTNDPTypeUploadData");
+            com.giosis.library.util.DataUtil.logEvent("button_click", TAG, "setDeliveryRTNDPTypeUploadData");
 
             new QuickReturnedUploadHelper.Builder(this, opID, officeCode, deviceID,
                     mStrWaybillNo, mReceiveType, sign_view_sign_d_r_signature, driverMemo,

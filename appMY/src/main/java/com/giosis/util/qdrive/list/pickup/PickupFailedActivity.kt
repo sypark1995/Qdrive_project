@@ -428,7 +428,7 @@ class PickupFailedActivity : CommonActivity(), Camera2APIs.Camera2Interface, Tex
             Log.i(tag, "  Location $latitude / $longitude")
 
 
-            DataUtil.logEvent("button_click", tag, com.giosis.library.util.DataUtil.requestSetUploadPickupData)
+            com.giosis.library.util.DataUtil.logEvent("button_click", tag, com.giosis.library.util.DataUtil.requestSetUploadPickupData)
 
 
             PickupFailedUploadHelper.Builder(this, userId, officeCode, deviceId,

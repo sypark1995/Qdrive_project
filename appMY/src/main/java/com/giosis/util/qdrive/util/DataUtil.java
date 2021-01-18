@@ -61,22 +61,6 @@ public class DataUtil {
     public static int inProgressListPosition = 0;
     public static int uploadFailedListPosition = 0;
 
-    // 2019.04 FA(Firebase Analytics)
-    public static FirebaseAnalytics mFirebaseAnalytics;
-
-    public static void logEvent(String event, String activity, String method) {
-
-        try {
-
-            Bundle params = new Bundle();
-            params.putString("Activity", activity);
-            params.putString("method", method);
-            mFirebaseAnalytics.logEvent(event, params);
-        } catch (Exception ignored) {
-        }
-    }
-
-
     public static Intent getFusedProviderService() {
         return fusedProviderService;
     }

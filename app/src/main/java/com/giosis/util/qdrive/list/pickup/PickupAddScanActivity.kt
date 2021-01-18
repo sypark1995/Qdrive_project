@@ -173,7 +173,7 @@ class PickupAddScanActivity : CommonActivity() {
             }
 
 
-            DataUtil.logEvent("button_click", tag, "SetPickupUploadData_AddScan");
+            com.giosis.library.util.DataUtil.logEvent("button_click", tag, "SetPickupUploadData_AddScan");
 
             PickupAddScanUploadHelper.Builder(this, userId, officeCode, deviceId,
                     pickupNo, scannedList, scannedQty, sign_view_sign_p_applicant_signature, sign_view_sign_p_collector_signature,

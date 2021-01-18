@@ -422,7 +422,7 @@ public class DeliveryFailedActivity extends CommonActivity implements Camera2API
             }
 
 
-            DataUtil.logEvent("button_click", TAG, com.giosis.library.util.DataUtil.requestSetUploadDeliveryData);
+            com.giosis.library.util.DataUtil.logEvent("button_click", TAG, com.giosis.library.util.DataUtil.requestSetUploadDeliveryData);
 
             new DeliveryFailedUploadHelper.Builder(DeliveryFailedActivity.this, opID, officeCode, deviceID,
                     mStrWaybillNo, failedCode, driverMemo, img_sign_d_f_visit_log,

@@ -514,7 +514,7 @@ public class PickupFailedActivity extends CommonActivity implements Camera2APIs.
             }
 
 
-            DataUtil.logEvent("button_click", TAG, com.giosis.library.util.DataUtil.requestSetUploadPickupData);
+            com.giosis.library.util.DataUtil.logEvent("button_click", TAG, com.giosis.library.util.DataUtil.requestSetUploadPickupData);
 
             new PickupFailedUploadHelper.Builder(this, opID, officeCode, deviceID,
                     rcvType, pickupNo, failedCode, retry_day, driverMemo, img_sign_p_f_visit_log,

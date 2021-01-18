@@ -1,4 +1,4 @@
-package com.giosis.util.qdrive.list.delivery;
+package com.giosis.library.list.delivery;
 
 import android.app.AlertDialog;
 import android.app.ProgressDialog;
@@ -10,19 +10,19 @@ import android.graphics.Bitmap;
 import android.os.AsyncTask;
 import android.text.TextUtils;
 import android.util.Log;
+import android.widget.ImageView;
 
+import com.giosis.library.R;
+import com.giosis.library.barcodescanner.StdResult;
+import com.giosis.library.list.BarcodeData;
+import com.giosis.library.list.SigningView;
+import com.giosis.library.server.Custom_JsonParser;
 import com.giosis.library.server.ImageUpload;
-import com.giosis.util.qdrive.barcodescanner.StdResult;
-import com.giosis.util.qdrive.international.R;
-import com.giosis.util.qdrive.list.BarcodeData;
-import com.giosis.util.qdrive.list.SigningView;
-import com.giosis.util.qdrive.list.pickup.OnOutletDataUploadEventListener;
-import com.giosis.util.qdrive.util.BarcodeType;
-import com.giosis.util.qdrive.util.Custom_JsonParser;
-import com.giosis.util.qdrive.util.DataUtil;
+import com.giosis.library.util.DataUtil;
 import com.giosis.library.util.DatabaseHelper;
-import com.giosis.util.qdrive.util.DisplayUtil;
-import com.giosis.util.qdrive.util.NetworkUtil;
+import com.giosis.library.util.DisplayUtil;
+import com.giosis.library.util.NetworkUtil;
+import com.giosis.library.util.Preferences;
 
 import org.json.JSONObject;
 
@@ -30,8 +30,11 @@ import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Date;
 
-public class OutletDeliveryDoneHelper {
-    private String TAG = "OutletDeliveryDoneHelper";
+/**
+ * Delivery Done
+ */
+public class DeliveryDoneUploadHelper {
+    String TAG = "DeliveryDoneUploadHelper";
 
     private final Context context;
     private final String opID;
@@ -39,17 +42,20 @@ public class OutletDeliveryDoneHelper {
     private final String deviceID;
 
     private final ArrayList<BarcodeData> assignBarcodeList;
-    private final SigningView signingView;
-    private final String driverMemo;
     private final String receiveType;
+    private final String driverMemo;
+
+    private final SigningView signingView;
+    private final boolean hasSignImage;
+    private final ImageView imageView;
+    private final boolean hasVisitImage;
 
     private final long disk_size;
     private final double lat;
     private final double lon;
-    private final String outlet_type;
 
     private final String networkType;
-    private final OnOutletDataUploadEventListener eventListener;
+    private final OnServerUploadEventListener eventListener;
     private final ProgressDialog progressDialog;
     private final AlertDialog resultDialog;
 
@@ -61,21 +67,26 @@ public class OutletDeliveryDoneHelper {
         private final String deviceID;
 
         private final ArrayList<BarcodeData> assignBarcodeList;
-        private final SigningView signingView;
-        private final String driverMemo;
         private final String receiveType;
+        private final String driverMemo;
+
+        private final SigningView signingView;
+        private final boolean hasSignImage;
+        private final ImageView imageView;
+        private final boolean hasVisitImage;
+
 
         private final long disk_size;
         private final double lat;
         private final double lon;
-        private final String outlet_type;
 
         private String networkType;
-        private OnOutletDataUploadEventListener eventListener;
+        private OnServerUploadEventListener eventListener;
 
         public Builder(Context context, String opID, String officeCode, String deviceID,
-                       ArrayList<BarcodeData> assignBarcodeList, SigningView signingView, String driverMemo, String receiveType,
-                       long disk_size, double lat, double lon, String outletType) {
+                       ArrayList<BarcodeData> assignBarcodeList, String receiveType, String driverMemo,
+                       SigningView signingView, boolean hasSignImage, ImageView imageView, boolean hasVisitImage,
+                       long disk_size, double lat, double lon) {
 
             this.context = context;
             this.opID = opID;
@@ -84,28 +95,31 @@ public class OutletDeliveryDoneHelper {
             this.networkType = NetworkUtil.getNetworkType(context);
 
             this.assignBarcodeList = assignBarcodeList;
-            this.signingView = signingView;
-            this.driverMemo = driverMemo;
             this.receiveType = receiveType;
+            this.driverMemo = driverMemo;
+
+            this.signingView = signingView;
+            this.hasSignImage = hasSignImage;
+            this.imageView = imageView;
+            this.hasVisitImage = hasVisitImage;
 
             this.disk_size = disk_size;
             this.lat = lat;
             this.lon = lon;
-            this.outlet_type = outletType;
         }
 
-        public OutletDeliveryDoneHelper build() {
-            return new OutletDeliveryDoneHelper(this);
+        public DeliveryDoneUploadHelper build() {
+            return new DeliveryDoneUploadHelper(this);
         }
 
-        Builder setOnOutletDataUploadEventListener(OnOutletDataUploadEventListener eventListener) {
+        public Builder setOnServerUploadEventListener(OnServerUploadEventListener eventListener) {
             this.eventListener = eventListener;
 
             return this;
         }
     }
 
-    private OutletDeliveryDoneHelper(Builder builder) {
+    private DeliveryDoneUploadHelper(Builder builder) {
 
         this.context = builder.context;
         this.opID = builder.opID;
@@ -113,14 +127,17 @@ public class OutletDeliveryDoneHelper {
         this.deviceID = builder.deviceID;
 
         this.assignBarcodeList = builder.assignBarcodeList;
-        this.signingView = builder.signingView;
-        this.driverMemo = builder.driverMemo;
         this.receiveType = builder.receiveType;
+        this.driverMemo = builder.driverMemo;
+
+        this.signingView = builder.signingView;
+        this.hasSignImage = builder.hasSignImage;
+        this.imageView = builder.imageView;
+        this.hasVisitImage = builder.hasVisitImage;
 
         this.disk_size = builder.disk_size;
         this.lat = builder.lat;
         this.lon = builder.lon;
-        this.outlet_type = builder.outlet_type;
 
         this.networkType = builder.networkType;
         this.eventListener = builder.eventListener;
@@ -141,13 +158,16 @@ public class OutletDeliveryDoneHelper {
 
         AlertDialog dialog = new AlertDialog.Builder(context)
                 .setTitle(context.getResources().getString(R.string.text_upload_result))
-                .setCancelable(false)
-                .setPositiveButton(context.getResources().getString(R.string.button_ok), new OnClickListener() {
+                .setCancelable(false).setPositiveButton(context.getResources().getString(R.string.button_ok), new OnClickListener() {
 
                     @Override
                     public void onClick(DialogInterface dialog, int which) {
-                        if (dialog != null)
-                            dialog.dismiss();
+                        try {
+                            if (dialog != null)
+                                dialog.dismiss();
+                        } catch (Exception e) {
+                            Log.e("Exception", TAG + "getResultAlertDialog Exception : " + e.toString());
+                        }
 
                         if (eventListener != null) {
                             eventListener.onPostResult();
@@ -165,7 +185,7 @@ public class OutletDeliveryDoneHelper {
     }
 
 
-    class OutletDeliveryTask extends AsyncTask<Void, Integer, ArrayList<StdResult>> {
+    class DeliveryUploadTask extends AsyncTask<Void, Integer, ArrayList<StdResult>> {
         int progress = 0;
 
         @Override
@@ -185,14 +205,12 @@ public class OutletDeliveryDoneHelper {
 
             ArrayList<StdResult> resultList = new ArrayList<>();
 
-            if (assignBarcodeList != null && 0 < assignBarcodeList.size()) {
-
+            if (assignBarcodeList != null && assignBarcodeList.size() > 0) {
                 for (BarcodeData assignData : assignBarcodeList) {
 
                     StdResult result = null;
 
                     if (!TextUtils.isEmpty(assignData.getBarcode())) {
-
                         result = requestServerUpload(assignData.getBarcode());
                     }
 
@@ -207,6 +225,7 @@ public class OutletDeliveryDoneHelper {
         @Override
         protected void onProgressUpdate(Integer... values) {
             super.onProgressUpdate(values);
+
             progress += values[0];
             progressDialog.setProgress(progress);
         }
@@ -217,11 +236,10 @@ public class OutletDeliveryDoneHelper {
 
             DisplayUtil.dismissProgressDialog(progressDialog);
 
-
+            StdResult result = null;
             int successCount = 0;
             int failCount = 0;
-            StdResult result;
-            StringBuilder fail_reason = new StringBuilder();
+            String fail_reason = "";
 
             try {
 
@@ -231,7 +249,7 @@ public class OutletDeliveryDoneHelper {
 
                     if (result.getResultCode() < 0) {
 
-                        fail_reason.append(result.getResultMsg());
+                        fail_reason += result.getResultMsg();
                         failCount++;
                     } else {
 
@@ -246,13 +264,10 @@ public class OutletDeliveryDoneHelper {
                 } else {
 
                     String msg;
-
                     if (0 < successCount) {
-
-                        msg = String.format(context.getResources().getString(R.string.text_upload_fail_count), successCount, failCount, fail_reason.toString());
+                        msg = String.format(context.getResources().getString(R.string.text_upload_fail_count), successCount, failCount, fail_reason);
                     } else {
-
-                        msg = String.format(context.getResources().getString(R.string.text_upload_fail_count1), failCount, fail_reason.toString());
+                        msg = String.format(context.getResources().getString(R.string.text_upload_fail_count1), failCount, fail_reason);
                     }
 
                     showResultDialog(msg);
@@ -260,23 +275,54 @@ public class OutletDeliveryDoneHelper {
             } catch (Exception e) {
 
                 Log.e("Exception", TAG + "  onPostExecute Exception : " + e.toString());
-                String msg = String.format(context.getResources().getString(R.string.text_exception), e.toString());
-                showResultDialog(msg);
             }
         }
 
 
         private StdResult requestServerUpload(String assignNo) {
 
-            if (!outlet_type.equals("FL"))
+            StdResult result = new StdResult();
+
+            String bitmapString = "";
+            String bitmapString1 = "";
+
+            if (hasSignImage) {
+                Log.e("krm0219", " save  sign");
                 DataUtil.captureSign("/Qdrive", assignNo, signingView);
 
+                signingView.buildDrawingCache();
+                Bitmap signBitmap = signingView.getDrawingCache();
+                bitmapString = DataUtil.bitmapToString(context, signBitmap, ImageUpload.QXPOD, "qdriver/sign", assignNo);
+
+                if (bitmapString.equals("")) {
+                    result.setResultCode(-100);
+                    result.setResultMsg(context.getResources().getString(R.string.msg_upload_fail_image));
+                    return result;
+                }
+            }
+
+            if (hasVisitImage) {
+                Log.e("krm0219", " save  visit log");
+                DataUtil.captureSign("/Qdrive", assignNo + "_1", imageView);
+
+                imageView.buildDrawingCache();
+                Bitmap visitBitmap = imageView.getDrawingCache();
+                bitmapString1 = DataUtil.bitmapToString(context, visitBitmap, ImageUpload.QXPOD, "qdriver/delivery", assignNo);
+
+                if (bitmapString1.equals("")) {
+                    result.setResultCode(-100);
+                    result.setResultMsg(context.getResources().getString(R.string.msg_upload_fail_image));
+                    return result;
+                }
+            }
+
+            Log.e("krm0219", TAG + " DATA  :  " + bitmapString + " / " + bitmapString1);
 
             SimpleDateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
             Date date = new Date();
 
             ContentValues contentVal = new ContentValues();
-            contentVal.put("stat", BarcodeType.OUTLET_DELIVERY_DONE);
+            contentVal.put("stat", "D4");
             contentVal.put("rcv_type", receiveType);
             contentVal.put("driver_memo", driverMemo);
             contentVal.put("chg_id", opID);
@@ -284,10 +330,9 @@ public class OutletDeliveryDoneHelper {
             contentVal.put("fail_reason", "");
 
             DatabaseHelper dbHelper = DatabaseHelper.getInstance();
-            dbHelper.update(DatabaseHelper.DB_TABLE_INTEGRATION_LIST, contentVal, "invoice_no=? COLLATE NOCASE " + "and reg_id = ?", new String[]{assignNo, opID});
+            dbHelper.update(DatabaseHelper.DB_TABLE_INTEGRATION_LIST, contentVal,
+                    "invoice_no=? COLLATE NOCASE " + "and reg_id = ?", new String[]{assignNo, opID});
 
-
-            StdResult result = new StdResult();
 
             if (!NetworkUtil.isNetworkAvailable(context)) {
 
@@ -297,53 +342,42 @@ public class OutletDeliveryDoneHelper {
             }
 
 
+//            // TEST.  Upload Failed
+//            if (true) {
+//
+//                result.setResultCode(-15);
+//                result.setResultMsg(context.getResources().getString(R.string.msg_time_out));
+//
+//                return result;
+//            }
+
+
             try {
-
-                String bitmapString = "";
-                try {
-                    if (!outlet_type.equals("FL")) {
-
-                        signingView.buildDrawingCache();
-                        Bitmap captureView = signingView.getDrawingCache();
-                        bitmapString = DataUtil.bitmapToString(captureView, ImageUpload.QXPOD, "qdriver/sign", assignNo);
-
-                        if (bitmapString.equals("")) {
-                            result.setResultCode(-100);
-                            result.setResultMsg(context.getResources().getString(R.string.msg_upload_fail_image));
-                            return result;
-                        }
-                    }
-                } catch (Exception e) {
-
-                    bitmapString = "";
-                }
-                Log.e("krm0219", "Outlet Delivery DATA > " + receiveType + " " + opID + " " + bitmapString + " " + assignNo + " " + outlet_type);
 
                 JSONObject job = new JSONObject();
                 job.accumulate("rcv_type", receiveType);
-                job.accumulate("stat", BarcodeType.OUTLET_DELIVERY_DONE);
+                job.accumulate("stat", "D4");
                 job.accumulate("chg_id", opID);
-                job.accumulate("fileData", bitmapString);
-                job.accumulate("deliv_msg", "(by Qdrive RealTime-Upload)"); // 내부관리자용 메세지
+                job.accumulate("deliv_msg", "(by Qdrive RealTime-Upload)");
                 job.accumulate("opId", opID);
                 job.accumulate("officeCd", officeCode);
                 job.accumulate("device_id", deviceID);
                 job.accumulate("network_type", networkType);
                 job.accumulate("no_songjang", assignNo);
-                job.accumulate("remark", driverMemo);           // 드라이버 메세지 driver_memo	== remark
+                job.accumulate("fileData", bitmapString);
+                job.accumulate("delivery_photo_url", bitmapString1);
+                job.accumulate("remark", driverMemo);            // 드라이버 메세지 driver_memo	== remark
                 job.accumulate("disk_size", disk_size);
                 job.accumulate("lat", lat);
                 job.accumulate("lon", lon);
                 job.accumulate("stat_reason", "");
-                job.accumulate("del_channel", "QR");
-                job.accumulate("outlet_company", outlet_type);  //  Outlet 종류
-                job.accumulate("stat_chg_gubun", "D");
+                job.accumulate("del_channel", "QR");        // 업로드 채널: Qsign Realtime
                 job.accumulate("app_id", DataUtil.appID);
-                job.accumulate("nation_cd", DataUtil.nationCode);
+                job.accumulate("nation_cd", Preferences.INSTANCE.getUserNation());
 
 
-                String methodName = "SetOutletDeliveryUploadData";
-                String jsonString = Custom_JsonParser.requestServerDataReturnJSON(methodName, job);
+                String jsonString = Custom_JsonParser.requestServerDataReturnJSON(com.giosis.library.util.DataUtil.requestSetUploadDeliveryData, job);
+                // {"ResultCode":0,"ResultMsg":"SUCCESS"}
                 // {"ResultCode":-11,"ResultMsg":"Upload Failed."}
 
                 JSONObject jsonObject = new JSONObject(jsonString);
@@ -352,17 +386,19 @@ public class OutletDeliveryDoneHelper {
                 result.setResultMsg(jsonObject.getString("ResultMsg"));
 
                 if (ResultCode == 0) {
+
                     ContentValues contentVal2 = new ContentValues();
                     contentVal2.put("punchOut_stat", "S");
 
-                    dbHelper.update(DatabaseHelper.DB_TABLE_INTEGRATION_LIST, contentVal2, "invoice_no=? COLLATE NOCASE " + "and reg_id = ?", new String[]{assignNo, opID});
+                    dbHelper.update(DatabaseHelper.DB_TABLE_INTEGRATION_LIST, contentVal2,
+                            "invoice_no=? COLLATE NOCASE " + "and reg_id = ?", new String[]{assignNo, opID});
                 } else if (ResultCode == -25) {
 
                     dbHelper.delete(DatabaseHelper.DB_TABLE_INTEGRATION_LIST, "invoice_no= '" + assignNo + "' COLLATE NOCASE");
                 }
             } catch (Exception e) {
 
-                Log.e("Exception", TAG + "  SetOutletDeliveryUploadData Exception : " + e.toString());
+                Log.e("Exception", TAG + "  upload Exception : " + e.toString());
                 result.setResultCode(-15);
                 result.setResultMsg(context.getResources().getString(R.string.msg_upload_fail_15));
             }
@@ -372,9 +408,13 @@ public class OutletDeliveryDoneHelper {
     }
 
 
-    public OutletDeliveryDoneHelper execute() {
-        OutletDeliveryTask outletDeliveryTask = new OutletDeliveryTask();
-        outletDeliveryTask.execute();
+    public DeliveryDoneUploadHelper execute() {
+        DeliveryUploadTask deliveryUploadTask = new DeliveryUploadTask();
+        deliveryUploadTask.execute();
         return this;
+    }
+
+    public interface OnServerUploadEventListener {
+        void onPostResult();
     }
 }

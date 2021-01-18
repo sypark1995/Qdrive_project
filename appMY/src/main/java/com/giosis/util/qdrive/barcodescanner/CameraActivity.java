@@ -78,7 +78,7 @@ public final class CameraActivity extends CommonActivity implements Camera2APIs.
         setContentView(R.layout.activity_camera);
 
 
-        DataUtil.logEvent("button_click", TAG, "CameraActivity");
+        com.giosis.library.util.DataUtil.logEvent("button_click", TAG, "CameraActivity");
 
         layout_top_back = findViewById(R.id.layout_top_back);
         text_top_title = findViewById(R.id.text_top_title);
