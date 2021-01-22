@@ -1,7 +1,6 @@
 package com.giosis.library.list.pickup
 
 import android.app.Activity
-import android.content.Context
 import android.content.Intent
 import android.os.Bundle
 import android.util.Log
@@ -31,7 +30,6 @@ class PickupScannedListActivity : CommonActivity() {
     private var itemArrayList: ArrayList<PickupScannedListItem>? = null
     private var pickupScannedListAdapter: PickupScannedListAdapter? = null
 
-    lateinit var context: Context
 
     var pickupNo: String = ""
     var applicant: String = ""
@@ -42,14 +40,13 @@ class PickupScannedListActivity : CommonActivity() {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_pickup_scanned_list)
 
-
-        context = this.applicationContext
+        
         pickupNo = intent.getStringExtra("pickupNo").toString()
         applicant = intent.getStringExtra("applicant").toString()
         buttonType = intent.getStringExtra("buttonType").toString()
 
 
-        text_top_title.text = context.resources.getString(R.string.text_today_done_scan_list)
+        text_top_title.text = resources.getString(R.string.text_today_done_scan_list)
         text_add_scan_pickup_no.text = pickupNo
 
         if (buttonType == BarcodeType.PICKUP_ADD_SCAN) {
@@ -99,7 +96,7 @@ class PickupScannedListActivity : CommonActivity() {
             itemArrayList!!.add(item)
         }
 
-        pickupScannedListAdapter = PickupScannedListAdapter(context, itemArrayList)
+        pickupScannedListAdapter = PickupScannedListAdapter(this, itemArrayList)
         list_add_scan_scanned_list!!.adapter = pickupScannedListAdapter
         setListViewHeightBasedOnChildren(list_add_scan_scanned_list)
     }
@@ -107,10 +104,11 @@ class PickupScannedListActivity : CommonActivity() {
 
     private fun clickAddScan() {
 
+
         try {
 
-            val intent = Intent(context, Class.forName("com.giosis.util.qdrive.barcodescanner.CaptureActivity"))
-            intent.putExtra("title", context.resources.getString(R.string.button_add_scan_list))
+            val intent = Intent(this, Class.forName("com.giosis.util.qdrive.barcodescanner.CaptureActivity"))
+            intent.putExtra("title", resources.getString(R.string.button_add_scan_list))
             intent.putExtra("type", BarcodeType.PICKUP_ADD_SCAN)
             intent.putExtra("pickup_no", pickupNo)
             intent.putExtra("applicant", applicant)
@@ -118,7 +116,7 @@ class PickupScannedListActivity : CommonActivity() {
         } catch (e: Exception) {
 
             Log.e("Exception", "$tag  Exception :  $e")
-            Toast.makeText(context, "Exception $e", Toast.LENGTH_SHORT).show()
+            Toast.makeText(this@PickupScannedListActivity, "Exception $e", Toast.LENGTH_SHORT).show()
         }
     }
 
@@ -127,8 +125,8 @@ class PickupScannedListActivity : CommonActivity() {
 
         try {
 
-            val intent = Intent(context, Class.forName("com.giosis.util.qdrive.barcodescanner.CaptureActivity"))
-            intent.putExtra("title", context.resources.getString(R.string.button_take_back))
+            val intent = Intent(this, Class.forName("com.giosis.util.qdrive.barcodescanner.CaptureActivity"))
+            intent.putExtra("title", resources.getString(R.string.button_take_back))
             intent.putExtra("type", BarcodeType.PICKUP_TAKE_BACK)
             intent.putExtra("pickup_no", pickupNo)
             intent.putExtra("applicant", applicant)
@@ -137,7 +135,7 @@ class PickupScannedListActivity : CommonActivity() {
         } catch (e: Exception) {
 
             Log.e("Exception", "$tag  Exception :  $e")
-            Toast.makeText(context, "Exception $e", Toast.LENGTH_SHORT).show()
+            Toast.makeText(this@PickupScannedListActivity, "Exception $e", Toast.LENGTH_SHORT).show()
         }
     }
 

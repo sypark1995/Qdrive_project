@@ -1,7 +1,6 @@
 package com.giosis.library.list.pickup
 
 import android.app.AlertDialog
-import android.content.Context
 import android.content.DialogInterface
 import android.content.Intent
 import android.os.Bundle
@@ -28,8 +27,6 @@ class PickupDoneActivity : CommonActivity() {
     var tag = "PickupDoneActivity"
 
     //
-    lateinit var context: Context
-
     lateinit var pickupNo: String
     private lateinit var mStrWaybillNo: String
 
@@ -50,14 +47,12 @@ class PickupDoneActivity : CommonActivity() {
         btn_sign_p_save.setOnClickListener(clickListener)
 
         //
-        context = applicationContext
-
         pickupNo = intent.getStringExtra("pickupNo").toString()
         val applicant = intent.getStringExtra("applicant")
         mStrWaybillNo = intent.getStringExtra("scannedList").toString()
         val strReqQty = intent.getStringExtra("scannedQty")
 
-        text_top_title.text = context.resources.getString(R.string.text_start_to_scan)
+        text_top_title.text = resources.getString(R.string.text_start_to_scan)
         text_sign_p_pickup_no.text = pickupNo
         text_sign_p_applicant.text = applicant
         img_sign_p_start_scan.setBackgroundResource(R.drawable.qdrive_btn_icon_check_on)
@@ -72,7 +67,7 @@ class PickupDoneActivity : CommonActivity() {
 
                 if (99 <= edit_sign_p_memo.length()) {
 
-                    Toast.makeText(context, context.resources.getText(R.string.msg_memo_too_long), Toast.LENGTH_SHORT).show()
+                    Toast.makeText(this@PickupDoneActivity, resources.getText(R.string.msg_memo_too_long), Toast.LENGTH_SHORT).show()
                 }
             }
 
@@ -97,7 +92,7 @@ class PickupDoneActivity : CommonActivity() {
 
         if (isPermissionTrue) {
 
-            gpsTrackerManager = GPSTrackerManager(context)
+            gpsTrackerManager = GPSTrackerManager(this@PickupDoneActivity)
             gpsEnable = gpsTrackerManager!!.enableGPSSetting()
 
             if (gpsEnable && gpsTrackerManager != null) {
@@ -143,7 +138,7 @@ class PickupDoneActivity : CommonActivity() {
 
             if (!NetworkUtil.isNetworkAvailable(this)) {
 
-                DisplayUtil.AlertDialog(this, context.resources.getString(R.string.msg_network_connect_error))
+                DisplayUtil.AlertDialog(this, resources.getString(R.string.msg_network_connect_error))
                 return
             }
 
@@ -158,24 +153,24 @@ class PickupDoneActivity : CommonActivity() {
 
             //사인이미지를 그리지 않았다면
             if (!sign_view_sign_p_applicant_signature.isTouch) {
-                Toast.makeText(this.applicationContext, context.resources.getString(R.string.msg_signature_require), Toast.LENGTH_SHORT).show()
+                Toast.makeText(this@PickupDoneActivity, resources.getString(R.string.msg_signature_require), Toast.LENGTH_SHORT).show()
                 return
             }
             //사인이미지를 그리지 않았다면
             if (!sign_view_sign_p_collector_signature.isTouch) {
-                Toast.makeText(this.applicationContext, context.resources.getString(R.string.msg_collector_signature_require), Toast.LENGTH_SHORT).show()
+                Toast.makeText(this@PickupDoneActivity, resources.getString(R.string.msg_collector_signature_require), Toast.LENGTH_SHORT).show()
                 return
             }
 
             val driverMemo = edit_sign_p_memo.text.toString().trim { it <= ' ' }
             if (driverMemo == "") {
-                Toast.makeText(this.applicationContext, context.resources.getString(R.string.msg_must_enter_memo), Toast.LENGTH_SHORT).show()
+                Toast.makeText(this@PickupDoneActivity, resources.getString(R.string.msg_must_enter_memo), Toast.LENGTH_SHORT).show()
                 return
             }
 
             if (MemoryStatus.getAvailableInternalMemorySize() != MemoryStatus.ERROR.toLong() && MemoryStatus.getAvailableInternalMemorySize() < MemoryStatus.PRESENT_BYTE) {
 
-                DisplayUtil.AlertDialog(this, context.resources.getString(R.string.msg_disk_size_error))
+                DisplayUtil.AlertDialog(this, resources.getString(R.string.msg_disk_size_error))
                 return
             }
 
@@ -197,7 +192,7 @@ class PickupDoneActivity : CommonActivity() {
         } catch (e: Exception) {
 
             Log.e("Exception", "$tag  Exception : $e")
-            Toast.makeText(this.applicationContext, context.resources.getString(R.string.text_error) + " - " + e.toString(), Toast.LENGTH_SHORT).show()
+            Toast.makeText(this@PickupDoneActivity, resources.getString(R.string.text_error) + " - " + e.toString(), Toast.LENGTH_SHORT).show()
         }
     }
 

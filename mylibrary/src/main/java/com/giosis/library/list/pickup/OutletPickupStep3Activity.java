@@ -1,9 +1,6 @@
 package com.giosis.library.list.pickup;
 
 import android.app.AlertDialog;
-import android.app.ListActivity;
-import android.content.Context;
-import android.content.DialogInterface;
 import android.content.Intent;
 import android.os.Bundle;
 import android.text.Editable;
@@ -37,6 +34,7 @@ import com.giosis.library.util.Preferences;
  * @author krm0219
  * LIST > In-Progress > Outlet Pickup (Step 3)
  */
+// TODO_TEST    UI는 확인했음 // Done(OutletPickupDoneHelper) 테스트 필요
 public class OutletPickupStep3Activity extends CommonActivity {
     private static final String[] PERMISSIONS = new String[]{PermissionChecker.READ_EXTERNAL_STORAGE, PermissionChecker.WRITE_EXTERNAL_STORAGE,
             PermissionChecker.ACCESS_FINE_LOCATION, PermissionChecker.ACCESS_COARSE_LOCATION};
@@ -56,10 +54,6 @@ public class OutletPickupStep3Activity extends CommonActivity {
 
 
     //
-    Context context;
-    String opID = "";
-    String officeCode = "";
-    String deviceID = "";
     Button btn_sign_p_outlet_save;
     String mTitle;
     String mPickupNo;
@@ -147,11 +141,6 @@ public class OutletPickupStep3Activity extends CommonActivity {
         btn_sign_p_outlet_save.setOnClickListener(clickListener);
 
         //
-        context = getApplicationContext();
-        opID = Preferences.INSTANCE.getUserId();
-        officeCode = Preferences.INSTANCE.getOfficeCode();
-        deviceID = Preferences.INSTANCE.getDeviceUUID();
-
         mTitle = getIntent().getStringExtra("title");
         mPickupNo = getIntent().getStringExtra("pickupNo");
         mApplicant = getIntent().getStringExtra("applicant");
@@ -162,7 +151,7 @@ public class OutletPickupStep3Activity extends CommonActivity {
         scanned_list = getIntent().getStringExtra("scannedList");
 
 
-        outletPickupDoneTrackingNoAdapter = new OutletPickupDoneTrackingNoAdapter(context, resultData, mRoute);
+        outletPickupDoneTrackingNoAdapter = new OutletPickupDoneTrackingNoAdapter(OutletPickupStep3Activity.this, resultData, mRoute);
         outletPickupDoneTrackingNoAdapter.notifyDataSetChanged();
         list_sign_p_outlet_tracking_no.setAdapter(outletPickupDoneTrackingNoAdapter);
         setListViewHeightBasedOnChildren(list_sign_p_outlet_tracking_no);
@@ -192,7 +181,7 @@ public class OutletPickupStep3Activity extends CommonActivity {
             public void onTextChanged(CharSequence charSequence, int i, int i1, int i2) {
 
                 if (99 <= edit_sign_p_outlet_memo.length()) {
-                    Toast.makeText(context, context.getResources().getText(R.string.msg_memo_too_long), Toast.LENGTH_SHORT).show();
+                    Toast.makeText(OutletPickupStep3Activity.this, getResources().getText(R.string.msg_memo_too_long), Toast.LENGTH_SHORT).show();
                 }
             }
 
@@ -241,7 +230,7 @@ public class OutletPickupStep3Activity extends CommonActivity {
 
         if (isPermissionTrue) {
 
-            gpsTrackerManager = new GPSTrackerManager(context);
+            gpsTrackerManager = new GPSTrackerManager(OutletPickupStep3Activity.this);
             gpsEnable = gpsTrackerManager.enableGPSSetting();
 
             if (gpsEnable && gpsTrackerManager != null) {
@@ -274,9 +263,9 @@ public class OutletPickupStep3Activity extends CommonActivity {
 
     private void AlertShow(String msg) {
         AlertDialog.Builder alert_internet_status = new AlertDialog.Builder(this);
-        alert_internet_status.setTitle(context.getResources().getString(R.string.text_warning));
+        alert_internet_status.setTitle(getResources().getString(R.string.text_warning));
         alert_internet_status.setMessage(msg);
-        alert_internet_status.setPositiveButton(context.getResources().getString(R.string.button_close),
+        alert_internet_status.setPositiveButton(getResources().getString(R.string.button_close),
                 (dialog, which) -> {
                     dialog.dismiss(); // 닫기
                     finish();
@@ -290,7 +279,7 @@ public class OutletPickupStep3Activity extends CommonActivity {
 
             if (!NetworkUtil.isNetworkAvailable(this)) {
 
-                AlertShow(context.getResources().getString(R.string.msg_network_connect_error));
+                AlertShow(getResources().getString(R.string.msg_network_connect_error));
                 return;
             }
 
@@ -304,13 +293,13 @@ public class OutletPickupStep3Activity extends CommonActivity {
 
             if (mRoute.equals("7E")) {
                 if (!sign_view_sign_p_outlet_signature.isTouch()) {
-                    Toast.makeText(this.getApplicationContext(), context.getResources().getString(R.string.msg_signature_require), Toast.LENGTH_SHORT).show();
+                    Toast.makeText(OutletPickupStep3Activity.this, getResources().getString(R.string.msg_signature_require), Toast.LENGTH_SHORT).show();
                     return;
                 }
             }
 
             if (MemoryStatus.getAvailableInternalMemorySize() != MemoryStatus.ERROR && MemoryStatus.getAvailableInternalMemorySize() < MemoryStatus.PRESENT_BYTE) {
-                AlertShow(context.getResources().getString(R.string.msg_disk_size_error));
+                AlertShow(getResources().getString(R.string.msg_disk_size_error));
                 return;
             }
 
@@ -318,8 +307,8 @@ public class OutletPickupStep3Activity extends CommonActivity {
 
             com.giosis.library.util.DataUtil.logEvent("button_click", TAG, "SetOutletPickupUploadData");
 
-            new OutletPickupDoneHelper.Builder(this, opID, officeCode, deviceID, mPickupNo,
-                    sign_view_sign_p_outlet_signature, mDriverMemo,
+            new OutletPickupDoneHelper.Builder(this, Preferences.INSTANCE.getUserId(), Preferences.INSTANCE.getOfficeCode(), Preferences.INSTANCE.getDeviceUUID(),
+                    mPickupNo, sign_view_sign_p_outlet_signature, mDriverMemo,
                     MemoryStatus.getAvailableInternalMemorySize(), latitude, longitude, Integer.toString(mScannedQty), scanned_list, mRoute)
                     .setOnOutletDataUploadEventListener(() -> {
 
@@ -327,20 +316,20 @@ public class OutletPickupStep3Activity extends CommonActivity {
 
                         try {
 
-                            Intent intent = new Intent(context, Class.forName("com.giosis.util.qdrive.list.ListActivity"));
+                            Intent intent = new Intent(OutletPickupStep3Activity.this, Class.forName("com.giosis.util.qdrive.list.ListActivity"));
                             startActivity(intent);
-                        } catch(Exception e) {
+                        } catch (Exception e) {
 
                             Log.e("Exception", "  Exception : " + e.toString());
-                            Toast.makeText(context, "Exception : " + e.toString(), Toast.LENGTH_SHORT).show();
+                            Toast.makeText(OutletPickupStep3Activity.this, "Exception : " + e.toString(), Toast.LENGTH_SHORT).show();
                         }
                     }).build().execute();
 
         } catch (Exception e) {
 
-            String msg = String.format(context.getResources().getString(R.string.text_exception), e.toString());
+            String msg = String.format(getResources().getString(R.string.text_exception), e.toString());
             Log.e("krm0219", msg);
-            Toast.makeText(this.getApplicationContext(), msg, Toast.LENGTH_SHORT).show();
+            Toast.makeText(OutletPickupStep3Activity.this, msg, Toast.LENGTH_SHORT).show();
         }
     }
 }
