@@ -31,13 +31,13 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import com.giosis.library.list.delivery.DeliveryDoneActivity;
+import com.giosis.library.list.pickup.OutletPickupStep1Activity;
 import com.giosis.library.message.CustomerMessageListDetailActivity;
 import com.giosis.util.qdrive.barcodescanner.StdResult;
 import com.giosis.util.qdrive.international.MyApplication;
 import com.giosis.util.qdrive.international.R;
 import com.giosis.util.qdrive.list.ChildItem;
 import com.giosis.util.qdrive.list.RowItem;
-import com.giosis.util.qdrive.list.pickup.OutletPickupScanActivity;
 import com.giosis.util.qdrive.util.Custom_JsonParser;
 import com.giosis.util.qdrive.util.DataUtil;
 import com.giosis.library.util.DatabaseHelper;
@@ -492,7 +492,7 @@ public class OutletOrderStatusAdapter extends BaseExpandableListAdapter {
 
                 } else if (type.equals("P")) {
 
-                    Intent intent = new Intent(context, OutletPickupScanActivity.class);
+                    Intent intent = new Intent(context, OutletPickupStep1Activity.class);
 
                     intent.putExtra("title", "Qsuttle : Pickup Done");
                     intent.putExtra("pickup_no", tracking_no);

@@ -50,6 +50,7 @@ import android.widget.ToggleButton;
 import com.giosis.library.gps.GPSTrackerManager;
 import com.giosis.library.list.delivery.DeliveryDoneActivity;
 import com.giosis.library.list.pickup.CnRPickupDoneActivity;
+import com.giosis.library.list.pickup.OutletPickupStep3Activity;
 import com.giosis.library.list.pickup.PickupAddScanActivity;
 import com.giosis.library.list.pickup.PickupDoneActivity;
 import com.giosis.library.list.pickup.PickupTakeBackActivity;
@@ -66,7 +67,6 @@ import com.giosis.util.qdrive.international.SigningActivity;
 import com.giosis.util.qdrive.international.UploadData;
 import com.giosis.util.qdrive.list.BarcodeData;
 import com.giosis.util.qdrive.list.OutletPickupDoneResult;
-import com.giosis.util.qdrive.list.pickup.OutletPickupDoneActivity;
 import com.giosis.util.qdrive.main.ChangeDriverValidationCheckHelper;
 import com.giosis.util.qdrive.main.Dpc3OutValidationCheckHelper;
 import com.giosis.util.qdrive.main.ManualChangeDelDriverHelper;
@@ -2038,7 +2038,7 @@ public final class CaptureActivity extends CommonActivity implements SurfaceHold
                 Log.e(TAG, "Outlet Pickup Scanned List : " + scanned_list);
 
 
-                Intent intent = new Intent(this, OutletPickupDoneActivity.class);
+                Intent intent = new Intent(this, OutletPickupStep3Activity.class);
                 intent.putExtra("title", mScanTitle);
                 intent.putExtra("pickup_no", pickupNo);
                 intent.putExtra("applicant", pickupApplicantName);
