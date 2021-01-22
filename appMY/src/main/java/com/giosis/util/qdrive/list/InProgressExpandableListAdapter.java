@@ -37,6 +37,9 @@ import android.widget.Toast;
 import com.giosis.library.list.delivery.DeliveryDoneActivity;
 import com.giosis.library.list.pickup.PickupFailedActivity;
 import com.giosis.library.list.pickup.PickupZeroQtyActivity;
+import com.giosis.library.list.delivery.DeliveryFailedActivity;
+import com.giosis.library.list.delivery.QuickReturnFailedActivity;
+import com.giosis.library.list.delivery.QuickReturnedActivity;
 import com.giosis.library.message.CustomerMessageListDetailActivity;
 import com.giosis.library.server.data.FailedCodeResult;
 import com.giosis.library.setting.bluetooth.BluetoothDeviceData;
@@ -49,6 +52,10 @@ import com.giosis.util.qdrive.international.R;
 import com.giosis.util.qdrive.list.delivery.DeliveryFailedActivity;
 import com.giosis.util.qdrive.list.delivery.DeliveryReturnFailedActivity;
 import com.giosis.util.qdrive.list.delivery.DeliveryReturnedActivity;
+import com.giosis.util.qdrive.list.pickup.ManualCnRPrintDataHelper;
+import com.giosis.util.qdrive.list.pickup.OutletPickupScanActivity;
+import com.giosis.util.qdrive.list.pickup.PickupFailedActivity;
+import com.giosis.util.qdrive.list.pickup.PickupZeroQtyActivity;
 import com.giosis.util.qdrive.portableprinter.bluetooth.GPrinterBroadcastReceiver;
 import com.giosis.util.qdrive.portableprinter.bluetooth.GPrinterData;
 import com.giosis.util.qdrive.portableprinter.bluetooth.GPrinterHandler;
@@ -873,12 +880,10 @@ public class InProgressExpandableListAdapter extends BaseExpandableListAdapter i
             @Override
             public void onClick(View v) {
 
-                Intent intent = new Intent(context, DeliveryReturnedActivity.class);
+                Intent intent = new Intent(context, QuickReturnedActivity.class);
                 intent.putExtra("title", context.getResources().getString(R.string.text_signature));
                 intent.putExtra("type", "D");
-                intent.putExtra("trackingNo", tracking_no);
-                intent.putExtra("receiverName", receiver);
-                intent.putExtra("senderName", sender);
+                intent.putExtra("waybillNo", tracking_no);
                 ((Activity) context).startActivityForResult(intent, 1);
             }
         });
@@ -888,12 +893,10 @@ public class InProgressExpandableListAdapter extends BaseExpandableListAdapter i
             @Override
             public void onClick(View v) {
 
-                Intent intent = new Intent(context, DeliveryReturnFailedActivity.class);
+                Intent intent = new Intent(context, QuickReturnFailedActivity.class);
                 intent.putExtra("title", context.getResources().getString(R.string.text_visit_log));
                 intent.putExtra("type", "D");
-                intent.putExtra("trackingNo", tracking_no);
-                intent.putExtra("receiverName", receiver);
-                intent.putExtra("senderName", sender);
+                intent.putExtra("waybillNo", tracking_no);
                 context.startActivity(intent);
             }
         });

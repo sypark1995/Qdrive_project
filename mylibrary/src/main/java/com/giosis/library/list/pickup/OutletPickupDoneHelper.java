@@ -28,25 +28,27 @@ import java.text.SimpleDateFormat;
 import java.util.Date;
 
 public class OutletPickupDoneHelper {
-    private final String pickup_no;
+    String TAG = "OutletPickupDoneHelper";
 
     private final Context context;
     private final String opID;
     private final String officeCode;
     private final String deviceID;
-    private final String scannedQty;
+
+    private final String pickup_no;
     private final SigningView signingView;
     private final String driverMemo;
 
     private final long disk_size;
     private final double lat;
     private final double lon;
+    private final String scannedQty;
     private final String scanned_str;
     private final String outlet_type;
     private final OnOutletDataUploadEventListener eventListener;
 
     private final String networkType;
-    String TAG = "OutletPickupDoneHelper";
+    private final OnOutletDataUploadEventListener eventListener;
     private final ProgressDialog progressDialog;
     private final AlertDialog resultDialog;
 
@@ -165,6 +167,66 @@ public class OutletPickupDoneHelper {
             return this;
         }
     }
+
+    private OutletPickupDoneHelper(Builder builder) {
+
+        this.context = builder.context;
+        this.opID = builder.opID;
+        this.officeCode = builder.officeCode;
+        this.deviceID = builder.deviceID;
+
+        this.pickup_no = builder.pickup_no;
+        this.signingView = builder.signingView;
+        this.driverMemo = builder.driverMemo;
+
+        this.disk_size = builder.disk_size;
+        this.lat = builder.lat;
+        this.lon = builder.lon;
+        this.scannedQty = builder.scannedQty;
+        this.scanned_str = builder.scanned_str;
+        this.outlet_type = builder.outlet_type;
+
+        this.networkType = builder.networkType;
+        this.eventListener = builder.eventListener;
+        this.progressDialog = getProgressDialog(this.context);
+        this.resultDialog = getResultAlertDialog(this.context);
+    }
+
+    private ProgressDialog getProgressDialog(Context context) {
+
+        ProgressDialog progressDialog = new ProgressDialog(context);
+        progressDialog.setProgressStyle(ProgressDialog.STYLE_HORIZONTAL);
+        progressDialog.setMessage(context.getResources().getString(R.string.text_set_transfer));
+        progressDialog.setCancelable(false);
+        return progressDialog;
+    }
+
+    private AlertDialog getResultAlertDialog(final Context context) {
+
+        AlertDialog dialog = new AlertDialog.Builder(context)
+                .setTitle(context.getResources().getString(R.string.text_upload_result))
+                .setCancelable(false).setPositiveButton(context.getResources().getString(R.string.button_ok), new OnClickListener() {
+
+                    @Override
+                    public void onClick(DialogInterface dialog, int which) {
+                        if (dialog != null)
+                            dialog.dismiss();
+
+                        if (eventListener != null) {
+                            eventListener.onPostResult();
+                        }
+                    }
+                })
+                .create();
+
+        return dialog;
+    }
+
+    private void showResultDialog(String message) {
+        resultDialog.setMessage(message);
+        resultDialog.show();
+    }
+
 
     class OutletPickupTask extends AsyncTask<Void, Integer, StdResult> {
 

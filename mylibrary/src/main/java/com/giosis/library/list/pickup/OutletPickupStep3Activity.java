@@ -1,4 +1,4 @@
-package com.giosis.library.list.pickup;
+package com.giosis.util.qdrive.list.pickup;
 
 import android.app.AlertDialog;
 import android.app.ListActivity;
@@ -25,14 +25,17 @@ import androidx.annotation.Nullable;
 import com.giosis.library.MemoryStatus;
 import com.giosis.library.R;
 import com.giosis.library.gps.GPSTrackerManager;
-import com.giosis.library.list.SigningView;
-import com.giosis.library.list.delivery.OnOutletDataUploadEventListener;
-import com.giosis.library.util.CommonActivity;
-import com.giosis.library.util.DataUtil;
-import com.giosis.library.util.NetworkUtil;
-import com.giosis.library.util.PermissionActivity;
-import com.giosis.library.util.PermissionChecker;
-import com.giosis.library.util.Preferences;
+import com.giosis.util.qdrive.list.ListActivity;
+import com.giosis.util.qdrive.list.SigningView;
+import com.giosis.util.qdrive.list.delivery.OnOutletDataUploadEventListener;
+import com.giosis.util.qdrive.singapore.MyApplication;
+import com.giosis.util.qdrive.singapore.R;
+import com.giosis.util.qdrive.util.DataUtil;
+import com.giosis.util.qdrive.util.MemoryStatus;
+import com.giosis.util.qdrive.util.NetworkUtil;
+import com.giosis.util.qdrive.util.PermissionActivity;
+import com.giosis.util.qdrive.util.PermissionChecker;
+import com.giosis.util.qdrive.util.ui.CommonActivity;
 
 /**
  * @author krm0219

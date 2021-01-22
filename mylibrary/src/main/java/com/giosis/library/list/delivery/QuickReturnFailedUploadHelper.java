@@ -1,4 +1,4 @@
-package com.giosis.util.qdrive.list.delivery;
+package com.giosis.library.list.delivery;
 
 import android.app.AlertDialog;
 import android.app.ProgressDialog;
@@ -9,26 +9,27 @@ import android.content.DialogInterface.OnClickListener;
 import android.graphics.Bitmap;
 import android.os.AsyncTask;
 import android.util.Log;
+import android.widget.ImageView;
 
+import com.giosis.library.OnServerEventListener;
+import com.giosis.library.R;
+import com.giosis.library.barcodescanner.StdResult;
+import com.giosis.library.server.Custom_JsonParser;
 import com.giosis.library.server.ImageUpload;
-import com.giosis.util.qdrive.barcodescanner.StdResult;
-import com.giosis.util.qdrive.list.SigningView;
-import com.giosis.util.qdrive.singapore.MyApplication;
-import com.giosis.util.qdrive.singapore.OnServerEventListener;
-import com.giosis.util.qdrive.singapore.R;
-import com.giosis.util.qdrive.util.Custom_JsonParser;
-import com.giosis.util.qdrive.util.DataUtil;
+import com.giosis.library.util.DataUtil;
 import com.giosis.library.util.DatabaseHelper;
-import com.giosis.util.qdrive.util.DisplayUtil;
-import com.giosis.util.qdrive.util.NetworkUtil;
+import com.giosis.library.util.DisplayUtil;
+import com.giosis.library.util.NetworkUtil;
+import com.giosis.library.util.Preferences;
 
 import org.json.JSONObject;
 
 import java.text.SimpleDateFormat;
 import java.util.Date;
 
-public class QuickReturnedUploadHelper {
-    String TAG = "QuickReturnedUploadHelper";
+
+public class QuickReturnFailedUploadHelper {
+    String TAG = "QuickReturnFailedUploadHelper";
 
     private final Context context;
     private final String opID;
@@ -36,9 +37,8 @@ public class QuickReturnedUploadHelper {
     private final String deviceID;
 
     private final String shippingNo;
-    private final String receiveType;
-    private final SigningView signingView;
     private final String driverMemo;
+    private final ImageView imageView;
 
     private final long disk_size;
     private final double lat;
@@ -57,9 +57,8 @@ public class QuickReturnedUploadHelper {
         private final String deviceID;
 
         private final String shippingNo;
-        private final String receiveType;
-        private final SigningView signingView;
         private final String driverMemo;
+        private final ImageView imageView;
 
         private final long disk_size;
         private final double lat;
@@ -69,7 +68,7 @@ public class QuickReturnedUploadHelper {
         private OnServerEventListener eventListener;
 
         public Builder(Context context, String opID, String officeCode, String deviceID,
-                       String shippingNo, String receiveType, SigningView signingView, String driverMemo,
+                       String shippingNo, String driverMemo, ImageView imageView,
                        long disk_size, double lat, double lon) {
 
             this.context = context;
@@ -79,17 +78,16 @@ public class QuickReturnedUploadHelper {
             this.networkType = NetworkUtil.getNetworkType(context);
 
             this.shippingNo = shippingNo;
-            this.receiveType = receiveType;
-            this.signingView = signingView;
             this.driverMemo = driverMemo;
+            this.imageView = imageView;
 
             this.disk_size = disk_size;
             this.lat = lat;
             this.lon = lon;
         }
 
-        public QuickReturnedUploadHelper build() {
-            return new QuickReturnedUploadHelper(this);
+        public QuickReturnFailedUploadHelper build() {
+            return new QuickReturnFailedUploadHelper(this);
         }
 
         public Builder setOnServerEventListener(OnServerEventListener eventListener) {
@@ -99,7 +97,7 @@ public class QuickReturnedUploadHelper {
         }
     }
 
-    private QuickReturnedUploadHelper(Builder builder) {
+    private QuickReturnFailedUploadHelper(Builder builder) {
 
         this.context = builder.context;
         this.opID = builder.opID;
@@ -107,9 +105,8 @@ public class QuickReturnedUploadHelper {
         this.deviceID = builder.deviceID;
 
         this.shippingNo = builder.shippingNo;
-        this.receiveType = builder.receiveType;
-        this.signingView = builder.signingView;
         this.driverMemo = builder.driverMemo;
+        this.imageView = builder.imageView;
 
         this.disk_size = builder.disk_size;
         this.lat = builder.lat;
@@ -156,8 +153,7 @@ public class QuickReturnedUploadHelper {
         resultDialog.show();
     }
 
-    class ReturnedUploadTask extends AsyncTask<Void, Integer, StdResult> {
-
+    class ReturnFailUploadTask extends AsyncTask<Void, Integer, StdResult> {
         int progress = 0;
 
         @Override
@@ -174,7 +170,7 @@ public class QuickReturnedUploadHelper {
         @Override
         protected StdResult doInBackground(Void... params) {
 
-            StdResult stdResult = requestReturnUpload(shippingNo);
+            StdResult stdResult = requestReturnFailUpload(shippingNo);
             publishProgress(1);
 
             return stdResult;
@@ -182,9 +178,9 @@ public class QuickReturnedUploadHelper {
 
         @Override
         protected void onProgressUpdate(Integer... values) {
+            super.onProgressUpdate(values);
             progress += values[0];
             progressDialog.setProgress(progress);
-            super.onProgressUpdate(values);
         }
 
         @Override
@@ -219,10 +215,7 @@ public class QuickReturnedUploadHelper {
         }
 
 
-        private StdResult requestReturnUpload(String assignNo) {
-
-            DataUtil.captureSign("/Qdrive", assignNo, signingView);
-
+        private StdResult requestReturnFailUpload(String assignNo) {
 
             SimpleDateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
             Date date = new Date();
@@ -243,15 +236,15 @@ public class QuickReturnedUploadHelper {
             if (!NetworkUtil.isNetworkAvailable(context)) {
 
                 result.setResultCode(-16);
-                result.setResultMsg(context.getResources().getString(R.string.msg_network_connect_error_saved));
+                result.setResultMsg(context.getResources().getString(R.string.msg_upload_fail_16));
                 return result;
             }
 
             try {
 
-                signingView.buildDrawingCache();
-                Bitmap captureView = signingView.getDrawingCache();
-                String bitmapString = DataUtil.bitmapToString(captureView, ImageUpload.QXPOD, "qdriver/sign", assignNo);
+                imageView.buildDrawingCache();
+                Bitmap captureView = imageView.getDrawingCache();
+                String bitmapString = DataUtil.bitmapToString(context, captureView, ImageUpload.QXPOD, "qdriver/sign", assignNo);
 
                 if (bitmapString.equals("")) {
                     result.setResultCode(-100);
@@ -260,8 +253,9 @@ public class QuickReturnedUploadHelper {
                 }
 
                 JSONObject job = new JSONObject();
-                job.accumulate("rcv_type", receiveType);
-                job.accumulate("stat", "RT");
+
+                job.accumulate("rcv_type", "RC");
+                job.accumulate("stat", "RF");
                 job.accumulate("chg_id", opID);
                 job.accumulate("deliv_msg", "(by Qdrive RealTime-Upload)"); // 내부관리자용 메세지
                 job.accumulate("opId", opID);
@@ -270,12 +264,13 @@ public class QuickReturnedUploadHelper {
                 job.accumulate("network_type", networkType);
                 job.accumulate("fileData", bitmapString);
                 job.accumulate("no_songjang", assignNo);
-                job.accumulate("remark", driverMemo);           // 드라이버 메세지 driver_memo	== remark
+                job.accumulate("remark", driverMemo);               // 드라이버 메세지 driver_memo	== remark
                 job.accumulate("disk_size", disk_size);
                 job.accumulate("lat", lat);
                 job.accumulate("lon", lon);
+                job.accumulate("del_channel", "QDRIVE");
                 job.accumulate("app_id", DataUtil.appID);
-                job.accumulate("nation_cd", DataUtil.nationCode);
+                job.accumulate("nation_cd", Preferences.INSTANCE.getUserNation());
 
 
                 String methodName = "setDeliveryRTNDPTypeUploadData";
@@ -311,29 +306,29 @@ public class QuickReturnedUploadHelper {
     }
 
 
-    public QuickReturnedUploadHelper execute() {
-        ReturnedUploadTask returnedUploadTask = new ReturnedUploadTask();
-        returnedUploadTask.execute();
+    public QuickReturnFailedUploadHelper execute() {
+        ReturnFailUploadTask returnFailUploadTask = new ReturnFailUploadTask();
+        returnFailUploadTask.execute();
         return this;
     }
 
     // SQLite UPDATE
     private void updateReceiverSign(String invoiceNo, String driverMemo) {
 
-//        String opId = SharedPreferencesHelper.getSigninOpID(context);
-
-        String opId = MyApplication.preferences.getUserId();
+        //        String opId = SharedPreferencesHelper.getSigninOpID(context);
+        String opId = Preferences.INSTANCE.getUserId();
 
         SimpleDateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
         Date date = new Date();
 
         ContentValues contentVal = new ContentValues();
-        contentVal.put("stat", "RT");
+        contentVal.put("stat", "RF");
         contentVal.put("chg_id", opId);
         contentVal.put("chg_dt", dateFormat.format(date));
-        contentVal.put("real_qty", "0");                // 업로드시 값 Parse 시 에러나서 0 넘김
+        contentVal.put("real_qty", "0");
         contentVal.put("driver_memo", driverMemo);
         contentVal.put("retry_dt", "");
+        contentVal.put("rev_type", "VL");
         contentVal.put("punchOut_stat", "S");
 
         DatabaseHelper.getInstance().update(DatabaseHelper.DB_TABLE_INTEGRATION_LIST, contentVal,

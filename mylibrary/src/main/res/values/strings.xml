@@ -77,6 +77,7 @@
 
     <string name="text_qoo10_account" translatable="false">Qoo10 Account</string>
     <string name="text_device_name_info" translatable="false">Device name should be 1 or more letter words.</string>
+    <string name="msg_failed_code_error" translatable="false">CodeData Error.\nPlease press the \'Download\' button again at Home.</string>
 
     <string name="text_upload_failed">Upload Failed</string>
     <string name="text_today_done">Today Done</string>
