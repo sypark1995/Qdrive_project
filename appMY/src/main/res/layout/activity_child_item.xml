@@ -334,24 +334,6 @@
                     android:textColor="@color/color_303030"
                     android:textSize="@dimen/text_size_24px" />
             </LinearLayout>
-
-            <RelativeLayout
-                android:id="@+id/layout_list_item_child_outlet_pickup"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:visibility="gone">
-
-                <Button
-                    android:id="@+id/btn_list_item_child_outlet_pickup_scan"
-                    android:layout_width="94dp"
-                    android:layout_height="32dp"
-                    android:layout_alignParentEnd="true"
-                    android:background="@drawable/border_radius_5_cccccc_ffffff"
-                    android:text="@string/button_pickup_done"
-                    android:textAllCaps="false"
-                    android:textColor="@color/color_303030"
-                    android:textSize="@dimen/text_size_24px" />
-            </RelativeLayout>
         </RelativeLayout>
     </RelativeLayout>
 </LinearLayout>

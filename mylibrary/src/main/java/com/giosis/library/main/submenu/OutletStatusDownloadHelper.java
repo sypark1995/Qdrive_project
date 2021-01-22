@@ -1,21 +1,23 @@
-package com.giosis.util.qdrive.main;
+package com.giosis.library.main.submenu;
 
+import android.app.AlertDialog;
 import android.app.ProgressDialog;
 import android.content.ContentValues;
 import android.content.Context;
 import android.os.AsyncTask;
 import android.util.Log;
 
-import com.giosis.util.qdrive.barcodescanner.DriverAssignResult;
-import com.giosis.util.qdrive.international.R;
-import com.giosis.util.qdrive.list.ChildItem;
-import com.giosis.util.qdrive.list.RowItem;
-import com.giosis.util.qdrive.list.PickupAssignResult;
-import com.giosis.util.qdrive.util.Custom_JsonParser;
-import com.giosis.util.qdrive.util.DataUtil;
+import com.giosis.library.main.ChildItem;
+import com.giosis.library.main.DriverAssignResult;
+import com.giosis.library.main.PickupAssignResult;
+import com.giosis.library.main.RowItem;
+import com.giosis.library.server.Custom_JsonParser;
+import com.giosis.library.util.BarcodeType;
+import com.giosis.library.util.DataUtil;
 import com.giosis.library.util.DatabaseHelper;
-import com.giosis.util.qdrive.util.DisplayUtil;
-import com.giosis.util.qdrive.util.NetworkUtil;
+import com.giosis.library.util.DisplayUtil;
+import com.giosis.library.util.NetworkUtil;
+import com.giosis.library.util.Preferences;
 import com.google.gson.Gson;
 
 import org.json.JSONObject;
@@ -26,7 +28,7 @@ import java.util.Date;
 import java.util.TimeZone;
 
 // Outlet Order Status
-public class OutletOrderStatusDownloadHelper {
+public class OutletStatusDownloadHelper {
     String TAG = "OutletStatusDownloadHelper";
 
     Gson gson = new Gson();
@@ -39,43 +41,41 @@ public class OutletOrderStatusDownloadHelper {
     private final String networkType;
     private final OnOutletStatusDownloadListener eventListener;
     private final ProgressDialog progressDialog;
-
-    public static class Builder {
-
-        private final Context context;
-        private final String opID;
-        private final String officeCode;
-        private final String deviceID;
-        private final int outletStatusPosition;
-
-        private String networkType;
-        private OnOutletStatusDownloadListener eventListener;
+    private final AlertDialog resultDialog;
 
 
-        public Builder(Context context, String opID, String officeCode, String deviceID, int outletStatusPosition) {
+    private DriverAssignResult getOutletRealTimeData(String type) {
 
-            this.context = context;
-            this.opID = opID;
-            this.officeCode = officeCode;
-            this.deviceID = deviceID;
-            this.outletStatusPosition = outletStatusPosition;
+        DriverAssignResult resultObj;
 
-            this.networkType = NetworkUtil.getNetworkType(context);
+        try {
+
+            JSONObject job = new JSONObject();
+            job.accumulate("type", type);
+            job.accumulate("opId", opID);
+            job.accumulate("officeCd", officeCode);
+            job.accumulate("exceptList", "");
+            job.accumulate("assignList", "");
+            job.accumulate("device_id", deviceID);
+            job.accumulate("network_type", networkType);
+            job.accumulate("app_id", DataUtil.appID);
+            job.accumulate("nation_cd", Preferences.INSTANCE.getUserNation());
+
+
+            String methodName = "GetDeliveryList_OutletRealTime";
+            String jsonString = Custom_JsonParser.requestServerDataReturnJSON(methodName, job);
+
+            resultObj = gson.fromJson(jsonString, DriverAssignResult.class);
+        } catch (Exception e) {
+
+            Log.e("Exception", TAG + "  GetDeliveryList_OutletRealTime Json Exception : " + e.toString());
+            resultObj = null;
         }
 
-        public OutletOrderStatusDownloadHelper build() {
-            return new OutletOrderStatusDownloadHelper(this);
-        }
-
-        Builder setOnOutletStatusDownloadListener(OnOutletStatusDownloadListener eventListener) {
-
-            this.eventListener = eventListener;
-            return this;
-        }
+        return resultObj;
     }
 
-    private OutletOrderStatusDownloadHelper(Builder builder) {
-
+    private OutletStatusDownloadHelper(Builder builder) {
         this.context = builder.context;
         this.opID = builder.opID;
         this.officeCode = builder.officeCode;
@@ -85,11 +85,12 @@ public class OutletOrderStatusDownloadHelper {
         this.networkType = builder.networkType;
         this.eventListener = builder.eventListener;
         this.progressDialog = getProgressDialog(this.context);
+        this.resultDialog = getResultAlertDialog(this.context);
     }
-
 
     // 리스트 만들 RowItem array (delivery + pickup)
     private ArrayList<RowItem> outletDataArrayList;
+
 
     class DownloadTask extends AsyncTask<Void, Integer, Long> {
 
@@ -149,11 +150,6 @@ public class OutletOrderStatusDownloadHelper {
                     successCount = setOutletDeliveryData(outlet_shippingInfo);
                     publishProgress(1);
                 }
-          /*     //   TODO  7E TEST
-                //   가상의 값 DB에 밀어넣기~
-                testInsertOutletDeliveryData("55001497", "TSGP177621", "7E 001 CR20181107001");
-                testInsertOutletDeliveryData("55001498", "TSGP177622", "7E 001 CR20181107002");
-                testInsertOutletDeliveryData("55001499", "TSGP177623", "7E 002 CR20181107001");*/
             }
 
             if (PickupServerList != null) {
@@ -177,57 +173,13 @@ public class OutletOrderStatusDownloadHelper {
         protected void onPostExecute(Long result) {
             super.onPostExecute(result);
 
-            try {
-
-                if (progressDialog != null && progressDialog.isShowing()) {
-
-                    DisplayUtil.dismissProgressDialog(progressDialog);
-                }
-
-            } catch (Exception e) {
-
-                Log.e("Exception", TAG + "  onPostExecute Exception : " + e.toString());
-                // !((Activity)context).isFinishing()
-            }
+            DisplayUtil.dismissProgressDialog(progressDialog);
 
             if (eventListener != null) {
                 eventListener.onDownloadResult(outletDataArrayList);
             }
         }
     }
-
-
-    private DriverAssignResult getOutletRealTimeData(String type) {
-
-        DriverAssignResult resultObj;
-
-        try {
-
-            JSONObject job = new JSONObject();
-            job.accumulate("type", type);
-            job.accumulate("opId", opID);
-            job.accumulate("officeCd", officeCode);
-            job.accumulate("exceptList", "");
-            job.accumulate("assignList", "");
-            job.accumulate("device_id", deviceID);
-            job.accumulate("network_type", networkType);
-            job.accumulate("app_id", DataUtil.appID);
-            job.accumulate("nation_cd", DataUtil.nationCode);
-
-
-            String methodName = "GetDeliveryList_OutletRealTime";
-            String jsonString = Custom_JsonParser.requestServerDataReturnJSON(methodName, job);
-
-            resultObj = gson.fromJson(jsonString, DriverAssignResult.class);
-        } catch (Exception e) {
-
-            Log.e("Exception", TAG + "  GetDeliveryList_OutletRealTime Json Exception : " + e.toString());
-            resultObj = null;
-        }
-
-        return resultObj;
-    }
-
 
     private DriverAssignResult getOutletDeliveryServerData() {
 
@@ -243,7 +195,7 @@ public class OutletOrderStatusDownloadHelper {
             job.accumulate("device_id", deviceID);
             job.accumulate("network_type", networkType);
             job.accumulate("app_id", DataUtil.appID);
-            job.accumulate("nation_cd", DataUtil.nationCode);
+            job.accumulate("nation_cd", Preferences.INSTANCE.getUserNation());
 
 
             String methodName = "GetDeliveryList_Outlet";
@@ -273,7 +225,7 @@ public class OutletOrderStatusDownloadHelper {
             job.accumulate("device_id", deviceID);
             job.accumulate("network_type", networkType);
             job.accumulate("app_id", DataUtil.appID);
-            job.accumulate("nation_cd", DataUtil.nationCode);
+            job.accumulate("nation_cd", Preferences.INSTANCE.getUserNation());
 
 
             String methodName = "GetPickupList";
@@ -287,6 +239,20 @@ public class OutletOrderStatusDownloadHelper {
         }
 
         return resultObj;
+    }
+
+    private AlertDialog getResultAlertDialog(Context context) {
+
+        AlertDialog dialog = new AlertDialog.Builder(context).setTitle("[Download] Result")
+                .setCancelable(true).setPositiveButton("OK", (dialog1, which) -> {
+                    if (dialog1 != null)
+                        dialog1.dismiss();
+                    if (eventListener != null) {
+                        eventListener.onDownloadResult(null);
+                    }
+                })
+                .create();
+        return dialog;
     }
 
 
@@ -319,7 +285,7 @@ public class OutletOrderStatusDownloadHelper {
                     delay = diffOfDate(data.getDeliveryFirstDate());
                 } catch (Exception e) {
 
-                    Log.e("Exception", TAG + "  diffOfDate Exception : " + e.toString());
+                    Log.e("Exception", TAG + "  Exception : " + e.toString());
                 }
             }
 
@@ -388,8 +354,10 @@ public class OutletOrderStatusDownloadHelper {
             childItem.setSecretNo(data.getSecretNo());
             childItemArrayList.add(childItem);
 
-            //
-            RowItem rowItem = new RowItem(data.getContrNo(), "D+0", data.getInvoiceNo(), data.getReqName(),
+//
+            long delay = 0;
+
+            RowItem rowItem = new RowItem(data.getContrNo(), "D+" + delay, data.getInvoiceNo(), data.getReqName(),
                     "(" + data.getZipCode() + ")" + data.getAddress(), data.getDelMemo(), "P", data.getRoute(),
                     "", data.getPickupHopeDay(), data.getQty(), "", 0, 0, data.getStat(), data.getCustNo(),
                     data.getPartnerID(), "", "", "");
@@ -465,7 +433,7 @@ public class OutletOrderStatusDownloadHelper {
         contentVal.put("rcv_request", data.getDelMemo());
         contentVal.put("delivery_dt", data.getDeliveryFirstDate());
         contentVal.put("delivery_cnt", data.getDeliveryCount());
-        contentVal.put("type", "D");
+        contentVal.put("type", BarcodeType.TYPE_DELIVERY);
         contentVal.put("route", data.getRoute());
         contentVal.put("reg_id", opID);
         contentVal.put("reg_dt", regDataString);
@@ -479,11 +447,16 @@ public class OutletOrderStatusDownloadHelper {
         contentVal.put("currency", data.getCurrency());
         contentVal.put("order_type_etc", data.getOrder_type_etc());
 
+        // TODO
+        contentVal.put("lat", "0");
+        contentVal.put("lng", "0");
+
         dbHelper.insert(DatabaseHelper.DB_TABLE_INTEGRATION_LIST, contentVal);
     }
 
 
     private void insertDevicePickupData(PickupAssignResult.QSignPickupList data) {
+
         SimpleDateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
         dateFormat.setTimeZone(TimeZone.getTimeZone("GMT"));
         String regDataString = dateFormat.format(new Date());
@@ -499,7 +472,7 @@ public class OutletOrderStatusDownloadHelper {
         contentVal.put("zip_code", data.getZipCode());
         contentVal.put("address", data.getAddress());
         contentVal.put("route", data.getRoute());
-        contentVal.put("type", "P");
+        contentVal.put("type", BarcodeType.TYPE_PICKUP);
         contentVal.put("desired_date", data.getPickupHopeDay());
         contentVal.put("req_qty", data.getQty());
         contentVal.put("req_nm", data.getReqName());
@@ -515,6 +488,10 @@ public class OutletOrderStatusDownloadHelper {
         contentVal.put("cust_no", data.getCustNo()); //QLPS cust_no
         contentVal.put("partner_id", data.getPartnerID()); //QLPS partner_cust_id
 
+        // TODO
+        contentVal.put("lat", "0");
+        contentVal.put("lng", "0");
+
         dbHelper.insert(DatabaseHelper.DB_TABLE_INTEGRATION_LIST, contentVal);
     }
 
@@ -523,19 +500,53 @@ public class OutletOrderStatusDownloadHelper {
 
         ProgressDialog progressDialog = new ProgressDialog(context);
         progressDialog.setProgressStyle(ProgressDialog.STYLE_HORIZONTAL);
-        progressDialog.setMessage(context.getResources().getString(R.string.text_downloading));
+        progressDialog.setMessage("Downloading...");
         progressDialog.setCancelable(false);
         return progressDialog;
     }
 
+    public static class Builder {
 
-    public OutletOrderStatusDownloadHelper execute() {
+        private final Context context;
+        private final String opID;
+        private final String officeCode;
+        private final String deviceID;
+        private final int outletStatusPosition;
+
+        private final String networkType;
+        private OnOutletStatusDownloadListener eventListener;
+
+
+        public Builder(Context context, String opID, String officeCode, String deviceID, int outletStatusPosition) {
+
+            this.context = context;
+            this.opID = opID;
+            this.officeCode = officeCode;
+            this.deviceID = deviceID;
+            this.outletStatusPosition = outletStatusPosition;
+            this.networkType = NetworkUtil.getNetworkType(context);
+        }
+
+        public OutletStatusDownloadHelper build() {
+            return new OutletStatusDownloadHelper(this);
+        }
+
+        public Builder setOnOutletStatusDownloadListener(OnOutletStatusDownloadListener eventListener) {
+
+            this.eventListener = eventListener;
+            return this;
+        }
+    }
+
+
+    //
+    public interface OnOutletStatusDownloadListener {
+        void onDownloadResult(ArrayList<RowItem> resultList);
+    }
+
+    public OutletStatusDownloadHelper execute() {
         DownloadTask downloadTask = new DownloadTask();
         downloadTask.execute();
         return this;
-    }
-
-    public interface OnOutletStatusDownloadListener {
-        void onDownloadResult(ArrayList<RowItem> resultList);
     }
 }

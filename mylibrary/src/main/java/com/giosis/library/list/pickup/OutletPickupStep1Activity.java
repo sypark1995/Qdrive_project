@@ -1,7 +1,6 @@
 package com.giosis.library.list.pickup;
 
 import android.app.ProgressDialog;
-import android.content.Context;
 import android.content.Intent;
 import android.database.Cursor;
 import android.graphics.Bitmap;
@@ -79,11 +78,6 @@ public class OutletPickupStep1Activity extends CommonActivity {
 
     //
     Gson gson = new Gson();
-    Context context;
-
-    String opID = "";
-    String officeCode = "";
-    String deviceID = "";
 
     String mTitle;
     String mPickupNo;
@@ -135,7 +129,7 @@ public class OutletPickupStep1Activity extends CommonActivity {
 
                         try {
 
-                            Intent intent = new Intent(context, Class.forName("com.giosis.util.qdrive.barcodescanner.CaptureActivity"));
+                            Intent intent = new Intent(OutletPickupStep1Activity.this, Class.forName("com.giosis.util.qdrive.barcodescanner.CaptureActivity"));
                             intent.putExtra("title", mTitle);
                             intent.putExtra("type", BarcodeType.OUTLET_PICKUP_SCAN);
                             intent.putExtra("pickup_no", mPickupNo);
@@ -147,7 +141,7 @@ public class OutletPickupStep1Activity extends CommonActivity {
                         } catch (Exception e) {
 
                             Log.e("Exception", "  Exception : " + e.toString());
-                            Toast.makeText(context, "Exception : " + e.toString(), Toast.LENGTH_SHORT).show();
+                            Toast.makeText(OutletPickupStep1Activity.this, "Exception : " + e.toString(), Toast.LENGTH_SHORT).show();
                         }
                     } else {
 
@@ -200,11 +194,6 @@ public class OutletPickupStep1Activity extends CommonActivity {
 
 
         //
-        context = getApplicationContext();
-        opID = Preferences.INSTANCE.getUserId();
-        officeCode = Preferences.INSTANCE.getOfficeCode();
-        deviceID = Preferences.INSTANCE.getDeviceUUID();
-
         mTitle = getIntent().getStringExtra("title");
         mPickupNo = getIntent().getStringExtra("pickup_no");
         mApplicant = getIntent().getStringExtra("applicant");
@@ -230,19 +219,19 @@ public class OutletPickupStep1Activity extends CommonActivity {
         // 2019.04
         String outletAddress = outletInfo.getAddress().toUpperCase();
         String operationHour = null;
-        Log.e("krm0219", "TEST  Operation : " + outletInfo.getAddress() + " / " + context.getResources().getString(R.string.text_operation_hours));
+        Log.e("krm0219", "TEST  Operation : " + outletInfo.getAddress() + " / " + getResources().getString(R.string.text_operation_hours));
 
-        if (outletAddress.contains(context.getResources().getString(R.string.text_operation_hours).toUpperCase())) {
+        if (outletAddress.contains(getResources().getString(R.string.text_operation_hours).toUpperCase())) {
 
-            String indexString = "(" + context.getResources().getString(R.string.text_operation_hours).toUpperCase() + ":";
+            String indexString = "(" + getResources().getString(R.string.text_operation_hours).toUpperCase() + ":";
             int operationHourIndex = outletAddress.indexOf(indexString);
 
             operationHour = outletInfo.getAddress().substring(operationHourIndex + indexString.length(), outletAddress.length() - 1);
             outletAddress = outletInfo.getAddress().substring(0, operationHourIndex);
             Log.e("krm0219", "TEST  Operation Hour : " + operationHour + " / " + operationHourIndex);
-        } else if (outletAddress.contains(context.getResources().getString(R.string.text_operation_hour).toUpperCase())) {
+        } else if (outletAddress.contains(getResources().getString(R.string.text_operation_hour).toUpperCase())) {
 
-            String indexString = "(" + context.getResources().getString(R.string.text_operation_hour).toUpperCase() + ":";
+            String indexString = "(" + getResources().getString(R.string.text_operation_hour).toUpperCase() + ":";
             int operationHourIndex = outletAddress.indexOf(indexString);
 
             operationHour = outletInfo.getAddress().substring(operationHourIndex + indexString.length(), outletAddress.length() - 1);
@@ -431,7 +420,7 @@ public class OutletPickupStep1Activity extends CommonActivity {
                         text_sign_p_outlet_total_qty.setText(mQty);
                     }
 
-                    outletPickupDoneTrackingNoAdapter = new OutletPickupDoneTrackingNoAdapter(context, result, mRoute);
+                    outletPickupDoneTrackingNoAdapter = new OutletPickupDoneTrackingNoAdapter(OutletPickupStep1Activity.this, result, mRoute);
                     outletPickupDoneTrackingNoAdapter.notifyDataSetChanged();
                     list_sign_p_outlet_tracking_no.setAdapter(outletPickupDoneTrackingNoAdapter);
                     setListViewHeightBasedOnChildren(list_sign_p_outlet_tracking_no);

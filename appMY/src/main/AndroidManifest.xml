@@ -133,10 +133,6 @@
         <!-- -->
 
         <activity
-            android:name="com.giosis.util.qdrive.main.OutletOrderStatusActivity"
-            android:screenOrientation="portrait" />
-
-        <activity
             android:name="com.giosis.util.qdrive.main.FailListActivity"
             android:configChanges="orientation|keyboardHidden"
             android:screenOrientation="portrait"

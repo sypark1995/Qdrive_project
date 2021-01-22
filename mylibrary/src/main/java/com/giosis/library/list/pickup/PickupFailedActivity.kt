@@ -3,7 +3,6 @@ package com.giosis.library.list.pickup
 import android.app.Activity
 import android.app.AlertDialog
 import android.app.DatePickerDialog
-import android.content.Context
 import android.content.Intent
 import android.graphics.SurfaceTexture
 import android.hardware.camera2.CameraDevice
@@ -33,8 +32,6 @@ import java.util.*
 // 일반 Pickup 실패  &  CNR Pickup 실패
 class PickupFailedActivity : CommonActivity(), Camera2APIs.Camera2Interface, TextureView.SurfaceTextureListener {
     val tag = "PickupFailedActivity"
-
-    lateinit var context: Context
 
     private lateinit var pickupType: String     // P, CNR
     private lateinit var pickupNo: String
@@ -69,23 +66,21 @@ class PickupFailedActivity : CommonActivity(), Camera2APIs.Camera2Interface, Tex
         setContentView(R.layout.activity_pickup_visit_log)
 
 
-        context = this.applicationContext
-
         pickupType = intent.getStringExtra("type").toString()
         pickupNo = intent.getStringExtra("pickupNo").toString()
 
-        text_top_title.text = context.resources.getString(R.string.text_visit_log)
+        text_top_title.text = resources.getString(R.string.text_visit_log)
         text_sign_p_f_pickup_no.text = pickupNo
         text_sign_p_f_applicant.text = intent.getStringExtra("applicant")
         text_sign_p_f_requested_qty.text = intent.getStringExtra("reqQty")
 
         if (pickupType == BarcodeType.TYPE_PICKUP) {
 
-            text_sign_p_f_applicant_title.text = context.resources.getString(R.string.text_applicant)
+            text_sign_p_f_applicant_title.text = resources.getString(R.string.text_applicant)
             rcvType = "VL"
         } else if (pickupType == BarcodeType.TYPE_CNR) {
 
-            text_sign_p_f_applicant_title.text = context.resources.getString(R.string.text_requestor)
+            text_sign_p_f_applicant_title.text = resources.getString(R.string.text_requestor)
             rcvType = "RC"
         }
 
@@ -109,8 +104,8 @@ class PickupFailedActivity : CommonActivity(), Camera2APIs.Camera2Interface, Tex
                 when {
                     restDay.isNotEmpty() -> {
 
-                        Toast.makeText(this, "$restDay " + context.resources.getString(R.string.msg_choose_another_day), Toast.LENGTH_SHORT).show()
-                        text_sign_p_f_retry_date.text = context.resources.getString(R.string.text_select)
+                        Toast.makeText(this, "$restDay " + resources.getString(R.string.msg_choose_another_day), Toast.LENGTH_SHORT).show()
+                        text_sign_p_f_retry_date.text = resources.getString(R.string.text_select)
                     }
                     else -> {
 
@@ -124,13 +119,13 @@ class PickupFailedActivity : CommonActivity(), Camera2APIs.Camera2Interface, Tex
                 when {
                     calendar.get(Calendar.DAY_OF_WEEK) == Calendar.SUNDAY -> {
 
-                        Toast.makeText(this, context.resources.getString(R.string.msg_choose_sunday_error), Toast.LENGTH_SHORT).show()
-                        text_sign_p_f_retry_date.text = context.resources.getString(R.string.text_select)
+                        Toast.makeText(this, resources.getString(R.string.msg_choose_sunday_error), Toast.LENGTH_SHORT).show()
+                        text_sign_p_f_retry_date.text = resources.getString(R.string.text_select)
                     }
                     restDay.isNotEmpty() -> {
 
-                        Toast.makeText(this, "$restDay " + context.resources.getString(R.string.msg_choose_another_day), Toast.LENGTH_SHORT).show()
-                        text_sign_p_f_retry_date.text = context.resources.getString(R.string.text_select)
+                        Toast.makeText(this, "$restDay " + resources.getString(R.string.msg_choose_another_day), Toast.LENGTH_SHORT).show()
+                        text_sign_p_f_retry_date.text = resources.getString(R.string.text_select)
                     }
                     else -> {
 
@@ -181,7 +176,7 @@ class PickupFailedActivity : CommonActivity(), Camera2APIs.Camera2Interface, Tex
 
                 val reason = parentView.getItemAtPosition(position).toString()
 
-                if (reason.toUpperCase().contains(context.resources.getString(R.string.text_other).toUpperCase())) {
+                if (reason.toUpperCase().contains(resources.getString(R.string.text_other).toUpperCase())) {
 
                     layout_sign_p_f_memo.visibility = View.VISIBLE
                 } else {
@@ -204,7 +199,7 @@ class PickupFailedActivity : CommonActivity(), Camera2APIs.Camera2Interface, Tex
 
                 if (99 <= edit_sign_p_f_memo.length()) {
 
-                    Toast.makeText(this@PickupFailedActivity, context.resources.getString(R.string.msg_memo_too_long), Toast.LENGTH_SHORT).show()
+                    Toast.makeText(this@PickupFailedActivity, resources.getString(R.string.msg_memo_too_long), Toast.LENGTH_SHORT).show()
                 }
             }
         })
@@ -232,7 +227,7 @@ class PickupFailedActivity : CommonActivity(), Camera2APIs.Camera2Interface, Tex
                 camera2.takePhoto(texture_sign_p_f_preview, img_sign_p_f_visit_log)
             } else {
 
-                Toast.makeText(this, context.resources.getString(R.string.msg_back_camera_required), Toast.LENGTH_SHORT).show()
+                Toast.makeText(this, resources.getString(R.string.msg_back_camera_required), Toast.LENGTH_SHORT).show()
             }
         }
 
@@ -268,7 +263,7 @@ class PickupFailedActivity : CommonActivity(), Camera2APIs.Camera2Interface, Tex
 
         if (arrayList == null) {
 
-            DisplayUtil.AlertDialog(this, context.resources.getString(R.string.msg_failed_code_error))
+            DisplayUtil.AlertDialog(this, resources.getString(R.string.msg_failed_code_error))
         } else {
 
             failedCodeArrayList = ArrayList()
@@ -278,8 +273,8 @@ class PickupFailedActivity : CommonActivity(), Camera2APIs.Camera2Interface, Tex
                 failedCodeArrayList!!.add(failedCode.failedString)
             }
 
-            spinner_p_f_failed_reason.prompt = context.resources.getString(R.string.text_failed_reason)
-            val failedCodeArrayAdapter = ArrayAdapter(context, android.R.layout.simple_spinner_item, failedCodeArrayList!!)
+            spinner_p_f_failed_reason.prompt = resources.getString(R.string.text_failed_reason)
+            val failedCodeArrayAdapter = ArrayAdapter(this, android.R.layout.simple_spinner_item, failedCodeArrayList!!)
             failedCodeArrayAdapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item)
             spinner_p_f_failed_reason.adapter = failedCodeArrayAdapter
         }
@@ -301,7 +296,7 @@ class PickupFailedActivity : CommonActivity(), Camera2APIs.Camera2Interface, Tex
             }
 
             // Location
-            gpsTrackerManager = GPSTrackerManager(context)
+            gpsTrackerManager = GPSTrackerManager(this)
             val gpsEnable = gpsTrackerManager?.enableGPSSetting()
 
             if (gpsEnable == true) {
@@ -325,7 +320,7 @@ class PickupFailedActivity : CommonActivity(), Camera2APIs.Camera2Interface, Tex
             camera2.setCameraDevice(cameraManager, cameraId)
         } else {
 
-            Toast.makeText(this, context.resources.getString(R.string.msg_back_camera_required), Toast.LENGTH_SHORT).show()
+            Toast.makeText(this, resources.getString(R.string.msg_back_camera_required), Toast.LENGTH_SHORT).show()
         }
     }
 
@@ -372,14 +367,14 @@ class PickupFailedActivity : CommonActivity(), Camera2APIs.Camera2Interface, Tex
     private fun cancelUpload() {
 
         val alertBuilder = AlertDialog.Builder(this)
-        alertBuilder.setMessage(context.resources.getString(R.string.msg_delivered_sign_cancel))
+        alertBuilder.setMessage(resources.getString(R.string.msg_delivered_sign_cancel))
 
-        alertBuilder.setPositiveButton(context.resources.getString(R.string.button_ok)) { _, _ ->
+        alertBuilder.setPositiveButton(resources.getString(R.string.button_ok)) { _, _ ->
 
             finish()
         }
 
-        alertBuilder.setNegativeButton(context.resources.getString(R.string.button_cancel)) { dialogInterface, _ ->
+        alertBuilder.setNegativeButton(resources.getString(R.string.button_cancel)) { dialogInterface, _ ->
 
             dialogInterface.dismiss()
         }
@@ -392,9 +387,9 @@ class PickupFailedActivity : CommonActivity(), Camera2APIs.Camera2Interface, Tex
 
         try {
 
-            if (!NetworkUtil.isNetworkAvailable(context)) {
+            if (!NetworkUtil.isNetworkAvailable(this)) {
 
-                DisplayUtil.AlertDialog(this, context.resources.getString(R.string.msg_network_connect_error))
+                DisplayUtil.AlertDialog(this, resources.getString(R.string.msg_network_connect_error))
                 return
             }
 
@@ -404,12 +399,12 @@ class PickupFailedActivity : CommonActivity(), Camera2APIs.Camera2Interface, Tex
             Log.e("krm0219", "Fail Reason Code  >  $failedCode  ${code.failedString}")
 
             var driverMemo = ""
-            if (code.failedString.toUpperCase().contains(context.resources.getString(R.string.text_other).toUpperCase())) {
+            if (code.failedString.toUpperCase().contains(resources.getString(R.string.text_other).toUpperCase())) {
 
                 driverMemo = edit_sign_p_f_memo.text.toString()
                 if (driverMemo.isEmpty()) {
 
-                    Toast.makeText(this, context.resources.getString(R.string.msg_must_enter_memo1), Toast.LENGTH_SHORT).show()
+                    Toast.makeText(this, resources.getString(R.string.msg_must_enter_memo1), Toast.LENGTH_SHORT).show()
                     return
                 }
             }
@@ -417,21 +412,21 @@ class PickupFailedActivity : CommonActivity(), Camera2APIs.Camera2Interface, Tex
 
 
             val retryDay = text_sign_p_f_retry_date.text.toString()
-            if (retryDay == context.resources.getString(R.string.text_select)) {
+            if (retryDay == resources.getString(R.string.text_select)) {
 
-                Toast.makeText(this, context.resources.getString(R.string.msg_select_retry_date), Toast.LENGTH_SHORT).show()
+                Toast.makeText(this, resources.getString(R.string.msg_select_retry_date), Toast.LENGTH_SHORT).show()
                 return
             }
 
             if (!camera2.hasImage(img_sign_p_f_visit_log)) {
 
-                Toast.makeText(this, context.resources.getString(R.string.msg_visit_photo_require), Toast.LENGTH_SHORT).show()
+                Toast.makeText(this, resources.getString(R.string.msg_visit_photo_require), Toast.LENGTH_SHORT).show()
                 return
             }
 
             if (MemoryStatus.getAvailableInternalMemorySize() != MemoryStatus.ERROR.toLong() && MemoryStatus.getAvailableInternalMemorySize() < MemoryStatus.PRESENT_BYTE) {
 
-                DisplayUtil.AlertDialog(this, context.resources.getString(R.string.msg_disk_size_error))
+                DisplayUtil.AlertDialog(this, resources.getString(R.string.msg_disk_size_error))
                 return
             }
 
@@ -463,7 +458,7 @@ class PickupFailedActivity : CommonActivity(), Camera2APIs.Camera2Interface, Tex
         } catch (e: Exception) {
 
             Log.e("Exception", "$tag   serverUpload  Exception : $e")
-            Toast.makeText(this, context.resources.getString(R.string.text_error) + " - " + e.toString(), Toast.LENGTH_SHORT).show()
+            Toast.makeText(this, resources.getString(R.string.text_error) + " - " + e.toString(), Toast.LENGTH_SHORT).show()
         }
     }
 

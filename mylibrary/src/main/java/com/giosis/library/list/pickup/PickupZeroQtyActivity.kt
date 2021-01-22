@@ -1,7 +1,6 @@
 package com.giosis.library.list.pickup
 
 import android.app.AlertDialog
-import android.content.Context
 import android.content.Intent
 import android.os.Bundle
 import android.text.Editable
@@ -56,7 +55,7 @@ class PickupZeroQtyActivity : CommonActivity() {
 
                 if (99 <= edit_sign_p_memo.length()) {
 
-                    Toast.makeText(this@PickupZeroQtyActivity,resources.getString(R.string.msg_memo_too_long), Toast.LENGTH_SHORT).show()
+                    Toast.makeText(this@PickupZeroQtyActivity, resources.getString(R.string.msg_memo_too_long), Toast.LENGTH_SHORT).show()
                 }
             }
         })

@@ -87,6 +87,10 @@
             android:screenOrientation="portrait" />
 
         <activity
+            android:name=".main.submenu.OutletOrderStatusActivity"
+            android:screenOrientation="portrait" />
+
+        <activity
             android:name=".main.submenu.StatisticsActivity"
             android:screenOrientation="portrait" />
 

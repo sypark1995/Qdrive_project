@@ -1,4 +1,4 @@
-package com.giosis.util.qdrive.main;
+package com.giosis.library.main.submenu;
 
 import android.app.SearchManager;
 import android.content.Context;
@@ -20,11 +20,11 @@ import android.widget.TextView;
 
 import androidx.annotation.Nullable;
 
-import com.giosis.util.qdrive.list.RowItem;
-import com.giosis.util.qdrive.singapore.MyApplication;
-import com.giosis.util.qdrive.singapore.R;
+import com.giosis.library.R;
+import com.giosis.library.main.RowItem;
+import com.giosis.library.util.CommonActivity;
 import com.giosis.library.util.DatabaseHelper;
-import com.giosis.util.qdrive.util.ui.CommonActivity;
+import com.giosis.library.util.Preferences;
 
 import java.lang.reflect.Field;
 import java.util.ArrayList;
@@ -67,7 +67,6 @@ public class OutletOrderStatusActivity extends CommonActivity implements SearchV
 
 
     //
-    Context context;
     String opID;
     String officeCode;
     String deviceID;
@@ -100,6 +99,275 @@ public class OutletOrderStatusActivity extends CommonActivity implements SearchV
     int deliveryCount;
     int retrieveCount;
 
+
+    Comparator<RowItem> zipCodeAsc = (o1, o2) -> o1.getZip_code().compareTo(o2.getZip_code());
+    Comparator<RowItem> zipCodeDesc = (o1, o2) -> o2.getZip_code().compareTo(o1.getZip_code());
+
+    // NOTIFICATION.
+    void setOutletArrayList(String outlet_code, String outlet_name) {
+
+        totalArrayList = new ArrayList<>();
+        deliveryArrayList = new ArrayList<>();
+        retrieveArrayList = new ArrayList<>();
+        deliveryCount = 0;
+        retrieveCount = 0;
+
+        Log.e("krm0219", TAG + "  Selected Outlet Code : " + selectedOutletCode + " /  Selected Outlet Name : " + selectedOutletName);
+
+        if (conditionArrayList == null) {
+
+            outletNameArrayList.clear();
+            outletNameArrayList.add("ALL");
+
+            text_outlet_status_total_count.setText(Integer.toString(deliveryCount + retrieveCount));
+            text_outlet_status_delivery_count.setText(Integer.toString(deliveryCount));
+            text_outlet_status_retrieve_count.setText(Integer.toString(retrieveCount));
+
+            outletOrderStatusAdapter = null;
+            exlist_outlet_status_card.setAdapter(outletOrderStatusAdapter);
+            outletNameArrayAdapter.notifyDataSetChanged();
+
+            return;
+        }
+
+
+        if (outlet_code.equals("ALL") && outlet_name.equals("ALL")) {
+
+            totalArrayList = conditionArrayList;
+        } else if (!outlet_code.equals("ALL") && outlet_name.equals("ALL")) {
+            // 7E or FL
+
+            for (int i = 0; i < conditionArrayList.size(); i++) {
+
+                String routeString = conditionArrayList.get(i).getRoute();
+                String[] routeSplitString = routeString.split(" ");
+
+                if (routeSplitString[0].equals(outlet_code)) {
+                    totalArrayList.add(conditionArrayList.get(i));
+                }
+            }
+        } else if (outlet_code.equals("ALL") && !outlet_name.equals("ALL")) {
+
+            for (int i = 0; i < conditionArrayList.size(); i++) {
+
+                String routeString = conditionArrayList.get(i).getRoute();
+
+                if (routeString.contains(outlet_name)) {
+                    totalArrayList.add(conditionArrayList.get(i));
+                }
+            }
+        } else if (!outlet_code.equals("ALL") && !outlet_name.equals("ALL")) {
+
+            for (int i = 0; i < conditionArrayList.size(); i++) {
+
+                String routeString = conditionArrayList.get(i).getRoute();
+
+                if (routeString.contains(outlet_name)) {
+                    totalArrayList.add(conditionArrayList.get(i));
+                }
+            }
+        }
+
+
+        // outlet name setting
+        outletNameArrayList.clear();
+        outletNameArrayList.add("ALL");
+
+        if (outlet_code.equals("ALL")) {
+
+            for (int i = 0; i < conditionArrayList.size(); i++) {
+                String[] routeSplit = conditionArrayList.get(i).getRoute().split(" ");
+
+                if (1 < routeSplit.length) {
+
+                    StringBuilder sb = new StringBuilder();
+
+                    for (int j = 2; j < routeSplit.length; j++) {
+
+                        sb.append(routeSplit[j]);
+                        sb.append(" ");
+                    }
+
+                    if (!outletNameArrayList.contains(sb.toString().trim())) {
+
+                        outletNameArrayList.add(sb.toString().trim());
+                    }
+                }
+            }
+        } else {
+
+            for (int i = 0; i < conditionArrayList.size(); i++) {
+                if (conditionArrayList.get(i).getRoute().contains(outlet_code)) {
+                    String[] routeSplit = conditionArrayList.get(i).getRoute().split(" ");
+
+                    if (1 < routeSplit.length) {
+
+                        StringBuilder sb = new StringBuilder();
+
+                        for (int j = 2; j < routeSplit.length; j++) {
+
+                            sb.append(routeSplit[j]);
+                            sb.append(" ");
+                        }
+
+                        if (!outletNameArrayList.contains(sb.toString().trim())) {
+
+                            outletNameArrayList.add(sb.toString().trim());
+                        }
+                    }
+                }
+            }
+        }
+
+
+        for (int i = 0; i < totalArrayList.size(); i++) {
+            //    Log.e("krm0219", "total > " + totalArrayList.get(i).getShipping());
+
+            if (totalArrayList.get(i).getType().equals("D")) {
+
+                deliveryArrayList.add(totalArrayList.get(i));
+                deliveryCount += 1;
+            } else if (totalArrayList.get(i).getType().equals("P")) {
+
+                retrieveArrayList.add(totalArrayList.get(i));
+                retrieveCount += 1;
+            }
+        }
+
+        text_outlet_status_total_count.setText(Integer.toString(deliveryCount + retrieveCount));
+        text_outlet_status_delivery_count.setText(Integer.toString(deliveryCount));
+        text_outlet_status_retrieve_count.setText(Integer.toString(retrieveCount));
+
+        if (selectedType.equals("D")) {
+
+            outletOrderStatusAdapter = new OutletOrderStatusAdapter(OutletOrderStatusActivity.this, deliveryArrayList, selectedOutletCondition);
+        } else if (selectedType.equals("P")) {
+
+            outletOrderStatusAdapter = new OutletOrderStatusAdapter(OutletOrderStatusActivity.this, retrieveArrayList, selectedOutletCondition);
+        } else {
+
+            outletOrderStatusAdapter = new OutletOrderStatusAdapter(OutletOrderStatusActivity.this, totalArrayList, selectedOutletCondition);
+        }
+
+        exlist_outlet_status_card.setAdapter(outletOrderStatusAdapter);
+        outletNameArrayAdapter.notifyDataSetChanged();
+    }
+    Comparator<RowItem> trackingNoAsc = (o1, o2) -> o1.getShipping().compareTo(o2.getShipping());
+
+
+    // NOTI - Sort
+    void setSortList(int position) {
+
+        if (conditionArrayList != null) {
+            switch (position) {
+                case 0: {
+
+                    Collections.sort(conditionArrayList, zipCodeAsc);
+                }
+                break;
+
+                case 1: {
+
+                    Collections.sort(conditionArrayList, zipCodeDesc);
+                }
+                break;
+
+                case 2: {
+
+                    Collections.sort(conditionArrayList, trackingNoAsc);
+                }
+                break;
+
+                case 3: {
+
+                    Collections.sort(conditionArrayList, trackingNoDesc);
+                }
+                break;
+
+                case 4: {
+
+                    Collections.sort(conditionArrayList, nameAsc);
+                }
+                break;
+
+                case 5: {
+
+                    Collections.sort(conditionArrayList, nameDesc);
+                }
+                break;
+            }
+        }
+
+
+        setOutletArrayList(selectedOutletCode, selectedOutletName);
+    }
+    Comparator<RowItem> trackingNoDesc = (o1, o2) -> o2.getShipping().compareTo(o1.getShipping());
+    Comparator<RowItem> nameAsc = (o1, o2) -> o1.getOutlet_store_name().compareTo(o2.getOutlet_store_name());
+    Comparator<RowItem> nameDesc = (o1, o2) -> o2.getOutlet_store_name().compareTo(o1.getOutlet_store_name());
+    View.OnClickListener clickListener = new View.OnClickListener() {
+        @Override
+        public void onClick(View view) {
+
+            searchview_outlet_status.clearFocus();
+
+            int id = view.getId();
+            if (id == R.id.layout_top_back) {
+
+                finish();
+            } else if (id == R.id.layout_outlet_status_total) {
+
+                selectedType = "ALL";
+                layout_outlet_status_total.setSelected(true);
+                layout_outlet_status_delivery.setSelected(false);
+                layout_outlet_status_retrieve.setSelected(false);
+
+                outletOrderStatusAdapter = new OutletOrderStatusAdapter(OutletOrderStatusActivity.this, totalArrayList, selectedOutletCondition);
+                exlist_outlet_status_card.setAdapter(outletOrderStatusAdapter);
+
+                if (!searchview_outlet_status.getQuery().toString().isEmpty()) {
+
+                    outletOrderStatusAdapter.filterData(searchview_outlet_status.getQuery().toString());
+                }
+            } else if (id == R.id.layout_outlet_status_delivery) {
+
+                selectedType = "D";
+                layout_outlet_status_total.setSelected(false);
+                layout_outlet_status_delivery.setSelected(true);
+                layout_outlet_status_retrieve.setSelected(false);
+
+                outletOrderStatusAdapter = new OutletOrderStatusAdapter(OutletOrderStatusActivity.this, deliveryArrayList, selectedOutletCondition);
+                exlist_outlet_status_card.setAdapter(outletOrderStatusAdapter);
+
+                if (!searchview_outlet_status.getQuery().toString().isEmpty()) {
+
+                    outletOrderStatusAdapter.filterData(searchview_outlet_status.getQuery().toString());
+                }
+            } else if (id == R.id.layout_outlet_status_retrieve) {
+
+                selectedType = "P";
+                layout_outlet_status_total.setSelected(false);
+                layout_outlet_status_delivery.setSelected(false);
+                layout_outlet_status_retrieve.setSelected(true);
+
+                outletOrderStatusAdapter = new OutletOrderStatusAdapter(OutletOrderStatusActivity.this, retrieveArrayList, selectedOutletCondition);
+                exlist_outlet_status_card.setAdapter(outletOrderStatusAdapter);
+
+                if (!searchview_outlet_status.getQuery().toString().isEmpty()) {
+
+                    outletOrderStatusAdapter.filterData(searchview_outlet_status.getQuery().toString());
+                }
+            } else if (id == R.id.layout_outlet_status_condition) {
+
+                spinner_outlet_status_condition.performClick();
+            } else if (id == R.id.layout_outlet_status_outlet_code) {
+
+                spinner_outlet_status_outlet_code.performClick();
+            } else if (id == R.id.layout_outlet_status_outlet_name) {
+
+                spinner_outlet_status_outlet_name.performClick();
+            }
+        }
+    };
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
@@ -143,14 +411,9 @@ public class OutletOrderStatusActivity extends CommonActivity implements SearchV
 
 
         //
-        context = getApplicationContext();
-//        opID = SharedPreferencesHelper.getSigninOpID(context);
-//        deviceID = SharedPreferencesHelper.getSigninDeviceID(context);
-//        officeCode = SharedPreferencesHelper.getSigninOfficeCode(context);
-        opID = MyApplication.preferences.getUserId();
-        officeCode = MyApplication.preferences.getOfficeCode();
-        deviceID = MyApplication.preferences.getDeviceUUID();
-
+        opID = Preferences.INSTANCE.getUserId();
+        officeCode = Preferences.INSTANCE.getOfficeCode();
+        deviceID = Preferences.INSTANCE.getDeviceUUID();
         databaseHelper = DatabaseHelper.getInstance();
 
 
@@ -159,7 +422,7 @@ public class OutletOrderStatusActivity extends CommonActivity implements SearchV
 
 
         //
-        text_top_title.setText(context.getResources().getString(R.string.text_outlet_order_status));
+        text_top_title.setText(getResources().getString(R.string.text_outlet_order_status));
 
         layout_outlet_status_total.setSelected(true);
         layout_outlet_status_delivery.setSelected(false);
@@ -341,7 +604,6 @@ public class OutletOrderStatusActivity extends CommonActivity implements SearchV
         });
     }
 
-
     // NOTIFICATION.  outlet condition 선택에 따라 값 재정비
     void setConditionArrayList(String condition) {
 
@@ -353,21 +615,17 @@ public class OutletOrderStatusActivity extends CommonActivity implements SearchV
         if (condition.equals(getResources().getString(R.string.text_outlet_status_1))) {
 
             new OutletStatusDownloadHelper.Builder(this, opID, officeCode, deviceID, 1).setOnOutletStatusDownloadListener(
-                    new OutletStatusDownloadHelper.OnOutletStatusDownloadListener() {
+                    resultList -> {
 
-                        @Override
-                        public void onDownloadResult(ArrayList<RowItem> resultList) {
+                        if (resultList != null) {
+                            if (resultList.size() == 0) {
 
-                            if (resultList != null) {
-                                if (resultList.size() == 0) {
-
-                                    conditionArrayList = null;
-                                } else {
-                                    conditionArrayList = resultList;
-                                }
-
-                                setOutletArrayList("ALL", "ALL");
+                                conditionArrayList = null;
+                            } else {
+                                conditionArrayList = resultList;
                             }
+
+                            setOutletArrayList("ALL", "ALL");
                         }
                     }).build().execute();
         } else if (condition.equals(getResources().getString(R.string.text_outlet_status_2))) {
@@ -375,192 +633,33 @@ public class OutletOrderStatusActivity extends CommonActivity implements SearchV
             databaseHelper.delete(DatabaseHelper.DB_TABLE_INTEGRATION_LIST, "");
 
             new OutletStatusDownloadHelper.Builder(this, opID, officeCode, deviceID, 2).setOnOutletStatusDownloadListener(
-                    new OutletStatusDownloadHelper.OnOutletStatusDownloadListener() {
+                    resultList -> {
 
-                        @Override
-                        public void onDownloadResult(ArrayList<RowItem> resultList) {
+                        if (resultList != null) {
 
-                            if (resultList != null) {
+                            conditionArrayList = resultList;
+                            setOutletArrayList("ALL", "ALL");
+                        } else {
 
-                                conditionArrayList = resultList;
-                                setOutletArrayList("ALL", "ALL");
-                            } else {
-
-                                Log.e("krm0219", "Error  !!!!!!!!!!!");
-                            }
+                            Log.e("krm0219", "Error  !!!!!!!!!!!");
                         }
                     }).build().execute();
         } else if (condition.equals(getResources().getString(R.string.text_outlet_status_3))) {
 
             new OutletStatusDownloadHelper.Builder(this, opID, officeCode, deviceID, 3).setOnOutletStatusDownloadListener(
-                    new OutletStatusDownloadHelper.OnOutletStatusDownloadListener() {
+                    resultList -> {
 
-                        @Override
-                        public void onDownloadResult(ArrayList<RowItem> resultList) {
+                        if (resultList != null) {
 
-                            if (resultList != null) {
+                            conditionArrayList = resultList;
+                            setOutletArrayList("ALL", "ALL");
+                        } else {
 
-                                conditionArrayList = resultList;
-                                setOutletArrayList("ALL", "ALL");
-                            } else {
-
-                                Log.e("krm0219", "Error  !!!!!!!!!!!");
-                            }
+                            Log.e("krm0219", "Error  !!!!!!!!!!!");
                         }
                     }).build().execute();
         }
     }
-
-    // NOTIFICATION.
-    void setOutletArrayList(String outlet_code, String outlet_name) {
-
-        totalArrayList = new ArrayList<>();
-        deliveryArrayList = new ArrayList<>();
-        retrieveArrayList = new ArrayList<>();
-        deliveryCount = 0;
-        retrieveCount = 0;
-
-        Log.e("krm0219", TAG + "  Selected Outlet Code : " + selectedOutletCode + " /  Selected Outlet Name : " + selectedOutletName);
-
-        if (conditionArrayList == null) {
-
-            outletNameArrayList.clear();
-            outletNameArrayList.add("ALL");
-
-            text_outlet_status_total_count.setText(Integer.toString(deliveryCount + retrieveCount));
-            text_outlet_status_delivery_count.setText(Integer.toString(deliveryCount));
-            text_outlet_status_retrieve_count.setText(Integer.toString(retrieveCount));
-
-            outletOrderStatusAdapter = null;
-            exlist_outlet_status_card.setAdapter(outletOrderStatusAdapter);
-            outletNameArrayAdapter.notifyDataSetChanged();
-
-            return;
-        }
-
-
-        if (outlet_code.equals("ALL") && outlet_name.equals("ALL")) {
-
-            totalArrayList = conditionArrayList;
-        } else if (!outlet_code.equals("ALL") && outlet_name.equals("ALL")) {
-            // 7E or FL
-
-            for (int i = 0; i < conditionArrayList.size(); i++) {
-
-                String routeString = conditionArrayList.get(i).getRoute();
-                String[] routeSplitString = routeString.split(" ");
-
-                if (routeSplitString[0].equals(outlet_code)) {
-                    totalArrayList.add(conditionArrayList.get(i));
-                }
-            }
-        } else if (outlet_code.equals("ALL") && !outlet_name.equals("ALL")) {
-
-            for (int i = 0; i < conditionArrayList.size(); i++) {
-
-                String routeString = conditionArrayList.get(i).getRoute();
-
-                if (routeString.contains(outlet_name)) {
-                    totalArrayList.add(conditionArrayList.get(i));
-                }
-            }
-        } else if (!outlet_code.equals("ALL") && !outlet_name.equals("ALL")) {
-
-            for (int i = 0; i < conditionArrayList.size(); i++) {
-
-                String routeString = conditionArrayList.get(i).getRoute();
-
-                if (routeString.contains(outlet_name)) {
-                    totalArrayList.add(conditionArrayList.get(i));
-                }
-            }
-        }
-
-
-        // outlet name setting
-        outletNameArrayList.clear();
-        outletNameArrayList.add("ALL");
-
-        if (outlet_code.equals("ALL")) {
-
-            for (int i = 0; i < conditionArrayList.size(); i++) {
-                String[] routeSplit = conditionArrayList.get(i).getRoute().split(" ");
-
-                if (1 < routeSplit.length) {
-
-                    StringBuilder sb = new StringBuilder();
-
-                    for (int j = 2; j < routeSplit.length; j++) {
-
-                        sb.append(routeSplit[j]);
-                        sb.append(" ");
-                    }
-
-                    if (!outletNameArrayList.contains(sb.toString().trim())) {
-
-                        outletNameArrayList.add(sb.toString().trim());
-                    }
-                }
-            }
-        } else {
-
-            for (int i = 0; i < conditionArrayList.size(); i++) {
-                if (conditionArrayList.get(i).getRoute().contains(outlet_code)) {
-                    String[] routeSplit = conditionArrayList.get(i).getRoute().split(" ");
-
-                    if (1 < routeSplit.length) {
-
-                        StringBuilder sb = new StringBuilder();
-
-                        for (int j = 2; j < routeSplit.length; j++) {
-
-                            sb.append(routeSplit[j]);
-                            sb.append(" ");
-                        }
-
-                        if (!outletNameArrayList.contains(sb.toString().trim())) {
-
-                            outletNameArrayList.add(sb.toString().trim());
-                        }
-                    }
-                }
-            }
-        }
-
-
-        for (int i = 0; i < totalArrayList.size(); i++) {
-            //    Log.e("krm0219", "total > " + totalArrayList.get(i).getShipping());
-
-            if (totalArrayList.get(i).getType().equals("D")) {
-
-                deliveryArrayList.add(totalArrayList.get(i));
-                deliveryCount += 1;
-            } else if (totalArrayList.get(i).getType().equals("P")) {
-
-                retrieveArrayList.add(totalArrayList.get(i));
-                retrieveCount += 1;
-            }
-        }
-
-        text_outlet_status_total_count.setText(Integer.toString(deliveryCount + retrieveCount));
-        text_outlet_status_delivery_count.setText(Integer.toString(deliveryCount));
-        text_outlet_status_retrieve_count.setText(Integer.toString(retrieveCount));
-
-        if (selectedType.equals("D")) {
-
-            outletOrderStatusAdapter = new OutletOrderStatusAdapter(OutletOrderStatusActivity.this, deliveryArrayList, selectedOutletCondition);
-        } else if (selectedType.equals("P")) {
-
-            outletOrderStatusAdapter = new OutletOrderStatusAdapter(OutletOrderStatusActivity.this, retrieveArrayList, selectedOutletCondition);
-        } else {
-
-            outletOrderStatusAdapter = new OutletOrderStatusAdapter(OutletOrderStatusActivity.this, totalArrayList, selectedOutletCondition);
-        }
-
-        exlist_outlet_status_card.setAdapter(outletOrderStatusAdapter);
-        outletNameArrayAdapter.notifyDataSetChanged();
-    }
-
 
     @Override
     protected void onResume() {
@@ -573,221 +672,31 @@ public class OutletOrderStatusActivity extends CommonActivity implements SearchV
         deliveryCount = 0;
         retrieveCount = 0;
 
-        exlist_outlet_status_card.setOnGroupExpandListener(new ExpandableListView.OnGroupExpandListener() {
+        exlist_outlet_status_card.setOnGroupExpandListener(groupPosition -> {
 
-            @Override
-            public void onGroupExpand(int groupPosition) {
+            int groupCount = outletOrderStatusAdapter.getGroupCount();
 
-                int groupCount = outletOrderStatusAdapter.getGroupCount();
-
-                for (int i = 0; i < groupCount; i++) {
-                    if (!(i == groupPosition))
-                        exlist_outlet_status_card.collapseGroup(i);
-                }
+            for (int i = 0; i < groupCount; i++) {
+                if (!(i == groupPosition))
+                    exlist_outlet_status_card.collapseGroup(i);
             }
         });
 
-        exlist_outlet_status_card.setOnGroupClickListener(new ExpandableListView.OnGroupClickListener() {
-            @Override
-            public boolean onGroupClick(ExpandableListView parent, View v, int groupPosition, long id) {
+        exlist_outlet_status_card.setOnGroupClickListener((parent, v, groupPosition, id) -> {
 
-                if (selectedOutletCondition.equals(getResources().getString(R.string.text_outlet_status_2))) {
+            if (selectedOutletCondition.equals(getResources().getString(R.string.text_outlet_status_2))) {
 
-                    return false;
-                } else {
+                return false;
+            } else {
 
-                    return true;
-                }
+                return true;
             }
         });
     }
-
-
-    // NOTI - Sort
-    void setSortList(int position) {
-
-        if (conditionArrayList != null) {
-            switch (position) {
-                case 0: {
-
-                    Collections.sort(conditionArrayList, zipCodeAsc);
-                }
-                break;
-
-                case 1: {
-
-                    Collections.sort(conditionArrayList, zipCodeDesc);
-                }
-                break;
-
-                case 2: {
-
-                    Collections.sort(conditionArrayList, trackingNoAsc);
-                }
-                break;
-
-                case 3: {
-
-                    Collections.sort(conditionArrayList, trackingNoDesc);
-                }
-                break;
-
-                case 4: {
-
-                    Collections.sort(conditionArrayList, nameAsc);
-                }
-                break;
-
-                case 5: {
-
-                    Collections.sort(conditionArrayList, nameDesc);
-                }
-                break;
-            }
-        }
-
-
-        setOutletArrayList(selectedOutletCode, selectedOutletName);
-    }
-
-    Comparator<RowItem> zipCodeAsc = new Comparator<RowItem>() {
-
-        @Override
-        public int compare(RowItem o1, RowItem o2) {
-            return o1.getZip_code().compareTo(o2.getZip_code());
-        }
-    };
-
-    Comparator<RowItem> zipCodeDesc = new Comparator<RowItem>() {
-
-        @Override
-        public int compare(RowItem o1, RowItem o2) {
-            return o2.getZip_code().compareTo(o1.getZip_code());
-        }
-    };
-
-    Comparator<RowItem> trackingNoAsc = new Comparator<RowItem>() {
-
-        @Override
-        public int compare(RowItem o1, RowItem o2) {
-            return o1.getShipping().compareTo(o2.getShipping());
-        }
-    };
-
-    Comparator<RowItem> trackingNoDesc = new Comparator<RowItem>() {
-
-        @Override
-        public int compare(RowItem o1, RowItem o2) {
-            return o2.getShipping().compareTo(o1.getShipping());
-        }
-    };
-
-    Comparator<RowItem> nameAsc = new Comparator<RowItem>() {
-
-        @Override
-        public int compare(RowItem o1, RowItem o2) {
-            return o1.getOutlet_store_name().compareTo(o2.getOutlet_store_name());
-        }
-    };
-
-    Comparator<RowItem> nameDesc = new Comparator<RowItem>() {
-
-        @Override
-        public int compare(RowItem o1, RowItem o2) {
-            return o2.getOutlet_store_name().compareTo(o1.getOutlet_store_name());
-        }
-    };
-
-
-    View.OnClickListener clickListener = new View.OnClickListener() {
-        @Override
-        public void onClick(View view) {
-
-            searchview_outlet_status.clearFocus();
-
-            switch (view.getId()) {
-
-                case R.id.layout_top_back: {
-
-                    finish();
-                }
-                break;
-
-                case R.id.layout_outlet_status_total: {
-
-                    selectedType = "ALL";
-                    layout_outlet_status_total.setSelected(true);
-                    layout_outlet_status_delivery.setSelected(false);
-                    layout_outlet_status_retrieve.setSelected(false);
-
-                    outletOrderStatusAdapter = new OutletOrderStatusAdapter(OutletOrderStatusActivity.this, totalArrayList, selectedOutletCondition);
-                    exlist_outlet_status_card.setAdapter(outletOrderStatusAdapter);
-
-                    if (!searchview_outlet_status.getQuery().toString().isEmpty()) {
-
-                        outletOrderStatusAdapter.filterData(searchview_outlet_status.getQuery().toString());
-                    }
-                }
-                break;
-
-                case R.id.layout_outlet_status_delivery: {
-
-                    selectedType = "D";
-                    layout_outlet_status_total.setSelected(false);
-                    layout_outlet_status_delivery.setSelected(true);
-                    layout_outlet_status_retrieve.setSelected(false);
-
-                    outletOrderStatusAdapter = new OutletOrderStatusAdapter(OutletOrderStatusActivity.this, deliveryArrayList, selectedOutletCondition);
-                    exlist_outlet_status_card.setAdapter(outletOrderStatusAdapter);
-
-                    if (!searchview_outlet_status.getQuery().toString().isEmpty()) {
-
-                        outletOrderStatusAdapter.filterData(searchview_outlet_status.getQuery().toString());
-                    }
-                }
-                break;
-
-                case R.id.layout_outlet_status_retrieve: {
-
-                    selectedType = "P";
-                    layout_outlet_status_total.setSelected(false);
-                    layout_outlet_status_delivery.setSelected(false);
-                    layout_outlet_status_retrieve.setSelected(true);
-
-                    outletOrderStatusAdapter = new OutletOrderStatusAdapter(OutletOrderStatusActivity.this, retrieveArrayList, selectedOutletCondition);
-                    exlist_outlet_status_card.setAdapter(outletOrderStatusAdapter);
-
-                    if (!searchview_outlet_status.getQuery().toString().isEmpty()) {
-
-                        outletOrderStatusAdapter.filterData(searchview_outlet_status.getQuery().toString());
-                    }
-                }
-                break;
-
-                case R.id.layout_outlet_status_condition: {
-
-                    spinner_outlet_status_condition.performClick();
-                }
-                break;
-
-                case R.id.layout_outlet_status_outlet_code: {
-
-                    spinner_outlet_status_outlet_code.performClick();
-                }
-                break;
-
-                case R.id.layout_outlet_status_outlet_name: {
-
-                    spinner_outlet_status_outlet_name.performClick();
-                }
-                break;
-            }
-        }
-    };
 
     private int dpTopx(float dp) {
 
-        int pixel = (int) TypedValue.applyDimension(TypedValue.COMPLEX_UNIT_DIP, dp, context.getResources().getDisplayMetrics());
+        int pixel = (int) TypedValue.applyDimension(TypedValue.COMPLEX_UNIT_DIP, dp, getResources().getDisplayMetrics());
         return pixel;
     }
 
