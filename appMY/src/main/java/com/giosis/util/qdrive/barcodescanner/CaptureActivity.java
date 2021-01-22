@@ -48,6 +48,7 @@ import android.widget.Toast;
 import android.widget.ToggleButton;
 
 import com.giosis.library.gps.GPSTrackerManager;
+import com.giosis.library.list.BarcodeData;
 import com.giosis.library.list.delivery.DeliveryDoneActivity;
 import com.giosis.library.list.pickup.CnRPickupDoneActivity;
 import com.giosis.library.list.pickup.OutletPickupStep3Activity;
@@ -65,7 +66,6 @@ import com.giosis.util.qdrive.international.MyApplication;
 import com.giosis.util.qdrive.international.R;
 import com.giosis.util.qdrive.international.SigningActivity;
 import com.giosis.util.qdrive.international.UploadData;
-import com.giosis.util.qdrive.list.BarcodeData;
 import com.giosis.util.qdrive.list.OutletPickupDoneResult;
 import com.giosis.util.qdrive.main.ChangeDriverValidationCheckHelper;
 import com.giosis.util.qdrive.main.Dpc3OutValidationCheckHelper;

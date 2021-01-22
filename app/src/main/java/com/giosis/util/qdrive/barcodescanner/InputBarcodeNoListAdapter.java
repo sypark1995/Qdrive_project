@@ -11,6 +11,7 @@ import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.TextView;
 
+import com.giosis.library.list.BarcodeData;
 import com.giosis.util.qdrive.singapore.R;
 import com.giosis.util.qdrive.util.BarcodeType;
 
@@ -23,10 +24,10 @@ public class InputBarcodeNoListAdapter extends BaseAdapter {
     Context context;
 
     private String scanType;
-    private ArrayList<CaptureActivity.BarcodeListData> items;
+    private ArrayList<BarcodeData> items;
 
 
-    InputBarcodeNoListAdapter(Context context, ArrayList<CaptureActivity.BarcodeListData> objects, String mScanType) {
+    InputBarcodeNoListAdapter(Context context, ArrayList<BarcodeData> objects, String mScanType) {
 
         this.context = context;
         this.scanType = mScanType;

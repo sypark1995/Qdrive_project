@@ -5,7 +5,7 @@ import android.os.AsyncTask;
 import android.text.TextUtils;
 import android.util.Log;
 
-import com.giosis.util.qdrive.list.BarcodeData;
+import com.giosis.library.list.BarcodeData;
 import com.giosis.util.qdrive.util.Custom_JsonParser;
 import com.giosis.util.qdrive.util.DataUtil;
 import com.google.gson.Gson;

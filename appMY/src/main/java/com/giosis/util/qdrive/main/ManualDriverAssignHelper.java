@@ -8,9 +8,9 @@ import android.os.AsyncTask;
 import android.text.TextUtils;
 import android.util.Log;
 
+import com.giosis.library.list.BarcodeData;
 import com.giosis.util.qdrive.barcodescanner.DriverAssignResult;
 import com.giosis.util.qdrive.international.R;
-import com.giosis.util.qdrive.list.BarcodeData;
 import com.giosis.util.qdrive.util.Custom_JsonParser;
 import com.giosis.util.qdrive.util.DataUtil;
 import com.giosis.library.util.DatabaseHelper;

@@ -11,8 +11,8 @@ import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.TextView;
 
+import com.giosis.library.list.BarcodeData;
 import com.giosis.util.qdrive.international.R;
-import com.giosis.util.qdrive.list.BarcodeData;
 import com.giosis.util.qdrive.util.BarcodeType;
 
 import java.util.ArrayList;
