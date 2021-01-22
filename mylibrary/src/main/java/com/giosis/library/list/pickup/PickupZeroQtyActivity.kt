@@ -18,7 +18,6 @@ import kotlinx.android.synthetic.main.top_title.*
 class PickupZeroQtyActivity : CommonActivity() {
 
     val tag = "PickupZeroQtyActivity"
-    lateinit var context: Context
 
     lateinit var pickupNo: String
 
@@ -36,11 +35,9 @@ class PickupZeroQtyActivity : CommonActivity() {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_pickup_start_to_scan)
 
-        context = this.applicationContext
-
         pickupNo = intent.getStringExtra("pickupNo").toString()
 
-        text_top_title.text = context.resources.getString(R.string.text_zero_qty)
+        text_top_title.text = resources.getString(R.string.text_zero_qty)
         text_sign_p_pickup_no.text = pickupNo
         text_sign_p_applicant.text = intent.getStringExtra("applicant")
         img_sign_p_start_scan.setBackgroundResource(R.drawable.qdrive_btn_icon_check_off)
@@ -59,7 +56,7 @@ class PickupZeroQtyActivity : CommonActivity() {
 
                 if (99 <= edit_sign_p_memo.length()) {
 
-                    Toast.makeText(this@PickupZeroQtyActivity, context.resources.getString(R.string.msg_memo_too_long), Toast.LENGTH_SHORT).show()
+                    Toast.makeText(this@PickupZeroQtyActivity,resources.getString(R.string.msg_memo_too_long), Toast.LENGTH_SHORT).show()
                 }
             }
         })
@@ -108,7 +105,7 @@ class PickupZeroQtyActivity : CommonActivity() {
         if (isPermissionTrue) {
 
             // Location
-            gpsTrackerManager = GPSTrackerManager(context)
+            gpsTrackerManager = GPSTrackerManager(this@PickupZeroQtyActivity)
             val gpsEnable = gpsTrackerManager?.enableGPSSetting()
 
             if (gpsEnable == true) {
@@ -126,14 +123,14 @@ class PickupZeroQtyActivity : CommonActivity() {
     private fun cancelUpload() {
 
         val alertBuilder = AlertDialog.Builder(this)
-        alertBuilder.setMessage(context.resources.getString(R.string.msg_delivered_sign_cancel))
+        alertBuilder.setMessage(resources.getString(R.string.msg_delivered_sign_cancel))
 
-        alertBuilder.setPositiveButton(context.resources.getString(R.string.button_ok)) { _, _ ->
+        alertBuilder.setPositiveButton(resources.getString(R.string.button_ok)) { _, _ ->
 
             finish()
         }
 
-        alertBuilder.setNegativeButton(context.resources.getString(R.string.button_cancel)) { dialogInterface, _ ->
+        alertBuilder.setNegativeButton(resources.getString(R.string.button_cancel)) { dialogInterface, _ ->
 
             dialogInterface.dismiss()
         }
@@ -146,9 +143,9 @@ class PickupZeroQtyActivity : CommonActivity() {
 
         try {
 
-            if (!NetworkUtil.isNetworkAvailable(context)) {
+            if (!NetworkUtil.isNetworkAvailable(this@PickupZeroQtyActivity)) {
 
-                DisplayUtil.AlertDialog(this, context.resources.getString(R.string.msg_network_connect_error))
+                DisplayUtil.AlertDialog(this, resources.getString(R.string.msg_network_connect_error))
                 return
             }
 
@@ -164,26 +161,27 @@ class PickupZeroQtyActivity : CommonActivity() {
 
             if (!sign_view_sign_p_applicant_signature.isTouch) {
 
-                Toast.makeText(this, context.resources.getString(R.string.msg_signature_require), Toast.LENGTH_SHORT).show()
+                Toast.makeText(this, resources.getString(R.string.msg_signature_require), Toast.LENGTH_SHORT).show()
                 return
             }
 
             if (!sign_view_sign_p_collector_signature.isTouch) {
 
-                Toast.makeText(this, context.resources.getString(R.string.msg_collector_signature_require), Toast.LENGTH_SHORT).show()
+                Toast.makeText(this, resources.getString(R.string.msg_collector_signature_require), Toast.LENGTH_SHORT).show()
                 return
             }
 
             val driverMemo = edit_sign_p_memo.text.toString()
             if (driverMemo.isEmpty()) {
 
-                Toast.makeText(this, context.resources.getString(R.string.msg_must_enter_memo1), Toast.LENGTH_SHORT).show()
+                Toast.makeText(this, resources.getString(R.string.msg_must_enter_memo1), Toast.LENGTH_SHORT).show()
                 return
             }
 
             if (MemoryStatus.getAvailableInternalMemorySize() != MemoryStatus.ERROR.toLong() && MemoryStatus.getAvailableInternalMemorySize() < MemoryStatus.PRESENT_BYTE) {
 
-                DisplayUtil.AlertDialog(this, context.resources.getString(R.string.msg_disk_size_error))
+                DisplayUtil.AlertDialog(this,
+                        resources.getString(R.string.msg_disk_size_error))
                 return
             }
 
@@ -206,7 +204,7 @@ class PickupZeroQtyActivity : CommonActivity() {
         } catch (e: Exception) {
 
             Log.e("Exception", "$tag   serverUpload  Exception : $e")
-            Toast.makeText(this, context.resources.getString(R.string.text_error) + " - " + e.toString(), Toast.LENGTH_SHORT).show()
+            Toast.makeText(this, resources.getString(R.string.text_error) + " - " + e.toString(), Toast.LENGTH_SHORT).show()
         }
     }
 
