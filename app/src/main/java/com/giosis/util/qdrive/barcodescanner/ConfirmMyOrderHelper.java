@@ -9,6 +9,7 @@ import android.os.AsyncTask;
 import android.text.TextUtils;
 import android.util.Log;
 
+import com.giosis.library.list.BarcodeData;
 import com.giosis.library.util.DatabaseHelper;
 import com.giosis.util.qdrive.singapore.MyApplication;
 import com.giosis.util.qdrive.singapore.R;
@@ -34,7 +35,7 @@ public class ConfirmMyOrderHelper {
     private final String opID;
     private final String officeCode;
     private final String deviceID;
-    private final ArrayList<CaptureActivity.BarcodeListData> assignBarcodeList;
+    private final ArrayList<BarcodeData> assignBarcodeList;
 
     private final OnDriverAssignEventListener eventListener;
     private final ProgressDialog progressDialog;
@@ -45,10 +46,10 @@ public class ConfirmMyOrderHelper {
         private final String opID;
         private final String officeCode;
         private final String deviceID;
-        private final ArrayList<CaptureActivity.BarcodeListData> assignBarcodeList;
+        private final ArrayList<BarcodeData> assignBarcodeList;
         private OnDriverAssignEventListener eventListener;
 
-        public Builder(Context context, String opID, String officeCode, String deviceID, ArrayList<CaptureActivity.BarcodeListData> assignBarcodeList) {
+        public Builder(Context context, String opID, String officeCode, String deviceID, ArrayList<BarcodeData> assignBarcodeList) {
 
             this.context = context;
             this.opID = opID;
@@ -112,7 +113,7 @@ public class ConfirmMyOrderHelper {
 
             String str = null;
 
-            for (CaptureActivity.BarcodeListData assignData : assignBarcodeList) {
+            for (BarcodeData assignData : assignBarcodeList) {
 
                 if (!TextUtils.isEmpty(assignData.getBarcode())) {
 

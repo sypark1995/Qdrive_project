@@ -76,7 +76,7 @@ public class SelfCollectionDoneActivity extends CommonActivity {
     String deviceID;
 
     String mReceiveType = "RC";
-    ArrayList<CaptureActivity.BarcodeListData> barcodeList;
+    ArrayList<BarcodeData> barcodeList;
     ArrayList<BarcodeData> songjanglist;
 
     String senderName;
@@ -148,7 +148,7 @@ public class SelfCollectionDoneActivity extends CommonActivity {
         String strTitle = getIntent().getStringExtra("title");
         String temp_qfs_order = getIntent().getStringExtra("nonq10qfs");
         //바코드 정보리스트 인텐트로 받음 ArrayList 시리얼라이즈화  add by jmkang 2013-05-09
-        barcodeList = (ArrayList<CaptureActivity.BarcodeListData>) getIntent().getSerializableExtra("data");
+        barcodeList = (ArrayList<BarcodeData>) getIntent().getSerializableExtra("data");
         Log.e(TAG, "  QFS Order : " + temp_qfs_order);
 
 

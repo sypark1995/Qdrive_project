@@ -73,6 +73,7 @@ import com.giosis.library.list.pickup.OutletPickupStep3Activity;
 import com.giosis.library.list.pickup.PickupAddScanActivity;
 import com.giosis.library.list.pickup.PickupDoneActivity;
 import com.giosis.library.list.pickup.PickupTakeBackActivity;
+import com.giosis.library.list.BarcodeData;
 import com.giosis.library.util.DatabaseHelper;
 import com.giosis.util.qdrive.barcodescanner.bluetooth.BluetoothChatService;
 import com.giosis.util.qdrive.barcodescanner.bluetooth.DeviceListActivity;
@@ -187,7 +188,7 @@ public final class CaptureActivity extends CommonActivity implements SurfaceHold
 
 
     int mScanCount = 0;
-    private ArrayList<BarcodeListData> scanBarcodeArrayList = null;
+    private ArrayList<BarcodeData> scanBarcodeArrayList = null;
     private InputBarcodeNoListAdapter scanBarcodeNoListAdapter;
     // resume 시 recreate 할 data list
     private ArrayList<String> barcodeList = new ArrayList<>();
@@ -359,7 +360,7 @@ public final class CaptureActivity extends CommonActivity implements SurfaceHold
 
                 for (int i = 0; i < listItem.size(); i++) {
 
-                    BarcodeListData data = new BarcodeListData();
+                    BarcodeData data = new BarcodeData();
                     data.setState("FAIL");
                     data.setBarcode(listItem.get(i).getTrackingNo());
 
@@ -628,7 +629,7 @@ public final class CaptureActivity extends CommonActivity implements SurfaceHold
                     if (barcodeList != null && 0 < barcodeList.size()) {
                         for (int i = 0; i < barcodeList.size(); i++) {
 
-                            BarcodeListData data = new BarcodeListData();
+                            BarcodeData data = new BarcodeData();
                             data.setState("SUCCESS");
                             data.setBarcode(barcodeList.get(i));
                             scanBarcodeArrayList.add(0, data);
@@ -656,7 +657,7 @@ public final class CaptureActivity extends CommonActivity implements SurfaceHold
                             String tracking_no = listItem.get(i).getTrackingNo();
                             boolean isScanned = listItem.get(i).isScanned();
 
-                            BarcodeListData data = new BarcodeListData();
+                            BarcodeData data = new BarcodeData();
                             data.setBarcode(tracking_no);
 
                             if (isScanned) {
@@ -967,28 +968,7 @@ public final class CaptureActivity extends CommonActivity implements SurfaceHold
             break;
         }
     }
-
-
-    public static class BarcodeListData implements Serializable {
-        private String barcode;
-        private String state;
-
-        public String getBarcode() {
-            return barcode;
-        }
-
-        public void setBarcode(String barcode) {
-            this.barcode = barcode;
-        }
-
-        public String getState() {
-            return state;
-        }
-
-        public void setState(String state) {
-            this.state = state;
-        }
-    }
+    
 
     // NOTIFICATION.  Camera  /  Bluetooth Setting
     // Camera
@@ -1581,7 +1561,7 @@ public final class CaptureActivity extends CommonActivity implements SurfaceHold
         text_capture_scan_count.setText(String.valueOf(mScanCount));
 
 
-        BarcodeListData data = new BarcodeListData();
+        BarcodeData data = new BarcodeData();
         data.setBarcode(barcodeNo.toUpperCase());
         data.setState("NONE");
 
@@ -1725,7 +1705,7 @@ public final class CaptureActivity extends CommonActivity implements SurfaceHold
 
         if (!mScanType.equals(BarcodeType.OUTLET_PICKUP_SCAN)) {
 
-            BarcodeListData data = new BarcodeListData();
+            BarcodeData data = new BarcodeData();
             data.setBarcode(inputBarcode);
             data.setState(result);
 
@@ -1861,15 +1841,15 @@ public final class CaptureActivity extends CommonActivity implements SurfaceHold
         DeliveryInfo info;
         String receiverName = "";
         boolean diffReceiverName = false;
-        ArrayList<BarcodeListData> deliveryBarcodeList = new ArrayList<>();
+        ArrayList<BarcodeData> deliveryBarcodeList = new ArrayList<>();
 
         for (int i = 0; i < scanBarcodeArrayList.size(); i++) {
 
-            BarcodeListData barcodeListData = scanBarcodeArrayList.get(i);
+            BarcodeData BarcodeData = scanBarcodeArrayList.get(i);
 
-            if (barcodeListData.getState().equals("SUCCESS")) {
+            if (BarcodeData.getState().equals("SUCCESS")) {
 
-                info = getDeliveryInfo(barcodeListData.getBarcode());
+                info = getDeliveryInfo(BarcodeData.getBarcode());
 
                 try {
 
@@ -1885,7 +1865,7 @@ public final class CaptureActivity extends CommonActivity implements SurfaceHold
                 }
 
                 receiverName = info.getReceiverName();
-                deliveryBarcodeList.add(barcodeListData);
+                deliveryBarcodeList.add(BarcodeData);
             }
         }
 
@@ -2061,7 +2041,7 @@ public final class CaptureActivity extends CommonActivity implements SurfaceHold
 
                 for (int i = 0; i < listItem.size(); i++) {
 
-                    BarcodeListData data = new BarcodeListData();
+                    BarcodeData data = new BarcodeData();
                     data.setBarcode(listItem.get(i).getTrackingNo());
                     data.setState("FAIL");
                     scanBarcodeArrayList.add(i, data);
@@ -2182,12 +2162,12 @@ public final class CaptureActivity extends CommonActivity implements SurfaceHold
 
         // SELF_COLLECTION            //복수건 가져다가 self-collection by 2016-09-09
         // 넘기는 데이터 재정의 스캔성공된 것들만 보낸다.
-        ArrayList<BarcodeListData> newBarcodeNoList = new ArrayList<>();
+        ArrayList<BarcodeData> newBarcodeNoList = new ArrayList<>();
         for (int i = 0; i < scanBarcodeArrayList.size(); i++) {
 
-            BarcodeListData barcodeListData = scanBarcodeArrayList.get(i);
+            BarcodeData barcodeListData = scanBarcodeArrayList.get(i);
 
-            if (barcodeListData.state.equals("FAIL")) {
+            if (barcodeListData.getState().equals("FAIL")) {
 
                 Toast toast = Toast.makeText(this, R.string.msg_invalid_scan, Toast.LENGTH_SHORT);
                 toast.setGravity(Gravity.CENTER_HORIZONTAL, 0, 0);

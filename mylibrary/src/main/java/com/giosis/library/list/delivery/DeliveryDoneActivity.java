@@ -211,10 +211,6 @@ public class DeliveryDoneActivity extends CommonActivity implements Camera2APIs.
 
         mStrWaybillNo = getIntent().getStringExtra("waybillNo");
 
-        if (getIntent().hasExtra("type")) {
-            mType = getIntent().getStringExtra("type");
-        }
-
         ArrayList<BarcodeData> barcodeList = (ArrayList<BarcodeData>) getIntent().getSerializableExtra("data");
 
 

@@ -102,6 +102,58 @@ public class Custom_JsonParser {
     }
 
 
+    public static String requestGetDataReturnJSON(String apiUrl, String method, String data) {
+
+        URL url;
+        HttpURLConnection conn;
+        InputStream is;
+        ByteArrayOutputStream baos;
+
+        String response = "";
+
+        try {
+
+            url = new URL(apiUrl + "/" + method + "?driver_id=" + data);
+            Log.e("krm0219", "URL : " + url.toString());
+
+            // URL 연결
+            conn = (HttpURLConnection) url.openConnection();
+            conn.setRequestMethod("GET");
+            //    conn.setDoOutput(true);
+            conn.setDoInput(true);
+            conn.setUseCaches(false);
+            conn.setAllowUserInteraction(false);
+
+            int responseCode = conn.getResponseCode();
+
+            if (responseCode == HttpURLConnection.HTTP_OK) {
+
+                is = conn.getInputStream();
+                baos = new ByteArrayOutputStream();
+                byte[] byteBuffer = new byte[1024];
+                byte[] byteData;
+                int nLength;
+
+                while ((nLength = is.read(byteBuffer, 0, byteBuffer.length)) != -1) {
+                    baos.write(byteBuffer, 0, nLength);
+                }
+                byteData = baos.toByteArray();
+
+                response = new String(byteData);
+
+                String[] URLStrings = apiUrl.split("/");
+                Log.e("Server", URLStrings[URLStrings.length - 1] + " > " + method + "  Result : " + response);
+            }
+        } catch (Exception e) {
+
+            response = e.toString();
+            Log.e("Server", method + "   JsonParser Exception " + e.toString());
+        }
+
+        return response;
+    }
+
+
     // Main - Navigation - Message
     public static MessageListResult getAdminMessageList(String jsonString) {
 

@@ -58,7 +58,7 @@ public class DataUtil {
     public static Intent locationManagerService = null;
 
 
-    //
+    // TODO_kjyoo app 과 라이블러리에 둘다 있음...
     public static int inProgressListPosition = 0;
     public static int uploadFailedListPosition = 0;
 
@@ -128,6 +128,20 @@ public class DataUtil {
             params.putString("method", method);
             mFirebaseAnalytics.logEvent(event, params);
         } catch (Exception ignored) {
+        }
+    }
+
+    public static void FirebaseSelectEvents(String type, String id) {
+
+        try {
+
+            Bundle params = new Bundle();
+            params.putString(FirebaseAnalytics.Param.CONTENT_TYPE, type);
+            params.putString(FirebaseAnalytics.Param.ITEM_ID, id);
+            DataUtil.mFirebaseAnalytics.logEvent(FirebaseAnalytics.Event.SELECT_CONTENT, params);
+        } catch (Exception e) {
+
+            Log.e("Firebase", "FirebaseSelectEvents error : " + e.toString());
         }
     }
 
