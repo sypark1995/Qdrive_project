@@ -16,6 +16,7 @@ import androidx.core.content.ContextCompat;
 import androidx.drawerlayout.widget.DrawerLayout;
 
 import com.giosis.library.main.submenu.ListNotInHousedActivity;
+import com.giosis.library.main.submenu.OutletOrderStatusActivity;
 import com.giosis.library.main.submenu.ScanActivity;
 import com.giosis.library.main.submenu.StatisticsActivity;
 import com.giosis.library.message.MessageListActivity;
@@ -276,7 +277,6 @@ public class AppBaseActivity extends CommonActivity {
 
                         case 4: {       // Outlet - Outlet Order Status
 
-                            // OutletOrderStatusActivity1
                             Intent intent = new Intent(AppBaseActivity.this, OutletOrderStatusActivity.class);
                             startActivity(intent);
                         }

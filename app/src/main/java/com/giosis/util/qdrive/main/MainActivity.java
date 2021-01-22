@@ -34,6 +34,7 @@ import androidx.core.graphics.drawable.RoundedBitmapDrawableFactory;
 
 import com.giosis.library.gps.GPSTrackerManager;
 import com.giosis.library.gps.QuickAppUserInfoUploadHelper;
+import com.giosis.library.main.submenu.OutletOrderStatusActivity;
 import com.giosis.library.pickup.CreatePickupOrderActivity;
 import com.giosis.library.setting.bluetooth.BluetoothDeviceData;
 import com.giosis.library.util.DatabaseHelper;
@@ -167,22 +168,6 @@ public class MainActivity extends AppBaseActivity {
 //        // TEST Outlet
 //        MyApplication.preferences.setOutletDriver("Y");
 //        MyApplication.preferences.setUserId("Syed_7E");
-
-//        // TEST.
-//        String imgDirName = "/QdrivePickup";
-//        String signName = "123";
-//
-//        String dirPath = Environment.getExternalStorageDirectory().toString() + imgDirName;
-//        String filePath = dirPath + "/" + signName + ".png";
-//        String saveAbsolutePath = "file://" + Environment.getExternalStorageDirectory().getAbsolutePath() + "/" +
-//                imgDirName + "/" + signName + ".png";
-//        Log.e("krm0219", "PATH 1 : " + dirPath + " / " + filePath + " / " + saveAbsolutePath);
-//
-//        // FIXME.  API 29  deprecated
-//        String path = Environment.getExternalStorageDirectory().getAbsolutePath();
-//        String path1 = getApplication().getExternalFilesDir(Environment.DIRECTORY_PICTURES).toString();
-//        Log.e("krm0219", "PATH 2 : " + path + " / " + path1);
-//        // ---
 
 
         dbHelper = DatabaseHelper.getInstance();

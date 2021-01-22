@@ -893,14 +893,6 @@ public class MainActivity extends AppBaseActivity {
                     }
                 }
                 break;
-
-                case R.id.btn_home_outlet_order_status: {
-
-                    //OutletOrderStatusActivity
-                    Intent intent = new Intent(MainActivity.this, OutletOrderStatusActivity.class);
-                    startActivity(intent);
-                }
-                break;
             }
         }
     };

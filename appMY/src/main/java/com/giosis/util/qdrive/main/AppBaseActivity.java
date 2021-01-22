@@ -19,7 +19,6 @@ import com.giosis.library.main.submenu.ScanActivity;
 import com.giosis.library.main.submenu.StatisticsActivity;
 import com.giosis.library.setting.SettingActivity;
 import com.giosis.util.qdrive.barcodescanner.CaptureActivity;
-import com.giosis.util.qdrive.international.MyApplication;
 import com.giosis.util.qdrive.international.R;
 import com.giosis.util.qdrive.list.ListActivity;
 import com.giosis.util.qdrive.util.BarcodeType;
@@ -95,32 +94,14 @@ public class AppBaseActivity extends CommonActivity {
         // sub divider 칼라 없앰
         nav_list.setChildDivider(getResources().getDrawable(R.color.transparent));
 
-        String outletDriverYN;
-        try {
-
-            outletDriverYN = MyApplication.preferences.getOutletDriver();
-        } catch (Exception e) {
-
-            outletDriverYN = "N";
-        }
-
 
         ArrayList<String> arrayList;
         ArrayList<String> arrayList1;
 
-        if (outletDriverYN.equals("Y")) {
-
-            arrayList = new ArrayList<>(Arrays.asList(getString(R.string.text_start_delivery_for_outlet), getString(R.string.navi_sub_delivery_done),
-                    getString(R.string.navi_sub_pickup), getString(R.string.navi_sub_self)));
-            arrayList1 = new ArrayList<>(Arrays.asList(getString(R.string.navi_sub_in_progress), getString(R.string.navi_sub_upload_fail), getString(R.string.navi_sub_today_done),
-                    getString(R.string.navi_sub_not_in_housed), getString(R.string.text_outlet_order_status)));
-        } else {
-
-            arrayList = new ArrayList<>(Arrays.asList(getString(R.string.navi_sub_confirm_delivery), getString(R.string.navi_sub_delivery_done),
-                    getString(R.string.navi_sub_pickup), getString(R.string.navi_sub_self)));
-            arrayList1 = new ArrayList<>(Arrays.asList(getString(R.string.navi_sub_in_progress), getString(R.string.navi_sub_upload_fail), getString(R.string.navi_sub_today_done),
-                    getString(R.string.navi_sub_not_in_housed)));
-        }
+        arrayList = new ArrayList<>(Arrays.asList(getString(R.string.navi_sub_confirm_delivery), getString(R.string.navi_sub_delivery_done),
+                getString(R.string.navi_sub_pickup), getString(R.string.navi_sub_self)));
+        arrayList1 = new ArrayList<>(Arrays.asList(getString(R.string.navi_sub_in_progress), getString(R.string.navi_sub_upload_fail), getString(R.string.navi_sub_today_done),
+                getString(R.string.navi_sub_not_in_housed)));
 
 
         adapter.addItem(ContextCompat.getDrawable(this, R.drawable.side_icon_home_selector), getString(R.string.navi_home), null);
@@ -250,14 +231,6 @@ public class AppBaseActivity extends CommonActivity {
                         case 3: {   // Not In-housed
 
                             Intent intent = new Intent(AppBaseActivity.this, ListNotInHousedActivity.class);
-                            startActivity(intent);
-                        }
-                        break;
-
-                        case 4: {       // Outlet - Outlet Order Status
-
-                            // OutletOrderStatusActivity
-                            Intent intent = new Intent(AppBaseActivity.this, OutletOrderStatusActivity.class);
                             startActivity(intent);
                         }
                         break;

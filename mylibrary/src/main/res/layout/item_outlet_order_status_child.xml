@@ -3,10 +3,10 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
-    android:background="@drawable/bg_bottom_radius_10_ffffff_shadows"
+    android:background="@drawable/bg_bottom_round_10_ffffff"
     android:orientation="vertical"
-    android:paddingEnd="10dp"
-    android:paddingStart="10dp">
+    android:paddingStart="10dp"
+    android:paddingEnd="10dp">
 
     <View
         android:layout_width="match_parent"
@@ -16,14 +16,13 @@
     <RelativeLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_marginBottom="20dp"
-        android:layout_marginTop="15dp">
+        android:layout_marginTop="15dp"
+        android:layout_marginBottom="20dp">
 
         <LinearLayout
             android:id="@+id/layout_list_item_child_order_info"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_below="@id/layout_list_item_child_failed"
             android:layout_toStartOf="@id/img_list_item_child_sms"
             android:minHeight="30dp"
             android:orientation="vertical"
@@ -81,8 +80,8 @@
             android:id="@+id/img_list_item_child_sms"
             android:layout_width="30dp"
             android:layout_height="30dp"
-            android:layout_above="@id/layout_list_item_child_buttons"
             android:layout_alignWithParentIfMissing="true"
+            android:layout_above="@id/layout_list_item_child_buttons"
             android:layout_marginStart="7dp"
             android:layout_toStartOf="@id/img_list_item_child_live10"
             android:background="@drawable/qdrive_btn_icon_mail"
@@ -92,8 +91,8 @@
             android:id="@+id/img_list_item_child_live10"
             android:layout_width="30dp"
             android:layout_height="30dp"
-            android:layout_above="@id/layout_list_item_child_buttons"
             android:layout_alignWithParentIfMissing="true"
+            android:layout_above="@id/layout_list_item_child_buttons"
             android:layout_marginStart="7dp"
             android:layout_toStartOf="@id/img_list_item_child_qpost"
             android:background="@drawable/qdrive_btn_icon_live10" />
@@ -102,8 +101,8 @@
             android:id="@+id/img_list_item_child_qpost"
             android:layout_width="30dp"
             android:layout_height="30dp"
-            android:layout_above="@id/layout_list_item_child_buttons"
             android:layout_alignWithParentIfMissing="true"
+            android:layout_above="@id/layout_list_item_child_buttons"
             android:layout_marginStart="7dp"
             android:layout_toStartOf="@id/img_list_item_child_driver_memo"
             android:background="@drawable/qdrive_btn_icon_qoo10" />
@@ -112,9 +111,9 @@
             android:id="@+id/img_list_item_child_driver_memo"
             android:layout_width="30dp"
             android:layout_height="30dp"
+            android:layout_alignWithParentIfMissing="true"
             android:layout_above="@id/layout_list_item_child_buttons"
             android:layout_alignParentEnd="true"
-            android:layout_alignWithParentIfMissing="true"
             android:layout_marginStart="7dp"
             android:background="@drawable/qdrive_btn_icon_memo" />
 
@@ -130,7 +129,7 @@
                 android:layout_width="94dp"
                 android:layout_height="32dp"
                 android:layout_alignParentEnd="true"
-                android:background="@drawable/border_radius_5_cccccc_ffffff"
+                android:background="@drawable/border_round_5_cccccc"
                 android:text="@string/button_delivered"
                 android:textAllCaps="false"
                 android:textColor="@color/color_303030"
