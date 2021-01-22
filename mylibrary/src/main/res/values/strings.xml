@@ -41,6 +41,16 @@
     <string name="text_title_scan_pickup_cnr">Scan C&amp;R, Lazada Parcels</string>
     <string name="text_title_notice">Notice</string>
 
+    <!-- 2019.07  Smart Route  -->
+    <string name="text_smart_route" translatable="false">Smart Route</string>
+    <string name="msg_please_create_smart_route" translatable="false">Please create a smart route.</string>
+    <string name="msg_smart_route_creating" translatable="false">The smart route is creating…</string>
+    <string name="msg_smart_route_created" translatable="false">The smart route is created!</string>
+
+    <string name="msg_orders_not_found" translatable="false">Orders are not found.</string>
+    <string name="text_trip_detail_requests" translatable="false">Trip Details (%d requests)</string>
+    <string name="text_payment_check" translatable="false">Payment Check</string>
+
     <!-- Text -->
     <string name="text_office">Office</string>
     <string name="text_total_qty">Total Qty</string>
