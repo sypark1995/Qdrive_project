@@ -2,7 +2,6 @@ package com.giosis.library.list.pickup
 
 import android.app.Activity
 import android.app.AlertDialog
-import android.content.Context
 import android.content.DialogInterface
 import android.content.Intent
 import android.os.Bundle
@@ -24,9 +23,6 @@ import java.util.*
  */
 class CnRPickupDoneActivity : CommonActivity() {
     var tag = "CnRPickupDoneActivity"
-
-    //
-    lateinit var context: Context
 
     private var mStrWaybillNo: String = ""
     private var mType = BarcodeType.PICKUP_CNR
@@ -52,8 +48,6 @@ class CnRPickupDoneActivity : CommonActivity() {
 
 
         //
-        context = applicationContext
-
         val strSenderName = intent.getStringExtra("senderName")
         mStrWaybillNo = intent.getStringExtra("scannedList").toString()
         val strReqQty = intent.getStringExtra("scannedQty")
@@ -91,13 +85,13 @@ class CnRPickupDoneActivity : CommonActivity() {
             barcodeMsg += if (barcodeMsg == "") pickupNoList!![i].barcode else ", " + pickupNoList!![i].barcode
         }
 
-        val qtyFormat = String.format(context.resources.getString(R.string.text_total_qty_count), songJangListSize)
+        val qtyFormat = String.format(resources.getString(R.string.text_total_qty_count), songJangListSize)
 
         text_sign_p_tracking_no.text = qtyFormat
         text_sign_p_tracking_no_more.visibility = View.VISIBLE
         text_sign_p_tracking_no_more.text = barcodeMsg
 
-        text_top_title.text = context.resources.getString(R.string.text_cnr_pickup_done)
+        text_top_title.text = resources.getString(R.string.text_cnr_pickup_done)
         text_sign_p_requester.text = strReqQty
         text_sign_p_request_qty.text = strSenderName
 
@@ -120,7 +114,7 @@ class CnRPickupDoneActivity : CommonActivity() {
 
         if (isPermissionTrue) {
 
-            gpsTrackerManager = GPSTrackerManager(context)
+            gpsTrackerManager = GPSTrackerManager(this)
             gpsEnable = gpsTrackerManager!!.enableGPSSetting()
 
             if (gpsEnable && gpsTrackerManager != null) {
@@ -183,7 +177,7 @@ class CnRPickupDoneActivity : CommonActivity() {
         try {
             if (!NetworkUtil.isNetworkAvailable(this)) {
 
-                DisplayUtil.AlertDialog(this, context.resources.getString(R.string.msg_network_connect_error))
+                DisplayUtil.AlertDialog(this, resources.getString(R.string.msg_network_connect_error))
                 return
             }
 
@@ -195,18 +189,18 @@ class CnRPickupDoneActivity : CommonActivity() {
 
 
             if (!sign_view_sign_p_applicant_signature!!.isTouch) {
-                Toast.makeText(this.applicationContext, context.resources.getString(R.string.msg_signature_require), Toast.LENGTH_SHORT).show()
+                Toast.makeText(this.applicationContext, resources.getString(R.string.msg_signature_require), Toast.LENGTH_SHORT).show()
                 return
             }
 
             if (!sign_view_sign_p_collector_signature!!.isTouch) {
-                Toast.makeText(this.applicationContext, context.resources.getString(R.string.msg_collector_signature_require), Toast.LENGTH_SHORT).show()
+                Toast.makeText(this.applicationContext, resources.getString(R.string.msg_collector_signature_require), Toast.LENGTH_SHORT).show()
                 return
             }
 
             if (MemoryStatus.getAvailableInternalMemorySize() != MemoryStatus.ERROR.toLong() && MemoryStatus.getAvailableInternalMemorySize() < MemoryStatus.PRESENT_BYTE) {
 
-                DisplayUtil.AlertDialog(this, context.resources.getString(R.string.msg_disk_size_error))
+                DisplayUtil.AlertDialog(this, resources.getString(R.string.msg_disk_size_error))
                 return
             }
 
@@ -229,7 +223,7 @@ class CnRPickupDoneActivity : CommonActivity() {
         } catch (e: Exception) {
 
             Log.e("krm0219", "$tag  Exception : $e")
-            Toast.makeText(this.applicationContext, context.resources.getString(R.string.text_error) + " - " + e.toString(), Toast.LENGTH_SHORT).show()
+            Toast.makeText(this, resources.getString(R.string.text_error) + " - " + e.toString(), Toast.LENGTH_SHORT).show()
         }
     }
 
