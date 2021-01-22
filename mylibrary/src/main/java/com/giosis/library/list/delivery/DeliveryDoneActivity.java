@@ -411,7 +411,7 @@ public class DeliveryDoneActivity extends CommonActivity implements Camera2APIs.
                 layout_sign_d_sign_memo.setVisibility(View.GONE);
                 layout_sign_d_visit_log.setVisibility(View.GONE);
 
-                outletTrackingNoAdapter = new OutletTrackingNoAdapter(outletDeliveryDoneListItemArrayList, "FL");
+                outletTrackingNoAdapter = new OutletTrackingNoAdapter(DeliveryDoneActivity.this, outletDeliveryDoneListItemArrayList, "FL");
                 list_sign_d_outlet_list.setAdapter(outletTrackingNoAdapter);
                 setListViewHeightBasedOnChildren(list_sign_d_outlet_list);
             }
@@ -984,7 +984,7 @@ public class DeliveryDoneActivity extends CommonActivity implements Camera2APIs.
 
                 showQRCode = true;
 
-                outletTrackingNoAdapter = new OutletTrackingNoAdapter(outletDeliveryDoneListItemArrayList, "7E");
+                outletTrackingNoAdapter = new OutletTrackingNoAdapter(DeliveryDoneActivity.this, outletDeliveryDoneListItemArrayList, "7E");
                 list_sign_d_outlet_list.setAdapter(outletTrackingNoAdapter);
                 setListViewHeightBasedOnChildren(list_sign_d_outlet_list);
             } else {

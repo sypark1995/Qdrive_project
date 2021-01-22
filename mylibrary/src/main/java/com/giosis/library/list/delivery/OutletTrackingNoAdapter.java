@@ -40,11 +40,13 @@ import javax.net.ssl.X509TrustManager;
 public class OutletTrackingNoAdapter extends BaseAdapter {
     String TAG = "OutletTrackingNoAdapter";
 
+    Context context;
     ArrayList<OutletDeliveryDoneListItem> trackingNoList;
     String route;
 
-    public OutletTrackingNoAdapter(ArrayList<OutletDeliveryDoneListItem> list, String route) {
+    public OutletTrackingNoAdapter(Context context, ArrayList<OutletDeliveryDoneListItem> list, String route) {
 
+        this.context = context;
         this.trackingNoList = list;
         this.route = route;
 
@@ -126,7 +128,7 @@ public class OutletTrackingNoAdapter extends BaseAdapter {
 
         if (convertView == null) {
 
-            LayoutInflater inflater = (LayoutInflater) convertView.getContext().getSystemService(Context.LAYOUT_INFLATER_SERVICE);
+            LayoutInflater inflater = (LayoutInflater) context.getSystemService(Context.LAYOUT_INFLATER_SERVICE);
 
             if (item.getTrackingNo().equals("1")) {
 
