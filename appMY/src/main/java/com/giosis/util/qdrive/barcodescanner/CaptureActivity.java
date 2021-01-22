@@ -49,6 +49,10 @@ import android.widget.ToggleButton;
 
 import com.giosis.library.gps.GPSTrackerManager;
 import com.giosis.library.list.delivery.DeliveryDoneActivity;
+import com.giosis.library.list.pickup.CnRPickupDoneActivity;
+import com.giosis.library.list.pickup.PickupAddScanActivity;
+import com.giosis.library.list.pickup.PickupDoneActivity;
+import com.giosis.library.list.pickup.PickupTakeBackActivity;
 import com.giosis.util.qdrive.barcodescanner.bluetooth.BluetoothChatService;
 import com.giosis.util.qdrive.barcodescanner.bluetooth.DeviceListActivity;
 import com.giosis.util.qdrive.barcodescanner.bluetooth.KScan;
@@ -62,11 +66,7 @@ import com.giosis.util.qdrive.international.SigningActivity;
 import com.giosis.util.qdrive.international.UploadData;
 import com.giosis.util.qdrive.list.BarcodeData;
 import com.giosis.util.qdrive.list.OutletPickupDoneResult;
-import com.giosis.util.qdrive.list.pickup.CnRPickupDoneActivity;
 import com.giosis.util.qdrive.list.pickup.OutletPickupDoneActivity;
-import com.giosis.util.qdrive.list.pickup.PickupAddScanActivity;
-import com.giosis.util.qdrive.list.pickup.PickupDoneActivity;
-import com.giosis.util.qdrive.list.pickup.PickupTakeBackActivity;
 import com.giosis.util.qdrive.main.ChangeDriverValidationCheckHelper;
 import com.giosis.util.qdrive.main.Dpc3OutValidationCheckHelper;
 import com.giosis.util.qdrive.main.ManualChangeDelDriverHelper;
@@ -1971,8 +1971,6 @@ public final class CaptureActivity extends CommonActivity implements SurfaceHold
             case BarcodeType.PICKUP_CNR: {
 
                 Intent intent = new Intent(this, CnRPickupDoneActivity.class);
-                intent.putExtra("title", context.getResources().getString(R.string.text_cnr_pickup_done));
-                intent.putExtra("type", BarcodeType.PICKUP_CNR);
                 intent.putExtra("senderName", pickupCNRRequester);
                 intent.putExtra("scannedList", scannedList);
                 intent.putExtra("scannedQty", scannedQty);
@@ -1983,7 +1981,6 @@ public final class CaptureActivity extends CommonActivity implements SurfaceHold
             case BarcodeType.PICKUP_START_SCAN: {
 
                 Intent intent = new Intent(this, PickupDoneActivity.class);
-                intent.putExtra("title", context.getResources().getString(R.string.text_start_to_scan));
                 intent.putExtra("pickupNo", pickupNo);
                 intent.putExtra("applicant", pickupApplicantName);
                 intent.putExtra("scannedList", scannedList);
@@ -1996,9 +1993,8 @@ public final class CaptureActivity extends CommonActivity implements SurfaceHold
             case BarcodeType.PICKUP_ADD_SCAN: {
 
                 Intent intent = new Intent(this, PickupAddScanActivity.class);
-                intent.putExtra("title", context.getResources().getString(R.string.text_title_add_pickup));
                 intent.putExtra("pickupNo", pickupNo);
-                intent.putExtra("senderName", pickupApplicantName);
+                intent.putExtra("applicant", pickupApplicantName);
                 intent.putExtra("scannedList", scannedList);
                 intent.putExtra("scannedQty", scannedQty);
                 this.startActivityForResult(intent, REQUEST_PICKUP_ADD_SCAN);
@@ -2008,7 +2004,6 @@ public final class CaptureActivity extends CommonActivity implements SurfaceHold
             case BarcodeType.PICKUP_TAKE_BACK: {
 
                 Intent intent = new Intent(this, PickupTakeBackActivity.class);
-                intent.putExtra("title", context.getResources().getString(R.string.button_take_back));
                 intent.putExtra("pickupNo", pickupNo);
                 intent.putExtra("applicant", pickupApplicantName);
                 intent.putExtra("scannedList", scannedList);

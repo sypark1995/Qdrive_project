@@ -38,7 +38,7 @@
     <string name="text_cnr_pickup_done">C&amp;R Pickup Done</string>
     <string name="text_title_add_pickup">Add Pickup Scan No.</string>
     <string name="text_title_driver_assign">Driver Assign</string>
-    <string name="text_title_scan_pickup_cnr">Scan Pickup C&amp;R no</string>
+    <string name="text_title_scan_pickup_cnr">Scan C&amp;R, Lazada Parcels</string>
     <string name="text_title_notice">Notice</string>
 
     <!-- Text -->
@@ -305,6 +305,7 @@
     <string name="msg_check_date_range">Please check the date range. Max 1 month</string>
 
     <string name="msg_back_camera_required">Back camera is required.(LENS_FACING_BACK) \n Please use the \'Gallery\' button.</string>
+    <string name="msg_failed_code_error" translatable="false">CodeData Error.\nPlease press the \'Download\' button again at Home.</string>
 
     <string name="msg_please_input_data" translatable="false">Please enter ZipCode or Address</string>
     <string name="msg_upload_fail_image" translatable="false">ImageServer Error.\nPlease try again..</string>

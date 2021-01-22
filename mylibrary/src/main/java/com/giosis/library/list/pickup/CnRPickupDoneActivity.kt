@@ -1,0 +1,258 @@
+package com.giosis.library.list.pickup
+
+import android.app.Activity
+import android.app.AlertDialog
+import android.content.Context
+import android.content.DialogInterface
+import android.content.Intent
+import android.os.Bundle
+import android.util.Log
+import android.view.View
+import android.widget.Toast
+import com.giosis.library.MemoryStatus
+import com.giosis.library.R
+import com.giosis.library.gps.GPSTrackerManager
+import com.giosis.library.list.BarcodeData
+import com.giosis.library.util.*
+import kotlinx.android.synthetic.main.activity_pickup_done.*
+import kotlinx.android.synthetic.main.top_title.*
+import java.util.*
+
+/**
+ * @editor krm0219
+ * SCAN > CNR DONE
+ */
+class CnRPickupDoneActivity : CommonActivity() {
+    var tag = "CnRPickupDoneActivity"
+
+    //
+    lateinit var context: Context
+
+    private var mStrWaybillNo: String = ""
+    private var mType = BarcodeType.PICKUP_CNR
+
+    private lateinit var mWaybillList: Array<String>
+    private var pickupNoList: ArrayList<BarcodeData>? = null
+
+    var gpsTrackerManager: GPSTrackerManager? = null
+    var gpsEnable = false
+    var latitude = 0.0
+    var longitude = 0.0
+    var isPermissionTrue = false
+
+    public override fun onCreate(savedInstanceState: Bundle?) {
+        super.onCreate(savedInstanceState)
+        setContentView(R.layout.activity_pickup_done)
+
+
+        layout_top_back.setOnClickListener(clickListener)
+        layout_sign_p_applicant_eraser.setOnClickListener(clickListener)
+        layout_sign_p_collector_eraser.setOnClickListener(clickListener)
+        btn_sign_p_save.setOnClickListener(clickListener)
+
+
+        //
+        context = applicationContext
+
+        val strSenderName = intent.getStringExtra("senderName")
+        mStrWaybillNo = intent.getStringExtra("scannedList").toString()
+        val strReqQty = intent.getStringExtra("scannedQty")
+
+
+        text_sign_p_tracking_no_title.setText(R.string.text_pickup_no)
+        text_sign_p_requester_title.setText(R.string.text_parcel_qty1)
+        text_sign_p_request_qty_title.setText(R.string.text_applicant)
+
+        pickupNoList = ArrayList()
+        var pickupBarcodeData: BarcodeData
+
+        mWaybillList = mStrWaybillNo.split(",".toRegex()).toTypedArray()
+
+        if (mWaybillList.isNotEmpty()) {
+            for (s in mWaybillList) {
+
+                pickupBarcodeData = BarcodeData()
+                pickupBarcodeData.barcode = s.trim { it <= ' ' }
+                pickupBarcodeData.state = mType
+                pickupNoList!!.add(pickupBarcodeData)
+            }
+        } else {
+
+            pickupBarcodeData = BarcodeData()
+            pickupBarcodeData.barcode = mStrWaybillNo
+            pickupBarcodeData.state = mType
+            pickupNoList!!.add(pickupBarcodeData)
+        }
+
+        var barcodeMsg: String? = ""
+        val songJangListSize = pickupNoList!!.size
+
+        for (i in 0 until songJangListSize) {
+            barcodeMsg += if (barcodeMsg == "") pickupNoList!![i].barcode else ", " + pickupNoList!![i].barcode
+        }
+
+        val qtyFormat = String.format(context.resources.getString(R.string.text_total_qty_count), songJangListSize)
+
+        text_sign_p_tracking_no.text = qtyFormat
+        text_sign_p_tracking_no_more.visibility = View.VISIBLE
+        text_sign_p_tracking_no_more.text = barcodeMsg
+
+        text_top_title.text = context.resources.getString(R.string.text_cnr_pickup_done)
+        text_sign_p_requester.text = strReqQty
+        text_sign_p_request_qty.text = strSenderName
+
+
+        //
+        val checker = PermissionChecker(this)
+
+        // 권한 여부 체크 (없으면 true, 있으면 false)
+        if (checker.lacksPermissions(*PERMISSIONS)) {
+            isPermissionTrue = false
+            PermissionActivity.startActivityForResult(this, PERMISSION_REQUEST_CODE, *PERMISSIONS)
+            overridePendingTransition(0, 0)
+        } else {
+            isPermissionTrue = true
+        }
+    }
+
+    override fun onResume() {
+        super.onResume()
+
+        if (isPermissionTrue) {
+
+            gpsTrackerManager = GPSTrackerManager(context)
+            gpsEnable = gpsTrackerManager!!.enableGPSSetting()
+
+            if (gpsEnable && gpsTrackerManager != null) {
+
+                gpsTrackerManager!!.GPSTrackerStart()
+                latitude = gpsTrackerManager!!.latitude
+                longitude = gpsTrackerManager!!.longitude
+                Log.e("Location", "$tag GPSTrackerManager onResume : $latitude  $longitude  ")
+            } else {
+                1
+                DataUtil.enableLocationSettings(this)
+            }
+        }
+    }
+
+    override fun onDestroy() {
+        super.onDestroy()
+        DataUtil.stopGPSManager(gpsTrackerManager)
+    }
+
+    override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
+        super.onActivityResult(requestCode, resultCode, data)
+        if (requestCode == PERMISSION_REQUEST_CODE) {   // permission
+            if (resultCode == PermissionActivity.PERMISSIONS_GRANTED) {
+                Log.e("Permission", "$tag   onActivityResult  PERMISSIONS_GRANTED")
+                isPermissionTrue = true
+            }
+        }
+    }
+
+
+    var clickListener = View.OnClickListener { view ->
+
+        when (view.id) {
+            R.id.layout_top_back -> {
+
+                cancelSigning()
+            }
+            R.id.layout_sign_p_applicant_eraser -> {
+
+                sign_view_sign_p_applicant_signature!!.clearText()
+            }
+            R.id.layout_sign_p_collector_eraser -> {
+
+                sign_view_sign_p_collector_signature!!.clearText()
+            }
+            R.id.btn_sign_p_save -> {
+
+                saveServerUploadSign()
+            }
+        }
+    }
+
+
+    /*
+     * 실시간 Upload 처리
+     * add by jmkang 2014-07-15
+     */
+    fun saveServerUploadSign() {
+        try {
+            if (!NetworkUtil.isNetworkAvailable(this)) {
+
+                DisplayUtil.AlertDialog(this, context.resources.getString(R.string.msg_network_connect_error))
+                return
+            }
+
+            if (gpsTrackerManager != null) {
+                latitude = gpsTrackerManager!!.latitude
+                longitude = gpsTrackerManager!!.longitude
+                Log.e("Location", "$tag saveServerUploadSign  GPSTrackerManager : $latitude  $longitude  ")
+            }
+
+
+            if (!sign_view_sign_p_applicant_signature!!.isTouch) {
+                Toast.makeText(this.applicationContext, context.resources.getString(R.string.msg_signature_require), Toast.LENGTH_SHORT).show()
+                return
+            }
+
+            if (!sign_view_sign_p_collector_signature!!.isTouch) {
+                Toast.makeText(this.applicationContext, context.resources.getString(R.string.msg_collector_signature_require), Toast.LENGTH_SHORT).show()
+                return
+            }
+
+            if (MemoryStatus.getAvailableInternalMemorySize() != MemoryStatus.ERROR.toLong() && MemoryStatus.getAvailableInternalMemorySize() < MemoryStatus.PRESENT_BYTE) {
+
+                DisplayUtil.AlertDialog(this, context.resources.getString(R.string.msg_disk_size_error))
+                return
+            }
+
+
+            DataUtil.logEvent("button_click", tag, DataUtil.requestSetUploadPickupData)
+
+            CnRPickupUploadHelper.Builder(this, Preferences.userId, Preferences.officeCode, Preferences.deviceUUID,
+                    pickupNoList, sign_view_sign_p_applicant_signature, sign_view_sign_p_collector_signature,
+                    MemoryStatus.getAvailableInternalMemorySize(), latitude, longitude)
+                    .setOnServerEventListener(object : OnServerEventListener {
+                        override fun onPostResult() {
+
+                            DataUtil.inProgressListPosition = 0
+                            setResult(Activity.RESULT_OK)
+                            finish()
+                        }
+
+                        override fun onPostFailList() {}
+                    }).build().execute()
+        } catch (e: Exception) {
+
+            Log.e("krm0219", "$tag  Exception : $e")
+            Toast.makeText(this.applicationContext, context.resources.getString(R.string.text_error) + " - " + e.toString(), Toast.LENGTH_SHORT).show()
+        }
+    }
+
+
+    override fun onBackPressed() {
+        cancelSigning()
+    }
+
+    fun cancelSigning() {
+
+        AlertDialog.Builder(this)
+                .setMessage(R.string.msg_delivered_sign_cancel)
+                .setPositiveButton(R.string.button_ok) { _: DialogInterface?, _: Int ->
+
+                    setResult(Activity.RESULT_CANCELED)
+                    finish()
+                }
+                .setNegativeButton(R.string.button_cancel) { dialog: DialogInterface, _: Int -> dialog.dismiss() }.show()
+    }
+
+    companion object {
+        private const val PERMISSION_REQUEST_CODE = 1000
+        private val PERMISSIONS = arrayOf(PermissionChecker.ACCESS_FINE_LOCATION, PermissionChecker.ACCESS_COARSE_LOCATION,
+                PermissionChecker.READ_EXTERNAL_STORAGE, PermissionChecker.WRITE_EXTERNAL_STORAGE)
+    }
+}

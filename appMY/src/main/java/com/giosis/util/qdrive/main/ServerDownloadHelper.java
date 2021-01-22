@@ -12,7 +12,7 @@ import android.widget.Toast;
 
 import com.giosis.util.qdrive.barcodescanner.DriverAssignResult;
 import com.giosis.util.qdrive.international.R;
-import com.giosis.util.qdrive.list.pickup.PickupAssignResult;
+import com.giosis.util.qdrive.list.PickupAssignResult;
 import com.giosis.util.qdrive.util.Custom_JsonParser;
 import com.giosis.util.qdrive.util.DataUtil;
 import com.giosis.library.util.DatabaseHelper;

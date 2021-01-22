@@ -38,6 +38,9 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import com.giosis.library.list.delivery.DeliveryDoneActivity;
+import com.giosis.library.list.pickup.OutletPickupStep1Activity;
+import com.giosis.library.list.pickup.PickupFailedActivity;
+import com.giosis.library.list.pickup.PickupZeroQtyActivity;
 import com.giosis.library.message.CustomerMessageListDetailActivity;
 import com.giosis.library.server.data.FailedCodeResult;
 import com.giosis.library.setting.bluetooth.BluetoothDeviceData;
@@ -45,14 +48,9 @@ import com.giosis.library.setting.bluetooth.PrinterSettingActivity;
 import com.giosis.library.util.DatabaseHelper;
 import com.giosis.util.qdrive.barcodescanner.CaptureActivity;
 import com.giosis.util.qdrive.barcodescanner.StdResult;
-
 import com.giosis.util.qdrive.list.delivery.DeliveryFailedActivity;
 import com.giosis.util.qdrive.list.delivery.QuickReturnFailedActivity;
 import com.giosis.util.qdrive.list.delivery.QuickReturnedActivity;
-import com.giosis.util.qdrive.list.pickup.CnRPickupInfoGetHelper;
-import com.giosis.util.qdrive.list.pickup.OutletPickupScanActivity;
-import com.giosis.util.qdrive.list.pickup.PickupFailedActivity;
-import com.giosis.util.qdrive.list.pickup.PickupZeroQtyActivity;
 import com.giosis.util.qdrive.portableprinter.bluetooth.GPrinterBroadcastReceiver;
 import com.giosis.util.qdrive.portableprinter.bluetooth.GPrinterData;
 import com.giosis.util.qdrive.portableprinter.bluetooth.GPrinterHandler;
@@ -899,45 +897,32 @@ public class CustomExpandableAdapter extends BaseExpandableListAdapter implement
         });
 
 
-        btn_list_item_child_pickup_scan.setOnClickListener(new OnClickListener() {
+        btn_list_item_child_pickup_scan.setOnClickListener(v -> {
 
-            @Override
-            public void onClick(View v) {
-
-                Intent intent = new Intent(context, CaptureActivity.class);
-                intent.putExtra("title", context.getResources().getString(R.string.text_start_to_scan));
-                intent.putExtra("type", BarcodeType.PICKUP_SCAN_ALL);
-                intent.putExtra("pickup_no", tracking_no);
-                intent.putExtra("applicant", requester);
-                context.startActivity(intent);
-            }
+            Intent intent = new Intent(context, CaptureActivity.class);
+            intent.putExtra("title", context.getResources().getString(R.string.text_start_to_scan));
+            intent.putExtra("type", BarcodeType.PICKUP_SCAN_ALL);
+            intent.putExtra("pickup_no", tracking_no);
+            intent.putExtra("applicant", requester);
+            context.startActivity(intent);
         });
 
-        btn_list_item_child_pickup_zero_qty.setOnClickListener(new OnClickListener() {
+        btn_list_item_child_pickup_zero_qty.setOnClickListener(v -> {
 
-            @Override
-            public void onClick(View v) {
-
-                Intent intent = new Intent(context, PickupZeroQtyActivity.class);
-                intent.putExtra("title", context.getResources().getString(R.string.text_zero_qty));
-                intent.putExtra("pickupNo", tracking_no);
-                intent.putExtra("applicant", requester);
-                context.startActivity(intent);
-            }
+            Intent intent = new Intent(context, PickupZeroQtyActivity.class);
+            intent.putExtra("pickupNo", tracking_no);
+            intent.putExtra("applicant", requester);
+            context.startActivity(intent);
         });
 
-        btn_list_item_child_pickup_visit_log.setOnClickListener(new OnClickListener() {
+        btn_list_item_child_pickup_visit_log.setOnClickListener(v -> {
 
-            @Override
-            public void onClick(View v) {
-
-                Intent intent = new Intent(context, PickupFailedActivity.class);
-                intent.putExtra("type", BarcodeType.TYPE_PICKUP);
-                intent.putExtra("reqQty", qty);
-                intent.putExtra("applicant", requester);
-                intent.putExtra("pickupNo", tracking_no);
-                context.startActivity(intent);
-            }
+            Intent intent = new Intent(context, PickupFailedActivity.class);
+            intent.putExtra("type", BarcodeType.TYPE_PICKUP);
+            intent.putExtra("reqQty", qty);
+            intent.putExtra("applicant", requester);
+            intent.putExtra("pickupNo", tracking_no);
+            context.startActivity(intent);
         });
 
         // NOTIFICATION.  krm0219  Outlet Pickup Done
@@ -945,7 +930,7 @@ public class CustomExpandableAdapter extends BaseExpandableListAdapter implement
             @Override
             public void onClick(View view) {
 
-                Intent intent = new Intent(context, OutletPickupScanActivity.class);
+                Intent intent = new Intent(context, OutletPickupStep1Activity.class);
                 intent.putExtra("title", context.getResources().getString(R.string.text_outlet_pickup_done));
                 intent.putExtra("pickup_no", tracking_no);
                 intent.putExtra("applicant", requester);
@@ -980,17 +965,14 @@ public class CustomExpandableAdapter extends BaseExpandableListAdapter implement
             }
         });
 
-        btn_list_item_child_cnr_failed.setOnClickListener(new OnClickListener() {
-            @Override
-            public void onClick(View v) {
+        btn_list_item_child_cnr_failed.setOnClickListener(v -> {
 
-                Intent intent = new Intent(context, PickupFailedActivity.class);
-                intent.putExtra("type", BarcodeType.TYPE_CNR);
-                intent.putExtra("reqQty", qty);
-                intent.putExtra("applicant", requester);
-                intent.putExtra("pickupNo", tracking_no);
-                context.startActivity(intent);
-            }
+            Intent intent = new Intent(context, PickupFailedActivity.class);
+            intent.putExtra("type", BarcodeType.TYPE_CNR);
+            intent.putExtra("reqQty", qty);
+            intent.putExtra("applicant", requester);
+            intent.putExtra("pickupNo", tracking_no);
+            context.startActivity(intent);
         });
 
         btn_list_item_child_cnr_print.setOnClickListener(new OnClickListener() {

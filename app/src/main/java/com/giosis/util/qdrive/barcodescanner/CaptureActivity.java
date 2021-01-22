@@ -67,6 +67,12 @@ import android.widget.ToggleButton;
 
 import com.giosis.library.gps.GPSTrackerManager;
 import com.giosis.library.list.delivery.DeliveryDoneActivity;
+import com.giosis.library.list.pickup.CnRPickupDoneActivity;
+import com.giosis.library.list.pickup.OutletPickupDoneResult;
+import com.giosis.library.list.pickup.OutletPickupStep3Activity;
+import com.giosis.library.list.pickup.PickupAddScanActivity;
+import com.giosis.library.list.pickup.PickupDoneActivity;
+import com.giosis.library.list.pickup.PickupTakeBackActivity;
 import com.giosis.library.util.DatabaseHelper;
 import com.giosis.util.qdrive.barcodescanner.bluetooth.BluetoothChatService;
 import com.giosis.util.qdrive.barcodescanner.bluetooth.DeviceListActivity;
@@ -74,12 +80,6 @@ import com.giosis.util.qdrive.barcodescanner.bluetooth.KScan;
 import com.giosis.util.qdrive.barcodescanner.bluetooth.KTSyncData;
 import com.giosis.util.qdrive.barcodescanner.camera.CameraManager;
 import com.giosis.util.qdrive.barcodescanner.history.HistoryManager;
-import com.giosis.util.qdrive.list.pickup.CnRPickupDoneActivity;
-import com.giosis.util.qdrive.list.pickup.OutletPickupDoneActivity;
-import com.giosis.util.qdrive.list.pickup.OutletPickupDoneResult;
-import com.giosis.util.qdrive.list.pickup.PickupAddScanActivity;
-import com.giosis.util.qdrive.list.pickup.PickupDoneActivity;
-import com.giosis.util.qdrive.list.pickup.PickupTakeBackActivity;
 import com.giosis.util.qdrive.main.SelfCollectionDoneActivity;
 import com.giosis.util.qdrive.singapore.BuildConfig;
 import com.giosis.util.qdrive.singapore.LoginActivity;
@@ -1963,8 +1963,6 @@ public final class CaptureActivity extends CommonActivity implements SurfaceHold
             case BarcodeType.PICKUP_CNR: {
 
                 Intent intent = new Intent(this, CnRPickupDoneActivity.class);
-                intent.putExtra("title", context.getResources().getString(R.string.text_cnr_pickup_done));
-                intent.putExtra("type", BarcodeType.PICKUP_CNR);
                 intent.putExtra("senderName", pickupCNRRequester);
                 intent.putExtra("scannedList", scannedList);
                 intent.putExtra("scannedQty", scannedQty);
@@ -1974,8 +1972,7 @@ public final class CaptureActivity extends CommonActivity implements SurfaceHold
             case BarcodeType.PICKUP_SCAN_ALL: {
 
                 Intent intent = new Intent(this, PickupDoneActivity.class);
-                intent.putExtra("title", context.getResources().getString(R.string.text_start_to_scan));
-                intent.putExtra("pickup_no", pickupNo);
+                intent.putExtra("pickupNo", pickupNo);
                 intent.putExtra("applicant", pickupApplicantName);
                 intent.putExtra("scannedList", scannedList);
                 intent.putExtra("scannedQty", scannedQty);
@@ -1986,7 +1983,6 @@ public final class CaptureActivity extends CommonActivity implements SurfaceHold
             case BarcodeType.PICKUP_ADD_SCAN: {
 
                 Intent intent = new Intent(this, PickupAddScanActivity.class);
-                intent.putExtra("title", context.getResources().getString(R.string.text_title_add_pickup));
                 intent.putExtra("pickupNo", pickupNo);
                 intent.putExtra("applicant", pickupApplicantName);
                 intent.putExtra("scannedList", scannedList);
@@ -1997,7 +1993,6 @@ public final class CaptureActivity extends CommonActivity implements SurfaceHold
             case BarcodeType.PICKUP_TAKE_BACK: {
 
                 Intent intent = new Intent(this, PickupTakeBackActivity.class);
-                intent.putExtra("title", context.getResources().getString(R.string.button_take_back));
                 intent.putExtra("pickupNo", pickupNo);
                 intent.putExtra("applicant", pickupApplicantName);
                 intent.putExtra("scannedList", scannedList);
@@ -2030,7 +2025,7 @@ public final class CaptureActivity extends CommonActivity implements SurfaceHold
                 }
                 Log.e(TAG, "Outlet Pickup Scanned List : " + scanned_list);
 
-                Intent intent = new Intent(this, OutletPickupDoneActivity.class);
+                Intent intent = new Intent(this, OutletPickupStep3Activity.class);
                 intent.putExtra("title", title);
                 intent.putExtra("pickupNo", pickupNo);
                 intent.putExtra("applicant", pickupApplicantName);

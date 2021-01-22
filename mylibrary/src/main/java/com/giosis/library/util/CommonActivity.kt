@@ -38,7 +38,7 @@ open class CommonActivity : AppCompatActivity() {
 //    }
 
 
-    // TODO.  Alarm Receiver 옮기면 추석 풀기
+    // TODO.  Alarm Receiver 옮기면 주석 풀기
     // Auto Logout
     override fun onResume() {
         super.onResume()

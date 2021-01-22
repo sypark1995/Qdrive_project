@@ -166,7 +166,7 @@ public class MainActivity extends AppBaseActivity {
 
 //        // TEST Outlet
 //        MyApplication.preferences.setOutletDriver("Y");
-//        MyApplication.preferences.setUserId("7Eleven.Ajib");
+//        MyApplication.preferences.setUserId("Syed_7E");
 
 //        // TEST.
 //        String imgDirName = "/QdrivePickup";

@@ -32,7 +32,6 @@ import androidx.fragment.app.Fragment;
 
 import com.giosis.util.qdrive.international.MyApplication;
 import com.giosis.util.qdrive.international.R;
-import com.giosis.util.qdrive.list.pickup.PickupAssignResult;
 import com.giosis.util.qdrive.portableprinter.bluetooth.GPrinterData;
 import com.giosis.util.qdrive.util.DataUtil;
 import com.giosis.library.util.DatabaseHelper;

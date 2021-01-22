@@ -35,10 +35,13 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import com.giosis.library.list.delivery.DeliveryDoneActivity;
+import com.giosis.library.list.pickup.PickupFailedActivity;
+import com.giosis.library.list.pickup.PickupZeroQtyActivity;
 import com.giosis.library.message.CustomerMessageListDetailActivity;
 import com.giosis.library.server.data.FailedCodeResult;
 import com.giosis.library.setting.bluetooth.BluetoothDeviceData;
 import com.giosis.library.setting.bluetooth.PrinterSettingActivity;
+import com.giosis.library.util.DatabaseHelper;
 import com.giosis.util.qdrive.barcodescanner.CaptureActivity;
 import com.giosis.util.qdrive.barcodescanner.StdResult;
 import com.giosis.util.qdrive.international.MyApplication;
@@ -46,10 +49,6 @@ import com.giosis.util.qdrive.international.R;
 import com.giosis.util.qdrive.list.delivery.DeliveryFailedActivity;
 import com.giosis.util.qdrive.list.delivery.DeliveryReturnFailedActivity;
 import com.giosis.util.qdrive.list.delivery.DeliveryReturnedActivity;
-import com.giosis.util.qdrive.list.pickup.ManualCnRPrintDataHelper;
-import com.giosis.util.qdrive.list.pickup.OutletPickupScanActivity;
-import com.giosis.util.qdrive.list.pickup.PickupFailedActivity;
-import com.giosis.util.qdrive.list.pickup.PickupZeroQtyActivity;
 import com.giosis.util.qdrive.portableprinter.bluetooth.GPrinterBroadcastReceiver;
 import com.giosis.util.qdrive.portableprinter.bluetooth.GPrinterData;
 import com.giosis.util.qdrive.portableprinter.bluetooth.GPrinterHandler;
@@ -57,7 +56,6 @@ import com.giosis.util.qdrive.portableprinter.bluetooth.PrinterConnManager;
 import com.giosis.util.qdrive.util.BarcodeType;
 import com.giosis.util.qdrive.util.Custom_JsonParser;
 import com.giosis.util.qdrive.util.DataUtil;
-import com.giosis.library.util.DatabaseHelper;
 import com.giosis.util.qdrive.util.NetworkUtil;
 import com.gprinter.command.EscCommand;
 import com.gprinter.command.LabelCommand;
@@ -472,12 +470,8 @@ public class InProgressExpandableListAdapter extends BaseExpandableListAdapter i
         Button btn_list_item_child_cnr_failed = convertView.findViewById(R.id.btn_list_item_child_cnr_failed);
         Button btn_list_item_child_cnr_print = convertView.findViewById(R.id.btn_list_item_child_cnr_print);
 
-        RelativeLayout layout_list_item_child_outlet_pickup = convertView.findViewById(R.id.layout_list_item_child_outlet_pickup);
-        Button btn_list_item_child_outlet_pickup_scan = convertView.findViewById(R.id.btn_list_item_child_outlet_pickup_scan);
-
 
         //
-
         final RowItem group_item = rowItem.get(groupPosition);
         final ChildItem child = (ChildItem) getChild(groupPosition, childPosition);
 
@@ -659,25 +653,9 @@ public class InProgressExpandableListAdapter extends BaseExpandableListAdapter i
 
             layout_list_item_child_pickup_buttons.setVisibility(View.GONE);
             layout_list_item_child_cnr_buttons.setVisibility(View.GONE);
-            layout_list_item_child_outlet_pickup.setVisibility(View.GONE);
 
-            if (rowItem.get(groupPosition).getOutlet_company().equals("7E") || rowItem.get(groupPosition).getOutlet_company().equals("FL")) {
-
-                layout_list_item_child_parcel_amount.setVisibility(View.GONE);
-                // k. 2018.10.24   VisitLog 시 화물이 DPC3-Out 처리됨... 7E 화물은 DPC2-Out 까지만 처리되야 함..
-                btn_list_item_child_delivery_failed.setVisibility(View.GONE);
-
-                // 2019.04
-                layout_list_item_child_telephone.setVisibility(View.GONE);
-                layout_list_item_child_mobile.setVisibility(View.GONE);
-                img_list_item_child_sms.setVisibility(View.GONE);
-                img_list_item_child_live10.setVisibility(View.GONE);
-                img_list_item_child_qpost.setVisibility(View.GONE);
-            } else {
-
-                layout_list_item_child_parcel_amount.setVisibility(View.VISIBLE);
-                btn_list_item_child_delivery_failed.setVisibility(View.VISIBLE);
-            }
+            layout_list_item_child_parcel_amount.setVisibility(View.VISIBLE);
+            btn_list_item_child_delivery_failed.setVisibility(View.VISIBLE);
         } else {            // Pickup
 
             text_list_item_child_parcel_amount_title.setText(context.getResources().getString(R.string.text_name));
@@ -697,24 +675,10 @@ public class InProgressExpandableListAdapter extends BaseExpandableListAdapter i
 
                 layout_list_item_child_pickup_buttons.setVisibility(View.GONE);
                 layout_list_item_child_cnr_buttons.setVisibility(View.VISIBLE);
-                layout_list_item_child_outlet_pickup.setVisibility(View.GONE);
-
-            } else if (rowItem.get(groupPosition).getOutlet_company().equals("7E") || rowItem.get(groupPosition).getOutlet_company().equals("FL")) {       // 7E, FL
-
-                layout_list_item_child_pickup_buttons.setVisibility(View.GONE);
-                layout_list_item_child_cnr_buttons.setVisibility(View.GONE);
-                layout_list_item_child_outlet_pickup.setVisibility(View.VISIBLE);
-
-                layout_list_item_child_telephone.setVisibility(View.GONE);
-                layout_list_item_child_mobile.setVisibility(View.GONE);
-                img_list_item_child_sms.setVisibility(View.GONE);
-                img_list_item_child_live10.setVisibility(View.GONE);
-                img_list_item_child_qpost.setVisibility(View.GONE);
             } else {    //  일반 Pickup
 
                 layout_list_item_child_pickup_buttons.setVisibility(View.VISIBLE);
                 layout_list_item_child_cnr_buttons.setVisibility(View.GONE);
-                layout_list_item_child_outlet_pickup.setVisibility(View.GONE);
             }
         }
 
@@ -885,50 +849,22 @@ public class InProgressExpandableListAdapter extends BaseExpandableListAdapter i
             }
         });
 
-        btn_list_item_child_pickup_zero_qty.setOnClickListener(new OnClickListener() {
+        btn_list_item_child_pickup_zero_qty.setOnClickListener(v -> {
 
-            @Override
-            public void onClick(View v) {
-
-            /*    // TEST
-                count = 0;
-                isConnectPortablePrint(tracking_no);*/
-
-                Intent intent = new Intent(context, PickupZeroQtyActivity.class);
-                intent.putExtra("title", context.getResources().getString(R.string.text_zero_qty));
-                intent.putExtra("pickupNo", tracking_no);
-                intent.putExtra("applicant", requestor);
-                context.startActivity(intent);
-            }
+            Intent intent = new Intent(context, PickupZeroQtyActivity.class);
+            intent.putExtra("pickupNo", tracking_no);
+            intent.putExtra("applicant", requestor);
+            context.startActivity(intent);
         });
 
-        btn_list_item_child_pickup_visit_log.setOnClickListener(new OnClickListener() {
+        btn_list_item_child_pickup_visit_log.setOnClickListener(v -> {
 
-            @Override
-            public void onClick(View v) {
-
-                Intent intent = new Intent(context, PickupFailedActivity.class);
-                intent.putExtra("type", BarcodeType.TYPE_PICKUP);
-                intent.putExtra("reqQty", qty);
-                intent.putExtra("applicant", requestor);
-                intent.putExtra("pickupNo", tracking_no);
-                context.startActivity(intent);
-            }
-        });
-
-        // krm0219  Outlet Pickup Done
-        btn_list_item_child_outlet_pickup_scan.setOnClickListener(new OnClickListener() {
-            @Override
-            public void onClick(View view) {
-
-                Intent intent = new Intent(context, OutletPickupScanActivity.class);
-                intent.putExtra("title", context.getResources().getString(R.string.text_outlet_pickup_done));
-                intent.putExtra("pickup_no", tracking_no);
-                intent.putExtra("applicant", requestor);
-                intent.putExtra("qty", qty);
-                intent.putExtra("route", route);
-                context.startActivity(intent);
-            }
+            Intent intent = new Intent(context, PickupFailedActivity.class);
+            intent.putExtra("type", BarcodeType.TYPE_PICKUP);
+            intent.putExtra("reqQty", qty);
+            intent.putExtra("applicant", requestor);
+            intent.putExtra("pickupNo", tracking_no);
+            context.startActivity(intent);
         });
 
         //  QUICK Delivery
@@ -963,17 +899,14 @@ public class InProgressExpandableListAdapter extends BaseExpandableListAdapter i
         });
 
         //  CNR
-        btn_list_item_child_cnr_failed.setOnClickListener(new OnClickListener() {
-            @Override
-            public void onClick(View v) {
+        btn_list_item_child_cnr_failed.setOnClickListener(v -> {
 
-                Intent intent = new Intent(context, PickupFailedActivity.class);
-                intent.putExtra("type", BarcodeType.TYPE_CNR);
-                intent.putExtra("reqQty", qty);
-                intent.putExtra("applicant", requestor);
-                intent.putExtra("pickupNo", tracking_no);
-                context.startActivity(intent);
-            }
+            Intent intent = new Intent(context, PickupFailedActivity.class);
+            intent.putExtra("type", BarcodeType.TYPE_CNR);
+            intent.putExtra("reqQty", qty);
+            intent.putExtra("applicant", requestor);
+            intent.putExtra("pickupNo", tracking_no);
+            context.startActivity(intent);
         });
 
         btn_list_item_child_cnr_print.setOnClickListener(new OnClickListener() {

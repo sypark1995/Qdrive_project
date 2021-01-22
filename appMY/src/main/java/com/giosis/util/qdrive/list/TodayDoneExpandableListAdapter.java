@@ -25,15 +25,16 @@ import android.widget.PopupMenu;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import com.giosis.library.list.pickup.PickupScannedListActivity;
 import com.giosis.library.setting.bluetooth.BluetoothDeviceData;
 import com.giosis.library.setting.bluetooth.PrinterSettingActivity;
 import com.giosis.util.qdrive.international.MyApplication;
 import com.giosis.util.qdrive.international.R;
-import com.giosis.util.qdrive.list.pickup.ManualCnRPrintDataHelper;
 import com.giosis.util.qdrive.portableprinter.bluetooth.GPrinterBroadcastReceiver;
 import com.giosis.util.qdrive.portableprinter.bluetooth.GPrinterData;
 import com.giosis.util.qdrive.portableprinter.bluetooth.GPrinterHandler;
 import com.giosis.util.qdrive.portableprinter.bluetooth.PrinterConnManager;
+import com.giosis.util.qdrive.util.BarcodeType;
 import com.giosis.util.qdrive.util.DataUtil;
 import com.giosis.util.qdrive.util.NetworkUtil;
 import com.gprinter.command.EscCommand;
@@ -313,42 +314,25 @@ public class TodayDoneExpandableListAdapter extends BaseExpandableListAdapter im
         }
 
 
-        btn_list_item_child_done_add_scan.setOnClickListener(new OnClickListener() {
+        btn_list_item_child_done_print_label.setOnClickListener(v -> isConnectPortablePrint(tracking_no));
 
-            @Override
-            public void onClick(View v) {
+        btn_list_item_child_done_add_scan.setOnClickListener(v -> {
 
-                Intent intent = new Intent(context, TodayDonePickupScanListActivity.class);
-                intent.putExtra("title", context.getResources().getString(R.string.text_today_done_scan_list));
-                intent.putExtra("pickup_no", tracking_no);
-                intent.putExtra("applicant", applicant);
-                intent.putExtra("button_type", "Add Scan");
-                ((Activity) context).startActivityForResult(intent, REQUEST_SCAN_ADD_LIST);
-            }
-        });
-
-        btn_list_item_child_done_print_label.setOnClickListener(new OnClickListener() {
-
-            @Override
-            public void onClick(View v) {
-
-                isConnectPortablePrint(tracking_no);
-            }
-
+            Intent intent = new Intent(context, PickupScannedListActivity.class);
+            intent.putExtra("pickupNo", tracking_no);
+            intent.putExtra("applicant", applicant);
+            intent.putExtra("buttonType", BarcodeType.PICKUP_ADD_SCAN);
+            ((Activity) context).startActivityForResult(intent, REQUEST_SCAN_ADD_LIST);
         });
 
         // 2019.02 - Take Back
-        btn_list_item_child_done_take_back.setOnClickListener(new OnClickListener() {
-            @Override
-            public void onClick(View v) {
+        btn_list_item_child_done_take_back.setOnClickListener(v -> {
 
-                Intent intent = new Intent(context, TodayDonePickupScanListActivity.class);
-                intent.putExtra("title", context.getResources().getString(R.string.text_today_done_scan_list));
-                intent.putExtra("pickup_no", tracking_no);
-                intent.putExtra("applicant", applicant);
-                intent.putExtra("button_type", "Take Back");
-                ((Activity) context).startActivityForResult(intent, REQUEST_TAKE_BACK);
-            }
+            Intent intent = new Intent(context, PickupScannedListActivity.class);
+            intent.putExtra("pickupNo", tracking_no);
+            intent.putExtra("applicant", applicant);
+            intent.putExtra("buttonType", BarcodeType.PICKUP_TAKE_BACK);
+            ((Activity) context).startActivityForResult(intent, REQUEST_TAKE_BACK);
         });
 
         return convertView;

@@ -17,14 +17,20 @@ import com.giosis.library.gps.GPSTrackerManager;
 import com.giosis.library.message.AdminMessageListDetailActivity;
 import com.giosis.library.message.CustomerMessageListDetailActivity;
 import com.giosis.library.message.MessageListActivity;
+import com.giosis.library.server.CallServer;
 import com.giosis.library.server.ImageUpload;
+import com.giosis.library.server.data.FailedCodeResult;
 import com.google.firebase.analytics.FirebaseAnalytics;
+import com.google.gson.Gson;
+
+import org.jetbrains.annotations.NotNull;
 
 import java.io.ByteArrayOutputStream;
 import java.io.File;
 import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
 import java.io.IOException;
+import java.util.ArrayList;
 
 public class DataUtil {
 
@@ -215,5 +221,78 @@ public class DataUtil {
             Log.e("Location", "Stop GPS");
             gpsTrackerManager.stopFusedProviderService();
         }
+    }
+
+
+    // NOTIFICATION. 202012  Failed Reason
+    public static void requestServerPickupFailedCode() {
+        CallServer.INSTANCE.getFailedCode(CallServer.PFC, Preferences.INSTANCE.getUserNation(), new CallServer.GetFailedCodeCallback() {
+
+            @Override
+            public void onServerError(int value) {
+            }
+
+            @Override
+            public void onServerResult(@NotNull FailedCodeResult value) {
+
+                if (value.getResultCode() == 10) {
+
+                    Gson gson = new Gson();
+                    String json = gson.toJson(value);
+                    Log.e("krm0219", "P  getFailedCode  " + json);
+                    Preferences.INSTANCE.setPFailedCode(json);
+                }
+            }
+        });
+    }
+
+    public static void requestServerDeliveryFailedCode() {
+
+        CallServer.INSTANCE.getFailedCode(CallServer.DFC, Preferences.INSTANCE.getUserNation(), new CallServer.GetFailedCodeCallback() {
+
+            @Override
+            public void onServerError(int value) {
+            }
+
+            @Override
+            public void onServerResult(@NotNull FailedCodeResult value) {
+
+                if (value.getResultCode() == 10) {
+
+                    Gson gson = new Gson();
+                    String json = gson.toJson(value);
+                    Log.e("krm0219", "D  getFailedCode  " + json);
+                    Preferences.INSTANCE.setDFailedCode(json);
+                }
+            }
+        });
+    }
+
+
+    public static ArrayList<FailedCodeResult.FailedCode> getFailCode(String type) {
+
+        ArrayList<FailedCodeResult.FailedCode> arrayList;
+        String json = "";
+
+        if (type.equals("D")) {
+
+            json = Preferences.INSTANCE.getDFailedCode();
+        } else if (type.equals("P")) {
+
+            json = Preferences.INSTANCE.getPFailedCode();
+        }
+
+
+        if (json.equals("")) {
+
+            return null;
+        } else {
+
+            Gson gson = new Gson();
+            FailedCodeResult result = gson.fromJson(json, FailedCodeResult.class);
+            arrayList = new ArrayList<>(result.getResultObject());
+        }
+
+        return arrayList;
     }
 }

@@ -93,7 +93,7 @@ public class OutletPickupDoneActivity extends CommonActivity {
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_outlet_pickup_done);
+        setContentView(R.layout.activity_outlet_pickup_step3);
 
         layout_top_back = findViewById(R.id.layout_top_back);
         text_top_title = findViewById(R.id.text_top_title);

@@ -156,4 +156,16 @@ object Preferences {
         get() = preferences.getBoolean(PREF_KEY_DEVELOPER_MODE, false)
         set(value) = preferences.edit().putBoolean(PREF_KEY_DEVELOPER_MODE, value).apply()
 
+
+    // 202012. Failed Code
+    private val PREF_KEY_DELIVERY_FAILED_CODE = "dFailedCode"
+    private val PREF_KEY_PICKUP_FAILED_CODE = "pFailedCode"
+
+    var dFailedCode: String
+        get() = preferences.getString(PREF_KEY_DELIVERY_FAILED_CODE, "").toString()
+        set(value) = preferences.edit().putString(PREF_KEY_DELIVERY_FAILED_CODE, value).apply()
+
+    var pFailedCode: String
+        get() = preferences.getString(PREF_KEY_PICKUP_FAILED_CODE, "").toString()
+        set(value) = preferences.edit().putString(PREF_KEY_PICKUP_FAILED_CODE, value).apply()
 }
