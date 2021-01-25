@@ -24,9 +24,9 @@ public class StatisticsResultListAdapter extends BaseAdapter {
     private ArrayList<StatisticsResult.SummaryData> summaryDataArrayList;
     private ArrayList<StatisticsResult.DetailData> detailDataArrayList;
 
-    StatisticsResultListAdapter(Context mContext, StatisticsResult statisticsResult, String searchType) {
+    StatisticsResultListAdapter(Context context, StatisticsResult statisticsResult, String searchType) {
 
-        this.context = mContext;
+        this.context = context;
         this.searchType = searchType;
 
         if (searchType.contains("Summary")) {

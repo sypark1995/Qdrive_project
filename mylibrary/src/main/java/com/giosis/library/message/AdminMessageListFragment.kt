@@ -41,7 +41,7 @@ class AdminMessageListFragment : Fragment() {
     var oldResultString: String = ""
     var newResultString: String = ""
 
-    
+
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
 
         val view = inflater.inflate(R.layout.fragment_message_list, container, false)
@@ -77,7 +77,7 @@ class AdminMessageListFragment : Fragment() {
                     adminMessageListAsyncTask.execute()
                 } else {
 
-                    Log.e("Message", "$TAG  getActivity().isFinishing()")
+                    Log.e("Message", "$tag  getActivity().isFinishing()")
                 }
             } catch (e: Exception) {
 

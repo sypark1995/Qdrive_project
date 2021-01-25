@@ -2,8 +2,6 @@ package com.giosis.library.message;
 
 import android.app.AlertDialog;
 import android.app.ProgressDialog;
-import android.content.Context;
-import android.content.DialogInterface;
 import android.os.AsyncTask;
 import android.os.Bundle;
 import android.os.Handler;
@@ -11,10 +9,7 @@ import android.os.Message;
 import android.text.Editable;
 import android.text.TextWatcher;
 import android.util.Log;
-import android.view.MotionEvent;
-import android.view.View;
 import android.view.View.OnClickListener;
-import android.view.View.OnTouchListener;
 import android.widget.AbsListView;
 import android.widget.EditText;
 import android.widget.FrameLayout;
@@ -53,7 +48,6 @@ public class CustomerMessageListDetailActivity extends CommonActivity {
     LinearLayout layout_message_detail_send;
 
 
-    Context mContext;
     Gson gson = new Gson();
 
     String opID;
@@ -75,26 +69,23 @@ public class CustomerMessageListDetailActivity extends CommonActivity {
     String send_message;
 
 
-    OnClickListener clickListener = new OnClickListener() {
-        @Override
-        public void onClick(View view) {
+    OnClickListener clickListener = view -> {
 
-            int id = view.getId();
-            if (id == R.id.layout_top_back) {
-                finish();
-            } else if (id == R.id.layout_message_detail_send) {
-                if (!NetworkUtil.isNetworkAvailable(mContext)) {
+        int id = view.getId();
+        if (id == R.id.layout_top_back) {
+            finish();
+        } else if (id == R.id.layout_message_detail_send) {
+            if (!NetworkUtil.isNetworkAvailable(CustomerMessageListDetailActivity.this)) {
 
-                    try {
-                        showDialog(getResources().getString(R.string.text_warning), getResources().getString(R.string.msg_network_connect_error));
-                    } catch (Exception e) {
+                try {
 
-                    }
-                    return;
-                } else {
+                    showDialog(getResources().getString(R.string.text_warning), getResources().getString(R.string.msg_network_connect_error));
+                } catch (Exception ignored) {
 
-                    sendChatMessage();
                 }
+            } else {
+
+                sendChatMessage();
             }
         }
     };
@@ -105,15 +96,14 @@ public class CustomerMessageListDetailActivity extends CommonActivity {
 
         DataUtil.setCustomerMessageListDetailActivity(this);
 
-        if (!NetworkUtil.isNetworkAvailable(mContext)) {
+        if (!NetworkUtil.isNetworkAvailable(this)) {
 
             try {
 
                 showDialog(getResources().getString(R.string.text_warning), getResources().getString(R.string.msg_network_connect_error));
-            } catch (Exception e) {
+            } catch (Exception ignored) {
 
             }
-            return;
         } else if (questionNo.equals("0")) {
 
             Log.e("krm0219", "in LIST");
@@ -147,50 +137,6 @@ public class CustomerMessageListDetailActivity extends CommonActivity {
         }
     }
 
-    // NOTI  :  CustomerThread
-    class CustomerThread extends Thread {
-
-        public CustomerThread() {
-        }
-
-        @Override
-        public void run() {
-            super.run();
-
-            while (!Thread.currentThread().isInterrupted()) {
-
-                try {
-
-                    Message message = handler.obtainMessage();
-                    message.what = SEND_CUTOMER_START;
-                    handler.sendMessage(message);
-
-                    sleep(60 * 1000);
-                } catch (InterruptedException e) {
-
-                    Log.e("krm0219", TAG + "  CustomerThread Exception : " + e.toString());
-                    Thread.currentThread().interrupt();
-                    e.printStackTrace();
-                }
-            }
-
-            Log.e("krm0219", TAG + "  CustomerThread while break");
-        }
-    }
-
-    @Override
-    protected void onStop() {
-        super.onStop();
-
-        try {
-
-            customerThread.interrupt();
-        } catch (Exception e) {
-
-            Thread.currentThread().interrupt();
-        }
-    }
-
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -210,7 +156,6 @@ public class CustomerMessageListDetailActivity extends CommonActivity {
         list_message_detail_message.setTranscriptMode(AbsListView.TRANSCRIPT_MODE_ALWAYS_SCROLL);       // message 입력 후, List 최하단으로 이동
 
         //
-        mContext = getApplicationContext();
         opID = Preferences.INSTANCE.getUserId();
 
         questionNo = Integer.toString(getIntent().getIntExtra("question_no", 0));       // 최초 0
@@ -238,91 +183,52 @@ public class CustomerMessageListDetailActivity extends CommonActivity {
             }
         });
 
-        edit_message_detail_input.setOnTouchListener(new OnTouchListener() {
+        edit_message_detail_input.setOnTouchListener((v, event) -> {
 
-            @Override
-            public boolean onTouch(View v, MotionEvent event) {
-                layout_message_detail_send.setBackgroundResource(R.drawable.btn_send_qpost);
-                edit_message_detail_input.setHint("");
-                return false;
-            }
+            layout_message_detail_send.setBackgroundResource(R.drawable.btn_send_qpost);
+            edit_message_detail_input.setHint("");
+            return false;
         });
     }
 
-    //NOTIFICATION.  GetQuestionNumberAsyncTask
-    private class GetQuestionNumberAsyncTask extends AsyncTask<Void, Void, MessageQuestionNumberResult> {
+    @Override
+    protected void onStop() {
+        super.onStop();
 
-        String qdriver_id;
-        String tracking_no;
+        try {
 
-        ProgressDialog progressDialog = new ProgressDialog(CustomerMessageListDetailActivity.this);
+            customerThread.interrupt();
+        } catch (Exception e) {
 
-        public GetQuestionNumberAsyncTask(String QdriverID, String TrackingNo) {
-
-            qdriver_id = QdriverID;
-            tracking_no = TrackingNo;
+            Thread.currentThread().interrupt();
         }
+    }
 
-        @Override
-        protected void onPreExecute() {
-            super.onPreExecute();
+    public void showDialog(String title, String msg) {
 
-            progressDialog.setProgressStyle(ProgressDialog.STYLE_SPINNER);
-            progressDialog.setMessage(getResources().getString(R.string.text_please_wait));
-            progressDialog.setCancelable(false);
-            progressDialog.show();
-        }
+        AlertDialog.Builder alert_internet_status = new AlertDialog.Builder(this);
+        alert_internet_status.setTitle(title);
+        alert_internet_status.setMessage(msg);
+        alert_internet_status.setPositiveButton(getResources().getString(R.string.button_close),
+                (dialog, which) -> {
+                    dialog.dismiss();
+                    finish();
+                });
+        alert_internet_status.show();
+    }
 
-        @Override
-        protected MessageQuestionNumberResult doInBackground(Void... params) {
+    public void refreshData() {
 
-            MessageQuestionNumberResult resultObj;
+        Log.e("krm0219", TAG + "  refreshData");
 
-            try {
+        try {
 
-                JSONObject job = new JSONObject();
-                job.accumulate("driverId", qdriver_id);
-                job.accumulate("trackingNo", tracking_no);
-                job.accumulate("app_id", DataUtil.appID);
-                job.accumulate("nation_cd", Preferences.INSTANCE.getUserNation());
+            CustomerMessageDetailAsyncTask CustomerMessageDetailAsyncTask = new CustomerMessageDetailAsyncTask(opID, questionNo);
+            CustomerMessageDetailAsyncTask.execute();
+        } catch (Exception e) {
 
-
-                String methodName = "GetMessageToQPostOnPickupMenu";
-                String jsonString = Custom_JsonParser.requestServerDataReturnJSON(methodName, job);
-
-                resultObj = gson.fromJson(jsonString, MessageQuestionNumberResult.class);
-            } catch (Exception e) {
-
-                Log.e("Exception", TAG + "  GetMessageToQPostOnPickupMenu Json Exception : " + e.toString());
-                resultObj = null;
-            }
-
-            return resultObj;
-        }
-
-        @Override
-        protected void onPostExecute(MessageQuestionNumberResult result) {
-            super.onPostExecute(result);
-
-            DisplayUtil.dismissProgressDialog(progressDialog);
-
-            try {
-
-                questionNo = "0";
-
-                if (result != null && result.getQuestionNo() > 0) {
-
-                    questionNo = Integer.toString(result.getQuestionNo());
-                }
-
-                handler = new AsyncHandler();
-                customerThread = new CustomerThread();
-                customerThread.start();
-            } catch (Exception e) {
-
-                Toast.makeText(mContext, getResources().getString(R.string.text_error) + "!! " + getResources().getString(R.string.msg_please_try_again), Toast.LENGTH_SHORT).show();
-                Log.e("krm0219", TAG + " GetQuestionNumberAsyncTask Exception : " + e.toString());
-            }
+            Toast.makeText(this, getResources().getString(R.string.msg_left_and_come_back), Toast.LENGTH_SHORT).show();
+            Log.e("krm0219", TAG + "  Exception : " + e.toString());
         }
     }
 
@@ -341,115 +247,34 @@ public class CustomerMessageListDetailActivity extends CommonActivity {
         sendMessageAsyncTask.execute();
     }
 
-    //NOTIFICATION.  CustomerMessageDetailAsyncTask      1분  refresh
-    private class CustomerMessageDetailAsyncTask extends AsyncTask<Void, Void, MessageDetailResult> {
+    // NOTIFICATION.   CustomerThread
+    class CustomerThread extends Thread {
 
-        String qdriver_id;
-        String question_seq_no;
-
-        ProgressDialog progressDialog = new ProgressDialog(CustomerMessageListDetailActivity.this);
-
-        public CustomerMessageDetailAsyncTask(String QdriverID, String QuestionNo) {
-
-            qdriver_id = QdriverID;
-            question_seq_no = QuestionNo;
-
-            if (question_seq_no == null) {
-
-                question_seq_no = "0";
-            }
+        public CustomerThread() {
         }
 
         @Override
-        protected void onPreExecute() {
-            super.onPreExecute();
+        public void run() {
+            super.run();
 
-            old_resultString = new_resultString;
+            while (!Thread.currentThread().isInterrupted()) {
 
-            if (new_resultString == null) {
+                try {
 
-                progressDialog.setProgressStyle(ProgressDialog.STYLE_SPINNER);
-                progressDialog.setMessage(getResources().getString(R.string.text_please_wait));
-                progressDialog.setCancelable(false);
-                progressDialog.show();
-            }
-        }
+                    Message message = handler.obtainMessage();
+                    message.what = SEND_CUTOMER_START;
+                    handler.sendMessage(message);
 
-        @Override
-        protected MessageDetailResult doInBackground(Void... params) {
+                    sleep(60 * 1000);
+                } catch (InterruptedException e) {
 
-            MessageDetailResult resultObj;
-
-            try {
-
-                JSONObject job = new JSONObject();
-                job.accumulate("qdriver_id", qdriver_id);
-                job.accumulate("question_seq_no", question_seq_no);
-                job.accumulate("app_id", DataUtil.appID);
-                job.accumulate("nation_cd", Preferences.INSTANCE.getUserNation());
-
-
-                String methodName = "GetQdriverMessageDetail";
-                String jsonString = Custom_JsonParser.requestServerDataReturnJSON(methodName, job);
-                new_resultString = jsonString;
-
-                resultObj = gson.fromJson(jsonString, MessageDetailResult.class);
-            } catch (Exception e) {
-
-                Log.e("Exception", TAG + "  GetQdriverMessageDetail Json Exception : " + e.toString());
-                resultObj = null;
-            }
-
-            return resultObj;
-        }
-
-        @Override
-        protected void onPostExecute(MessageDetailResult result) {
-            super.onPostExecute(result);
-
-            DisplayUtil.dismissProgressDialog(progressDialog);
-
-            try {
-                if (old_resultString != null && old_resultString.equalsIgnoreCase(new_resultString)) {
-
-                    Log.e("krm0219", TAG + "  CustomerMessageDetailAsyncTask  EQUAL");
-                } else {
-
-                    if (result != null) {
-
-                        messageDetailList = (ArrayList<MessageDetailResult.MessageDetailList>) result.getResultObject();
-                        Log.e("krm0219", TAG + " CustomerMessageDetailAsyncTask  LIST Size : " + messageDetailList.size());
-
-                        if (messageDetailList.size() > 0) {
-
-                            for (int i = 0; i < messageDetailList.size(); i++) {        // 초 second 제거
-
-                                String date_string = messageDetailList.get(i).getSend_date();
-                                String[] date_array = date_string.split(":");
-
-                                date_string = date_array[0] + ":" + date_array[1];
-                                messageDetailList.get(i).setSend_date(date_string);
-                            }
-
-                            messageDetailAdapter = new MessageDetailAdapter(mContext, messageDetailList, "C");
-                            list_message_detail_message.setAdapter(messageDetailAdapter);
-
-                            text_message_detail_title.setText(messageDetailList.get(0).getTitle());
-                        } else {        // Driver가 처음 message 보낼 때~  (LIST에서 들어옴)
-
-                            text_message_detail_title.setText(getResources().getString(R.string.text_qxpress_driver));
-
-                            messageDetailList = new ArrayList<>();
-                            messageDetailAdapter = new MessageDetailAdapter(mContext, messageDetailList, "C");
-                            list_message_detail_message.setAdapter(messageDetailAdapter);
-                        }
-                    }
+                    Log.e("krm0219", TAG + "  CustomerThread Exception : " + e.toString());
+                    Thread.currentThread().interrupt();
+                    e.printStackTrace();
                 }
-            } catch (Exception e) {
-
-                Toast.makeText(mContext, getResources().getString(R.string.text_error) + "!! " + getResources().getString(R.string.msg_please_try_again), Toast.LENGTH_SHORT).show();
-                Log.e("krm0219", TAG + " CustomerMessageDetailAsyncTask Exception : " + e.toString());
             }
+
+            Log.e("krm0219", TAG + "  CustomerThread while break");
         }
     }
 
@@ -570,33 +395,192 @@ public class CustomerMessageListDetailActivity extends CommonActivity {
         }
     }
 
-    public void showDialog(String title, String msg) {
+    //NOTIFICATION.  GetQuestionNumberAsyncTask
+    private class GetQuestionNumberAsyncTask extends AsyncTask<Void, Void, MessageQuestionNumberResult> {
 
-        AlertDialog.Builder alert_internet_status = new AlertDialog.Builder(mContext);
-        alert_internet_status.setTitle(title);
-        alert_internet_status.setMessage(msg);
-        alert_internet_status.setPositiveButton(getResources().getString(R.string.button_close),
-                new DialogInterface.OnClickListener() {
-                    public void onClick(DialogInterface dialog, int which) {
-                        dialog.dismiss();
-                        finish();
-                    }
-                });
-        alert_internet_status.show();
+        String qdriver_id;
+        String tracking_no;
+
+        ProgressDialog progressDialog = new ProgressDialog(CustomerMessageListDetailActivity.this);
+
+        public GetQuestionNumberAsyncTask(String QdriverID, String TrackingNo) {
+
+            qdriver_id = QdriverID;
+            tracking_no = TrackingNo;
+        }
+
+        @Override
+        protected void onPreExecute() {
+            super.onPreExecute();
+
+            progressDialog.setProgressStyle(ProgressDialog.STYLE_SPINNER);
+            progressDialog.setMessage(getResources().getString(R.string.text_please_wait));
+            progressDialog.setCancelable(false);
+            progressDialog.show();
+        }
+
+        @Override
+        protected MessageQuestionNumberResult doInBackground(Void... params) {
+
+            MessageQuestionNumberResult resultObj;
+
+            try {
+
+                JSONObject job = new JSONObject();
+                job.accumulate("driverId", qdriver_id);
+                job.accumulate("trackingNo", tracking_no);
+                job.accumulate("app_id", DataUtil.appID);
+                job.accumulate("nation_cd", Preferences.INSTANCE.getUserNation());
+
+
+                String methodName = "GetMessageToQPostOnPickupMenu";
+                String jsonString = Custom_JsonParser.requestServerDataReturnJSON(methodName, job);
+
+                resultObj = gson.fromJson(jsonString, MessageQuestionNumberResult.class);
+            } catch (Exception e) {
+
+                Log.e("Exception", TAG + "  GetMessageToQPostOnPickupMenu Json Exception : " + e.toString());
+                resultObj = null;
+            }
+
+            return resultObj;
+        }
+
+        @Override
+        protected void onPostExecute(MessageQuestionNumberResult result) {
+            super.onPostExecute(result);
+
+            DisplayUtil.dismissProgressDialog(progressDialog);
+
+            try {
+
+                questionNo = "0";
+
+                if (result != null && result.getQuestionNo() > 0) {
+
+                    questionNo = Integer.toString(result.getQuestionNo());
+                }
+
+                handler = new AsyncHandler();
+                customerThread = new CustomerThread();
+                customerThread.start();
+            } catch (Exception e) {
+
+                Toast.makeText(CustomerMessageListDetailActivity.this, getResources().getString(R.string.text_error) + "!! " + getResources().getString(R.string.msg_please_try_again), Toast.LENGTH_SHORT).show();
+                Log.e("krm0219", TAG + " GetQuestionNumberAsyncTask Exception : " + e.toString());
+            }
+        }
     }
 
-    public void refreshData() {
+    //NOTIFICATION.  CustomerMessageDetailAsyncTask      1분  refresh
+    private class CustomerMessageDetailAsyncTask extends AsyncTask<Void, Void, MessageDetailResult> {
 
-        Log.e("krm0219", TAG + "  refreshData");
+        String qdriver_id;
+        String question_seq_no;
 
-        try {
+        ProgressDialog progressDialog = new ProgressDialog(CustomerMessageListDetailActivity.this);
 
-            CustomerMessageDetailAsyncTask CustomerMessageDetailAsyncTask = new CustomerMessageDetailAsyncTask(opID, questionNo);
-            CustomerMessageDetailAsyncTask.execute();
-        } catch (Exception e) {
+        public CustomerMessageDetailAsyncTask(String QdriverID, String QuestionNo) {
 
-            Toast.makeText(mContext, getResources().getString(R.string.msg_left_and_come_back), Toast.LENGTH_SHORT).show();
-            Log.e("krm0219", TAG + "  Exception : " + e.toString());
+            qdriver_id = QdriverID;
+            question_seq_no = QuestionNo;
+
+            if (question_seq_no == null) {
+
+                question_seq_no = "0";
+            }
+        }
+
+        @Override
+        protected void onPreExecute() {
+            super.onPreExecute();
+
+            old_resultString = new_resultString;
+
+            if (new_resultString == null) {
+
+                progressDialog.setProgressStyle(ProgressDialog.STYLE_SPINNER);
+                progressDialog.setMessage(getResources().getString(R.string.text_please_wait));
+                progressDialog.setCancelable(false);
+                progressDialog.show();
+            }
+        }
+
+        @Override
+        protected MessageDetailResult doInBackground(Void... params) {
+
+            MessageDetailResult resultObj;
+
+            try {
+
+                JSONObject job = new JSONObject();
+                job.accumulate("qdriver_id", qdriver_id);
+                job.accumulate("question_seq_no", question_seq_no);
+                job.accumulate("app_id", DataUtil.appID);
+                job.accumulate("nation_cd", Preferences.INSTANCE.getUserNation());
+
+
+                String methodName = "GetQdriverMessageDetail";
+                String jsonString = Custom_JsonParser.requestServerDataReturnJSON(methodName, job);
+                new_resultString = jsonString;
+
+                resultObj = gson.fromJson(jsonString, MessageDetailResult.class);
+            } catch (Exception e) {
+
+                Log.e("Exception", TAG + "  GetQdriverMessageDetail Json Exception : " + e.toString());
+                resultObj = null;
+            }
+
+            return resultObj;
+        }
+
+        @Override
+        protected void onPostExecute(MessageDetailResult result) {
+            super.onPostExecute(result);
+
+            DisplayUtil.dismissProgressDialog(progressDialog);
+
+            try {
+                if (old_resultString != null && old_resultString.equalsIgnoreCase(new_resultString)) {
+
+                    Log.e("krm0219", TAG + "  CustomerMessageDetailAsyncTask  EQUAL");
+                } else {
+
+                    if (result != null) {
+
+                        messageDetailList = (ArrayList<MessageDetailResult.MessageDetailList>) result.getResultObject();
+                        Log.e("krm0219", TAG + " CustomerMessageDetailAsyncTask  LIST Size : " + messageDetailList.size());
+
+                        if (messageDetailList.size() > 0) {
+
+                            for (int i = 0; i < messageDetailList.size(); i++) {        // 초 second 제거
+
+                                String date_string = messageDetailList.get(i).getSend_date();
+                                String[] date_array = date_string.split(":");
+
+                                date_string = date_array[0] + ":" + date_array[1];
+                                messageDetailList.get(i).setSend_date(date_string);
+                            }
+
+                            messageDetailAdapter = new MessageDetailAdapter(CustomerMessageListDetailActivity.this, messageDetailList, "C");
+                            list_message_detail_message.setAdapter(messageDetailAdapter);
+
+                            text_message_detail_title.setText(messageDetailList.get(0).getTitle());
+                        } else {        // Driver가 처음 message 보낼 때~  (LIST에서 들어옴)
+
+                            text_message_detail_title.setText(getResources().getString(R.string.text_qxpress_driver));
+
+                            messageDetailList = new ArrayList<>();
+                            messageDetailAdapter = new MessageDetailAdapter(CustomerMessageListDetailActivity.this, messageDetailList, "C");
+                            list_message_detail_message.setAdapter(messageDetailAdapter);
+                        }
+                    }
+                }
+            } catch (Exception e) {
+
+                Toast.makeText(CustomerMessageListDetailActivity.this, getResources().getString(R.string.text_error) + "!! " + getResources().getString(R.string.msg_please_try_again), Toast.LENGTH_SHORT).show();
+                Log.e("krm0219", TAG + " CustomerMessageDetailAsyncTask Exception : " + e.toString());
+            }
         }
     }
 }

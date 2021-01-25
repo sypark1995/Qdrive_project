@@ -1,7 +1,6 @@
 package com.giosis.library.main.submenu
 
 import android.app.ProgressDialog
-import android.content.Context
 import android.os.AsyncTask
 import android.os.Bundle
 import android.util.Log
@@ -19,12 +18,11 @@ import org.json.JSONObject
  * @author krm0219  2018.07.26
  */
 class ListNotInHousedActivity : CommonActivity() {
-    var TAG = "ListNotInHousedActivity"
+    var tag = "ListNotInHousedActivity"
 
 
     lateinit var listNotInHousedAdapter: ListNotInHousedAdapter
 
-    var context: Context? = null
     lateinit var opID: String
     lateinit var officeCode: String
     lateinit var deviceID: String
@@ -36,11 +34,10 @@ class ListNotInHousedActivity : CommonActivity() {
 
 
         //
-        context = applicationContext
         opID = Preferences.userId
         officeCode = Preferences.officeCode
         deviceID = Preferences.deviceUUID
-        networkType = NetworkUtil.getNetworkType(context)
+        networkType = NetworkUtil.getNetworkType(this)
 
         text_top_title.setText(R.string.navi_sub_not_in_housed)
         layout_top_back.setOnClickListener { finish() }
@@ -76,7 +73,7 @@ class ListNotInHousedActivity : CommonActivity() {
 
             super.onPreExecute()
             progressDialog.setProgressStyle(ProgressDialog.STYLE_SPINNER)
-            progressDialog.setMessage(context!!.resources.getString(R.string.text_please_wait))
+            progressDialog.setMessage(resources.getString(R.string.text_please_wait))
             progressDialog.setCancelable(false)
             progressDialog.show()
         }
@@ -101,7 +98,7 @@ class ListNotInHousedActivity : CommonActivity() {
                 Gson().fromJson(jsonString, NotInHousedResult::class.java)
             } catch (e: Exception) {
 
-                Log.e("Exception", "$TAG  GetOutStandingInhousedPickupList Json Exception : $e")
+                Log.e("Exception", "$tag  GetOutStandingInhousedPickupList Json Exception : $e")
                 null
             }
 
@@ -117,7 +114,7 @@ class ListNotInHousedActivity : CommonActivity() {
 
                 if (result!!.resultObject!!.isEmpty()) {
 
-                    text_not_in_housed_empty!!.text = context!!.resources.getString(R.string.text_empty)
+                    text_not_in_housed_empty!!.text = resources.getString(R.string.text_empty)
                     text_not_in_housed_empty!!.visibility = View.VISIBLE
                     exlist_not_in_housed_list!!.visibility = View.GONE
                 } else {
@@ -130,8 +127,8 @@ class ListNotInHousedActivity : CommonActivity() {
                 }
             } catch (e: Exception) {
 
-                Log.e("Exception", "$TAG  onPostExecute Exception : $e")
-                text_not_in_housed_empty!!.text = context!!.resources.getString(R.string.msg_please_try_again)
+                Log.e("Exception", "$tag  onPostExecute Exception : $e")
+                text_not_in_housed_empty!!.text = resources.getString(R.string.msg_please_try_again)
                 text_not_in_housed_empty!!.visibility = View.VISIBLE
                 exlist_not_in_housed_list!!.visibility = View.GONE
             }

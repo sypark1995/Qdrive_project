@@ -2,8 +2,6 @@ package com.giosis.library.message;
 
 import android.app.AlertDialog;
 import android.app.ProgressDialog;
-import android.content.Context;
-import android.content.DialogInterface;
 import android.os.AsyncTask;
 import android.os.Bundle;
 import android.os.Handler;
@@ -41,10 +39,7 @@ import java.util.Date;
  * @author krm0219
  **/
 public class CustomerMessageListFragment extends Fragment {
-    private String TAG = "CustomerMessageListFragment";
-
-    private Context mContext;
-    private View view;
+    private final String TAG = "CustomerMessageListFragment";
 
     private ListView list_message_list;
     private TextView text_message_list_empty;
@@ -55,9 +50,6 @@ public class CustomerMessageListFragment extends Fragment {
     private TextView text_message_list_current_page;
     private TextView text_message_list_total_page;
 
-
-    private MessageListAdapter messageListAdapter;
-    private static ArrayList<MessageListResult.MessageList> messageList;
 
     private String opID;
 
@@ -71,13 +63,48 @@ public class CustomerMessageListFragment extends Fragment {
 
     private String old_resultString = null;
     private String new_resultString = null;
+    View.OnClickListener clickListener = new View.OnClickListener() {
+        @Override
+        public void onClick(View view) {
 
+            int id = view.getId();
+            if (id == R.id.layout_message_list_prev) {
+                if (!NetworkUtil.isNetworkAvailable(getActivity())) {
+
+                    showDialog(getResources().getString(R.string.text_warning), getResources().getString(R.string.msg_network_connect_error));
+                } else {
+
+                    if (current_page_no > 1) {
+                        current_page_no = current_page_no - 1;
+                        CustomerMessageListAsyncTask customerMessageListAsyncTask = new CustomerMessageListAsyncTask(opID, "", "", Integer.toString(current_page_no), "15");
+                        customerMessageListAsyncTask.execute();
+                    } else {
+
+                        Toast.makeText(getActivity(), getResources().getString(R.string.text_first_page), Toast.LENGTH_SHORT).show();
+                    }
+                }
+            } else if (id == R.id.layout_message_list_next) {
+                if (!NetworkUtil.isNetworkAvailable(getActivity())) {
+
+                    showDialog(getResources().getString(R.string.text_warning), getResources().getString(R.string.msg_network_connect_error));
+                } else {
+                    if (!(total_page_no < current_page_no + 1)) {
+                        current_page_no = current_page_no + 1;
+                        CustomerMessageListAsyncTask customerMessageListAsyncTask = new CustomerMessageListAsyncTask(opID, "", "", Integer.toString(current_page_no), "15");
+                        customerMessageListAsyncTask.execute();
+                    } else {
+
+                        Toast.makeText(getActivity(), getResources().getString(R.string.text_last_page), Toast.LENGTH_SHORT).show();
+                    }
+                }
+            }
+        }
+    };
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
 
-        mContext = getActivity();
-        view = inflater.inflate(R.layout.fragment_message_list, container, false);
+        View view = inflater.inflate(R.layout.fragment_message_list, container, false);
 
         list_message_list = view.findViewById(R.id.list_message_list);
         text_message_list_empty = view.findViewById(R.id.text_message_list_empty);
@@ -95,44 +122,6 @@ public class CustomerMessageListFragment extends Fragment {
 
         return view;
     }
-
-    View.OnClickListener clickListener = new View.OnClickListener() {
-        @Override
-        public void onClick(View view) {
-
-            int id = view.getId();
-            if (id == R.id.layout_message_list_prev) {
-                if (!NetworkUtil.isNetworkAvailable(mContext)) {
-
-                    showDialog(getResources().getString(R.string.text_warning), getResources().getString(R.string.msg_network_connect_error));
-                } else {
-
-                    if (current_page_no > 1) {
-                        current_page_no = current_page_no - 1;
-                        CustomerMessageListAsyncTask customerMessageListAsyncTask = new CustomerMessageListAsyncTask(opID, "", "", Integer.toString(current_page_no), "15");
-                        customerMessageListAsyncTask.execute();
-                    } else {
-
-                        Toast.makeText(mContext, getResources().getString(R.string.text_first_page), Toast.LENGTH_SHORT).show();
-                    }
-                }
-            } else if (id == R.id.layout_message_list_next) {
-                if (!NetworkUtil.isNetworkAvailable(mContext)) {
-
-                    showDialog(getResources().getString(R.string.text_warning), getResources().getString(R.string.msg_network_connect_error));
-                } else {
-                    if (!(total_page_no < current_page_no + 1)) {
-                        current_page_no = current_page_no + 1;
-                        CustomerMessageListAsyncTask customerMessageListAsyncTask = new CustomerMessageListAsyncTask(opID, "", "", Integer.toString(current_page_no), "15");
-                        customerMessageListAsyncTask.execute();
-                    } else {
-
-                        Toast.makeText(mContext, getResources().getString(R.string.text_last_page), Toast.LENGTH_SHORT).show();
-                    }
-                }
-            }
-        }
-    };
 
 
     private class AsyncHandler extends Handler {
@@ -202,15 +191,13 @@ public class CustomerMessageListFragment extends Fragment {
     public void onResume() {
         super.onResume();
 
-        if (!NetworkUtil.isNetworkAvailable(mContext)) {
+        if (!NetworkUtil.isNetworkAvailable(getActivity())) {
 
             try {
                 showDialog(getResources().getString(R.string.text_warning), getResources().getString(R.string.msg_network_connect_error));
-            } catch (Exception e) {
+            } catch (Exception ignored) {
 
             }
-
-            return;
         } else {
 
             opID = Preferences.INSTANCE.getUserId();
@@ -218,6 +205,32 @@ public class CustomerMessageListFragment extends Fragment {
             handler = new AsyncHandler();
             customerThread = new CustomerThread();
             customerThread.start();
+        }
+    }
+
+    public void showDialog(String title, String msg) {
+
+        AlertDialog.Builder alert_internet_status = new AlertDialog.Builder(getActivity());
+        alert_internet_status.setTitle(title);
+        alert_internet_status.setMessage(msg);
+        alert_internet_status.setPositiveButton(getResources().getString(R.string.button_close),
+                (dialog, which) -> {
+                    dialog.dismiss();
+                    getActivity().finish();
+                });
+        alert_internet_status.show();
+    }
+
+    public void refreshData() {
+
+        try {
+
+            CustomerMessageListAsyncTask customerMessageListAsyncTask = new CustomerMessageListAsyncTask(opID, "", "", Integer.toString(current_page_no), "15");
+            customerMessageListAsyncTask.execute();
+        } catch (Exception e) {
+
+            Toast.makeText(getActivity(), getResources().getString(R.string.msg_left_and_come_back), Toast.LENGTH_SHORT).show();
+            Log.e("Exception", TAG + "  Exception : " + e.toString());
         }
     }
 
@@ -230,7 +243,7 @@ public class CustomerMessageListFragment extends Fragment {
         String page_no;
         String page_size;
 
-        ProgressDialog progressDialog = new ProgressDialog(mContext);
+        ProgressDialog progressDialog = new ProgressDialog(getActivity());
 
 
         public CustomerMessageListAsyncTask(String QdriverID, String StartDate, String EndDate, String PageNo, String PageSize) {
@@ -323,7 +336,7 @@ public class CustomerMessageListFragment extends Fragment {
 
                     if (result != null) {
 
-                        messageList = (ArrayList<MessageListResult.MessageList>) result.getResultObject();
+                        ArrayList<MessageListResult.MessageList> messageList = (ArrayList<MessageListResult.MessageList>) result.getResultObject();
 
                         if (messageList.size() > 0) {
 
@@ -331,7 +344,7 @@ public class CustomerMessageListFragment extends Fragment {
                             text_message_list_empty.setVisibility(View.GONE);
                             layout_message_list_bottom.setVisibility(View.VISIBLE);
 
-                            messageListAdapter = new MessageListAdapter(getActivity(), "C", messageList);
+                            MessageListAdapter messageListAdapter = new MessageListAdapter(getActivity(), "C", messageList);
                             list_message_list.setAdapter(messageListAdapter);
 
                             total_page_no = messageList.get(0).getTotal_page_size();
@@ -353,7 +366,7 @@ public class CustomerMessageListFragment extends Fragment {
                             text_message_list_empty.setVisibility(View.VISIBLE);
                             layout_message_list_bottom.setVisibility(View.GONE);
 
-                            text_message_list_empty.setText("Empty");
+                            text_message_list_empty.setText(getResources().getString(R.string.text_empty));
                         }
                     }
                 }
@@ -365,38 +378,9 @@ public class CustomerMessageListFragment extends Fragment {
 
                 text_message_list_empty.setText(getResources().getString(R.string.text_error));
 
-                Toast.makeText(mContext, getResources().getString(R.string.text_error) + "!! " + getResources().getString(R.string.msg_please_try_again), Toast.LENGTH_SHORT).show();
+                Toast.makeText(getActivity(), getResources().getString(R.string.text_error) + "!! " + getResources().getString(R.string.msg_please_try_again), Toast.LENGTH_SHORT).show();
                 Log.e("krm0219", TAG + "  CustomerMessageListAsyncTask Exception : " + e.toString());
             }
-        }
-    }
-
-
-    public void showDialog(String title, String msg) {
-
-        AlertDialog.Builder alert_internet_status = new AlertDialog.Builder(mContext);
-        alert_internet_status.setTitle(title);
-        alert_internet_status.setMessage(msg);
-        alert_internet_status.setPositiveButton(getResources().getString(R.string.button_close),
-                new DialogInterface.OnClickListener() {
-                    public void onClick(DialogInterface dialog, int which) {
-                        dialog.dismiss();
-                        getActivity().finish();
-                    }
-                });
-        alert_internet_status.show();
-    }
-
-    public void refreshData() {
-
-        try {
-
-            CustomerMessageListAsyncTask customerMessageListAsyncTask = new CustomerMessageListAsyncTask(opID, "", "", Integer.toString(current_page_no), "15");
-            customerMessageListAsyncTask.execute();
-        } catch (Exception e) {
-
-            Toast.makeText(mContext, getResources().getString(R.string.msg_left_and_come_back), Toast.LENGTH_SHORT).show();
-            Log.e("Exception", TAG + "  Exception : " + e.toString());
         }
     }
 }

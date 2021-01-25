@@ -41,7 +41,7 @@ class DeliveryFailedActivity : CommonActivity(), Camera2APIs.Camera2Interface, S
     lateinit var trackingNo: String
 
     // Location
-    private val gpsTrackerManager = GPSTrackerManager(this)
+    var gpsTrackerManager: GPSTrackerManager? = null
 
     // Camera & Gallery
     private val camera2 = Camera2APIs(this)
@@ -197,12 +197,15 @@ class DeliveryFailedActivity : CommonActivity(), Camera2APIs.Camera2Interface, S
             }
 
             // Location
-            val gpsEnable = gpsTrackerManager.enableGPSSetting()
+            gpsTrackerManager = GPSTrackerManager(this)
+            val gpsEnable = gpsTrackerManager!!.enableGPSSetting()
 
-            if (gpsEnable) {
-                gpsTrackerManager.GPSTrackerStart()
-                Log.e(tag, " onResume  Location  :  ${gpsTrackerManager.latitude} / ${gpsTrackerManager.longitude}")
+            if (gpsEnable && gpsTrackerManager != null) {
+
+                gpsTrackerManager!!.GPSTrackerStart()
+                Log.e(tag, " onResume  Location  :  ${gpsTrackerManager!!.latitude} / ${gpsTrackerManager!!.longitude}")
             } else {
+
                 DataUtil.enableLocationSettings(this@DeliveryFailedActivity)
             }
         }
@@ -318,7 +321,7 @@ class DeliveryFailedActivity : CommonActivity(), Camera2APIs.Camera2Interface, S
             var latitude = 0.0
             var longitude = 0.0
             gpsTrackerManager.let {
-                latitude = it.latitude
+                latitude = it!!.latitude
                 longitude = it.longitude
             }
 

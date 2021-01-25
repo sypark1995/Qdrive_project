@@ -1,6 +1,5 @@
 package com.giosis.library.main.submenu
 
-import android.content.Context
 import android.content.Intent
 import android.os.Bundle
 import android.util.Log
@@ -19,7 +18,6 @@ import kotlinx.android.synthetic.main.top_title.*
 class ScanActivity : CommonActivity() {
     var TAG = "ScanActivity"
 
-    var context: Context? = null
     lateinit var officeName: String
     var outletDriverYN = "N"
 
@@ -30,7 +28,6 @@ class ScanActivity : CommonActivity() {
 
         text_top_title.setText(R.string.text_title_delivery_scan)
 
-        context = applicationContext
         officeName = Preferences.officeName
 
         outletDriverYN = try {
@@ -43,11 +40,11 @@ class ScanActivity : CommonActivity() {
         val msg: String
         if (outletDriverYN == "Y") {
 
-            msg = String.format(context!!.resources.getString(R.string.msg_delivery_scan2), context!!.resources.getString(R.string.text_start_delivery_for_outlet))
+            msg = String.format(resources.getString(R.string.msg_delivery_scan2), resources.getString(R.string.text_start_delivery_for_outlet))
             text_scan_confirm_my_delivery_order.setText(R.string.text_start_delivery_for_outlet)
         } else {
 
-            msg = String.format(context!!.resources.getString(R.string.msg_delivery_scan2), context!!.resources.getString(R.string.button_confirm_my_delivery_order))
+            msg = String.format(resources.getString(R.string.msg_delivery_scan2), resources.getString(R.string.button_confirm_my_delivery_order))
             text_scan_confirm_my_delivery_order.setText(R.string.button_confirm_my_delivery_order)
         }
         text_scan_delivery_scan_msg.text = msg
@@ -79,7 +76,7 @@ class ScanActivity : CommonActivity() {
                 try {
 
                     val intent = Intent(this@ScanActivity, Class.forName("com.giosis.util.qdrive.barcodescanner.CaptureActivity"))
-                    intent.putExtra("title", context!!.resources.getString(R.string.text_title_driver_assign))
+                    intent.putExtra("title", resources.getString(R.string.text_title_driver_assign))
                     intent.putExtra("type", BarcodeType.CONFIRM_MY_DELIVERY_ORDER)
                     startActivity(intent)
                 } catch (e: Exception) {
@@ -92,7 +89,7 @@ class ScanActivity : CommonActivity() {
                 try {
 
                     val intent = Intent(this@ScanActivity, Class.forName("com.giosis.util.qdrive.barcodescanner.CaptureActivity"))
-                    intent.putExtra("title", context!!.resources.getString(R.string.text_delivered))
+                    intent.putExtra("title", resources.getString(R.string.text_delivered))
                     intent.putExtra("type", BarcodeType.DELIVERY_DONE)
                     startActivity(intent)
                 } catch (e: Exception) {
@@ -105,7 +102,7 @@ class ScanActivity : CommonActivity() {
                 try {
 
                     val intent = Intent(this@ScanActivity, Class.forName("com.giosis.util.qdrive.barcodescanner.CaptureActivity"))
-                    intent.putExtra("title", context!!.resources.getString(R.string.text_title_scan_pickup_cnr))
+                    intent.putExtra("title", resources.getString(R.string.text_title_scan_pickup_cnr))
                     intent.putExtra("type", BarcodeType.PICKUP_CNR)
                     startActivity(intent)
                 } catch (e: Exception) {
@@ -118,7 +115,7 @@ class ScanActivity : CommonActivity() {
                 try {
 
                     val intent = Intent(this@ScanActivity, Class.forName("com.giosis.util.qdrive.barcodescanner.CaptureActivity"))
-                    intent.putExtra("title", context!!.resources.getString(R.string.navi_sub_self))
+                    intent.putExtra("title", resources.getString(R.string.navi_sub_self))
                     intent.putExtra("type", BarcodeType.SELF_COLLECTION)
                     startActivity(intent)
                 } catch (e: Exception) {

@@ -252,6 +252,7 @@ public class OutletOrderStatusActivity extends CommonActivity implements SearchV
         exlist_outlet_status_card.setAdapter(outletOrderStatusAdapter);
         outletNameArrayAdapter.notifyDataSetChanged();
     }
+
     Comparator<RowItem> trackingNoAsc = (o1, o2) -> o1.getShipping().compareTo(o2.getShipping());
 
 
@@ -301,6 +302,7 @@ public class OutletOrderStatusActivity extends CommonActivity implements SearchV
 
         setOutletArrayList(selectedOutletCode, selectedOutletName);
     }
+
     Comparator<RowItem> trackingNoDesc = (o1, o2) -> o2.getShipping().compareTo(o1.getShipping());
     Comparator<RowItem> nameAsc = (o1, o2) -> o1.getOutlet_store_name().compareTo(o2.getOutlet_store_name());
     Comparator<RowItem> nameDesc = (o1, o2) -> o2.getOutlet_store_name().compareTo(o1.getOutlet_store_name());
@@ -415,10 +417,6 @@ public class OutletOrderStatusActivity extends CommonActivity implements SearchV
         officeCode = Preferences.INSTANCE.getOfficeCode();
         deviceID = Preferences.INSTANCE.getDeviceUUID();
         databaseHelper = DatabaseHelper.getInstance();
-
-
-        // TEST
-        //opID = "7Eleven.Ajib";
 
 
         //

@@ -1,7 +1,6 @@
 package com.giosis.library.list.pickup;
 
 import android.content.Context;
-import android.util.TypedValue;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -9,7 +8,6 @@ import android.widget.BaseAdapter;
 import android.widget.Button;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
-import android.widget.RelativeLayout;
 import android.widget.TextView;
 
 import com.giosis.library.R;
@@ -66,7 +64,7 @@ public class OutletPickupDoneTrackingNoAdapter extends BaseAdapter {
             view = convertView;
         }
 
-        RelativeLayout layout_outlet_pickup_done_tracking_no = view.findViewById(R.id.layout_outlet_pickup_done_tracking_no);
+
         LinearLayout layout_outlet_pickup_done_tracking_no_item = view.findViewById(R.id.layout_outlet_pickup_done_tracking_no_item);
         ImageView img_outlet_pickup_done_tracking_no_item = view.findViewById(R.id.img_outlet_pickup_done_tracking_no_item);
         TextView text_outlet_pickup_done_tracking_no_item = view.findViewById(R.id.text_outlet_pickup_done_tracking_no_item);
@@ -90,33 +88,6 @@ public class OutletPickupDoneTrackingNoAdapter extends BaseAdapter {
             img_outlet_pickup_done_tracking_no_item_check.setBackgroundResource(R.drawable.qdrive_btn_icon_big_off);
         }
 
-/*
-        if (route.equals("FL")) {
-
-            if (result.getTrackingNoList().size() == 1) {
-
-                layout_outlet_pickup_done_tracking_no.setPadding(0, dpTopx(20), 0, dpTopx(20));
-            } else {
-
-                if (position == 0) {
-
-                    layout_outlet_pickup_done_tracking_no.setPadding(0, dpTopx(20), 0, dpTopx(7));
-                } else if (position == result.getTrackingNoList().size() - 1) {
-
-                    layout_outlet_pickup_done_tracking_no.setPadding(0, dpTopx(7), 0, dpTopx(20));
-                } else {
-
-                    layout_outlet_pickup_done_tracking_no.setPadding(0, dpTopx(7), 0, dpTopx(7));
-                }
-            }
-        }*/
-
         return view;
-    }
-
-    private int dpTopx(float dp) {
-
-        int pixel = (int) TypedValue.applyDimension(TypedValue.COMPLEX_UNIT_DIP, dp, context.getResources().getDisplayMetrics());
-        return pixel;
     }
 }

@@ -2,14 +2,12 @@ package com.giosis.library.main.submenu;
 
 import android.annotation.SuppressLint;
 import android.app.DatePickerDialog;
-import android.content.Context;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.View;
 import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
 import android.widget.Button;
-import android.widget.DatePicker;
 import android.widget.FrameLayout;
 import android.widget.LinearLayout;
 import android.widget.ListView;
@@ -81,7 +79,6 @@ public class StatisticsActivity extends CommonActivity {
 
 
     //
-    Context context;
     String opID;
 
     String selectedType = "Delivery";
@@ -126,18 +123,14 @@ public class StatisticsActivity extends CommonActivity {
                 spinner_statistics_delivery_type.performClick();
             } else if (id == R.id.text_statistics_start_date) {
 
-                DatePickerDialog datePickerDialog = new DatePickerDialog(
-                        StatisticsActivity.this,
-                        new DatePickerDialog.OnDateSetListener() {
-                            @Override
-                            public void onDateSet(DatePicker datePicker, int year, int month, int dayOfMonth) {
+                DatePickerDialog datePickerDialog = new DatePickerDialog(StatisticsActivity.this,
+                        (datePicker, year, month, dayOfMonth) -> {
 
-                                startCalendar.set(Calendar.YEAR, year);
-                                startCalendar.set(Calendar.MONTH, month);
-                                startCalendar.set(Calendar.DAY_OF_MONTH, dayOfMonth);
+                            startCalendar.set(Calendar.YEAR, year);
+                            startCalendar.set(Calendar.MONTH, month);
+                            startCalendar.set(Calendar.DAY_OF_MONTH, dayOfMonth);
 
-                                text_statistics_start_date.setText(sdf.format(startCalendar.getTime()));
-                            }
+                            text_statistics_start_date.setText(sdf.format(startCalendar.getTime()));
                         },
                         startCalendar.get(Calendar.YEAR),
                         startCalendar.get(Calendar.MONTH),
@@ -146,18 +139,14 @@ public class StatisticsActivity extends CommonActivity {
                 datePickerDialog.getDatePicker().setMaxDate(maxDate.getTimeInMillis());
                 datePickerDialog.show();
             } else if (id == R.id.text_statistics_end_date) {
-                DatePickerDialog datePickerDialog = new DatePickerDialog(
-                        StatisticsActivity.this,
-                        new DatePickerDialog.OnDateSetListener() {
-                            @Override
-                            public void onDateSet(DatePicker datePicker, int year, int month, int dayOfMonth) {
+                DatePickerDialog datePickerDialog = new DatePickerDialog(StatisticsActivity.this,
+                        (datePicker, year, month, dayOfMonth) -> {
 
-                                endCalendar.set(Calendar.YEAR, year);
-                                endCalendar.set(Calendar.MONTH, month);
-                                endCalendar.set(Calendar.DAY_OF_MONTH, dayOfMonth);
+                            endCalendar.set(Calendar.YEAR, year);
+                            endCalendar.set(Calendar.MONTH, month);
+                            endCalendar.set(Calendar.DAY_OF_MONTH, dayOfMonth);
 
-                                text_statistics_end_date.setText(sdf.format(endCalendar.getTime()));
-                            }
+                            text_statistics_end_date.setText(sdf.format(endCalendar.getTime()));
                         },
                         endCalendar.get(Calendar.YEAR),
                         endCalendar.get(Calendar.MONTH),
@@ -171,7 +160,7 @@ public class StatisticsActivity extends CommonActivity {
 
                 if (0 < compareDate) { // start date 가 더 크다  : Error!
 
-                    Toast.makeText(StatisticsActivity.this, context.getResources().getString(R.string.msg_check_date_range), Toast.LENGTH_SHORT).show();
+                    Toast.makeText(StatisticsActivity.this, getResources().getString(R.string.msg_check_date_range), Toast.LENGTH_SHORT).show();
                 } else {
 
                     long dateDiff = endCalendar.getTimeInMillis() - startCalendar.getTimeInMillis();
@@ -180,7 +169,7 @@ public class StatisticsActivity extends CommonActivity {
 
                     if (30 < diff) {
 
-                        Toast.makeText(StatisticsActivity.this, context.getResources().getString(R.string.msg_check_date_range), Toast.LENGTH_SHORT).show();
+                        Toast.makeText(StatisticsActivity.this, getResources().getString(R.string.msg_check_date_range), Toast.LENGTH_SHORT).show();
                     } else {
 
                         downloadStatistics("");
@@ -299,7 +288,7 @@ public class StatisticsActivity extends CommonActivity {
             text_statistics_d_delivered.setText(Integer.toString(deliveredCount));
             text_statistics_d_not_delivered.setText(Integer.toString(dTotalCount - deliveredCount));
 
-            listAdapter = new StatisticsResultListAdapter(context, result, searchType);
+            listAdapter = new StatisticsResultListAdapter(this, result, searchType);
             list_statistics_result.setAdapter(listAdapter);
         } else {
 
@@ -331,7 +320,7 @@ public class StatisticsActivity extends CommonActivity {
             text_statistics_p_failed.setText(Integer.toString(failedCount));
             text_statistics_p_confirmed.setText(Integer.toString(confirmedCount));
 
-            listAdapter = new StatisticsResultListAdapter(context, result, searchType);
+            listAdapter = new StatisticsResultListAdapter(this, result, searchType);
             list_statistics_result.setAdapter(listAdapter);
         } else {
 
@@ -353,7 +342,6 @@ public class StatisticsActivity extends CommonActivity {
         initView();
 
         //
-        context = getApplicationContext();
         opID = Preferences.INSTANCE.getUserId();
 
         startCalendar = Calendar.getInstance();
@@ -362,7 +350,7 @@ public class StatisticsActivity extends CommonActivity {
 
 
         //
-        text_top_title.setText(context.getResources().getString(R.string.navi_statistics));
+        text_top_title.setText(getResources().getString(R.string.navi_statistics));
 
         spinner_statistics_type.setPrompt(getResources().getString(R.string.text_delivery));
         typeArrayAdapter = ArrayAdapter.createFromResource(this, R.array.statistics_type, android.R.layout.simple_spinner_item);
@@ -370,120 +358,105 @@ public class StatisticsActivity extends CommonActivity {
         spinner_statistics_type.setAdapter(typeArrayAdapter);
         spinner_statistics_type.setSelection(0);
 
-        spinner_statistics_type.post(new Runnable() {
+
+        spinner_statistics_type.post(() -> spinner_statistics_type.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
             @Override
-            public void run() {
+            public void onItemSelected(AdapterView<?> parent, View view, int position, long id) {
 
-                spinner_statistics_type.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
-                    @Override
-                    public void onItemSelected(AdapterView<?> parent, View view, int position, long id) {
-
-                        text_statistics_orders_not.setVisibility(View.GONE);
-                        if (listAdapter != null)
-                            listAdapter.clearList();
+                text_statistics_orders_not.setVisibility(View.GONE);
+                if (listAdapter != null)
+                    listAdapter.clearList();
 
 
-                        selectedType = parent.getItemAtPosition(position).toString();
-                        text_statistics_type.setText(selectedType);
+                selectedType = parent.getItemAtPosition(position).toString();
+                text_statistics_type.setText(selectedType);
 
-                        if (selectedType.equals("Delivery")) {
+                if (selectedType.equals("Delivery")) {
 
-                            layout_statistics_delivery_type.setVisibility(View.VISIBLE);
-                            layout_statistics_delivery_result_count.setVisibility(View.VISIBLE);
-                            layout_statistics_pickup_result_count.setVisibility(View.GONE);
+                    layout_statistics_delivery_type.setVisibility(View.VISIBLE);
+                    layout_statistics_delivery_result_count.setVisibility(View.VISIBLE);
+                    layout_statistics_pickup_result_count.setVisibility(View.GONE);
 
-                            setDeliveryResult(null);
-                        } else {
+                    setDeliveryResult(null);
+                } else {
 
-                            layout_statistics_delivery_type.setVisibility(View.GONE);
-                            layout_statistics_delivery_result_count.setVisibility(View.GONE);
-                            layout_statistics_pickup_result_count.setVisibility(View.VISIBLE);
+                    layout_statistics_delivery_type.setVisibility(View.GONE);
+                    layout_statistics_delivery_result_count.setVisibility(View.GONE);
+                    layout_statistics_pickup_result_count.setVisibility(View.VISIBLE);
 
-                            setPickupResult(null);
-                        }
-                    }
-
-                    @Override
-                    public void onNothingSelected(AdapterView<?> parent) {
-                    }
-                });
+                    setPickupResult(null);
+                }
             }
-        });
+
+            @Override
+            public void onNothingSelected(AdapterView<?> parent) {
+            }
+        }));
 
         spinner_statistics_result_type.setPrompt(getResources().getString(R.string.text_summary));
         resultTypeArrayAdapter = ArrayAdapter.createFromResource(this, R.array.statistics_result_type, android.R.layout.simple_spinner_item);
         resultTypeArrayAdapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
         spinner_statistics_result_type.setAdapter(resultTypeArrayAdapter);
 
-        spinner_statistics_result_type.post(new Runnable() {
+
+        spinner_statistics_result_type.post(() -> spinner_statistics_result_type.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
             @Override
-            public void run() {
+            public void onItemSelected(AdapterView<?> parent, View view, int position, long id) {
 
-                spinner_statistics_result_type.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
-                    @Override
-                    public void onItemSelected(AdapterView<?> parent, View view, int position, long id) {
-
-                        text_statistics_orders_not.setVisibility(View.GONE);
-                        if (listAdapter != null)
-                            listAdapter.clearList();
+                text_statistics_orders_not.setVisibility(View.GONE);
+                if (listAdapter != null)
+                    listAdapter.clearList();
 
 
-                        selectedResultType = parent.getItemAtPosition(position).toString();
-                        text_statistics_result_type.setText(selectedResultType);
+                selectedResultType = parent.getItemAtPosition(position).toString();
+                text_statistics_result_type.setText(selectedResultType);
 
-                        if (selectedType.equals("Delivery")) {
+                if (selectedType.equals("Delivery")) {
 
-                            setDeliveryResult(null);
-                        } else {
+                    setDeliveryResult(null);
+                } else {
 
-                            setPickupResult(null);
-                        }
-                    }
-
-                    @Override
-                    public void onNothingSelected(AdapterView<?> parent) {
-                    }
-                });
+                    setPickupResult(null);
+                }
             }
-        });
+
+            @Override
+            public void onNothingSelected(AdapterView<?> parent) {
+            }
+        }));
 
         spinner_statistics_delivery_type.setPrompt(getResources().getString(R.string.text_dpc3_out_date));
         deliveryTypeArrayAdapter = ArrayAdapter.createFromResource(this, R.array.statistics_delivery_type, android.R.layout.simple_spinner_item);
         deliveryTypeArrayAdapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
         spinner_statistics_delivery_type.setAdapter(deliveryTypeArrayAdapter);
 
-        spinner_statistics_delivery_type.post(new Runnable() {
+
+        spinner_statistics_delivery_type.post(() -> spinner_statistics_delivery_type.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
             @Override
-            public void run() {
+            public void onItemSelected(AdapterView<?> parent, View view, int position, long id) {
 
-                spinner_statistics_delivery_type.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
-                    @Override
-                    public void onItemSelected(AdapterView<?> parent, View view, int position, long id) {
-
-                        text_statistics_orders_not.setVisibility(View.GONE);
-                        if (listAdapter != null)
-                            listAdapter.clearList();
-                        setDeliveryResult(null);
+                text_statistics_orders_not.setVisibility(View.GONE);
+                if (listAdapter != null)
+                    listAdapter.clearList();
+                setDeliveryResult(null);
 
 
-                        selectedDeliveryType = parent.getItemAtPosition(position).toString();
-                        text_statistics_delivery_type.setText(selectedDeliveryType);
+                selectedDeliveryType = parent.getItemAtPosition(position).toString();
+                text_statistics_delivery_type.setText(selectedDeliveryType);
 
-                        if (selectedDeliveryType.contains("Delivered")) {
+                if (selectedDeliveryType.contains("Delivered")) {
 
-                            text_d_s_dpc3_out_date.setText(context.getResources().getString(R.string.text_delivered_date));
-                        } else {
+                    text_d_s_dpc3_out_date.setText(getResources().getString(R.string.text_delivered_date));
+                } else {
 
-                            text_d_s_dpc3_out_date.setText(context.getResources().getString(R.string.text_dpc3_out_date));
-                        }
-                    }
-
-                    @Override
-                    public void onNothingSelected(AdapterView<?> parent) {
-                    }
-                });
+                    text_d_s_dpc3_out_date.setText(getResources().getString(R.string.text_dpc3_out_date));
+                }
             }
-        });
+
+            @Override
+            public void onNothingSelected(AdapterView<?> parent) {
+            }
+        }));
 
         // Date Picker
         startCalendar.set(Calendar.YEAR, maxDate.get(Calendar.YEAR));
@@ -530,85 +503,81 @@ public class StatisticsActivity extends CommonActivity {
 
         new StatisticsDownloadHelper.Builder(StatisticsActivity.this, opID, searchType,
                 sdf.format(startCalendar.getTime()), sdf.format(endCalendar.getTime()), status).setOnStatisticsDownloadListener(
-                new StatisticsDownloadHelper.OnStatisticsDownloadListener() {
+                (searchType, result) -> {
 
-                    @Override
-                    public void onDownloadResult(String searchType, StatisticsResult result) {
+                    if (result != null) {
 
-                        if (result != null) {
+                        if (searchType.contains("D_Summary")) {
 
-                            if (searchType.contains("D_Summary")) {
+                            dTotalCount = 0;
+                            deliveredCount = 0;
 
-                                dTotalCount = 0;
-                                deliveredCount = 0;
+                            if (result.getSummaryDataArrayList().size() == 0) {
 
-                                if (result.getSummaryDataArrayList().size() == 0) {
+                                list_statistics_result.setVisibility(View.GONE);
+                                text_statistics_orders_not.setVisibility(View.VISIBLE);
+                            } else {
 
-                                    list_statistics_result.setVisibility(View.GONE);
-                                    text_statistics_orders_not.setVisibility(View.VISIBLE);
-                                } else {
+                                list_statistics_result.setVisibility(View.VISIBLE);
+                                text_statistics_orders_not.setVisibility(View.GONE);
 
-                                    list_statistics_result.setVisibility(View.VISIBLE);
-                                    text_statistics_orders_not.setVisibility(View.GONE);
+                                for (int i = 0; i < result.getSummaryDataArrayList().size(); i++) {
 
-                                    for (int i = 0; i < result.getSummaryDataArrayList().size(); i++) {
-
-                                        dTotalCount += result.getSummaryDataArrayList().get(i).getTotalCount();
-                                        deliveredCount += result.getSummaryDataArrayList().get(i).getDeliveredCount();
-                                    }
-
-                                    setDeliveryResult(result);
+                                    dTotalCount += result.getSummaryDataArrayList().get(i).getTotalCount();
+                                    deliveredCount += result.getSummaryDataArrayList().get(i).getDeliveredCount();
                                 }
-                            } else if (searchType.contains("D_Detail")) {
-                                if (result.getDetailDataArrayList().size() == 0) {
 
-                                    list_statistics_result.setVisibility(View.GONE);
-                                    text_statistics_orders_not.setVisibility(View.VISIBLE);
-                                } else {
+                                setDeliveryResult(result);
+                            }
+                        } else if (searchType.contains("D_Detail")) {
+                            if (result.getDetailDataArrayList().size() == 0) {
 
-                                    list_statistics_result.setVisibility(View.VISIBLE);
-                                    text_statistics_orders_not.setVisibility(View.GONE);
+                                list_statistics_result.setVisibility(View.GONE);
+                                text_statistics_orders_not.setVisibility(View.VISIBLE);
+                            } else {
 
-                                    setDeliveryResult(result);
+                                list_statistics_result.setVisibility(View.VISIBLE);
+                                text_statistics_orders_not.setVisibility(View.GONE);
+
+                                setDeliveryResult(result);
+                            }
+                        } else if (searchType.contains("P_Summary")) {
+
+                            pTotalCount = 0;
+                            doneCount = 0;
+                            failedCount = 0;
+                            confirmedCount = 0;
+
+                            if (result.getSummaryDataArrayList().size() == 0) {
+
+                                list_statistics_result.setVisibility(View.GONE);
+                                text_statistics_orders_not.setVisibility(View.VISIBLE);
+                            } else {
+
+                                list_statistics_result.setVisibility(View.VISIBLE);
+                                text_statistics_orders_not.setVisibility(View.GONE);
+
+                                for (int i = 0; i < result.getSummaryDataArrayList().size(); i++) {
+
+                                    pTotalCount += result.getSummaryDataArrayList().get(i).getTotalCount();
+                                    doneCount += result.getSummaryDataArrayList().get(i).getDoneCount();
+                                    failedCount += result.getSummaryDataArrayList().get(i).getFailedCount();
+                                    confirmedCount += result.getSummaryDataArrayList().get(i).getConfirmedCount();
                                 }
-                            } else if (searchType.contains("P_Summary")) {
 
-                                pTotalCount = 0;
-                                doneCount = 0;
-                                failedCount = 0;
-                                confirmedCount = 0;
+                                setPickupResult(result);
+                            }
+                        } else if (searchType.contains("P_Detail")) {
+                            if (result.getDetailDataArrayList().size() == 0) {
 
-                                if (result.getSummaryDataArrayList().size() == 0) {
+                                list_statistics_result.setVisibility(View.GONE);
+                                text_statistics_orders_not.setVisibility(View.VISIBLE);
+                            } else {
 
-                                    list_statistics_result.setVisibility(View.GONE);
-                                    text_statistics_orders_not.setVisibility(View.VISIBLE);
-                                } else {
+                                list_statistics_result.setVisibility(View.VISIBLE);
+                                text_statistics_orders_not.setVisibility(View.GONE);
 
-                                    list_statistics_result.setVisibility(View.VISIBLE);
-                                    text_statistics_orders_not.setVisibility(View.GONE);
-
-                                    for (int i = 0; i < result.getSummaryDataArrayList().size(); i++) {
-
-                                        pTotalCount += result.getSummaryDataArrayList().get(i).getTotalCount();
-                                        doneCount += result.getSummaryDataArrayList().get(i).getDoneCount();
-                                        failedCount += result.getSummaryDataArrayList().get(i).getFailedCount();
-                                        confirmedCount += result.getSummaryDataArrayList().get(i).getConfirmedCount();
-                                    }
-
-                                    setPickupResult(result);
-                                }
-                            } else if (searchType.contains("P_Detail")) {
-                                if (result.getDetailDataArrayList().size() == 0) {
-
-                                    list_statistics_result.setVisibility(View.GONE);
-                                    text_statistics_orders_not.setVisibility(View.VISIBLE);
-                                } else {
-
-                                    list_statistics_result.setVisibility(View.VISIBLE);
-                                    text_statistics_orders_not.setVisibility(View.GONE);
-
-                                    setPickupResult(result);
-                                }
+                                setPickupResult(result);
                             }
                         }
                     }

@@ -18,7 +18,7 @@ import java.util.ArrayList;
 
 public class MessageListAdapter extends BaseAdapter {
 
-    private Context context;
+    private final Context context;
     String called_fragment;
 
     RelativeLayout layout_message_list_item;
@@ -27,7 +27,7 @@ public class MessageListAdapter extends BaseAdapter {
     TextView text_message_list_item_date;
 
 
-    private ArrayList<MessageListResult.MessageList> mItems;
+    private final ArrayList<MessageListResult.MessageList> mItems;
 
     public MessageListAdapter(Context context, String called, ArrayList<MessageListResult.MessageList> messageItemArrayList) {
 

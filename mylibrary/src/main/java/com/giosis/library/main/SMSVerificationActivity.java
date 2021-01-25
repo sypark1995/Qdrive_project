@@ -2,8 +2,6 @@ package com.giosis.library.main;
 
 import android.app.AlertDialog;
 import android.content.Context;
-import android.content.DialogInterface;
-import android.content.DialogInterface.OnClickListener;
 import android.content.Intent;
 import android.content.pm.PackageManager;
 import android.os.AsyncTask;
@@ -55,7 +53,6 @@ public class SMSVerificationActivity extends CommonActivity {
     EditText edit_verify_email;
     Button btn_verify_submit;
 
-    Context context;
     String op_id = "";
     String deviceID = "";
     String nation;
@@ -108,7 +105,6 @@ public class SMSVerificationActivity extends CommonActivity {
         btn_verify_submit.setOnClickListener(clickListener);
 
         //
-        context = getApplicationContext();
         op_id = Preferences.INSTANCE.getUserId();
         deviceID = Preferences.INSTANCE.getDeviceUUID();
         nation = Preferences.INSTANCE.getUserNation();
@@ -269,20 +265,20 @@ public class SMSVerificationActivity extends CommonActivity {
                     if (!matches) {
 
                         isvalid = false;
-                        builder.setTitle(context.getResources().getString(R.string.text_invalidation_alert));
-                        builder.setMessage(context.getResources().getString(R.string.msg_enter_right_format_number));
+                        builder.setTitle(getResources().getString(R.string.text_invalidation_alert));
+                        builder.setMessage(getResources().getString(R.string.msg_enter_right_format_number));
                         builder.setCancelable(true);
                     } else {
 
-                        builder.setTitle(context.getResources().getString(R.string.text_verification));
-                        builder.setMessage(context.getResources().getString(R.string.msg_verify_phone_number) + " (" + phone_no + "). " + context.getResources().getString(R.string.msg_is_this_ok));
+                        builder.setTitle(getResources().getString(R.string.text_verification));
+                        builder.setMessage(getResources().getString(R.string.msg_verify_phone_number) + " (" + phone_no + "). " + getResources().getString(R.string.msg_is_this_ok));
                         builder.setCancelable(true);
                     }
                 } else {
 
                     isvalid = false;
-                    builder.setTitle(context.getResources().getString(R.string.text_invalidation_alert));
-                    builder.setMessage(context.getResources().getString(R.string.msg_please_enter_right_number));
+                    builder.setTitle(getResources().getString(R.string.text_invalidation_alert));
+                    builder.setMessage(getResources().getString(R.string.msg_please_enter_right_number));
                     builder.setCancelable(true);
                 }
             } else {
@@ -292,14 +288,14 @@ public class SMSVerificationActivity extends CommonActivity {
 
                 if (matches2) {
 
-                    builder.setTitle(context.getResources().getString(R.string.text_verification));
-                    builder.setMessage(context.getResources().getString(R.string.msg_verify_phone_number) + " (" + phone_no + "). " + context.getResources().getString(R.string.msg_is_this_ok));
+                    builder.setTitle(getResources().getString(R.string.text_verification));
+                    builder.setMessage(getResources().getString(R.string.msg_verify_phone_number) + " (" + phone_no + "). " + getResources().getString(R.string.msg_is_this_ok));
                     builder.setCancelable(true);
                 } else {
 
                     isvalid = false;
-                    builder.setTitle(context.getResources().getString(R.string.text_invalidation_alert));
-                    builder.setMessage(context.getResources().getString(R.string.msg_enter_right_format_number));
+                    builder.setTitle(getResources().getString(R.string.text_invalidation_alert));
+                    builder.setMessage(getResources().getString(R.string.msg_enter_right_format_number));
                     builder.setCancelable(true);
                 }
             }
@@ -313,14 +309,14 @@ public class SMSVerificationActivity extends CommonActivity {
 
                 if (matches) {
 
-                    builder.setTitle(context.getResources().getString(R.string.text_verification));
-                    builder.setMessage(context.getResources().getString(R.string.msg_verify_phone_number) + " (" + phone_no + "). " + context.getResources().getString(R.string.msg_is_this_ok));
+                    builder.setTitle(getResources().getString(R.string.text_verification));
+                    builder.setMessage(getResources().getString(R.string.msg_verify_phone_number) + " (" + phone_no + "). " + getResources().getString(R.string.msg_is_this_ok));
                     builder.setCancelable(true);
                 } else {
 
                     isvalid = false;
-                    builder.setTitle(context.getResources().getString(R.string.text_invalidation_alert));
-                    builder.setMessage(context.getResources().getString(R.string.msg_enter_right_format_number));
+                    builder.setTitle(getResources().getString(R.string.text_invalidation_alert));
+                    builder.setMessage(getResources().getString(R.string.msg_enter_right_format_number));
                     builder.setCancelable(true);
                 }
             } else if (phone_no.length() == 11) {        // 018 367X 4700
@@ -331,21 +327,21 @@ public class SMSVerificationActivity extends CommonActivity {
 
                 if (matches) {
 
-                    builder.setTitle(context.getResources().getString(R.string.text_verification));
-                    builder.setMessage(context.getResources().getString(R.string.msg_verify_phone_number) + " (" + phone_no + "). " + context.getResources().getString(R.string.msg_is_this_ok));
+                    builder.setTitle(getResources().getString(R.string.text_verification));
+                    builder.setMessage(getResources().getString(R.string.msg_verify_phone_number) + " (" + phone_no + "). " + getResources().getString(R.string.msg_is_this_ok));
                     builder.setCancelable(true);
                 } else {
 
                     isvalid = false;
-                    builder.setTitle(context.getResources().getString(R.string.text_invalidation_alert));
-                    builder.setMessage(context.getResources().getString(R.string.msg_enter_right_format_number));
+                    builder.setTitle(getResources().getString(R.string.text_invalidation_alert));
+                    builder.setMessage(getResources().getString(R.string.msg_enter_right_format_number));
                     builder.setCancelable(true);
                 }
             } else {
 
                 isvalid = false;
-                builder.setTitle(context.getResources().getString(R.string.text_invalidation_alert));
-                builder.setMessage(context.getResources().getString(R.string.msg_please_enter_right_number));
+                builder.setTitle(getResources().getString(R.string.text_invalidation_alert));
+                builder.setMessage(getResources().getString(R.string.msg_please_enter_right_number));
                 builder.setCancelable(true);
             }
         } else if (nation.equals("ID")) {
@@ -359,14 +355,14 @@ public class SMSVerificationActivity extends CommonActivity {
 
                 if (matches) {
 
-                    builder.setTitle(context.getResources().getString(R.string.text_verification));
-                    builder.setMessage(context.getResources().getString(R.string.msg_verify_phone_number) + " (" + phone_no + "). " + context.getResources().getString(R.string.msg_is_this_ok));
+                    builder.setTitle(getResources().getString(R.string.text_verification));
+                    builder.setMessage(getResources().getString(R.string.msg_verify_phone_number) + " (" + phone_no + "). " + getResources().getString(R.string.msg_is_this_ok));
                     builder.setCancelable(true);
                 } else {
 
                     isvalid = false;
-                    builder.setTitle(context.getResources().getString(R.string.text_invalidation_alert));
-                    builder.setMessage(context.getResources().getString(R.string.msg_enter_right_format_number));
+                    builder.setTitle(getResources().getString(R.string.text_invalidation_alert));
+                    builder.setMessage(getResources().getString(R.string.msg_enter_right_format_number));
                     builder.setCancelable(true);
                 }
             } else if (phone_no.length() == 12) {        // 0813 1111 8569
@@ -378,14 +374,14 @@ public class SMSVerificationActivity extends CommonActivity {
 
                 if (matches) {
 
-                    builder.setTitle(context.getResources().getString(R.string.text_verification));
-                    builder.setMessage(context.getResources().getString(R.string.msg_verify_phone_number) + " (" + phone_no + "). " + context.getResources().getString(R.string.msg_is_this_ok));
+                    builder.setTitle(getResources().getString(R.string.text_verification));
+                    builder.setMessage(getResources().getString(R.string.msg_verify_phone_number) + " (" + phone_no + "). " + getResources().getString(R.string.msg_is_this_ok));
                     builder.setCancelable(true);
                 } else {
 
                     isvalid = false;
-                    builder.setTitle(context.getResources().getString(R.string.text_invalidation_alert));
-                    builder.setMessage(context.getResources().getString(R.string.msg_enter_right_format_number));
+                    builder.setTitle(getResources().getString(R.string.text_invalidation_alert));
+                    builder.setMessage(getResources().getString(R.string.msg_enter_right_format_number));
                     builder.setCancelable(true);
                 }
             } else if (phone_no.length() == 13) {        // 0813 11111 8569
@@ -396,21 +392,21 @@ public class SMSVerificationActivity extends CommonActivity {
 
                 if (matches) {
 
-                    builder.setTitle(context.getResources().getString(R.string.text_verification));
-                    builder.setMessage(context.getResources().getString(R.string.msg_verify_phone_number) + " (" + phone_no + "). " + context.getResources().getString(R.string.msg_is_this_ok));
+                    builder.setTitle(getResources().getString(R.string.text_verification));
+                    builder.setMessage(getResources().getString(R.string.msg_verify_phone_number) + " (" + phone_no + "). " + getResources().getString(R.string.msg_is_this_ok));
                     builder.setCancelable(true);
                 } else {
 
                     isvalid = false;
-                    builder.setTitle(context.getResources().getString(R.string.text_invalidation_alert));
-                    builder.setMessage(context.getResources().getString(R.string.msg_enter_right_format_number));
+                    builder.setTitle(getResources().getString(R.string.text_invalidation_alert));
+                    builder.setMessage(getResources().getString(R.string.msg_enter_right_format_number));
                     builder.setCancelable(true);
                 }
             } else {
 
                 isvalid = false;
-                builder.setTitle(context.getResources().getString(R.string.text_invalidation_alert));
-                builder.setMessage(context.getResources().getString(R.string.msg_please_enter_right_number));
+                builder.setTitle(getResources().getString(R.string.text_invalidation_alert));
+                builder.setMessage(getResources().getString(R.string.msg_please_enter_right_number));
                 builder.setCancelable(true);
             }
         }
@@ -418,18 +414,18 @@ public class SMSVerificationActivity extends CommonActivity {
 
         if (isvalid) {
 
-            builder.setPositiveButton(context.getResources().getString(R.string.button_ok), (dialog, which) -> {
+            builder.setPositiveButton(getResources().getString(R.string.button_ok), (dialog, which) -> {
 
                 GetAuthSMSRequestTask getAuthSMSRequestTask = new GetAuthSMSRequestTask();
                 getAuthSMSRequestTask.execute();
                 dialog.cancel();
             });
 
-            builder.setNeutralButton(context.getResources().getString(R.string.button_cancel), (dialog, id) -> dialog.cancel());
+            builder.setNeutralButton(getResources().getString(R.string.button_cancel), (dialog, id) -> dialog.cancel());
 
         } else {
 
-            builder.setPositiveButton(context.getResources().getString(R.string.button_ok), (dialog, which) -> dialog.cancel());
+            builder.setPositiveButton(getResources().getString(R.string.button_ok), (dialog, which) -> dialog.cancel());
 
         }
 
@@ -446,7 +442,7 @@ public class SMSVerificationActivity extends CommonActivity {
         email = edit_verify_email.getText().toString();
 
         AlertDialog.Builder builder = new AlertDialog.Builder(this);
-        builder.setTitle(context.getResources().getString(R.string.text_invalidation_alert));
+        builder.setTitle(getResources().getString(R.string.text_invalidation_alert));
 
         if (authCode.length() == 4) {
             boolean isValidate = true;
@@ -456,8 +452,8 @@ public class SMSVerificationActivity extends CommonActivity {
                 isValidate = false;
                 focusItem = "name";
 
-                builder.setMessage(context.getResources().getString(R.string.msg_please_enter_name));
-                builder.setPositiveButton(context.getResources().getString(R.string.button_ok), (dialog, which) -> {
+                builder.setMessage(getResources().getString(R.string.msg_please_enter_name));
+                builder.setPositiveButton(getResources().getString(R.string.button_ok), (dialog, which) -> {
                     if (focusItem.equals("name")) {
                         edit_verify_name.requestFocus();
                     }
@@ -477,8 +473,8 @@ public class SMSVerificationActivity extends CommonActivity {
 
         } else {
 
-            builder.setMessage(context.getResources().getString(R.string.msg_please_enter_right_number));
-            builder.setPositiveButton(context.getResources().getString(R.string.button_ok), (dialog, which) -> {
+            builder.setMessage(getResources().getString(R.string.msg_please_enter_right_number));
+            builder.setPositiveButton(getResources().getString(R.string.button_ok), (dialog, which) -> {
 
                 edit_verify_4_digit.requestFocus();
                 dialog.cancel();
@@ -493,10 +489,10 @@ public class SMSVerificationActivity extends CommonActivity {
 
         HashMap<String, String> hashMap = new HashMap<>();
 
-        if (!NetworkUtil.isNetworkAvailable(context)) {
+        if (!NetworkUtil.isNetworkAvailable(this)) {
 
             hashMap.put("ResultCode", "-16");
-            hashMap.put("ResultMsg", context.getResources().getString(R.string.msg_network_connect_error));
+            hashMap.put("ResultMsg", getResources().getString(R.string.msg_network_connect_error));
             return hashMap;
         }
 
@@ -519,7 +515,7 @@ public class SMSVerificationActivity extends CommonActivity {
             hashMap.put("ResultMsg", jsonObject.getString("ResultMsg"));
         } catch (Exception e) {
 
-            String msg = String.format(context.getResources().getString(R.string.text_exception), e.toString());
+            String msg = String.format(getResources().getString(R.string.text_exception), e.toString());
             hashMap.put("ResultCode", "-15");
             hashMap.put("ResultMsg", msg);
         }
@@ -532,10 +528,10 @@ public class SMSVerificationActivity extends CommonActivity {
 
         HashMap<String, String> hashMap = new HashMap<>();
 
-        if (!NetworkUtil.isNetworkAvailable(context)) {
+        if (!NetworkUtil.isNetworkAvailable(this)) {
 
             hashMap.put("ResultCode", "-16");
-            hashMap.put("ResultMsg", context.getResources().getString(R.string.msg_network_connect_error));
+            hashMap.put("ResultMsg", getResources().getString(R.string.msg_network_connect_error));
             return hashMap;
         }
 
@@ -560,7 +556,7 @@ public class SMSVerificationActivity extends CommonActivity {
             hashMap.put("ResultMsg", jsonObject.getString("ResultMsg"));
         } catch (Exception e) {
 
-            String msg = String.format(context.getResources().getString(R.string.text_exception), e.toString());
+            String msg = String.format(getResources().getString(R.string.text_exception), e.toString());
             hashMap.put("ResultCode", "-15");
             hashMap.put("ResultMsg", msg);
         }
@@ -586,15 +582,9 @@ public class SMSVerificationActivity extends CommonActivity {
             if (!resultCode.equals("0")) {
 
                 AlertDialog.Builder builder = new AlertDialog.Builder(SMSVerificationActivity.this);
-                builder.setTitle(context.getResources().getString(R.string.text_alert));
-                builder.setMessage(context.getResources().getString(R.string.msg_sms_request_failed) + " " + resultMsg);
-                builder.setPositiveButton(context.getResources().getString(R.string.button_ok), new OnClickListener() {
-
-                    @Override
-                    public void onClick(DialogInterface dialog, int which) {
-                        dialog.cancel();
-                    }
-                });
+                builder.setTitle(getResources().getString(R.string.text_alert));
+                builder.setMessage(getResources().getString(R.string.msg_sms_request_failed) + " " + resultMsg);
+                builder.setPositiveButton(getResources().getString(R.string.button_ok), (dialog, which) -> dialog.cancel());
 
                 try {
 
@@ -626,16 +616,10 @@ public class SMSVerificationActivity extends CommonActivity {
             if (!resultCode.equals("0")) {
 
                 AlertDialog.Builder builder = new AlertDialog.Builder(SMSVerificationActivity.this);
-                builder.setTitle(context.getResources().getString(R.string.text_alert));
-                builder.setMessage(context.getResources().getString(R.string.msg_sms_verification_failed) + " " + resultMsg
-                        + "\n" + context.getResources().getString(R.string.msg_verification_not_use));
-                builder.setPositiveButton(context.getResources().getString(R.string.button_ok), new OnClickListener() {
-
-                    @Override
-                    public void onClick(DialogInterface dialog, int which) {
-                        dialog.cancel();
-                    }
-                });
+                builder.setTitle(getResources().getString(R.string.text_alert));
+                builder.setMessage(getResources().getString(R.string.msg_sms_verification_failed) + " " + resultMsg
+                        + "\n" + getResources().getString(R.string.msg_verification_not_use));
+                builder.setPositiveButton(getResources().getString(R.string.button_ok), (dialog, which) -> dialog.cancel());
 
                 if (!SMSVerificationActivity.this.isFinishing()) {
                     AlertDialog alertDialog = builder.create();
@@ -644,31 +628,26 @@ public class SMSVerificationActivity extends CommonActivity {
             } else {
 
                 AlertDialog.Builder builder = new AlertDialog.Builder(SMSVerificationActivity.this);
-                builder.setTitle(context.getResources().getString(R.string.text_success));
-                builder.setMessage(context.getResources().getString(R.string.msg_sms_verification_success));
+                builder.setTitle(getResources().getString(R.string.text_success));
+                builder.setMessage(getResources().getString(R.string.msg_sms_verification_success));
 
-                builder.setPositiveButton(context.getResources().getString(R.string.button_ok), new OnClickListener() {
+                builder.setPositiveButton(getResources().getString(R.string.button_ok), (dialog, which) -> {
 
-                    @Override
-                    public void onClick(DialogInterface dialog, int which) {
+                    dialog.cancel();
 
-                        dialog.cancel();
+                    Preferences.INSTANCE.setUserName(name);
 
-                        Preferences.INSTANCE.setUserName(name);
-                        //     MyApplication.preferences.setUserName(name);
+                    try {
 
-                        try {
+                        Intent intent = new Intent(SMSVerificationActivity.this, Class.forName("com.giosis.util.qdrive.main.MainActivity"));
+                        intent.addFlags(Intent.FLAG_ACTIVITY_NO_ANIMATION);
+                        startActivity(intent);
 
-                            Intent intent = new Intent(context, Class.forName("com.giosis.util.qdrive.main.MainActivity"));
-                            intent.addFlags(Intent.FLAG_ACTIVITY_NO_ANIMATION);
-                            startActivity(intent);
+                        overridePendingTransition(android.R.anim.fade_in, android.R.anim.fade_out);
+                        finish();
+                    } catch (Exception e) {
 
-                            overridePendingTransition(android.R.anim.fade_in, android.R.anim.fade_out);
-                            finish();
-                        } catch (Exception e) {
-
-                            Log.e("Exception", "Exception  " + e.toString());
-                        }
+                        Log.e("Exception", "Exception  " + e.toString());
                     }
                 });
 

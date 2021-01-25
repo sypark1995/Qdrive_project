@@ -3,7 +3,6 @@ package com.giosis.library.message
 import android.annotation.SuppressLint
 import android.app.AlertDialog
 import android.app.ProgressDialog
-import android.content.Context
 import android.os.AsyncTask
 import android.os.Bundle
 import android.os.Handler
@@ -29,13 +28,12 @@ import java.util.*
  * @author krm0219
  */
 class AdminMessageListDetailActivity : CommonActivity() {
-    var TAG = "AdminMessageListDetailActivity"
+    var tag = "AdminMessageListDetailActivity"
 
     var messageDetailAdapter: MessageDetailAdapter? = null
     var handler: AsyncHandler? = null
-    var adminThread: AdminThread? = null
+    private var adminThread: AdminThread? = null
 
-    var mContext: Context? = null
     var senderID: String? = null
 
     var oldResultString: String? = null
@@ -52,7 +50,6 @@ class AdminMessageListDetailActivity : CommonActivity() {
         list_message_detail_message.transcriptMode = AbsListView.TRANSCRIPT_MODE_ALWAYS_SCROLL // message 입력 후, List 최하단으로 이동
 
         //
-        mContext = applicationContext
         senderID = intent.getStringExtra("sender_id")
 
         text_top_title.text = senderID
@@ -82,7 +79,7 @@ class AdminMessageListDetailActivity : CommonActivity() {
 
         DataUtil.setAdminMessageListDetailActivity(this)
 
-        if (!NetworkUtil.isNetworkAvailable(mContext)) {
+        if (!NetworkUtil.isNetworkAvailable(this)) {
             try {
                 showDialog(resources.getString(R.string.text_warning), resources.getString(R.string.msg_network_connect_error))
             } catch (e: Exception) {
@@ -105,7 +102,7 @@ class AdminMessageListDetailActivity : CommonActivity() {
                     adminMessageDetailAsyncTask.execute()
                 }
             } catch (e: Exception) {
-                Log.e("Exception", "$TAG  AsyncHandler Exception : $e")
+                Log.e("Exception", "$tag  AsyncHandler Exception : $e")
             }
         }
     }
@@ -127,13 +124,13 @@ class AdminMessageListDetailActivity : CommonActivity() {
                     sleep(5 * 60 * 1000.toLong())
                 } catch (e: InterruptedException) {
 
-                    Log.e("Exception", "$TAG  AdminThread Exception : $e")
+                    Log.e("Exception", "$tag  AdminThread Exception : $e")
                     currentThread().interrupt()
                     e.printStackTrace()
                 }
             }
 
-            Log.e("Message", "$TAG  AdminThread while break")
+            Log.e("Message", "$tag  AdminThread while break")
         }
     }
 
@@ -186,7 +183,7 @@ class AdminMessageListDetailActivity : CommonActivity() {
                 resultObj = Gson().fromJson(jsonString, MessageDetailResult::class.java)
             } catch (e: Exception) {
 
-                Log.e("Exception", "$TAG  GetQdriverMessageDetailFromMessenger Json Exception : $e")
+                Log.e("Exception", "$tag  GetQdriverMessageDetailFromMessenger Json Exception : $e")
                 resultObj = null
             }
 
@@ -202,7 +199,7 @@ class AdminMessageListDetailActivity : CommonActivity() {
 
                 if (oldResultString != null && oldResultString.equals(newResultString, ignoreCase = true)) {
 
-                    Log.e("Message", "$TAG  AdminMessageDetailAsyncTask  EQUAL")
+                    Log.e("Message", "$tag  AdminMessageDetailAsyncTask  EQUAL")
                 } else {
 
                     if (result != null) {
@@ -217,19 +214,19 @@ class AdminMessageListDetailActivity : CommonActivity() {
                                 messageDetailList!![i].setSend_date(dateString)
                             }
 
-                            messageDetailAdapter = MessageDetailAdapter(mContext, messageDetailList, "A")
+                            messageDetailAdapter = MessageDetailAdapter(this@AdminMessageListDetailActivity, messageDetailList, "A")
                             list_message_detail_message.adapter = messageDetailAdapter
                             list_message_detail_message.setSelection(list_message_detail_message.count - 1)
                         } else {
 
-                            Toast.makeText(mContext, resources.getString(R.string.text_empty), Toast.LENGTH_SHORT).show()
+                            Toast.makeText(this@AdminMessageListDetailActivity, resources.getString(R.string.text_empty), Toast.LENGTH_SHORT).show()
                         }
                     }
                 }
             } catch (e: Exception) {
 
-                Toast.makeText(mContext, resources.getString(R.string.text_error) + "!! " + resources.getString(R.string.msg_please_try_again), Toast.LENGTH_SHORT).show()
-                Log.e("Exception", "$TAG AdminMessageDetailAsyncTask Exception : $e")
+                Toast.makeText(this@AdminMessageListDetailActivity, resources.getString(R.string.text_error) + "!! " + resources.getString(R.string.msg_please_try_again), Toast.LENGTH_SHORT).show()
+                Log.e("Exception", "$tag AdminMessageDetailAsyncTask Exception : $e")
             }
         }
     }
@@ -240,7 +237,7 @@ class AdminMessageListDetailActivity : CommonActivity() {
         sendMessage = edit_message_detail_input.text.toString().trim { it <= ' ' }
 
         if (sendMessage == "") {
-            Toast.makeText(mContext, resources.getString(R.string.msg_enter_message), Toast.LENGTH_SHORT).show()
+            Toast.makeText(this, resources.getString(R.string.msg_enter_message), Toast.LENGTH_SHORT).show()
             return
         }
 
@@ -280,7 +277,7 @@ class AdminMessageListDetailActivity : CommonActivity() {
                 Gson().fromJson(jsonString, MessageSendResult::class.java)
             } catch (e: Exception) {
 
-                Log.e("Exception", "$TAG  SendQdriveToMessengerMessage Json Exception : $e")
+                Log.e("Exception", "$tag  SendQdriveToMessengerMessage Json Exception : $e")
                 null
             }
 
@@ -320,12 +317,12 @@ class AdminMessageListDetailActivity : CommonActivity() {
             } catch (e: Exception) {
 
                 Toast.makeText(this@AdminMessageListDetailActivity, "${resources.getString(R.string.msg_send_message_error)} ${resources.getString(R.string.msg_please_try_again)}", Toast.LENGTH_SHORT).show()
-                Log.e("Exception", "$TAG SendMessageAdminAsyncTask Exception : $e")
+                Log.e("Exception", "$tag SendMessageAdminAsyncTask Exception : $e")
             }
         }
 
         init {
-            Log.e("Message", "$TAG  SendMessageAdminAsyncTask  $contents  ${Preferences.userId}  $sender_id")
+            Log.e("Message", "$tag  SendMessageAdminAsyncTask  $contents  ${Preferences.userId}  $sender_id")
         }
     }
 
@@ -338,7 +335,7 @@ class AdminMessageListDetailActivity : CommonActivity() {
             finish()
         } else if (id == R.id.layout_message_detail_send) {
 
-            if (!NetworkUtil.isNetworkAvailable(mContext)) {
+            if (!NetworkUtil.isNetworkAvailable(this)) {
                 try {
                     showDialog(resources.getString(R.string.text_warning), resources.getString(R.string.msg_network_connect_error))
                 } catch (e: Exception) {
@@ -353,7 +350,7 @@ class AdminMessageListDetailActivity : CommonActivity() {
 
     private fun showDialog(title: String?, msg: String?) {
 
-        val alert = AlertDialog.Builder(mContext)
+        val alert = AlertDialog.Builder(this)
         alert.setTitle(title)
         alert.setMessage(msg)
         alert.setPositiveButton(resources.getString(R.string.button_close)

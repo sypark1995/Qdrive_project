@@ -22,7 +22,7 @@ import java.util.Date;
 
 public class MessageDetailAdapter extends BaseAdapter {
 
-    Context mContext;
+    Context context;
 
     RelativeLayout layout_message_detail;
 
@@ -41,7 +41,7 @@ public class MessageDetailAdapter extends BaseAdapter {
 
     public MessageDetailAdapter(Context context, ArrayList<MessageDetailResult.MessageDetailList> item, String called) {
 
-        this.mContext = context;
+        this.context = context;
         this.messageDetailListArrayList = item;
         this.calledFragment = called;
     }
@@ -71,7 +71,7 @@ public class MessageDetailAdapter extends BaseAdapter {
 
         if (convertView == null) {
 
-            LayoutInflater inflater = (LayoutInflater) mContext.getSystemService(Context.LAYOUT_INFLATER_SERVICE);
+            LayoutInflater inflater = (LayoutInflater) context.getSystemService(Context.LAYOUT_INFLATER_SERVICE);
             view = inflater.inflate(R.layout.item_message_detail, null);
         } else {
 
@@ -202,7 +202,7 @@ public class MessageDetailAdapter extends BaseAdapter {
 
     private int dpTopx(float dp) {
 
-        int pixel = (int) TypedValue.applyDimension(TypedValue.COMPLEX_UNIT_DIP, dp, mContext.getResources().getDisplayMetrics());
+        int pixel = (int) TypedValue.applyDimension(TypedValue.COMPLEX_UNIT_DIP, dp, context.getResources().getDisplayMetrics());
         return pixel;
     }
 

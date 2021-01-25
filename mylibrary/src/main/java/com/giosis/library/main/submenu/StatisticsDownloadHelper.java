@@ -20,7 +20,7 @@ import java.util.ArrayList;
 
 
 public class StatisticsDownloadHelper {
-    private String TAG = "StatisticsDownloadHelper";
+    private final String TAG = "StatisticsDownloadHelper";
 
     private final Context context;
     private final String opID;
