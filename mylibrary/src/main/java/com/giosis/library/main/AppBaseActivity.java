@@ -18,6 +18,7 @@ import androidx.core.content.ContextCompat;
 import androidx.drawerlayout.widget.DrawerLayout;
 
 import com.giosis.library.R;
+import com.giosis.library.list.ListActivity;
 import com.giosis.library.main.submenu.ListNotInHousedActivity;
 import com.giosis.library.main.submenu.OutletOrderStatusActivity;
 import com.giosis.library.main.submenu.StatisticsActivity;
@@ -95,7 +96,7 @@ public class AppBaseActivity extends CommonActivity {
 
                 try {
 
-                    Intent intent = new Intent(AppBaseActivity.this, Class.forName("com.giosis.util.qdrive.list.ListActivity"));
+                    Intent intent = new Intent(AppBaseActivity.this, ListActivity.class);
                     startActivity(intent);
                 } catch (Exception e) {
 
@@ -356,7 +357,7 @@ public class AppBaseActivity extends CommonActivity {
 
                         try {
 
-                            Intent intent = new Intent(AppBaseActivity.this, Class.forName("com.giosis.util.qdrive.list.ListActivity"));
+                            Intent intent = new Intent(AppBaseActivity.this, ListActivity.class);
                             intent.putExtra("position", child_position);
                             startActivity(intent);
                         } catch (Exception e) {
