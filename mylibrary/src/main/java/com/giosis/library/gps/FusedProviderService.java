@@ -16,6 +16,7 @@ import androidx.core.app.NotificationCompat;
 
 import com.giosis.library.R;
 import com.giosis.library.main.MainActivity;
+import com.giosis.library.util.Preferences;
 import com.google.android.gms.common.api.GoogleApiClient;
 
 // Main 에서 호출 / 5분 또는 500m 거리 이동 시 마다 호출
@@ -65,9 +66,17 @@ public class FusedProviderService extends Service {
             Intent notificationIntent = new Intent(this, MainActivity.class);
             PendingIntent pendingIntent = PendingIntent.getActivity(this, 0, notificationIntent, 0);
 
+            
+            int resourceId = getResources().getIdentifier("qdrive_icon", "drawable", getPackageName());
+            if (!Preferences.INSTANCE.getUserNation().equalsIgnoreCase("SG")) {
+
+                resourceId = getResources().getIdentifier("icon_qdrive_my", "drawable", getPackageName());
+            }
+
+
             NotificationCompat.Builder builder = new NotificationCompat.Builder(this, Channel_ID)
                     .setContentTitle(getResources().getString(R.string.text_gps_service))
-                    .setSmallIcon(R.drawable.qdrive_icon)
+                    .setSmallIcon(resourceId)
                     .setContentIntent(pendingIntent);
 
             Notification notification = builder.build();
