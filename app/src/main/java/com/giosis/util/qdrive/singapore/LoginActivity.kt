@@ -14,11 +14,11 @@ import android.widget.LinearLayout
 import android.widget.ProgressBar
 import androidx.appcompat.app.AlertDialog
 import com.giosis.library.gps.GPSTrackerManager
+import com.giosis.library.main.MainActivity
 import com.giosis.library.main.SMSVerificationActivity
 import com.giosis.library.server.RetrofitClient
 import com.giosis.library.setting.DeveloperModeActivity
 import com.giosis.library.util.DatabaseHelper
-import com.giosis.util.qdrive.main.MainActivity
 import com.giosis.util.qdrive.server.data.LoginInfo
 import com.giosis.util.qdrive.util.DataUtil
 import com.giosis.util.qdrive.util.PermissionActivity

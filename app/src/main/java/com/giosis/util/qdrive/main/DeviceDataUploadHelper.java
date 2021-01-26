@@ -12,13 +12,13 @@ import android.text.TextUtils;
 import android.util.Log;
 
 import com.giosis.library.server.ImageUpload;
+import com.giosis.library.util.DatabaseHelper;
 import com.giosis.util.qdrive.barcodescanner.StdResult;
 import com.giosis.util.qdrive.singapore.OnServerEventListener;
 import com.giosis.util.qdrive.singapore.R;
 import com.giosis.util.qdrive.singapore.UploadData;
 import com.giosis.util.qdrive.util.Custom_JsonParser;
 import com.giosis.util.qdrive.util.DataUtil;
-import com.giosis.library.util.DatabaseHelper;
 import com.giosis.util.qdrive.util.DisplayUtil;
 import com.giosis.util.qdrive.util.NetworkUtil;
 
@@ -33,6 +33,7 @@ import java.util.ArrayList;
  * 업로드 대상건을 홈에서 넘겨 줌
  */
 
+// TODO_  List 이동 후 삭제
 public class DeviceDataUploadHelper {
     String TAG = "DeviceDataUploadHelper";
 

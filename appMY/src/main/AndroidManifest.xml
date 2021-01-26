@@ -77,8 +77,7 @@
                 <action android:name="com.google.firebase.INSTANCE_ID_EVENT" />
             </intent-filter>
         </service>
-        <service android:name="com.giosis.util.qdrive.gps.FusedProviderService" />
-        <service android:name="com.giosis.util.qdrive.gps.LocationManagerService" />
+
 
         <receiver
             android:name="com.giosis.util.qdrive.international.DeviceBootReceiver"
@@ -91,10 +90,6 @@
         <receiver
             android:name="com.giosis.util.qdrive.international.AlarmReceiver"
             tools:ignore="Instantiatable" />
-
-        <activity
-            android:name="com.giosis.util.qdrive.main.AppBaseActivity"
-            android:screenOrientation="portrait" />
 
         <activity
             android:name="com.giosis.util.qdrive.util.PermissionActivity"
@@ -124,30 +119,7 @@
             android:name="com.giosis.util.qdrive.international.LoginActivity"
             android:screenOrientation="portrait" />
 
-        <activity
-            android:name="com.giosis.util.qdrive.main.MainActivity"
-            android:configChanges="orientation|keyboardHidden"
-            android:screenOrientation="portrait"
-            android:windowSoftInputMode="stateAlwaysHidden|adjustPan" />
-
         <!-- -->
-
-        <activity
-            android:name="com.giosis.util.qdrive.main.FailListActivity"
-            android:configChanges="orientation|keyboardHidden"
-            android:screenOrientation="portrait"
-            android:windowSoftInputMode="stateAlwaysHidden|adjustPan" />
-
-        <activity
-            android:name="com.giosis.util.qdrive.barcodescanner.PodListActivity"
-            android:configChanges="orientation|keyboardHidden"
-            android:screenOrientation="portrait"
-            android:windowSoftInputMode="stateAlwaysHidden|adjustPan" />
-
-        <activity
-            android:name="com.giosis.util.qdrive.main.RpcListActivity"
-            android:configChanges="orientation|keyboardHidden"
-            android:screenOrientation="portrait" />
 
 
         <!-- NOTIFICATION. Scan -->
@@ -161,12 +133,6 @@
         <activity
             android:name="com.giosis.util.qdrive.barcodescanner.bluetooth.DeviceListActivity"
             android:theme="@android:style/Theme.Dialog" />
-
-        <activity
-            android:name="com.giosis.util.qdrive.barcodescanner.CameraActivity"
-            android:configChanges="orientation|keyboardHidden"
-            android:screenOrientation="portrait"
-            android:windowSoftInputMode="adjustNothing" />
 
 
         <!--   NOTIFICATION.  List   -->

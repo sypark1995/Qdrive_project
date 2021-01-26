@@ -65,7 +65,9 @@ import android.widget.TextView;
 import android.widget.Toast;
 import android.widget.ToggleButton;
 
+import com.giosis.library.BuildConfig;
 import com.giosis.library.gps.GPSTrackerManager;
+import com.giosis.library.list.BarcodeData;
 import com.giosis.library.list.delivery.DeliveryDoneActivity;
 import com.giosis.library.list.pickup.CnRPickupDoneActivity;
 import com.giosis.library.list.pickup.OutletPickupDoneResult;
@@ -73,7 +75,7 @@ import com.giosis.library.list.pickup.OutletPickupStep3Activity;
 import com.giosis.library.list.pickup.PickupAddScanActivity;
 import com.giosis.library.list.pickup.PickupDoneActivity;
 import com.giosis.library.list.pickup.PickupTakeBackActivity;
-import com.giosis.library.list.BarcodeData;
+import com.giosis.library.main.submenu.SelfCollectionDoneActivity;
 import com.giosis.library.util.DatabaseHelper;
 import com.giosis.util.qdrive.barcodescanner.bluetooth.BluetoothChatService;
 import com.giosis.util.qdrive.barcodescanner.bluetooth.DeviceListActivity;
@@ -81,8 +83,6 @@ import com.giosis.util.qdrive.barcodescanner.bluetooth.KScan;
 import com.giosis.util.qdrive.barcodescanner.bluetooth.KTSyncData;
 import com.giosis.util.qdrive.barcodescanner.camera.CameraManager;
 import com.giosis.util.qdrive.barcodescanner.history.HistoryManager;
-import com.giosis.util.qdrive.main.SelfCollectionDoneActivity;
-import com.giosis.util.qdrive.singapore.BuildConfig;
 import com.giosis.util.qdrive.singapore.LoginActivity;
 import com.giosis.util.qdrive.singapore.MyApplication;
 import com.giosis.util.qdrive.singapore.R;
@@ -95,7 +95,6 @@ import com.giosis.util.qdrive.util.PermissionChecker;
 import com.giosis.util.qdrive.util.ui.CommonActivity;
 import com.google.zxing.Result;
 
-import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.regex.Pattern;
 
@@ -888,87 +887,27 @@ public final class CaptureActivity extends CommonActivity implements SurfaceHold
     };
 
 
-    @Override
-    public void onActivityResult(int requestCode, int resultCode, Intent data) {
-        super.onActivityResult(requestCode, resultCode, data);
-        Log.e(TAG, "onActivityResult " + requestCode + " / " + resultCode);
+    /*
+     * Qxpress송장번호 규칙(범용)
+     * 운송장번호 규칙이 맞는지 체크
+     * 10문자 안넘으면 false, 맨앞두글자가 KR,SG,QX,JP,CN이 아닐경우 false, 5,6번째가 숫자가 아닐경우 false, 영문숫자조합
+      SELF_COLLECTION */
+    public static boolean isInvoiceCodeRule(String invoiceNo) {
 
-        switch (requestCode) {
-            case REQUEST_CONNECT_DEVICE: {
-                //  Bluetooth Device 연결
-                if (resultCode == Activity.RESULT_OK) {
-
-                    String address = data.getExtras().getString(DeviceListActivity.EXTRA_DEVICE_ADDRESS);
-
-                    connectedDevice = mBluetoothAdapter.getRemoteDevice(address);
-                    KTSyncData.mChatService.connect(connectedDevice);
-                }
-            }
-            break;
-
-            case REQUEST_ENABLE_BT: {
-
-                if (resultCode == Activity.RESULT_OK) {
-                    // Bluetooth 승인 요청 'YES'
-                    setupChat();
-                } else {
-                    // Bluetooth 승인 요청 'NO'
-                    Toast.makeText(this, R.string.msg_bluetooth_enabled, Toast.LENGTH_SHORT).show();
-                    finish();
-                }
-            }
-            break;
-
-            case REQUEST_DELIVERY_DONE: {
-
-                if (resultCode == Activity.RESULT_OK) {
-
-                    finish();
-                }
-            }
-            break;
-
-            case REQUEST_PICKUP_CNR: {
-
-                onResetButtonClick();
-
-                if (resultCode == Activity.RESULT_OK) {
-
-                    finish();
-                }
-            }
-            break;
-
-            case REQUEST_PICKUP_ADD_SCAN:
-            case REQUEST_PICKUP_TAKE_BACK: {
-
-                onResetButtonClick();
-
-                if (resultCode == Activity.RESULT_OK) {
-
-                    setResult(Activity.RESULT_OK);
-                    finish();
-                }
-            }
-            break;
-
-            case REQUEST_SELF_COLLECTION: {
-
-                onResetButtonClick();
-            }
-            break;
-
-            case PERMISSION_REQUEST_CODE: {
-                if (resultCode == PermissionActivity.PERMISSIONS_GRANTED) {
-                    Log.e("eylee", TAG + "   onActivityResult  PERMISSIONS_GRANTED");
-
-                    isPermissionTrue = true;
-                }
-            }
-            break;
+        boolean bln = Pattern.matches("^[a-zA-Z0-9]*$", invoiceNo);
+        if (!bln) {
+            return false;
         }
+
+        if (10 <= invoiceNo.length()) {    // self collection c2c 아닐 때
+
+            String sub_invoice_int = invoiceNo.substring(4, 6);
+            return isStringDouble(sub_invoice_int);
+        }
+
+        return true;
     }
-    
+
 
     // NOTIFICATION.  Camera  /  Bluetooth Setting
     // Camera
@@ -1291,6 +1230,190 @@ public final class CaptureActivity extends CommonActivity implements SurfaceHold
         }
     }
 
+    @Override
+    public void onActivityResult(int requestCode, int resultCode, Intent data) {
+        super.onActivityResult(requestCode, resultCode, data);
+        Log.e(TAG, "onActivityResult " + requestCode + " / " + resultCode);
+
+        switch (requestCode) {
+            case REQUEST_CONNECT_DEVICE: {
+                //  Bluetooth Device 연결
+                if (resultCode == Activity.RESULT_OK) {
+
+                    String address = data.getExtras().getString(DeviceListActivity.EXTRA_DEVICE_ADDRESS);
+
+                    connectedDevice = mBluetoothAdapter.getRemoteDevice(address);
+                    KTSyncData.mChatService.connect(connectedDevice);
+                }
+            }
+            break;
+
+            case REQUEST_ENABLE_BT: {
+
+                if (resultCode == Activity.RESULT_OK) {
+                    // Bluetooth 승인 요청 'YES'
+                    setupChat();
+                } else {
+                    // Bluetooth 승인 요청 'NO'
+                    Toast.makeText(this, R.string.msg_bluetooth_enabled, Toast.LENGTH_SHORT).show();
+                    finish();
+                }
+            }
+            break;
+
+            case REQUEST_DELIVERY_DONE:
+            case REQUEST_SELF_COLLECTION: {
+
+                if (resultCode == Activity.RESULT_OK) {
+
+                    finish();
+                }
+            }
+            break;
+
+            case REQUEST_PICKUP_CNR: {
+
+                onResetButtonClick();
+
+                if (resultCode == Activity.RESULT_OK) {
+
+                    finish();
+                }
+            }
+            break;
+
+            case REQUEST_PICKUP_ADD_SCAN:
+            case REQUEST_PICKUP_TAKE_BACK: {
+
+                onResetButtonClick();
+
+                if (resultCode == Activity.RESULT_OK) {
+
+                    setResult(Activity.RESULT_OK);
+                    finish();
+                }
+            }
+            break;
+
+            case PERMISSION_REQUEST_CODE: {
+                if (resultCode == PermissionActivity.PERMISSIONS_GRANTED) {
+                    Log.e("eylee", TAG + "   onActivityResult  PERMISSIONS_GRANTED");
+
+                    isPermissionTrue = true;
+                }
+            }
+            break;
+        }
+    }
+
+
+    // NOTIFICATION.  Add Barcode List
+    private void addScannedBarcode(String barcodeNo, String where) {
+        Log.e(TAG, "  addScannedBarcode  > " + where + " // " + barcodeNo);
+
+        mScanCount++;
+        text_capture_scan_count.setText(String.valueOf(mScanCount));
+
+
+        BarcodeData data = new BarcodeData();
+        data.setBarcode(barcodeNo.toUpperCase());
+        data.setState("NONE");
+
+        if (mScanType.equals(BarcodeType.CHANGE_DELIVERY_DRIVER)) {
+
+            data.setBarcode(changeDriverResult.getTrackingNo() + "  |  " + changeDriverResult.getStatus() + "  |  " + changeDriverResult.getCurrentDriver());
+        }
+
+
+        switch (mScanType) {
+            case BarcodeType.CONFIRM_MY_DELIVERY_ORDER:
+            case BarcodeType.CHANGE_DELIVERY_DRIVER:
+            case BarcodeType.PICKUP_CNR:
+            case BarcodeType.PICKUP_SCAN_ALL:
+            case BarcodeType.PICKUP_ADD_SCAN:
+            case BarcodeType.PICKUP_TAKE_BACK:
+                // 스캔 시 최근 스캔한 바코드가 제일 위로 셋팅됨.
+                data.setState("SUCCESS");
+
+                if (mScanType.equals(BarcodeType.CHANGE_DELIVERY_DRIVER)) {
+
+                    barcodeList.add(changeDriverResult.getTrackingNo() + "  |  " + changeDriverResult.getStatus() + "  |  " + changeDriverResult.getCurrentDriver());
+                    changeDriverObjectArrayList.add(changeDriverResult);
+                } else {
+
+                    barcodeList.add(barcodeNo);
+                }
+
+                scanBarcodeArrayList.add(0, data);
+                scanBarcodeNoListAdapter.notifyDataSetChanged();
+                list_capture_scan_barcode.setSelection(0);
+                list_capture_scan_barcode.smoothScrollToPosition(0);
+
+                break;
+            case BarcodeType.OUTLET_PICKUP_SCAN:
+
+                ArrayList<OutletPickupDoneResult.OutletPickupDoneItem.OutletPickupDoneTrackingNoItem> listItem = resultData.getResultObject().getTrackingNoList();
+                int position = -400;
+
+                for (int i = 0; i < listItem.size(); i++) {
+
+                    String tracking_no = listItem.get(i).getTrackingNo();
+
+                    if (tracking_no.equalsIgnoreCase(barcodeNo)) {
+                        Log.e("krm0219", "Compare : " + tracking_no + " vs " + barcodeNo);
+                        position = i;
+                        data.setState("SUCCESS");
+                        listItem.get(i).setScanned(true);
+                    }
+                }
+
+
+                if (0 <= position) {
+
+                    Log.e("krm0219", " Position : " + position);
+                    barcodeList.add(barcodeNo);
+
+                    scanBarcodeArrayList.set(position, data);
+                    scanBarcodeNoListAdapter.notifyDataSetChanged();
+                    list_capture_scan_barcode.setSelection(0);
+                    list_capture_scan_barcode.smoothScrollToPosition(0);
+                } else {
+
+                    mScanCount--;
+                    text_capture_scan_count.setText(String.valueOf(mScanCount));
+
+                    scanBarcodeNoListAdapter.notifyDataSetChanged();
+
+                    AlertDialog.Builder alertDialog = new AlertDialog.Builder(this);
+                    alertDialog.setTitle(context.getResources().getString(R.string.text_warning));
+                    alertDialog.setMessage(context.getResources().getString(R.string.msg_no_outlet_parcels));
+                    alertDialog.setPositiveButton(context.getResources().getString(R.string.button_ok),
+                            new DialogInterface.OnClickListener() {
+                                public void onClick(DialogInterface dialog, int which) {
+
+                                    dialog.dismiss();
+                                }
+                            });
+                    alertDialog.show();
+                }
+                break;
+            default:
+                //스캔 시 최근 스캔한 바코드가 아래로 추가됨.
+                // maybe.. DELIVERY DONE, SELF COLLECTION
+                scanBarcodeArrayList.add(data);
+                scanBarcodeNoListAdapter.notifyDataSetChanged();
+                break;
+        }
+
+        if (!mScanType.equals(BarcodeType.CONFIRM_MY_DELIVERY_ORDER) && !mScanType.equals(BarcodeType.CHANGE_DELIVERY_DRIVER)
+                && !mScanType.equals(BarcodeType.PICKUP_CNR)) {
+
+            updateInvoiceNO(mScanType, barcodeNo);
+        }
+
+        edit_capture_type_number.setText("");
+        inputMethodManager.hideSoftInputFromWindow(edit_capture_type_number.getWindowToken(), 0);
+    }
 
     // TODO.  Add Barcode  (Validation Check / Add List)
     // NOTIFICATION.  Barcode Validation Check
@@ -1512,7 +1635,7 @@ public final class CaptureActivity extends CommonActivity implements SurfaceHold
             }
             case BarcodeType.SELF_COLLECTION: {     // 2016-09-20 eylee
 
-                if (!isInvoiceCodeRule(strBarcodeNo, mScanType)) {
+                if (!isInvoiceCodeRule(strBarcodeNo)) {
 
                     beepManagerError.playBeepSoundAndVibrate();
                     Toast toast = Toast.makeText(this, context.getResources().getString(R.string.msg_invalid_scan), Toast.LENGTH_SHORT);
@@ -1549,182 +1672,6 @@ public final class CaptureActivity extends CommonActivity implements SurfaceHold
                 beepManager.playBeepSoundAndVibrate();
                 addScannedBarcode(strBarcodeNo, "checkValidation - Default");
             }
-        }
-    }
-
-
-    // NOTIFICATION.  Add Barcode List
-    private void addScannedBarcode(String barcodeNo, String where) {
-        Log.e(TAG, "  addScannedBarcode  > " + where + " // " + barcodeNo);
-
-        mScanCount++;
-        text_capture_scan_count.setText(String.valueOf(mScanCount));
-
-
-        BarcodeData data = new BarcodeData();
-        data.setBarcode(barcodeNo.toUpperCase());
-        data.setState("NONE");
-
-        if (mScanType.equals(BarcodeType.CHANGE_DELIVERY_DRIVER)) {
-
-            data.setBarcode(changeDriverResult.getTrackingNo() + "  |  " + changeDriverResult.getStatus() + "  |  " + changeDriverResult.getCurrentDriver());
-        }
-
-
-        switch (mScanType) {
-            case BarcodeType.CONFIRM_MY_DELIVERY_ORDER:
-            case BarcodeType.CHANGE_DELIVERY_DRIVER:
-            case BarcodeType.PICKUP_CNR:
-            case BarcodeType.PICKUP_SCAN_ALL:
-            case BarcodeType.PICKUP_ADD_SCAN:
-            case BarcodeType.PICKUP_TAKE_BACK:
-                // 스캔 시 최근 스캔한 바코드가 제일 위로 셋팅됨.
-                data.setState("SUCCESS");
-
-                if (mScanType.equals(BarcodeType.CHANGE_DELIVERY_DRIVER)) {
-
-                    barcodeList.add(changeDriverResult.getTrackingNo() + "  |  " + changeDriverResult.getStatus() + "  |  " + changeDriverResult.getCurrentDriver());
-                    changeDriverObjectArrayList.add(changeDriverResult);
-                } else {
-
-                    barcodeList.add(barcodeNo);
-                }
-
-                scanBarcodeArrayList.add(0, data);
-                scanBarcodeNoListAdapter.notifyDataSetChanged();
-                list_capture_scan_barcode.setSelection(0);
-                list_capture_scan_barcode.smoothScrollToPosition(0);
-
-                break;
-            case BarcodeType.OUTLET_PICKUP_SCAN:
-
-                ArrayList<OutletPickupDoneResult.OutletPickupDoneItem.OutletPickupDoneTrackingNoItem> listItem = resultData.getResultObject().getTrackingNoList();
-                int position = -400;
-
-                for (int i = 0; i < listItem.size(); i++) {
-
-                    String tracking_no = listItem.get(i).getTrackingNo();
-
-                    if (tracking_no.equalsIgnoreCase(barcodeNo)) {
-                        Log.e("krm0219", "Compare : " + tracking_no + " vs " + barcodeNo);
-                        position = i;
-                        data.setState("SUCCESS");
-                        listItem.get(i).setScanned(true);
-                    }
-                }
-
-
-                if (0 <= position) {
-
-                    Log.e("krm0219", " Position : " + position);
-                    barcodeList.add(barcodeNo);
-
-                    scanBarcodeArrayList.set(position, data);
-                    scanBarcodeNoListAdapter.notifyDataSetChanged();
-                    list_capture_scan_barcode.setSelection(0);
-                    list_capture_scan_barcode.smoothScrollToPosition(0);
-                } else {
-
-                    mScanCount--;
-                    text_capture_scan_count.setText(String.valueOf(mScanCount));
-
-                    scanBarcodeNoListAdapter.notifyDataSetChanged();
-
-                    AlertDialog.Builder alertDialog = new AlertDialog.Builder(this);
-                    alertDialog.setTitle(context.getResources().getString(R.string.text_warning));
-                    alertDialog.setMessage(context.getResources().getString(R.string.msg_no_outlet_parcels));
-                    alertDialog.setPositiveButton(context.getResources().getString(R.string.button_ok),
-                            new DialogInterface.OnClickListener() {
-                                public void onClick(DialogInterface dialog, int which) {
-
-                                    dialog.dismiss();
-                                }
-                            });
-                    alertDialog.show();
-                }
-                break;
-            default:
-                //스캔 시 최근 스캔한 바코드가 아래로 추가됨.
-                // maybe.. DELIVERY DONE, SELF COLLECTION
-                scanBarcodeArrayList.add(data);
-                scanBarcodeNoListAdapter.notifyDataSetChanged();
-                break;
-        }
-
-        if (!mScanType.equals(BarcodeType.CONFIRM_MY_DELIVERY_ORDER) && !mScanType.equals(BarcodeType.CHANGE_DELIVERY_DRIVER)
-                && !mScanType.equals(BarcodeType.PICKUP_CNR)) {
-
-            updateInvoiceNO(mScanType, barcodeNo);
-        }
-
-        edit_capture_type_number.setText("");
-        inputMethodManager.hideSoftInputFromWindow(edit_capture_type_number.getWindowToken(), 0);
-    }
-
-    /*
-     * update delivery set stat = @stat , chg_id = localStorage.getItem('opId')
-     * , chg_dt = datetime('now') where invoice_no = @invoice_no COLLATE NOCASE
-     * and punchOut_stat <> 'S' and reg_id = localStorage.getItem('opId')
-     */
-    private void updateInvoiceNO(String scanType, String invoiceNo) {
-
-        int updateCount = 0;
-
-        if (scanType.equals(BarcodeType.PICKUP_SCAN_ALL) || scanType.equals(BarcodeType.PICKUP_ADD_SCAN)
-                || scanType.equals(BarcodeType.PICKUP_TAKE_BACK) || scanType.equals(BarcodeType.OUTLET_PICKUP_SCAN)) {
-
-            updateCount = 1;
-        } else if (mScanType.equals(BarcodeType.DELIVERY_DONE)) {
-            // 복수건 배달완료 시점에서는 아무것도 안함 사인전 jmkang 2013-05-08
-
-            ContentValues contentVal = new ContentValues();
-            contentVal.put("reg_id", opID); // 해당 배송번호를 가지고 자신의아이디만 없데이트
-            updateCount = DatabaseHelper.getInstance().update(DatabaseHelper.DB_TABLE_INTEGRATION_LIST, contentVal,
-                    "invoice_no=? COLLATE NOCASE " + "and punchOut_stat <> 'S' " + "and reg_id = ?", new String[]{invoiceNo, opID});
-        } else if (mScanType.equals(BarcodeType.SELF_COLLECTION)) {
-
-            if (isInvoiceCodeRule(invoiceNo, mScanType)) {
-                updateCount = 1;
-            }
-        }
-
-
-        String message = String.format(" [ %s ] ", title);
-        String result;
-        String inputBarcode = scanBarcodeArrayList.get(scanBarcodeArrayList.size() - 1).getBarcode();
-
-        if (updateCount < 1) {
-
-            message += context.getResources().getString(R.string.text_not_assigned);
-            result = "FAIL";
-        } else {
-
-            message += context.getResources().getString(R.string.text_success);
-            result = "SUCCESS";
-        }
-
-        if (!mScanType.equals(BarcodeType.OUTLET_PICKUP_SCAN)) {
-
-            BarcodeData data = new BarcodeData();
-            data.setBarcode(inputBarcode);
-            data.setState(result);
-
-            scanBarcodeArrayList.set(scanBarcodeArrayList.size() - 1, data);
-            scanBarcodeNoListAdapter.notifyDataSetChanged();
-        }
-
-        // 교체 후 Adapter.notifyDataSetChanged() 메서드로 listview  변경 add comment by eylee 2016-09-08
-        if (updateCount < 1) { // 실패일때만 보여준다.
-
-            Vibrator vibrator = (Vibrator) getSystemService(Context.VIBRATOR_SERVICE);
-            if (vibrator != null) {
-
-                vibrator.vibrate(200L);
-            }
-
-            Toast toast = Toast.makeText(getApplicationContext(), message, Toast.LENGTH_LONG);
-            toast.setGravity(Gravity.CENTER, 0, 10);
-            toast.show();
         }
     }
 
@@ -2137,6 +2084,73 @@ public final class CaptureActivity extends CommonActivity implements SurfaceHold
         return isNQ;
     }
 
+    /*
+     * update delivery set stat = @stat , chg_id = localStorage.getItem('opId')
+     * , chg_dt = datetime('now') where invoice_no = @invoice_no COLLATE NOCASE
+     * and punchOut_stat <> 'S' and reg_id = localStorage.getItem('opId')
+     */
+    private void updateInvoiceNO(String scanType, String invoiceNo) {
+
+        int updateCount = 0;
+
+        if (scanType.equals(BarcodeType.PICKUP_SCAN_ALL) || scanType.equals(BarcodeType.PICKUP_ADD_SCAN)
+                || scanType.equals(BarcodeType.PICKUP_TAKE_BACK) || scanType.equals(BarcodeType.OUTLET_PICKUP_SCAN)) {
+
+            updateCount = 1;
+        } else if (mScanType.equals(BarcodeType.DELIVERY_DONE)) {
+            // 복수건 배달완료 시점에서는 아무것도 안함 사인전 jmkang 2013-05-08
+
+            ContentValues contentVal = new ContentValues();
+            contentVal.put("reg_id", opID); // 해당 배송번호를 가지고 자신의아이디만 없데이트
+            updateCount = DatabaseHelper.getInstance().update(DatabaseHelper.DB_TABLE_INTEGRATION_LIST, contentVal,
+                    "invoice_no=? COLLATE NOCASE " + "and punchOut_stat <> 'S' " + "and reg_id = ?", new String[]{invoiceNo, opID});
+        } else if (mScanType.equals(BarcodeType.SELF_COLLECTION)) {
+
+            if (isInvoiceCodeRule(invoiceNo)) {
+                updateCount = 1;
+            }
+        }
+
+
+        String message = String.format(" [ %s ] ", title);
+        String result;
+        String inputBarcode = scanBarcodeArrayList.get(scanBarcodeArrayList.size() - 1).getBarcode();
+
+        if (updateCount < 1) {
+
+            message += context.getResources().getString(R.string.text_not_assigned);
+            result = "FAIL";
+        } else {
+
+            message += context.getResources().getString(R.string.text_success);
+            result = "SUCCESS";
+        }
+
+        if (!mScanType.equals(BarcodeType.OUTLET_PICKUP_SCAN)) {
+
+            BarcodeData data = new BarcodeData();
+            data.setBarcode(inputBarcode);
+            data.setState(result);
+
+            scanBarcodeArrayList.set(scanBarcodeArrayList.size() - 1, data);
+            scanBarcodeNoListAdapter.notifyDataSetChanged();
+        }
+
+        // 교체 후 Adapter.notifyDataSetChanged() 메서드로 listview  변경 add comment by eylee 2016-09-08
+        if (updateCount < 1) { // 실패일때만 보여준다.
+
+            Vibrator vibrator = (Vibrator) getSystemService(Context.VIBRATOR_SERVICE);
+            if (vibrator != null) {
+
+                vibrator.vibrate(200L);
+            }
+
+            Toast toast = Toast.makeText(getApplicationContext(), message, Toast.LENGTH_LONG);
+            toast.setGravity(Gravity.CENTER, 0, 10);
+            toast.show();
+        }
+    }
+
     // NOTIFICATION.  SELF_COLLECTION
     /*
      * 송장번호 규칙에 맞는지 체크한후 프리뷰영역에 이미지를 보여준다.
@@ -2152,7 +2166,7 @@ public final class CaptureActivity extends CommonActivity implements SurfaceHold
             return;
         }
 
-        if (!isInvoiceCodeRule(scanBarcodeArrayList.get(0).getBarcode(), mScanType)) {
+        if (!isInvoiceCodeRule(scanBarcodeArrayList.get(0).getBarcode())) {
 
             Toast toast = Toast.makeText(this, context.getResources().getString(R.string.msg_invalid_scan), Toast.LENGTH_SHORT);
             toast.setGravity(Gravity.CENTER_HORIZONTAL, 0, 0);
@@ -2182,38 +2196,17 @@ public final class CaptureActivity extends CommonActivity implements SurfaceHold
 
         if (0 < newBarcodeNoList.size()) {
 
-            Intent intentSign = new Intent(this, SelfCollectionDoneActivity.class);
-            intentSign.putExtra("title", title);
-            intentSign.putExtra("data", newBarcodeNoList);
-            intentSign.putExtra("nonq10qfs", String.valueOf(isNonQ10QFSOrder));    //09-12 add isNonQ10QFSOrder
-            this.startActivityForResult(intentSign, REQUEST_SELF_COLLECTION);
+            Intent intent = new Intent(this, SelfCollectionDoneActivity.class);
+            intent.putExtra("title", title);
+            intent.putExtra("data", newBarcodeNoList);
+            intent.putExtra("nonq10qfs", String.valueOf(isNonQ10QFSOrder));    //09-12 add isNonQ10QFSOrder
+            this.startActivityForResult(intent, REQUEST_SELF_COLLECTION);
         } else {
 
             Toast toast = Toast.makeText(this, R.string.msg_tracking_number_manually, Toast.LENGTH_SHORT);
             toast.setGravity(Gravity.CENTER_HORIZONTAL, 0, 0);
             toast.show();
         }
-    }
-
-    /*
-     * Qxpress송장번호 규칙(범용)
-     * 운송장번호 규칙이 맞는지 체크
-     * 10문자 안넘으면 false, 맨앞두글자가 KR,SG,QX,JP,CN이 아닐경우 false, 5,6번째가 숫자가 아닐경우 false, 영문숫자조합
-      SELF_COLLECTION */
-    public static boolean isInvoiceCodeRule(String invoiceNo, String mType) {
-
-        boolean bln = Pattern.matches("^[a-zA-Z0-9]*$", invoiceNo);
-        if (!bln) {
-            return false;
-        }
-
-        if (10 <= invoiceNo.length()) {    // self collection c2c 아닐 때
-
-            String sub_invoice_int = invoiceNo.substring(4, 6);
-            return isStringDouble(sub_invoice_int);
-        }
-
-        return true;
     }
 
     public static boolean isStringDouble(String s) {

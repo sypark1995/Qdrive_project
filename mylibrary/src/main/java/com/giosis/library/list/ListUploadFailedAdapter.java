@@ -24,14 +24,14 @@ import android.widget.PopupMenu;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
 
-import com.giosis.library.DeviceDataUploadHelper;
-import com.giosis.library.OnServerEventListener;
 import com.giosis.library.R;
 import com.giosis.library.UploadData;
 import com.giosis.library.gps.GPSTrackerManager;
+import com.giosis.library.main.DeviceDataUploadHelper;
 import com.giosis.library.server.data.FailedCodeResult;
 import com.giosis.library.util.DataUtil;
 import com.giosis.library.util.DatabaseHelper;
+import com.giosis.library.util.OnServerEventListener;
 import com.giosis.library.util.Preferences;
 
 import java.io.File;

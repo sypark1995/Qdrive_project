@@ -19,10 +19,10 @@ import android.util.Log;
 
 import androidx.core.app.NotificationCompat;
 
+import com.giosis.library.main.MainActivity;
 import com.giosis.library.message.MessageListActivity;
 import com.giosis.library.util.DatabaseHelper;
 import com.giosis.util.qdrive.list.ListActivity;
-import com.giosis.util.qdrive.main.MainActivity;
 import com.giosis.util.qdrive.util.DataUtil;
 import com.google.firebase.messaging.FirebaseMessagingService;
 import com.google.firebase.messaging.RemoteMessage;

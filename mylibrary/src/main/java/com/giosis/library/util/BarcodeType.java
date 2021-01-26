@@ -6,6 +6,8 @@ public class BarcodeType {
     public static final String TYPE_PICKUP = "P";
     public static final String TYPE_CNR = "CnR";
     public static final String PICKUP_ZERO_QTY = "PZQ";
+    public static final String DELIVERY_FAILED = "DX";
+    public static final String PICKUP_FAILED = "PF";
 
 
     // CaptureActivity

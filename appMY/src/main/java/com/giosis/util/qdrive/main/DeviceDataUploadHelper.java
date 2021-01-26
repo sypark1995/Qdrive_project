@@ -10,8 +10,6 @@ import android.app.AlertDialog;
 import android.app.ProgressDialog;
 import android.content.ContentValues;
 import android.content.Context;
-import android.content.DialogInterface;
-import android.content.DialogInterface.OnClickListener;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.os.AsyncTask;
@@ -20,6 +18,7 @@ import android.text.TextUtils;
 import android.util.Log;
 
 import com.giosis.library.server.ImageUpload;
+import com.giosis.library.util.DatabaseHelper;
 import com.giosis.util.qdrive.barcodescanner.StdResult;
 import com.giosis.util.qdrive.international.OnServerEventListener;
 import com.giosis.util.qdrive.international.R;
@@ -27,7 +26,6 @@ import com.giosis.util.qdrive.international.UploadData;
 import com.giosis.util.qdrive.util.BarcodeType;
 import com.giosis.util.qdrive.util.Custom_JsonParser;
 import com.giosis.util.qdrive.util.DataUtil;
-import com.giosis.library.util.DatabaseHelper;
 import com.giosis.util.qdrive.util.DisplayUtil;
 import com.giosis.util.qdrive.util.NetworkUtil;
 
@@ -36,6 +34,7 @@ import org.json.JSONObject;
 import java.io.File;
 import java.util.ArrayList;
 
+// TODO_  List 이동 후 삭제
 public class DeviceDataUploadHelper {
     String TAG = "DeviceDataUploadHelper";
 
@@ -125,24 +124,18 @@ public class DeviceDataUploadHelper {
 
     private AlertDialog getResultAlertDialog(final Context context) {
 
-        AlertDialog dialog = new AlertDialog.Builder(context)
+        return new AlertDialog.Builder(context)
                 .setTitle(context.getResources().getString(R.string.text_upload_result))
                 .setCancelable(false)
-                .setPositiveButton(context.getResources().getString(R.string.button_ok), new OnClickListener() {
+                .setPositiveButton(context.getResources().getString(R.string.button_ok), (dialog1, which) -> {
+                    if (dialog1 != null)
+                        dialog1.dismiss();
 
-                    @Override
-                    public void onClick(DialogInterface dialog, int which) {
-                        if (dialog != null)
-                            dialog.dismiss();
-
-                        if (eventListener != null) {
-                            eventListener.onPostResult();
-                        }
+                    if (eventListener != null) {
+                        eventListener.onPostResult();
                     }
                 })
                 .create();
-
-        return dialog;
     }
 
     private void showResultDialog(String message) {
@@ -300,7 +293,7 @@ public class DeviceDataUploadHelper {
                         Log.e("krm0219", " RE-Upload DATA 1 : " + bitmapString);
                         Log.e("krm0219", " RE-Upload DATA 2 : " + bitmapString1);
 
-                        // 사인 이미지 없으면 업로드 실패
+                        // 사인, 이미지가 둘 다 없으면 업로드 불가능
                         if (bitmapString.equals("") && bitmapString1.equals("")) {
                             result.setResultCode(-14);
                             result.setResultMsg("");
@@ -323,7 +316,6 @@ public class DeviceDataUploadHelper {
                             }
                         }
                     }
-
                     Log.e("Server", TAG + "  DATA : " + uploadData.getStat() + " / " + bitmapString);
 
 
@@ -411,10 +403,10 @@ public class DeviceDataUploadHelper {
 
 
                     job.accumulate("rcv_type", uploadData.getReceiveType());
-                    job.accumulate("stat", uploadData.getStat());   // P3:Pickup Down / PX: Pickup Cancle / PF : Pickup Failed
+                    job.accumulate("stat", uploadData.getStat());   // P3:Pickup Down / PF : Pickup Failed
                     job.accumulate("chg_id", opID);
                     job.accumulate("deliv_msg", "(by Qdrive RealTime-Upload)"); // 내부관리자용 메세지
-                    job.accumulate("opId", opID);  // del_driver_id 로 사용됨
+                    job.accumulate("opId", opID);
                     job.accumulate("officeCd", officeCode);
                     job.accumulate("device_id", deviceID);
                     job.accumulate("network_type", networkType);
@@ -422,12 +414,12 @@ public class DeviceDataUploadHelper {
                     job.accumulate("fileData", bitmapString);
                     job.accumulate("fileData2", bitmapString2);
                     job.accumulate("remark", uploadData.getDriverMemo());  // 드라이버 메세지 driver_memo	== remark
-                    job.accumulate("disk_size", "999999");  // 남은디스크용량
-                    job.accumulate("lat", latitude);  // 위도
-                    job.accumulate("lon", longitude);  // 경도
-                    job.accumulate("real_qty", uploadData.getRealQty());  // 실제픽업수량
-                    job.accumulate("fail_reason", uploadData.getFailReason());  // 픽업취소이유코드
-                    job.accumulate("retry_day", uploadData.getRetryDay());  // Failed - 픽업 재시도 날짜
+                    job.accumulate("disk_size", "999999");
+                    job.accumulate("lat", latitude);
+                    job.accumulate("lon", longitude);
+                    job.accumulate("real_qty", uploadData.getRealQty());
+                    job.accumulate("fail_reason", uploadData.getFailReason());
+                    job.accumulate("retry_day", uploadData.getRetryDay());
                     job.accumulate("app_id", DataUtil.appID);
                     job.accumulate("nation_cd", DataUtil.nationCode);
 

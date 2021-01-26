@@ -21,10 +21,6 @@
         tools:targetApi="n">
 
         <activity
-            android:name="com.giosis.util.qdrive.main.AppBaseActivity"
-            android:screenOrientation="portrait" />
-
-        <activity
             android:name="com.giosis.util.qdrive.util.PermissionActivity"
             android:configChanges="orientation|screenSize|screenLayout|keyboard|keyboardHidden"
             android:screenOrientation="unspecified"
@@ -58,12 +54,6 @@
 
 
         <activity
-            android:name="com.giosis.util.qdrive.main.RpcListActivity"
-            android:configChanges="orientation|keyboardHidden"
-            android:label="@string/app_name"
-            android:screenOrientation="portrait" />
-
-        <activity
             android:name="com.giosis.util.qdrive.list.ListActivity"
             android:configChanges="orientation|keyboardHidden"
             android:label="@string/app_name"
@@ -89,21 +79,10 @@
             android:screenOrientation="portrait"
             android:windowSoftInputMode="stateAlwaysHidden|adjustPan" />
         <activity
-            android:name="com.giosis.util.qdrive.main.MainActivity"
-            android:configChanges="orientation|keyboardHidden"
-            android:label="@string/app_name"
-            android:screenOrientation="portrait"
-            android:windowSoftInputMode="stateAlwaysHidden|adjustPan" />
-        <activity
             android:name="com.giosis.util.qdrive.barcodescanner.CaptureActivity"
             android:configChanges="orientation|keyboardHidden"
             android:screenOrientation="portrait"
             android:windowSoftInputMode="adjustNothing" />
-        <activity
-            android:name="com.giosis.util.qdrive.main.SelfCollectionDoneActivity"
-            android:configChanges="orientation|keyboardHidden"
-            android:screenOrientation="portrait"
-            android:windowSoftInputMode="stateAlwaysHidden|adjustPan" />
 
         <activity
             android:name="com.giosis.util.qdrive.barcodescanner.PreferencesActivity"
@@ -153,9 +132,7 @@
             </intent-filter>
         </service>
 
-        <service android:name="com.giosis.util.qdrive.gps.FusedProviderService" />
 
-        <service android:name="com.giosis.util.qdrive.gps.LocationManagerService" />
 
 
         <uses-library

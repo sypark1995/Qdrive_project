@@ -17,11 +17,10 @@ import android.widget.AdapterView
 import android.widget.LinearLayout
 import android.widget.ProgressBar
 import com.giosis.library.gps.GPSTrackerManager
+import com.giosis.library.main.MainActivity
 import com.giosis.library.main.SMSVerificationActivity
 import com.giosis.library.setting.DeveloperModeActivity
 import com.giosis.library.util.DatabaseHelper
-import com.giosis.util.qdrive.main.GetRestDaysAsyncTask
-import com.giosis.util.qdrive.main.MainActivity
 import com.giosis.util.qdrive.util.*
 import com.giosis.util.qdrive.util.ui.CommonActivity
 import kotlinx.android.synthetic.main.activity_login.*
@@ -385,68 +384,99 @@ class LoginActivity : CommonActivity() {
                 // NOTIFICATION.  Login Success
 
                 Log.e(tag, " Login Version -  ${MyApplication.preferences.appVersion} < ${result.resultObject.serverVersion}")
+                progressBar.visibility = View.GONE
+
 
                 if (MyApplication.preferences.appVersion < result.resultObject.serverVersion) {
 
-                    progressBar.visibility = View.GONE
                     val msg = java.lang.String.format(context.resources.getString(R.string.msg_update_version),
                             result.resultObject.serverVersion, MyApplication.preferences.appVersion)
                     goGooglePlay(msg)
                 } else {
 
-                    DatabaseHelper.getInstance().delete(DatabaseHelper.DB_TABLE_REST_DAYS, "")
+                    DataUtil.nationCode = MyApplication.preferences.userNation
+                    MyApplication.preferences.userId = result.resultObject.userId
+                    MyApplication.preferences.userName = result.resultObject.userName
+                    MyApplication.preferences.userEmail = result.resultObject.userEmail
+                    MyApplication.preferences.officeCode = result.resultObject.officeCode
+                    MyApplication.preferences.officeName = result.resultObject.officeName
+                    MyApplication.preferences.pickupDriver = result.resultObject.pickupDriver
+                    MyApplication.preferences.outletDriver = result.resultObject.outletDriver
+                    MyApplication.preferences.lockerStatus = result.resultObject.lockerStatus
+                    MyApplication.preferences.default = result.resultObject.defaultYn
+                    MyApplication.preferences.authNo = result.resultObject.authNo
 
-                    GetRestDaysAsyncTask(MyApplication.preferences.userNation, Calendar.getInstance().get(Calendar.YEAR), object : onEventListner {
-                        override fun onSuccess() {
-
-                            GetRestDaysAsyncTask(MyApplication.preferences.userNation, Calendar.getInstance().get(Calendar.YEAR) + 1, object : onEventListner {
-                                override fun onSuccess() {
-                                    Log.e(tag, "Rest Day   DB insert finish")
-
-                                    progressBar.visibility = View.GONE
-                                    DataUtil.nationCode = MyApplication.preferences.userNation
-
-                                    MyApplication.preferences.userId = result.resultObject.userId
-                                    MyApplication.preferences.userName = result.resultObject.userName
-                                    MyApplication.preferences.userEmail = result.resultObject.userEmail
-                                    MyApplication.preferences.officeCode = result.resultObject.officeCode
-                                    MyApplication.preferences.officeName = result.resultObject.officeName
-                                    MyApplication.preferences.pickupDriver = result.resultObject.pickupDriver
-                                    MyApplication.preferences.outletDriver = result.resultObject.outletDriver
-                                    MyApplication.preferences.lockerStatus = result.resultObject.lockerStatus
-                                    MyApplication.preferences.default = result.resultObject.defaultYn
-                                    MyApplication.preferences.authNo = result.resultObject.authNo
-
-                                    Log.e(tag, "SERVER  DOWNLOAD  DATA : ${result.resultObject.officeCode} / ${result.resultObject.officeName} / " +
-                                            "${result.resultObject.pickupDriver} / ${result.resultObject.outletDriver} / ${result.resultObject.lockerStatus} / " +
-                                            "${result.resultObject.defaultYn} / ${result.resultObject.authNo}")
+                    Log.e(tag, "SERVER  DOWNLOAD  DATA : ${result.resultObject.officeCode} / ${result.resultObject.officeName} / " +
+                            "${result.resultObject.pickupDriver} / ${result.resultObject.outletDriver} / ${result.resultObject.lockerStatus} / " +
+                            "${result.resultObject.defaultYn} / ${result.resultObject.authNo}")
 
 
-                                    Log.e(tag, "  SMS / Device Auth - ${result.resultObject.smsYn}, ${result.resultObject.deviceYn}")
-                                    // Notification.  GO Main
-                                    if (result.resultObject.smsYn == "Y" && result.resultObject.deviceYn == "Y") {
+                    Log.e(tag, "  SMS / Device Auth - ${result.resultObject.smsYn}, ${result.resultObject.deviceYn}")
+                    // Notification.  GO Main
+                    if (result.resultObject.smsYn == "Y" && result.resultObject.deviceYn == "Y") {
 
-                                        val intent = Intent(this@LoginActivity, MainActivity::class.java)
-                                        startActivity(intent)
-                                        finish()
-                                    } else {
+                        val intent = Intent(this@LoginActivity, MainActivity::class.java)
+                        startActivity(intent)
+                        finish()
+                    } else {
 
-                                        goSMSVerification(context.resources.getString(R.string.msg_go_sms_verification))
-                                    }
-                                }
+                        goSMSVerification(context.resources.getString(R.string.msg_go_sms_verification))
+                    }
 
-                                override fun onFailure() {
 
-                                    showDialog("Rest Day API Error. ${context.resources.getString(R.string.msg_please_try_again)}")
-                                }
-                            }).execute()
-                        }
+                    //    DatabaseHelper.getInstance().delete(DatabaseHelper.DB_TABLE_REST_DAYS, "")
 
-                        override fun onFailure() {
-
-                            showDialog("Rest Day API Error. ${context.resources.getString(R.string.msg_please_try_again)}")
-                        }
-                    }).execute()
+//                    GetRestDaysAsyncTask(MyApplication.preferences.userNation, Calendar.getInstance().get(Calendar.YEAR), object : onEventListner {
+//                        override fun onSuccess() {
+//
+//                            GetRestDaysAsyncTask(MyApplication.preferences.userNation, Calendar.getInstance().get(Calendar.YEAR) + 1, object : onEventListner {
+//                                override fun onSuccess() {
+//                                    Log.e(tag, "Rest Day   DB insert finish")
+//
+//                                    progressBar.visibility = View.GONE
+//                                    DataUtil.nationCode = MyApplication.preferences.userNation
+//
+//                                    MyApplication.preferences.userId = result.resultObject.userId
+//                                    MyApplication.preferences.userName = result.resultObject.userName
+//                                    MyApplication.preferences.userEmail = result.resultObject.userEmail
+//                                    MyApplication.preferences.officeCode = result.resultObject.officeCode
+//                                    MyApplication.preferences.officeName = result.resultObject.officeName
+//                                    MyApplication.preferences.pickupDriver = result.resultObject.pickupDriver
+//                                    MyApplication.preferences.outletDriver = result.resultObject.outletDriver
+//                                    MyApplication.preferences.lockerStatus = result.resultObject.lockerStatus
+//                                    MyApplication.preferences.default = result.resultObject.defaultYn
+//                                    MyApplication.preferences.authNo = result.resultObject.authNo
+//
+//                                    Log.e(tag, "SERVER  DOWNLOAD  DATA : ${result.resultObject.officeCode} / ${result.resultObject.officeName} / " +
+//                                            "${result.resultObject.pickupDriver} / ${result.resultObject.outletDriver} / ${result.resultObject.lockerStatus} / " +
+//                                            "${result.resultObject.defaultYn} / ${result.resultObject.authNo}")
+//
+//
+//                                    Log.e(tag, "  SMS / Device Auth - ${result.resultObject.smsYn}, ${result.resultObject.deviceYn}")
+//                                    // Notification.  GO Main
+//                                    if (result.resultObject.smsYn == "Y" && result.resultObject.deviceYn == "Y") {
+//
+//                                        val intent = Intent(this@LoginActivity, MainActivity::class.java)
+//                                        startActivity(intent)
+//                                        finish()
+//                                    } else {
+//
+//                                        goSMSVerification(context.resources.getString(R.string.msg_go_sms_verification))
+//                                    }
+//                                }
+//
+//                                override fun onFailure() {
+//
+//                                    showDialog("Rest Day API Error. ${context.resources.getString(R.string.msg_please_try_again)}")
+//                                }
+//                            }).execute()
+//                        }
+//
+//                        override fun onFailure() {
+//
+//                            showDialog("Rest Day API Error. ${context.resources.getString(R.string.msg_please_try_again)}")
+//                        }
+//                    }).execute()
                 }
             }
         }

@@ -53,11 +53,7 @@ class LockerUserInfoViewModel : BaseViewModel() {
     fun callServer() {
 
         progressVisible.value = true
-
-        // TEST   7Eleven.Ajib
-        var id = Preferences.userId
-        if(Preferences.userId.equals("karam.kim"))
-            id = " 7Eleven.Ajib"
+        val id = Preferences.userId
 
         RetrofitClient.instanceDynamic().requestGetLockerUserInfo(id)
                 .subscribeOn(Schedulers.io())
