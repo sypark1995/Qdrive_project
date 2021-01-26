@@ -713,8 +713,8 @@ public class MainActivity extends AppBaseActivity {
             if (Build.MANUFACTURER.equals("HUAWEI") && Preferences.INSTANCE.getServerURL().contains("staging")) {  // KR 화웨이폰 - google 위치정보 못가져옴
                 isGooglePlayService = false;
             }
-            // TEST.
-            isGooglePlayService = false;
+//            // TEST.
+//            isGooglePlayService = false;
 
             if (isGooglePlayService) {  // Fused Provider Service start (Google play 에 클라이언트 객체 얻어 서비스)
 
