@@ -76,5 +76,8 @@ dependencies {
 
     implementation 'com.google.firebase:firebase-core:18.0.1'
     implementation 'com.google.firebase:firebase-messaging:21.0.1'
+
+    implementation "com.journeyapps:zxing-android-embedded:3.6.0"
+
 }
 

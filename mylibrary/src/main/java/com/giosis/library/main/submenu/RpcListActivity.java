@@ -19,6 +19,7 @@ import android.widget.SearchView;
 import android.widget.TextView;
 
 import com.giosis.library.R;
+import com.giosis.library.bluetooth.BluetoothClass;
 import com.giosis.library.list.ChildItem;
 import com.giosis.library.list.ListInProgressAdapter;
 import com.giosis.library.list.RowItem;
@@ -56,6 +57,8 @@ public class RpcListActivity extends CommonActivity implements SearchView.OnQuer
     //
     private PermissionChecker checker;
 
+    BluetoothClass bluetoothClass;
+
     public static long diffOfDate(String begin) throws Exception {
         SimpleDateFormat formatter = new SimpleDateFormat("yyyy-MM-dd");
 
@@ -79,6 +82,8 @@ public class RpcListActivity extends CommonActivity implements SearchView.OnQuer
                 | WindowManager.LayoutParams.FLAG_SHOW_WHEN_LOCKED
                 | WindowManager.LayoutParams.FLAG_TURN_SCREEN_ON);
 
+
+        bluetoothClass = new BluetoothClass(this);
 
         layout_top_back = findViewById(R.id.layout_top_back);
         text_top_title = findViewById(R.id.text_top_title);
@@ -164,7 +169,7 @@ public class RpcListActivity extends CommonActivity implements SearchView.OnQuer
 
 
         rowItems = new ArrayList<>();
-        adapter = new ListInProgressAdapter(rowItems);
+        adapter = new ListInProgressAdapter(rowItems, bluetoothClass);
 
 
         exlist_card_list.setOnGroupCollapseListener(groupPosition -> isOpen = false);
@@ -213,7 +218,7 @@ public class RpcListActivity extends CommonActivity implements SearchView.OnQuer
 
 
         rowItems = getSortList(orderby);
-        adapter = new ListInProgressAdapter(rowItems);
+        adapter = new ListInProgressAdapter(rowItems, bluetoothClass);
         adapter.setOnMoveUpListener(this);
         exlist_card_list.setAdapter(adapter);
         adapter.setSorting(rowItems);
@@ -458,5 +463,12 @@ public class RpcListActivity extends CommonActivity implements SearchView.OnQuer
                 Log.e("Permission", TAG + "   onActivityResult  PERMISSIONS_GRANTED");
             }
         }
+    }
+
+    @Override
+    public void onDestroy() {
+        super.onDestroy();
+
+        bluetoothClass.clearBluetoothAdapter();
     }
 }

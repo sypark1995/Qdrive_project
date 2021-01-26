@@ -21,6 +21,7 @@ import android.widget.RelativeLayout;
 import android.widget.TextView;
 
 import com.giosis.library.R;
+import com.giosis.library.bluetooth.BluetoothListener;
 
 import java.net.URISyntaxException;
 import java.util.ArrayList;
@@ -33,10 +34,12 @@ public class SmartRouteExpandableAdapter extends BaseExpandableListAdapter {
 
     private ArrayList<SmartRouteResult.RouteMaster> routeMasterArrayList;
     private ListInProgressAdapter routeDetailAdapter;
+    BluetoothListener bluetoothListener;
 
 
-    public SmartRouteExpandableAdapter(ArrayList<SmartRouteResult.RouteMaster> routeMasterArrayList) {
+    public SmartRouteExpandableAdapter(ArrayList<SmartRouteResult.RouteMaster> routeMasterArrayList, BluetoothListener bluetoothListener) {
         this.routeMasterArrayList = routeMasterArrayList;
+        this.bluetoothListener = bluetoothListener;
     }
 
     @Override
@@ -137,7 +140,7 @@ public class SmartRouteExpandableAdapter extends BaseExpandableListAdapter {
                 exlist_route_detail.setVisibility(View.VISIBLE);
                 text_route_orders_not.setVisibility(View.GONE);
 
-                routeDetailAdapter = new ListInProgressAdapter(routeMasterArrayList.get(groupPosition).getRouteDetailList());
+                routeDetailAdapter = new ListInProgressAdapter(routeMasterArrayList.get(groupPosition).getRouteDetailList(), bluetoothListener);
                 exlist_route_detail.setAdapter(routeDetailAdapter);
             }
         }

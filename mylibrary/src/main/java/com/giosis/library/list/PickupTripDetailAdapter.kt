@@ -7,9 +7,10 @@ import android.view.ViewGroup
 import android.view.ViewTreeObserver
 import androidx.recyclerview.widget.RecyclerView
 import com.giosis.library.R
+import com.giosis.library.bluetooth.BluetoothListener
 import kotlinx.android.synthetic.main.item_trip_detail.view.*
 
-class PickupTripDetailAdapter(private val context: Context, private val list: ArrayList<RowItem>, private val adapter: ListInProgressAdapter)
+class PickupTripDetailAdapter(private val context: Context, private val list: ArrayList<RowItem>, private val listener: BluetoothListener)
     : RecyclerView.Adapter<PickupTripDetailAdapter.ViewHolder>() {
 
     class ViewHolder(val view: View) : RecyclerView.ViewHolder(view)
@@ -41,9 +42,7 @@ class PickupTripDetailAdapter(private val context: Context, private val list: Ar
             holder.view.text_trip_detail_address.text = item.address
 
             holder.view.layout_trip_detail_cnr_print.setOnClickListener {
-// TODO_kjyoo
-//                Log.e("trip", "CNR Print ${item.shipping}")
-//                adapter.isConnectPortablePrint(item.shipping)
+                listener.isConnectPortablePrint(item.shipping)
             }
         }
 

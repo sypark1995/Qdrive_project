@@ -22,6 +22,8 @@ import androidx.viewpager.widget.ViewPager;
 import androidx.viewpager.widget.ViewPager.OnPageChangeListener;
 
 import com.giosis.library.R;
+import com.giosis.library.bluetooth.BluetoothClass;
+import com.giosis.library.main.MainActivity;
 import com.giosis.library.util.CommonActivity;
 import com.giosis.library.util.DataUtil;
 import com.giosis.library.util.DatabaseHelper;
@@ -59,6 +61,8 @@ public class ListActivity extends CommonActivity implements OnClickListener,
     PagerAdapter pagerAdapter;
 
     ListInProgressFragment inProgressFragment;
+
+    BluetoothClass bluetoothClass;
 
     /* Fragment numbering */
     public final static int FRAGMENT_PAGE1 = 0;
@@ -113,6 +117,8 @@ public class ListActivity extends CommonActivity implements OnClickListener,
         viewpager_list = findViewById(R.id.viewpager_list);
         pagerAdapter = new PagerAdapter(getSupportFragmentManager());
         viewpager_list.setAdapter(pagerAdapter);
+
+        bluetoothClass = new BluetoothClass(this);
 
         int position = getIntent().getIntExtra("position", 0);
         viewpager_list.setCurrentItem(position);  //첫 페이지 설정 (홈에서 카운트 클릭으로 넘어옴)
@@ -239,12 +245,11 @@ public class ListActivity extends CommonActivity implements OnClickListener,
 
         } else if (id == R.id.layout_top_back) {
 
-            // TODO_kjyoo
-//            DataUtil.inProgressListPosition = 0;
-//            DataUtil.uploadFailedListPosition = 0;
-//            Intent intent = new Intent(ListActivity.this, MainActivity.class);
-//            intent.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP | Intent.FLAG_ACTIVITY_SINGLE_TOP);
-//            startActivity(intent);
+            DataUtil.inProgressListPosition = 0;
+            DataUtil.uploadFailedListPosition = 0;
+            Intent intent = new Intent(ListActivity.this, MainActivity.class);
+            intent.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP | Intent.FLAG_ACTIVITY_SINGLE_TOP);
+            startActivity(intent);
 
         } else if (id == R.id.layout_top_smart_route) {
             Cursor cursor = DatabaseHelper.getInstance().get("SELECT * FROM "
@@ -309,13 +314,15 @@ public class ListActivity extends CommonActivity implements OnClickListener,
 
             switch (position) {
                 case 0: {
-                    inProgressFragment = new ListInProgressFragment();
+                    inProgressFragment = new ListInProgressFragment(bluetoothClass);
                     return inProgressFragment;
                 }
                 case 1:
                     return new ListUploadFailedFragment();
+
                 case 2:
-                    return new ListTodayDoneFragment();
+                    return new ListTodayDoneFragment(bluetoothClass);
+
                 default:
                     return null;
             }
@@ -344,5 +351,11 @@ public class ListActivity extends CommonActivity implements OnClickListener,
         } catch (Exception e) {
             Log.e("Exception", TAG + "  onActivityResult Exception : " + e.toString());
         }
+    }
+
+    @Override
+    public void onDestroy() {
+        super.onDestroy();
+        bluetoothClass.clearBluetoothAdapter();
     }
 }

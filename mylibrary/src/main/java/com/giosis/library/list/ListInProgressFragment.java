@@ -28,6 +28,7 @@ import androidx.constraintlayout.widget.ConstraintLayout;
 import androidx.fragment.app.Fragment;
 
 import com.giosis.library.R;
+import com.giosis.library.bluetooth.BluetoothListener;
 import com.giosis.library.util.DataUtil;
 import com.giosis.library.util.DatabaseHelper;
 import com.giosis.library.util.NDSpinner;
@@ -103,8 +104,9 @@ public class ListInProgressFragment extends Fragment
     private ExpandableListView exlist_card_list;
     private ExpandableListView exlist_smart_route;
 
-    public ListInProgressFragment() {
+    public ListInProgressFragment(BluetoothListener bluetoothListener) {
         super();
+        this.bluetoothListener = bluetoothListener;
     }
 
     public interface OnInProgressFragmentListener {
@@ -112,6 +114,8 @@ public class ListInProgressFragment extends Fragment
 
         void onTodayDoneCountRefresh(int count);
     }
+
+    BluetoothListener bluetoothListener;
 
     //부모 Activity 와 통신을 하기 위한 연결
     @Override
@@ -422,7 +426,7 @@ public class ListInProgressFragment extends Fragment
                         Preferences.INSTANCE.setClickedSRCount(Preferences.INSTANCE.getCreatedSRCount());
                         Preferences.INSTANCE.setSRResult(strResult);
 
-                        smartRouteExpandableAdapter = new SmartRouteExpandableAdapter(routeMasterArrayList);
+                        smartRouteExpandableAdapter = new SmartRouteExpandableAdapter(routeMasterArrayList, bluetoothListener);
                         exlist_smart_route.setAdapter(smartRouteExpandableAdapter);
                     }
                 }
@@ -444,7 +448,7 @@ public class ListInProgressFragment extends Fragment
                 }.getType();
 
                 routeMasterArrayList = gson.fromJson(strResult, listType);
-                smartRouteExpandableAdapter = new SmartRouteExpandableAdapter(routeMasterArrayList);
+                smartRouteExpandableAdapter = new SmartRouteExpandableAdapter(routeMasterArrayList, bluetoothListener);
                 exlist_smart_route.setAdapter(smartRouteExpandableAdapter);
             }
         }
@@ -472,7 +476,7 @@ public class ListInProgressFragment extends Fragment
             rowItems = getSortList(selectedSort);
         }
 
-        adapter = new ListInProgressAdapter(rowItems);
+        adapter = new ListInProgressAdapter(rowItems, bluetoothListener);
         adapter.setOnMoveUpListener(this);
         exlist_card_list.setAdapter(adapter);
         adapter.setSorting(rowItems);
@@ -533,63 +537,14 @@ public class ListInProgressFragment extends Fragment
     public void onPause() {
         super.onPause();
 
-// TODO_kjyoo
-//        GPrinterData.TEMP_TRACKING_NO = "";
-//        if (GPrinterData.mBluetoothAdapter != null) {
-//            GPrinterData.mBluetoothAdapter.cancelDiscovery();
-//            GPrinterData.mBluetoothAdapter = null;
-//        }
-//
-//        if (GPrinterData.printerConnManagerList != null) {
-//            for (int i = 0; i < GPrinterData.printerConnManagerList.size(); i++) {
-//                GPrinterData.printerConnManagerList.get(i).closePort();
-//            }
-//            GPrinterData.printerConnManagerList = null;
-//        }
-//
-//        if (GPrinterData.gPrinterHandler != null) {
-//            GPrinterData.gPrinterHandler = null;
-//        }
-//
-//        try {
-//            if (GPrinterData.printerReceiver != null) {
-//                getActivity().unregisterReceiver(GPrinterData.printerReceiver);
-//                GPrinterData.printerReceiver = null;
-//            }
-//        } catch (Exception e) {
-//            Log.w("new", "PageInProgress onPause Exception : " + e.toString());
-//        }
+        bluetoothListener.clearBluetoothAdapter();
     }
 
     @Override
     public void onDestroy() {
         super.onDestroy();
 
-        // TODO_kjyoo
-//        GPrinterData.TEMP_TRACKING_NO = "";
-//        if (GPrinterData.mBluetoothAdapter != null) {
-//            GPrinterData.mBluetoothAdapter.cancelDiscovery();
-//        }
-//
-//        if (GPrinterData.printerConnManagerList != null) {
-//            for (int i = 0; i < GPrinterData.printerConnManagerList.size(); i++) {
-//                GPrinterData.printerConnManagerList.get(i).closePort();
-//            }
-//            GPrinterData.printerConnManagerList = null;
-//        }
-//
-//        if (GPrinterData.gPrinterHandler != null) {
-//            GPrinterData.gPrinterHandler = null;
-//        }
-//
-//        try {
-//            if (GPrinterData.printerReceiver != null) {
-//                getActivity().unregisterReceiver(GPrinterData.printerReceiver);
-//                GPrinterData.printerReceiver = null;
-//            }
-//        } catch (Exception e) {
-//            Log.w("new", "PageInProgress onDestroy Exception : " + e.toString());
-//        }
+        bluetoothListener.clearBluetoothAdapter();
     }
 
     @Override

@@ -36,6 +36,7 @@ import com.giosis.library.gps.FusedProviderService;
 import com.giosis.library.gps.GPSTrackerManager;
 import com.giosis.library.gps.LocationManagerService;
 import com.giosis.library.gps.QuickAppUserInfoUploadHelper;
+import com.giosis.library.list.ListActivity;
 import com.giosis.library.main.submenu.OutletOrderStatusActivity;
 import com.giosis.library.main.submenu.RpcListActivity;
 import com.giosis.library.pickup.CreatePickupOrderActivity;
@@ -139,7 +140,7 @@ public class MainActivity extends AppBaseActivity {
 
                 try {
 
-                    Intent intent = new Intent(MainActivity.this, Class.forName("com.giosis.util.qdrive.list.ListActivity"));
+                    Intent intent = new Intent(MainActivity.this, ListActivity.class);
                     intent.putExtra("position", 0);
                     startActivity(intent);
                 } catch (Exception e) {

@@ -27,6 +27,7 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import com.giosis.library.R;
+import com.giosis.library.bluetooth.BluetoothListener;
 import com.giosis.library.list.delivery.DeliveryDoneActivity;
 import com.giosis.library.list.delivery.DeliveryFailedActivity;
 import com.giosis.library.list.delivery.QuickReturnFailedActivity;
@@ -49,13 +50,16 @@ public class ListInProgressAdapter extends BaseExpandableListAdapter {
 
     private ArrayList<RowItem> rowItem;
     private ArrayList<RowItem> originalRowItem;
+    BluetoothListener bluetoothListener;
 
-    public ListInProgressAdapter(ArrayList<RowItem> rowItems) {
+    public ListInProgressAdapter(ArrayList<RowItem> rowItems, BluetoothListener bluetoothListener) {
         this.rowItem = new ArrayList<>();
         this.rowItem.addAll(rowItems);
 
         this.originalRowItem = new ArrayList<>();
         this.originalRowItem.addAll(rowItems);
+
+        this.bluetoothListener = bluetoothListener;
     }
 
     public void setOnMoveUpListener(OnMoveUpListener listener) {
@@ -737,7 +741,7 @@ public class ListInProgressAdapter extends BaseExpandableListAdapter {
                     Log.e("trip", "DATA :: " + tripDataArrayList.get(i).getShipping() + tripDataArrayList.get(i).getAddress());
                 }*/
 
-                PickupTripDetailDialog dialog = new PickupTripDetailDialog(v.getContext(), tripDataArrayList, ListInProgressAdapter.this);
+                PickupTripDetailDialog dialog = new PickupTripDetailDialog(v.getContext(), tripDataArrayList, bluetoothListener);
                 dialog.show();
                 //    dialog.setCanceledOnTouchOutside(false);
                 Window window = dialog.getWindow();
@@ -858,15 +862,17 @@ public class ListInProgressAdapter extends BaseExpandableListAdapter {
 
 
         btn_list_item_child_pickup_scan.setOnClickListener(v -> {
+            try {
+                //TODO_kjyoo check
+                Intent intent = new Intent(v.getContext(), Class.forName("com.giosis.util.qdrive.barcodescanner.CaptureActivity"));
+                intent.putExtra("title", v.getContext().getResources().getString(R.string.text_start_to_scan));
+                intent.putExtra("type", BarcodeType.PICKUP_SCAN_ALL);
+                intent.putExtra("pickup_no", tracking_no);
+                intent.putExtra("applicant", requester);
+                v.getContext().startActivity(intent);
+            } catch (Exception e) {
 
-            // TODO_kjyoo
-//            Intent intent = new Intent(v.getContext(), CaptureActivity.class);
-//            intent.putExtra("title", v.getContext().getResources().getString(R.string.text_start_to_scan));
-//            intent.putExtra("type", BarcodeType.PICKUP_SCAN_ALL);
-//            intent.putExtra("pickup_no", tracking_no);
-//            intent.putExtra("applicant", requester);
-//            v.getContext().startActivity(intent);
-
+            }
         });
 
 
@@ -936,11 +942,10 @@ public class ListInProgressAdapter extends BaseExpandableListAdapter {
         });
 
         btn_list_item_child_cnr_print.setOnClickListener(v -> {
-// TODO_kjyoo
-//            count = 0;
-//            isConnectPortablePrint(tracking_no);
-        });
 
+            bluetoothListener.isConnectPortablePrint(tracking_no);
+
+        });
 
         return convertView;
     }

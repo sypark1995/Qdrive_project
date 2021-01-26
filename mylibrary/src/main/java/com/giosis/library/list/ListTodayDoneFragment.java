@@ -18,6 +18,7 @@ import android.widget.Toast;
 import androidx.fragment.app.Fragment;
 
 import com.giosis.library.R;
+import com.giosis.library.bluetooth.BluetoothListener;
 import com.giosis.library.util.PermissionActivity;
 import com.giosis.library.util.PermissionChecker;
 import com.giosis.library.util.Preferences;
@@ -45,8 +46,11 @@ public class ListTodayDoneFragment extends Fragment implements SearchView.OnQuer
     private ArrayList<ChildItem> childItems;
     private ListTodayDoneAdapter adapter;
 
-    public ListTodayDoneFragment() {
+    BluetoothListener bluetoothListener;
+
+    public ListTodayDoneFragment(BluetoothListener bluetoothListener) {
         super();
+        this.bluetoothListener = bluetoothListener;
     }
 
     //리스트 카운트를 갱신하기 위한 인터페이스
@@ -104,9 +108,6 @@ public class ListTodayDoneFragment extends Fragment implements SearchView.OnQuer
         edit_list_searchview.setHintTextColor(getResources().getColor(R.color.color_8f8f8f));
 
         layout_list_sort.setVisibility(View.GONE);
-
-        rowItems = new ArrayList<>();
-        adapter = new ListTodayDoneAdapter(rowItems);
 
         exlist_card_list.setOnGroupExpandListener(groupPosition -> {
             int groupCount = adapter.getGroupCount();
@@ -184,7 +185,7 @@ public class ListTodayDoneFragment extends Fragment implements SearchView.OnQuer
                             rowItems.add(rowitem);
                         }
 
-                        adapter = new ListTodayDoneAdapter(rowItems);
+                        adapter = new ListTodayDoneAdapter(rowItems, bluetoothListener);
                         exlist_card_list.setAdapter(adapter);
                         adapter.setSorting(rowItems);
 
@@ -251,68 +252,13 @@ public class ListTodayDoneFragment extends Fragment implements SearchView.OnQuer
     @Override
     public void onPause() {
         super.onPause();
-
-// TODO_kjyoo
-
-//        GPrinterData.TEMP_TRACKING_NO = "";
-//        if (GPrinterData.mBluetoothAdapter != null) {
-//            GPrinterData.mBluetoothAdapter.cancelDiscovery();
-//            GPrinterData.mBluetoothAdapter = null;
-//        }
-//
-//        if (GPrinterData.printerConnManagerList != null) {
-//            for (int i = 0; i < GPrinterData.printerConnManagerList.size(); i++) {
-//                GPrinterData.printerConnManagerList.get(i).closePort();
-//            }
-//            GPrinterData.printerConnManagerList = null;
-//        }
-//
-//        if (GPrinterData.gPrinterHandler != null) {
-//            GPrinterData.gPrinterHandler = null;
-//        }
-//
-//        try {
-//
-//            if (GPrinterData.printerReceiver != null) {
-//                getActivity().unregisterReceiver(GPrinterData.printerReceiver);
-//                GPrinterData.printerReceiver = null;
-//            }
-//        } catch (Exception e) {
-//        }
+        bluetoothListener.clearBluetoothAdapter();
     }
 
     @Override
     public void onDestroy() {
         super.onDestroy();
-
-        // TODO_kjyoo
-
-//        GPrinterData.TEMP_TRACKING_NO = "";
-//        if (GPrinterData.mBluetoothAdapter != null) {
-//            GPrinterData.mBluetoothAdapter.cancelDiscovery();
-//            GPrinterData.mBluetoothAdapter = null;
-//        }
-//
-//        if (GPrinterData.printerConnManagerList != null) {
-//            for (int i = 0; i < GPrinterData.printerConnManagerList.size(); i++) {
-//                GPrinterData.printerConnManagerList.get(i).closePort();
-//            }
-//            GPrinterData.printerConnManagerList = null;
-//        }
-//
-//        if (GPrinterData.gPrinterHandler != null) {
-//            GPrinterData.gPrinterHandler = null;
-//        }
-//
-//        try {
-//
-//            if (GPrinterData.printerReceiver != null) {
-//                getActivity().unregisterReceiver(GPrinterData.printerReceiver);
-//                GPrinterData.printerReceiver = null;
-//            }
-//        } catch (Exception e) {
-//        }
+        bluetoothListener.clearBluetoothAdapter();
     }
-
 
 }

@@ -5,10 +5,11 @@ import android.content.Context
 import android.os.Bundle
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.giosis.library.R
+import com.giosis.library.bluetooth.BluetoothListener
 import kotlinx.android.synthetic.main.dialog_pickup_trip_detail.*
 
 
-class PickupTripDetailDialog(context: Context, private val list: ArrayList<RowItem>, private val adapter: ListInProgressAdapter)
+class PickupTripDetailDialog(context: Context, private val list: ArrayList<RowItem>, private val listener: BluetoothListener)
     : Dialog(context), PickupTripDetailAdapter.GetViewHeightListener {
 
     private var totalHeight = 0
@@ -27,7 +28,7 @@ class PickupTripDetailDialog(context: Context, private val list: ArrayList<RowIt
 
         list_dialog_trip_detail.layoutManager = LinearLayoutManager(context)
 
-        val tripDetailAdapter = PickupTripDetailAdapter(context, list, adapter)
+        val tripDetailAdapter = PickupTripDetailAdapter(context, list, listener)
         list_dialog_trip_detail.adapter = tripDetailAdapter
         tripDetailAdapter.setGetViewHeightListener(this)
     }

@@ -18,6 +18,7 @@ import android.widget.PopupMenu;
 import android.widget.TextView;
 
 import com.giosis.library.R;
+import com.giosis.library.bluetooth.BluetoothListener;
 import com.giosis.library.util.NetworkUtil;
 import com.giosis.library.util.Preferences;
 
@@ -34,14 +35,16 @@ public class ListTodayDoneAdapter extends BaseExpandableListAdapter {
 
     private ArrayList<RowItem> rowItem;
     private ArrayList<RowItem> originalRowItem;
-
+    BluetoothListener bluetoothListener;
     private OnMoveUpListener onMoveUpListener;
 
-    ListTodayDoneAdapter(ArrayList<RowItem> rowItem) {
+    ListTodayDoneAdapter(ArrayList<RowItem> rowItem, BluetoothListener bluetoothListener) {
         this.rowItem = new ArrayList<>();
         this.rowItem.addAll(rowItem);
         this.originalRowItem = new ArrayList<>();
         this.originalRowItem.addAll(rowItem);
+
+        this.bluetoothListener = bluetoothListener;
     }
 
     // 인터페이스
@@ -267,10 +270,10 @@ public class ListTodayDoneAdapter extends BaseExpandableListAdapter {
         });
 
         btn_list_item_child_done_print_label.setOnClickListener(v -> {
-            // TODO_kjyoo
-//                isConnectPortablePrint(v.getContext(), tracking_no)
-        });
 
+            bluetoothListener.isConnectPortablePrint(tracking_no);
+
+        });
 
         // 2019.02 - Take Back
         btn_list_item_child_done_take_back.setOnClickListener(v -> {

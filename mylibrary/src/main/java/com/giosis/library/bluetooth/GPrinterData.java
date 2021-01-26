@@ -1,4 +1,4 @@
-package com.giosis.library.list;
+package com.giosis.library.bluetooth;
 
 /**
  * @author eylee 2018-04-03
