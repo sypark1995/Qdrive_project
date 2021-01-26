@@ -7,7 +7,9 @@ import android.content.Intent;
 import android.os.Bundle;
 import android.util.Log;
 import android.util.TypedValue;
+import android.view.LayoutInflater;
 import android.view.View;
+import android.view.ViewGroup;
 import android.view.inputmethod.InputMethodManager;
 import android.widget.EditText;
 import android.widget.ExpandableListView;
@@ -87,6 +89,19 @@ public class ListTodayDoneFragment extends Fragment implements SearchView.OnQuer
             PermissionActivity.startActivityForResult(getActivity(), PERMISSION_REQUEST_CODE, PERMISSIONS);
             getActivity().overridePendingTransition(0, 0);
         }
+    }
+
+
+    @Override
+    public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
+
+        View view = inflater.inflate(R.layout.fragment_inprogress, container, false);
+
+        searchview_list = view.findViewById(R.id.searchview_list);
+        layout_list_sort = view.findViewById(R.id.layout_list_sort);
+        exlist_card_list = view.findViewById(R.id.exlist_card_list);
+
+        return view;
     }
 
 

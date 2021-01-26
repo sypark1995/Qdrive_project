@@ -549,20 +549,26 @@ public class ListInProgressFragment extends Fragment
 
     @Override
     public boolean onClose() {
-        adapter.filterData("");
+        if (adapter != null) {
+            adapter.filterData("");
+        }
         return false;
     }
 
     @Override
     public boolean onQueryTextSubmit(String query) {
-        adapter.filterData(query);
+        if (adapter != null) {
+            adapter.filterData(query);
+        }
         return false;
     }
 
     @Override
     public boolean onQueryTextChange(String query) {
         Log.e("krm0219", "onQueryTextChange  " + query);
-        adapter.filterData(query);
+        if (adapter != null) {
+            adapter.filterData(query);
+        }
         return false;
     }
 
