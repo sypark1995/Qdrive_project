@@ -77,9 +77,9 @@ class AdminMessageListDetailActivity : CommonActivity() {
     override fun onResume() {
         super.onResume()
 
-        DataUtil.setAdminMessageListDetailActivity(this)
+        DataUtil.setAdminMessageListDetailActivity(this@AdminMessageListDetailActivity)
 
-        if (!NetworkUtil.isNetworkAvailable(this)) {
+        if (!NetworkUtil.isNetworkAvailable(this@AdminMessageListDetailActivity)) {
             try {
                 showDialog(resources.getString(R.string.text_warning), resources.getString(R.string.msg_network_connect_error))
             } catch (e: Exception) {
@@ -237,7 +237,7 @@ class AdminMessageListDetailActivity : CommonActivity() {
         sendMessage = edit_message_detail_input.text.toString().trim { it <= ' ' }
 
         if (sendMessage == "") {
-            Toast.makeText(this, resources.getString(R.string.msg_enter_message), Toast.LENGTH_SHORT).show()
+            Toast.makeText(this@AdminMessageListDetailActivity, resources.getString(R.string.msg_enter_message), Toast.LENGTH_SHORT).show()
             return
         }
 
@@ -335,7 +335,7 @@ class AdminMessageListDetailActivity : CommonActivity() {
             finish()
         } else if (id == R.id.layout_message_detail_send) {
 
-            if (!NetworkUtil.isNetworkAvailable(this)) {
+            if (!NetworkUtil.isNetworkAvailable(this@AdminMessageListDetailActivity)) {
                 try {
                     showDialog(resources.getString(R.string.text_warning), resources.getString(R.string.msg_network_connect_error))
                 } catch (e: Exception) {
@@ -350,7 +350,7 @@ class AdminMessageListDetailActivity : CommonActivity() {
 
     private fun showDialog(title: String?, msg: String?) {
 
-        val alert = AlertDialog.Builder(this)
+        val alert = AlertDialog.Builder(this@AdminMessageListDetailActivity)
         alert.setTitle(title)
         alert.setMessage(msg)
         alert.setPositiveButton(resources.getString(R.string.button_close)

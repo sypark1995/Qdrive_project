@@ -97,12 +97,12 @@ class CnRPickupDoneActivity : CommonActivity() {
 
 
         //
-        val checker = PermissionChecker(this)
+        val checker = PermissionChecker(this@CnRPickupDoneActivity)
 
         // 권한 여부 체크 (없으면 true, 있으면 false)
         if (checker.lacksPermissions(*PERMISSIONS)) {
             isPermissionTrue = false
-            PermissionActivity.startActivityForResult(this, PERMISSION_REQUEST_CODE, *PERMISSIONS)
+            PermissionActivity.startActivityForResult(this@CnRPickupDoneActivity, PERMISSION_REQUEST_CODE, *PERMISSIONS)
             overridePendingTransition(0, 0)
         } else {
             isPermissionTrue = true
@@ -114,7 +114,7 @@ class CnRPickupDoneActivity : CommonActivity() {
 
         if (isPermissionTrue) {
 
-            gpsTrackerManager = GPSTrackerManager(this)
+            gpsTrackerManager = GPSTrackerManager(this@CnRPickupDoneActivity)
             gpsEnable = gpsTrackerManager!!.enableGPSSetting()
 
             if (gpsEnable && gpsTrackerManager != null) {
@@ -125,7 +125,7 @@ class CnRPickupDoneActivity : CommonActivity() {
                 Log.e("Location", "$tag GPSTrackerManager onResume : $latitude  $longitude  ")
             } else {
                 1
-                DataUtil.enableLocationSettings(this)
+                DataUtil.enableLocationSettings(this@CnRPickupDoneActivity)
             }
         }
     }
@@ -175,9 +175,9 @@ class CnRPickupDoneActivity : CommonActivity() {
      */
     fun saveServerUploadSign() {
         try {
-            if (!NetworkUtil.isNetworkAvailable(this)) {
+            if (!NetworkUtil.isNetworkAvailable(this@CnRPickupDoneActivity)) {
 
-                DisplayUtil.AlertDialog(this, resources.getString(R.string.msg_network_connect_error))
+                DisplayUtil.AlertDialog(this@CnRPickupDoneActivity, resources.getString(R.string.msg_network_connect_error))
                 return
             }
 
@@ -200,14 +200,14 @@ class CnRPickupDoneActivity : CommonActivity() {
 
             if (MemoryStatus.getAvailableInternalMemorySize() != MemoryStatus.ERROR.toLong() && MemoryStatus.getAvailableInternalMemorySize() < MemoryStatus.PRESENT_BYTE) {
 
-                DisplayUtil.AlertDialog(this, resources.getString(R.string.msg_disk_size_error))
+                DisplayUtil.AlertDialog(this@CnRPickupDoneActivity, resources.getString(R.string.msg_disk_size_error))
                 return
             }
 
 
             DataUtil.logEvent("button_click", tag, DataUtil.requestSetUploadPickupData)
 
-            CnRPickupUploadHelper.Builder(this, Preferences.userId, Preferences.officeCode, Preferences.deviceUUID,
+            CnRPickupUploadHelper.Builder(this@CnRPickupDoneActivity, Preferences.userId, Preferences.officeCode, Preferences.deviceUUID,
                     pickupNoList, sign_view_sign_p_applicant_signature, sign_view_sign_p_collector_signature,
                     MemoryStatus.getAvailableInternalMemorySize(), latitude, longitude)
                     .setOnServerEventListener(object : OnServerEventListener {
@@ -223,7 +223,7 @@ class CnRPickupDoneActivity : CommonActivity() {
         } catch (e: Exception) {
 
             Log.e("krm0219", "$tag  Exception : $e")
-            Toast.makeText(this, resources.getString(R.string.text_error) + " - " + e.toString(), Toast.LENGTH_SHORT).show()
+            Toast.makeText(this@CnRPickupDoneActivity, resources.getString(R.string.text_error) + " - " + e.toString(), Toast.LENGTH_SHORT).show()
         }
     }
 
@@ -234,7 +234,7 @@ class CnRPickupDoneActivity : CommonActivity() {
 
     fun cancelSigning() {
 
-        AlertDialog.Builder(this)
+        AlertDialog.Builder(this@CnRPickupDoneActivity)
                 .setMessage(R.string.msg_delivered_sign_cancel)
                 .setPositiveButton(R.string.button_ok) { _: DialogInterface?, _: Int ->
 

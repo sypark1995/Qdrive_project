@@ -73,12 +73,12 @@ class PickupAddScanActivity : CommonActivity() {
 
 
         // permission
-        val checker = PermissionChecker(this)
+        val checker = PermissionChecker(this@PickupAddScanActivity)
 
         if (checker.lacksPermissions(*PERMISSIONS)) {
 
             isPermissionTrue = false
-            PermissionActivity.startActivityForResult(this, PERMISSION_REQUEST_CODE, *PERMISSIONS)
+            PermissionActivity.startActivityForResult(this@PickupAddScanActivity, PERMISSION_REQUEST_CODE, *PERMISSIONS)
             overridePendingTransition(0, 0)
         } else {
 
@@ -103,7 +103,7 @@ class PickupAddScanActivity : CommonActivity() {
                 Log.e(tag, " onResume  Location  :  ${gpsTrackerManager?.latitude} / ${gpsTrackerManager?.longitude}")
             } else {
 
-                DataUtil.enableLocationSettings(this)
+                DataUtil.enableLocationSettings(this@PickupAddScanActivity)
             }
         }
     }
@@ -111,7 +111,7 @@ class PickupAddScanActivity : CommonActivity() {
 
     private fun cancelUpload() {
 
-        val alertBuilder = AlertDialog.Builder(this)
+        val alertBuilder = AlertDialog.Builder(this@PickupAddScanActivity)
         alertBuilder.setMessage(resources.getString(R.string.msg_delivered_sign_cancel))
 
         alertBuilder.setPositiveButton(resources.getString(R.string.button_ok)) { _, _ ->
@@ -145,32 +145,32 @@ class PickupAddScanActivity : CommonActivity() {
 
             if (!NetworkUtil.isNetworkAvailable(this@PickupAddScanActivity)) {
 
-                DisplayUtil.AlertDialog(this, resources.getString(R.string.msg_network_connect_error))
+                DisplayUtil.AlertDialog(this@PickupAddScanActivity, resources.getString(R.string.msg_network_connect_error))
                 return
             }
 
             if (!sign_view_sign_p_applicant_signature.isTouch) {
 
-                Toast.makeText(this, resources.getString(R.string.msg_signature_require), Toast.LENGTH_SHORT).show()
+                Toast.makeText(this@PickupAddScanActivity, resources.getString(R.string.msg_signature_require), Toast.LENGTH_SHORT).show()
                 return
             }
 
             if (!sign_view_sign_p_collector_signature.isTouch) {
 
-                Toast.makeText(this, resources.getString(R.string.msg_collector_signature_require), Toast.LENGTH_SHORT).show()
+                Toast.makeText(this@PickupAddScanActivity, resources.getString(R.string.msg_collector_signature_require), Toast.LENGTH_SHORT).show()
                 return
             }
 
             if (MemoryStatus.getAvailableInternalMemorySize() != MemoryStatus.ERROR.toLong() && MemoryStatus.getAvailableInternalMemorySize() < MemoryStatus.PRESENT_BYTE) {
 
-                DisplayUtil.AlertDialog(this, resources.getString(R.string.msg_disk_size_error))
+                DisplayUtil.AlertDialog(this@PickupAddScanActivity, resources.getString(R.string.msg_disk_size_error))
                 return
             }
 
 
             DataUtil.logEvent("button_click", tag, "SetPickupUploadData_AddScan")
 
-            PickupAddScanUploadHelper.Builder(this, Preferences.userId, Preferences.officeCode, Preferences.deviceUUID,
+            PickupAddScanUploadHelper.Builder(this@PickupAddScanActivity, Preferences.userId, Preferences.officeCode, Preferences.deviceUUID,
                     pickupNo, scannedList, scannedQty, sign_view_sign_p_applicant_signature, sign_view_sign_p_collector_signature,
                     MemoryStatus.getAvailableInternalMemorySize(), latitude, longitude)
                     .setOnServerEventListener(object : OnServerEventListener {
@@ -187,7 +187,7 @@ class PickupAddScanActivity : CommonActivity() {
         } catch (e: Exception) {
 
             Log.e("Exception", "$tag   serverUpload  Exception : $e")
-            Toast.makeText(this, resources.getString(R.string.text_error) + " - " + e.toString(), Toast.LENGTH_SHORT).show()
+            Toast.makeText(this@PickupAddScanActivity, resources.getString(R.string.text_error) + " - " + e.toString(), Toast.LENGTH_SHORT).show()
         }
     }
 

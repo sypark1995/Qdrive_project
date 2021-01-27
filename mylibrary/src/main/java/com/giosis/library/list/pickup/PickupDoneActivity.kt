@@ -75,12 +75,12 @@ class PickupDoneActivity : CommonActivity() {
         })
 
         //
-        val checker = PermissionChecker(this)
+        val checker = PermissionChecker(this@PickupDoneActivity)
 
         // 권한 여부 체크 (없으면 true, 있으면 false)
         if (checker.lacksPermissions(*PERMISSIONS)) {
             isPermissionTrue = false
-            PermissionActivity.startActivityForResult(this, PERMISSION_REQUEST_CODE, *PERMISSIONS)
+            PermissionActivity.startActivityForResult(this@PickupDoneActivity, PERMISSION_REQUEST_CODE, *PERMISSIONS)
             overridePendingTransition(0, 0)
         } else {
             isPermissionTrue = true
@@ -103,7 +103,7 @@ class PickupDoneActivity : CommonActivity() {
                 Log.e("Location", "$tag GPSTrackerManager onResume : $latitude  $longitude  ")
             } else {
 
-                DataUtil.enableLocationSettings(this)
+                DataUtil.enableLocationSettings(this@PickupDoneActivity)
             }
         }
     }
@@ -123,7 +123,7 @@ class PickupDoneActivity : CommonActivity() {
     }
 
     fun cancelSigning() {
-        AlertDialog.Builder(this)
+        AlertDialog.Builder(this@PickupDoneActivity)
                 .setMessage(R.string.msg_delivered_sign_cancel)
                 .setPositiveButton(R.string.button_ok) { _: DialogInterface?, _: Int -> finish() }
                 .setNegativeButton(R.string.button_cancel) { dialog: DialogInterface, _: Int -> dialog.dismiss() }.show()
@@ -136,9 +136,9 @@ class PickupDoneActivity : CommonActivity() {
     fun saveServerUploadSign() {
         try {
 
-            if (!NetworkUtil.isNetworkAvailable(this)) {
+            if (!NetworkUtil.isNetworkAvailable(this@PickupDoneActivity)) {
 
-                DisplayUtil.AlertDialog(this, resources.getString(R.string.msg_network_connect_error))
+                DisplayUtil.AlertDialog(this@PickupDoneActivity, resources.getString(R.string.msg_network_connect_error))
                 return
             }
 
@@ -170,14 +170,14 @@ class PickupDoneActivity : CommonActivity() {
 
             if (MemoryStatus.getAvailableInternalMemorySize() != MemoryStatus.ERROR.toLong() && MemoryStatus.getAvailableInternalMemorySize() < MemoryStatus.PRESENT_BYTE) {
 
-                DisplayUtil.AlertDialog(this, resources.getString(R.string.msg_disk_size_error))
+                DisplayUtil.AlertDialog(this@PickupDoneActivity, resources.getString(R.string.msg_disk_size_error))
                 return
             }
 
 
             DataUtil.logEvent("button_click", tag, "SetPickupUploadData_ScanAll")
 
-            PickupDoneUploadHelper.Builder(this, Preferences.userId, Preferences.officeCode, Preferences.deviceUUID,
+            PickupDoneUploadHelper.Builder(this@PickupDoneActivity, Preferences.userId, Preferences.officeCode, Preferences.deviceUUID,
                     pickupNo, mStrWaybillNo, realQty, sign_view_sign_p_applicant_signature, sign_view_sign_p_collector_signature, driverMemo,
                     MemoryStatus.getAvailableInternalMemorySize(), latitude, longitude)
                     .setOnServerEventListener(object : OnServerEventListener {

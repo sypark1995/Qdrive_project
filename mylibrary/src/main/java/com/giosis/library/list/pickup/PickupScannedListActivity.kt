@@ -41,7 +41,7 @@ class PickupScannedListActivity : CommonActivity() {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_pickup_scanned_list)
 
-        
+
         pickupNo = intent.getStringExtra("pickupNo").toString()
         applicant = intent.getStringExtra("applicant").toString()
         buttonType = intent.getStringExtra("buttonType").toString()
@@ -78,7 +78,7 @@ class PickupScannedListActivity : CommonActivity() {
         }
 
 
-        PickupScannedListDownloadHelper.Builder(this, Preferences.userId, pickupNo)
+        PickupScannedListDownloadHelper.Builder(this@PickupScannedListActivity, Preferences.userId, pickupNo)
                 .setOnServerEventListener { result: PickupScannedListResult -> setScannedList(result) }.build().execute()
     }
 
@@ -97,7 +97,7 @@ class PickupScannedListActivity : CommonActivity() {
             itemArrayList!!.add(item)
         }
 
-        pickupScannedListAdapter = PickupScannedListAdapter(this, itemArrayList)
+        pickupScannedListAdapter = PickupScannedListAdapter(itemArrayList)
         list_add_scan_scanned_list!!.adapter = pickupScannedListAdapter
         setListViewHeightBasedOnChildren(list_add_scan_scanned_list)
     }
@@ -108,7 +108,7 @@ class PickupScannedListActivity : CommonActivity() {
 
         try {
 
-            val intent = Intent(this, Class.forName("com.giosis.util.qdrive.barcodescanner.CaptureActivity"))
+            val intent = Intent(this@PickupScannedListActivity, Class.forName("com.giosis.util.qdrive.barcodescanner.CaptureActivity"))
             intent.putExtra("title", resources.getString(R.string.button_add_scan_list))
             intent.putExtra("type", BarcodeType.PICKUP_ADD_SCAN)
             intent.putExtra("pickup_no", pickupNo)
@@ -126,7 +126,7 @@ class PickupScannedListActivity : CommonActivity() {
 
         try {
 
-            val intent = Intent(this, Class.forName("com.giosis.util.qdrive.barcodescanner.CaptureActivity"))
+            val intent = Intent(this@PickupScannedListActivity, Class.forName("com.giosis.util.qdrive.barcodescanner.CaptureActivity"))
             intent.putExtra("title", resources.getString(R.string.button_take_back))
             intent.putExtra("type", BarcodeType.PICKUP_TAKE_BACK)
             intent.putExtra("pickup_no", pickupNo)

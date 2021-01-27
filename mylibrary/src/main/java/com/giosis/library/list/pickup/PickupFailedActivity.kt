@@ -41,7 +41,7 @@ class PickupFailedActivity : CommonActivity(), Camera2APIs.Camera2Interface, Tex
     private var gpsTrackerManager: GPSTrackerManager? = null
 
     // Camera & Gallery
-    private val camera2 = Camera2APIs(this)
+    private val camera2 = Camera2APIs(this@PickupFailedActivity)
     private var cameraId: String? = null
     private val RESULT_LOAD_IMAGE = 2000
 
@@ -104,7 +104,7 @@ class PickupFailedActivity : CommonActivity(), Camera2APIs.Camera2Interface, Tex
                 when {
                     restDay.isNotEmpty() -> {
 
-                        Toast.makeText(this, "$restDay " + resources.getString(R.string.msg_choose_another_day), Toast.LENGTH_SHORT).show()
+                        Toast.makeText(this@PickupFailedActivity, "$restDay " + resources.getString(R.string.msg_choose_another_day), Toast.LENGTH_SHORT).show()
                         text_sign_p_f_retry_date.text = resources.getString(R.string.text_select)
                     }
                     else -> {
@@ -119,12 +119,12 @@ class PickupFailedActivity : CommonActivity(), Camera2APIs.Camera2Interface, Tex
                 when {
                     calendar.get(Calendar.DAY_OF_WEEK) == Calendar.SUNDAY -> {
 
-                        Toast.makeText(this, resources.getString(R.string.msg_choose_sunday_error), Toast.LENGTH_SHORT).show()
+                        Toast.makeText(this@PickupFailedActivity, resources.getString(R.string.msg_choose_sunday_error), Toast.LENGTH_SHORT).show()
                         text_sign_p_f_retry_date.text = resources.getString(R.string.text_select)
                     }
                     restDay.isNotEmpty() -> {
 
-                        Toast.makeText(this, "$restDay " + resources.getString(R.string.msg_choose_another_day), Toast.LENGTH_SHORT).show()
+                        Toast.makeText(this@PickupFailedActivity, "$restDay " + resources.getString(R.string.msg_choose_another_day), Toast.LENGTH_SHORT).show()
                         text_sign_p_f_retry_date.text = resources.getString(R.string.text_select)
                     }
                     else -> {
@@ -227,7 +227,7 @@ class PickupFailedActivity : CommonActivity(), Camera2APIs.Camera2Interface, Tex
                 camera2.takePhoto(texture_sign_p_f_preview, img_sign_p_f_visit_log)
             } else {
 
-                Toast.makeText(this, resources.getString(R.string.msg_back_camera_required), Toast.LENGTH_SHORT).show()
+                Toast.makeText(this@PickupFailedActivity, resources.getString(R.string.msg_back_camera_required), Toast.LENGTH_SHORT).show()
             }
         }
 
@@ -243,12 +243,12 @@ class PickupFailedActivity : CommonActivity(), Camera2APIs.Camera2Interface, Tex
 
 
         // permission
-        val checker = PermissionChecker(this)
+        val checker = PermissionChecker(this@PickupFailedActivity)
 
         if (checker.lacksPermissions(*PERMISSIONS)) {
 
             isPermissionTrue = false
-            PermissionActivity.startActivityForResult(this, PERMISSION_REQUEST_CODE, *PERMISSIONS)
+            PermissionActivity.startActivityForResult(this@PickupFailedActivity, PERMISSION_REQUEST_CODE, *PERMISSIONS)
             overridePendingTransition(0, 0)
         } else {
 
@@ -263,7 +263,7 @@ class PickupFailedActivity : CommonActivity(), Camera2APIs.Camera2Interface, Tex
 
         if (arrayList == null) {
 
-            DisplayUtil.AlertDialog(this, resources.getString(R.string.msg_failed_code_error))
+            DisplayUtil.AlertDialog(this@PickupFailedActivity, resources.getString(R.string.msg_failed_code_error))
         } else {
 
             failedCodeArrayList = ArrayList()
@@ -274,7 +274,7 @@ class PickupFailedActivity : CommonActivity(), Camera2APIs.Camera2Interface, Tex
             }
 
             spinner_p_f_failed_reason.prompt = resources.getString(R.string.text_failed_reason)
-            val failedCodeArrayAdapter = ArrayAdapter(this, android.R.layout.simple_spinner_item, failedCodeArrayList!!)
+            val failedCodeArrayAdapter = ArrayAdapter(this@PickupFailedActivity, android.R.layout.simple_spinner_item, failedCodeArrayList!!)
             failedCodeArrayAdapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item)
             spinner_p_f_failed_reason.adapter = failedCodeArrayAdapter
         }
@@ -292,11 +292,11 @@ class PickupFailedActivity : CommonActivity(), Camera2APIs.Camera2Interface, Tex
                 openCamera()
             } else {
 
-                texture_sign_p_f_preview.surfaceTextureListener = this
+                texture_sign_p_f_preview.surfaceTextureListener = this@PickupFailedActivity
             }
 
             // Location
-            gpsTrackerManager = GPSTrackerManager(this)
+            gpsTrackerManager = GPSTrackerManager(this@PickupFailedActivity)
             val gpsEnable = gpsTrackerManager?.enableGPSSetting()
 
             if (gpsEnable == true) {
@@ -304,7 +304,7 @@ class PickupFailedActivity : CommonActivity(), Camera2APIs.Camera2Interface, Tex
                 Log.e(tag, " onResume  Location  :  ${gpsTrackerManager?.latitude} / ${gpsTrackerManager?.longitude}")
             } else {
 
-                DataUtil.enableLocationSettings(this)
+                DataUtil.enableLocationSettings(this@PickupFailedActivity)
             }
         }
     }
@@ -312,7 +312,7 @@ class PickupFailedActivity : CommonActivity(), Camera2APIs.Camera2Interface, Tex
     // Camera
     private fun openCamera() {
 
-        val cameraManager: CameraManager = camera2.getCameraManager(this)
+        val cameraManager: CameraManager = camera2.getCameraManager(this@PickupFailedActivity)
         cameraId = camera2.getCameraCharacteristics(cameraManager)
 
         if (cameraId != null) {
@@ -320,7 +320,7 @@ class PickupFailedActivity : CommonActivity(), Camera2APIs.Camera2Interface, Tex
             camera2.setCameraDevice(cameraManager, cameraId)
         } else {
 
-            Toast.makeText(this, resources.getString(R.string.msg_back_camera_required), Toast.LENGTH_SHORT).show()
+            Toast.makeText(this@PickupFailedActivity, resources.getString(R.string.msg_back_camera_required), Toast.LENGTH_SHORT).show()
         }
     }
 
@@ -387,9 +387,9 @@ class PickupFailedActivity : CommonActivity(), Camera2APIs.Camera2Interface, Tex
 
         try {
 
-            if (!NetworkUtil.isNetworkAvailable(this)) {
+            if (!NetworkUtil.isNetworkAvailable(this@PickupFailedActivity)) {
 
-                DisplayUtil.AlertDialog(this, resources.getString(R.string.msg_network_connect_error))
+                DisplayUtil.AlertDialog(this@PickupFailedActivity, resources.getString(R.string.msg_network_connect_error))
                 return
             }
 
@@ -404,7 +404,7 @@ class PickupFailedActivity : CommonActivity(), Camera2APIs.Camera2Interface, Tex
                 driverMemo = edit_sign_p_f_memo.text.toString()
                 if (driverMemo.isEmpty()) {
 
-                    Toast.makeText(this, resources.getString(R.string.msg_must_enter_memo1), Toast.LENGTH_SHORT).show()
+                    Toast.makeText(this@PickupFailedActivity, resources.getString(R.string.msg_must_enter_memo1), Toast.LENGTH_SHORT).show()
                     return
                 }
             }
@@ -414,19 +414,19 @@ class PickupFailedActivity : CommonActivity(), Camera2APIs.Camera2Interface, Tex
             val retryDay = text_sign_p_f_retry_date.text.toString()
             if (retryDay == resources.getString(R.string.text_select)) {
 
-                Toast.makeText(this, resources.getString(R.string.msg_select_retry_date), Toast.LENGTH_SHORT).show()
+                Toast.makeText(this@PickupFailedActivity, resources.getString(R.string.msg_select_retry_date), Toast.LENGTH_SHORT).show()
                 return
             }
 
             if (!camera2.hasImage(img_sign_p_f_visit_log)) {
 
-                Toast.makeText(this, resources.getString(R.string.msg_visit_photo_require), Toast.LENGTH_SHORT).show()
+                Toast.makeText(this@PickupFailedActivity, resources.getString(R.string.msg_visit_photo_require), Toast.LENGTH_SHORT).show()
                 return
             }
 
             if (MemoryStatus.getAvailableInternalMemorySize() != MemoryStatus.ERROR.toLong() && MemoryStatus.getAvailableInternalMemorySize() < MemoryStatus.PRESENT_BYTE) {
 
-                DisplayUtil.AlertDialog(this, resources.getString(R.string.msg_disk_size_error))
+                DisplayUtil.AlertDialog(this@PickupFailedActivity, resources.getString(R.string.msg_disk_size_error))
                 return
             }
 
@@ -443,7 +443,7 @@ class PickupFailedActivity : CommonActivity(), Camera2APIs.Camera2Interface, Tex
 
             DataUtil.logEvent("button_click", tag, DataUtil.requestSetUploadPickupData)
 
-            PickupFailedUploadHelper.Builder(this, Preferences.userId, Preferences.officeCode, Preferences.deviceUUID,
+            PickupFailedUploadHelper.Builder(this@PickupFailedActivity, Preferences.userId, Preferences.officeCode, Preferences.deviceUUID,
                     rcvType, pickupNo, failedCode, retryDay, driverMemo, img_sign_p_f_visit_log,
                     MemoryStatus.getAvailableInternalMemorySize(), latitude, longitude)
                     .setOnServerEventListener(object : OnServerEventListener {
@@ -458,7 +458,7 @@ class PickupFailedActivity : CommonActivity(), Camera2APIs.Camera2Interface, Tex
         } catch (e: Exception) {
 
             Log.e("Exception", "$tag   serverUpload  Exception : $e")
-            Toast.makeText(this, resources.getString(R.string.text_error) + " - " + e.toString(), Toast.LENGTH_SHORT).show()
+            Toast.makeText(this@PickupFailedActivity, resources.getString(R.string.text_error) + " - " + e.toString(), Toast.LENGTH_SHORT).show()
         }
     }
 

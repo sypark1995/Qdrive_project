@@ -187,7 +187,7 @@ class PickupZeroQtyActivity : CommonActivity() {
 
             DataUtil.logEvent("button_click", tag, DataUtil.requestSetUploadPickupData)
 
-            PickupZeroQtyUploadHelper.Builder(this, Preferences.userId, Preferences.officeCode, Preferences.deviceUUID,
+            PickupZeroQtyUploadHelper.Builder(this@PickupZeroQtyActivity, Preferences.userId, Preferences.officeCode, Preferences.deviceUUID,
                     pickupNo, sign_view_sign_p_applicant_signature, sign_view_sign_p_collector_signature, driverMemo,
                     MemoryStatus.getAvailableInternalMemorySize(), latitude, longitude)
                     .setOnServerEventListener(object : OnServerEventListener {

@@ -9,7 +9,7 @@ import android.widget.TextView
 import com.giosis.library.R
 import java.util.*
 
-class PickupScannedListAdapter(private val context: Context, private val itemArrayList: ArrayList<PickupScannedListItem>?) : BaseAdapter() {
+class PickupScannedListAdapter(private val itemArrayList: ArrayList<PickupScannedListItem>?) : BaseAdapter() {
 
     private lateinit var text_scan_list_item_tracking_no: TextView
     private lateinit var text_scan_list_item_date: TextView
@@ -32,7 +32,7 @@ class PickupScannedListAdapter(private val context: Context, private val itemArr
     override fun getView(position: Int, convertView: View?, parent: ViewGroup): View {
         val view: View
         view = if (convertView == null) {
-            val inflater = context.getSystemService(Context.LAYOUT_INFLATER_SERVICE) as LayoutInflater
+            val inflater = parent.context.getSystemService(Context.LAYOUT_INFLATER_SERVICE) as LayoutInflater
             inflater.inflate(R.layout.item_pickup_scanned_list, null)
         } else {
             convertView

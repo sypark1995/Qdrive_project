@@ -69,7 +69,7 @@ class PickupTakeBackActivity : CommonActivity() {
 
 
         // permission
-        val checker = PermissionChecker(this)
+        val checker = PermissionChecker(this@PickupTakeBackActivity)
 
         if (checker.lacksPermissions(*PERMISSIONS)) {
 

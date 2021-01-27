@@ -44,7 +44,7 @@ class DeliveryFailedActivity : CommonActivity(), Camera2APIs.Camera2Interface, S
     var gpsTrackerManager: GPSTrackerManager? = null
 
     // Camera & Gallery
-    private val camera2 = Camera2APIs(this)
+    private val camera2 = Camera2APIs(this@DeliveryFailedActivity)
     private var cameraId: String? = null
     private val RESULT_LOAD_IMAGE = 2000
 
@@ -149,11 +149,11 @@ class DeliveryFailedActivity : CommonActivity(), Camera2APIs.Camera2Interface, S
         }
 
         // permission
-        val checker = PermissionChecker(this)
+        val checker = PermissionChecker(this@DeliveryFailedActivity)
 
         if (checker.lacksPermissions(*PERMISSIONS)) {
             isPermissionTrue = false
-            PermissionActivity.startActivityForResult(this, PERMISSION_REQUEST_CODE, *PERMISSIONS)
+            PermissionActivity.startActivityForResult(this@DeliveryFailedActivity, PERMISSION_REQUEST_CODE, *PERMISSIONS)
             overridePendingTransition(0, 0)
         } else {
             isPermissionTrue = true
@@ -193,11 +193,11 @@ class DeliveryFailedActivity : CommonActivity(), Camera2APIs.Camera2Interface, S
             if (texture_sign_d_f_preview.isAvailable) {
                 openCamera()
             } else {
-                texture_sign_d_f_preview.surfaceTextureListener = this
+                texture_sign_d_f_preview.surfaceTextureListener = this@DeliveryFailedActivity
             }
 
             // Location
-            gpsTrackerManager = GPSTrackerManager(this)
+            gpsTrackerManager = GPSTrackerManager(this@DeliveryFailedActivity)
             val gpsEnable = gpsTrackerManager!!.enableGPSSetting()
 
             if (gpsEnable && gpsTrackerManager != null) {
@@ -215,7 +215,7 @@ class DeliveryFailedActivity : CommonActivity(), Camera2APIs.Camera2Interface, S
     // Camera
     private fun openCamera() {
 
-        val cameraManager: CameraManager = camera2.getCameraManager(this)
+        val cameraManager: CameraManager = camera2.getCameraManager(this@DeliveryFailedActivity)
         cameraId = camera2.getCameraCharacteristics(cameraManager)
 
         if (cameraId != null) {
@@ -269,7 +269,7 @@ class DeliveryFailedActivity : CommonActivity(), Camera2APIs.Camera2Interface, S
 
     private fun cancelUpload() {
 
-        val alertBuilder = AlertDialog.Builder(this)
+        val alertBuilder = AlertDialog.Builder(this@DeliveryFailedActivity)
         alertBuilder.setMessage(resources.getString(R.string.msg_delivered_sign_cancel))
         alertBuilder.setPositiveButton(resources.getString(R.string.button_ok)) { _, _ ->
             finish()
@@ -329,7 +329,7 @@ class DeliveryFailedActivity : CommonActivity(), Camera2APIs.Camera2Interface, S
 
             DataUtil.logEvent("button_click", tag, DataUtil.requestSetUploadDeliveryData)
 
-            DeliveryFailedUploadHelper.Builder(this, userId, officeCode, deviceId,
+            DeliveryFailedUploadHelper.Builder(this@DeliveryFailedActivity, userId, officeCode, deviceId,
                     trackingNo, img_sign_d_f_visit_log, failedCode, driverMemo, "RC",
                     MemoryStatus.getAvailableInternalMemorySize(), latitude, longitude)
                     .setOnServerEventListener(object : OnServerEventListener {
