@@ -62,6 +62,7 @@ import com.giosis.library.util.DatabaseHelper;
 import com.giosis.library.util.NetworkUtil;
 import com.giosis.library.util.PermissionActivity;
 import com.giosis.library.util.PermissionChecker;
+import com.giosis.util.qdrive.barcodescanner.ManualChangeDelDriverHelper.OnChangeDelDriverEventListener;
 import com.giosis.util.qdrive.barcodescanner.bluetooth.BluetoothChatService;
 import com.giosis.util.qdrive.barcodescanner.bluetooth.DeviceListActivity;
 import com.giosis.util.qdrive.barcodescanner.bluetooth.KScan;
@@ -72,7 +73,6 @@ import com.giosis.util.qdrive.international.MyApplication;
 import com.giosis.util.qdrive.international.R;
 import com.giosis.util.qdrive.international.SigningActivity;
 import com.giosis.util.qdrive.international.UploadData;
-import com.giosis.util.qdrive.barcodescanner.ManualChangeDelDriverHelper.OnChangeDelDriverEventListener;
 import com.giosis.util.qdrive.util.BarcodeType;
 import com.giosis.util.qdrive.util.DataUtil;
 import com.giosis.util.qdrive.util.ui.CommonActivity;
@@ -771,11 +771,13 @@ public final class CaptureActivity extends CommonActivity implements SurfaceHold
                     CameraManager.get().closeDriver();
 
                     // Bluetooth 지원 && 비활성화 상태
-                    if (!mBluetoothAdapter.isEnabled()) {
-
-                        Intent enableIntent = new Intent(BluetoothAdapter.ACTION_REQUEST_ENABLE);
-                        startActivityForResult(enableIntent, REQUEST_ENABLE_BT);
+                    if (mBluetoothAdapter != null) {
+                        if (!mBluetoothAdapter.isEnabled()) {
+                            Intent enableIntent = new Intent(BluetoothAdapter.ACTION_REQUEST_ENABLE);
+                            startActivityForResult(enableIntent, REQUEST_ENABLE_BT);
+                        }
                     }
+
                     KTSyncData.bIsRunning = true;
                 }
                 break;

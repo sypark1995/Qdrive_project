@@ -794,11 +794,13 @@ public final class CaptureActivity extends CommonActivity implements SurfaceHold
                     CameraManager.get().closeDriver();
 
                     // Bluetooth 지원 && 비활성화 상태
-                    if (!mBluetoothAdapter.isEnabled()) {
-
-                        Intent intent = new Intent(BluetoothAdapter.ACTION_REQUEST_ENABLE);
-                        startActivityForResult(intent, REQUEST_ENABLE_BT);
+                    if (mBluetoothAdapter != null) {
+                        if (!mBluetoothAdapter.isEnabled()) {
+                            Intent intent = new Intent(BluetoothAdapter.ACTION_REQUEST_ENABLE);
+                            startActivityForResult(intent, REQUEST_ENABLE_BT);
+                        }
                     }
+
                     KTSyncData.bIsRunning = true;
                 }
                 break;
