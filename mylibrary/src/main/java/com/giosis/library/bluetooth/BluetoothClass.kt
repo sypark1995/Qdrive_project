@@ -193,6 +193,7 @@ class BluetoothClass(val mActivity: Activity) : BluetoothListener {
                                 val size = printerConnManagerList.size
                                 if (0 < size) {
                                     printerConnManagerList[size - 1].openPort(mActivity)
+
                                     if (!printerConnManagerList[size - 1].connState) {  // 포트가  열리지 않았다면
                                         Log.e("print", "$TAG  connState  $size")
                                         printerConnManagerList.removeAt(size - 1)

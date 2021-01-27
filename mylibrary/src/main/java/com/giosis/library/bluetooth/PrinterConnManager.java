@@ -8,7 +8,6 @@ import android.os.Message;
 import android.util.Log;
 import android.widget.Toast;
 
-import com.giosis.library.bluetooth.GPrinterData;
 import com.gprinter.io.BluetoothPort;
 import com.gprinter.io.PortManager;
 
@@ -195,10 +194,13 @@ public class PrinterConnManager {
         private boolean isRun;
         private byte[] buffer = new byte[100];
         private Context mContext;
+        CustomHandler customHandler;
 
         PrinterReader(Context context) {
             mContext = context;
             isRun = true;
+
+            customHandler = new CustomHandler(mContext);
         }
 
         @Override
@@ -220,7 +222,6 @@ public class PrinterConnManager {
                         bundle.putByteArray(READ_BUFFER_ARRAY, buffer);
                         msg.setData(bundle);
 
-                        CustomHandler customHandler = new CustomHandler(mContext);
                         customHandler.sendMessage(msg);
                     }
                 }
@@ -235,8 +236,6 @@ public class PrinterConnManager {
     private int readDataImmediately(byte[] buffer) throws IOException {
         return this.mPort.readData(buffer);
     }
-
-    // TODO_kjyoo 핸들러 동작 확인 필요.
 
     class CustomHandler extends Handler {
         Context mContext;

@@ -863,13 +863,14 @@ public class ListInProgressAdapter extends BaseExpandableListAdapter {
 
         btn_list_item_child_pickup_scan.setOnClickListener(v -> {
             try {
-                //TODO_kjyoo check
+
                 Intent intent = new Intent(v.getContext(), Class.forName("com.giosis.util.qdrive.barcodescanner.CaptureActivity"));
                 intent.putExtra("title", v.getContext().getResources().getString(R.string.text_start_to_scan));
                 intent.putExtra("type", BarcodeType.PICKUP_SCAN_ALL);
                 intent.putExtra("pickup_no", tracking_no);
                 intent.putExtra("applicant", requester);
                 v.getContext().startActivity(intent);
+
             } catch (Exception e) {
 
             }
