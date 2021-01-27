@@ -9,9 +9,9 @@ import android.os.AsyncTask;
 import android.util.Log;
 
 import com.giosis.library.server.Custom_JsonParser;
+import com.giosis.library.util.NetworkUtil;
 import com.giosis.util.qdrive.singapore.R;
 import com.giosis.util.qdrive.util.DataUtil;
-import com.giosis.util.qdrive.util.NetworkUtil;
 import com.google.gson.Gson;
 
 import org.json.JSONObject;

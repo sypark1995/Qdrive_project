@@ -21,12 +21,6 @@
         tools:targetApi="n">
 
         <activity
-            android:name="com.giosis.util.qdrive.util.PermissionActivity"
-            android:configChanges="orientation|screenSize|screenLayout|keyboard|keyboardHidden"
-            android:screenOrientation="unspecified"
-            android:theme="@style/Theme.AppCompat.Transparent" />
-
-        <activity
             android:name=".AlertDialogActivity"
             android:launchMode="singleTop"
             android:theme="@android:style/Theme.Dialog">

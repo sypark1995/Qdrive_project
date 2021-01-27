@@ -92,12 +92,6 @@
             tools:ignore="Instantiatable" />
 
         <activity
-            android:name="com.giosis.util.qdrive.util.PermissionActivity"
-            android:configChanges="orientation|screenSize|screenLayout|keyboard|keyboardHidden"
-            android:screenOrientation="unspecified"
-            android:theme="@style/Theme.AppCompat.Transparent" />
-
-        <activity
             android:name="com.giosis.util.qdrive.international.AlertDialogActivity"
             android:launchMode="singleTop"
             android:theme="@android:style/Theme.Dialog">
@@ -119,11 +113,7 @@
             android:name="com.giosis.util.qdrive.international.LoginActivity"
             android:screenOrientation="portrait" />
 
-        <!-- -->
-
-
         <!-- NOTIFICATION. Scan -->
-
         <activity
             android:name="com.giosis.util.qdrive.barcodescanner.CaptureActivity"
             android:configChanges="orientation|keyboardHidden"
@@ -133,27 +123,6 @@
         <activity
             android:name="com.giosis.util.qdrive.barcodescanner.bluetooth.DeviceListActivity"
             android:theme="@android:style/Theme.Dialog" />
-
-
-        <!--   NOTIFICATION.  List   -->
-        <activity
-            android:name="com.giosis.util.qdrive.list.ListActivity"
-            android:configChanges="orientation|keyboardHidden"
-            android:screenOrientation="portrait">
-            <intent-filter>
-                <action android:name="android.intent.action.VIEW" />
-
-                <category android:name="android.intent.category.DEFAULT" />
-                <category android:name="android.intent.category.BROWSABLE" />
-
-                <data
-                    android:host="qtalk_call"
-                    android:scheme="qtalk" />
-                <data
-                    android:host="link"
-                    android:scheme="qtalk" />
-            </intent-filter>
-        </activity>
 
         <activity
             android:name=".SigningActivity"

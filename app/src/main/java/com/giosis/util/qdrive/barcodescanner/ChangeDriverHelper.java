@@ -13,12 +13,12 @@ import android.widget.Toast;
 import com.giosis.library.server.Custom_JsonParser;
 import com.giosis.library.util.DatabaseHelper;
 import com.giosis.library.util.GeoCodeUtil;
+import com.giosis.library.util.NetworkUtil;
 import com.giosis.util.qdrive.singapore.MyApplication;
 import com.giosis.util.qdrive.singapore.R;
 import com.giosis.util.qdrive.util.BarcodeType;
 import com.giosis.util.qdrive.util.DataUtil;
 import com.giosis.util.qdrive.util.DisplayUtil;
-import com.giosis.util.qdrive.util.NetworkUtil;
 import com.google.gson.Gson;
 
 import org.json.JSONObject;

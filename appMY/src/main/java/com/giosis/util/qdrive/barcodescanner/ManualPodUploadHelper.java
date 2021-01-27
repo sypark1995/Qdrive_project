@@ -15,12 +15,12 @@ import android.util.Log;
 
 import com.giosis.library.server.Custom_JsonParser;
 import com.giosis.library.server.ImageUpload;
+import com.giosis.library.util.NetworkUtil;
 import com.giosis.util.qdrive.international.R;
 import com.giosis.util.qdrive.international.UploadData;
 import com.giosis.util.qdrive.util.DataUtil;
 import com.giosis.library.util.DatabaseHelper;
 import com.giosis.util.qdrive.util.DisplayUtil;
-import com.giosis.util.qdrive.util.NetworkUtil;
 
 import org.json.JSONObject;
 

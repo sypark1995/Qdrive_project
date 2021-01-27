@@ -19,9 +19,9 @@ import com.giosis.library.main.SMSVerificationActivity
 import com.giosis.library.server.RetrofitClient
 import com.giosis.library.setting.DeveloperModeActivity
 import com.giosis.library.util.DatabaseHelper
+import com.giosis.library.util.PermissionActivity
+import com.giosis.library.util.PermissionChecker
 import com.giosis.util.qdrive.util.DataUtil
-import com.giosis.util.qdrive.util.PermissionActivity
-import com.giosis.util.qdrive.util.PermissionChecker
 import com.giosis.util.qdrive.util.ui.CommonActivity
 import com.google.gson.Gson
 import io.reactivex.rxjava3.android.schedulers.AndroidSchedulers
