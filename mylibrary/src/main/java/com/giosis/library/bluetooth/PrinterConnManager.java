@@ -1,5 +1,6 @@
 package com.giosis.library.bluetooth;
 
+import android.annotation.SuppressLint;
 import android.content.Context;
 import android.content.Intent;
 import android.os.Bundle;
@@ -11,7 +12,6 @@ import android.widget.Toast;
 import com.gprinter.io.BluetoothPort;
 import com.gprinter.io.PortManager;
 
-import java.io.IOException;
 import java.util.Vector;
 
 /**
@@ -22,6 +22,7 @@ import java.util.Vector;
 public class PrinterConnManager {
     private String TAG = "PrinterConnManager";
 
+    private Context mContext;
     private int id;
     private PortManager mPort;
     private CONN_METHOD connMethod;
@@ -29,8 +30,10 @@ public class PrinterConnManager {
 
     private boolean isOpenPort = false;
 
+
     private final int CONN_STATE_DISCONNECT = 500;
     private final int CONN_STATE_FAILED = CONN_STATE_DISCONNECT << 2;
+
 
     private final int READ_DATA = 10000;
     private final String READ_DATA_CNT = "read_data_cnt";
@@ -73,18 +76,20 @@ public class PrinterConnManager {
         TSC
     }
 
-
-    public PrinterConnManager(CONN_METHOD connMethod, String macAddress) {
-        Log.e("print_list", TAG + "  construct");
+    PrinterConnManager(Context context, CONN_METHOD connMethod, String macAddress) {
+        mContext = context;
         this.connMethod = connMethod;
         this.macAddress = macAddress;
     }
 
-    public synchronized void openPort(Context context) {
+
+    synchronized void openPort() {
 
         isOpenPort = false;
 
         try {
+
+            Log.e("print", TAG + "  DATA > " + connMethod + " / " + macAddress);
 
             if (connMethod == CONN_METHOD.BLUETOOTH) {
 
@@ -96,33 +101,33 @@ public class PrinterConnManager {
             isOpenPort = false;
         }
 
-        Log.e("print_list", TAG + "  openPort : " + isOpenPort);
+        Log.e("print", TAG + "  openPort : " + isOpenPort);
 
         if (isOpenPort) {
 
-            queryCommand(context);
+            queryCommand();
         } else {
 
-            sendStateBroadcast(context, CONN_STATE_FAILED);
+            sendStateBroadcast(CONN_STATE_FAILED);
         }
     }
 
-    private void queryCommand(Context context) {
+    private void queryCommand() {
 
         //开启读取打印机返回数据线程
-        PrinterReader reader = new PrinterReader(context);
+        PrinterReader reader = new PrinterReader();
         reader.start();
 
         //查询打印机所使用指令
         queryPrinterCommand();
-    }
+    }//
 
     private void queryPrinterCommand() {
 
         Thread thread = new Thread(new Runnable() {
             @Override
             public void run() {
-                Log.e("print_list", TAG + "  queryPrinterCommand  : " + currentPrinterCommand);
+                Log.e("print", TAG + "  queryPrinterCommand  : " + currentPrinterCommand);
 
                 if (currentPrinterCommand == null || currentPrinterCommand == PrinterCommand.TSC) {
 
@@ -148,33 +153,41 @@ public class PrinterConnManager {
 
         try {
 
+            Log.e("print", TAG + "  sendDataImmediately size : " + data.size());
             this.mPort.writeDataImmediately(data, 0, data.size());
             if (data.size() > 10) {  // 첫번째 포트 (리스트 프린트 버튼에서 커넥션 여는게 아닌 프린트 할 때 불려지는 함수 - 자동 트리거)
                 //자동 트리거하는 함수 없앤것
                 GPrinterData.TEMP_TRACKING_NO = "";
             }
-        } catch (IOException e) {
+        } catch (Exception e) {
+
+            Log.e("print", TAG + "  sendDataImmediately  Exception : " + e.toString());
             e.printStackTrace();
         }
     }
 
 
-    public synchronized void closePort(Context context) {
+    public synchronized void closePort() {
+        Log.e("print", TAG + "  closePort");
+
         if (this.mPort != null) {
+
             this.mPort.closePort();
             isOpenPort = false;
             currentPrinterCommand = null;
         }
 
-        sendStateBroadcast(context, CONN_STATE_DISCONNECT);
+        sendStateBroadcast(CONN_STATE_DISCONNECT);
     }
 
-    private void sendStateBroadcast(Context context, int state) {
+    private void sendStateBroadcast(int state) {
+
         Intent intent = new Intent(GPrinterData.ACTION_CONN_STATE);
         intent.putExtra("state", state);
         intent.putExtra("id", id);
-        context.sendBroadcast(intent);
+        mContext.sendBroadcast(intent);
     }
+
 
     public boolean getConnState() {
         return isOpenPort;
@@ -193,62 +206,69 @@ public class PrinterConnManager {
 
         private boolean isRun;
         private byte[] buffer = new byte[100];
-        private Context mContext;
-        CustomHandler customHandler;
 
-        PrinterReader(Context context) {
-            mContext = context;
+        PrinterReader() {
             isRun = true;
-
-            customHandler = new CustomHandler(mContext);
         }
 
         @Override
         public void run() {
-            try {
 
+            try {
                 while (isRun) {
 
-                    Log.e("print_list", TAG + "  PrinterReader run");
+                    //    Log.e("print", TAG + "  PrinterReader run");
                     int len = readDataImmediately(buffer);
-                    Log.e("print_list", TAG + "  PrinterReader length : " + len);
 
                     if (0 < len) {
 
+                        Log.e("print", TAG + "  PrinterReader length : " + len);
                         Message msg = Message.obtain();
                         msg.what = READ_DATA;
                         Bundle bundle = new Bundle();
                         bundle.putInt(READ_DATA_CNT, len);
                         bundle.putByteArray(READ_BUFFER_ARRAY, buffer);
                         msg.setData(bundle);
-
-                        customHandler.sendMessage(msg);
+                        mHandler.sendMessage(msg);
                     }
                 }
             } catch (Exception e) {
 
-                Log.e("print_list", TAG + "  Exception : " + e.toString());
-                closePort(mContext);
+                Log.e("print", TAG + "  Exception : " + e.toString());
+                closePort();
             }
         }
     }
 
-    private int readDataImmediately(byte[] buffer) throws IOException {
-        return this.mPort.readData(buffer);
+    private int readDataImmediately(byte[] buffer) {//lthrows IOException {
+
+        //  Log.e("print", TAG + "  readDataImmediately  1");
+        int aa = 0;
+
+        try {
+            aa = this.mPort.readData(buffer);
+            //     Log.e("print", TAG + "  readDataImmediately  2  " + aa);
+        } catch (Exception e) {
+
+            Log.e("print", TAG + " readDataImmediately Exception : " + e.toString());
+            closePort();
+
+        }
+
+        return aa;
+
+        //    return this.mPort.readData(buffer);
     }
 
-    class CustomHandler extends Handler {
-        Context mContext;
-
-        public CustomHandler(Context context) {
-            mContext = context;
-        }
+    @SuppressLint("HandlerLeak")
+    private Handler mHandler = new Handler() {
 
         @Override
         public void handleMessage(Message msg) {
 
             if (msg.what == READ_DATA) {
 
+                Log.e("print", TAG + "  mHandler");
                 int cnt = msg.getData().getInt(READ_DATA_CNT);
                 byte[] buffer = msg.getData().getByteArray(READ_BUFFER_ARRAY);
                 //这里只对查询状态返回值做处理，其它返回值可参考编程手册来解析
@@ -258,13 +278,10 @@ public class PrinterConnManager {
 
                 String status = "Printer connected normal";
 
-
-                Log.e("print_list", TAG + "  handler  / " + sendCommand);
-
                 if (sendCommand == tsc) {
                     //设置当前打印机模式为TSC模式   // 현재 프린터 모드를 TSC 모드로 설정
                     if (currentPrinterCommand == null) {
-
+Log.e(TAG, "handler  currentPrinterCommand = PrinterCommand.TSC; ");
                         currentPrinterCommand = PrinterCommand.TSC;
                         //    sendStateBroadcast(CONN_STATE_CONNECTED);
                     } else {
@@ -290,5 +307,5 @@ public class PrinterConnManager {
                 }
             }
         }
-    }
+    };
 }

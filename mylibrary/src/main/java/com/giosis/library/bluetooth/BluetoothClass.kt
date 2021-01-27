@@ -20,8 +20,7 @@ import com.giosis.library.list.CnRPickupInfoGetHelper
 import com.giosis.library.list.PrintDataResult
 import com.giosis.library.setting.bluetooth.BluetoothDeviceData
 import com.giosis.library.setting.bluetooth.PrinterSettingActivity
-import com.giosis.library.util.Preferences.userId
-import com.giosis.library.util.Preferences.userNation
+import com.giosis.library.util.Preferences
 import com.google.zxing.BarcodeFormat
 import com.google.zxing.EncodeHintType
 import com.google.zxing.MultiFormatWriter
@@ -78,7 +77,7 @@ class BluetoothClass(val mActivity: Activity) : BluetoothListener {
             }
 
             for (printerCon in printerConnManagerList) {
-                printerCon.closePort(mActivity)
+                printerCon.closePort()
             }
 
             printerConnManagerList.clear()
@@ -189,10 +188,10 @@ class BluetoothClass(val mActivity: Activity) : BluetoothListener {
                                 // 프린트 버튼을 눌렀을 때, 디바이스를 찾아서 커넥션이 이루어진다음에  printerConnManagerList 에 소켓 섹션을 담아서 저장한 다음에 SDK 포트로  열린다면 그 커넥션을 저장해 놓고
                                 // 포트가 열리지 않는다면 커넥션 제거
                                 // 포트가 열린다면 디바이스 맥어드레스 저장해 놓기 -> 블루투스 세팅 화면에서 커넥션 열어 한 소스처럼 관리
-                                printerConnManagerList.add(PrinterConnManager(PrinterConnManager.CONN_METHOD.BLUETOOTH, device.address))
+                                printerConnManagerList.add(PrinterConnManager(mActivity, PrinterConnManager.CONN_METHOD.BLUETOOTH, device.address))
                                 val size = printerConnManagerList.size
                                 if (0 < size) {
-                                    printerConnManagerList[size - 1].openPort(mActivity)
+                                    printerConnManagerList[size - 1].openPort()
 
                                     if (!printerConnManagerList[size - 1].connState) {  // 포트가  열리지 않았다면
                                         Log.e("print", "$TAG  connState  $size")
@@ -321,8 +320,8 @@ class BluetoothClass(val mActivity: Activity) : BluetoothListener {
 
         // 위에 if 문은 아마 그냥 통과 될 것 왜냐면 커넥션을 자동으로 하고 바로 프린터 버튼 누른 것처럼 trigger 보완 소스 넣고 있음
         //  handler 에서 메시지 받으면 다시 버튼 클릭을 interface 함수로 getTodayPickupDone호출 하고 있음 - onStartGprinter
-        if (printerConnManagerList[0].currentPrinterCommand === PrinterConnManager.PrinterCommand.TSC) {
-            val opId = userId
+        if (printerConnManagerList[0].currentPrinterCommand == PrinterConnManager.PrinterCommand.TSC) {
+            val opId = Preferences.userId
             Log.e("print", TAG + "  printLabel Command : " + printerConnManagerList[0].currentPrinterCommand + " / " + address + " / " + tracking_no)
             CnRPickupInfoGetHelper.Builder(mActivity, opId, tracking_no)
                     .setOnCnRPrintDataEventListener { stdResult: PrintDataResult? ->
@@ -373,7 +372,7 @@ class BluetoothClass(val mActivity: Activity) : BluetoothListener {
         tsc.addCls()
 
         //첫번째 row
-        if ("SG" == userNation) {
+        if ("SG" == Preferences.userNation) {
             tsc.add1DBarcode(20, 0, LabelCommand.BARCODETYPE.CODE128, 80, LabelCommand.READABEL.EANBEL,
                     LabelCommand.ROTATION.ROTATION_0, result.invoiceNo)
         } else {
