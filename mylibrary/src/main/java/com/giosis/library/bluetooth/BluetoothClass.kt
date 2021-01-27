@@ -305,6 +305,9 @@ class BluetoothClass(val mActivity: Activity) : BluetoothListener {
 
     fun onStartGprinter(trackingNo: String, mac_addr: String) {
         //   Log.e("print", TAG + "  onStartGprinter > " + mac_addr);
+
+        GPrinterData.TEMP_TRACKING_NO = trackingNo
+
         if (mac_addr == "") {
             isConnectPortablePrint(trackingNo)
         } else {
@@ -488,6 +491,7 @@ class BluetoothClass(val mActivity: Activity) : BluetoothListener {
             arrayList.add(str3)
         }
 
+        Log.e(TAG, " cutString $arrayList")
         return arrayList
     }
 
