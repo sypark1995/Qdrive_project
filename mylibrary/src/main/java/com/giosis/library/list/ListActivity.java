@@ -215,10 +215,19 @@ public class ListActivity extends CommonActivity implements OnClickListener,
 
             Toast.makeText(ListActivity.this, getResources().getString(R.string.msg_qdrive_auto_logout), Toast.LENGTH_SHORT).show();
 
-            // TODO_kjyoo
-//            Intent intent = new Intent(ListActivity.this, LoginActivity.class);
-//            intent.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP | Intent.FLAG_ACTIVITY_SINGLE_TOP);
-//            startActivity(intent);
+            try {
+                Intent intent;
+                if ("SG".equals(Preferences.INSTANCE.getUserNation())) {
+                    intent = new Intent(ListActivity.this, Class.forName("com.giosis.util.qdrive.singapore.LoginActivity"));
+                } else {
+                    intent = new Intent(ListActivity.this, Class.forName("com.giosis.util.qdrive.international.LoginActivity"));
+                }
+                intent.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP | Intent.FLAG_ACTIVITY_SINGLE_TOP);
+                startActivity(intent);
+            } catch (Exception e) {
+
+            }
+
         }
     }
 

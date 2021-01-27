@@ -1,4 +1,4 @@
-package com.giosis.util.qdrive.server.data
+package com.giosis.util.qdrive.singapore
 
 import com.giosis.library.server.JsonModel
 import com.google.gson.annotations.SerializedName

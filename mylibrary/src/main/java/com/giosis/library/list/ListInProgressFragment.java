@@ -68,13 +68,12 @@ public class ListInProgressFragment extends Fragment
             "invoice_no desc",
             "rcv_nm asc",
             "rcv_nm desc",
-            "Smart Route" // TODO my 에서는 안쓴다.
+            "Smart Route"
     };
 
     private ListInProgressAdapter adapter;
     private ArrayList<RowItem> rowItems;
 
-    // TODO sg 에서만 사용
     // 2019.07  Smart Route
     private ArrayList<SmartRouteResult.RouteMaster> routeMasterArrayList;
     private SmartRouteExpandableAdapter smartRouteExpandableAdapter;
@@ -94,7 +93,7 @@ public class ListInProgressFragment extends Fragment
     private ConstraintLayout layout_list_pickup_sort_condition;
     private Button btn_list_pickup_sort_request;
     private Button btn_list_pickup_sort_trip;
-    private ProgressBar progress_in_progress; // TODO 사용하지 않
+    private ProgressBar progress_in_progress;
 
     private SearchView searchview_list;
     private EditText edit_list_searchview;
@@ -238,7 +237,9 @@ public class ListInProgressFragment extends Fragment
         edit_list_searchview.setTextSize(TypedValue.COMPLEX_UNIT_PX, getResources().getDimension(R.dimen.text_size_26px));
         edit_list_searchview.setHintTextColor(getResources().getColor(R.color.color_8f8f8f));
 
-        layout_list_sort.setOnClickListener(v -> spinner_list_sort.performClick());
+        layout_list_sort.setOnClickListener(v ->
+                spinner_list_sort.performClick()
+        );
 
         ArrayList<String> sortArrayList = new ArrayList<>(Arrays.asList(
                 getResources().getString(R.string.text_sort_postal_code_asc),
@@ -250,6 +251,17 @@ public class ListInProgressFragment extends Fragment
                 getResources().getString(R.string.text_smart_route)
         ));
 
+        if (!"SG".equals(Preferences.INSTANCE.getUserNation())) {
+            try {
+                // SG 에서만 "Smart Route" 시용함
+                int number = sortArrayList.size() - 1;
+                if ("Smart Route".equals(sortArrayList.get(number))) {
+                    sortArrayList.remove(number);
+                }
+            } catch (Exception e) {
+
+            }
+        }
 
         ArrayAdapter<String> sortArrayAdapter = new ArrayAdapter<>(getActivity(), android.R.layout.simple_spinner_dropdown_item, sortArrayList);
         spinner_list_sort.setAdapter(sortArrayAdapter);
@@ -1068,7 +1080,7 @@ public class ListInProgressFragment extends Fragment
         return resultArrayList;
     }
 
-    private static long diffOfDate(String begin) throws Exception {
+    private long diffOfDate(String begin) throws Exception {
         SimpleDateFormat formatter = new SimpleDateFormat("yyyy-MM-dd");
 
         Date beginDate = formatter.parse(begin);
@@ -1080,7 +1092,7 @@ public class ListInProgressFragment extends Fragment
         return diffDays;
     }
 
-    static class TripMultiComparator implements Comparator<RowItem> {
+    class TripMultiComparator implements Comparator<RowItem> {
 
         @Override
         public int compare(RowItem o1, RowItem o2) {

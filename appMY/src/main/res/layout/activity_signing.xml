@@ -242,8 +242,7 @@
                             android:textSize="@dimen/text_size_28px" />
                     </LinearLayout>
                 </RelativeLayout>
-
-                <com.giosis.util.qdrive.list.SigningView
+                <com.giosis.library.list.SigningView
                     android:id="@+id/sign_view_sign_signature"
                     android:layout_width="match_parent"
                     android:layout_height="140dp"

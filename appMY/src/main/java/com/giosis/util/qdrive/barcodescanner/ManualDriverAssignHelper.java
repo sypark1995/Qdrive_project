@@ -1,4 +1,4 @@
-package com.giosis.util.qdrive.main;
+package com.giosis.util.qdrive.barcodescanner;
 
 import android.app.ProgressDialog;
 import android.content.ContentValues;
@@ -7,11 +7,8 @@ import android.database.Cursor;
 import android.os.AsyncTask;
 import android.text.TextUtils;
 import android.util.Log;
-import android.widget.Toast;
 
-import com.giosis.util.qdrive.barcodescanner.ChangeDriverResult;
-import com.giosis.util.qdrive.barcodescanner.DriverAssignResult;
-import com.giosis.util.qdrive.barcodescanner.StdResult;
+import com.giosis.library.list.BarcodeData;
 import com.giosis.util.qdrive.international.R;
 import com.giosis.util.qdrive.util.Custom_JsonParser;
 import com.giosis.util.qdrive.util.DataUtil;
@@ -28,19 +25,17 @@ import java.util.Date;
 import java.util.List;
 import java.util.TimeZone;
 
-public class ManualChangeDelDriverHelper {
-    String TAG = "ManualChangeDelDriverHelper";
+public class ManualDriverAssignHelper {
+    String TAG = "ManualDriverAssignHelper";
 
     private final Context context;
     private final String opID;
     private final String officeCode;
     private final String deviceID;
-    private final ArrayList<ChangeDriverResult> changeDriverArrayList;
-    private final double lat;
-    private final double lon;
+    private final ArrayList<BarcodeData> confirmOrderBarcodeList;
 
     private final String networkType;
-    private final OnChangeDelDriverEventListener eventListener;
+    private final OnDriverAssignV2EventListener eventListener;
     private final ProgressDialog progressDialog;
 
     public static class Builder {
@@ -49,47 +44,41 @@ public class ManualChangeDelDriverHelper {
         private final String opID;
         private final String officeCode;
         private final String deviceID;
-        private final ArrayList<ChangeDriverResult> changeDriverArrayList;
-        private final double lat;
-        private final double lon;
+        private final ArrayList<BarcodeData> confirmOrderBarcodeList;
 
         private String networkType;
-        private OnChangeDelDriverEventListener eventListener;
+        private OnDriverAssignV2EventListener eventListener;
 
         public Builder(Context context, String opID, String officeCode, String deviceID,
-                       ArrayList<ChangeDriverResult> changeDriverArrayList, double lat, double lon) {
+                       ArrayList<BarcodeData> confirmOrderBarcodeList) {
 
             this.context = context;
             this.opID = opID;
             this.officeCode = officeCode;
             this.deviceID = deviceID;
-            this.changeDriverArrayList = changeDriverArrayList;
-            this.lat = lat;
-            this.lon = lon;
+            this.confirmOrderBarcodeList = confirmOrderBarcodeList;
 
             this.networkType = NetworkUtil.getNetworkType(context);
         }
 
-        public ManualChangeDelDriverHelper build() {
-            return new ManualChangeDelDriverHelper(this);
+        public ManualDriverAssignHelper build() {
+            return new ManualDriverAssignHelper(this);
         }
 
-        public Builder setOnChangeDelDriverEventListener(OnChangeDelDriverEventListener eventListener) {
+        public Builder setOnDriverAssignV2EventListener(OnDriverAssignV2EventListener eventListener) {
             this.eventListener = eventListener;
 
             return this;
         }
     }
 
-    private ManualChangeDelDriverHelper(Builder builder) {
+    private ManualDriverAssignHelper(Builder builder) {
 
         this.context = builder.context;
         this.opID = builder.opID;
         this.officeCode = builder.officeCode;
         this.deviceID = builder.deviceID;
-        this.changeDriverArrayList = builder.changeDriverArrayList;
-        this.lat = builder.lat;
-        this.lon = builder.lon;
+        this.confirmOrderBarcodeList = builder.confirmOrderBarcodeList;
 
         this.networkType = builder.networkType;
         this.eventListener = builder.eventListener;
@@ -106,7 +95,7 @@ public class ManualChangeDelDriverHelper {
     }
 
 
-    class ChangeDriverAsyncTask extends AsyncTask<Void, Integer, DriverAssignResult> {
+    class DriverAssignTask extends AsyncTask<Void, Integer, DriverAssignResult> {
         int progress = 0;
 
         @Override
@@ -114,28 +103,27 @@ public class ManualChangeDelDriverHelper {
             super.onPreExecute();
 
             if (progressDialog != null) {
-                int maxCount = changeDriverArrayList.size();
+                int maxCount = confirmOrderBarcodeList.size();
                 progressDialog.setMax(maxCount);
                 progressDialog.show();
             }
         }
 
-
-        @SuppressWarnings("rawtypes")
         @Override
         protected DriverAssignResult doInBackground(Void... params) {
+
             DriverAssignResult result = null;
 
-            if (changeDriverArrayList != null && 0 < changeDriverArrayList.size()) {
+            if (confirmOrderBarcodeList != null && 0 < confirmOrderBarcodeList.size()) {
 
                 String str = null;
-
-                for (int i = 0; i < changeDriverArrayList.size(); i++) {
-
-                    if (str == null) {
-                        str = changeDriverArrayList.get(i).getResultObject().getContrNo();
-                    } else {
-                        str = str + "," + changeDriverArrayList.get(i).getResultObject().getContrNo();
+                for (BarcodeData assignData : confirmOrderBarcodeList) {
+                    if (!TextUtils.isEmpty(assignData.getBarcode())) {
+                        if (str == null) {
+                            str = assignData.getBarcode();
+                        } else {
+                            str = str + "," + assignData.getBarcode();
+                        }
                     }
                 }
 
@@ -157,25 +145,26 @@ public class ManualChangeDelDriverHelper {
         protected void onPostExecute(DriverAssignResult resultList) {
             super.onPostExecute(resultList);
 
-            DisplayUtil.dismissProgressDialog(progressDialog);
+            try {
+
+                DisplayUtil.dismissProgressDialog(progressDialog);
 
 
-            int resultCode = resultList.getResultCode();
+                int resultCode = resultList.getResultCode();
 
-            if (resultCode == 0) {
-                List<DriverAssignResult.QSignDeliveryList> resultObject = resultList.getResultObject();
+                if (resultCode == 0) {
 
-                for (DriverAssignResult.QSignDeliveryList qSignDeliveryList : resultObject) {
-                    if (!TextUtils.isEmpty(qSignDeliveryList.getPartnerRefNo().trim())) {
+                    List<DriverAssignResult.QSignDeliveryList> resultObject = resultList.getResultObject();
 
-                        boolean success_insert = insertDriverAssignInfo(qSignDeliveryList);
-
-                        if (success_insert) {
-                            ChangeMessageAsyncTask changeMessageAsyncTask = new ChangeMessageAsyncTask(qSignDeliveryList.getInvoiceNo(), "SG", opID);
-                            changeMessageAsyncTask.execute();
+                    for (DriverAssignResult.QSignDeliveryList qSignDeliveryList : resultObject) {
+                        if (!TextUtils.isEmpty(qSignDeliveryList.getPartnerRefNo().trim())) {
+                            insertDriverAssignInfo(qSignDeliveryList);
                         }
                     }
                 }
+            } catch (Exception e) {
+
+                Log.e("Exception", TAG + "  onPostExecute Exception : " + e.toString());
             }
 
             if (eventListener != null) {
@@ -195,17 +184,14 @@ public class ManualChangeDelDriverHelper {
                 JSONObject job = new JSONObject();
                 job.accumulate("assignList", assignNo);
                 job.accumulate("office_code", officeCode);
-                job.accumulate("network_type", networkType);
                 job.accumulate("del_driver_id", opID);
                 job.accumulate("device_id", deviceID);
-                job.accumulate("lat", String.valueOf(lat));
-                job.accumulate("lon", String.valueOf(lon));
+                job.accumulate("stat_chg_gubun", "D");
                 job.accumulate("app_id", DataUtil.appID);
                 job.accumulate("nation_cd", DataUtil.nationCode);
 
-                String methodName = "SetChangeDeliveryDriver";
+                String methodName = "SetShippingStatDpc3out";
                 String jsonString = Custom_JsonParser.requestServerDataReturnJSON(methodName, job);
-                // {"ResultObject":[{"contr_no":"90256451","partner_ref_no":"SGSG23614214","invoice_no":"SGP163532597","stat":"D3","rcv_nm":"Ang Boon Sin","tel_no":"+65--","hp_no":"+65-9172-5419","zip_code":"791412","address":"412A FERNVALE LINK#05-13,  Singapore","sender_nm":"jenny","del_memo":"","driver_memo":"","fail_reason":"  ","partner_ref_no_fail_assign":null,"reason_fail_assign":null,"delivery_count":"0","delivery_first_date":"2020-08-23","route":"GIO","secret_no_type":" ","secret_no":"","del_hopeday":null,"course":null,"course_driver":null,"secure_delivery_yn":"N","parcel_amount":"20.41","currency":"SGD","qwms_yn":null,"order_type_etc":"DPC","del_hopedaybyDBData":null,"del_hopetime":null,"GoogleMap":null,"delivery_nation_cd":null,"lat_lng":"1.389179,103.877918"}],"ResultCode":0,"ResultMsg":"Success"}
                 resultObj = gson.fromJson(jsonString, DriverAssignResult.class);
             } catch (Exception e) {
 
@@ -218,7 +204,7 @@ public class ManualChangeDelDriverHelper {
     }
 
 
-    private boolean insertDriverAssignInfo(DriverAssignResult.QSignDeliveryList assignInfo) {
+    private void insertDriverAssignInfo(DriverAssignResult.QSignDeliveryList assignInfo) {
 
         SimpleDateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
         dateFormat.setTimeZone(TimeZone.getTimeZone("GMT"));
@@ -232,7 +218,6 @@ public class ManualChangeDelDriverHelper {
         if (0 < cnt) {
             deleteSelectedContrNo(contry_no);
         }
-
 
         // eylee 2015.08.26 add end
         //성공 시 통합리스트 테이블 저장
@@ -264,79 +249,11 @@ public class ManualChangeDelDriverHelper {
         contentVal2.put("secure_delivery_yn", assignInfo.getSecureDeliveryYN());
         contentVal2.put("parcel_amount", assignInfo.getParcelAmount());
         contentVal2.put("currency", assignInfo.getCurrency());
-
         // krm0219
         contentVal2.put("order_type_etc", assignInfo.getOrder_type_etc());
 
-        long insertCount = dbHelper.insert(DatabaseHelper.DB_TABLE_INTEGRATION_LIST, contentVal2);
-
-        return insertCount >= 0;
+        dbHelper.insert(DatabaseHelper.DB_TABLE_INTEGRATION_LIST, contentVal2);
     }
-
-
-    // krm0219
-    class ChangeMessageAsyncTask extends AsyncTask<Void, Void, StdResult> {
-
-        String tracking_no;
-        String svc_nation_cd;
-        String qdriver_id;
-
-
-        ChangeMessageAsyncTask(String TrackingNo, String NationCode, String DriverID) {
-
-            tracking_no = TrackingNo;
-            svc_nation_cd = NationCode;
-            qdriver_id = DriverID;
-        }
-
-        @Override
-        protected StdResult doInBackground(Void... voids) {
-
-            StdResult result = new StdResult();
-
-            try {
-
-                JSONObject job = new JSONObject();
-                job.accumulate("tracking_no", tracking_no);
-                job.accumulate("svc_nation_cd", svc_nation_cd);
-                job.accumulate("qdriver_id", qdriver_id);
-                job.accumulate("app_id", DataUtil.appID);
-                job.accumulate("nation_cd", DataUtil.nationCode);
-
-
-                String methodName = "SetQdriverMessageChangeQdriver";
-                String jsonString = Custom_JsonParser.requestServerDataReturnJSON(methodName, job);
-                // {"ResultObject":null,"ResultCode":0,"ResultMsg":"OK"}
-
-                JSONObject jsonObject = new JSONObject(jsonString);
-                result.setResultCode(jsonObject.getInt("ResultCode"));
-                result.setResultMsg(jsonObject.getString("ResultMsg"));
-            } catch (Exception e) {
-
-                Log.e("Exception", TAG + "  SetQdriverMessageChangeQdriver Exception : " + e.toString());
-
-                String msg = String.format(context.getResources().getString(R.string.text_exception), e.toString());
-                result.setResultCode(-15);
-                result.setResultMsg(msg);
-            }
-
-            return result;
-        }
-
-        @Override
-        protected void onPostExecute(StdResult result) {
-            super.onPostExecute(result);
-
-            if (result.getResultCode() == 0) {
-
-                Log.e("krm0219", TAG + "  ChangeMessageAsyncTask Success");
-            } else {
-
-                Toast.makeText(context, context.getResources().getString(R.string.msg_message_change_error), Toast.LENGTH_SHORT).show();
-            }
-        }
-    }
-
 
     private int getContrNoCount(String contr_no) {
         DatabaseHelper dbHelper = DatabaseHelper.getInstance();
@@ -359,14 +276,13 @@ public class ManualChangeDelDriverHelper {
     }
 
 
-    public ManualChangeDelDriverHelper execute() {
-        ChangeDriverAsyncTask changeDriverAsyncTask = new ChangeDriverAsyncTask();
-        changeDriverAsyncTask.execute();
-
+    public ManualDriverAssignHelper execute() {
+        DriverAssignTask driverAssignTask = new DriverAssignTask();
+        driverAssignTask.execute();
         return this;
     }
 
-    public interface OnChangeDelDriverEventListener {
+    public interface OnDriverAssignV2EventListener {
         void onPostAssignResult(DriverAssignResult stdResult);
     }
 }

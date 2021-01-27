@@ -2,7 +2,6 @@ package com.giosis.library.util;
 
 import android.app.Activity;
 import android.app.AlertDialog;
-import android.app.Dialog;
 import android.app.ProgressDialog;
 import android.content.Context;
 import android.content.ContextWrapper;
@@ -10,13 +9,10 @@ import android.util.Log;
 import android.util.TypedValue;
 import android.view.View;
 import android.view.ViewTreeObserver;
-import android.view.Window;
-import android.view.WindowManager;
 import android.view.inputmethod.InputMethodManager;
 import android.widget.ImageView;
 import android.widget.RelativeLayout;
 
-import com.giosis.library.OnEventListener;
 import com.giosis.library.R;
 
 
@@ -115,34 +111,6 @@ public class DisplayUtil {
         alert_internet_status.show();
     }
 
-
-    public static Dialog showProgressDialog(Activity activity) {
-
-        Dialog dialog = new Dialog(activity);
-        dialog.requestWindowFeature(Window.FEATURE_NO_TITLE);
-        dialog.setCancelable(false);
-        dialog.setContentView(R.layout.custom_progress_dialog);
-
-        Window window = dialog.getWindow();
-        window.setLayout(WindowManager.LayoutParams.MATCH_PARENT, WindowManager.LayoutParams.WRAP_CONTENT);
-
-        return dialog;
-    }
-
-
-    public static void serverResultDialog(final Activity activity, String msg, final OnEventListener eventListener) {
-
-        AlertDialog.Builder alert_internet_status = new AlertDialog.Builder(activity);
-        alert_internet_status.setTitle(activity.getResources().getString(R.string.text_upload_result));
-        alert_internet_status.setMessage(msg);
-        alert_internet_status.setPositiveButton(activity.getResources().getString(R.string.button_close),
-                (dialog, which) -> {
-
-                    dialog.dismiss();
-                    eventListener.onSuccess();
-                });
-        alert_internet_status.show();
-    }
 
     public static void setPreviewCamera(ImageView imageview) {
         // ViewTree의 뷰가 그려질 때마다

@@ -23,8 +23,4 @@ public class BarcodeType {
     public static final String OUTLET_PICKUP_SCAN = "OPS";              // LIST > Outlet Pickup Scan
     public static final String PICKUP_TAKE_BACK = "PTB";                // LIST > Today Done > Take Back
 
-
-    // TODO. List Fragment 옮기면 삭제
-    public static final int REQUEST_ADD_SCAN = 30;
-    public static final int REQUEST_TAKE_BACK = 31;
 }

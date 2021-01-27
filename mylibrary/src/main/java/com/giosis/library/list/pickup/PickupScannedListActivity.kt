@@ -8,6 +8,7 @@ import android.view.View
 import android.widget.ListView
 import android.widget.Toast
 import com.giosis.library.R
+import com.giosis.library.list.ListTodayDoneFragment
 import com.giosis.library.server.data.PickupScannedListResult
 import com.giosis.library.util.BarcodeType
 import com.giosis.library.util.CommonActivity
@@ -112,7 +113,7 @@ class PickupScannedListActivity : CommonActivity() {
             intent.putExtra("type", BarcodeType.PICKUP_ADD_SCAN)
             intent.putExtra("pickup_no", pickupNo)
             intent.putExtra("applicant", applicant)
-            startActivityForResult(intent, BarcodeType.REQUEST_ADD_SCAN)
+            startActivityForResult(intent, ListTodayDoneFragment.REQUEST_ADD_SCAN)
         } catch (e: Exception) {
 
             Log.e("Exception", "$tag  Exception :  $e")
@@ -131,7 +132,7 @@ class PickupScannedListActivity : CommonActivity() {
             intent.putExtra("pickup_no", pickupNo)
             intent.putExtra("applicant", applicant)
             intent.putExtra("scanned_qty", scannedQty)
-            startActivityForResult(intent, BarcodeType.REQUEST_TAKE_BACK)
+            startActivityForResult(intent, ListTodayDoneFragment.REQUEST_TAKE_BACK)
         } catch (e: Exception) {
 
             Log.e("Exception", "$tag  Exception :  $e")
@@ -141,7 +142,7 @@ class PickupScannedListActivity : CommonActivity() {
 
     override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
         super.onActivityResult(requestCode, resultCode, data)
-        if (requestCode == BarcodeType.REQUEST_ADD_SCAN || requestCode == BarcodeType.REQUEST_TAKE_BACK) {
+        if (requestCode == ListTodayDoneFragment.REQUEST_ADD_SCAN || requestCode == ListTodayDoneFragment.REQUEST_TAKE_BACK) {
             setResult(Activity.RESULT_OK)
             finish()
         }

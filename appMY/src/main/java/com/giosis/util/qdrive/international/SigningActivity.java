@@ -23,7 +23,7 @@ import android.widget.Toast;
 import androidx.annotation.Nullable;
 
 import com.giosis.library.list.BarcodeData;
-import com.giosis.util.qdrive.list.SigningView;
+import com.giosis.library.list.SigningView;
 import com.giosis.library.util.DatabaseHelper;
 import com.giosis.util.qdrive.util.MemoryStatus;
 import com.giosis.util.qdrive.util.NetworkUtil;
@@ -374,7 +374,7 @@ public class SigningActivity extends CommonActivity {
                 return;
             }
 
-            if (!sign_view_sign_signature.getIsTouche()) {
+            if (!sign_view_sign_signature.isTouch()) {
                 Toast.makeText(this.getApplicationContext(), context.getResources().getString(R.string.msg_signature_require), Toast.LENGTH_SHORT).show();
                 return;
             }

@@ -41,8 +41,8 @@ public class ListTodayDoneFragment extends Fragment implements SearchView.OnQuer
     private ExpandableListView exlist_card_list;
 
     private OnTodayDoneCountListener mCountCallback;
-    static final int REQUEST_ADD_SCAN = 30;
-    static final int REQUEST_TAKE_BACK = 31;
+    public static final int REQUEST_ADD_SCAN = 30;
+    public static final int REQUEST_TAKE_BACK = 31;
 
     private ArrayList<RowItem> rowItems;
     private ArrayList<ChildItem> childItems;

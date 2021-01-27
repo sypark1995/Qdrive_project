@@ -53,30 +53,6 @@ public class DataUtil {
     public static String barcode_url = "http://image.qxpress.net/code128/code128.php?no=";
     public static String locker_pin_url = "https://www.lockeralliance.net/pin";
 
-    // Main Service
-    public static Intent fusedProviderService = null;
-    public static Intent locationManagerService = null;
-
-    //
-    public static int inProgressListPosition = 0;
-    public static int uploadFailedListPosition = 0;
-
-    public static Intent getFusedProviderService() {
-        return fusedProviderService;
-    }
-
-    public static void setFusedProviderService(Intent fusedProviderService) {
-        DataUtil.fusedProviderService = fusedProviderService;
-    }
-
-    public static Intent getLocationManagerService() {
-        return locationManagerService;
-    }
-
-    public static void setLocationManagerService(Intent locationManagerService) {
-        DataUtil.locationManagerService = locationManagerService;
-    }
-
 
     public static void copyClipBoard(Context context, String data) {
 
@@ -108,29 +84,6 @@ public class DataUtil {
 
         if (gpsTrackerManager != null)
             gpsTrackerManager.stopFusedProviderService();
-    }
-
-    public static void captureSign(String dirName, String signName, View targetView) {
-
-        targetView.buildDrawingCache();
-        Bitmap captureView = targetView.getDrawingCache();
-
-        String dirPath = Environment.getExternalStorageDirectory().toString() + dirName;
-        File saveDir = new File(dirPath);
-        if (!saveDir.exists()) {
-            saveDir.mkdir();
-        }
-
-        String filePath = dirPath + "/" + signName + ".png";
-
-        try {
-
-            FileOutputStream fos = new FileOutputStream(filePath);
-            captureView.compress(Bitmap.CompressFormat.PNG, 100, fos);
-            fos.close();
-        } catch (Exception e) {
-            e.printStackTrace();
-        }
     }
 
     public static String bitmapToString(Bitmap bitmap, String basePath, String path, String trackNo) {
@@ -171,107 +124,5 @@ public class DataUtil {
         return imagePath;
     }
 
-    public static Bitmap stringToDataMatrix(String scan_no) {
 
-        Bitmap bitmap = null;
-        MultiFormatWriter gen = new MultiFormatWriter();
-
-        try {
-
-            final int WIDTH = 200;
-            final int HEIGHT = 200;
-
-            Hashtable<EncodeHintType, Object> hints = new Hashtable<>(1);
-            hints.put(EncodeHintType.DATA_MATRIX_SHAPE, SymbolShapeHint.FORCE_SQUARE);
-
-            BitMatrix bytemap = gen.encode(scan_no, BarcodeFormat.DATA_MATRIX, WIDTH, HEIGHT, hints);
-            bitmap = Bitmap.createBitmap(WIDTH, HEIGHT, Bitmap.Config.ARGB_8888);
-            for (int i = 0; i < WIDTH; ++i) {
-                for (int j = 0; j < HEIGHT; ++j) {
-
-                    bitmap.setPixel(i, j, bytemap.get(i, j) ? Color.BLACK : Color.WHITE);
-                }
-            }
-        } catch (Exception e) {
-
-            Log.e("print", "stringToDataMatrix  MultiFormatWriter Exception  : " + e.toString());
-        }
-
-
-        return bitmap;
-    }
-
-
-    // NOTIFICATION. 202012  Failed Reason
-    public static void requestServerPickupFailedCode() {
-
-        CallServer.INSTANCE.getFailedCode(CallServer.PFC, "", new CallServer.GetFailedCodeCallback() {
-
-            @Override
-            public void onServerError(int value) {
-            }
-
-            @Override
-            public void onServerResult(@NotNull FailedCodeResult value) {
-
-                if (value.getResultCode() == 10) {
-
-                    Gson gson = new Gson();
-                    String json = gson.toJson(value);
-                    Log.e("krm0219", "P  getFailedCode  " + json);
-                    MyApplication.preferences.setPFailedCode(json);
-                }
-            }
-        });
-    }
-
-    public static void requestServerDeliveryFailedCode() {
-
-        CallServer.INSTANCE.getFailedCode(CallServer.DFC, "", new CallServer.GetFailedCodeCallback() {
-
-            @Override
-            public void onServerError(int value) {
-            }
-
-            @Override
-            public void onServerResult(@NotNull FailedCodeResult value) {
-
-                if (value.getResultCode() == 10) {
-
-                    Gson gson = new Gson();
-                    String json = gson.toJson(value);
-                    Log.e("krm0219", "D  getFailedCode  " + json);
-                    MyApplication.preferences.setDFailedCode(json);
-                }
-            }
-        });
-    }
-
-
-    public static ArrayList<FailedCodeResult.FailedCode> getFailCode(String type) {
-
-        ArrayList<FailedCodeResult.FailedCode> arrayList;
-        String json = "";
-
-        if (type.equals("D")) {
-
-            json = MyApplication.preferences.getDFailedCode();
-        } else if (type.equals("P")) {
-
-            json = MyApplication.preferences.getPFailedCode();
-        }
-
-
-        if (json.equals("")) {
-
-            return null;
-        } else {
-
-            Gson gson = new Gson();
-            FailedCodeResult result = gson.fromJson(json, FailedCodeResult.class);
-            arrayList = new ArrayList<>(result.getResultObject());
-        }
-
-        return arrayList;
-    }
 }

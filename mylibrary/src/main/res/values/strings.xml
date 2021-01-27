@@ -213,6 +213,9 @@
     <string name="text_alert">Alert</string>
     <string name="text_enter_your_information">Enter your Information</string>
 
+    <string name="text_by_request" translatable="false">By Request</string>
+    <string name="text_by_trip" translatable="false">By Trip</string>
+
     <string name="text_summary">Summary</string>
     <string name="text_detail">Detail</string>
     <string name="text_dpc3_out_date">DPC3-Out Date</string>

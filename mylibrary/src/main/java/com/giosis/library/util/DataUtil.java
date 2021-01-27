@@ -58,15 +58,8 @@ public class DataUtil {
     public static Intent locationManagerService = null;
 
 
-    // TODO_kjyoo app 과 라이블러리에 둘다 있음...
     public static int inProgressListPosition = 0;
     public static int uploadFailedListPosition = 0;
-
-
-    // 2019.07  -  Smart Route
-    public static String SHARED_PREFERENCE_FILE = "com.giosis.qdrive.sharedpreferences";
-    public static String QDRIVE_API = "qdriveApiSG";
-    public static String QDRIVE_NATION_CODE = "SG";
 
 
     public static Intent getFusedProviderService() {
