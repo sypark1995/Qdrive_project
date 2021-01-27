@@ -7,8 +7,8 @@ import android.content.DialogInterface.OnClickListener;
 import android.os.AsyncTask;
 import android.util.Log;
 
+import com.giosis.library.server.Custom_JsonParser;
 import com.giosis.util.qdrive.international.R;
-import com.giosis.util.qdrive.util.Custom_JsonParser;
 import com.giosis.util.qdrive.util.DataUtil;
 import com.giosis.util.qdrive.util.NetworkUtil;
 import com.google.gson.Gson;

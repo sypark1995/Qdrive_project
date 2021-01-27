@@ -22,10 +22,10 @@ import android.widget.Toast;
 
 import androidx.annotation.Nullable;
 
+import com.giosis.library.MemoryStatus;
 import com.giosis.library.list.BarcodeData;
 import com.giosis.library.list.SigningView;
 import com.giosis.library.util.DatabaseHelper;
-import com.giosis.util.qdrive.util.MemoryStatus;
 import com.giosis.util.qdrive.util.NetworkUtil;
 import com.giosis.util.qdrive.util.PermissionActivity;
 import com.giosis.util.qdrive.util.PermissionChecker;

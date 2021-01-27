@@ -10,14 +10,14 @@ import android.text.TextUtils;
 import android.util.Log;
 
 import com.giosis.library.list.BarcodeData;
+import com.giosis.library.server.Custom_JsonParser;
 import com.giosis.library.util.DatabaseHelper;
+import com.giosis.library.util.GeoCodeUtil;
 import com.giosis.util.qdrive.singapore.MyApplication;
 import com.giosis.util.qdrive.singapore.R;
 import com.giosis.util.qdrive.util.BarcodeType;
-import com.giosis.util.qdrive.util.Custom_JsonParser;
 import com.giosis.util.qdrive.util.DataUtil;
 import com.giosis.util.qdrive.util.DisplayUtil;
-import com.giosis.util.qdrive.util.GeocoderUtil;
 import com.google.gson.Gson;
 
 import org.json.JSONObject;
@@ -240,7 +240,7 @@ public class ConfirmMyOrderHelper {
         contentVal.put("order_type_etc", assignInfo.getOrder_type_etc());        // krm0219
 
         // 2020.06 위, 경도 저장
-        String[] latLng = GeocoderUtil.getLatLng(assignInfo.getLat_lng());
+        String[] latLng = GeoCodeUtil.getLatLng(assignInfo.getLat_lng());
         contentVal.put("lat", latLng[0]);
         contentVal.put("lng", latLng[1]);
 
