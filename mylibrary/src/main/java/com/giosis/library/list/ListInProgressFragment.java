@@ -71,16 +71,6 @@ public class ListInProgressFragment extends Fragment
             "Smart Route"
     };
 
-    private String[] orderbyQueryMY = {
-            "zip_code asc",
-            "zip_code desc",
-            "invoice_no asc",
-            "invoice_no desc",
-            "rcv_nm asc",
-            "rcv_nm desc",
-            "seq_orderby asc" // TODO_
-    };
-
 
     private ListInProgressAdapter adapter;
     private ArrayList<RowItem> rowItems;
@@ -147,10 +137,6 @@ public class ListInProgressFragment extends Fragment
 
     @Override
     public void onMoveUp(int pos) {
-
-// TODO_kjyoo
-//        orderby = "seq_orderby asc";
-//        spinner_list_sort.setSelection(6);
 
         if (isOpen) {
             exlist_card_list.expandGroup(pos);
@@ -274,18 +260,23 @@ public class ListInProgressFragment extends Fragment
             ));
         }
 
+        if (!"SG".equals(Preferences.INSTANCE.getUserNation())) {
+            try {
+                // SG 에서만 "Smart Route" 시용함
+                int number = sortArrayList.size() - 1;
+                if ("Smart Route".equals(sortArrayList.get(number))) {
+                    sortArrayList.remove(number);
+                }
+            } catch (Exception e) {
+            }
+        }
 
         ArrayAdapter<String> sortArrayAdapter = new ArrayAdapter<>(getActivity(), android.R.layout.simple_spinner_dropdown_item, sortArrayList);
         spinner_list_sort.setAdapter(sortArrayAdapter);
 
         try {
             spinner_list_sort.setSelection(Preferences.INSTANCE.getSortIndex());
-
-            if ("SG".equals(Preferences.INSTANCE.getUserNation())) {
-                selectedSort = orderbyQuery[Preferences.INSTANCE.getSortIndex()];
-            } else {
-                selectedSort = orderbyQueryMY[Preferences.INSTANCE.getSortIndex()];
-            }
+            selectedSort = orderbyQuery[Preferences.INSTANCE.getSortIndex()];
 
         } catch (Exception e) {
             Log.e("Exception", TAG + "  Spinner Exception : " + e.toString());
@@ -302,12 +293,7 @@ public class ListInProgressFragment extends Fragment
                 if (++check > 1) {
 
                     Preferences.INSTANCE.setSortIndex(position);
-
-                    if ("SG".equals(Preferences.INSTANCE.getUserNation())) {
-                        selectedSort = orderbyQuery[position];
-                    } else {
-                        selectedSort = orderbyQueryMY[position];
-                    }
+                    selectedSort = orderbyQuery[position];
 
                     Log.e("krm0219", TAG + "  spinner position : " + position + " / " + selectedSort);
                     onResume();
