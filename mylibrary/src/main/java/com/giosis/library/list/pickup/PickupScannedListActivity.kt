@@ -97,7 +97,7 @@ class PickupScannedListActivity : CommonActivity() {
             itemArrayList!!.add(item)
         }
 
-        pickupScannedListAdapter = PickupScannedListAdapter(itemArrayList)
+        pickupScannedListAdapter = PickupScannedListAdapter(this@PickupScannedListActivity, itemArrayList)
         list_add_scan_scanned_list!!.adapter = pickupScannedListAdapter
         setListViewHeightBasedOnChildren(list_add_scan_scanned_list)
     }
