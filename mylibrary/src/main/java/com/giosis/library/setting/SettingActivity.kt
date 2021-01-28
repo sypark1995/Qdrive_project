@@ -110,6 +110,13 @@ class SettingActivity : BaseActivity<ActivitySettingBinding, SettingViewModel>()
         })
     }
 
+
+    override fun onResume() {
+        super.onResume()
+        mViewModel.initData()
+    }
+
+
     private fun initDeveloperMode() {
         if (Preferences.developerMode) {
             btn_setting_developer_mode.visibility = View.VISIBLE;

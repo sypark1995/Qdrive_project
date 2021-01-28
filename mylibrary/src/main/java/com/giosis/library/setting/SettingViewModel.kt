@@ -44,7 +44,6 @@ class SettingViewModel : BaseViewModel() {
 
     init {
 
-        // TODO_Setting   ModifyUserInfo에서 name, email 수정 후 돌아오면 반영되지 않음
         _name.value = Preferences.userName
         _id.value = Preferences.userId
         _email.value = Preferences.userEmail
@@ -76,6 +75,17 @@ class SettingViewModel : BaseViewModel() {
             version.value = Preferences.appVersion
         }
     }
+
+
+    fun initData(){
+
+        _name.value = Preferences.userName
+        _id.value = Preferences.userId
+        _email.value = Preferences.userEmail
+        _officeName.value = Preferences.officeName
+
+    }
+
 
     fun changePassword() {
         startActivity(ChangePwdActivity::class.java)
