@@ -34,6 +34,7 @@ import com.giosis.library.util.PermissionChecker;
 import com.giosis.library.util.Preferences;
 
 
+// TODO_TEST
 public class QuickReturnedActivity extends CommonActivity {
     String TAG = "QuickReturnedActivity";
 

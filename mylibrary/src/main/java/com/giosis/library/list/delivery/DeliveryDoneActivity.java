@@ -64,6 +64,8 @@ import java.util.ArrayList;
  * LIST, In Progress > 'Delivered'  // SCAN > Delivery Done
  * 2020.06 사진 추가
  */
+
+// TODO_TEST 아울렛 관련
 public class DeliveryDoneActivity extends CommonActivity implements Camera2APIs.Camera2Interface, TextureView.SurfaceTextureListener {
     String TAG = "DeliveryDoneActivity";
 
