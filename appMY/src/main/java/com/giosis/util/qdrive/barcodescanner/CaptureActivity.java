@@ -1566,8 +1566,9 @@ public final class CaptureActivity extends CommonActivity implements SurfaceHold
 
                 if (mScanType.equals(BarcodeType.CHANGE_DELIVERY_DRIVER)) {
 
-                    data.setChangeDeliveryText(changeDriverResult.getResultObject().getTrackingNo() + "  |  " + changeDriverResult.getResultObject().getStatus() + "  |  " + changeDriverResult.getResultObject().getCurrentDriver());
-                    barcodeList.add(changeDriverResult.getResultObject().getTrackingNo() + "  |  " + changeDriverResult.getResultObject().getStatus() + "  |  " + changeDriverResult.getResultObject().getCurrentDriver());
+                    barcodeList.add(changeDriverResult.getResultObject().getTrackingNo() +
+                            "  |  " + changeDriverResult.getResultObject().getStatus() +
+                            "  |  " + changeDriverResult.getResultObject().getCurrentDriver());
                     changeDriverArrayList.add(changeDriverResult);
                 } else {
 

@@ -22,16 +22,6 @@ public class IntroActivity extends Activity {
         setContentView(R.layout.intro);
         context = getApplicationContext();
 
-
-        /*//TODO
-        Intent intent = new Intent();
-        intent.setClass(getApplicationContext(), LoginActivity.class);
-        intent.addFlags(Intent.FLAG_ACTIVITY_NO_ANIMATION);
-        startActivity(intent);
-        overridePendingTransition(android.R.anim.fade_in, android.R.anim.fade_out);
-        finish();*/
-
-
         // Live10 설치 여부 확인
         Intent intent = getPackageManager().getLaunchIntentForPackage("net.giosis.qpost");
         if (intent == null && !BuildConfig.DEBUG) {
