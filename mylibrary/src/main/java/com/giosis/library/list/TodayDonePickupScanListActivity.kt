@@ -2,8 +2,6 @@ package com.giosis.library.list
 
 import android.content.Intent
 import android.os.Bundle
-import android.view.View
-import android.widget.ListView
 import com.giosis.library.R
 import com.giosis.library.util.BarcodeType
 import com.giosis.library.util.CommonActivity
@@ -12,15 +10,9 @@ import kotlinx.android.synthetic.main.activity_pickup_scan_list.*
 import kotlinx.android.synthetic.main.top_title.*
 import java.util.*
 
-/**
- * @author eylee 2017-03-14
- * @editor LIST > TODAY DONE > 'ADD SCAN' Button
- * LIST > TODAY DONE > 'Take Back' Button
- */
 class TodayDonePickupScanListActivity : CommonActivity() {
     var TAG = "TodayDonePickupScanListActivity"
 
-    var itemArrayList: ArrayList<PickupScanListItem>? = null
     var todayDonePickupScanListAdapter: TodayDonePickupScanListAdapter? = null
     var button_type: String? = null
     var pickup_no: String? = ""
@@ -60,23 +52,26 @@ class TodayDonePickupScanListActivity : CommonActivity() {
         }
 
         TodayScanPackingListDownloadHelper.Builder(this@TodayDonePickupScanListActivity, userId, pickup_no)
-                .setOnScanPackingListDownloadEventListener { result: PickupPackingListResult -> setScannedList(result) }.build().execute()
+                .setOnScanPackingListDownloadEventListener { result: PickupPackingListResult ->
+                    setScannedList(result)
+                }.build().execute()
     }
 
     private fun setScannedList(result: PickupPackingListResult) {
-        scanned_qty = Integer.toString(result.resultObject.size)
+        scanned_qty = result.resultObject.size.toString()
         text_add_scan_scanned_qty!!.text = scanned_qty
-        itemArrayList = ArrayList()
+        val itemArrayList = ArrayList<PickupScanListItem>()
+
         for (scanPackingList in result.resultObject) {
             val item = PickupScanListItem()
             item.tracking_no = scanPackingList.packingNo
             item.scanned_date = scanPackingList.regDt
-            itemArrayList!!.add(item)
+            itemArrayList.add(item)
         }
-        todayDonePickupScanListAdapter = TodayDonePickupScanListAdapter(itemArrayList)
+
+        todayDonePickupScanListAdapter = TodayDonePickupScanListAdapter(this@TodayDonePickupScanListActivity, itemArrayList)
         list_add_scan_scanned_list!!.adapter = todayDonePickupScanListAdapter
 
-        setListViewHeightBasedOnChildren(list_add_scan_scanned_list)
     }
 
     // packing list 추가
@@ -108,21 +103,5 @@ class TodayDonePickupScanListActivity : CommonActivity() {
         }
     }
 
-    companion object { // TODO_kjyoo 이상함...
 
-        fun setListViewHeightBasedOnChildren(listView: ListView?) {
-            val listAdapter = listView!!.adapter ?: return
-            var totalHeight = 0
-            val desiredWidth = View.MeasureSpec.makeMeasureSpec(listView.width, View.MeasureSpec.AT_MOST)
-            for (i in 0 until listAdapter.count) {
-                val listItem = listAdapter.getView(i, null, listView)
-                listItem.measure(desiredWidth, View.MeasureSpec.UNSPECIFIED)
-                totalHeight += listItem.measuredHeight
-            }
-            val params = listView.layoutParams
-            params.height = totalHeight
-            listView.layoutParams = params
-            listView.requestLayout()
-        }
-    }
 }

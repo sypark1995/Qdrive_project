@@ -9,25 +9,28 @@ import android.widget.TextView
 import com.giosis.library.R
 import java.util.*
 
-class TodayDonePickupScanListAdapter(private val mItems: ArrayList<PickupScanListItem>?) : BaseAdapter() {
+class TodayDonePickupScanListAdapter(val context: Context, private val mItems: ArrayList<PickupScanListItem>?) : BaseAdapter() {
+
     override fun getCount(): Int {
         return if (mItems != null && mItems.size > 0) {
             mItems.size
         } else 0
     }
 
+
     override fun getItem(position: Int): Any {
         return mItems!![position]
     }
+
 
     override fun getItemId(position: Int): Long {
         return position.toLong()
     }
 
-    override fun getView(position: Int, convertView: View, parent: ViewGroup): View {
+    override fun getView(position: Int, convertView: View?, parent: ViewGroup?): View {
         val view: View
         view = if (convertView == null) {
-            val inflater = parent.context.getSystemService(Context.LAYOUT_INFLATER_SERVICE) as LayoutInflater
+            val inflater = context.getSystemService(Context.LAYOUT_INFLATER_SERVICE) as LayoutInflater
             inflater.inflate(R.layout.item_today_done_pickup_scanned_list, null)
         } else {
             convertView
