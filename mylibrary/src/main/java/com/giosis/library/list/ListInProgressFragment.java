@@ -284,7 +284,7 @@ public class ListInProgressFragment extends Fragment
 
                 if (++check > 1) {
 
-                    Preferences.INSTANCE.setSortIndex(0);
+                    Preferences.INSTANCE.setSortIndex(position);
                     selectedSort = orderbyQuery[position];
                     Log.e("krm0219", TAG + "  spinner position : " + position + " / " + selectedSort);
                     onResume();
