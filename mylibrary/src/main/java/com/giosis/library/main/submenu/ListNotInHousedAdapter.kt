@@ -18,7 +18,7 @@ import java.util.*
  * @author krm0219
  * NavigationBar > LIST > Not-IN Parcels
  */
-class ListNotInHousedAdapter(var context: Context, var result: NotInHousedResult) : BaseExpandableListAdapter() {
+class ListNotInHousedAdapter(var result: NotInHousedResult) : BaseExpandableListAdapter() {
     var TAG = "ListNotInHousedAdapter"
 
     override fun getGroup(i: Int): Any {
@@ -39,7 +39,7 @@ class ListNotInHousedAdapter(var context: Context, var result: NotInHousedResult
     override fun getGroupView(group_position: Int, isExpanded: Boolean, convertView: View?, viewGroup: ViewGroup): View {
         val view: View
         view = if (convertView == null) {
-            val inflater = context.getSystemService(Context.LAYOUT_INFLATER_SERVICE) as LayoutInflater
+            val inflater = viewGroup.context.getSystemService(Context.LAYOUT_INFLATER_SERVICE) as LayoutInflater
             inflater.inflate(R.layout.item_not_in_housed, null)
         } else {
             convertView
@@ -89,7 +89,7 @@ class ListNotInHousedAdapter(var context: Context, var result: NotInHousedResult
         } catch (e: ParseException) {
 
             Log.e("krm0219", "$TAG Exception : $e")
-            text_not_in_parcels_item_desired_date.text = context.resources.getString(R.string.text_error)
+            text_not_in_parcels_item_desired_date.text = text_not_in_parcels_item_desired_date.resources.getString(R.string.text_error)
             e.printStackTrace()
         }
 
@@ -119,7 +119,7 @@ class ListNotInHousedAdapter(var context: Context, var result: NotInHousedResult
         val view: View
 
         view = if (convertView == null) {
-            val inflater = context.getSystemService(Context.LAYOUT_INFLATER_SERVICE) as LayoutInflater
+            val inflater = viewGroup.context.getSystemService(Context.LAYOUT_INFLATER_SERVICE) as LayoutInflater
             inflater.inflate(R.layout.item_not_in_housed_child, null)
         } else {
             convertView
@@ -141,7 +141,7 @@ class ListNotInHousedAdapter(var context: Context, var result: NotInHousedResult
         } else {
 
             layout_not_in_parcels_child_view.setPadding(0, 0, 0, 0)
-            layout_not_in_parcels_child_view.setBackgroundColor(context.resources.getColor(R.color.white))
+            layout_not_in_parcels_child_view.setBackgroundColor(layout_not_in_parcels_child_view.resources.getColor(R.color.white))
         }
 
         text_not_in_parcels_child_scanned_no.text = subitem.packingNo

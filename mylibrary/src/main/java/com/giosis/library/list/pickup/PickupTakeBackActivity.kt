@@ -74,7 +74,7 @@ class PickupTakeBackActivity : CommonActivity() {
         if (checker.lacksPermissions(*PERMISSIONS)) {
 
             isPermissionTrue = false
-            PermissionActivity.startActivityForResult(this, PERMISSION_REQUEST_CODE, *PERMISSIONS)
+            PermissionActivity.startActivityForResult(this@PickupTakeBackActivity, PERMISSION_REQUEST_CODE, *PERMISSIONS)
             overridePendingTransition(0, 0)
         } else {
 
@@ -89,7 +89,7 @@ class PickupTakeBackActivity : CommonActivity() {
         if (isPermissionTrue) {
 
             // Location
-            gpsTrackerManager = GPSTrackerManager(this)
+            gpsTrackerManager = GPSTrackerManager(this@PickupTakeBackActivity)
             val gpsEnable = gpsTrackerManager?.enableGPSSetting()
 
             if (gpsEnable == true) {
@@ -98,7 +98,7 @@ class PickupTakeBackActivity : CommonActivity() {
                 Log.e(tag, " onResume  Location  :  ${gpsTrackerManager?.latitude} / ${gpsTrackerManager?.longitude}")
             } else {
 
-                DataUtil.enableLocationSettings(this)
+                DataUtil.enableLocationSettings(this@PickupTakeBackActivity)
             }
         }
     }
@@ -106,7 +106,7 @@ class PickupTakeBackActivity : CommonActivity() {
 
     private fun cancelUpload() {
 
-        val alertBuilder = AlertDialog.Builder(this)
+        val alertBuilder = AlertDialog.Builder(this@PickupTakeBackActivity)
         alertBuilder.setMessage(resources.getString(R.string.msg_delivered_sign_cancel))
 
         alertBuilder.setPositiveButton(resources.getString(R.string.button_ok)) { _, _ ->
@@ -138,34 +138,34 @@ class PickupTakeBackActivity : CommonActivity() {
             Log.e(tag, "  Location $latitude / $longitude")
 
 
-            if (!NetworkUtil.isNetworkAvailable(this)) {
+            if (!NetworkUtil.isNetworkAvailable(this@PickupTakeBackActivity)) {
 
-                DisplayUtil.AlertDialog(this, resources.getString(R.string.msg_network_connect_error))
+                DisplayUtil.AlertDialog(this@PickupTakeBackActivity, resources.getString(R.string.msg_network_connect_error))
                 return
             }
 
             if (!sign_view_sign_p_tb_applicant_signature.isTouch) {
 
-                Toast.makeText(this, resources.getString(R.string.msg_signature_require), Toast.LENGTH_SHORT).show()
+                Toast.makeText(this@PickupTakeBackActivity, resources.getString(R.string.msg_signature_require), Toast.LENGTH_SHORT).show()
                 return
             }
 
             if (!sign_view_sign_p_tb_collector_signature.isTouch) {
 
-                Toast.makeText(this, resources.getString(R.string.msg_collector_signature_require), Toast.LENGTH_SHORT).show()
+                Toast.makeText(this@PickupTakeBackActivity, resources.getString(R.string.msg_collector_signature_require), Toast.LENGTH_SHORT).show()
                 return
             }
 
             if (MemoryStatus.getAvailableInternalMemorySize() != MemoryStatus.ERROR.toLong() && MemoryStatus.getAvailableInternalMemorySize() < MemoryStatus.PRESENT_BYTE) {
 
-                DisplayUtil.AlertDialog(this, resources.getString(R.string.msg_disk_size_error))
+                DisplayUtil.AlertDialog(this@PickupTakeBackActivity, resources.getString(R.string.msg_disk_size_error))
                 return
             }
 
 
             DataUtil.logEvent("button_click", tag, "SetPickupUploadData_TakeBack")
 
-            PickupTakeBackUploadHelper.Builder(this, Preferences.userId, Preferences.officeCode, Preferences.deviceUUID,
+            PickupTakeBackUploadHelper.Builder(this@PickupTakeBackActivity, Preferences.userId, Preferences.officeCode, Preferences.deviceUUID,
                     pickupNo, scannedList, sign_view_sign_p_tb_applicant_signature, sign_view_sign_p_tb_collector_signature,
                     MemoryStatus.getAvailableInternalMemorySize(), latitude, longitude, finalQty)
                     .setOnServerEventListener(object : OnServerEventListener {
@@ -181,7 +181,7 @@ class PickupTakeBackActivity : CommonActivity() {
         } catch (e: Exception) {
 
             Log.e("Exception", "$tag   serverUpload  Exception : $e")
-            Toast.makeText(this, resources.getString(R.string.text_error) + " - " + e.toString(), Toast.LENGTH_SHORT).show()
+            Toast.makeText(this@PickupTakeBackActivity, resources.getString(R.string.text_error) + " - " + e.toString(), Toast.LENGTH_SHORT).show()
         }
     }
 

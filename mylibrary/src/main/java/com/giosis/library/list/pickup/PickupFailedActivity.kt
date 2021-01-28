@@ -366,7 +366,7 @@ class PickupFailedActivity : CommonActivity(), Camera2APIs.Camera2Interface, Tex
 
     private fun cancelUpload() {
 
-        val alertBuilder = AlertDialog.Builder(this)
+        val alertBuilder = AlertDialog.Builder(this@PickupFailedActivity)
         alertBuilder.setMessage(resources.getString(R.string.msg_delivered_sign_cancel))
 
         alertBuilder.setPositiveButton(resources.getString(R.string.button_ok)) { _, _ ->

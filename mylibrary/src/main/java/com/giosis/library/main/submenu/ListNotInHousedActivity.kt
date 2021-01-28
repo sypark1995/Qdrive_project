@@ -37,7 +37,7 @@ class ListNotInHousedActivity : CommonActivity() {
         opID = Preferences.userId
         officeCode = Preferences.officeCode
         deviceID = Preferences.deviceUUID
-        networkType = NetworkUtil.getNetworkType(this)
+        networkType = NetworkUtil.getNetworkType(this@ListNotInHousedActivity)
 
         text_top_title.setText(R.string.navi_sub_not_in_housed)
         layout_top_back.setOnClickListener { finish() }
@@ -122,7 +122,7 @@ class ListNotInHousedActivity : CommonActivity() {
                     text_not_in_housed_empty!!.visibility = View.GONE
                     exlist_not_in_housed_list!!.visibility = View.VISIBLE
 
-                    listNotInHousedAdapter = ListNotInHousedAdapter(this@ListNotInHousedActivity, result)
+                    listNotInHousedAdapter = ListNotInHousedAdapter(result)
                     exlist_not_in_housed_list!!.setAdapter(listNotInHousedAdapter)
                 }
             } catch (e: Exception) {

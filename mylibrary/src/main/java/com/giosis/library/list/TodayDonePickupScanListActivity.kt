@@ -59,7 +59,7 @@ class TodayDonePickupScanListActivity : CommonActivity() {
             }
         }
 
-        TodayScanPackingListDownloadHelper.Builder(this, userId, pickup_no)
+        TodayScanPackingListDownloadHelper.Builder(this@TodayDonePickupScanListActivity, userId, pickup_no)
                 .setOnScanPackingListDownloadEventListener { result: PickupPackingListResult -> setScannedList(result) }.build().execute()
     }
 
@@ -81,7 +81,7 @@ class TodayDonePickupScanListActivity : CommonActivity() {
 
     // packing list 추가
     private fun click_add_scan() {
-        val intent = Intent(this, Class.forName("com.giosis.util.qdrive.barcodescanner.CaptureActivity"))
+        val intent = Intent(this@TodayDonePickupScanListActivity, Class.forName("com.giosis.util.qdrive.barcodescanner.CaptureActivity"))
         intent.putExtra("title", "ADD Scan List")
         intent.putExtra("type", BarcodeType.PICKUP_ADD_SCAN)
         intent.putExtra("pickup_no", pickup_no)
@@ -90,7 +90,7 @@ class TodayDonePickupScanListActivity : CommonActivity() {
     }
 
     private fun click_take_back() {
-        val intent = Intent(this, Class.forName("com.giosis.util.qdrive.barcodescanner.CaptureActivity"))
+        val intent = Intent(this@TodayDonePickupScanListActivity, Class.forName("com.giosis.util.qdrive.barcodescanner.CaptureActivity"))
         intent.putExtra("title", "Take Back List")
         intent.putExtra("type", BarcodeType.PICKUP_TAKE_BACK)
         intent.putExtra("pickup_no", pickup_no)
