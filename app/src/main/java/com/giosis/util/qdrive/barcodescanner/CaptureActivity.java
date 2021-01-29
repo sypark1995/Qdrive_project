@@ -1065,7 +1065,7 @@ public final class CaptureActivity extends CommonActivity implements SurfaceHold
                 || mScanType.equals(BarcodeType.OUTLET_PICKUP_SCAN) || mScanType.equals(BarcodeType.PICKUP_TAKE_BACK)) {
 
             // TEST.
-            if (opID.equals("karam.kim") || (opID.equals("YuMin.Dwl") && BuildConfig.DEBUG)) {
+            if (opID.equals("karam.kim")) {
 
                 Log.e(TAG, "  EditText onTouch  > karam !!");
                 inputMethodManager.showSoftInput(edit_capture_type_number, InputMethodManager.SHOW_IMPLICIT);

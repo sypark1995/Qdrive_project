@@ -235,11 +235,13 @@ public class ListUploadFailedFragment extends Fragment
                 .get("SELECT * FROM " + DatabaseHelper.DB_TABLE_INTEGRATION_LIST + " WHERE punchOut_stat <> 'S' and chg_dt is not null and reg_id='" + opID + "' order by " + orderby);
 
         rowItems = new ArrayList<>();
-        ArrayList<ChildItemNotUpload> childItems = new ArrayList<>();
+        ArrayList<ChildItemNotUpload> childItems;
+
 
         if (cs2 != null && cs2.moveToFirst()) {
             do {
 
+                childItems = new ArrayList<>();
                 ChildItemNotUpload child = new ChildItemNotUpload();
                 child.setHp(cs2.getString(cs2.getColumnIndex("hp_no")));
                 child.setTel(cs2.getString(cs2.getColumnIndex("tel_no")));
@@ -364,28 +366,5 @@ public class ListUploadFailedFragment extends Fragment
             Log.e("Exception", TAG + "  onQueryTextChange Exception : " + e.toString());
         }
         return false;
-    }
-
-    public void drag(int from, int to) {
-        if (!isDnd) {
-            isDnd = true;
-            Log.i("Drag and Drop : drag", "from : " + from + ", to : " + to);
-        }
-    }
-
-    public void drop(int from, int to) {
-        if (isDnd) {
-            Log.i("Drag and Drop : drop", "from : " + from + ", to : " + to);
-            if (from == to)
-                return;
-
-            moveItems = rowItems.remove(from);
-            rowItems.add(to, moveItems);
-            //data.add(to, item);
-            //String item = data.remove(from);
-
-            isDnd = false;
-            adapter.notifyDataSetChanged();
-        }
     }
 }

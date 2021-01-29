@@ -346,7 +346,7 @@ public class DeliveryDoneUploadHelper {
 //            if (true) {
 //
 //                result.setResultCode(-15);
-//                result.setResultMsg(context.getResources().getString(R.string.msg_time_out));
+//                result.setResultMsg(context.getResources().getString(R.string.msg_upload_fail_15));
 //
 //                return result;
 //            }

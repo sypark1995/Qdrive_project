@@ -79,14 +79,9 @@ public class AppBaseActivity extends CommonActivity {
 
                 if (!(top_title_string.contains(getString(R.string.navi_home)))) {
 
-                    try {
-
-                        Intent intent = new Intent(AppBaseActivity.this, Class.forName("com.giosis.util.qdrive.main.MainActivity"));
-                        startActivity(intent);
-                        finish();
-                    } catch (Exception ignored) {
-
-                    }
+                    Intent intent = new Intent(AppBaseActivity.this, MainActivity.class);
+                    startActivity(intent);
+                    finish();
                 }
             } else if (id == R.id.layout_bottom_bar_scan) {
 
@@ -94,15 +89,8 @@ public class AppBaseActivity extends CommonActivity {
                 startActivity(intent);
             } else if (id == R.id.layout_bottom_bar_list) {
 
-                try {
-
-                    Intent intent = new Intent(AppBaseActivity.this, ListActivity.class);
-                    startActivity(intent);
-                } catch (Exception e) {
-
-                    Log.e("Exception", "  Exception : " + e.toString());
-                    Toast.makeText(AppBaseActivity.this, "Exception : " + e.toString(), Toast.LENGTH_SHORT).show();
-                }
+                Intent intent = new Intent(AppBaseActivity.this, ListActivity.class);
+                startActivity(intent);
             } else if (id == R.id.layout_bottom_bar_setting) {
 
                 Intent intent = new Intent(AppBaseActivity.this, SettingActivity.class);
@@ -223,14 +211,9 @@ public class AppBaseActivity extends CommonActivity {
                 drawerLayout.closeDrawers();
                 if (!(top_title_string.contains(getString(R.string.navi_home)))) {
 
-                    try {
-
-                        Intent intent = new Intent(AppBaseActivity.this, Class.forName("com.giosis.util.qdrive.main.MainActivity"));
-                        startActivity(intent);
-                        finish();
-                    } catch (Exception ignored) {
-
-                    }
+                    Intent intent = new Intent(AppBaseActivity.this, MainActivity.class);
+                    startActivity(intent);
+                    finish();
                 }
             } else if (title.equals(getString(R.string.navi_statistics))) {
 
@@ -355,16 +338,9 @@ public class AppBaseActivity extends CommonActivity {
                     case 1:
                     case 2: {
 
-                        try {
-
-                            Intent intent = new Intent(AppBaseActivity.this, ListActivity.class);
-                            intent.putExtra("position", child_position);
-                            startActivity(intent);
-                        } catch (Exception e) {
-
-                            Log.e("Exception", "  Exception : " + e.toString());
-                            Toast.makeText(AppBaseActivity.this, "Exception : " + e.toString(), Toast.LENGTH_SHORT).show();
-                        }
+                        Intent intent = new Intent(AppBaseActivity.this, ListActivity.class);
+                        intent.putExtra("position", child_position);
+                        startActivity(intent);
                     }
                     break;
 

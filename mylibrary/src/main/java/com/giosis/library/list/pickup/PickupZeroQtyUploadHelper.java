@@ -269,13 +269,14 @@ public class PickupZeroQtyUploadHelper {
                 return result;
             }
 
-           /* // TEST.   Upload Failed
-            if (true) {
+//            // TEST.   Upload Failed
+//            if (true) {
+//
+//                result.setResultCode(-15);
+//                result.setResultMsg(context.getResources().getString(R.string.msg_upload_fail_15));
+//                return result;
+//            }
 
-                result.setResultCode(-15);
-                result.setResultMsg("");
-                return result;
-            }*/
 
             try {
 

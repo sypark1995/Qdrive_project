@@ -637,18 +637,12 @@ public class SMSVerificationActivity extends CommonActivity {
 
                     Preferences.INSTANCE.setUserName(name);
 
-                    try {
+                    Intent intent = new Intent(SMSVerificationActivity.this, MainActivity.class);
+                    intent.addFlags(Intent.FLAG_ACTIVITY_NO_ANIMATION);
+                    startActivity(intent);
 
-                        Intent intent = new Intent(SMSVerificationActivity.this, Class.forName("com.giosis.util.qdrive.main.MainActivity"));
-                        intent.addFlags(Intent.FLAG_ACTIVITY_NO_ANIMATION);
-                        startActivity(intent);
-
-                        overridePendingTransition(android.R.anim.fade_in, android.R.anim.fade_out);
-                        finish();
-                    } catch (Exception e) {
-
-                        Log.e("Exception", "Exception  " + e.toString());
-                    }
+                    overridePendingTransition(android.R.anim.fade_in, android.R.anim.fade_out);
+                    finish();
                 });
 
                 if (!SMSVerificationActivity.this.isFinishing()) {

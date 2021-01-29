@@ -138,16 +138,9 @@ public class MainActivity extends AppBaseActivity {
 
             if (id == R.id.layout_home_list_count) {
 
-                try {
-
-                    Intent intent = new Intent(MainActivity.this, ListActivity.class);
-                    intent.putExtra("position", 0);
-                    startActivity(intent);
-                } catch (Exception e) {
-
-                    Log.e("Exception", "  Exception : " + e.toString());
-                    Toast.makeText(MainActivity.this, "Exception : " + e.toString(), Toast.LENGTH_SHORT).show();
-                }
+                Intent intent = new Intent(MainActivity.this, ListActivity.class);
+                intent.putExtra("position", 0);
+                startActivity(intent);
             } else if (id == R.id.layout_home_download) {
 
                 Download();
@@ -225,8 +218,8 @@ public class MainActivity extends AppBaseActivity {
 
 
 //        // TEST Outlet
-//        MyApplication.preferences.setOutletDriver("Y");
-//        MyApplication.preferences.setUserId("Syed_7E");   // 7Eleven.Ajib
+//        Preferences.INSTANCE.setOutletDriver("Y");
+//        Preferences.INSTANCE.setUserId("Syed_7E");      // 7Eleven.Ajib
 
 
         dbHelper = DatabaseHelper.getInstance();

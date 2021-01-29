@@ -300,14 +300,13 @@ public class CnRPickupUploadHelper {
                 return result;
             }
 
-           /* // TEST   Upload Failed
-            if (true) {
-
-                result.setResultCode(-15);
-                result.setResultMsg("");
-                Log.e("Location", "TEST ManualPickupUploadHelper location : " + lat + " / " + lon);
-                return result;
-            }*/
+//            // TEST   Upload Failed
+//            if (true) {
+//
+//                result.setResultCode(-15);
+//                result.setResultMsg(context.getResources().getString(R.string.msg_upload_fail_15));
+//                return result;
+//            }
 
 
             try {

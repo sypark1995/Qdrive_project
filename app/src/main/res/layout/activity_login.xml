@@ -43,6 +43,7 @@
             android:maxLines="1"
             android:paddingStart="13dp"
             android:paddingEnd="13dp"
+            android:singleLine="true"
             android:textColor="@color/color_222222"
             android:textSize="@dimen/text_size_28px" />
 
@@ -59,6 +60,7 @@
             android:maxLines="1"
             android:paddingStart="13dp"
             android:paddingEnd="13dp"
+            android:singleLine="true"
             android:textColor="@color/color_222222"
             android:textSize="@dimen/text_size_28px" />
 

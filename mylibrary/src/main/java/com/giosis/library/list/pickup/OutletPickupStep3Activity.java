@@ -22,6 +22,7 @@ import androidx.annotation.Nullable;
 import com.giosis.library.MemoryStatus;
 import com.giosis.library.R;
 import com.giosis.library.gps.GPSTrackerManager;
+import com.giosis.library.list.ListActivity;
 import com.giosis.library.list.SigningView;
 import com.giosis.library.util.CommonActivity;
 import com.giosis.library.util.DataUtil;
@@ -314,15 +315,8 @@ public class OutletPickupStep3Activity extends CommonActivity {
 
                         DataUtil.inProgressListPosition = 0;
 
-                        try {
-
-                            Intent intent = new Intent(OutletPickupStep3Activity.this, Class.forName("com.giosis.util.qdrive.list.ListActivity"));
-                            startActivity(intent);
-                        } catch (Exception e) {
-
-                            Log.e("Exception", "  Exception : " + e.toString());
-                            Toast.makeText(OutletPickupStep3Activity.this, "Exception : " + e.toString(), Toast.LENGTH_SHORT).show();
-                        }
+                        Intent intent = new Intent(OutletPickupStep3Activity.this, ListActivity.class);
+                        startActivity(intent);
                     }).build().execute();
 
         } catch (Exception e) {

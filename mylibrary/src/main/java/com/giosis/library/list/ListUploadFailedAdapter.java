@@ -48,10 +48,6 @@ public class ListUploadFailedAdapter extends BaseExpandableListAdapter {
     private ArrayList<RowItemNotUpload> rowItem;
     private ArrayList<RowItemNotUpload> originalRowItem;
 
-    private String[] dx_array = {"NH", "IA", "CR", "MR", "ET"};
-    private String[] px_array = {"WA", "RC", "ET"};
-    private String[] pf_array = {"WA", "WP", "NA", "NO", "NR", "NQ", "ET"};
-
     private final String DELIVERY_DONE = "D4";
     private final String DELIVERY_FAIL = "DX";
     private final String PICKUP_FAIL = "PF";
