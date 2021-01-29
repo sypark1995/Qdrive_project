@@ -85,16 +85,6 @@
                 android:listSelector="@android:color/transparent"
                 android:scrollbars="none" />
 
-            <ExpandableListView
-                android:id="@+id/exlist_smart_route"
-                android:layout_width="match_parent"
-                android:layout_height="match_parent"
-                android:childDivider="@null"
-                android:divider="@null"
-                android:groupIndicator="@null"
-                android:listSelector="@android:color/transparent"
-                android:scrollbars="none"
-                android:visibility="gone" />
         </RelativeLayout>
 
     </LinearLayout>

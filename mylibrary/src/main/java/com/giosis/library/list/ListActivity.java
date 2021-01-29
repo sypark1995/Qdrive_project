@@ -46,7 +46,6 @@ public class ListActivity extends CommonActivity implements OnClickListener,
 
     FrameLayout layout_top_back;
     TextView text_top_title;
-    FrameLayout layout_top_smart_route;
 
     LinearLayout layout_list_in_progress;
     TextView text_list_in_progress_count;
@@ -98,11 +97,9 @@ public class ListActivity extends CommonActivity implements OnClickListener,
 
         layout_top_back = findViewById(R.id.layout_top_back);
         text_top_title = findViewById(R.id.text_top_title);
-        layout_top_smart_route = findViewById(R.id.layout_top_smart_route);
 
         text_top_title.setText(getResources().getString(R.string.navi_list));
         layout_top_back.setOnClickListener(this);
-        layout_top_smart_route.setOnClickListener(this);
 
         layout_list_in_progress = findViewById(R.id.layout_list_in_progress);
         text_list_in_progress_count = findViewById(R.id.text_list_in_progress_count);
@@ -136,17 +133,14 @@ public class ListActivity extends CommonActivity implements OnClickListener,
                 switch (position) {
                     case 0: {
                         layout_list_in_progress.setSelected(true);
-                        layout_top_smart_route.setVisibility(View.VISIBLE);
                     }
                     break;
                     case 1: {
                         layout_list_upload_failed.setSelected(true);
-                        layout_top_smart_route.setVisibility(View.GONE);
                     }
                     break;
                     case 2: {
                         layout_list_today_done.setSelected(true);
-                        layout_top_smart_route.setVisibility(View.GONE);
                     }
                     break;
                     default:
@@ -165,46 +159,12 @@ public class ListActivity extends CommonActivity implements OnClickListener,
 
         if (position == 1) {
             layout_list_upload_failed.setSelected(true);
-            layout_top_smart_route.setVisibility(View.GONE);
         } else if (position == 2) {
             layout_list_today_done.setSelected(true);
-            layout_top_smart_route.setVisibility(View.GONE);
         } else {
             layout_list_in_progress.setSelected(true);
-            layout_top_smart_route.setVisibility(View.VISIBLE);
         }
 
-
-        String createdSRDate = Preferences.INSTANCE.getCreatedSRDate();
-        Log.i("SmartRoute", TAG + "  SmartRoute createdDate : " + createdSRDate);
-
-        // NOTIFICATION.  2019.07
-        // SmartRoute 생성 후, 하루가 지나면 Route 재생성을 위해 초기화 (일반적으로 당일배송/당일픽업)
-        if (createdSRDate != null) {
-            try {
-
-                SimpleDateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd");
-                Date date = new Date();
-                String strToday = dateFormat.format(date);
-
-                Date today = dateFormat.parse(strToday);
-                Date createdDate = dateFormat.parse(createdSRDate);
-                Log.i("SmartRoute", TAG + " Date " + dateFormat.format(today) + " / " + dateFormat.format(createdDate));
-                Log.i("SmartRoute", TAG + " Compare : " + today.compareTo(createdDate));
-
-                if (0 < today.compareTo(createdDate)) {
-
-                    // 'Smart Route' sort 되어 있을 때, 다음날이면 route 초기화가 되기 때문에 보여줄 게 없으므로
-                    // 기본 zip_code(0) sort 전환
-                    initSortIndex("compareDate");
-
-                    Preferences.INSTANCE.setCreatedSRCount(0);
-                    Preferences.INSTANCE.setClickedSRCount(0);
-                }
-            } catch (Exception e) {
-                Log.e("Exception", TAG + "  SmartRoute init Exception : " + e.toString());
-            }
-        }
     }
 
     @Override
@@ -260,55 +220,10 @@ public class ListActivity extends CommonActivity implements OnClickListener,
             intent.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP | Intent.FLAG_ACTIVITY_SINGLE_TOP);
             startActivity(intent);
 
-        } else if (id == R.id.layout_top_smart_route) {
-            Cursor cursor = DatabaseHelper.getInstance().get("SELECT * FROM "
-                    + DatabaseHelper.DB_TABLE_INTEGRATION_LIST + " WHERE punchOut_stat = 'N' and chg_dt is null " +
-                    "and reg_id='" + Preferences.INSTANCE.getUserId() + "'");
-
-            Log.i("SmartRoute", "  Count > " + cursor.getCount());
-
-            if (cursor.getCount() == 0) {
-
-                Toast.makeText(ListActivity.this, getResources().getString(R.string.msg_orders_not_found), Toast.LENGTH_SHORT).show();
-            } else {
-
-                // 'smart route' 화면 보여주고 있을 때 버튼을 누르면 새롭게 Refresh 필요!!  (새로운 Smart Route 생성되기 때문에)
-                initSortIndex("makeSRBtn");
-
-                new MakeSmartRouteAsyncTask(ListActivity.this, Preferences.INSTANCE.getUserId(), new MakeSmartRouteAsyncTask.AsyncTaskCallback() {
-
-                    @Override
-                    public void onSuccess(ServerResult result) {
-
-                        // resultCode '0000'   성공
-                        Toast.makeText(ListActivity.this, getResources().getString(R.string.msg_smart_route_creating), Toast.LENGTH_SHORT).show();
-                    }
-
-                    @Override
-                    public void onFailure(ServerResult result) {
-
-                        String msg = getResources().getString(R.string.text_error) + "\n" + result.getResultMsg();
-                        Toast.makeText(ListActivity.this, msg, Toast.LENGTH_SHORT).show();
-                    }
-                }).execute();
-            }
         }
+
     }
 
-
-    private void initSortIndex(String called) {
-
-        int selectedSort = Preferences.INSTANCE.getSortIndex();
-
-        if (selectedSort == 6) {
-
-            Preferences.INSTANCE.setSortIndex(0);
-
-            if (called.equalsIgnoreCase("makeSRBtn")) {
-                inProgressFragment.setSortSpinner();
-            }
-        }
-    }
 
     // FragmentPageAdapter : Fragment로써 각각의 페이지를 어떻게 보여줄지 정의한다.
     private class PagerAdapter extends FragmentStatePagerAdapter {

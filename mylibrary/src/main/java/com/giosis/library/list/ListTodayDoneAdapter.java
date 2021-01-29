@@ -36,6 +36,8 @@ public class ListTodayDoneAdapter extends BaseExpandableListAdapter {
     private ArrayList<RowItem> rowItem;
     private ArrayList<RowItem> originalRowItem;
     BluetoothListener bluetoothListener;
+
+    // TODO_  언제나 널임 ?
     private OnMoveUpListener onMoveUpListener;
 
     ListTodayDoneAdapter(ArrayList<RowItem> rowItem, BluetoothListener bluetoothListener) {

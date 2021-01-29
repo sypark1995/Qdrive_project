@@ -487,12 +487,6 @@
     <string name="cancel_reason">Cancel Reason</string>
     <string name="fail_reason">Fail Reason</string>
 
-    <!-- 2019.07  Smart Route  -->
-    <string name="text_smart_route">Smart Route</string>
-    <string name="msg_please_create_smart_route">Please create a smart route.</string>
-    <string name="msg_smart_route_creating">The smart route is creating…</string>
-    <string name="msg_smart_route_created">The smart route is created!</string>
-
     <!--  2020  Login  -->
     <string name="login_desc">Delivery &amp; Pickup for Qxpress SG</string>
     <string name="login_password">Password</string>

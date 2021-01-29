@@ -162,23 +162,6 @@ public class FCMIntentService extends FirebaseMessagingService {
             } else if (action_key.equals("LAE")) {
                 // Locker Alliance Expired - User key(12자리) 값 클립보드에 복사
                 DataUtil.copyClipBoard(context, action_value);
-            } else if (action_key.equals("SRL") || action_key.equals("TEST_SRL")) {
-
-                // Smart Route 만들어지면 PUSH !!
-                SimpleDateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd");
-                Date date = new Date();
-                String strDate = dateFormat.format(date);
-
-                SharedPreferences sharedPreferences = getSharedPreferences(DataUtil.SHARED_PREFERENCE_FILE, MODE_PRIVATE);
-
-                int count = sharedPreferences.getInt("createdSRCount", 0) + 1;
-
-                SharedPreferences.Editor editor = sharedPreferences.edit();
-                editor.putInt("createdSRCount", count);
-                editor.putString("createdSRDate", strDate);
-                editor.apply();
-
-                Log.e("FCM", TAG + "  SmartRoute Count / Date : " + count + " / " + strDate);
             }
 
             // 진동

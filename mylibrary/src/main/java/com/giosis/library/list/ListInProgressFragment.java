@@ -1,7 +1,6 @@
 package com.giosis.library.list;
 
 import android.app.Activity;
-import android.app.ProgressDialog;
 import android.app.SearchManager;
 import android.content.Context;
 import android.content.Intent;
@@ -17,12 +16,10 @@ import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
 import android.widget.Button;
 import android.widget.EditText;
-import android.widget.ExpandableListAdapter;
 import android.widget.ExpandableListView;
 import android.widget.FrameLayout;
 import android.widget.ProgressBar;
 import android.widget.SearchView;
-import android.widget.Toast;
 
 import androidx.constraintlayout.widget.ConstraintLayout;
 import androidx.fragment.app.Fragment;
@@ -35,13 +32,9 @@ import com.giosis.library.util.NDSpinner;
 import com.giosis.library.util.PermissionActivity;
 import com.giosis.library.util.PermissionChecker;
 import com.giosis.library.util.Preferences;
-import com.google.gson.Gson;
-import com.google.gson.GsonBuilder;
-import com.google.gson.reflect.TypeToken;
 
 import org.jetbrains.annotations.NotNull;
 
-import java.lang.reflect.Type;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -67,17 +60,11 @@ public class ListInProgressFragment extends Fragment
             "invoice_no asc",
             "invoice_no desc",
             "rcv_nm asc",
-            "rcv_nm desc",
-            "Smart Route"
+            "rcv_nm desc"
     };
-
 
     private ListInProgressAdapter adapter;
     private ArrayList<RowItem> rowItems;
-
-    // 2019.07  Smart Route
-    private ArrayList<SmartRouteResult.RouteMaster> routeMasterArrayList;
-    private SmartRouteExpandableAdapter smartRouteExpandableAdapter;
 
     // 2020.07  ByTrip 정렬기능 추가
     private String pickupDriverYn = Preferences.INSTANCE.getPickupDriver();
@@ -88,7 +75,6 @@ public class ListInProgressFragment extends Fragment
     private boolean isOpen = false;
     OnInProgressFragmentListener fragmentListener;
 
-    private ProgressDialog progressDialog;
     InputMethodManager inputMethodManager;
 
     private ConstraintLayout layout_list_pickup_sort_condition;
@@ -102,7 +88,6 @@ public class ListInProgressFragment extends Fragment
     private NDSpinner spinner_list_sort;
 
     private ExpandableListView exlist_card_list;
-    private ExpandableListView exlist_smart_route;
 
     public ListInProgressFragment(BluetoothListener bluetoothListener) {
         super();
@@ -143,10 +128,6 @@ public class ListInProgressFragment extends Fragment
         }
     }
 
-    void setSortSpinner() {
-        spinner_list_sort.setSelection(0);
-    }
-
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -164,7 +145,6 @@ public class ListInProgressFragment extends Fragment
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
 
-        progressDialog = new ProgressDialog(getActivity());
         inputMethodManager = (InputMethodManager) getActivity().getSystemService(Context.INPUT_METHOD_SERVICE);
 
         View view = inflater.inflate(R.layout.fragment_inprogress, container, false);
@@ -179,7 +159,6 @@ public class ListInProgressFragment extends Fragment
         spinner_list_sort = view.findViewById(R.id.spinner_list_sort);
 
         exlist_card_list = view.findViewById(R.id.exlist_card_list);
-        exlist_smart_route = view.findViewById(R.id.exlist_smart_route);
 
         btn_list_pickup_sort_request.setOnClickListener(v -> {
 
@@ -237,39 +216,14 @@ public class ListInProgressFragment extends Fragment
                 spinner_list_sort.performClick()
         );
 
-        ArrayList<String> sortArrayList = null;
-
-        if ("SG".equals(Preferences.INSTANCE.getUserNation())) {
-            sortArrayList = new ArrayList<>(Arrays.asList(
-                    getResources().getString(R.string.text_sort_postal_code_asc),
-                    getResources().getString(R.string.text_sort_postal_code_desc),
-                    getResources().getString(R.string.text_sort_tracking_no_asc),
-                    getResources().getString(R.string.text_sort_tracking_no_desc),
-                    getResources().getString(R.string.text_sort_name_asc),
-                    getResources().getString(R.string.text_sort_name_desc),
-                    getResources().getString(R.string.text_smart_route)
-            ));
-        } else {
-            sortArrayList = new ArrayList<>(Arrays.asList(
-                    getResources().getString(R.string.text_sort_postal_code_asc),
-                    getResources().getString(R.string.text_sort_postal_code_desc),
-                    getResources().getString(R.string.text_sort_tracking_no_asc),
-                    getResources().getString(R.string.text_sort_tracking_no_desc),
-                    getResources().getString(R.string.text_sort_name_asc),
-                    getResources().getString(R.string.text_sort_name_desc)
-            ));
-        }
-
-        if (!"SG".equals(Preferences.INSTANCE.getUserNation())) {
-            try {
-                // SG 에서만 "Smart Route" 시용함
-                int number = sortArrayList.size() - 1;
-                if ("Smart Route".equals(sortArrayList.get(number))) {
-                    sortArrayList.remove(number);
-                }
-            } catch (Exception e) {
-            }
-        }
+        ArrayList<String> sortArrayList = new ArrayList<>(Arrays.asList(
+                getResources().getString(R.string.text_sort_postal_code_asc),
+                getResources().getString(R.string.text_sort_postal_code_desc),
+                getResources().getString(R.string.text_sort_tracking_no_asc),
+                getResources().getString(R.string.text_sort_tracking_no_desc),
+                getResources().getString(R.string.text_sort_name_asc),
+                getResources().getString(R.string.text_sort_name_desc)
+        ));
 
         ArrayAdapter<String> sortArrayAdapter = new ArrayAdapter<>(getActivity(), android.R.layout.simple_spinner_dropdown_item, sortArrayList);
         spinner_list_sort.setAdapter(sortArrayAdapter);
@@ -319,59 +273,6 @@ public class ListInProgressFragment extends Fragment
             }
         });
 
-
-        exlist_smart_route.setSelectionAfterHeaderView();
-        exlist_smart_route.setOnGroupExpandListener(groupPosition -> {
-
-            final int position = groupPosition;
-            SmartRouteResult.RouteMaster routeMasterItem = routeMasterArrayList.get(position);
-
-            for (int i = 0; i < smartRouteExpandableAdapter.getGroupCount(); i++) {
-                if (i != position)
-                    exlist_smart_route.collapseGroup(i);
-            }
-
-            Log.e("SmartRoute", TAG + "  Smart Route MasterItem : " + position + " / " + routeMasterItem.getRouteNo());
-
-            // 처음 클릭시 API 호출
-            if (routeMasterItem.getRouteDetailList() == null) {
-
-                Log.e("SmartRoute", TAG + "  Smart Route MasterItem Null");
-
-                // NOTIFICATION.  GetRouteDetail
-                new GetRouteDetailAsyncTask(requireContext(), progressDialog, Preferences.INSTANCE.getUserId(), routeMasterItem.getRouteNo(), new GetRouteDetailAsyncTask.AsyncTaskCallback() {
-                    @Override
-                    public void onSuccess(SmartRouteResult.RouteMaster result) {
-
-                        SmartRouteResult.RouteMaster routeMasterItem = routeMasterArrayList.get(position);
-
-                        ArrayList<RowItem> cardRowItemArrayList = getRouteList(result.getRouteDetailArrayList());
-                        routeMasterItem.setRouteDetailArrayList(result.getRouteDetailArrayList());
-                        routeMasterItem.setRouteDetailList(cardRowItemArrayList);
-                        smartRouteExpandableAdapter.notifyDataSetChanged();
-
-                        Gson gson = new GsonBuilder().create();
-                        Type listType = new TypeToken<ArrayList<SmartRouteResult.RouteMaster>>() {
-                        }.getType();
-                        String strResult = gson.toJson(routeMasterArrayList, listType);
-
-                        Preferences.INSTANCE.setSRResult(strResult);
-                    }
-
-                    @Override
-                    public void onFailure(SmartRouteResult.RouteMaster result) {
-                        Toast.makeText(getActivity(), result.getResultMsg(), Toast.LENGTH_SHORT).show();
-                    }
-                }).execute();
-            } else {
-
-                Log.e("SmartRoute", TAG + "  Smart Route MasterItem Not Null");
-                // 기존에 호출했던 API 결과값으로 보여주기
-                ArrayList<RowItem> cardRowItemArrayList = getRouteList(routeMasterItem.getRouteDetailArrayList());
-                routeMasterItem.setRouteDetailList(cardRowItemArrayList);
-                smartRouteExpandableAdapter.notifyDataSetChanged();
-            }
-        });
     }
 
     @Override
@@ -398,94 +299,14 @@ public class ListInProgressFragment extends Fragment
         }
 
 
-        if ("SG".equals(Preferences.INSTANCE.getUserNation())) {
+        // 일반 정렬
+        getNormalList();
 
-            int createdSRCount = Preferences.INSTANCE.getCreatedSRCount();
-            int clickedSRCount = Preferences.INSTANCE.getClickedSRCount();
-
-            Log.e("SmartRoute", TAG + "  onResume   SmartRoute  DATA > " + createdSRCount + " / " + clickedSRCount);
-
-            if (selectedSort.equals(requireContext().getResources().getString(R.string.text_smart_route)) && createdSRCount != 0) {
-                getSmartRouteList(createdSRCount, clickedSRCount);
-            } else {
-                // 일반 정렬
-                getNormalList();
-            }
-        } else {
-            // 일반 정렬
-            getNormalList();
-        }
-    }
-
-    private void getSmartRouteList(int createdSRCount, int clickedSRCount) {
-        exlist_card_list.setVisibility(View.GONE);
-        exlist_smart_route.setVisibility(View.VISIBLE);
-
-        // 'Smart Route' 선택하고 LIST 나갔다 오면 Count 표시 안됨
-        // 그래서 DB in-progress 상태인 주문건 Count 표시하기
-        Cursor cursor = DatabaseHelper.getInstance().get("SELECT * FROM "
-                + DatabaseHelper.DB_TABLE_INTEGRATION_LIST + " WHERE punchOut_stat = 'N' and chg_dt is null and reg_id='" + Preferences.INSTANCE.getUserId() + "'");
-
-        fragmentListener.onCountRefresh(cursor.getCount());
-
-        if (createdSRCount != clickedSRCount) {
-
-            // NOTIFICATION.  GetRouteMaster
-            new GetRouteMasterAsyncTask(requireContext(), progressDialog, Preferences.INSTANCE.getUserId(), new GetRouteMasterAsyncTask.AsyncTaskCallback() {
-                @Override
-                public void onSuccess(SmartRouteResult result) {
-
-                    if (result != null) {
-
-                        routeMasterArrayList = result.getRouteMasterList();
-
-                        Gson gson = new GsonBuilder().create();
-                        Type listType = new TypeToken<ArrayList<SmartRouteResult.RouteMaster>>() {
-                        }.getType();
-                        String strResult = gson.toJson(routeMasterArrayList, listType);
-
-                        Preferences.INSTANCE.setClickedSRCount(Preferences.INSTANCE.getCreatedSRCount());
-                        Preferences.INSTANCE.setSRResult(strResult);
-
-                        smartRouteExpandableAdapter = new SmartRouteExpandableAdapter(routeMasterArrayList, bluetoothListener);
-                        exlist_smart_route.setAdapter(smartRouteExpandableAdapter);
-                    }
-                }
-
-                @Override
-                public void onFailure(SmartRouteResult result) {
-                    Toast.makeText(getActivity(), result.getResultMsg(), Toast.LENGTH_SHORT).show();
-                }
-            }).execute();
-
-        } else {
-
-            String strResult = Preferences.INSTANCE.getSRResult();
-
-            if (strResult != null) {
-
-                Gson gson = new GsonBuilder().create();
-                Type listType = new TypeToken<ArrayList<SmartRouteResult.RouteMaster>>() {
-                }.getType();
-
-                routeMasterArrayList = gson.fromJson(strResult, listType);
-                smartRouteExpandableAdapter = new SmartRouteExpandableAdapter(routeMasterArrayList, bluetoothListener);
-                exlist_smart_route.setAdapter(smartRouteExpandableAdapter);
-            }
-        }
     }
 
 
     private void getNormalList() {
         exlist_card_list.setVisibility(View.VISIBLE);
-        exlist_smart_route.setVisibility(View.GONE);
-        exlist_smart_route.setAdapter((ExpandableListAdapter) null);
-
-        if (selectedSort.equals(requireContext().getResources().getString(R.string.text_smart_route))) {
-            Toast.makeText(requireContext(), requireContext().getResources().getString(R.string.msg_please_create_smart_route), Toast.LENGTH_SHORT).show();
-            spinner_list_sort.setSelection(0);
-            return;
-        }
 
         // 정렬
         if ("SG".equals(Preferences.INSTANCE.getUserNation()) &&
@@ -910,183 +731,6 @@ public class ListInProgressFragment extends Fragment
             RowItem item = tripArrayList.get(i);
             Log.e("trip", i + " : " + item.getTripNo() + " / " + item.getShipping() + " / " + item.getZip_code() + " / " + item.getItems().get(0).getHp());
         }*/
-    }
-
-    // NOTIFICATION.  2019.07  Smart Route 정렬기능 추가
-    // qoo10 API 호출 > 라우트 만들어지면 결과값 리스트에 뿌리기
-    private ArrayList<RowItem> getRouteList(ArrayList<SmartRouteResult.RouteMaster.RouteDetail> list) {
-
-        ArrayList<RowItem> resultArrayList = new ArrayList<>();
-
-        for (int i = 0; i < list.size(); i++) {
-
-            Cursor cs = DatabaseHelper.getInstance().get("SELECT * FROM "
-                    + DatabaseHelper.DB_TABLE_INTEGRATION_LIST + " WHERE punchOut_stat='N' and chg_dt is null and invoice_no='" + list.get(i).getTrackingNo() + "'");
-
-            if (cs.moveToFirst()) {
-                do {
-
-                    ArrayList<ChildItem> childItems = new ArrayList<>();
-                    ChildItem child = new ChildItem();
-
-                    child.setHp(cs.getString(cs.getColumnIndex("hp_no")));
-                    child.setTel(cs.getString(cs.getColumnIndex("tel_no")));
-                    child.setStat(cs.getString(cs.getColumnIndex("stat")));
-                    child.setStatMsg(cs.getString(cs.getColumnIndex("driver_memo")));
-                    child.setStatReason(cs.getString(cs.getColumnIndex("fail_reason")));
-                    child.setSecretNoType(cs.getString(cs.getColumnIndex("secret_no_type")));
-                    child.setSecretNo(cs.getString(cs.getColumnIndex("secret_no")));
-                    childItems.add(child);
-
-                    long delay = 0;
-
-                    if (cs.getString(cs.getColumnIndex("delivery_dt")) != null
-                            && !cs.getString(cs.getColumnIndex("delivery_dt")).equals("")) {
-
-                        try {
-                            delay = diffOfDate(cs.getString(cs.getColumnIndex("delivery_dt")));
-                        } catch (Exception e) {
-                            Log.e("Exception", TAG + "  diffOfDate Exception : " + e.toString());
-                        }
-                    }
-
-                    // Route
-                    String routeType = cs.getString(cs.getColumnIndex("route"));
-                    String deliveryType = cs.getString(cs.getColumnIndex("type"));
-
-                    String rcv_name = "";
-                    if (deliveryType.equals("D")) {
-                        rcv_name = cs.getString(cs.getColumnIndex("rcv_nm")); //구매자
-                    } else if (deliveryType.equals("P")) {
-                        rcv_name = cs.getString(cs.getColumnIndex("req_nm")); //픽업 요청 셀러
-                    }
-
-                    RowItem rowitem = new RowItem(cs.getString(cs.getColumnIndex("contr_no")),
-                            "D+" + delay,
-                            cs.getString(cs.getColumnIndex("invoice_no")),
-                            rcv_name,
-                            "(" + cs.getString(cs.getColumnIndex("zip_code")) + ") "
-                                    + cs.getString(cs.getColumnIndex("address")),
-                            cs.getString(cs.getColumnIndex("rcv_request")),
-                            deliveryType,
-                            routeType,
-                            cs.getString(cs.getColumnIndex("sender_nm")),
-                            cs.getString(cs.getColumnIndex("desired_date")),
-                            cs.getString(cs.getColumnIndex("req_qty")),
-                            cs.getString(cs.getColumnIndex("self_memo")),
-                            cs.getDouble(cs.getColumnIndex("lat")),
-                            cs.getDouble(cs.getColumnIndex("lng")),
-                            cs.getString(cs.getColumnIndex("stat")),
-                            cs.getString(cs.getColumnIndex("cust_no")),
-                            cs.getString(cs.getColumnIndex("partner_id")),
-                            cs.getString(cs.getColumnIndex("secure_delivery_yn")),
-                            cs.getString(cs.getColumnIndex("parcel_amount")),
-                            cs.getString(cs.getColumnIndex("currency"))
-                    );
-
-                    if (deliveryType.equals("D")) {
-                        rowitem.setOrder_type_etc(cs.getString(cs.getColumnIndex("order_type_etc")));
-                    }
-
-                    if (routeType.equals("RPC")) {
-                        rowitem.setDesired_time(cs.getString(cs.getColumnIndex("desired_time")));
-                    }
-
-                    rowitem.setItems(childItems);
-
-                    // k. Outlet Delivery 경우 같은 지점은 하나만 나오도록 수정
-                    if (0 < resultArrayList.size()) {
-                        boolean isRegisteredRoute = false;
-
-                        for (int j = 0; j < resultArrayList.size(); j++) {
-                            if (deliveryType.equalsIgnoreCase("D")) {
-                                if (routeType.contains("7E") || routeType.contains("FL")) {
-                                    // ex. 7E 001 name1, 7E 002 name2  / ex. FL FLA10001 mrtA, FL FLS10001 mrtB
-
-                                    String[] routeSplit = routeType.split(" ");
-
-                                    if (1 < routeSplit.length) {
-                                        String routeNumber = routeSplit[0] + " " + routeSplit[1];
-
-                                        if (resultArrayList.get(j).getType().equals("D") && resultArrayList.get(j).getRoute().contains(routeNumber)) {
-                                            isRegisteredRoute = true;
-                                        }
-                                    }
-                                }
-                            }
-                        }
-
-                        if (!isRegisteredRoute) {
-                            resultArrayList.add(rowitem);
-                        }
-
-                    } else {
-                        resultArrayList.add(rowitem);
-                    }
-                } while (cs.moveToNext());
-            }
-        }
-
-        // k. Outlet 정보 추가
-        for (int i = 0; i < resultArrayList.size(); i++) {
-            if (resultArrayList.get(i).getType().equalsIgnoreCase("D")) {
-
-                resultArrayList.get(i).setOutlet_company(resultArrayList.get(i).getRoute());
-
-                if (resultArrayList.get(i).getRoute().contains("7E") || resultArrayList.get(i).getRoute().contains("FL")) {
-                    String[] routeSplit = resultArrayList.get(i).getRoute().split(" ");
-
-                    if (1 < routeSplit.length) {
-
-                        String routeNumber = routeSplit[0] + " " + routeSplit[1];
-                        Cursor cursor = DatabaseHelper.getInstance().get("SELECT count(*) FROM "
-                                + DatabaseHelper.DB_TABLE_INTEGRATION_LIST + " WHERE punchOut_stat = 'N' and chg_dt is null and type = 'D' and " +
-                                "reg_id='" + Preferences.INSTANCE.getUserId() + "' and route LIKE '%" + routeNumber + "%'");
-
-                        cursor.moveToFirst();
-
-                        int count = cursor.getInt(0);
-
-                        StringBuilder sb = new StringBuilder();
-
-                        for (int j = 2; j < routeSplit.length; j++) {
-
-                            sb.append(routeSplit[j]);
-                            sb.append(" ");
-                        }
-
-                        resultArrayList.get(i).setOutlet_company(routeSplit[0]);
-                        resultArrayList.get(i).setOutlet_store_code(routeSplit[1]);
-                        resultArrayList.get(i).setOutlet_store_name(sb.toString().trim());
-                        resultArrayList.get(i).setOutlet_qty(count);
-                    }
-                }
-
-            } else {        // Pickup
-
-                resultArrayList.get(i).setOutlet_company(resultArrayList.get(i).getRoute());
-
-                if (resultArrayList.get(i).getRoute().contains("7E") || resultArrayList.get(i).getRoute().contains("FL")) {
-
-                    String[] routeSplit = resultArrayList.get(i).getRoute().split(" ");
-
-                    if (1 < routeSplit.length) {
-                        StringBuilder sb = new StringBuilder();
-
-                        for (int j = 2; j < routeSplit.length; j++) {
-                            sb.append(routeSplit[j]);
-                            sb.append(" ");
-                        }
-
-                        resultArrayList.get(i).setOutlet_company(routeSplit[0]);
-                        resultArrayList.get(i).setOutlet_store_code(routeSplit[1]);
-                        resultArrayList.get(i).setOutlet_store_name(sb.toString().trim());
-                    }
-                }
-            }
-        }
-
-        return resultArrayList;
     }
 
     private long diffOfDate(String begin) throws Exception {

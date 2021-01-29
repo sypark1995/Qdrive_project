@@ -168,25 +168,4 @@ object Preferences {
         set(value) = preferences.edit().putString(PREF_KEY_PICKUP_FAILED_CODE, value).apply()
 
 
-    private val PREF_KEY_CREATED_SR_COUNT = "createdSRCount"
-    private val PREF_KEY_CLICKED_SR_COUNT = "clickedSRCount"
-    private val PREF_KEY_SR_RESULT = "SRResult"
-    private val PREF_KEY_CREATED_SR_DATA = "createdSRDate"
-
-    var createdSRCount: Int
-        get() = preferences.getInt(PREF_KEY_CREATED_SR_COUNT, 0)
-        set(value) = preferences.edit().putInt(PREF_KEY_DELIVERY_FAILED_CODE, value).apply()
-
-    var clickedSRCount: Int
-        get() = preferences.getInt(PREF_KEY_CLICKED_SR_COUNT, 0)
-        set(value) = preferences.edit().putInt(PREF_KEY_CLICKED_SR_COUNT, value).apply()
-
-    var SRResult: String
-        get() = preferences.getString(PREF_KEY_SR_RESULT, "").toString()
-        set(value) = preferences.edit().putString(PREF_KEY_SR_RESULT, value).apply()
-
-    var createdSRDate: String
-        get() = preferences.getString(PREF_KEY_CREATED_SR_DATA, "").toString()
-        set(value) = preferences.edit().putString(PREF_KEY_CREATED_SR_DATA, value).apply()
-
 }

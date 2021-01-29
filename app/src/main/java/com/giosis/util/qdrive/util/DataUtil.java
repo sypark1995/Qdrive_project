@@ -24,16 +24,9 @@ public class DataUtil {
     public static String SERVER_REAL = "https://qxapi.qxpress.net";
     public static String API_ADDRESS = "/GMKT.INC.GLPS.MobileApiService/GlobalMobileService.qapi";
 
-
     public static String qrcode_url = "https://dp.image-gmkt.com/qr.bar?scale=7&version=4&code=";
     public static String barcode_url = "http://image.qxpress.net/code128/code128.php?no=";
     public static String locker_pin_url = "https://www.lockeralliance.net/pin";
-
-
-    // 2019.07  -  Smart Route
-    public static String SHARED_PREFERENCE_FILE = "com.giosis.qdrive.sharedpreferences";
-    public static String QDRIVE_API = "qdriveApiSG";
-    public static String QDRIVE_NATION_CODE = "SG";
 
 
     public static void copyClipBoard(Context context, String data) {
