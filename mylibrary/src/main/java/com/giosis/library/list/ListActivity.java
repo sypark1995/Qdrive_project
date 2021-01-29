@@ -59,8 +59,6 @@ public class ListActivity extends CommonActivity implements OnClickListener,
     ViewPager viewpager_list;
     PagerAdapter pagerAdapter;
 
-    ListInProgressFragment inProgressFragment;
-
     BluetoothClass bluetoothClass;
 
     /* Fragment numbering */
@@ -238,8 +236,7 @@ public class ListActivity extends CommonActivity implements OnClickListener,
 
             switch (position) {
                 case 0: {
-                    inProgressFragment = new ListInProgressFragment(bluetoothClass);
-                    return inProgressFragment;
+                    return new ListInProgressFragment(bluetoothClass);
                 }
                 case 1:
                     return new ListUploadFailedFragment();
