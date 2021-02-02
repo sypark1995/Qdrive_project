@@ -320,7 +320,7 @@ public class QuickReturnFailedActivity extends CommonActivity implements Camera2
                 return;
             }
 
-            com.giosis.library.util.DataUtil.logEvent("button_click", TAG, "setDeliveryRTNDPTypeUploadData");
+            DataUtil.logEvent("button_click", TAG, "setDeliveryRTNDPTypeUploadData");
 
             new QuickReturnFailedUploadHelper.Builder(this, opID, officeCode, deviceID,
                     mStrWaybillNo, driverMemo, img_sign_d_r_f_visit_log,

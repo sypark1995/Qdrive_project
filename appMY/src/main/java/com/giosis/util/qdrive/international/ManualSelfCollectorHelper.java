@@ -14,10 +14,10 @@ import com.giosis.library.list.BarcodeData;
 import com.giosis.library.list.SigningView;
 import com.giosis.library.server.Custom_JsonParser;
 import com.giosis.library.server.ImageUpload;
+import com.giosis.library.util.DisplayUtil;
 import com.giosis.library.util.NetworkUtil;
 import com.giosis.util.qdrive.util.BarcodeType;
 import com.giosis.util.qdrive.util.DataUtil;
-import com.giosis.util.qdrive.util.DisplayUtil;
 
 import org.json.JSONObject;
 

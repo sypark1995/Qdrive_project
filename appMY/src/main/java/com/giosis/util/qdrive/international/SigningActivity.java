@@ -25,6 +25,7 @@ import androidx.annotation.Nullable;
 import com.giosis.library.MemoryStatus;
 import com.giosis.library.list.BarcodeData;
 import com.giosis.library.list.SigningView;
+import com.giosis.library.util.DataUtil;
 import com.giosis.library.util.DatabaseHelper;
 import com.giosis.library.util.NetworkUtil;
 import com.giosis.library.util.PermissionActivity;
@@ -263,8 +264,7 @@ public class SigningActivity extends CommonActivity {
 
         //--------------------
 
-
-        com.giosis.library.util.DataUtil.logEvent("button_click", TAG, "GetContrInfo");
+        DataUtil.logEvent("button_click", TAG, "GetContrInfo");
 
         //2016-09-12 eylee
         // 배송정보 Self_Collector의 경우  배송상태값에 따른 정보 습득
@@ -387,7 +387,7 @@ public class SigningActivity extends CommonActivity {
             String driverMemo = edit_sign_memo.getText().toString();
 
 
-            com.giosis.library.util.DataUtil.logEvent("button_click", TAG, "SetSelfCollectorData");
+            DataUtil.logEvent("button_click", TAG, "SetSelfCollectorData");
 
             new ManualSelfCollectorHelper.Builder(this, MyApplication.preferences.getUserId(), MyApplication.preferences.getOfficeCode(), MyApplication.preferences.getDeviceUUID(),
                     songjanglist, sign_view_sign_signature, driverMemo, mReceiveType)

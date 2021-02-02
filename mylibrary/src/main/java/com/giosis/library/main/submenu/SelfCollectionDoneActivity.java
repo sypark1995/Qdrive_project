@@ -25,6 +25,7 @@ import com.giosis.library.R;
 import com.giosis.library.list.BarcodeData;
 import com.giosis.library.list.SigningView;
 import com.giosis.library.util.CommonActivity;
+import com.giosis.library.util.DataUtil;
 import com.giosis.library.util.DatabaseHelper;
 import com.giosis.library.util.NetworkUtil;
 import com.giosis.library.util.PermissionActivity;
@@ -288,7 +289,7 @@ public class SelfCollectionDoneActivity extends CommonActivity {
         }
 
         // Self-Collector 경우 서버로부터 수취인, 셀러명을 가지고 온다. (비동기)
-        com.giosis.library.util.DataUtil.logEvent("button_click", TAG, "GetContrInfo");
+        DataUtil.logEvent("button_click", TAG, "GetContrInfo");
 
         //2016-09-12 eylee        // 배송상태값에 따른 정보 습득
         // 콜백으로 받은 결과값을 쓰레드를 이용하여 TextView 갱신한다.
@@ -359,7 +360,7 @@ public class SelfCollectionDoneActivity extends CommonActivity {
 
             String driverMemo = edit_sign_memo.getText().toString();
 
-            com.giosis.library.util.DataUtil.logEvent("button_click", TAG, "SetSelfCollectorData");
+            DataUtil.logEvent("button_click", TAG, "SetSelfCollectorData");
 
             new SelfCollectionDoneHelper.Builder(this, Preferences.INSTANCE.getUserId(), Preferences.INSTANCE.getOfficeCode(), Preferences.INSTANCE.getDeviceUUID(),
                     songjanglist, sign_view_sign_signature, driverMemo, mReceiveType)

@@ -92,7 +92,12 @@ public class ListInProgressAdapter extends BaseExpandableListAdapter {
 
     @Override
     public Object getGroup(int groupPosition) {
-        return rowItem.get(groupPosition);
+        try {
+            return rowItem.get(groupPosition);
+        } catch (Exception e) {
+
+        }
+        return null;
     }
 
     @Override

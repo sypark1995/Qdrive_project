@@ -213,8 +213,16 @@ public class DeliveryDoneActivity extends CommonActivity implements Camera2APIs.
 
         mStrWaybillNo = getIntent().getStringExtra("waybillNo");
 
-        ArrayList<BarcodeData> barcodeList = (ArrayList<BarcodeData>) getIntent().getSerializableExtra("data");
 
+        ArrayList<BarcodeData> barcodeList = null;
+        try {
+            if (getIntent().hasExtra("data")) {
+                barcodeList = (ArrayList<BarcodeData>) getIntent().getSerializableExtra("data");
+            }
+
+        } catch (Exception e) {
+
+        }
 
         try {
 
@@ -677,7 +685,7 @@ public class DeliveryDoneActivity extends CommonActivity implements Camera2APIs.
             }
 
 
-            com.giosis.library.util.DataUtil.logEvent("button_click", TAG, com.giosis.library.util.DataUtil.requestSetUploadDeliveryData);
+            DataUtil.logEvent("button_click", TAG, com.giosis.library.util.DataUtil.requestSetUploadDeliveryData);
 
 //            DataUtil.captureSign("/Qdrive", songjanglist.get(0).getBarcode(), sign_view_sign_d_signature);
 //            DataUtil.captureSign("/Qdrive", songjanglist.get(0).getBarcode() + "_1", img_sign_d_visit_log);
@@ -745,7 +753,7 @@ public class DeliveryDoneActivity extends CommonActivity implements Camera2APIs.
 
             String driverMemo = edit_sign_d_memo.getText().toString();
 
-            com.giosis.library.util.DataUtil.logEvent("button_click", TAG + "_OUTLET", "SetOutletDeliveryUploadData");
+            DataUtil.logEvent("button_click", TAG + "_OUTLET", "SetOutletDeliveryUploadData");
 
             // 2019.02 - stat : D3 로..   서버에서 outlet stat 변경
             new OutletDeliveryDoneHelper.Builder(this, opID, officeCode, deviceID,
