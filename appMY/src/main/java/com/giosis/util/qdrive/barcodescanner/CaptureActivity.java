@@ -59,6 +59,7 @@ import com.giosis.library.list.pickup.OutletPickupStep3Activity;
 import com.giosis.library.list.pickup.PickupAddScanActivity;
 import com.giosis.library.list.pickup.PickupDoneActivity;
 import com.giosis.library.list.pickup.PickupTakeBackActivity;
+import com.giosis.library.main.submenu.SelfCollectionDoneActivity;
 import com.giosis.library.util.BarcodeType;
 import com.giosis.library.util.DatabaseHelper;
 import com.giosis.library.util.NetworkUtil;
@@ -73,7 +74,6 @@ import com.giosis.util.qdrive.barcodescanner.camera.CameraManager;
 import com.giosis.util.qdrive.barcodescanner.history.HistoryManager;
 import com.giosis.util.qdrive.international.MyApplication;
 import com.giosis.util.qdrive.international.R;
-import com.giosis.util.qdrive.international.SigningActivity;
 import com.giosis.util.qdrive.util.DataUtil;
 import com.giosis.util.qdrive.util.ui.CommonActivity;
 import com.google.zxing.Result;
@@ -2203,7 +2203,7 @@ public final class CaptureActivity extends CommonActivity implements SurfaceHold
 
         if (0 < barcodeDataArrayList.size()) {
 
-            Intent intentSign = new Intent(this, SigningActivity.class);
+            Intent intentSign = new Intent(this, SelfCollectionDoneActivity.class);
             intentSign.putExtra("title", mScanTitle);
             intentSign.putExtra("data", barcodeDataArrayList);
             intentSign.putExtra("nonq10qfs", String.valueOf(isNonQ10QFSOrder));
