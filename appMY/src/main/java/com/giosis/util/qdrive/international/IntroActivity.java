@@ -14,20 +14,17 @@ import com.giosis.library.util.LocaleManager;
 
 public class IntroActivity extends Activity {
 
-    Context context;
-
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.intro);
-        context = getApplicationContext();
 
         // Live10 설치 여부 확인
         Intent intent = getPackageManager().getLaunchIntentForPackage("net.giosis.qpost");
         if (intent == null && !BuildConfig.DEBUG) {
             new AlertDialog.Builder(this)
-                    .setMessage(context.getResources().getString(R.string.msg_live10_installed))
-                    .setCancelable(false).setPositiveButton(context.getResources().getString(R.string.button_ok),
+                    .setMessage(getResources().getString(R.string.msg_live10_installed))
+                    .setCancelable(false).setPositiveButton(getResources().getString(R.string.button_ok),
                     new DialogInterface.OnClickListener() {
                         @Override
                         public void onClick(DialogInterface dialog, int which) {

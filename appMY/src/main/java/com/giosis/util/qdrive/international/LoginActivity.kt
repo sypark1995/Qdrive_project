@@ -92,8 +92,8 @@ class LoginActivity : CommonActivity() {
 
 
         // Nation
-        spinnerList.add(LoginNation(context.resources.getString(R.string.text_malaysia), "MY", "login_icon_my"))
-        spinnerList.add(LoginNation(context.resources.getString(R.string.text_Indonesia), "ID", "login_icon_id"))
+        spinnerList.add(LoginNation(resources.getString(R.string.text_malaysia), "MY", "login_icon_my"))
+        spinnerList.add(LoginNation(resources.getString(R.string.text_Indonesia), "ID", "login_icon_id"))
         spinner_select_nation.adapter = LoginSpinnerAdapter(this, spinnerList)
 
         when (MyApplication.preferences.userNation) {
@@ -174,17 +174,17 @@ class LoginActivity : CommonActivity() {
             when {
                 userID.isEmpty() -> {
 
-                    showDialog(context.resources.getString(R.string.msg_please_input_id))
+                    showDialog(resources.getString(R.string.msg_please_input_id))
                     return@setOnClickListener
                 }
                 userPW.isEmpty() -> {
 
-                    showDialog(context.resources.getString(R.string.msg_please_input_password))
+                    showDialog(resources.getString(R.string.msg_please_input_password))
                     return@setOnClickListener
                 }
                 !dbFile.exists() -> {
 
-                    showDialog(context.resources.getString(R.string.msg_db_problem))
+                    showDialog(resources.getString(R.string.msg_db_problem))
                 }
                 else -> {
 
@@ -228,7 +228,7 @@ class LoginActivity : CommonActivity() {
 
             info = "staging / "
         }
-        text_login_version.text = "$info${context.resources.getString(R.string.text_app_version)} - $appVersion"
+        text_login_version.text = "$info${resources.getString(R.string.text_app_version)} - $appVersion"
 
 
         if (isPermissionTrue) {
@@ -256,7 +256,7 @@ class LoginActivity : CommonActivity() {
 
         return try {
 
-            val packageInfo = context.applicationContext.packageManager.getPackageInfo(context.applicationContext.packageName, 0)
+            val packageInfo = applicationContext.packageManager.getPackageInfo(applicationContext.packageName, 0)
             packageInfo.versionName
         } catch (e: Exception) {
 
@@ -267,7 +267,7 @@ class LoginActivity : CommonActivity() {
 
     fun showDialog(msg: String?) {
         val alertBuilder = AlertDialog.Builder(this)
-        alertBuilder.setTitle(context.resources.getString(R.string.text_alert))
+        alertBuilder.setTitle(resources.getString(R.string.text_alert))
         alertBuilder.setMessage(msg)
         alertBuilder.setPositiveButton(resources.getString(R.string.button_ok)
         ) { dialog, _ -> dialog.dismiss() }
@@ -298,7 +298,7 @@ class LoginActivity : CommonActivity() {
             if (!NetworkUtil.isNetworkAvailable(context)) {
 
                 result.resultCode = "-16"
-                result.resultMsg = context.resources.getString(R.string.msg_network_connect_error_saved)
+                result.resultMsg = resources.getString(R.string.msg_network_connect_error_saved)
                 return result
             }
 
@@ -354,7 +354,7 @@ class LoginActivity : CommonActivity() {
 
                 Log.e("krm0219", "Exception : $e")
                 result.resultCode = "-15"
-                result.resultMsg = java.lang.String.format(context.resources.getString(R.string.text_exception), e.toString())
+                result.resultMsg = java.lang.String.format(resources.getString(R.string.text_exception), e.toString())
             }
 
             return result
@@ -373,7 +373,7 @@ class LoginActivity : CommonActivity() {
                 when {
                     result.resultCode == "-10" -> {
 
-                        showDialog(context.resources.getString(R.string.msg_account_deactivated))
+                        showDialog(resources.getString(R.string.msg_account_deactivated))
                     }
                     result.resultMsg != "" -> {
 
@@ -381,7 +381,7 @@ class LoginActivity : CommonActivity() {
                     }
                     else -> {
 
-                        showDialog(context.resources.getString(R.string.msg_not_valid_info))
+                        showDialog(resources.getString(R.string.msg_not_valid_info))
                     }
                 }
             } else {
@@ -393,7 +393,7 @@ class LoginActivity : CommonActivity() {
 
                 if (MyApplication.preferences.appVersion < result.resultObject.serverVersion) {
 
-                    val msg = java.lang.String.format(context.resources.getString(R.string.msg_update_version),
+                    val msg = java.lang.String.format(resources.getString(R.string.msg_update_version),
                             result.resultObject.serverVersion, MyApplication.preferences.appVersion)
                     goGooglePlay(msg)
                 } else {
@@ -424,7 +424,7 @@ class LoginActivity : CommonActivity() {
                         finish()
                     } else {
 
-                        goSMSVerification(context.resources.getString(R.string.msg_go_sms_verification))
+                        goSMSVerification(resources.getString(R.string.msg_go_sms_verification))
                     }
 
 
@@ -490,9 +490,9 @@ class LoginActivity : CommonActivity() {
     fun goGooglePlay(msg: String?) {
 
         val alertBuilder = AlertDialog.Builder(this)
-        alertBuilder.setTitle(context.resources.getString(R.string.text_alert))
+        alertBuilder.setTitle(resources.getString(R.string.text_alert))
         alertBuilder.setMessage(msg)
-        alertBuilder.setPositiveButton(context.resources.getString(R.string.button_ok)
+        alertBuilder.setPositiveButton(resources.getString(R.string.button_ok)
         ) { dialog, _ ->
             val uri: Uri = Uri.parse("market://details?id=com.giosis.util.qdrive.international")
             val itt = Intent(Intent.ACTION_VIEW, uri)
@@ -507,7 +507,7 @@ class LoginActivity : CommonActivity() {
     fun goSMSVerification(msg: String?) {
 
         val alertBuilder = AlertDialog.Builder(this)
-        alertBuilder.setTitle(context.resources.getString(R.string.text_alert))
+        alertBuilder.setTitle(resources.getString(R.string.text_alert))
         alertBuilder.setMessage(msg)
         alertBuilder.setPositiveButton(resources.getString(R.string.button_ok)
         ) { _, _ ->

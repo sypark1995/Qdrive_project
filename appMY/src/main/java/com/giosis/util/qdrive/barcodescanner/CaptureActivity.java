@@ -49,6 +49,7 @@ import android.widget.ToggleButton;
 
 import com.giosis.library.BuildConfig;
 import com.giosis.library.MemoryStatus;
+import com.giosis.library.UploadData;
 import com.giosis.library.gps.GPSTrackerManager;
 import com.giosis.library.list.BarcodeData;
 import com.giosis.library.list.delivery.DeliveryDoneActivity;
@@ -73,7 +74,6 @@ import com.giosis.util.qdrive.barcodescanner.history.HistoryManager;
 import com.giosis.util.qdrive.international.MyApplication;
 import com.giosis.util.qdrive.international.R;
 import com.giosis.util.qdrive.international.SigningActivity;
-import com.giosis.util.qdrive.international.UploadData;
 import com.giosis.util.qdrive.util.DataUtil;
 import com.giosis.util.qdrive.util.ui.CommonActivity;
 import com.google.zxing.Result;
