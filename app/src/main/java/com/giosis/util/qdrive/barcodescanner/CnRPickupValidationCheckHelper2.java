@@ -12,10 +12,10 @@ import android.util.Log;
 import android.widget.Toast;
 
 import com.giosis.library.server.Custom_JsonParser;
+import com.giosis.library.util.BarcodeType;
 import com.giosis.library.util.DatabaseHelper;
 import com.giosis.library.util.NetworkUtil;
 import com.giosis.util.qdrive.singapore.R;
-import com.giosis.util.qdrive.util.BarcodeType;
 import com.giosis.util.qdrive.util.DataUtil;
 
 import org.json.JSONObject;
