@@ -1999,13 +1999,13 @@ public final class CaptureActivity extends CommonActivity implements SurfaceHold
 
                 Intent intent = new Intent(this, OutletPickupStep3Activity.class);
                 intent.putExtra("title", mScanTitle);
-                intent.putExtra("pickup_no", pickupNo);
+                intent.putExtra("pickupNo", pickupNo);
                 intent.putExtra("applicant", pickupApplicantName);
                 intent.putExtra("qty", mQty);
                 intent.putExtra("route", mRoute);
-                intent.putExtra("scanned_qty", scanned_qty);
+                intent.putExtra("scannedQty", scanned_qty);
                 intent.putExtra("tracking_data", resultData);
-                intent.putExtra("scanned_list", scanned_list);
+                intent.putExtra("scannedList", scanned_list);
                 startActivity(intent);
                 finish();
             }
