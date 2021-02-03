@@ -49,6 +49,7 @@ import android.widget.ToggleButton;
 
 import com.giosis.library.BuildConfig;
 import com.giosis.library.MemoryStatus;
+import com.giosis.library.UploadData;
 import com.giosis.library.gps.GPSTrackerManager;
 import com.giosis.library.list.BarcodeData;
 import com.giosis.library.list.delivery.DeliveryDoneActivity;
@@ -58,6 +59,8 @@ import com.giosis.library.list.pickup.OutletPickupStep3Activity;
 import com.giosis.library.list.pickup.PickupAddScanActivity;
 import com.giosis.library.list.pickup.PickupDoneActivity;
 import com.giosis.library.list.pickup.PickupTakeBackActivity;
+import com.giosis.library.main.submenu.SelfCollectionDoneActivity;
+import com.giosis.library.util.BarcodeType;
 import com.giosis.library.util.DatabaseHelper;
 import com.giosis.library.util.NetworkUtil;
 import com.giosis.library.util.PermissionActivity;
@@ -71,9 +74,6 @@ import com.giosis.util.qdrive.barcodescanner.camera.CameraManager;
 import com.giosis.util.qdrive.barcodescanner.history.HistoryManager;
 import com.giosis.util.qdrive.international.MyApplication;
 import com.giosis.util.qdrive.international.R;
-import com.giosis.util.qdrive.international.SigningActivity;
-import com.giosis.util.qdrive.international.UploadData;
-import com.giosis.util.qdrive.util.BarcodeType;
 import com.giosis.util.qdrive.util.DataUtil;
 import com.giosis.util.qdrive.util.ui.CommonActivity;
 import com.google.zxing.Result;
@@ -302,7 +302,7 @@ public final class CaptureActivity extends CommonActivity implements SurfaceHold
 
         // eylee 2015.10.06
         switch (mScanType) {
-            case BarcodeType.PICKUP_START_SCAN:
+            case BarcodeType.PICKUP_SCAN_ALL:
             case BarcodeType.PICKUP_ADD_SCAN: {
 
                 pickupNo = getIntent().getStringExtra("pickup_no");
@@ -476,7 +476,7 @@ public final class CaptureActivity extends CommonActivity implements SurfaceHold
             }
             break;
             case BarcodeType.PICKUP_CNR:            // pickup C&R by 2016-08-30 eylee
-            case BarcodeType.PICKUP_START_SCAN:     // 2016-09-26 pickup scan all
+            case BarcodeType.PICKUP_SCAN_ALL:     // 2016-09-26 pickup scan all
             case BarcodeType.PICKUP_ADD_SCAN:       // 2017-03-15 pickup  add scan list
             case BarcodeType.PICKUP_TAKE_BACK:      // 2019.02 krm0219
             case BarcodeType.OUTLET_PICKUP_SCAN:    // krm0219
@@ -589,7 +589,7 @@ public final class CaptureActivity extends CommonActivity implements SurfaceHold
             case BarcodeType.CONFIRM_MY_DELIVERY_ORDER:
             case BarcodeType.CHANGE_DELIVERY_DRIVER:
             case BarcodeType.PICKUP_CNR:
-            case BarcodeType.PICKUP_START_SCAN:
+            case BarcodeType.PICKUP_SCAN_ALL:
             case BarcodeType.PICKUP_ADD_SCAN:
             case BarcodeType.PICKUP_TAKE_BACK: {
 
@@ -817,7 +817,7 @@ public final class CaptureActivity extends CommonActivity implements SurfaceHold
                         }
                         break;
                         case BarcodeType.PICKUP_CNR:
-                        case BarcodeType.PICKUP_START_SCAN:
+                        case BarcodeType.PICKUP_SCAN_ALL:
                         case BarcodeType.PICKUP_ADD_SCAN:
                         case BarcodeType.PICKUP_TAKE_BACK:
                         case BarcodeType.OUTLET_PICKUP_SCAN: {
@@ -1116,7 +1116,7 @@ public final class CaptureActivity extends CommonActivity implements SurfaceHold
     public boolean onTouch(View v, MotionEvent event) {     // edit_capture_type_number  touch
 
         if (mScanType.equals(BarcodeType.PICKUP_CNR)
-                || mScanType.equals(BarcodeType.PICKUP_START_SCAN) || mScanType.equals(BarcodeType.PICKUP_ADD_SCAN)
+                || mScanType.equals(BarcodeType.PICKUP_SCAN_ALL) || mScanType.equals(BarcodeType.PICKUP_ADD_SCAN)
                 || mScanType.equals(BarcodeType.OUTLET_PICKUP_SCAN) || mScanType.equals(BarcodeType.PICKUP_TAKE_BACK)) {
 
             // TEST.
@@ -1228,7 +1228,7 @@ public final class CaptureActivity extends CommonActivity implements SurfaceHold
 
                 if (mScanType.equals(BarcodeType.CONFIRM_MY_DELIVERY_ORDER) || mScanType.equals(BarcodeType.CHANGE_DELIVERY_DRIVER)
                         || mScanType.equals(BarcodeType.PICKUP_CNR)
-                        || mScanType.equals(BarcodeType.PICKUP_START_SCAN) || mScanType.equals(BarcodeType.PICKUP_ADD_SCAN)
+                        || mScanType.equals(BarcodeType.PICKUP_SCAN_ALL) || mScanType.equals(BarcodeType.PICKUP_ADD_SCAN)
                         || mScanType.equals(BarcodeType.OUTLET_PICKUP_SCAN) || mScanType.equals(BarcodeType.PICKUP_TAKE_BACK)) {
 
                     //This is the filter  2번 fired 해서 막음
@@ -1395,7 +1395,7 @@ public final class CaptureActivity extends CommonActivity implements SurfaceHold
                         }).build().execute();
                 break;
             }
-            case BarcodeType.PICKUP_START_SCAN: {
+            case BarcodeType.PICKUP_SCAN_ALL: {
 
                 final String scanNo = strBarcodeNo;
 
@@ -1413,7 +1413,7 @@ public final class CaptureActivity extends CommonActivity implements SurfaceHold
                                 } else {
 
                                     beepManager.playBeepSoundAndVibrate(BeepManager.BELL_SOUNDS_SUCCESS);
-                                    addScannedBarcode(scanNo, "checkValidation - PICKUP_START_SCAN");
+                                    addScannedBarcode(scanNo, "checkValidation - PICKUP_SCAN_ALL");
                                 }
                             }
                         }).build().execute();
@@ -1558,7 +1558,7 @@ public final class CaptureActivity extends CommonActivity implements SurfaceHold
             case BarcodeType.CONFIRM_MY_DELIVERY_ORDER:
             case BarcodeType.CHANGE_DELIVERY_DRIVER:
             case BarcodeType.PICKUP_CNR:
-            case BarcodeType.PICKUP_START_SCAN:
+            case BarcodeType.PICKUP_SCAN_ALL:
             case BarcodeType.PICKUP_ADD_SCAN:
             case BarcodeType.PICKUP_TAKE_BACK: {
 
@@ -1654,7 +1654,7 @@ public final class CaptureActivity extends CommonActivity implements SurfaceHold
 
         int updateCount = 0;
 
-        if (scanType.equals(BarcodeType.PICKUP_START_SCAN) || scanType.equals(BarcodeType.PICKUP_ADD_SCAN)
+        if (scanType.equals(BarcodeType.PICKUP_SCAN_ALL) || scanType.equals(BarcodeType.PICKUP_ADD_SCAN)
                 || scanType.equals(BarcodeType.OUTLET_PICKUP_SCAN) || scanType.equals(BarcodeType.PICKUP_TAKE_BACK)) {
 
             updateCount = 1;
@@ -1937,7 +1937,7 @@ public final class CaptureActivity extends CommonActivity implements SurfaceHold
             }
             break;
 
-            case BarcodeType.PICKUP_START_SCAN: {
+            case BarcodeType.PICKUP_SCAN_ALL: {
 
                 Intent intent = new Intent(this, PickupDoneActivity.class);
                 intent.putExtra("pickupNo", pickupNo);
@@ -2045,7 +2045,7 @@ public final class CaptureActivity extends CommonActivity implements SurfaceHold
 
         if (mScanType.equals(BarcodeType.CONFIRM_MY_DELIVERY_ORDER) || mScanType.equals(BarcodeType.CHANGE_DELIVERY_DRIVER)
                 || mScanType.equals(BarcodeType.PICKUP_CNR)
-                || mScanType.equals(BarcodeType.PICKUP_START_SCAN) || mScanType.equals(BarcodeType.PICKUP_ADD_SCAN)
+                || mScanType.equals(BarcodeType.PICKUP_SCAN_ALL) || mScanType.equals(BarcodeType.PICKUP_ADD_SCAN)
                 || mScanType.equals(BarcodeType.OUTLET_PICKUP_SCAN) || mScanType.equals(BarcodeType.PICKUP_TAKE_BACK)) {
 
             removeBarcodeListInstance();
@@ -2203,7 +2203,7 @@ public final class CaptureActivity extends CommonActivity implements SurfaceHold
 
         if (0 < barcodeDataArrayList.size()) {
 
-            Intent intentSign = new Intent(this, SigningActivity.class);
+            Intent intentSign = new Intent(this, SelfCollectionDoneActivity.class);
             intentSign.putExtra("title", mScanTitle);
             intentSign.putExtra("data", barcodeDataArrayList);
             intentSign.putExtra("nonq10qfs", String.valueOf(isNonQ10QFSOrder));

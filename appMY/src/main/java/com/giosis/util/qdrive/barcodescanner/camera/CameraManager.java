@@ -9,8 +9,8 @@ import android.os.Handler;
 import android.util.Log;
 import android.view.SurfaceHolder;
 
+import com.giosis.library.util.DisplayUtil;
 import com.giosis.util.qdrive.barcodescanner.PlanarYUVLuminanceSource;
-import com.giosis.util.qdrive.util.DisplayUtil;
 
 import java.io.IOException;
 

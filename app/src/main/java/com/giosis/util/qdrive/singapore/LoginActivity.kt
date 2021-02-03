@@ -36,8 +36,6 @@ class LoginActivity : CommonActivity() {
         ProgressBar(this@LoginActivity)
     }
 
-    //    private var spinnerList = ArrayList<LoginNation>()
-    private var spinnerPosition = 0
     private lateinit var appVersion: String
 
     // Location

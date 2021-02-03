@@ -306,7 +306,7 @@ public class OutletPickupStep3Activity extends CommonActivity {
 
             mDriverMemo = edit_sign_p_outlet_memo.getText().toString();
 
-            com.giosis.library.util.DataUtil.logEvent("button_click", TAG, "SetOutletPickupUploadData");
+            DataUtil.logEvent("button_click", TAG, "SetOutletPickupUploadData");
 
             new OutletPickupDoneHelper.Builder(this, Preferences.INSTANCE.getUserId(), Preferences.INSTANCE.getOfficeCode(), Preferences.INSTANCE.getDeviceUUID(),
                     mPickupNo, sign_view_sign_p_outlet_signature, mDriverMemo,

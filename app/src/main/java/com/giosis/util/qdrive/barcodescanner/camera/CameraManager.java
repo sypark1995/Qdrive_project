@@ -29,9 +29,9 @@ import android.preference.PreferenceManager;
 import android.util.Log;
 import android.view.SurfaceHolder;
 
+import com.giosis.library.util.DisplayUtil;
 import com.giosis.util.qdrive.barcodescanner.PlanarYUVLuminanceSource;
 import com.giosis.util.qdrive.barcodescanner.PreferencesActivity;
-import com.giosis.util.qdrive.util.DisplayUtil;
 
 import java.io.IOException;
 import java.util.List;
