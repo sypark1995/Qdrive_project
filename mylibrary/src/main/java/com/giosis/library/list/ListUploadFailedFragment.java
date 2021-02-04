@@ -66,16 +66,12 @@ public class ListUploadFailedFragment extends Fragment
 
     OnFailedCountListener mFailedCountCallback;
 
-    private ArrayList<String> spinnerlist;
     private String orderby = "zip_code desc";
 
     private ListUploadFailedAdapter adapter;
 
     private ArrayList<RowItemNotUpload> rowItems;
 
-    private RowItemNotUpload moveItems;
-
-    private boolean isDnd = false;
 
     public ListUploadFailedFragment() {
         super();
@@ -163,7 +159,7 @@ public class ListUploadFailedFragment extends Fragment
                 spinner_list_sort.performClick()
         );
 
-        spinnerlist = new ArrayList<>(Arrays.asList(
+        ArrayList spinnerlist = new ArrayList<>(Arrays.asList(
                 getResources().getString(R.string.text_sort_postal_code_asc),
                 getResources().getString(R.string.text_sort_postal_code_desc),
                 getResources().getString(R.string.text_sort_tracking_no_asc),
