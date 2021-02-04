@@ -1,4 +1,4 @@
-package com.giosis.util.qdrive.barcodescanner;
+package com.giosis.library.barcodescanner;
 
 import org.simpleframework.xml.Element;
 import org.simpleframework.xml.Root;

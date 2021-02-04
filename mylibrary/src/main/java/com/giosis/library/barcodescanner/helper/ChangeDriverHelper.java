@@ -1,4 +1,4 @@
-package com.giosis.util.qdrive.barcodescanner;
+package com.giosis.library.barcodescanner.helper;
 
 import android.annotation.SuppressLint;
 import android.app.ProgressDialog;
@@ -10,15 +10,18 @@ import android.text.TextUtils;
 import android.util.Log;
 import android.widget.Toast;
 
+import com.giosis.library.R;
+import com.giosis.library.barcodescanner.ChangeDriverResult;
+import com.giosis.library.barcodescanner.StdResult;
+import com.giosis.library.main.DriverAssignResult;
 import com.giosis.library.server.Custom_JsonParser;
 import com.giosis.library.util.BarcodeType;
+import com.giosis.library.util.DataUtil;
 import com.giosis.library.util.DatabaseHelper;
 import com.giosis.library.util.DisplayUtil;
 import com.giosis.library.util.GeoCodeUtil;
 import com.giosis.library.util.NetworkUtil;
-import com.giosis.util.qdrive.singapore.MyApplication;
-import com.giosis.util.qdrive.singapore.R;
-import com.giosis.util.qdrive.util.DataUtil;
+import com.giosis.library.util.Preferences;
 import com.google.gson.Gson;
 
 import org.json.JSONObject;
@@ -44,42 +47,57 @@ public class ChangeDriverHelper {
     private final OnChangeDelDriverEventListener eventListener;
     private final ProgressDialog progressDialog;
 
-    public static class Builder {
+    private boolean insertDriverAssignInfo(DriverAssignResult.QSignDeliveryList assignInfo) {
 
-        private final Context context;
-        private final String opID;
-        private final String officeCode;
-        private final String deviceID;
-        private final ArrayList<ChangeDriverResult.Data> changeDriverObjectArrayList;
-        private final double lat;
-        private final double lon;
+        String opId = Preferences.INSTANCE.getUserId();
+        SimpleDateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
+        dateFormat.setTimeZone(TimeZone.getTimeZone("GMT"));
+        String regDataString = dateFormat.format(new Date());
 
-        private String networkType;
-        private OnChangeDelDriverEventListener eventListener;
-
-        public Builder(Context context, String opID, String officeCode, String deviceID,
-                       ArrayList<ChangeDriverResult.Data> list, double lat, double lon) {
-
-            this.context = context;
-            this.opID = opID;
-            this.officeCode = officeCode;
-            this.deviceID = deviceID;
-            this.networkType = NetworkUtil.getNetworkType(context);
-
-            this.changeDriverObjectArrayList = list;
-            this.lat = lat;
-            this.lon = lon;
+        // eylee 2015.08.26 add nonqoo10 - contr_no 로 sqlite 체크 후 있다면 삭제하는 로직 add start
+        String contr_no = assignInfo.getContrNo();
+        int cnt = getContrNoCount(contr_no);
+        if (0 < cnt) {
+            delSelectedContrNo(contr_no);
         }
 
-        public ChangeDriverHelper build() {
-            return new ChangeDriverHelper(this);
-        }
+        // eylee 2015.08.26 add end
+        //성공 시 통합리스트 테이블 저장
+        ContentValues contentVal = new ContentValues();
+        contentVal.put("contr_no", assignInfo.getContrNo());
+        contentVal.put("partner_ref_no", assignInfo.getPartnerRefNo());
+        contentVal.put("invoice_no", assignInfo.getInvoiceNo());
+        contentVal.put("stat", assignInfo.getStat());
+        contentVal.put("rcv_nm", assignInfo.getRcvName());
+        contentVal.put("sender_nm", assignInfo.getSenderName());
+        contentVal.put("tel_no", assignInfo.getTelNo());
+        contentVal.put("hp_no", assignInfo.getHpNo());
+        contentVal.put("zip_code", assignInfo.getZipCode());
+        contentVal.put("address", assignInfo.getAddress());
+        contentVal.put("rcv_request", assignInfo.getDelMemo());
+        contentVal.put("delivery_dt", assignInfo.getDeliveryFirstDate());
+        contentVal.put("delivery_cnt", assignInfo.getDeliveryCount());
+        contentVal.put("type", BarcodeType.TYPE_DELIVERY);
+        contentVal.put("route", assignInfo.getRoute());
+        contentVal.put("reg_id", opId);
+        contentVal.put("reg_dt", regDataString);
+        contentVal.put("punchOut_stat", "N");
+        contentVal.put("driver_memo", assignInfo.getDriverMemo());
+        contentVal.put("fail_reason", assignInfo.getFailReason());
+        contentVal.put("secret_no_type", assignInfo.getSecretNoType());
+        contentVal.put("secret_no", assignInfo.getSecretNo());
+        contentVal.put("secure_delivery_yn", assignInfo.getSecureDeliveryYN());
+        contentVal.put("parcel_amount", assignInfo.getParcelAmount());
+        contentVal.put("currency", assignInfo.getCurrency());
+        contentVal.put("order_type_etc", assignInfo.getOrder_type_etc());
 
-        Builder setOnChangeDelDriverEventListener(OnChangeDelDriverEventListener eventListener) {
-            this.eventListener = eventListener;
+        // 2020.06 위, 경도 저장
+        String[] latLng = GeoCodeUtil.getLatLng(assignInfo.getLat_lng());
+        contentVal.put("lat", latLng[0]);
+        contentVal.put("lng", latLng[1]);
 
-            return this;
-        }
+        long insertCount = DatabaseHelper.getInstance().insert(DatabaseHelper.DB_TABLE_INTEGRATION_LIST, contentVal);
+        return insertCount >= 0;
     }
 
     private ChangeDriverHelper(Builder builder) {
@@ -106,6 +124,43 @@ public class ChangeDriverHelper {
         return progressDialog;
     }
 
+    public static class Builder {
+
+        private final Context context;
+        private final String opID;
+        private final String officeCode;
+        private final String deviceID;
+        private final ArrayList<ChangeDriverResult.Data> changeDriverObjectArrayList;
+        private final double lat;
+        private final double lon;
+
+        private final String networkType;
+        private OnChangeDelDriverEventListener eventListener;
+
+        public Builder(Context context, String opID, String officeCode, String deviceID,
+                       ArrayList<ChangeDriverResult.Data> list, double lat, double lon) {
+
+            this.context = context;
+            this.opID = opID;
+            this.officeCode = officeCode;
+            this.deviceID = deviceID;
+            this.networkType = NetworkUtil.getNetworkType(context);
+
+            this.changeDriverObjectArrayList = list;
+            this.lat = lat;
+            this.lon = lon;
+        }
+
+        public ChangeDriverHelper build() {
+            return new ChangeDriverHelper(this);
+        }
+
+        public Builder setOnChangeDelDriverEventListener(OnChangeDelDriverEventListener eventListener) {
+            this.eventListener = eventListener;
+
+            return this;
+        }
+    }
 
     class ChangeDriverAsyncTask extends AsyncTask<Void, Integer, DriverAssignResult> {
 
@@ -195,7 +250,6 @@ public class ChangeDriverHelper {
             Gson gson = new Gson();
             DriverAssignResult resultObj;
 
-            // JSON Parser
             try {
 
                 JSONObject job = new JSONObject();
@@ -207,7 +261,7 @@ public class ChangeDriverHelper {
                 job.accumulate("lat", String.valueOf(lat));
                 job.accumulate("lon", String.valueOf(lon));
                 job.accumulate("app_id", DataUtil.appID);
-                job.accumulate("nation_cd", DataUtil.nationCode);
+                job.accumulate("nation_cd", Preferences.INSTANCE.getUserNation());
 
                 String methodName = "SetChangeDeliveryDriver";
                 String jsonString = Custom_JsonParser.requestServerDataReturnJSON(methodName, job);
@@ -223,62 +277,7 @@ public class ChangeDriverHelper {
         }
     }
 
-
-    private boolean insertDriverAssignInfo(DriverAssignResult.QSignDeliveryList assignInfo) {
-
-//        String opId = SharedPreferencesHelper.getSigninOpID(context);
-        String opId = MyApplication.preferences.getUserId();
-        SimpleDateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
-        dateFormat.setTimeZone(TimeZone.getTimeZone("GMT"));
-        String regDataString = dateFormat.format(new Date());
-
-        // eylee 2015.08.26 add nonqoo10 - contr_no 로 sqlite 체크 후 있다면 삭제하는 로직 add start
-        String contr_no = assignInfo.getContrNo();
-        int cnt = getContrNoCount(contr_no);
-        if (0 < cnt) {
-            delSelectedContrNo(contr_no);
-        }
-
-        // eylee 2015.08.26 add end
-        //성공 시 통합리스트 테이블 저장
-        ContentValues contentVal = new ContentValues();
-        contentVal.put("contr_no", assignInfo.getContrNo());
-        contentVal.put("partner_ref_no", assignInfo.getPartnerRefNo());
-        contentVal.put("invoice_no", assignInfo.getInvoiceNo());
-        contentVal.put("stat", assignInfo.getStat());
-        contentVal.put("rcv_nm", assignInfo.getRcvName());
-        contentVal.put("sender_nm", assignInfo.getSenderName());
-        contentVal.put("tel_no", assignInfo.getTelNo());
-        contentVal.put("hp_no", assignInfo.getHpNo());
-        contentVal.put("zip_code", assignInfo.getZipCode());
-        contentVal.put("address", assignInfo.getAddress());
-        contentVal.put("rcv_request", assignInfo.getDelMemo());
-        contentVal.put("delivery_dt", assignInfo.getDeliveryFirstDate());
-        contentVal.put("delivery_cnt", assignInfo.getDeliveryCount());
-        contentVal.put("type", BarcodeType.TYPE_DELIVERY);
-        contentVal.put("route", assignInfo.getRoute());
-        contentVal.put("reg_id", opId);
-        contentVal.put("reg_dt", regDataString);
-        contentVal.put("punchOut_stat", "N");
-        contentVal.put("driver_memo", assignInfo.getDriverMemo());
-        contentVal.put("fail_reason", assignInfo.getFailReason());
-        contentVal.put("secret_no_type", assignInfo.getSecretNoType());
-        contentVal.put("secret_no", assignInfo.getSecretNo());
-        contentVal.put("secure_delivery_yn", assignInfo.getSecureDeliveryYN());
-        contentVal.put("parcel_amount", assignInfo.getParcelAmount());
-        contentVal.put("currency", assignInfo.getCurrency());
-        contentVal.put("order_type_etc", assignInfo.getOrder_type_etc());   // krm0219
-
-        // 2020.06 위, 경도 저장
-        String[] latLng = GeoCodeUtil.getLatLng(assignInfo.getLat_lng());
-        contentVal.put("lat", latLng[0]);
-        contentVal.put("lng", latLng[1]);
-
-        long insertCount = DatabaseHelper.getInstance().insert(DatabaseHelper.DB_TABLE_INTEGRATION_LIST, contentVal);
-        return insertCount >= 0;
-    }
-
-    // krm0219
+    // Message 이동
     @SuppressLint("StaticFieldLeak")
     class ChangeMessageAsyncTask extends AsyncTask<Void, Void, StdResult> {
 
@@ -304,7 +303,7 @@ public class ChangeDriverHelper {
                 job.accumulate("svc_nation_cd", "SG");
                 job.accumulate("qdriver_id", driverId);
                 job.accumulate("app_id", DataUtil.appID);
-                job.accumulate("nation_cd", DataUtil.nationCode);
+                job.accumulate("nation_cd", Preferences.INSTANCE.getUserNation());
 
                 String methodName = "SetQdriverMessageChangeQdriver";
                 String jsonString = Custom_JsonParser.requestServerDataReturnJSON(methodName, job);

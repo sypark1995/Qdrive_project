@@ -13,7 +13,6 @@ import com.giosis.library.util.*
 import kotlinx.android.synthetic.main.activity_pickup_take_back.*
 import kotlinx.android.synthetic.main.top_title.*
 
-// TODO_TEST    테스트 필요
 class PickupTakeBackActivity : CommonActivity() {
     val tag = "PickupTakeBackActivity"
     lateinit var pickupNo: String

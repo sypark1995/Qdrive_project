@@ -406,13 +406,6 @@ public class ServerDownloadHelper {
 
                 progressDialog.setMax((int) maxCount);
 
-                 /*// FIXME.  서버에서 (-) Result 값이 내려왔을 때의 처리방법 바꾸기
-                Log.e("Server", "Download Result Code : " + resultCode + " / " + resultMsg);
-
-                if (resultCode < 0) {
-
-                    return resultCode;
-                }*/
 
                 if (maxCount < 1) {
 

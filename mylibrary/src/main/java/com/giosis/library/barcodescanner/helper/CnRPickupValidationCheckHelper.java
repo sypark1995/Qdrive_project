@@ -1,22 +1,22 @@
-package com.giosis.util.qdrive.barcodescanner;
+package com.giosis.library.barcodescanner.helper;
 
 import android.annotation.SuppressLint;
 import android.app.AlertDialog;
 import android.content.ContentValues;
 import android.content.Context;
-import android.content.DialogInterface;
-import android.content.DialogInterface.OnClickListener;
 import android.database.Cursor;
 import android.os.AsyncTask;
 import android.util.Log;
 import android.widget.Toast;
 
+import com.giosis.library.R;
+import com.giosis.library.barcodescanner.CnRPickupResult;
 import com.giosis.library.server.Custom_JsonParser;
 import com.giosis.library.util.BarcodeType;
+import com.giosis.library.util.DataUtil;
 import com.giosis.library.util.DatabaseHelper;
 import com.giosis.library.util.NetworkUtil;
-import com.giosis.util.qdrive.singapore.R;
-import com.giosis.util.qdrive.util.DataUtil;
+import com.giosis.library.util.Preferences;
 
 import org.json.JSONObject;
 
@@ -24,16 +24,48 @@ import java.text.SimpleDateFormat;
 import java.util.Date;
 import java.util.TimeZone;
 
-public class CnRPickupValidationCheckHelper2 {
+public class CnRPickupValidationCheckHelper {
     String TAG = "CnRPickupValidationCheckHelper";
 
     private final Context context;
     private final String opID;
     private final String scanNo;
 
-    private final String networkType;
     private final OnCnRPickupValidationCheckListener eventListener;
     private final AlertDialog resultDialog;
+
+    private CnRPickupValidationCheckHelper(Builder builder) {
+
+        this.context = builder.context;
+        this.opID = builder.opID;
+        this.scanNo = builder.scanNo;
+
+        this.eventListener = builder.eventListener;
+        this.resultDialog = getResultAlertDialog(this.context);
+    }
+
+    private AlertDialog getResultAlertDialog(final Context context) {
+
+        return new AlertDialog.Builder(context)
+                .setTitle("[" + context.getResources().getString(R.string.text_scanned_failed) + "]")
+                .setCancelable(false)
+                .setPositiveButton(context.getResources().getString(R.string.button_ok), (dialog1, which) -> {
+                    if (dialog1 != null) {
+                        dialog1.dismiss();
+                    }
+                }).create();
+    }
+
+    public CnRPickupValidationCheckHelper execute() {
+        CnRPickupValidationTask validationTask = new CnRPickupValidationTask();
+        validationTask.execute();
+        return this;
+    }
+
+    private void showResultDialog(String message) {
+        resultDialog.setMessage(message);
+        resultDialog.show();
+    }
 
     public static class Builder {
 
@@ -41,60 +73,23 @@ public class CnRPickupValidationCheckHelper2 {
         private final String opID;
         private final String scanNo;
 
-        private String networkType;
         private OnCnRPickupValidationCheckListener eventListener;
 
         public Builder(Context context, String opID, String scanNo) {
 
             this.context = context;
             this.opID = opID;
-            this.networkType = NetworkUtil.getNetworkType(context);
-
             this.scanNo = scanNo;
         }
 
-        public CnRPickupValidationCheckHelper2 build() {
-            return new CnRPickupValidationCheckHelper2(this);
+        public CnRPickupValidationCheckHelper build() {
+            return new CnRPickupValidationCheckHelper(this);
         }
 
-        Builder setOnCnRPickupValidationCheckListener(OnCnRPickupValidationCheckListener eventListener) {
+        public Builder setOnCnRPickupValidationCheckListener(OnCnRPickupValidationCheckListener eventListener) {
             this.eventListener = eventListener;
             return this;
         }
-    }
-
-    private CnRPickupValidationCheckHelper2(Builder builder) {
-
-        this.context = builder.context;
-        this.opID = builder.opID;
-        this.scanNo = builder.scanNo;
-
-        this.networkType = builder.networkType;
-        this.eventListener = builder.eventListener;
-        this.resultDialog = getResultAlertDialog(this.context);
-    }
-
-
-    private AlertDialog getResultAlertDialog(final Context context) {
-        AlertDialog dialog = new AlertDialog.Builder(context)
-                .setTitle("[" + context.getResources().getString(R.string.text_scanned_failed) + "]")
-                .setCancelable(false)
-                .setPositiveButton(context.getResources().getString(R.string.button_ok), new OnClickListener() {
-
-                    @Override
-                    public void onClick(DialogInterface dialog, int which) {
-                        if (dialog != null) {
-                            dialog.dismiss();
-                        }
-                    }
-                }).create();
-
-        return dialog;
-    }
-
-    private void showResultDialog(String message) {
-        resultDialog.setMessage(message);
-        resultDialog.show();
     }
 
     @SuppressLint("StaticFieldLeak")
@@ -117,7 +112,7 @@ public class CnRPickupValidationCheckHelper2 {
                     boolean isDBDuplicate = checkDBDuplicate(result.getResultObject().getContrNo(), result.getResultObject().getInvoiceNo());
 
                     String requester;
-                    Log.e("krm0219", "  DB Duplicate  > " + isDBDuplicate);
+                    Log.e(TAG, "  DB Duplicate  > " + isDBDuplicate);
 
                     if (isDBDuplicate) {
 
@@ -126,7 +121,7 @@ public class CnRPickupValidationCheckHelper2 {
 
                         requester = insertCnRData(result.getResultObject());
                     }
-                    Log.e("krm0219", "requester  > " + requester);
+                    Log.e(TAG, "requester  > " + requester);
 
                     if (eventListener != null)
                         eventListener.OnCnRPickupValidationCheckResult(result);
@@ -163,15 +158,11 @@ public class CnRPickupValidationCheckHelper2 {
                 job.accumulate("opId", opID);
                 job.accumulate("pickup_no", scanNo);
                 job.accumulate("app_id", DataUtil.appID);
-                job.accumulate("nation_cd", DataUtil.nationCode);
+                job.accumulate("nation_cd", Preferences.INSTANCE.getUserNation());
 
                 String methodName = "GetCnROrderCheck";
                 String jsonString = Custom_JsonParser.requestServerDataReturnJSON(methodName, job);
                 // {"ResultObject":{"contr_no":"55003355","partner_ref_no":"C2859SGSG","invoice_no":"C2859SGSG","stat":"P2","req_nm":"normal order","req_dt":"2019-08-2010:00-19:00","tel_no":"+65--","hp_no":"+65-8424-2354","zip_code":"048741","address":"11 PEKIN STREEThyemi3333","pickup_hopeday":"2019-08-20","pickup_hopetime":"10:00-19:00","sender_nm":"normal order","del_memo":"","driver_memo":"","fail_reason":"WA","qty":"1","cust_nm":"test191919","partner_id":"hyemi223","dr_assign_requestor":"","dr_assign_req_dt":"","dr_assign_stat":"","dr_req_no":"","failed_count":"0","route":"C2C","del_driver_id":null,"cust_no":"100054639"},"ResultCode":0,"ResultMsg":"Success"}
-
-               /* Serializer serializer = new Persister();
-                resultObj = serializer.read(PickupCNRResult.class, jsonString);*/
-
 
                 JSONObject jsonObject = new JSONObject(jsonString);
                 result.setResultCode(jsonObject.getInt("ResultCode"));
@@ -285,13 +276,6 @@ public class CnRPickupValidationCheckHelper2 {
 
             return data.getReqName();
         }
-    }
-
-
-    public CnRPickupValidationCheckHelper2 execute() {
-        CnRPickupValidationTask validationTask = new CnRPickupValidationTask();
-        validationTask.execute();
-        return this;
     }
 
     public interface OnCnRPickupValidationCheckListener {

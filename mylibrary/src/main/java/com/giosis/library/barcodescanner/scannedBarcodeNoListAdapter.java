@@ -1,4 +1,4 @@
-package com.giosis.util.qdrive.barcodescanner;
+package com.giosis.library.barcodescanner;
 
 import android.content.Context;
 import android.util.TypedValue;
@@ -11,15 +11,15 @@ import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.TextView;
 
+import com.giosis.library.R;
 import com.giosis.library.list.BarcodeData;
 import com.giosis.library.util.BarcodeType;
-import com.giosis.util.qdrive.singapore.R;
 
 import java.util.ArrayList;
 
 
-public class InputBarcodeNoListAdapter extends BaseAdapter {
-    String TAG = "InputBarcodeNoListAdapter";
+public class scannedBarcodeNoListAdapter extends BaseAdapter {
+    String TAG = "scannedBarcodeNoListAdapter";
 
     Context context;
 
@@ -27,7 +27,7 @@ public class InputBarcodeNoListAdapter extends BaseAdapter {
     private ArrayList<BarcodeData> items;
 
 
-    InputBarcodeNoListAdapter(Context context, ArrayList<BarcodeData> objects, String mScanType) {
+    public scannedBarcodeNoListAdapter(Context context, ArrayList<BarcodeData> objects, String mScanType) {
 
         this.context = context;
         this.scanType = mScanType;
@@ -85,7 +85,7 @@ public class InputBarcodeNoListAdapter extends BaseAdapter {
 
             if (barcodeState.equals("SUCCESS")) {
 
-                layout_caption_list_item.setBackgroundResource(R.drawable.custom_background_barcode_active);
+                layout_caption_list_item.setBackgroundResource(R.drawable.bg_round_10_cccccc);
                 img_capture_list_item_barcode.setBackgroundResource(R.drawable.qdrive_btn_icon_barcode);
                 text_capture_list_item_barcode.setTextSize(TypedValue.COMPLEX_UNIT_PX, context.getResources().getDimension(R.dimen.text_size_36px));
                 text_capture_list_item_barcode.setTextColor(context.getResources().getColor(R.color.color_303030));
@@ -98,11 +98,11 @@ public class InputBarcodeNoListAdapter extends BaseAdapter {
                     btn_capture_list_item_state.setVisibility(View.GONE);
                 } else if (scanType.equals(BarcodeType.OUTLET_PICKUP_SCAN)) {
 
-                    layout_caption_list_item.setBackgroundResource(R.drawable.rounded_yellow);
+                    layout_caption_list_item.setBackgroundResource(R.drawable.bg_round_5_ffcc00);
                 }
             } else if (barcodeState.equals("FAIL")) {
 
-                layout_caption_list_item.setBackgroundResource(R.drawable.custom_background_barcode_inactive);
+                layout_caption_list_item.setBackgroundResource(R.drawable.bg_round_10_dedede);
                 img_capture_list_item_barcode.setBackgroundResource(R.drawable.qdrive_btn_icon_barcode_off);
                 text_capture_list_item_barcode.setTextColor(context.getResources().getColor(R.color.color_909090));
                 btn_capture_list_item_state.setBackgroundResource(R.drawable.qdrive_btn_icon_big_off);

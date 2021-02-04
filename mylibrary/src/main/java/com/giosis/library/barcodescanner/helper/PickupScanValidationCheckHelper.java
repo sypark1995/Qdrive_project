@@ -1,17 +1,16 @@
-package com.giosis.util.qdrive.barcodescanner;
+package com.giosis.library.barcodescanner.helper;
 
 import android.app.AlertDialog;
 import android.content.Context;
-import android.content.DialogInterface;
-import android.content.DialogInterface.OnClickListener;
 import android.os.AsyncTask;
 import android.util.Log;
 import android.widget.Toast;
 
+import com.giosis.library.R;
+import com.giosis.library.barcodescanner.StdResult;
 import com.giosis.library.server.Custom_JsonParser;
-import com.giosis.library.util.NetworkUtil;
-import com.giosis.util.qdrive.singapore.R;
-import com.giosis.util.qdrive.util.DataUtil;
+import com.giosis.library.util.DataUtil;
+import com.giosis.library.util.Preferences;
 
 import org.json.JSONObject;
 
@@ -23,7 +22,6 @@ public class PickupScanValidationCheckHelper {
     private final String pickup_no;
     private final String scanNo;
 
-    private final String networkType;
     private final OnPickupAddScanNoOneByOneUploadListener eventListener;
     private final AlertDialog resultDialog;
 
@@ -34,7 +32,6 @@ public class PickupScanValidationCheckHelper {
         private final String pickup_no;
         private final String scanNo;
 
-        private String networkType;
         private OnPickupAddScanNoOneByOneUploadListener eventListener;
 
         public Builder(Context context, String opID, String pickup_no, String scanNo) {
@@ -43,8 +40,6 @@ public class PickupScanValidationCheckHelper {
             this.opID = opID;
             this.pickup_no = pickup_no;
             this.scanNo = scanNo;
-
-            this.networkType = NetworkUtil.getNetworkType(context);
         }
 
         public PickupScanValidationCheckHelper build() {
@@ -64,26 +59,20 @@ public class PickupScanValidationCheckHelper {
         this.pickup_no = builder.pickup_no;
         this.scanNo = builder.scanNo;
 
-        this.networkType = builder.networkType;
         this.eventListener = builder.eventListener;
         this.resultDialog = getResultAlertDialog(this.context);
     }
 
 
     private AlertDialog getResultAlertDialog(final Context context) {
-        AlertDialog dialog = new AlertDialog.Builder(context)
+
+        return new AlertDialog.Builder(context)
                 .setTitle("[" + context.getResources().getString(R.string.text_scanned_failed) + "]")
                 .setCancelable(false)
-                .setPositiveButton(context.getResources().getString(R.string.button_ok), new OnClickListener() {
-
-                    @Override
-                    public void onClick(DialogInterface dialog, int which) {
-                        if (dialog != null)
-                            dialog.dismiss();
-                    }
+                .setPositiveButton(context.getResources().getString(R.string.button_ok), (dialog1, which) -> {
+                    if (dialog1 != null)
+                        dialog1.dismiss();
                 }).create();
-
-        return dialog;
     }
 
     private void showResultDialog(String message) {
@@ -138,7 +127,7 @@ public class PickupScanValidationCheckHelper {
                 job.accumulate("pickup_no", pickup_no);
                 job.accumulate("scan_no", scan_no);
                 job.accumulate("app_id", DataUtil.appID);
-                job.accumulate("nation_cd", DataUtil.nationCode);
+                job.accumulate("nation_cd", Preferences.INSTANCE.getUserNation());
 
                 String methodName = "SetPickupScanNo";
                 String jsonString = Custom_JsonParser.requestServerDataReturnJSON(methodName, job);

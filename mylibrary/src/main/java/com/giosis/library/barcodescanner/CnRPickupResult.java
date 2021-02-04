@@ -1,4 +1,4 @@
-package com.giosis.util.qdrive.barcodescanner;
+package com.giosis.library.barcodescanner;
 
 public class CnRPickupResult {
 
@@ -22,11 +22,11 @@ public class CnRPickupResult {
         this.resultMsg = resultMsg;
     }
 
-    public CnRPickupResult.CnRPickupData getResultObject() {
+    public CnRPickupData getResultObject() {
         return ResultObject;
     }
 
-    public void setResultObject(CnRPickupResult.CnRPickupData resultObject) {
+    public void setResultObject(CnRPickupData resultObject) {
         ResultObject = resultObject;
     }
 

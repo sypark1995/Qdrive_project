@@ -1,18 +1,17 @@
-package com.giosis.util.qdrive.barcodescanner;
+package com.giosis.library.barcodescanner.helper;
 
 import android.app.Activity;
 import android.app.AlertDialog;
 import android.content.Context;
-import android.content.DialogInterface;
-import android.content.DialogInterface.OnClickListener;
 import android.os.AsyncTask;
 import android.util.Log;
 import android.widget.Toast;
 
+import com.giosis.library.R;
+import com.giosis.library.barcodescanner.StdResult;
 import com.giosis.library.server.Custom_JsonParser;
-import com.giosis.library.util.NetworkUtil;
-import com.giosis.util.qdrive.singapore.R;
-import com.giosis.util.qdrive.util.DataUtil;
+import com.giosis.library.util.DataUtil;
+import com.giosis.library.util.Preferences;
 
 import org.json.JSONObject;
 
@@ -24,39 +23,19 @@ public class ConfirmMyOrderValidationCheckHelper {
     private final String outletDriverYN;
     private final String scanNo;
 
-    private final String networkType;
     private final OnDpc3OutValidationCheckListener eventListener;
     private final AlertDialog resultDialog;
 
-    public static class Builder {
+    private AlertDialog getResultAlertDialog(final Context context) {
 
-        private final Context context;
-        private final String opID;
-        private final String outletDriverYN;
-        private final String scanNo;
+        return new AlertDialog.Builder(context)
+                .setTitle("[" + context.getResources().getString(R.string.text_scanned_failed) + "]")
+                .setCancelable(false)
+                .setPositiveButton(context.getResources().getString(R.string.button_ok), (dialog1, which) -> {
 
-        private String networkType;
-        private OnDpc3OutValidationCheckListener eventListener;
-
-        public Builder(Context context, String opID, String outletDriverYN, String scanNo) {
-
-            this.context = context;
-            this.opID = opID;
-            this.outletDriverYN = outletDriverYN;
-            this.scanNo = scanNo;
-
-            this.networkType = NetworkUtil.getNetworkType(context);
-        }
-
-        public ConfirmMyOrderValidationCheckHelper build() {
-            return new ConfirmMyOrderValidationCheckHelper(this);
-        }
-
-        Builder setOnDpc3OutValidationCheckListener(OnDpc3OutValidationCheckListener eventListener) {
-            this.eventListener = eventListener;
-
-            return this;
-        }
+                    if (dialog1 != null)
+                        dialog1.dismiss();
+                }).create();
     }
 
     private ConfirmMyOrderValidationCheckHelper(Builder builder) {
@@ -66,31 +45,54 @@ public class ConfirmMyOrderValidationCheckHelper {
         this.outletDriverYN = builder.outletDriverYN;
         this.scanNo = builder.scanNo;
 
-        this.networkType = builder.networkType;
         this.eventListener = builder.eventListener;
         this.resultDialog = getResultAlertDialog(this.context);
     }
 
-    private AlertDialog getResultAlertDialog(final Context context) {
-        AlertDialog dialog = new AlertDialog.Builder(context)
-                .setTitle("[" + context.getResources().getString(R.string.text_scanned_failed) + "]")
-                .setCancelable(false)
-                .setPositiveButton(context.getResources().getString(R.string.button_ok), new OnClickListener() {
+    public interface OnDpc3OutValidationCheckListener {
+        void OnDpc3OutValidationCheckResult(StdResult result);
 
-                    @Override
-                    public void onClick(DialogInterface dialog, int which) {
+        void OnDpc3OutValidationCheckFailList(StdResult result);
 
-                        if (dialog != null)
-                            dialog.dismiss();
-                    }
-                }).create();
-
-        return dialog;
     }
 
     private void showResultDialog(String message) {
         resultDialog.setMessage(message);
         resultDialog.show();
+    }
+
+    public static class Builder {
+
+        private final Context context;
+        private final String opID;
+        private final String outletDriverYN;
+        private final String scanNo;
+
+        private OnDpc3OutValidationCheckListener eventListener;
+
+        public Builder(Context context, String opID, String outletDriverYN, String scanNo) {
+
+            this.context = context;
+            this.opID = opID;
+            this.outletDriverYN = outletDriverYN;
+            this.scanNo = scanNo;
+        }
+
+        public ConfirmMyOrderValidationCheckHelper build() {
+            return new ConfirmMyOrderValidationCheckHelper(this);
+        }
+
+        public Builder setOnDpc3OutValidationCheckListener(OnDpc3OutValidationCheckListener eventListener) {
+            this.eventListener = eventListener;
+
+            return this;
+        }
+    }
+
+    public ConfirmMyOrderValidationCheckHelper execute() {
+        Dpc3OutValidationTask dpc3OutValidationTask = new Dpc3OutValidationTask();
+        dpc3OutValidationTask.execute();
+        return this;
     }
 
     class Dpc3OutValidationTask extends AsyncTask<Void, Void, StdResult> {
@@ -152,7 +154,7 @@ public class ConfirmMyOrderValidationCheckHelper {
                     job.accumulate("type", "STD");    // Standard
                 }
                 job.accumulate("app_id", DataUtil.appID);
-                job.accumulate("nation_cd", DataUtil.nationCode);
+                job.accumulate("nation_cd", Preferences.INSTANCE.getUserNation());
 
                 String methodName = "GetValidationCheckDpc3Out";
                 String jsonString = Custom_JsonParser.requestServerDataReturnJSON(methodName, job);
@@ -171,18 +173,5 @@ public class ConfirmMyOrderValidationCheckHelper {
 
             return resultObj;
         }
-    }
-
-    public interface OnDpc3OutValidationCheckListener {
-        void OnDpc3OutValidationCheckResult(StdResult result);
-
-        void OnDpc3OutValidationCheckFailList(StdResult result);
-
-    }
-
-    public ConfirmMyOrderValidationCheckHelper execute() {
-        Dpc3OutValidationTask dpc3OutValidationTask = new Dpc3OutValidationTask();
-        dpc3OutValidationTask.execute();
-        return this;
     }
 }

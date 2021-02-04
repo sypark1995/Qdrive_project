@@ -67,6 +67,16 @@ import android.widget.ToggleButton;
 
 import com.giosis.library.BuildConfig;
 import com.giosis.library.MemoryStatus;
+import com.giosis.library.barcodescanner.ChangeDriverResult;
+import com.giosis.library.barcodescanner.CnRPickupResult;
+import com.giosis.library.barcodescanner.helper.ChangeDriverHelper;
+import com.giosis.library.barcodescanner.helper.ChangeDriverValidationCheckHelper;
+import com.giosis.library.barcodescanner.helper.CnRPickupValidationCheckHelper;
+import com.giosis.library.barcodescanner.helper.ConfirmMyOrderHelper;
+import com.giosis.library.barcodescanner.helper.ConfirmMyOrderValidationCheckHelper;
+import com.giosis.library.barcodescanner.helper.PickupScanValidationCheckHelper;
+import com.giosis.library.barcodescanner.helper.PickupTakeBackValidationCheckHelper;
+import com.giosis.library.barcodescanner.scannedBarcodeNoListAdapter;
 import com.giosis.library.gps.GPSTrackerManager;
 import com.giosis.library.list.BarcodeData;
 import com.giosis.library.list.delivery.DeliveryDoneActivity;
@@ -188,7 +198,7 @@ public final class CaptureActivity extends CommonActivity implements SurfaceHold
 
     int mScanCount = 0;
     private ArrayList<BarcodeData> scanBarcodeArrayList = null;
-    private InputBarcodeNoListAdapter scanBarcodeNoListAdapter;
+    private scannedBarcodeNoListAdapter scanBarcodeNoListAdapter;
     // resume 시 recreate 할 data list
     private ArrayList<String> barcodeList = new ArrayList<>();
     private ArrayList<ChangeDriverResult.Data> changeDriverObjectArrayList = new ArrayList<>();
@@ -370,7 +380,7 @@ public final class CaptureActivity extends CommonActivity implements SurfaceHold
         }
 
 
-        scanBarcodeNoListAdapter = new InputBarcodeNoListAdapter(this, scanBarcodeArrayList, mScanType);
+        scanBarcodeNoListAdapter = new scannedBarcodeNoListAdapter(this, scanBarcodeArrayList, mScanType);
         list_capture_scan_barcode.setAdapter(scanBarcodeNoListAdapter);
 
         if (0 < scanBarcodeArrayList.size()) {
@@ -1453,7 +1463,7 @@ public final class CaptureActivity extends CommonActivity implements SurfaceHold
                         .setOnDpc3OutValidationCheckListener(new ConfirmMyOrderValidationCheckHelper.OnDpc3OutValidationCheckListener() {
 
                             @Override
-                            public void OnDpc3OutValidationCheckResult(StdResult result) {
+                            public void OnDpc3OutValidationCheckResult(com.giosis.library.barcodescanner.StdResult result) {
 
                                 if (result.getResultCode() < 0) {
 
@@ -1469,8 +1479,7 @@ public final class CaptureActivity extends CommonActivity implements SurfaceHold
                             }
 
                             @Override
-                            public void OnDpc3OutValidationCheckFailList(StdResult result) {
-
+                            public void OnDpc3OutValidationCheckFailList(com.giosis.library.barcodescanner.StdResult result) {
                                 Toast.makeText(context, context.getResources().getString(R.string.msg_error_check_again), Toast.LENGTH_SHORT).show();
                             }
                         }).build().execute();
@@ -1482,23 +1491,19 @@ public final class CaptureActivity extends CommonActivity implements SurfaceHold
                 final String scanNo = strBarcodeNo;
 
                 new ChangeDriverValidationCheckHelper.Builder(this, opID, strBarcodeNo)
-                        .setOnChangeDelDriverValidCheckListener(new ChangeDriverValidationCheckHelper.OnChangeDelDriverValidCheckListener() {
+                        .setOnChangeDelDriverValidCheckListener(result -> {
 
-                            @Override
-                            public void OnChangeDelDriverValidCheckResult(ChangeDriverResult result) {
+                            if (result.getResultCode() < 0) {
 
-                                if (result.getResultCode() < 0) {
+                                beepManagerError.playBeepSoundAndVibrate();
+                                deletePrevious(scanNo);
+                                edit_capture_type_number.setText("");
+                                inputMethodManager.hideSoftInputFromWindow(edit_capture_type_number.getWindowToken(), 0);
+                            } else {
 
-                                    beepManagerError.playBeepSoundAndVibrate();
-                                    deletePrevious(scanNo);
-                                    edit_capture_type_number.setText("");
-                                    inputMethodManager.hideSoftInputFromWindow(edit_capture_type_number.getWindowToken(), 0);
-                                } else {
-
-                                    beepManager.playBeepSoundAndVibrate();
-                                    changeDriverResult = result.getResultObject();
-                                    addScannedBarcode(scanNo, "checkValidation - CHANGE_DELIVERY_DRIVER");
-                                }
+                                beepManager.playBeepSoundAndVibrate();
+                                changeDriverResult = result.getResultObject();
+                                addScannedBarcode(scanNo, "checkValidation - CHANGE_DELIVERY_DRIVER");
                             }
                         }).build().execute();
 
@@ -1515,8 +1520,9 @@ public final class CaptureActivity extends CommonActivity implements SurfaceHold
                 // Edit.  2020.03  배포 (기존 CNR 중복 허용됨 > 중복 허용X 수정)    by krm0219
                 final String scanNo = strBarcodeNo;
 
-                new CnRPickupValidationCheckHelper2.Builder(this, opID, strBarcodeNo)
-                        .setOnCnRPickupValidationCheckListener(new CnRPickupValidationCheckHelper2.OnCnRPickupValidationCheckListener() {
+                new CnRPickupValidationCheckHelper.Builder(this, opID, strBarcodeNo)
+                        .setOnCnRPickupValidationCheckListener(new CnRPickupValidationCheckHelper.OnCnRPickupValidationCheckListener() {
+
                             @Override
                             public void OnCnRPickupValidationCheckResult(CnRPickupResult result) {
 
@@ -1540,21 +1546,17 @@ public final class CaptureActivity extends CommonActivity implements SurfaceHold
                 final String scanNo = strBarcodeNo;
 
                 new PickupScanValidationCheckHelper.Builder(this, opID, pickupNo, strBarcodeNo)
-                        .setOnPickupAddScanNoOneByOneUploadListener(new PickupScanValidationCheckHelper.OnPickupAddScanNoOneByOneUploadListener() {
+                        .setOnPickupAddScanNoOneByOneUploadListener(result -> {
 
-                            @Override
-                            public void onPickupAddScanNoOneByOneUploadResult(StdResult result) {
+                            if (result.getResultCode() < 0) {
 
-                                if (result.getResultCode() < 0) {
+                                beepManagerError.playBeepSoundAndVibrate();
+                                deletePrevious(scanNo);
+                                edit_capture_type_number.setText("");
+                            } else {
 
-                                    beepManagerError.playBeepSoundAndVibrate();
-                                    deletePrevious(scanNo);
-                                    edit_capture_type_number.setText("");
-                                } else {
-
-                                    beepManager.playBeepSoundAndVibrate();
-                                    addScannedBarcode(scanNo, "checkValidation - PICKUP_SCAN_ALL");
-                                }
+                                beepManager.playBeepSoundAndVibrate();
+                                addScannedBarcode(scanNo, "checkValidation - PICKUP_SCAN_ALL");
                             }
                         }).build().execute();
 
@@ -1565,21 +1567,17 @@ public final class CaptureActivity extends CommonActivity implements SurfaceHold
                 final String scanNo = strBarcodeNo;
 
                 new PickupScanValidationCheckHelper.Builder(this, opID, pickupNo, strBarcodeNo)
-                        .setOnPickupAddScanNoOneByOneUploadListener(new PickupScanValidationCheckHelper.OnPickupAddScanNoOneByOneUploadListener() {
+                        .setOnPickupAddScanNoOneByOneUploadListener(result -> {
 
-                            @Override
-                            public void onPickupAddScanNoOneByOneUploadResult(StdResult result) {
+                            if (result.getResultCode() < 0) {
 
-                                if (result.getResultCode() < 0) {
+                                beepManagerError.playBeepSoundAndVibrate();
+                                deletePrevious(scanNo);
+                                edit_capture_type_number.setText("");
+                            } else {
 
-                                    beepManagerError.playBeepSoundAndVibrate();
-                                    deletePrevious(scanNo);
-                                    edit_capture_type_number.setText("");
-                                } else {
-
-                                    beepManager.playBeepSoundAndVibrate();
-                                    addScannedBarcode(scanNo, "checkValidation - PICKUP_ADD_SCAN");
-                                }
+                                beepManager.playBeepSoundAndVibrate();
+                                addScannedBarcode(scanNo, "checkValidation - PICKUP_ADD_SCAN");
                             }
                         }).build().execute();
 
@@ -1590,21 +1588,17 @@ public final class CaptureActivity extends CommonActivity implements SurfaceHold
                 final String scanNo = strBarcodeNo;
 
                 new PickupTakeBackValidationCheckHelper.Builder(this, opID, pickupNo, strBarcodeNo)
-                        .setOnPickupTakeBackValidationCheckListener(new PickupTakeBackValidationCheckHelper.OnPickupTakeBackValidationCheckListener() {
+                        .setOnPickupTakeBackValidationCheckListener(result -> {
 
-                            @Override
-                            public void onPickupTakeBackValidationCheckResult(StdResult result) {
+                            if (result.getResultCode() < 0) {
 
-                                if (result.getResultCode() < 0) {
+                                beepManagerError.playBeepSoundAndVibrate();
+                                deletePrevious(scanNo);
+                                edit_capture_type_number.setText("");
+                            } else {
 
-                                    beepManagerError.playBeepSoundAndVibrate();
-                                    deletePrevious(scanNo);
-                                    edit_capture_type_number.setText("");
-                                } else {
-
-                                    beepManager.playBeepSoundAndVibrate();
-                                    addScannedBarcode(scanNo, "checkValidation - PICKUP_TAKE_BACK");
-                                }
+                                beepManager.playBeepSoundAndVibrate();
+                                addScannedBarcode(scanNo, "checkValidation - PICKUP_TAKE_BACK");
                             }
                         }).build().execute();
 
@@ -1787,7 +1781,8 @@ public final class CaptureActivity extends CommonActivity implements SurfaceHold
             return;
         }
 
-        DeliveryInfo info;
+
+        String name = "";
         String receiverName = "";
         boolean diffReceiverName = false;
         ArrayList<BarcodeData> deliveryBarcodeList = new ArrayList<>();
@@ -1798,13 +1793,13 @@ public final class CaptureActivity extends CommonActivity implements SurfaceHold
 
             if (BarcodeData.getState().equals("SUCCESS")) {
 
-                info = getDeliveryInfo(BarcodeData.getBarcode());
+                name = getDeliveryReceiver(BarcodeData.getBarcode());
 
                 try {
 
                     // 수취인성명이 틀린경우
                     if (!receiverName.equals("")) {
-                        if (!receiverName.toUpperCase().equals(info.getReceiverName().toUpperCase())) {
+                        if (!receiverName.toUpperCase().equals(name.toUpperCase())) {
                             diffReceiverName = true;
                         }
                     }
@@ -1813,7 +1808,7 @@ public final class CaptureActivity extends CommonActivity implements SurfaceHold
                     diffReceiverName = true;
                 }
 
-                receiverName = info.getReceiverName();
+                receiverName = name;
                 deliveryBarcodeList.add(BarcodeData);
             }
         }
@@ -2009,21 +2004,20 @@ public final class CaptureActivity extends CommonActivity implements SurfaceHold
     }
 
 
-    public DeliveryInfo getDeliveryInfo(String barcodeNo) {
+    public String getDeliveryReceiver(String barcodeNo) {
 
-        DeliveryInfo info = new DeliveryInfo();
+        String name = "";
         Cursor cursor = DatabaseHelper.getInstance().get("SELECT rcv_nm, sender_nm FROM " + DatabaseHelper.DB_TABLE_INTEGRATION_LIST +
                 " WHERE invoice_no='" + barcodeNo + "' COLLATE NOCASE");
 
         if (cursor.moveToFirst()) {
 
-            info.setReceiverName(cursor.getString(cursor.getColumnIndexOrThrow("rcv_nm")));
-            info.setSenderName(cursor.getString(cursor.getColumnIndexOrThrow("sender_nm")));
+            name = cursor.getString(cursor.getColumnIndexOrThrow("rcv_nm"));
         }
 
         cursor.close();
 
-        return info;
+        return name;
     }
 
 

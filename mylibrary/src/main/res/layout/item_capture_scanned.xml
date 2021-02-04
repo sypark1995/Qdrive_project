@@ -4,18 +4,18 @@
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
     android:background="@color/color_f0f0f0"
-    android:paddingBottom="7dp"
-    android:paddingTop="7dp">
+    android:paddingTop="7dp"
+    android:paddingBottom="7dp">
 
     <LinearLayout
         android:id="@+id/layout_caption_list_item"
         android:layout_width="match_parent"
         android:layout_height="35dp"
         android:layout_toStartOf="@id/btn_capture_list_item_state"
-        android:background="@drawable/bg_radius_10_cccccc"
+        android:background="@drawable/bg_round_10_cccccc"
         android:orientation="horizontal"
-        android:paddingEnd="10dp"
-        android:paddingStart="10dp">
+        android:paddingStart="10dp"
+        android:paddingEnd="10dp">
 
         <ImageView
             android:id="@+id/img_capture_list_item_barcode"
@@ -37,7 +37,7 @@
             android:textColor="@color/color_303030"
             android:textSize="@dimen/text_size_36px"
             android:textStyle="bold"
-            tools:text="SGSG1232132123 | DPC3-OUT | krm0219" />
+            tools:text="SGSG1232132123 | DPC3-OUT | karam.kim" />
     </LinearLayout>
 
     <Button
@@ -46,7 +46,7 @@
         android:layout_height="23dp"
         android:layout_alignParentEnd="true"
         android:layout_centerVertical="true"
-        android:layout_marginEnd="8dp"
         android:layout_marginStart="10dp"
+        android:layout_marginEnd="8dp"
         android:background="@drawable/qdrive_btn_icon_big_on" />
 </RelativeLayout>
