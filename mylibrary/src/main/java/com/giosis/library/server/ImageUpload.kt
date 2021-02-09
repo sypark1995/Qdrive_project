@@ -2,6 +2,8 @@ package com.giosis.library.server
 
 import android.util.Log
 import com.giosis.library.util.Preferences
+import io.reactivex.rxjava3.android.schedulers.AndroidSchedulers
+import io.reactivex.rxjava3.schedulers.Schedulers
 import okhttp3.MediaType.Companion.toMediaTypeOrNull
 import okhttp3.MultipartBody
 import okhttp3.RequestBody.Companion.asRequestBody
@@ -62,6 +64,14 @@ object ImageUpload {
 
             return returnValue
         } catch (e: Exception) {
+
+            RetrofitClient.instanceCommonService()
+                    .requestWriteLog("1", "IMAGEUPLOAD", "image upload error in RetrofitClient", "RetrofitClient Exception " + e.localizedMessage)
+                    .subscribeOn(Schedulers.io())
+                    .observeOn(AndroidSchedulers.mainThread())
+                    .subscribe({ Log.e("imageUpload", "result  \${it.resultCode}") })
+                    { Log.e("imageUpload", it.message!!) }
+
             Log.e("TAG", e.localizedMessage)
             return ""
         }

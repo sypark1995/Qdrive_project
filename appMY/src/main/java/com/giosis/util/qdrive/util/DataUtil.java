@@ -7,37 +7,10 @@ import android.content.ClipboardManager;
 import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
-import android.graphics.Bitmap;
-import android.graphics.Color;
-import android.os.Bundle;
-import android.os.Environment;
 import android.provider.Settings;
-import android.util.Log;
-import android.view.View;
 
 import com.giosis.library.gps.GPSTrackerManager;
-import com.giosis.library.server.CallServer;
-import com.giosis.library.server.ImageUpload;
-import com.giosis.library.server.data.FailedCodeResult;
-import com.giosis.util.qdrive.international.MyApplication;
 import com.giosis.util.qdrive.international.R;
-import com.google.firebase.analytics.FirebaseAnalytics;
-import com.google.gson.Gson;
-import com.google.zxing.BarcodeFormat;
-import com.google.zxing.EncodeHintType;
-import com.google.zxing.MultiFormatWriter;
-import com.google.zxing.common.BitMatrix;
-import com.google.zxing.datamatrix.encoder.SymbolShapeHint;
-
-import org.jetbrains.annotations.NotNull;
-
-import java.io.ByteArrayOutputStream;
-import java.io.File;
-import java.io.FileNotFoundException;
-import java.io.FileOutputStream;
-import java.io.IOException;
-import java.util.ArrayList;
-import java.util.Hashtable;
 
 public class DataUtil {
 
@@ -84,44 +57,6 @@ public class DataUtil {
 
         if (gpsTrackerManager != null)
             gpsTrackerManager.stopFusedProviderService();
-    }
-
-    public static String bitmapToString(Bitmap bitmap, String basePath, String path, String trackNo) {
-
-        String imagePath = "";
-
-        try {
-            File outputDir = MyApplication.getContext().getCacheDir();
-            File tempFile = File.createTempFile("temp", ".jpg", outputDir);
-
-            if (tempFile != null) {
-                ByteArrayOutputStream bos = new ByteArrayOutputStream();
-                bitmap.compress(Bitmap.CompressFormat.JPEG, 100, bos);
-                byte[] bitmapdata = bos.toByteArray();
-
-                FileOutputStream fos = null;
-                try {
-                    fos = new FileOutputStream(tempFile);
-                } catch (FileNotFoundException e) {
-                    e.printStackTrace();
-                }
-
-                try {
-                    fos.write(bitmapdata);
-                    fos.flush();
-                    fos.close();
-                } catch (IOException e) {
-                    e.printStackTrace();
-                }
-
-                imagePath = ImageUpload.INSTANCE.upload(tempFile, basePath, path, trackNo);
-            }
-
-        } catch (Exception e) {
-
-        }
-
-        return imagePath;
     }
 
 

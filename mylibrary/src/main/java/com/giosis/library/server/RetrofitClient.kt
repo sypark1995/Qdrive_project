@@ -11,6 +11,7 @@ import okhttp3.logging.HttpLoggingInterceptor
 import retrofit2.Retrofit
 import retrofit2.adapter.rxjava3.RxJava3CallAdapterFactory
 import retrofit2.converter.gson.GsonConverterFactory
+import java.util.concurrent.TimeUnit
 
 
 object RetrofitClient {
@@ -45,14 +46,29 @@ object RetrofitClient {
         return interceptor.setLevel(HttpLoggingInterceptor.Level.BODY)
     }
 
+
     private fun provideOkHttpClient(interceptor: AppInterceptor): OkHttpClient =
+            provideOkHttpClient(interceptor, false)
+
+
+    private fun provideOkHttpClient(interceptor: AppInterceptor, image: Boolean): OkHttpClient =
             OkHttpClient.Builder().run {
                 addInterceptor(interceptor)
                 addInterceptor(loggingInterceptor())
+
+                if (image) {
+                    // 이미지 업데이트 시 타임아웃 시간을 10 -> 20 으로 변경
+                    readTimeout(20, TimeUnit.SECONDS)
+                    writeTimeout(20, TimeUnit.SECONDS)
+                    connectTimeout(20, TimeUnit.SECONDS)
+                }
+
                 build()
             }
 
+
     private lateinit var instanceDynamic: RetrofitService
+
     fun instanceDynamic(): RetrofitService {
 
         val serverURL = Preferences.serverURL + DataUtil.API_ADDRESS
@@ -94,7 +110,7 @@ object RetrofitClient {
 
         val retrofit = Retrofit.Builder()
                 .baseUrl(imageUrl)
-                .client(provideOkHttpClient(AppInterceptor()))
+                .client(provideOkHttpClient(AppInterceptor(), true))
                 .addConverterFactory(GsonConverterFactory.create(gson))
                 .addCallAdapterFactory(RxJava3CallAdapterFactory.create())
                 .build()

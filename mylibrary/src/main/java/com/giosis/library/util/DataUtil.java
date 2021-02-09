@@ -9,16 +9,15 @@ import android.graphics.Bitmap;
 import android.os.Bundle;
 import android.os.Environment;
 import android.provider.Settings;
+import android.text.TextUtils;
 import android.util.Log;
 import android.view.View;
 
 import com.giosis.library.R;
 import com.giosis.library.gps.GPSTrackerManager;
-import com.giosis.library.message.AdminMessageListDetailActivity;
-import com.giosis.library.message.CustomerMessageListDetailActivity;
-import com.giosis.library.message.MessageListActivity;
 import com.giosis.library.server.CallServer;
 import com.giosis.library.server.ImageUpload;
+import com.giosis.library.server.RetrofitClient;
 import com.giosis.library.server.data.FailedCodeResult;
 import com.google.firebase.analytics.FirebaseAnalytics;
 import com.google.gson.Gson;
@@ -31,6 +30,9 @@ import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
 import java.io.IOException;
 import java.util.ArrayList;
+
+import io.reactivex.rxjava3.android.schedulers.AndroidSchedulers;
+import io.reactivex.rxjava3.schedulers.Schedulers;
 
 public class DataUtil {
 
@@ -154,17 +156,47 @@ public class DataUtil {
                 }).show();
     }
 
-    public static String bitmapToString(Context context, Bitmap bitmap, String basePath, String path, String trackNo) {
+
+    private static String imageUpload(Context context, Bitmap bitmap, String basePath, String path, String trackNo) {
 
         String imagePath = "";
-
         try {
             File outputDir = context.getCacheDir();
-            File tempFile = File.createTempFile("temp", ".jpg", outputDir);
+
+            File tempFile = null;
+
+            try {
+                tempFile = File.createTempFile("temp", ".jpg", outputDir);
+
+            } catch (IOException ioException) {
+
+                RetrofitClient.INSTANCE.instanceCommonService()
+                        .requestWriteLog("1", "IMAGEUPLOAD", "image upload error", "image file ioException " + ioException.getLocalizedMessage())
+                        .subscribeOn(Schedulers.io())
+                        .observeOn(AndroidSchedulers.mainThread())
+                        .subscribe(it -> {
+                            Log.e("imageUpload", "result  ${it.resultCode}");
+                        }, it -> {
+                            Log.e("imageUpload", it.getMessage());
+                        });
+
+            }
+
 
             if (tempFile != null) {
+
+                int quality = 90;
+
+                if (bitmap.getByteCount() > 4 * 1024 * 1024) {
+                    quality = 55;
+                } else if (bitmap.getByteCount() > 2 * 1024 * 1024) {
+                    quality = 75;
+                }
+
+                Log.e("imageUpload", " quality = " + quality + " / " + bitmap.getByteCount());
+
                 ByteArrayOutputStream bos = new ByteArrayOutputStream();
-                bitmap.compress(Bitmap.CompressFormat.JPEG, 100, bos);
+                bitmap.compress(Bitmap.CompressFormat.JPEG, quality, bos);
                 byte[] bitmapdata = bos.toByteArray();
 
                 FileOutputStream fos = null;
@@ -182,11 +214,57 @@ public class DataUtil {
                     e.printStackTrace();
                 }
 
+                long size2 = tempFile.length();
+
+                Log.e("imageUpload", "size2 11111 " + size2);
+
                 imagePath = ImageUpload.INSTANCE.upload(tempFile, basePath, path, trackNo);
+
+            } else {
+
+                Log.e("ImageUpload", "tempFile is NULL why?");
+                RetrofitClient.INSTANCE.instanceCommonService()
+                        .requestWriteLog("1", "IMAGEUPLOAD", "image upload error", " tempFile is NULL why? ")
+                        .subscribeOn(Schedulers.io())
+                        .observeOn(AndroidSchedulers.mainThread())
+                        .subscribe(it -> {
+                            Log.e("imageUpload", "result  ${it.resultCode}");
+                        }, it -> {
+                            Log.e("imageUpload", it.getMessage());
+                        });
+
             }
 
         } catch (Exception e) {
+            Log.e("ImageUpload", e.getLocalizedMessage());
 
+            RetrofitClient.INSTANCE.instanceCommonService()
+                    .requestWriteLog("1", "IMAGEUPLOAD", "image upload error", " Exception " + e.getLocalizedMessage())
+                    .subscribeOn(Schedulers.io())
+                    .observeOn(AndroidSchedulers.mainThread())
+                    .subscribe(it -> {
+                        Log.e("imageUpload", "result  ${it.resultCode}");
+                    }, it -> {
+                        Log.e("imageUpload", it.getMessage());
+                    });
+        }
+        return imagePath;
+    }
+
+
+    public static String bitmapToString(Context context, Bitmap bitmap, String basePath, String path, String trackNo) {
+
+        String imagePath = imageUpload(context, bitmap, basePath, path, trackNo);
+
+        if (TextUtils.isEmpty(imagePath)) {
+
+            try {
+                Thread.sleep(2000);
+            } catch (Exception e) {
+
+            }
+
+            imagePath = imageUpload(context, bitmap, basePath, path, trackNo);
         }
 
         return imagePath;
