@@ -35,7 +35,7 @@ public class AlertDialogActivity extends Activity {
 
         super.onCreate(savedInstanceState);
         requestWindowFeature(Window.FEATURE_NO_TITLE);
-        setContentView(R.layout.alertdialog);
+        setContentView(R.layout.dialog_alertdialog);
 
         TextView text_dialog_title = findViewById(R.id.text_dialog_title);
         TextView text_dialog_message = findViewById(R.id.text_dialog_message);

@@ -447,7 +447,6 @@ public class OutletStatusDownloadHelper {
         contentVal.put("currency", data.getCurrency());
         contentVal.put("order_type_etc", data.getOrder_type_etc());
 
-        // TODO
         contentVal.put("lat", "0");
         contentVal.put("lng", "0");
 
@@ -488,7 +487,6 @@ public class OutletStatusDownloadHelper {
         contentVal.put("cust_no", data.getCustNo()); //QLPS cust_no
         contentVal.put("partner_id", data.getPartnerID()); //QLPS partner_cust_id
 
-        // TODO
         contentVal.put("lat", "0");
         contentVal.put("lng", "0");
 

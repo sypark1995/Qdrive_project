@@ -37,9 +37,6 @@ public class ListTodayDoneAdapter extends BaseExpandableListAdapter {
     private ArrayList<RowItem> originalRowItem;
     BluetoothListener bluetoothListener;
 
-    // TODO_  언제나 널임 ?
-    private OnMoveUpListener onMoveUpListener;
-
     ListTodayDoneAdapter(ArrayList<RowItem> rowItem, BluetoothListener bluetoothListener) {
         this.rowItem = new ArrayList<>();
         this.rowItem.addAll(rowItem);
@@ -47,11 +44,6 @@ public class ListTodayDoneAdapter extends BaseExpandableListAdapter {
         this.originalRowItem.addAll(rowItem);
 
         this.bluetoothListener = bluetoothListener;
-    }
-
-    // 인터페이스
-    public interface OnMoveUpListener {
-        void onMoveUp(int pos);
     }
 
     @Override
@@ -190,10 +182,6 @@ public class ListTodayDoneAdapter extends BaseExpandableListAdapter {
                         originalRowItem.clear();
                         originalRowItem.addAll(rowItem);
                         notifyDataSetChanged();
-
-                        if (onMoveUpListener != null) {
-                            onMoveUpListener.onMoveUp(position - 1);
-                        }
                     }
                 } else if (itemId == R.id.menu_down) {
                     if (position < rowItem.size() - 1) {
@@ -202,10 +190,6 @@ public class ListTodayDoneAdapter extends BaseExpandableListAdapter {
                         originalRowItem.clear();
                         originalRowItem.addAll(rowItem);
                         notifyDataSetChanged();
-
-                        if (onMoveUpListener != null) {
-                            onMoveUpListener.onMoveUp(position + 1);
-                        }
                     }
                 }
                 return true;

@@ -40,7 +40,7 @@
             android:id="@+id/edit_login_id"
             android:layout_width="match_parent"
             android:layout_height="56dp"
-            android:background="@drawable/bg_radius_20_77c756_shadows"
+            android:background="@drawable/bg_round_20_77c756_shadows"
             android:hint="@string/text_id"
             android:maxLines="1"
             android:paddingStart="24dp"
@@ -55,7 +55,7 @@
             android:layout_width="match_parent"
             android:layout_height="56dp"
             android:layout_marginTop="12dp"
-            android:background="@drawable/bg_radius_20_77c756_shadows"
+            android:background="@drawable/bg_round_20_77c756_shadows"
             android:hint="@string/text_password"
             android:inputType="textPassword"
             android:maxLines="1"
@@ -71,7 +71,7 @@
             android:layout_width="match_parent"
             android:layout_height="56dp"
             android:layout_marginTop="12dp"
-            android:background="@drawable/bg_radius_20_42752c_shadows"
+            android:background="@drawable/bg_round_20_42752c_shadows"
             android:text="@string/button_sign"
             android:textAllCaps="false"
             android:textColor="@color/white"
@@ -137,7 +137,7 @@
             android:layout_height="48dp"
             android:layout_alignParentEnd="true"
             android:layout_marginStart="30dp"
-            android:background="@drawable/bg_radius_22_396427"
+            android:background="@drawable/bg_round_22_396427"
             android:orientation="horizontal">
 
             <ImageView

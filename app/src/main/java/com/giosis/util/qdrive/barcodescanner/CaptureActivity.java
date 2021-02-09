@@ -1427,7 +1427,7 @@ public final class CaptureActivity extends CommonActivity implements SurfaceHold
         inputMethodManager.hideSoftInputFromWindow(edit_capture_type_number.getWindowToken(), 0);
     }
 
-    // TODO.  Add Barcode  (Validation Check / Add List)
+    // Add Barcode  (Validation Check / Add List)
     // NOTIFICATION.  Barcode Validation Check
     private void checkValidation(String strBarcodeNo, boolean isDuplicate, String where) {
         Log.e(TAG, "checkValidation called > " + where);
@@ -1680,7 +1680,7 @@ public final class CaptureActivity extends CommonActivity implements SurfaceHold
     }
 
 
-    // TODO.  하단 버튼 클릭 이벤트
+    // 하단 버튼 클릭 이벤트
     // NOTIFICATION.  Confirm my delivery order / Change Delivery Driver
     public void onUpdateButtonClick() {
 

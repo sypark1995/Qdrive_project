@@ -78,7 +78,7 @@
         android:layout_height="40dp"
         android:layout_gravity="center"
         android:layout_marginTop="50dp"
-        android:background="@drawable/custom_button_pressed_40"
+        android:background="@drawable/bg_round_30_4fb648"
         android:text="@string/button_confirm"
         android:textAllCaps="false"
         android:textColor="@color/white"

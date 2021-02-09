@@ -934,7 +934,7 @@ public class DeliveryDoneActivity extends CommonActivity implements Camera2APIs.
 
                     if (result != null) {
 
-                       /* //    TODO 7E TEST
+                       /* //  7E TEST
                         //   ServerDownloadHelper.java 에서 테스트 데이터 넣고  테스트 가능
                         //   테스트 데이터를 넣은 만큼 데이터 셋팅
                         if (i == 0) {

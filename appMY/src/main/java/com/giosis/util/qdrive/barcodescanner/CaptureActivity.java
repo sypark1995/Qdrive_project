@@ -1254,7 +1254,7 @@ public final class CaptureActivity extends CommonActivity implements SurfaceHold
     }
 
 
-    // TODO.  Add Barcode  (Validation Check / Add List)
+    // Add Barcode  (Validation Check / Add List)
     // NOTIFICATION.  Barcode Validation Check
     private void checkValidation(String strBarcodeNo, boolean isDuplicate, String where) {
         Log.e(TAG, "checkValidation called > " + where);
@@ -1663,7 +1663,7 @@ public final class CaptureActivity extends CommonActivity implements SurfaceHold
     }
 
 
-    // TODO.  하단 버튼 클릭 이벤트 (작업 수행)
+    // 하단 버튼 클릭 이벤트 (작업 수행)
     // NOTIFICATION.  Confirm my delivery order / Change Delivery Driver
     public void onUpdateButtonClick() {
 

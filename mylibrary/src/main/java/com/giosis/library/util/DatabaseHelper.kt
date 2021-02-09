@@ -20,7 +20,6 @@ class DatabaseHelper private constructor(private val mContext: Context) : SQLite
 
         const val DB_TABLE_INTEGRATION_LIST = "INTEGRATION_LIST"
         const val DB_TABLE_REST_DAYS = "REST_DAYS"
-        const val DB_TABLE_SCAN_DELIVERY = "SCAN_DELIVERY"
 
         private const val CREATE_TABLE_INTEGRATION_LIST = "CREATE TABLE IF NOT EXISTS " +
                 DB_TABLE_INTEGRATION_LIST + "(contr_no unique, seq_orderby, partner_ref_no, " +
@@ -34,10 +33,6 @@ class DatabaseHelper private constructor(private val mContext: Context) : SQLite
         private const val CREATE_TABLE_REST_DAYS = "CREATE TABLE IF NOT EXISTS " +
                 DB_TABLE_REST_DAYS + "(rest_dt, title)"
 
-        private const val CREATE_TABLE_SCAN_DELIVERY = "CREATE TABLE IF NOT EXISTS " +
-                DB_TABLE_SCAN_DELIVERY + "(contr_no, invoice_no, stat, punchOut_stat, chg_id, chg_dt, reg_id, reg_dt, " +
-                "partner_ref_no,  rcv_nm, sender_nm, tel_no, hp_no, zip_code, address, fail_reason, del_memo, " +
-                "rcv_type, driver_memo, delivery_dt, delivery_cnt)"
 
         @Volatile
         private var instance: DatabaseHelper? = null
@@ -64,7 +59,6 @@ class DatabaseHelper private constructor(private val mContext: Context) : SQLite
         Log.e(TAG, "onCreate")
         db.execSQL(CREATE_TABLE_INTEGRATION_LIST)
         db.execSQL(CREATE_TABLE_REST_DAYS)
-        db.execSQL(CREATE_TABLE_SCAN_DELIVERY)
     }
 
     // 버전이 업데이트 되었을 때 DB 재생성
@@ -72,7 +66,6 @@ class DatabaseHelper private constructor(private val mContext: Context) : SQLite
         Log.e(TAG, "onUpgrade")
         db.execSQL("DROP TABLE IF EXISTS $DB_TABLE_INTEGRATION_LIST")
         db.execSQL("DROP TABLE IF EXISTS $DB_TABLE_REST_DAYS")
-        db.execSQL("DROP TABLE IF EXISTS $DB_TABLE_SCAN_DELIVERY")
         onCreate(db)
     }
 

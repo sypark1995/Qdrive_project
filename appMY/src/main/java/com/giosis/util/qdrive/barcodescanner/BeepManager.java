@@ -110,7 +110,7 @@ public final class BeepManager {
                 }
 
 
-                // TODO TEST  테스트하기 (시끌~)
+                // TEST  테스트하기 (시끌~)
                 if (MyApplication.preferences.getUserId().equals("karam.kim")) {
 
                     Log.e("krm0219", "Sound Start");

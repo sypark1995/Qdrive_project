@@ -265,7 +265,6 @@ public class CnRPickupValidationCheckHelper {
                 contentVal.put("secret_no_type", "");
                 contentVal.put("secret_no", "");
 
-                //TODO
                 contentVal.put("lat", "0");
                 contentVal.put("lng", "0");
 

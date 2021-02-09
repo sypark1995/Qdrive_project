@@ -50,7 +50,7 @@ public class DeviceListActivity extends Activity {
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         requestWindowFeature(Window.FEATURE_INDETERMINATE_PROGRESS);
-        setContentView(R.layout.activity_device_list);
+        setContentView(R.layout.dialog_device_list);
 
 
         text_capture_bluetooth_paired_devices_title = findViewById(R.id.text_capture_bluetooth_paired_devices_title);
@@ -86,8 +86,8 @@ public class DeviceListActivity extends Activity {
         });
 
 
-        pairedDeviceArrayAdapter = new ArrayAdapter<>(this, R.layout.device_name);
-        newDevicesArrayAdapter = new ArrayAdapter<>(this, R.layout.device_name);
+        pairedDeviceArrayAdapter = new ArrayAdapter<>(this, R.layout.item_device_name);
+        newDevicesArrayAdapter = new ArrayAdapter<>(this, R.layout.item_device_name);
 
         list_capture_bluetooth_paired_devices.setAdapter(pairedDeviceArrayAdapter);
         list_capture_bluetooth_paired_devices.setOnItemClickListener(mDeviceClickListener);

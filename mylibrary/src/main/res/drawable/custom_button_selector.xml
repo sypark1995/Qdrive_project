@@ -1,6 +1,8 @@
 <?xml version="1.0" encoding="utf-8"?>
 <selector xmlns:android="http://schemas.android.com/apk/res/android">
 
-    <item android:drawable="@drawable/custom_button_normal_30" android:state_pressed="false" />
-    <item android:drawable="@drawable/custom_button_selector_30" android:state_pressed="true" />
+    <item android:drawable="@drawable/border_round_30_4fb648"
+        android:state_pressed="false" />
+    <item android:drawable="@drawable/border_radius_30_4fb648_dddddd"
+        android:state_pressed="true" />
 </selector>

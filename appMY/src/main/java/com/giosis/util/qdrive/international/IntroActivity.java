@@ -17,7 +17,7 @@ public class IntroActivity extends Activity {
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.intro);
+        setContentView(R.layout.activity_intro);
 
         // Live10 설치 여부 확인
         Intent intent = getPackageManager().getLaunchIntentForPackage("net.giosis.qpost");

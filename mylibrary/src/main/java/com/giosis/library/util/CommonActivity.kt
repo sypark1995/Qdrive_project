@@ -1,7 +1,10 @@
 package com.giosis.library.util
 
 import android.content.Context
+import android.content.Intent
+import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
+import com.giosis.library.R
 
 
 /**
@@ -38,20 +41,30 @@ open class CommonActivity : AppCompatActivity() {
 //    }
 
 
-    // TODO.  Alarm Receiver 옮기면 주석 풀기
     // Auto Logout
     override fun onResume() {
         super.onResume()
 
-//        if (MyApplication.preferences.autoLogout) {
-//
-//            MyApplication.preferences.autoLogout = false;
-//            Toast.makeText(this, resources.getString(R.string.msg_qdrive_auto_logout), Toast.LENGTH_SHORT).show()
-//
-//            val intent = Intent(this, LoginActivity::class.java)
-//            intent.flags = Intent.FLAG_ACTIVITY_CLEAR_TOP or Intent.FLAG_ACTIVITY_SINGLE_TOP
-//            startActivity(intent)
-//        }
+        if (Preferences.autoLogout) {
+
+            Preferences.autoLogout = false;
+            Toast.makeText(this, resources.getString(R.string.msg_qdrive_auto_logout), Toast.LENGTH_SHORT).show()
+
+
+            if (Preferences.userNation == "SG") {
+
+                val intent = Intent(this@CommonActivity, Class.forName("com.giosis.util.qdrive.singapore.LoginActivity"))
+                intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP or Intent.FLAG_ACTIVITY_SINGLE_TOP)
+                startActivity(intent)
+                finish()
+            } else {
+
+                val intent = Intent(this@CommonActivity, Class.forName("com.giosis.util.qdrive.international.LoginActivity"))
+                intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP or Intent.FLAG_ACTIVITY_SINGLE_TOP)
+                startActivity(intent)
+                finish()
+            }
+        }
     }
 
     override fun attachBaseContext(base: Context?) {

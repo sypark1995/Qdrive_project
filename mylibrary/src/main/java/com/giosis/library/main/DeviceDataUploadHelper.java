@@ -35,7 +35,6 @@ import org.json.JSONObject;
 import java.io.File;
 import java.util.ArrayList;
 
-// TODO_TEST    테스트 필요
 public class DeviceDataUploadHelper {
     String TAG = "DeviceDataUploadHelper";
 
@@ -392,6 +391,7 @@ public class DeviceDataUploadHelper {
                         File imgFile = new File(filePath);
 
                         if (imgFile.exists()) {
+
                             Bitmap myBitmap = BitmapFactory.decodeFile(imgFile.getAbsolutePath());
                             bitmapString = DataUtil.bitmapToString(context, myBitmap, ImageUpload.QXPOD, "qdriver/sign", uploadData.getNoSongjang());
 
