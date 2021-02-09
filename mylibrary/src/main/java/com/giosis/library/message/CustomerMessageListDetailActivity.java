@@ -94,8 +94,6 @@ public class CustomerMessageListDetailActivity extends CommonActivity {
     protected void onResume() {
         super.onResume();
 
-        DataUtil.setCustomerMessageListDetailActivity(this);
-
         if (!NetworkUtil.isNetworkAvailable(this)) {
 
             try {

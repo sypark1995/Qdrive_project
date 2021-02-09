@@ -77,8 +77,6 @@ class AdminMessageListDetailActivity : CommonActivity() {
     override fun onResume() {
         super.onResume()
 
-        DataUtil.setAdminMessageListDetailActivity(this@AdminMessageListDetailActivity)
-
         if (!NetworkUtil.isNetworkAvailable(this@AdminMessageListDetailActivity)) {
             try {
                 showDialog(resources.getString(R.string.text_warning), resources.getString(R.string.msg_network_connect_error))
