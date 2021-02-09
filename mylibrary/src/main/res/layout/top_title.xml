@@ -51,20 +51,6 @@
         </FrameLayout>
 
         <FrameLayout
-            android:id="@+id/layout_top_change_pickup"
-            android:layout_width="match_parent"
-            android:layout_height="match_parent"
-            android:paddingStart="24dp"
-            android:visibility="gone">
-
-            <ImageView
-                android:layout_width="20dp"
-                android:layout_height="20dp"
-                android:layout_gravity="center_vertical"
-                android:background="@drawable/btn_layerpop_change" />
-        </FrameLayout>
-
-        <FrameLayout
             android:id="@+id/layout_top_close"
             android:layout_width="match_parent"
             android:layout_height="match_parent"
