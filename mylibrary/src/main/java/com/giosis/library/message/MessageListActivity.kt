@@ -104,7 +104,6 @@ class MessageListActivity : CommonActivity() {
     override fun onResume() {
         super.onResume()
 
-        DataUtil.setMessageListActivity(this@MessageListActivity)
         viewpager_message_list!!.currentItem = viewPagerPosition
     }
 

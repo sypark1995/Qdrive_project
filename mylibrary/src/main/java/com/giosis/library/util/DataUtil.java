@@ -41,7 +41,7 @@ public class DataUtil {
     public static String SERVER_STAGING = "http://staging-qxapi.qxpress.net";
     public static String SERVER_REAL = "https://qxapi.qxpress.net";
     public static String API_ADDRESS = "/GMKT.INC.GLPS.MobileApiService/GlobalMobileService.qapi/";
-
+    public static String API_ADDRESS_QX_APP_COMMON = "/GMKT.INC.GLPS.MobileApiService/QxAppCommonService.qapi/";
 
     public static String qrcode_url = "https://dp.image-gmkt.com/qr.bar?scale=7&version=4&code=";
     public static String barcode_url = "http://image.qxpress.net/code128/code128.php?no=";
@@ -136,35 +136,6 @@ public class DataUtil {
 
             Log.e("Firebase", "FirebaseSelectEvents error : " + e.toString());
         }
-    }
-
-    // push Message 이동
-    public static MessageListActivity messageListActivity = null;
-    public static CustomerMessageListDetailActivity customerMessageListDetailActivity = null;
-    public static AdminMessageListDetailActivity adminMessageListDetailActivity = null;
-
-    public static MessageListActivity getMessageListActivity() {
-        return messageListActivity;
-    }
-
-    public static void setMessageListActivity(MessageListActivity messageListActivity) {
-        DataUtil.messageListActivity = messageListActivity;
-    }
-
-    public static CustomerMessageListDetailActivity getCustomerMessageListDetailActivity() {
-        return customerMessageListDetailActivity;
-    }
-
-    public static void setCustomerMessageListDetailActivity(CustomerMessageListDetailActivity customerMessageListDetailActivity) {
-        DataUtil.customerMessageListDetailActivity = customerMessageListDetailActivity;
-    }
-
-    public static AdminMessageListDetailActivity getAdminMessageListDetailActivity() {
-        return adminMessageListDetailActivity;
-    }
-
-    public static void setAdminMessageListDetailActivity(AdminMessageListDetailActivity adminMessageListDetailActivity) {
-        DataUtil.adminMessageListDetailActivity = adminMessageListDetailActivity;
     }
 
 
