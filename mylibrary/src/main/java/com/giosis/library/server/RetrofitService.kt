@@ -150,4 +150,28 @@ interface RetrofitService {
             @Field("cd_type") cd_type: String,
             @Field("nation_cd") nation_cd: String
     ): Single<FailedCodeResult>
+
+
+    @POST("WriteLog")
+    @FormUrlEncoded
+    fun requestWriteLog(
+            @Field("logType") type: String,// -	1(info) , 2(Warm), 3(Error), 4(Fatal), 5(Debug)
+            @Field("location") location: String,
+            @Field("msg") msg: String,
+            @Field("detail") detail: String
+    ): Single<APIModel>
+
+
+    @POST("WriteDumpLog")
+    @FormUrlEncoded
+    fun requestWriteDumpLog(
+            @Field("logType") type: String,// -	1(info) , 2(Warm), 3(Error), 4(Fatal), 5(Debug)
+            @Field("location") location: String,
+            @Field("msg") msg: String,
+            @Field("detail") detail: String,
+            @Field("ext") ext: String,  // 확장자
+            @Field("dumpfile") dumpFile: String // 첨부파일
+    ): Single<APIModel>
+
+
 }

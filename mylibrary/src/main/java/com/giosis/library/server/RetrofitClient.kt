@@ -119,4 +119,21 @@ object RetrofitClient {
         return instanceDynamic
     }
 
+
+    fun instanceCommonService(): RetrofitService {
+
+        val serverURL = Preferences.serverURL + DataUtil.API_ADDRESS_QX_APP_COMMON
+        Log.e("Server", "Server URL  $serverURL")
+
+        val retrofit = Retrofit.Builder()
+                .baseUrl(serverURL)
+                .client(provideOkHttpClient(AppInterceptor()))
+                .addConverterFactory(GsonConverterFactory.create())
+                .addCallAdapterFactory(RxJava3CallAdapterFactory.create())
+                .build()
+
+        instanceDynamic = retrofit.create(RetrofitService::class.java)
+        return instanceDynamic
+    }
+
 }
