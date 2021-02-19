@@ -57,10 +57,10 @@ object RetrofitClient {
                 addInterceptor(loggingInterceptor())
 
                 if (image) {
-                    // 이미지 업데이트 시 타임아웃 시간을 10 -> 20 으로 변경
-                    readTimeout(20, TimeUnit.SECONDS)
-                    writeTimeout(20, TimeUnit.SECONDS)
-                    connectTimeout(20, TimeUnit.SECONDS)
+                    // 이미지 업데이트 시 타임아웃 시간을 10 -> 60 으로 변경
+                    readTimeout(60, TimeUnit.SECONDS)
+                    writeTimeout(60, TimeUnit.SECONDS)
+                    connectTimeout(60, TimeUnit.SECONDS)
                 }
 
                 build()
