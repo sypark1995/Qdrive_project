@@ -3,7 +3,6 @@ package com.giosis.util.qdrive.barcodescanner;
 import android.os.Handler;
 import android.os.Looper;
 import android.os.Message;
-import android.util.Log;
 
 import com.giosis.util.qdrive.barcodescanner.camera.CameraManager;
 import com.giosis.util.qdrive.international.R;
@@ -15,14 +14,15 @@ import com.google.zxing.common.HybridBinarizer;
 
 import java.util.Hashtable;
 
+@Deprecated
 final class DecodeHandler extends Handler {
     private static final String TAG = "DecodeHandler";
 
-    private final CaptureActivity activity;
+    private final CaptureActivityTemp activity;
     private final MultiFormatReader multiFormatReader;
     private boolean running = true;
 
-    DecodeHandler(CaptureActivity activity, Hashtable<DecodeHintType, Object> hints) {
+    DecodeHandler(CaptureActivityTemp activity, Hashtable<DecodeHintType, Object> hints) {
 
         this.activity = activity;
         multiFormatReader = new MultiFormatReader();
@@ -87,7 +87,7 @@ final class DecodeHandler extends Handler {
 
             //   Log.e("capture", TAG + "  rawResult != null  " + rawResult.getText());
 
-            // 바코드 전달  (CaptureActivityHandler)
+            // 바코드 전달  (CaptureActivityTempHandler)
             Message message = Message.obtain(activity.getHandler(), R.id.decode_succeeded, rawResult);
             message.sendToTarget();
         } else {

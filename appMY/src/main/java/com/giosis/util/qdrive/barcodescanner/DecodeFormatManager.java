@@ -4,6 +4,7 @@ import com.google.zxing.BarcodeFormat;
 
 import java.util.Vector;
 
+@Deprecated
 // 스캔가능한 format 저장
 final class DecodeFormatManager {
 

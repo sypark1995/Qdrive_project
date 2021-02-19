@@ -15,6 +15,7 @@ import com.giosis.util.qdrive.barcodescanner.PlanarYUVLuminanceSource;
 import java.io.IOException;
 
 
+@Deprecated
 public final class CameraManager {
     private static final String TAG = "CameraManager";
 

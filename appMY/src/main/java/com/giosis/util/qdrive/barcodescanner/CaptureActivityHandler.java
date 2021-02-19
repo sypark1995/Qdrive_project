@@ -16,11 +16,12 @@ import com.google.zxing.Result;
  *
  * @author dswitkin@google.com (Daniel Switkin)
  */
+@Deprecated
 public final class CaptureActivityHandler extends Handler {
 
     private static final String TAG = "CaptureActivityHandler";
 
-    private final CaptureActivity activity;
+    private final CaptureActivityTemp activity;
     private final DecodeThread decodeThread;
     private State state;
 
@@ -30,7 +31,7 @@ public final class CaptureActivityHandler extends Handler {
         DONE
     }
 
-    CaptureActivityHandler(CaptureActivity activity) {
+    CaptureActivityHandler(CaptureActivityTemp activity) {
 
         this.activity = activity;
         decodeThread = new DecodeThread(activity, new ViewfinderResultPointCallback(activity.getViewfinderView()));

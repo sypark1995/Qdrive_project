@@ -23,6 +23,7 @@ import android.database.sqlite.SQLiteOpenHelper;
 /**
  * @author Sean Owen
  */
+@Deprecated
 final class DBHelper extends SQLiteOpenHelper {
 
     private static final int DB_VERSION = 4;

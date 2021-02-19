@@ -25,6 +25,7 @@ import android.view.WindowManager;
 
 import java.util.regex.Pattern;
 
+@Deprecated
 final class CameraConfigurationManager {
 
     private static String TAG = "CameraConfigurationManager";
@@ -83,7 +84,6 @@ final class CameraConfigurationManager {
     Point getScreenResolution() {
         return screenResolution;
     }
-
 
 
     private static Point getCameraResolution(Camera.Parameters parameters, Point screenResolution) {

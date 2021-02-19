@@ -23,6 +23,7 @@ import java.util.List;
  *
  * @author dswitkin@google.com (Daniel Switkin)
  */
+@Deprecated
 public final class ViewfinderView extends View {
     String TAG = "ViewfinderView";
 

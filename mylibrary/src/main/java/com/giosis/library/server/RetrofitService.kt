@@ -2,6 +2,7 @@ package com.giosis.library.server
 
 import com.giosis.library.server.data.FailedCodeResult
 import com.giosis.library.server.data.ImageResult
+import com.giosis.library.util.DataUtil
 import com.giosis.library.util.Preferences
 import io.reactivex.rxjava3.core.Single
 import okhttp3.MultipartBody
@@ -173,5 +174,45 @@ interface RetrofitService {
             @Field("dumpfile") dumpFile: String // 첨부파일
     ): Single<APIModel>
 
+
+    @POST("GetValidationCheckDpc3Out")
+    @FormUrlEncoded
+    fun requestValidationCheckDpc3Out(
+            @Field("scanData") scanData: String,
+            @Field("type") type: String,
+            @Field("driverId") driverId: String = Preferences.userId,
+            @Field("app_id") app_id: String = DataUtil.appID,
+            @Field("nation_cd") nation_cd: String = Preferences.userNation
+    ): Single<APIModel>
+
+    @POST("GetChangeDriverValidationCheck")
+    @FormUrlEncoded
+    fun requestValidationCheckChangeDriver(
+            @Field("scanData") scanData: String,
+            @Field("driverId") driverId: String = Preferences.userId,
+            @Field("app_id") app_id: String = DataUtil.appID,
+            @Field("nation_cd") nation_cd: String = Preferences.userNation
+    ): Single<APIModel>
+
+    @POST("SetPickupScanNo")
+    @FormUrlEncoded
+    fun requestValidationCheckPickup(
+            @Field("pickup_no") pickup_no: String,
+            @Field("scan_no") scan_no: String,
+            @Field("type") type: String = "QX",
+            @Field("opId") opId: String = Preferences.userId,
+            @Field("app_id") app_id: String = DataUtil.appID,
+            @Field("nation_cd") nation_cd: String = Preferences.userNation
+    ): Single<APIModel>
+
+    @POST("SetAddScanNo_TakeBack")
+    @FormUrlEncoded
+    fun requestValidationCheckTakeBack(
+            @Field("pickup_no") pickup_no: String,
+            @Field("scan_no") scan_no: String,
+            @Field("op_id") op_id: String = Preferences.userId,
+            @Field("app_id") app_id: String = DataUtil.appID,
+            @Field("nation_cd") nation_cd: String = Preferences.userNation
+    ): Single<APIModel>
 
 }
