@@ -151,12 +151,14 @@
 
                     <RelativeLayout
                         android:layout_width="match_parent"
-                        android:layout_height="35dp"
+                        android:layout_height="wrap_content"
                         android:gravity="center_vertical"
+                        android:minHeight="35dp"
                         android:paddingStart="20dp"
                         android:paddingEnd="20dp">
 
                         <TextView
+                            android:id="@+id/text_sign_d_receiver_title"
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
                             android:text="@string/text_receiver"
@@ -168,10 +170,13 @@
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
                             android:layout_alignParentEnd="true"
+                            android:layout_marginStart="10dp"
+                            android:layout_toEndOf="@id/text_sign_d_receiver_title"
+                            android:gravity="end"
                             android:textColor="@color/color_303030"
                             android:textSize="@dimen/text_size_30px"
                             android:textStyle="bold"
-                            tools:text="Ono shinseitaru" />
+                            tools:text="Ono shinseitaru\nOno shinseitaru" />
                     </RelativeLayout>
 
                     <RelativeLayout

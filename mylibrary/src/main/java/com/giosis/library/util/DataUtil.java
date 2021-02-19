@@ -282,7 +282,7 @@ public class DataUtil {
 
     // NOTIFICATION. 202012  Failed Reason
     public static void requestServerPickupFailedCode() {
-        CallServer.INSTANCE.getFailedCode(CallServer.PFC, Preferences.INSTANCE.getUserNation(), new CallServer.GetFailedCodeCallback() {
+        CallServer.INSTANCE.getFailedCode(CallServer.PFC, "", new CallServer.GetFailedCodeCallback() {
 
             @Override
             public void onServerError(int value) {
@@ -304,7 +304,7 @@ public class DataUtil {
 
     public static void requestServerDeliveryFailedCode() {
 
-        CallServer.INSTANCE.getFailedCode(CallServer.DFC, Preferences.INSTANCE.getUserNation(), new CallServer.GetFailedCodeCallback() {
+        CallServer.INSTANCE.getFailedCode(CallServer.DFC, "", new CallServer.GetFailedCodeCallback() {
 
             @Override
             public void onServerError(int value) {

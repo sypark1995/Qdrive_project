@@ -27,6 +27,7 @@ import android.os.Vibrator;
 import android.preference.PreferenceManager;
 import android.util.Log;
 
+import com.giosis.library.BuildConfig;
 import com.giosis.util.qdrive.singapore.MyApplication;
 import com.giosis.util.qdrive.singapore.R;
 
@@ -167,7 +168,7 @@ final class BeepManager {
 //                String opID = SharedPreferencesHelper.getSigninOpID(activity);
                 String opID = MyApplication.preferences.getUserId();
 
-                if (opID.equals("karam.kim")) {
+                if (opID.equals("karam.kim") || BuildConfig.DEBUG) {
 
                     Log.e("krm0219", "Sound Start");
                 } else {

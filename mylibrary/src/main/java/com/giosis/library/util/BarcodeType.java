@@ -10,7 +10,6 @@ public class BarcodeType {
     public static final String PICKUP_FAILED = "PF";
 
 
-    // CaptureActivity
     public static final String CONFIRM_MY_DELIVERY_ORDER = "MDA";       // Main & SCAN > Confirm my delivery order
     public static final String CHANGE_DELIVERY_DRIVER = "CDR";          // Main > Change Delivery Driver
 
