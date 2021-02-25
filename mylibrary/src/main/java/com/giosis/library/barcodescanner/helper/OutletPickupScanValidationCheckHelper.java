@@ -1,4 +1,4 @@
-package com.giosis.util.qdrive.barcodescanner;
+package com.giosis.library.barcodescanner.helper;
 
 import android.app.AlertDialog;
 import android.content.Context;
@@ -7,10 +7,11 @@ import android.content.DialogInterface.OnClickListener;
 import android.os.AsyncTask;
 import android.util.Log;
 
+import com.giosis.library.R;
+import com.giosis.library.barcodescanner.StdResult;
 import com.giosis.library.server.Custom_JsonParser;
-import com.giosis.library.util.NetworkUtil;
-import com.giosis.util.qdrive.singapore.R;
-import com.giosis.util.qdrive.util.DataUtil;
+import com.giosis.library.util.DataUtil;
+import com.giosis.library.util.Preferences;
 
 import org.json.JSONObject;
 
@@ -23,7 +24,6 @@ public class OutletPickupScanValidationCheckHelper {
     private final String scanNo;
     private final String route;
 
-    private final String networkType;
     private final OnPickupAddScanNoOneByOneUploadListener eventListener;
     private final AlertDialog resultDialog;
 
@@ -35,7 +35,6 @@ public class OutletPickupScanValidationCheckHelper {
         private final String scanNo;
         private final String route;
 
-        private String networkType;
         private OnPickupAddScanNoOneByOneUploadListener eventListener;
 
         public Builder(Context context, String opID, String pickup_no, String scanNo, String route) {
@@ -45,7 +44,6 @@ public class OutletPickupScanValidationCheckHelper {
             this.pickup_no = pickup_no;
             this.scanNo = scanNo;
             this.route = route;
-            this.networkType = NetworkUtil.getNetworkType(context);
         }
 
         public OutletPickupScanValidationCheckHelper build() {
@@ -66,7 +64,6 @@ public class OutletPickupScanValidationCheckHelper {
         this.scanNo = builder.scanNo;
         this.route = builder.route;
 
-        this.networkType = builder.networkType;
         this.eventListener = builder.eventListener;
         this.resultDialog = getResultAlertDialog(this.context);
     }
@@ -132,7 +129,7 @@ public class OutletPickupScanValidationCheckHelper {
                 job.accumulate("pickup_no", pickup_no);
                 job.accumulate("scan_no", scan_no);
                 job.accumulate("app_id", DataUtil.appID);
-                job.accumulate("nation_cd", DataUtil.nationCode);
+                job.accumulate("nation_cd", Preferences.INSTANCE.getUserNation());
 
                 String methodName = "SetPickupScanNo";
                 String jsonString = Custom_JsonParser.requestServerDataReturnJSON(methodName, job);

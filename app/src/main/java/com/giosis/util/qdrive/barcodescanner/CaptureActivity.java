@@ -69,11 +69,13 @@ import com.giosis.library.BuildConfig;
 import com.giosis.library.MemoryStatus;
 import com.giosis.library.barcodescanner.ChangeDriverResult;
 import com.giosis.library.barcodescanner.CnRPickupResult;
+import com.giosis.library.barcodescanner.StdResult;
 import com.giosis.library.barcodescanner.helper.ChangeDriverHelper;
 import com.giosis.library.barcodescanner.helper.ChangeDriverValidationCheckHelper;
 import com.giosis.library.barcodescanner.helper.CnRPickupValidationCheckHelper;
 import com.giosis.library.barcodescanner.helper.ConfirmMyOrderHelper;
 import com.giosis.library.barcodescanner.helper.ConfirmMyOrderValidationCheckHelper;
+import com.giosis.library.barcodescanner.helper.OutletPickupScanValidationCheckHelper;
 import com.giosis.library.barcodescanner.helper.PickupScanValidationCheckHelper;
 import com.giosis.library.barcodescanner.helper.PickupTakeBackValidationCheckHelper;
 import com.giosis.library.barcodescanner.scannedBarcodeNoListAdapter;
@@ -1463,7 +1465,7 @@ public final class CaptureActivity extends CommonActivity implements SurfaceHold
                         .setOnDpc3OutValidationCheckListener(new ConfirmMyOrderValidationCheckHelper.OnDpc3OutValidationCheckListener() {
 
                             @Override
-                            public void OnDpc3OutValidationCheckResult(com.giosis.library.barcodescanner.StdResult result) {
+                            public void OnDpc3OutValidationCheckResult(StdResult result) {
 
                                 if (result.getResultCode() < 0) {
 
@@ -1609,21 +1611,17 @@ public final class CaptureActivity extends CommonActivity implements SurfaceHold
                 final String scanNo = strBarcodeNo;
 
                 new OutletPickupScanValidationCheckHelper.Builder(this, opID, pickupNo, strBarcodeNo, mRoute)
-                        .setOnPickupAddScanNoOneByOneUploadListener(new OutletPickupScanValidationCheckHelper.OnPickupAddScanNoOneByOneUploadListener() {
+                        .setOnPickupAddScanNoOneByOneUploadListener(result -> {
 
-                            @Override
-                            public void onPickupAddScanNoOneByOneUploadResult(StdResult result) {
+                            if (result.getResultCode() < 0) {
 
-                                if (result.getResultCode() < 0) {
+                                beepManagerError.playBeepSoundAndVibrate();
+                                deletePrevious(scanNo);
+                                edit_capture_type_number.setText("");
+                            } else {
 
-                                    beepManagerError.playBeepSoundAndVibrate();
-                                    deletePrevious(scanNo);
-                                    edit_capture_type_number.setText("");
-                                } else {
-
-                                    beepManager.playBeepSoundAndVibrate();
-                                    addScannedBarcode(scanNo, "checkValidation - OUTLET_PICKUP_SCAN");
-                                }
+                                beepManager.playBeepSoundAndVibrate();
+                                addScannedBarcode(scanNo, "checkValidation - OUTLET_PICKUP_SCAN");
                             }
                         }).build().execute();
 
