@@ -1,8 +1,7 @@
-package com.giosis.util.qdrive.util.ui
+package com.giosis.util.qdrive.util
 
 import android.content.Context
 import android.content.Intent
-import android.util.Log
 import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
 import com.giosis.library.util.LocaleManager
@@ -11,35 +10,6 @@ import com.giosis.util.qdrive.singapore.MyApplication
 import com.giosis.util.qdrive.singapore.R
 
 open class CommonActivity : AppCompatActivity() {
-
-    var progressDialog: QProgressDialog = QProgressDialog(this)
-    private var progressCount = 0
-
-
-    // QProgressDialog
-    fun showProgress() {
-
-        ++progressCount
-        //    Log.e("krm0219", "showProgress $progressCount")
-        progressDialog.showProgressDialog()
-    }
-
-    fun hideProgress() {
-
-        try {
-
-            if (progressCount == 0 || --progressCount <= 0) {
-
-                progressDialog.hideProgressDialog()
-            }
-
-            //    Log.e("krm0219", "hideProgress $progressCount")
-        } catch (e: Exception) {
-
-            Log.e("Exception", "CommonActivity hideProgress() Exception $e")
-        }
-    }
-
 
     // Auto Logout
     override fun onResume() {

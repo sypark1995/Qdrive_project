@@ -115,17 +115,13 @@
             android:screenOrientation="portrait" />
 
         <!-- NOTIFICATION. Scan -->
-        <activity
-            android:name="com.giosis.util.qdrive.barcodescanner.CaptureActivity"
-            android:configChanges="orientation|keyboardHidden"
-            android:screenOrientation="portrait"
-            android:windowSoftInputMode="adjustNothing" />
 
         <activity
             android:name="com.giosis.util.qdrive.barcodescanner.CaptureActivityTemp"
             android:configChanges="orientation|keyboardHidden"
             android:screenOrientation="portrait"
             android:windowSoftInputMode="adjustNothing" />
+
 
         <activity
             android:name="com.giosis.util.qdrive.barcodescanner.bluetooth.DeviceListActivity"

@@ -5,7 +5,6 @@ import android.app.AlertDialog;
 import android.content.ClipData;
 import android.content.ClipboardManager;
 import android.content.Context;
-import android.content.DialogInterface;
 import android.content.Intent;
 import android.provider.Settings;
 import android.util.Log;
@@ -16,8 +15,6 @@ import com.giosis.util.qdrive.singapore.R;
 public class DataUtil {
 
     public static String appID = "QDRIVE";
-    public static String nationCode = "SG";
-    public static String qDeliveryData = "QDATA";
 
     public static String SERVER_TEST = "https://test-api.qxpress.net";
     public static String SERVER_STAGING = "http://staging-qxapi.qxpress.net";
@@ -43,15 +40,11 @@ public class DataUtil {
                 .setCancelable(false)
                 .setTitle(context.getResources().getString(R.string.text_location_setting))
                 .setMessage(context.getResources().getString(R.string.msg_location_off))
-                .setPositiveButton(context.getResources().getString(R.string.button_ok), new DialogInterface.OnClickListener() {
+                .setPositiveButton(context.getResources().getString(R.string.button_ok), (dialog, which) -> {
 
-                    @Override
-                    public void onClick(DialogInterface dialog, int which) {
-
-                        Intent intent = new Intent(Settings.ACTION_LOCATION_SOURCE_SETTINGS);
-                        intent.addCategory(Intent.CATEGORY_DEFAULT);
-                        activity.startActivity(intent);
-                    }
+                    Intent intent = new Intent(Settings.ACTION_LOCATION_SOURCE_SETTINGS);
+                    intent.addCategory(Intent.CATEGORY_DEFAULT);
+                    activity.startActivity(intent);
                 }).show();
     }
 
@@ -63,5 +56,4 @@ public class DataUtil {
             gpsTrackerManager.stopFusedProviderService();
         }
     }
-
 }

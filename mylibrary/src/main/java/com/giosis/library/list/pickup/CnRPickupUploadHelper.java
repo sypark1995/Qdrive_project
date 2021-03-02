@@ -300,7 +300,7 @@ public class CnRPickupUploadHelper {
                 return result;
             }
 
-//            // TEST   Upload Failed
+//             // TEST_Upload Failed 시 주석 풀고 실행
 //            if (true) {
 //
 //                result.setResultCode(-15);

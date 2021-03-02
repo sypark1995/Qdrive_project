@@ -22,7 +22,7 @@ import com.giosis.library.util.DatabaseHelper
 import com.giosis.library.util.PermissionActivity
 import com.giosis.library.util.PermissionChecker
 import com.giosis.util.qdrive.util.DataUtil
-import com.giosis.util.qdrive.util.ui.CommonActivity
+import com.giosis.util.qdrive.util.CommonActivity
 import com.google.gson.Gson
 import io.reactivex.rxjava3.android.schedulers.AndroidSchedulers
 import io.reactivex.rxjava3.schedulers.Schedulers
