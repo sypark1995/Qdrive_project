@@ -208,7 +208,7 @@
                         android:layout_width="90dp"
                         android:layout_height="32dp"
                         android:layout_alignParentEnd="true"
-                        android:background="@drawable/border_radius_30_cccccc_ffffff"
+                        android:background="@drawable/border_round_30_cccccc"
                         android:gravity="center"
                         android:orientation="horizontal">
 
@@ -232,7 +232,7 @@
                     android:layout_width="match_parent"
                     android:layout_height="140dp"
                     android:layout_marginBottom="20dp"
-                    android:background="@drawable/border_radius_5_e5e5e5_ffffff" />
+                    android:background="@drawable/border_round_5_e5e5e5" />
 
                 <TextView
                     android:layout_width="match_parent"
@@ -248,7 +248,7 @@
                     android:layout_width="match_parent"
                     android:layout_height="72dp"
                     android:layout_marginBottom="25dp"
-                    android:background="@drawable/border_radius_5_e5e5e5_ffffff"
+                    android:background="@drawable/border_round_5_e5e5e5"
                     android:maxLength="99"
                     android:padding="10dp"
                     android:textColor="@color/color_8f8f8f"
@@ -263,7 +263,7 @@
                 android:layout_gravity="center"
                 android:layout_marginTop="30dp"
                 android:layout_marginBottom="30dp"
-                android:background="@drawable/bg_radius_30_4fb648"
+                android:background="@drawable/bg_round_30_4fb648"
                 android:gravity="center"
                 android:text="@string/button_save"
                 android:textAllCaps="false"

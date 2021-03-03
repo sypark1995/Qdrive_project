@@ -49,6 +49,7 @@ import android.widget.ToggleButton;
 
 import com.giosis.library.BuildConfig;
 import com.giosis.library.MemoryStatus;
+import com.giosis.library.barcodescanner.BeepManager;
 import com.giosis.library.barcodescanner.ChangeDriverResult;
 import com.giosis.library.barcodescanner.CnRPickupResult;
 import com.giosis.library.barcodescanner.helper.ChangeDriverHelper;
@@ -82,8 +83,8 @@ import com.giosis.util.qdrive.barcodescanner.camera.CameraManager;
 import com.giosis.util.qdrive.barcodescanner.history.HistoryManager;
 import com.giosis.util.qdrive.international.MyApplication;
 import com.giosis.util.qdrive.international.R;
+import com.giosis.util.qdrive.util.CommonActivity;
 import com.giosis.util.qdrive.util.DataUtil;
-import com.giosis.util.qdrive.util.ui.CommonActivity;
 import com.google.zxing.Result;
 
 import java.util.ArrayList;
@@ -108,6 +109,7 @@ public final class CaptureActivityTemp extends CommonActivity implements Surface
     public static final int MESSAGE_DISPLAY = 6;
     public static final int MESSAGE_SEND = 7;
     public static final int MESSAGE_SETTING = 255;
+
     private static final int REQUEST_CONNECT_DEVICE = 1;
     private static final int REQUEST_ENABLE_BT = 2;
     private static final int REQUEST_DELIVERY_DONE = 10;

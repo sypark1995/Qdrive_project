@@ -22,6 +22,7 @@ package com.giosis.util.qdrive.barcodescanner;
  *
  * @author dswitkin@google.com (Daniel Switkin)
  */
+@Deprecated
 public final class Intents {
     private Intents() {
     }

@@ -422,12 +422,9 @@ public class Settings extends PreferenceActivity {
     }
 
     private void BluetoothSettings() {
-        btPref.setOnPreferenceClickListener(new OnPreferenceClickListener() {
-            @Override
-            public boolean onPreferenceClick(Preference preference) {
-                if (KTSyncData.bIsConnected) KTSyncData.mKScan.GetBluetoothOptions();
-                return true;
-            }
+        btPref.setOnPreferenceClickListener(preference -> {
+            if (KTSyncData.bIsConnected) KTSyncData.mKScan.GetBluetoothOptions();
+            return true;
         });
 
     }

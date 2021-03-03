@@ -19,6 +19,7 @@ package com.giosis.util.qdrive.barcodescanner;
 import com.google.zxing.ResultPoint;
 import com.google.zxing.ResultPointCallback;
 
+@Deprecated
 final class ViewfinderResultPointCallback implements ResultPointCallback {
 
     private final ViewfinderView viewfinderView;

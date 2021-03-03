@@ -25,6 +25,7 @@ import android.content.DialogInterface;
  *
  * @author Sean Owen
  */
+@Deprecated
 public final class FinishListener
         implements DialogInterface.OnClickListener, DialogInterface.OnCancelListener, Runnable {
 

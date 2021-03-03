@@ -38,6 +38,7 @@ import java.util.List;
  *
  * @author dswitkin@google.com (Daniel Switkin)
  */
+@Deprecated
 public final class ViewfinderView extends View {
 
     private static final int[] SCANNER_ALPHA = {0, 64, 128, 192, 255, 192, 128, 64};

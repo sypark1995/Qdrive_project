@@ -72,7 +72,6 @@
         <activity android:name="com.giosis.util.qdrive.barcodescanner.bluetooth.SetBarcode" />
         <activity
             android:name="com.giosis.util.qdrive.barcodescanner.bluetooth.DeviceListActivity"
-            android:label=""
             android:theme="@android:style/Theme.Dialog" />
 
         <meta-data

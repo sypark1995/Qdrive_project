@@ -3,7 +3,7 @@ package com.giosis.util.qdrive.barcodescanner.bluetooth;
 import android.os.Handler;
 import android.util.Log;
 
-import com.giosis.util.qdrive.barcodescanner.CaptureActivity;
+import com.giosis.util.qdrive.barcodescanner.CaptureActivityTemp;
 
 public class KScan {
 
@@ -50,8 +50,8 @@ public class KScan {
 
         if (returnTarget == 0) return;
 
-        if (returnTarget == CaptureActivity.MESSAGE_SETTING)
-            mHandler.obtainMessage(CaptureActivity.MESSAGE_SETTING, -1, -1, -1).sendToTarget();
+        if (returnTarget == CaptureActivityTemp.MESSAGE_SETTING)
+            mHandler.obtainMessage(CaptureActivityTemp.MESSAGE_SETTING, -1, -1, -1).sendToTarget();
         else
             mSettingHandler.obtainMessage(returnTarget, -1, -1, -1).sendToTarget();
 
@@ -72,7 +72,7 @@ public class KScan {
                     KTSyncData.writePtr = 0;
                 } else {
                     if (ch == 0x0a) {
-                        mHandler.obtainMessage(CaptureActivity.MESSAGE_DISPLAY, KTSyncData.writePtr, -1, KTSyncData.RxBuffer)
+                        mHandler.obtainMessage(CaptureActivityTemp.MESSAGE_DISPLAY, KTSyncData.writePtr, -1, KTSyncData.RxBuffer)
                                 .sendToTarget();
                         KTSyncData.writePtr = 0;
                     } else
@@ -239,7 +239,7 @@ public class KScan {
 
 
     public void SendBarcodeData() {
-        mHandler.obtainMessage(CaptureActivity.MESSAGE_DISPLAY, bbuffer_offset, -1, KTSyncData.BarcodeBuffer).sendToTarget();
+        mHandler.obtainMessage(CaptureActivityTemp.MESSAGE_DISPLAY, bbuffer_offset, -1, KTSyncData.BarcodeBuffer).sendToTarget();
     }
 
 
@@ -816,7 +816,7 @@ public class KScan {
         public void writeData(String command, int offset, int length) {
             byte[] buffer = command.getBytes();
 
-            mHandler.obtainMessage(CaptureActivity.MESSAGE_SEND, length, -1, buffer).sendToTarget();
+            mHandler.obtainMessage(CaptureActivityTemp.MESSAGE_SEND, length, -1, buffer).sendToTarget();
         }
 
         public void SendCommand(String cmd) {

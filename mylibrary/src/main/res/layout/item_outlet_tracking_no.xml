@@ -11,7 +11,7 @@
     <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="35dp"
-        android:background="@drawable/bg_radius_10_cccccc"
+        android:background="@drawable/bg_round_10_cccccc"
         android:gravity="center_vertical"
         android:orientation="horizontal"
         android:paddingEnd="10dp"

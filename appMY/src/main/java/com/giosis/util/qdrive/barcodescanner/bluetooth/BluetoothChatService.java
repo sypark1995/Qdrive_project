@@ -9,7 +9,7 @@ import android.os.Handler;
 import android.os.Message;
 import android.util.Log;
 
-import com.giosis.util.qdrive.barcodescanner.CaptureActivity;
+import com.giosis.util.qdrive.barcodescanner.CaptureActivityTemp;
 
 import java.io.IOException;
 import java.io.InputStream;
@@ -62,7 +62,7 @@ public class BluetoothChatService {
     private synchronized void setState(int state) {
 
         mState = state;
-        mHandler.obtainMessage(CaptureActivity.MESSAGE_STATE_CHANGE, state, -1).sendToTarget();
+        mHandler.obtainMessage(CaptureActivityTemp.MESSAGE_STATE_CHANGE, state, -1).sendToTarget();
     }
 
     /**
@@ -159,7 +159,7 @@ public class BluetoothChatService {
         mConnectedThread.start();
 
         // Send the name of the connected device back to the UI Activity
-        Message msg = mHandler.obtainMessage(CaptureActivity.MESSAGE_DEVICE_NAME);
+        Message msg = mHandler.obtainMessage(CaptureActivityTemp.MESSAGE_DEVICE_NAME);
         Bundle bundle = new Bundle();
         bundle.putString("deviceName", device.getName());
         msg.setData(bundle);
@@ -214,7 +214,7 @@ public class BluetoothChatService {
         setState(STATE_FAILED);
 
         // Send a failure message back to the Activity
-        Message msg = mHandler.obtainMessage(CaptureActivity.MESSAGE_TOAST);
+        Message msg = mHandler.obtainMessage(CaptureActivityTemp.MESSAGE_TOAST);
         Bundle bundle = new Bundle();
         bundle.putString("Toast", "Unable to connect device");
         msg.setData(bundle);
@@ -232,7 +232,7 @@ public class BluetoothChatService {
         bChatStopped = false;
 
         // Send a failure message back to the Activity
-        Message msg = mHandler.obtainMessage(CaptureActivity.MESSAGE_TOAST);
+        Message msg = mHandler.obtainMessage(CaptureActivityTemp.MESSAGE_TOAST);
         Bundle bundle = new Bundle();
         bundle.putString("Toast", "Device connection was lost");
         msg.setData(bundle);
@@ -426,7 +426,7 @@ public class BluetoothChatService {
                     bytes = mmInStream.read(buffer);
 
                     // Send the obtained bytes to the UI Activity
-                    mHandler.obtainMessage(CaptureActivity.MESSAGE_READ, bytes, -1, buffer).sendToTarget();
+                    mHandler.obtainMessage(CaptureActivityTemp.MESSAGE_READ, bytes, -1, buffer).sendToTarget();
                 } catch (IOException e) {
                     Log.e(TAG, "disconnected", e);
                     connectionLost();

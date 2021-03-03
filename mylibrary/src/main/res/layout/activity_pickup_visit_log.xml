@@ -149,7 +149,7 @@
                         android:layout_centerVertical="true"
                         android:layout_marginStart="10dp"
                         android:layout_toEndOf="@id/text_sign_p_f_failed_reason_title"
-                        android:background="@drawable/border_radius_5_cccccc_ffffff"
+                        android:background="@drawable/border_round_5_cccccc"
                         android:orientation="horizontal">
 
                         <TextView
@@ -232,7 +232,7 @@
                         android:layout_height="35dp"
                         android:layout_alignParentEnd="true"
                         android:layout_centerVertical="true"
-                        android:background="@drawable/border_radius_5_cccccc_ffffff"
+                        android:background="@drawable/border_round_5_cccccc"
                         android:orientation="horizontal">
 
                         <TextView

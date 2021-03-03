@@ -4,16 +4,16 @@
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
     android:background="@color/white"
-    android:paddingBottom="10dp"
     android:paddingLeft="10dp"
+    android:paddingTop="20dp"
     android:paddingRight="10dp"
-    android:paddingTop="20dp">
+    android:paddingBottom="10dp">
 
     <RelativeLayout
         android:id="@+id/layout_sign_d_outlet_qrcode_load"
         android:layout_width="match_parent"
         android:layout_height="100dp"
-        android:background="@drawable/border_radius_5_e5e5e5_ffffff"
+        android:background="@drawable/border_round_5_e5e5e5"
         android:padding="10dp"
         android:visibility="visible">
 
@@ -21,8 +21,8 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_centerVertical="true"
-            android:layout_marginEnd="15dp"
             android:layout_marginStart="5dp"
+            android:layout_marginEnd="15dp"
             android:layout_toStartOf="@id/img_sign_d_outlet_qrcode"
             android:orientation="vertical">
 
@@ -113,7 +113,7 @@
         android:layout_width="match_parent"
         android:layout_height="100dp"
         android:layout_centerInParent="true"
-        android:background="@drawable/border_radius_5_e5e5e5_ffffff"
+        android:background="@drawable/border_round_5_e5e5e5"
         android:gravity="center"
         android:orientation="vertical"
         android:padding="10dp"
@@ -132,7 +132,7 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_marginTop="10dp"
-            android:background="@drawable/border_radius_30_cccccc_ffffff"
+            android:background="@drawable/border_round_30_cccccc"
             android:text="@string/button_reload"
             android:textAllCaps="false"
             android:textColor="@color/color_303030"

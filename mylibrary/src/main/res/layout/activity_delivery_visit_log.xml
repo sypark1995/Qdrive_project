@@ -144,7 +144,7 @@
                     android:layout_centerVertical="true"
                     android:layout_marginStart="10dp"
                     android:layout_toEndOf="@id/text_sign_d_f_failed_reason_title"
-                    android:background="@drawable/border_radius_5_cccccc_ffffff"
+                    android:background="@drawable/border_round_5_cccccc"
                     android:orientation="horizontal">
 
                     <TextView
@@ -316,7 +316,7 @@
                 android:layout_gravity="center"
                 android:layout_marginTop="35dp"
                 android:layout_marginBottom="35dp"
-                android:background="@drawable/bg_radius_30_4fb648"
+                android:background="@drawable/bg_round_30_4fb648"
                 android:gravity="center"
                 android:text="@string/button_save"
                 android:textAllCaps="false"

@@ -21,7 +21,7 @@ import android.database.sqlite.SQLiteDatabase;
 import android.database.sqlite.SQLiteOpenHelper;
 import android.util.Log;
 
-import com.giosis.util.qdrive.barcodescanner.CaptureActivity;
+import com.giosis.util.qdrive.barcodescanner.CaptureActivityTemp;
 import com.google.zxing.Result;
 
 /**
@@ -29,13 +29,14 @@ import com.google.zxing.Result;
  *
  * @author Sean Owen
  */
+@Deprecated
 public final class HistoryManager {
 
     private static final String TAG = HistoryManager.class.getSimpleName();
-    private final CaptureActivity activity;
+    private final CaptureActivityTemp activity;
 
 
-    public HistoryManager(CaptureActivity activity) {
+    public HistoryManager(CaptureActivityTemp activity) {
 
         this.activity = activity;
     }

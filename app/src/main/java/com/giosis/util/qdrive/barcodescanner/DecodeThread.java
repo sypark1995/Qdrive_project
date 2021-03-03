@@ -35,16 +35,17 @@ import java.util.concurrent.CountDownLatch;
  *
  * @author dswitkin@google.com (Daniel Switkin)
  */
+@Deprecated
 final class DecodeThread extends Thread {
 
     static final String BARCODE_BITMAP = "barcode_bitmap";
 
-    private final CaptureActivity activity;
+    private final CaptureActivityTemp activity;
     private final Hashtable<DecodeHintType, Object> hints;
     private Handler handler;
     private final CountDownLatch handlerInitLatch;
 
-    DecodeThread(CaptureActivity activity, ResultPointCallback resultPointCallback) {
+    DecodeThread(CaptureActivityTemp activity, ResultPointCallback resultPointCallback) {
 
         this.activity = activity;
         handlerInitLatch = new CountDownLatch(1);

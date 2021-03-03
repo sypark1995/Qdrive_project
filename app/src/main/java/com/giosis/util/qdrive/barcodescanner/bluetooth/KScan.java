@@ -15,7 +15,7 @@ import android.os.Handler;
 import android.os.Message;
 import android.util.Log;
 
-import com.giosis.util.qdrive.barcodescanner.CaptureActivity;
+import com.giosis.util.qdrive.barcodescanner.CaptureActivityTemp;
 
 import java.io.BufferedWriter;
 import java.io.File;
@@ -164,26 +164,12 @@ public class KScan {
 
         dialog.dismiss();
 
-        if (returnTarget == CaptureActivity.MESSAGE_SETTING)
-            mHandler.obtainMessage(CaptureActivity.MESSAGE_SETTING, -1, -1, -1).sendToTarget();
+        if (returnTarget == CaptureActivityTemp.MESSAGE_SETTING)
+            mHandler.obtainMessage(CaptureActivityTemp.MESSAGE_SETTING, -1, -1, -1).sendToTarget();
         else
             mSettingHandler.obtainMessage(returnTarget, -1, -1, -1).sendToTarget();
 
         returnTarget = 0;
-/*    	
-    	switch ( returnTarget ) {
-    		case Settings.MESSAGE_BARCODE :	mSettingHandler.obtainMessage(Settings.MESSAGE_BARCODE, -1, -1, -1).sendToTarget();	break;
-    		case Settings.MESSAGE_OPTION :	mSettingHandler.obtainMessage(Settings.MESSAGE_OPTION, -1, -1, -1).sendToTarget();	break;  
-    		case Settings.MESSAGE_SCANOPTION :	mSettingHandler.obtainMessage(Settings.MESSAGE_SCANOPTION, -1, -1, -1).sendToTarget();	break; 
-    		case Settings.MESSAGE_DATAPROCESS :	mSettingHandler.obtainMessage(Settings.MESSAGE_DATAPROCESS, -1, -1, -1).sendToTarget();	break; 
-    		case Settings.MESSAGE_BLUETOOTH :	mSettingHandler.obtainMessage(Settings.MESSAGE_BLUETOOTH, -1, -1, -1).sendToTarget();	break; 
-    		case Settings.MESSAGE_HID :	mSettingHandler.obtainMessage(Settings.MESSAGE_HID, -1, -1, -1).sendToTarget();	break; 
-    		case Settings.MESSAGE_MSR :	mSettingHandler.obtainMessage(Settings.MESSAGE_MSR, -1, -1, -1).sendToTarget();	break; 
-    		case Settings.MESSAGE_SYSTEM :	mSettingHandler.obtainMessage(Settings.MESSAGE_SYSTEM, -1, -1, -1).sendToTarget();	break;  
-    		case KTDemo.MESSAGE_SETTING :	mHandler.obtainMessage(KTDemo.MESSAGE_SETTING, -1, -1, -1).sendToTarget();	break;    		
-    		default:	break;
-    	}
-*/
     }
 
     public synchronized void HandleInputData(byte ch) {
@@ -206,7 +192,7 @@ public class KScan {
                     KTSyncData.writePtr = 0;
                 } else {
                     if (ch == 0x0a) {
-                        mHandler.obtainMessage(CaptureActivity.MESSAGE_DISPLAY, KTSyncData.writePtr, -1, KTSyncData.RxBuffer)
+                        mHandler.obtainMessage(CaptureActivityTemp.MESSAGE_DISPLAY, KTSyncData.writePtr, -1, KTSyncData.RxBuffer)
                                 .sendToTarget();
                         KTSyncData.writePtr = 0;
                     } else
@@ -582,7 +568,7 @@ public class KScan {
 
 
     public void SendBarcodeData() {
-        mHandler.obtainMessage(CaptureActivity.MESSAGE_DISPLAY, bbuffer_offset, -1, KTSyncData.BarcodeBuffer)
+        mHandler.obtainMessage(CaptureActivityTemp.MESSAGE_DISPLAY, bbuffer_offset, -1, KTSyncData.BarcodeBuffer)
                 .sendToTarget();
     }
 
@@ -908,21 +894,6 @@ public class KScan {
         FinishCommand();
     }
 
-    public void GetMemoryStatus() {
-        Log.d(TAG, "GetMemoryStatus");
-
-        returnTarget = CaptureActivity.MESSAGE_SETTING;
-
-        openDialog(mContext, "Loading", 10000, false);
-
-        if (KTSyncData.bIsConnected) {
-            WakeupCommand();
-            SendCommandGetResult(11, STORED_BARCODE, COMMAND_GET_NUMBER);
-            SendCommandGetResult(11, MEMORY_LEFT, COMMAND_GET_NUMBER);
-            StartCommandThread(255, (byte) 10);
-        } else
-            callHandler();
-    }
 
     public void GetSymbolOption() {
         Log.d(TAG, "GetSymbolOption");
@@ -1092,7 +1063,6 @@ public class KScan {
         private char wPtr = 0, rPtr = 0, i, length;
         private byte[] cmdArray = new byte[256 + 2];
         private int[] stateArray = new int[256 + 2];
-        private boolean bNeedToCallHandler = false;
 
         @Override
         public void run() {
@@ -1110,7 +1080,7 @@ public class KScan {
                                     if (KTSyncData.bForceTerminate) {
                                         Sleep(1000);
                                         KTSyncData.bForceTerminate = false;
-                                        mHandler.obtainMessage(CaptureActivity.MESSAGE_EXIT, -1, -1, -1).sendToTarget();
+                                        mHandler.obtainMessage(CaptureActivityTemp.MESSAGE_EXIT, -1, -1, -1).sendToTarget();
                                     }
                                 } else {
                                     Log.d(TAG, "Command = 10-2");
@@ -1119,7 +1089,6 @@ public class KScan {
                                 InitialVariables();
                                 break;
                             case 11:
-                                bNeedToCallHandler = false;
                                 switch (cmdArray[rPtr++]) {
                                     case 1:
                                         SendCommand("GnS0");
@@ -1541,7 +1510,7 @@ public class KScan {
         public void writeData(String command, int offset, int length) {
             byte[] buffer = command.getBytes();
 
-            mHandler.obtainMessage(CaptureActivity.MESSAGE_SEND, length, -1, buffer)
+            mHandler.obtainMessage(CaptureActivityTemp.MESSAGE_SEND, length, -1, buffer)
                     .sendToTarget();
 
         }

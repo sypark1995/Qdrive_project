@@ -44,6 +44,7 @@ import java.util.List;
  *
  * @author dswitkin@google.com (Daniel Switkin)
  */
+@Deprecated
 public final class CameraManager {
 
     private static final String TAG = CameraManager.class.getSimpleName();

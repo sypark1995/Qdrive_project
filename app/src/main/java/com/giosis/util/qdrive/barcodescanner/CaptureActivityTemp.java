@@ -67,6 +67,7 @@ import android.widget.ToggleButton;
 
 import com.giosis.library.BuildConfig;
 import com.giosis.library.MemoryStatus;
+import com.giosis.library.barcodescanner.BeepManager;
 import com.giosis.library.barcodescanner.ChangeDriverResult;
 import com.giosis.library.barcodescanner.CnRPickupResult;
 import com.giosis.library.barcodescanner.StdResult;
@@ -104,7 +105,7 @@ import com.giosis.util.qdrive.singapore.LoginActivity;
 import com.giosis.util.qdrive.singapore.MyApplication;
 import com.giosis.util.qdrive.singapore.R;
 import com.giosis.util.qdrive.util.DataUtil;
-import com.giosis.util.qdrive.util.ui.CommonActivity;
+import com.giosis.util.qdrive.util.CommonActivity;
 import com.google.zxing.Result;
 
 import java.util.ArrayList;
@@ -117,10 +118,10 @@ import java.util.regex.Pattern;
  * @author dswitkin@google.com (Daniel Switkin)
  * @author Sean Owen
  */
-
-public final class CaptureActivity extends CommonActivity implements SurfaceHolder.Callback, OnTouchListener,
+@Deprecated
+public final class CaptureActivityTemp extends CommonActivity implements SurfaceHolder.Callback, OnTouchListener,
         OnFocusChangeListener, TextWatcher, SensorEventListener, OnKeyListener {
-    private static final String TAG = "CaptureActivity";
+    private static final String TAG = "CaptureActivityTemp";
 
 
     private static final int REQUEST_CONNECT_DEVICE = 1;
@@ -218,8 +219,6 @@ public final class CaptureActivity extends CommonActivity implements SurfaceHold
 
     InputMethodManager inputMethodManager;
     private BeepManager beepManager;
-    private BeepManager beepManagerError;
-    private BeepManager beepManagerDuple;
 
     SurfaceHolder surfaceHolder;
     private boolean hasSurface;
@@ -248,7 +247,242 @@ public final class CaptureActivity extends CommonActivity implements SurfaceHold
     public Handler getHandler() {
         return handler;
     }
+    // NOTIFICATION.  Click Event
+    View.OnClickListener clickListener = new View.OnClickListener() {
+        @Override
+        public void onClick(View v) {
 
+            switch (v.getId()) {
+
+                case R.id.layout_top_back: {
+
+                    onResetButtonClick();
+                    finish();
+                }
+                break;
+
+                case R.id.layout_capture_camera: {
+
+                    layout_capture_camera.setBackgroundResource(R.drawable.bg_tab_bottom_ff0000);
+                    layout_capture_scanner.setBackgroundResource(R.drawable.bg_ffffff);
+                    layout_capture_bluetooth.setBackgroundResource(R.drawable.bg_ffffff);
+                    text_capture_camera.setTextColor(getResources().getColor(R.color.color_ff0000));
+                    text_capture_camera.setTypeface(text_capture_camera.getTypeface(), Typeface.BOLD);
+                    text_capture_scanner.setTextColor(getResources().getColor(R.color.color_303030));
+                    text_capture_scanner.setTypeface(text_capture_scanner.getTypeface(), Typeface.NORMAL);
+                    text_capture_bluetooth.setTextColor(getResources().getColor(R.color.color_303030));
+                    text_capture_bluetooth.setTypeface(text_capture_bluetooth.getTypeface(), Typeface.NORMAL);
+
+                    viewfinder_capture_preview.setVisibility(View.VISIBLE);
+                    layout_capture_scanner_mode.setVisibility(View.GONE);
+                    layout_capture_bluetooth_mode.setVisibility(View.GONE);
+
+                    // bluetooth
+                    if (KTSyncData.mChatService != null)
+                        KTSyncData.mChatService.stop();
+                    KTSyncData.bIsRunning = false;
+
+                    onResume();
+                }
+                break;
+
+                case R.id.layout_capture_scanner: {
+
+                    layout_capture_camera.setBackgroundResource(R.drawable.bg_ffffff);
+                    layout_capture_scanner.setBackgroundResource(R.drawable.bg_tab_bottom_ff0000);
+                    layout_capture_bluetooth.setBackgroundResource(R.drawable.bg_ffffff);
+                    text_capture_camera.setTextColor(getResources().getColor(R.color.color_303030));
+                    text_capture_camera.setTypeface(text_capture_camera.getTypeface(), Typeface.NORMAL);
+                    text_capture_scanner.setTextColor(getResources().getColor(R.color.color_ff0000));
+                    text_capture_scanner.setTypeface(text_capture_scanner.getTypeface(), Typeface.BOLD);
+                    text_capture_bluetooth.setTextColor(getResources().getColor(R.color.color_303030));
+                    text_capture_bluetooth.setTypeface(text_capture_bluetooth.getTypeface(), Typeface.NORMAL);
+
+                    viewfinder_capture_preview.setVisibility(View.GONE);
+                    layout_capture_scanner_mode.setVisibility(View.VISIBLE);
+                    layout_capture_bluetooth_mode.setVisibility(View.GONE);
+
+                    // camera
+                    if (handler != null) {
+                        handler.quitSynchronously();
+                        handler = null;
+                    }
+                    CameraManager.get().closeDriver();
+                    // bluetooth
+                    if (KTSyncData.mChatService != null)
+                        KTSyncData.mChatService.stop();
+                    KTSyncData.bIsRunning = false;
+                }
+                break;
+
+                case R.id.layout_capture_bluetooth: {
+
+                    layout_capture_camera.setBackgroundResource(R.drawable.bg_ffffff);
+                    layout_capture_scanner.setBackgroundResource(R.drawable.bg_ffffff);
+                    layout_capture_bluetooth.setBackgroundResource(R.drawable.bg_tab_bottom_ff0000);
+                    text_capture_camera.setTextColor(getResources().getColor(R.color.color_303030));
+                    text_capture_camera.setTypeface(text_capture_camera.getTypeface(), Typeface.NORMAL);
+                    text_capture_scanner.setTextColor(getResources().getColor(R.color.color_303030));
+                    text_capture_scanner.setTypeface(text_capture_scanner.getTypeface(), Typeface.NORMAL);
+                    text_capture_bluetooth.setTextColor(getResources().getColor(R.color.color_ff0000));
+                    text_capture_bluetooth.setTypeface(text_capture_bluetooth.getTypeface(), Typeface.BOLD);
+
+                    viewfinder_capture_preview.setVisibility(View.GONE);
+                    layout_capture_scanner_mode.setVisibility(View.GONE);
+                    layout_capture_bluetooth_mode.setVisibility(View.VISIBLE);
+
+                    // camera
+                    if (handler != null) {
+                        handler.quitSynchronously();
+                        handler = null;
+                    }
+                    CameraManager.get().closeDriver();
+
+                    // Bluetooth 지원 && 비활성화 상태
+                    if (mBluetoothAdapter != null) {
+                        if (!mBluetoothAdapter.isEnabled()) {
+                            Intent intent = new Intent(BluetoothAdapter.ACTION_REQUEST_ENABLE);
+                            startActivityForResult(intent, REQUEST_ENABLE_BT);
+                        }
+                    }
+
+                    KTSyncData.bIsRunning = true;
+                }
+                break;
+
+                case R.id.btn_capture_bluetooth_device_find: {
+
+                    mIsScanDeviceListActivityRun = true;
+                    Intent intent = new Intent(CaptureActivityTemp.this, DeviceListActivity.class);
+                    startActivityForResult(intent, REQUEST_CONNECT_DEVICE);
+                }
+                break;
+
+                case R.id.btn_capture_type_number_add: {
+
+                    onAddButtonClick();
+                }
+                break;
+
+                case R.id.btn_capture_barcode_reset: {
+
+                    onResetButtonClick();
+                }
+                break;
+
+                case R.id.btn_capture_barcode_confirm: {
+
+                    switch (mScanType) {
+                        case BarcodeType.CONFIRM_MY_DELIVERY_ORDER:
+                        case BarcodeType.CHANGE_DELIVERY_DRIVER:
+
+                            onUpdateButtonClick();
+                            break;
+                        case BarcodeType.PICKUP_CNR:
+                        case BarcodeType.PICKUP_SCAN_ALL:
+                        case BarcodeType.PICKUP_ADD_SCAN:
+                        case BarcodeType.PICKUP_TAKE_BACK:
+                        case BarcodeType.OUTLET_PICKUP_SCAN:
+
+                            onNextButtonClick();
+                            break;
+                        case BarcodeType.DELIVERY_DONE:
+
+                            onConfirmButtonClick();
+                            break;
+                        case BarcodeType.SELF_COLLECTION:
+
+                            onCaptureConfirmButtonClick();
+                            break;
+                    }
+                }
+                break;
+            }
+        }
+    };
+
+
+    private void initBluetoothDevice() {
+        // Get local Bluetooth adapter        // Bluetooth 지원 여부 확인
+        mBluetoothAdapter = BluetoothAdapter.getDefaultAdapter();
+
+        // If the adapter is null, then Bluetooth is not supported          // Bluetooth 지원하지 않음
+        if (mBluetoothAdapter == null && !BuildConfig.DEBUG) {
+
+            Toast.makeText(this, context.getResources().getString(R.string.msg_bluetooth_not_supported), Toast.LENGTH_LONG).show();
+            finish();
+            return;
+        }
+
+
+        KTSyncData.mKScan = new KScan(this, bluetoothHandler);
+
+        for (int i = 0; i < 10; i++) {
+            KTSyncData.SerialNumber[i] = '0';
+            KTSyncData.FWVersion[i] = '0';
+        }
+
+
+        byte[] temp;
+
+        SharedPreferences app_preferences = PreferenceManager.getDefaultSharedPreferences(this);
+        KTSyncData.AutoConnect = app_preferences.getBoolean("Auto Connect", false);
+        KTSyncData.AttachTimestamp = app_preferences.getBoolean("AttachTimeStamp", false);
+        KTSyncData.AttachType = app_preferences.getBoolean("AttachBarcodeType", false);
+        KTSyncData.AttachSerialNumber = app_preferences.getBoolean("AttachSerialNumber", false);
+        temp = app_preferences.getString("Data Delimiter", "4").getBytes();
+        KTSyncData.DataDelimiter = temp[0] - '0';
+        temp = app_preferences.getString("Record Delimiter", "1").getBytes();
+        KTSyncData.RecordDelimiter = temp[0] - '0';
+        KTSyncData.AttachLocation = app_preferences.getBoolean("AttachLocationData", false);
+        KTSyncData.SyncNonCompliant = app_preferences.getBoolean("SyncNonCompliant", false);
+        KTSyncData.AttachQuantity = app_preferences.getBoolean("AttachQuantity", false);
+    }
+
+    private void initManualScanViews(String scanType) {
+
+        layout_capture_scan_count.setVisibility(View.VISIBLE);
+
+        switch (scanType) {
+            case BarcodeType.CONFIRM_MY_DELIVERY_ORDER:
+
+                btn_capture_barcode_confirm.setText(context.getResources().getString(R.string.button_update));      //onUpdateButtonClick
+                break;
+            case BarcodeType.CHANGE_DELIVERY_DRIVER:
+
+                btn_capture_barcode_confirm.setText(context.getResources().getString(R.string.button_done));         //onUpdateButtonClick
+                break;
+            case BarcodeType.DELIVERY_DONE: {
+
+                layout_capture_scan_count.setVisibility(View.GONE);
+                btn_capture_barcode_confirm.setText(context.getResources().getString(R.string.button_confirm));         //onConfirmButtonClick
+            }
+            break;
+            case BarcodeType.PICKUP_CNR:
+            case BarcodeType.PICKUP_SCAN_ALL:
+            case BarcodeType.PICKUP_ADD_SCAN:
+            case BarcodeType.PICKUP_TAKE_BACK:
+            case BarcodeType.OUTLET_PICKUP_SCAN:
+
+                btn_capture_barcode_confirm.setText(context.getResources().getString(R.string.button_next));            //onNextButtonClick
+                break;
+            case BarcodeType.SELF_COLLECTION:
+
+                btn_capture_barcode_confirm.setText(context.getResources().getString(R.string.button_confirm));         // onCaptureConfirmButtonClick
+                break;
+        }
+    }
+
+
+    @Override
+    public void onStart() {
+        super.onStart();
+
+        if (mBluetoothAdapter != null && mBluetoothAdapter.isEnabled()) {
+            if (KTSyncData.mChatService == null)
+                setupChat();
+        }
+    }
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
@@ -395,9 +629,7 @@ public final class CaptureActivity extends CommonActivity implements SurfaceHold
         historyManager.clearHistory();
         inactivityTimer = new InactivityTimer(this);
 
-        beepManager = new BeepManager(this, 1);         // 띵동
-        beepManagerError = new BeepManager(this, 2);    // 삐~
-        beepManagerDuple = new BeepManager(this, 3);    // 삐비~
+        beepManager = new BeepManager(this);
 
 
         handler = null;
@@ -427,7 +659,7 @@ public final class CaptureActivity extends CommonActivity implements SurfaceHold
                 }
 
                 if (handler != null) {
-                    handler = new CaptureActivityHandler(CaptureActivity.this);
+                    handler = new CaptureActivityHandler(CaptureActivityTemp.this);
                 }
             }
         });
@@ -453,90 +685,6 @@ public final class CaptureActivity extends CommonActivity implements SurfaceHold
         }
     }
 
-
-    private void initBluetoothDevice() {
-        // Get local Bluetooth adapter        // Bluetooth 지원 여부 확인
-        mBluetoothAdapter = BluetoothAdapter.getDefaultAdapter();
-
-        // If the adapter is null, then Bluetooth is not supported          // Bluetooth 지원하지 않음
-        if (mBluetoothAdapter == null && !BuildConfig.DEBUG) {
-
-            Toast.makeText(this, context.getResources().getString(R.string.msg_bluetooth_not_supported), Toast.LENGTH_LONG).show();
-            finish();
-            return;
-        }
-
-
-        KTSyncData.mKScan = new KScan(this, bluetoothHandler);
-
-        for (int i = 0; i < 10; i++) {
-            KTSyncData.SerialNumber[i] = '0';
-            KTSyncData.FWVersion[i] = '0';
-        }
-
-
-        byte[] temp;
-
-        SharedPreferences app_preferences = PreferenceManager.getDefaultSharedPreferences(this);
-        KTSyncData.AutoConnect = app_preferences.getBoolean("Auto Connect", false);
-        KTSyncData.AttachTimestamp = app_preferences.getBoolean("AttachTimeStamp", false);
-        KTSyncData.AttachType = app_preferences.getBoolean("AttachBarcodeType", false);
-        KTSyncData.AttachSerialNumber = app_preferences.getBoolean("AttachSerialNumber", false);
-        temp = app_preferences.getString("Data Delimiter", "4").getBytes();
-        KTSyncData.DataDelimiter = temp[0] - '0';
-        temp = app_preferences.getString("Record Delimiter", "1").getBytes();
-        KTSyncData.RecordDelimiter = temp[0] - '0';
-        KTSyncData.AttachLocation = app_preferences.getBoolean("AttachLocationData", false);
-        KTSyncData.SyncNonCompliant = app_preferences.getBoolean("SyncNonCompliant", false);
-        KTSyncData.AttachQuantity = app_preferences.getBoolean("AttachQuantity", false);
-    }
-
-    private void initManualScanViews(String scanType) {
-
-        layout_capture_scan_count.setVisibility(View.VISIBLE);
-
-        switch (scanType) {
-            case BarcodeType.CONFIRM_MY_DELIVERY_ORDER:
-
-                btn_capture_barcode_confirm.setText(context.getResources().getString(R.string.button_update));      //onUpdateButtonClick
-                break;
-            case BarcodeType.CHANGE_DELIVERY_DRIVER:
-
-                btn_capture_barcode_confirm.setText(context.getResources().getString(R.string.button_done));         //onUpdateButtonClick
-                break;
-            case BarcodeType.DELIVERY_DONE: {
-
-                layout_capture_scan_count.setVisibility(View.GONE);
-                btn_capture_barcode_confirm.setText(context.getResources().getString(R.string.button_confirm));         //onConfirmButtonClick
-            }
-            break;
-            case BarcodeType.PICKUP_CNR:
-            case BarcodeType.PICKUP_SCAN_ALL:
-            case BarcodeType.PICKUP_ADD_SCAN:
-            case BarcodeType.PICKUP_TAKE_BACK:
-            case BarcodeType.OUTLET_PICKUP_SCAN:
-
-                btn_capture_barcode_confirm.setText(context.getResources().getString(R.string.button_next));            //onNextButtonClick
-                break;
-            case BarcodeType.SELF_COLLECTION:
-
-                btn_capture_barcode_confirm.setText(context.getResources().getString(R.string.button_confirm));         // onCaptureConfirmButtonClick
-                break;
-        }
-    }
-
-
-    @Override
-    public void onStart() {
-        super.onStart();
-
-        if (mBluetoothAdapter != null && mBluetoothAdapter.isEnabled()) {
-            if (KTSyncData.mChatService == null)
-                setupChat();
-        }
-    }
-
-
     @Override
     public synchronized void onResume() {
         super.onResume();
@@ -545,9 +693,9 @@ public final class CaptureActivity extends CommonActivity implements SurfaceHold
 
         if (MyApplication.preferences.getUserId().equals("")) {
 
-            Toast.makeText(CaptureActivity.this, getResources().getString(R.string.msg_qdrive_auto_logout), Toast.LENGTH_SHORT).show();
+            Toast.makeText(CaptureActivityTemp.this, getResources().getString(R.string.msg_qdrive_auto_logout), Toast.LENGTH_SHORT).show();
 
-            Intent intent = new Intent(CaptureActivity.this, LoginActivity.class);
+            Intent intent = new Intent(CaptureActivityTemp.this, LoginActivity.class);
             intent.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP | Intent.FLAG_ACTIVITY_SINGLE_TOP);
             startActivity(intent);
         }
@@ -616,7 +764,7 @@ public final class CaptureActivity extends CommonActivity implements SurfaceHold
                     Log.e("Location", TAG + " GPSTrackerManager onResume : " + latitude + "  " + longitude + "  ");
                 } else {
 
-                    DataUtil.enableLocationSettings(CaptureActivity.this, context);
+                    DataUtil.enableLocationSettings(CaptureActivityTemp.this, context);
                 }
             }
         }
@@ -695,7 +843,7 @@ public final class CaptureActivity extends CommonActivity implements SurfaceHold
                 Log.e("krm0219", TAG + "  Scan Count : " + mScanCount);
             } catch (Exception e) {
 
-                Toast.makeText(CaptureActivity.this, context.getResources().getString(R.string.text_data_error), Toast.LENGTH_SHORT).show();
+                Toast.makeText(CaptureActivityTemp.this, context.getResources().getString(R.string.text_data_error), Toast.LENGTH_SHORT).show();
 
                 scanBarcodeArrayList.clear();
                 scanBarcodeNoListAdapter.notifyDataSetChanged();
@@ -712,161 +860,6 @@ public final class CaptureActivity extends CommonActivity implements SurfaceHold
 
         inactivityTimer.onResume();
     }
-
-
-    // NOTIFICATION.  Click Event
-    View.OnClickListener clickListener = new View.OnClickListener() {
-        @Override
-        public void onClick(View v) {
-
-            switch (v.getId()) {
-
-                case R.id.layout_top_back: {
-
-                    onResetButtonClick();
-                    finish();
-                }
-                break;
-
-                case R.id.layout_capture_camera: {
-
-                    layout_capture_camera.setBackgroundResource(R.drawable.bg_tab_bottom_ff0000);
-                    layout_capture_scanner.setBackgroundResource(R.drawable.bg_ffffff);
-                    layout_capture_bluetooth.setBackgroundResource(R.drawable.bg_ffffff);
-                    text_capture_camera.setTextColor(getResources().getColor(R.color.color_ff0000));
-                    text_capture_camera.setTypeface(text_capture_camera.getTypeface(), Typeface.BOLD);
-                    text_capture_scanner.setTextColor(getResources().getColor(R.color.color_303030));
-                    text_capture_scanner.setTypeface(text_capture_scanner.getTypeface(), Typeface.NORMAL);
-                    text_capture_bluetooth.setTextColor(getResources().getColor(R.color.color_303030));
-                    text_capture_bluetooth.setTypeface(text_capture_bluetooth.getTypeface(), Typeface.NORMAL);
-
-                    viewfinder_capture_preview.setVisibility(View.VISIBLE);
-                    layout_capture_scanner_mode.setVisibility(View.GONE);
-                    layout_capture_bluetooth_mode.setVisibility(View.GONE);
-
-                    // bluetooth
-                    if (KTSyncData.mChatService != null)
-                        KTSyncData.mChatService.stop();
-                    KTSyncData.bIsRunning = false;
-
-                    onResume();
-                }
-                break;
-
-                case R.id.layout_capture_scanner: {
-
-                    layout_capture_camera.setBackgroundResource(R.drawable.bg_ffffff);
-                    layout_capture_scanner.setBackgroundResource(R.drawable.bg_tab_bottom_ff0000);
-                    layout_capture_bluetooth.setBackgroundResource(R.drawable.bg_ffffff);
-                    text_capture_camera.setTextColor(getResources().getColor(R.color.color_303030));
-                    text_capture_camera.setTypeface(text_capture_camera.getTypeface(), Typeface.NORMAL);
-                    text_capture_scanner.setTextColor(getResources().getColor(R.color.color_ff0000));
-                    text_capture_scanner.setTypeface(text_capture_scanner.getTypeface(), Typeface.BOLD);
-                    text_capture_bluetooth.setTextColor(getResources().getColor(R.color.color_303030));
-                    text_capture_bluetooth.setTypeface(text_capture_bluetooth.getTypeface(), Typeface.NORMAL);
-
-                    viewfinder_capture_preview.setVisibility(View.GONE);
-                    layout_capture_scanner_mode.setVisibility(View.VISIBLE);
-                    layout_capture_bluetooth_mode.setVisibility(View.GONE);
-
-                    // camera
-                    if (handler != null) {
-                        handler.quitSynchronously();
-                        handler = null;
-                    }
-                    CameraManager.get().closeDriver();
-                    // bluetooth
-                    if (KTSyncData.mChatService != null)
-                        KTSyncData.mChatService.stop();
-                    KTSyncData.bIsRunning = false;
-                }
-                break;
-
-                case R.id.layout_capture_bluetooth: {
-
-                    layout_capture_camera.setBackgroundResource(R.drawable.bg_ffffff);
-                    layout_capture_scanner.setBackgroundResource(R.drawable.bg_ffffff);
-                    layout_capture_bluetooth.setBackgroundResource(R.drawable.bg_tab_bottom_ff0000);
-                    text_capture_camera.setTextColor(getResources().getColor(R.color.color_303030));
-                    text_capture_camera.setTypeface(text_capture_camera.getTypeface(), Typeface.NORMAL);
-                    text_capture_scanner.setTextColor(getResources().getColor(R.color.color_303030));
-                    text_capture_scanner.setTypeface(text_capture_scanner.getTypeface(), Typeface.NORMAL);
-                    text_capture_bluetooth.setTextColor(getResources().getColor(R.color.color_ff0000));
-                    text_capture_bluetooth.setTypeface(text_capture_bluetooth.getTypeface(), Typeface.BOLD);
-
-                    viewfinder_capture_preview.setVisibility(View.GONE);
-                    layout_capture_scanner_mode.setVisibility(View.GONE);
-                    layout_capture_bluetooth_mode.setVisibility(View.VISIBLE);
-
-                    // camera
-                    if (handler != null) {
-                        handler.quitSynchronously();
-                        handler = null;
-                    }
-                    CameraManager.get().closeDriver();
-
-                    // Bluetooth 지원 && 비활성화 상태
-                    if (mBluetoothAdapter != null) {
-                        if (!mBluetoothAdapter.isEnabled()) {
-                            Intent intent = new Intent(BluetoothAdapter.ACTION_REQUEST_ENABLE);
-                            startActivityForResult(intent, REQUEST_ENABLE_BT);
-                        }
-                    }
-
-                    KTSyncData.bIsRunning = true;
-                }
-                break;
-
-                case R.id.btn_capture_bluetooth_device_find: {
-
-                    mIsScanDeviceListActivityRun = true;
-                    Intent intent = new Intent(CaptureActivity.this, DeviceListActivity.class);
-                    startActivityForResult(intent, REQUEST_CONNECT_DEVICE);
-                }
-                break;
-
-                case R.id.btn_capture_type_number_add: {
-
-                    onAddButtonClick();
-                }
-                break;
-
-                case R.id.btn_capture_barcode_reset: {
-
-                    onResetButtonClick();
-                }
-                break;
-
-                case R.id.btn_capture_barcode_confirm: {
-
-                    switch (mScanType) {
-                        case BarcodeType.CONFIRM_MY_DELIVERY_ORDER:
-                        case BarcodeType.CHANGE_DELIVERY_DRIVER:
-
-                            onUpdateButtonClick();
-                            break;
-                        case BarcodeType.PICKUP_CNR:
-                        case BarcodeType.PICKUP_SCAN_ALL:
-                        case BarcodeType.PICKUP_ADD_SCAN:
-                        case BarcodeType.PICKUP_TAKE_BACK:
-                        case BarcodeType.OUTLET_PICKUP_SCAN:
-
-                            onNextButtonClick();
-                            break;
-                        case BarcodeType.DELIVERY_DONE:
-
-                            onConfirmButtonClick();
-                            break;
-                        case BarcodeType.SELF_COLLECTION:
-
-                            onCaptureConfirmButtonClick();
-                            break;
-                    }
-                }
-                break;
-            }
-        }
-    };
 
     @Override
     public boolean onKeyDown(int keyCode, KeyEvent event) {
@@ -1445,7 +1438,7 @@ public final class CaptureActivity extends CommonActivity implements SurfaceHold
 
         if (isDuplicate) {
 
-            beepManagerDuple.playBeepSoundAndVibrate();
+            beepManager.playBeepSoundAndVibrate(BeepManager.BELL_SOUNDS_DUPLE);
             Toast toast = Toast.makeText(getApplicationContext(), R.string.msg_tracking_number_already_entered, Toast.LENGTH_SHORT);
             toast.setGravity(Gravity.CENTER, 0, 20);
             toast.show();
@@ -1469,13 +1462,13 @@ public final class CaptureActivity extends CommonActivity implements SurfaceHold
 
                                 if (result.getResultCode() < 0) {
 
-                                    beepManagerError.playBeepSoundAndVibrate();
+                                    beepManager.playBeepSoundAndVibrate(BeepManager.BELL_SOUNDS_ERROR);
                                     deletePrevious(scanNo);
                                     edit_capture_type_number.setText("");
                                     inputMethodManager.hideSoftInputFromWindow(edit_capture_type_number.getWindowToken(), 0);
                                 } else {
 
-                                    beepManager.playBeepSoundAndVibrate();
+                                    beepManager.playBeepSoundAndVibrate(BeepManager.BELL_SOUNDS_SUCCESS);
                                     addScannedBarcode(scanNo, "checkValidation - CONFIRM_MY_DELIVERY_ORDER");
                                 }
                             }
@@ -1497,13 +1490,13 @@ public final class CaptureActivity extends CommonActivity implements SurfaceHold
 
                             if (result.getResultCode() < 0) {
 
-                                beepManagerError.playBeepSoundAndVibrate();
+                                beepManager.playBeepSoundAndVibrate(BeepManager.BELL_SOUNDS_ERROR);
                                 deletePrevious(scanNo);
                                 edit_capture_type_number.setText("");
                                 inputMethodManager.hideSoftInputFromWindow(edit_capture_type_number.getWindowToken(), 0);
                             } else {
 
-                                beepManager.playBeepSoundAndVibrate();
+                                beepManager.playBeepSoundAndVibrate(BeepManager.BELL_SOUNDS_SUCCESS);
                                 changeDriverResult = result.getResultObject();
                                 addScannedBarcode(scanNo, "checkValidation - CHANGE_DELIVERY_DRIVER");
                             }
@@ -1528,7 +1521,7 @@ public final class CaptureActivity extends CommonActivity implements SurfaceHold
                             @Override
                             public void OnCnRPickupValidationCheckResult(CnRPickupResult result) {
 
-                                beepManager.playBeepSoundAndVibrate();
+                                beepManager.playBeepSoundAndVibrate(BeepManager.BELL_SOUNDS_SUCCESS);
                                 pickupCNRRequester = result.getResultObject().getReqName();
                                 addScannedBarcode(scanNo, "checkValidation - PICKUP_CNR");
                             }
@@ -1536,7 +1529,7 @@ public final class CaptureActivity extends CommonActivity implements SurfaceHold
                             @Override
                             public void OnCnRPickupValidationCheckFail() {
 
-                                beepManagerError.playBeepSoundAndVibrate();
+                                beepManager.playBeepSoundAndVibrate(BeepManager.BELL_SOUNDS_ERROR);
                                 deletePrevious(scanNo);
                                 edit_capture_type_number.setText("");
                             }
@@ -1552,12 +1545,12 @@ public final class CaptureActivity extends CommonActivity implements SurfaceHold
 
                             if (result.getResultCode() < 0) {
 
-                                beepManagerError.playBeepSoundAndVibrate();
+                                beepManager.playBeepSoundAndVibrate(BeepManager.BELL_SOUNDS_ERROR);
                                 deletePrevious(scanNo);
                                 edit_capture_type_number.setText("");
                             } else {
 
-                                beepManager.playBeepSoundAndVibrate();
+                                beepManager.playBeepSoundAndVibrate(BeepManager.BELL_SOUNDS_SUCCESS);
                                 addScannedBarcode(scanNo, "checkValidation - PICKUP_SCAN_ALL");
                             }
                         }).build().execute();
@@ -1573,12 +1566,12 @@ public final class CaptureActivity extends CommonActivity implements SurfaceHold
 
                             if (result.getResultCode() < 0) {
 
-                                beepManagerError.playBeepSoundAndVibrate();
+                                beepManager.playBeepSoundAndVibrate(BeepManager.BELL_SOUNDS_ERROR);
                                 deletePrevious(scanNo);
                                 edit_capture_type_number.setText("");
                             } else {
 
-                                beepManager.playBeepSoundAndVibrate();
+                                beepManager.playBeepSoundAndVibrate(BeepManager.BELL_SOUNDS_SUCCESS);
                                 addScannedBarcode(scanNo, "checkValidation - PICKUP_ADD_SCAN");
                             }
                         }).build().execute();
@@ -1594,12 +1587,12 @@ public final class CaptureActivity extends CommonActivity implements SurfaceHold
 
                             if (result.getResultCode() < 0) {
 
-                                beepManagerError.playBeepSoundAndVibrate();
+                                beepManager.playBeepSoundAndVibrate(BeepManager.BELL_SOUNDS_ERROR);
                                 deletePrevious(scanNo);
                                 edit_capture_type_number.setText("");
                             } else {
 
-                                beepManager.playBeepSoundAndVibrate();
+                                beepManager.playBeepSoundAndVibrate(BeepManager.BELL_SOUNDS_SUCCESS);
                                 addScannedBarcode(scanNo, "checkValidation - PICKUP_TAKE_BACK");
                             }
                         }).build().execute();
@@ -1615,12 +1608,12 @@ public final class CaptureActivity extends CommonActivity implements SurfaceHold
 
                             if (result.getResultCode() < 0) {
 
-                                beepManagerError.playBeepSoundAndVibrate();
+                                beepManager.playBeepSoundAndVibrate(BeepManager.BELL_SOUNDS_ERROR);
                                 deletePrevious(scanNo);
                                 edit_capture_type_number.setText("");
                             } else {
 
-                                beepManager.playBeepSoundAndVibrate();
+                                beepManager.playBeepSoundAndVibrate(BeepManager.BELL_SOUNDS_SUCCESS);
                                 addScannedBarcode(scanNo, "checkValidation - OUTLET_PICKUP_SCAN");
                             }
                         }).build().execute();
@@ -1631,14 +1624,14 @@ public final class CaptureActivity extends CommonActivity implements SurfaceHold
 
                 if (!isInvoiceCodeRule(strBarcodeNo)) {
 
-                    beepManagerError.playBeepSoundAndVibrate();
+                    beepManager.playBeepSoundAndVibrate(BeepManager.BELL_SOUNDS_ERROR);
                     Toast toast = Toast.makeText(this, context.getResources().getString(R.string.msg_invalid_scan), Toast.LENGTH_SHORT);
                     toast.setGravity(Gravity.CENTER_HORIZONTAL, 0, 0);
                     toast.show();
                     return;
                 }
 
-                beepManager.playBeepSoundAndVibrate();
+                beepManager.playBeepSoundAndVibrate(BeepManager.BELL_SOUNDS_SUCCESS);
 
                 //2016-09-12 eylee nq 끼리만 self collector 가능하게 수정하기
                 if (!scanBarcodeArrayList.isEmpty()) {
@@ -1663,7 +1656,7 @@ public final class CaptureActivity extends CommonActivity implements SurfaceHold
             }
             default: {
 
-                beepManager.playBeepSoundAndVibrate();
+                beepManager.playBeepSoundAndVibrate(BeepManager.BELL_SOUNDS_SUCCESS);
                 addScannedBarcode(strBarcodeNo, "checkValidation - Default");
             }
         }
@@ -1722,9 +1715,9 @@ public final class CaptureActivity extends CommonActivity implements SurfaceHold
 
 
                         // BadTokenException 예방
-                        if (!CaptureActivity.this.isFinishing()) {
+                        if (!CaptureActivityTemp.this.isFinishing()) {
 
-                            AlertDialog.Builder builder = new AlertDialog.Builder(CaptureActivity.this);
+                            AlertDialog.Builder builder = new AlertDialog.Builder(CaptureActivityTemp.this);
                             builder.setTitle(context.getResources().getString(R.string.text_driver_assign_result));
                             builder.setMessage(msg);
                             builder.setPositiveButton(context.getResources().getString(R.string.button_ok), (dialog, id) -> dialog.cancel());
@@ -1758,7 +1751,7 @@ public final class CaptureActivity extends CommonActivity implements SurfaceHold
                             msg = context.getResources().getString(R.string.text_fail_update);
                         }
 
-                        AlertDialog.Builder builder = new AlertDialog.Builder(CaptureActivity.this);
+                        AlertDialog.Builder builder = new AlertDialog.Builder(CaptureActivityTemp.this);
                         builder.setTitle(context.getResources().getString(R.string.text_driver_assign_result));
                         builder.setMessage(msg);
                         builder.setPositiveButton(context.getResources().getString(R.string.button_ok), (dialog, id) -> dialog.cancel());
@@ -2053,15 +2046,8 @@ public final class CaptureActivity extends CommonActivity implements SurfaceHold
         KTSyncData.mChatService = null;
         KTSyncData.bIsRunning = false;
 
-
         if (beepManager != null) {
             beepManager.destroy();
-        }
-        if (beepManagerError != null) {
-            beepManagerError.destroy();
-        }
-        if (beepManagerDuple != null) {
-            beepManagerDuple.destroy();
         }
     }
 
