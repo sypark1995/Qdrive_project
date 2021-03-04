@@ -15,6 +15,7 @@ import com.google.gson.Gson;
 
 import org.json.JSONObject;
 
+@Deprecated
 public class ChangeDriverValidationCheckHelper {
     String TAG = "ChangeDriverValidationCheckHelper";
 

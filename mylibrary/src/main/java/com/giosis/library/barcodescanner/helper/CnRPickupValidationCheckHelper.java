@@ -24,6 +24,7 @@ import java.text.SimpleDateFormat;
 import java.util.Date;
 import java.util.TimeZone;
 
+// TODO_ Retrofit 변경하기
 public class CnRPickupValidationCheckHelper {
     String TAG = "CnRPickupValidationCheckHelper";
 

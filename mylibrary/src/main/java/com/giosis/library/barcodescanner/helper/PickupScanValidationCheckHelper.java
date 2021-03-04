@@ -14,6 +14,7 @@ import com.giosis.library.util.Preferences;
 
 import org.json.JSONObject;
 
+@Deprecated
 public class PickupScanValidationCheckHelper {
     String TAG = "PickupScanValidationCheckHelper";
 
