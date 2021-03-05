@@ -215,4 +215,12 @@ interface RetrofitService {
             @Field("nation_cd") nation_cd: String = Preferences.userNation
     ): Single<APIModel>
 
+    @POST("GetCnROrderCheck")
+    @FormUrlEncoded
+    fun requestValidationCheckCnR(
+            @Field("pickup_no") pickup_no: String,
+            @Field("opId") opId: String = Preferences.userId,
+            @Field("app_id") app_id: String = DataUtil.appID,
+            @Field("nation_cd") nation_cd: String = Preferences.userNation
+    ): Single<APIModel>
 }

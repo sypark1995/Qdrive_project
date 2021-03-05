@@ -3,6 +3,7 @@ package com.giosis.library.list
 import android.content.Intent
 import android.os.Bundle
 import com.giosis.library.R
+import com.giosis.library.barcodescanner.CaptureActivity
 import com.giosis.library.util.BarcodeType
 import com.giosis.library.util.CommonActivity
 import com.giosis.library.util.Preferences.userId
@@ -76,7 +77,16 @@ class TodayDonePickupScanListActivity : CommonActivity() {
 
     // packing list 추가
     private fun click_add_scan() {
-        val intent = Intent(this@TodayDonePickupScanListActivity, Class.forName("com.giosis.util.qdrive.barcodescanner.CaptureActivity"))
+
+//        val intent = Intent(this@TodayDonePickupScanListActivity, Class.forName("com.giosis.util.qdrive.barcodescanner.CaptureActivityTemp"))
+//        intent.putExtra("title", "ADD Scan List")
+//        intent.putExtra("type", BarcodeType.PICKUP_ADD_SCAN)
+//        intent.putExtra("pickup_no", pickup_no)
+//        intent.putExtra("applicant", applicant)
+//        startActivityForResult(intent, ListTodayDoneFragment.REQUEST_ADD_SCAN)
+
+        // FIXME_ New CaptureActivity
+        val intent = Intent(this@TodayDonePickupScanListActivity, CaptureActivity::class.java)
         intent.putExtra("title", "ADD Scan List")
         intent.putExtra("type", BarcodeType.PICKUP_ADD_SCAN)
         intent.putExtra("pickup_no", pickup_no)
@@ -85,7 +95,17 @@ class TodayDonePickupScanListActivity : CommonActivity() {
     }
 
     private fun click_take_back() {
-        val intent = Intent(this@TodayDonePickupScanListActivity, Class.forName("com.giosis.util.qdrive.barcodescanner.CaptureActivity"))
+
+//        val intent = Intent(this@TodayDonePickupScanListActivity, Class.forName("com.giosis.util.qdrive.barcodescanner.CaptureActivityTemp"))
+//        intent.putExtra("title", "Take Back List")
+//        intent.putExtra("type", BarcodeType.PICKUP_TAKE_BACK)
+//        intent.putExtra("pickup_no", pickup_no)
+//        intent.putExtra("applicant", applicant)
+//        intent.putExtra("scanned_qty", scanned_qty)
+//        startActivityForResult(intent, ListTodayDoneFragment.REQUEST_TAKE_BACK)
+
+        // FIXME_ New CaptureActivity
+        val intent = Intent(this@TodayDonePickupScanListActivity, CaptureActivity::class.java)
         intent.putExtra("title", "Take Back List")
         intent.putExtra("type", BarcodeType.PICKUP_TAKE_BACK)
         intent.putExtra("pickup_no", pickup_no)

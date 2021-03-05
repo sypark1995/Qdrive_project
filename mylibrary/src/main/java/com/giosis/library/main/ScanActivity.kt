@@ -2,9 +2,9 @@ package com.giosis.library.main
 
 import android.content.Intent
 import android.os.Bundle
-import android.util.Log
 import android.view.View
 import com.giosis.library.R
+import com.giosis.library.barcodescanner.CaptureActivity
 import com.giosis.library.util.BarcodeType
 import com.giosis.library.util.CommonActivity
 import com.giosis.library.util.Preferences
@@ -73,55 +73,79 @@ class ScanActivity : CommonActivity() {
             }
             R.id.layout_scan_confirm_my_delivery_order -> {
 
-                try {
+//                try {
+//
+//                    val intent = Intent(this@ScanActivity, Class.forName("com.giosis.util.qdrive.barcodescanner.CaptureActivityTemp"))
+//                    intent.putExtra("title", resources.getString(R.string.text_title_driver_assign))
+//                    intent.putExtra("type", BarcodeType.CONFIRM_MY_DELIVERY_ORDER)
+//                    startActivity(intent)
+//                } catch (e: Exception) {
+//
+//                    Log.e("Exception", "$TAG  Exception  $e")
+//                }
 
-                    val intent = Intent(this@ScanActivity, Class.forName("com.giosis.util.qdrive.barcodescanner.CaptureActivity"))
-                    intent.putExtra("title", resources.getString(R.string.text_title_driver_assign))
-                    intent.putExtra("type", BarcodeType.CONFIRM_MY_DELIVERY_ORDER)
-                    startActivity(intent)
-                } catch (e: Exception) {
-
-                    Log.e("Exception", "$TAG  Exception  $e")
-                }
+                // FIXME_ New CaptureActivity
+                val intent = Intent(this@ScanActivity, CaptureActivity::class.java)
+                intent.putExtra("title", resources.getString(R.string.text_title_driver_assign))
+                intent.putExtra("type", BarcodeType.CONFIRM_MY_DELIVERY_ORDER)
+                startActivity(intent)
             }
             R.id.layout_scan_delivery_done -> {
 
-                try {
+//                try {
+//
+//                    val intent = Intent(this@ScanActivity, Class.forName("com.giosis.util.qdrive.barcodescanner.CaptureActivityTemp"))
+//                    intent.putExtra("title", resources.getString(R.string.text_delivered))
+//                    intent.putExtra("type", BarcodeType.DELIVERY_DONE)
+//                    startActivity(intent)
+//                } catch (e: Exception) {
+//
+//                    Log.e("Exception", "$TAG  Exception  $e")
+//                }
 
-                    val intent = Intent(this@ScanActivity, Class.forName("com.giosis.util.qdrive.barcodescanner.CaptureActivity"))
-                    intent.putExtra("title", resources.getString(R.string.text_delivered))
-                    intent.putExtra("type", BarcodeType.DELIVERY_DONE)
-                    startActivity(intent)
-                } catch (e: Exception) {
-
-                    Log.e("Exception", "$TAG  Exception  $e")
-                }
+                // FIXME_ New CaptureActivity
+                val intent = Intent(this@ScanActivity, CaptureActivity::class.java)
+                intent.putExtra("title", resources.getString(R.string.text_delivered))
+                intent.putExtra("type", BarcodeType.DELIVERY_DONE)
+                startActivity(intent)
             }
             R.id.layout_scan_pickup_cnr -> {
 
-                try {
+//                try {
+//
+//                    val intent = Intent(this@ScanActivity, Class.forName("com.giosis.util.qdrive.barcodescanner.CaptureActivityTemp"))
+//                    intent.putExtra("title", resources.getString(R.string.text_title_scan_pickup_cnr))
+//                    intent.putExtra("type", BarcodeType.PICKUP_CNR)
+//                    startActivity(intent)
+//                } catch (e: Exception) {
+//
+//                    Log.e("Exception", "$TAG  Exception  $e")
+//                }
 
-                    val intent = Intent(this@ScanActivity, Class.forName("com.giosis.util.qdrive.barcodescanner.CaptureActivity"))
-                    intent.putExtra("title", resources.getString(R.string.text_title_scan_pickup_cnr))
-                    intent.putExtra("type", BarcodeType.PICKUP_CNR)
-                    startActivity(intent)
-                } catch (e: Exception) {
-
-                    Log.e("Exception", "$TAG  Exception  $e")
-                }
+                // FIXME_ New CaptureActivity
+                val intent = Intent(this@ScanActivity, CaptureActivity::class.java)
+                intent.putExtra("title", resources.getString(R.string.text_title_scan_pickup_cnr))
+                intent.putExtra("type", BarcodeType.PICKUP_CNR)
+                startActivity(intent)
             }
             R.id.layout_scan_self_collection -> {
 
-                try {
+//                try {
+//
+//                    val intent = Intent(this@ScanActivity, Class.forName("com.giosis.util.qdrive.barcodescanner.CaptureActivityTemp"))
+//                    intent.putExtra("title", resources.getString(R.string.navi_sub_self))
+//                    intent.putExtra("type", BarcodeType.SELF_COLLECTION)
+//                    startActivity(intent)
+//                } catch (e: Exception) {
+//
+//                    Log.e("Exception", "$TAG  Exception  $e")
+//                }
 
-                    val intent = Intent(this@ScanActivity, Class.forName("com.giosis.util.qdrive.barcodescanner.CaptureActivity"))
-                    intent.putExtra("title", resources.getString(R.string.navi_sub_self))
-                    intent.putExtra("type", BarcodeType.SELF_COLLECTION)
-                    startActivity(intent)
-                } catch (e: Exception) {
-
-                    Log.e("Exception", "$TAG  Exception  $e")
-                }
+                // FIXME_ New CaptureActivity
+                val intent = Intent(this@ScanActivity, CaptureActivity::class.java)
+                intent.putExtra("title", resources.getString(R.string.navi_sub_self))
+                intent.putExtra("type", BarcodeType.SELF_COLLECTION)
+                startActivity(intent)
             }
         }
     }

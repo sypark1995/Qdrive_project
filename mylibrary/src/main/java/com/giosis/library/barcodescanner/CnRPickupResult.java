@@ -1,10 +1,16 @@
 package com.giosis.library.barcodescanner;
 
+import org.simpleframework.xml.Element;
+import org.simpleframework.xml.Root;
+
+@Root(strict = false, name = "StdCustomResultOfQSignPickupList")
 public class CnRPickupResult {
 
-    private int resultCode = -1;
-    private String resultMsg = "";
+    @Element(required = false, name = "ResultObject")
     public CnRPickupData ResultObject;
+    @Element(name = "ResultCode", required = false)
+    private int resultCode = -1;
+
 
     public int getResultCode() {
         return resultCode;
@@ -21,6 +27,8 @@ public class CnRPickupResult {
     public void setResultMsg(String resultMsg) {
         this.resultMsg = resultMsg;
     }
+    @Element(name = "ResultMsg", required = false)
+    private String resultMsg = "";
 
     public CnRPickupData getResultObject() {
         return ResultObject;
@@ -30,54 +38,97 @@ public class CnRPickupResult {
         ResultObject = resultObject;
     }
 
-
+    @Root(strict = false, name = "ResultObject")
     public static class CnRPickupData {
 
-        private String contrNo = "";
-        private String partnerRefNo = "";
-        private String invoiceNo = "";
+        @Element(name = "contr_no", required = false)
+        private String contr_no = "";
+
+        @Element(name = "partner_ref_no", required = false)
+        private String partner_ref_no = "";
+
+        @Element(name = "invoice_no", required = false)
+        private String invoice_no = "";
+
+        @Element(name = "stat", required = false)
         private String stat = "";
-        private String reqName = "";
-        private String reqDate = "";
-        private String telNo = "";
-        private String hpNo = "";
-        private String zipCode = "";
+
+        @Element(name = "req_nm", required = false)
+        private String req_nm = "";
+
+        @Element(name = "req_dt", required = false)
+        private String req_dt = "";
+
+        @Element(name = "tel_no", required = false)
+        private String tel_no = "";
+
+        @Element(name = "hp_no", required = false)
+        private String hp_no = "";
+
+        @Element(name = "zip_code", required = false)
+        private String zip_code = "";
+
+        @Element(name = "address", required = false)
         private String address = "";
-        private String pickupHopeDay = "";
-        private String pickupHopeTime = "";
-        private String senderName = "";
-        private String delMemo = "";
-        private String driverMemo = "";
-        private String failReason = "";
+
+        @Element(name = "pickup_hopeday", required = false)
+        private String pickup_hopeday = "";
+
+        @Element(name = "pickup_hopetime", required = false)
+        private String pickup_hopetime = "";
+
+        @Element(name = "sender_nm", required = false)
+        private String sender_nm = "";
+
+        @Element(name = "del_memo", required = false)
+        private String del_memo = "";
+
+        @Element(name = "driver_memo", required = false)
+        private String driver_memo = "";
+
+        @Element(name = "fail_reason", required = false)
+        private String fail_reason = "";
+
+        @Element(name = "qty", required = false)
         private String qty = "";
-        private String custName = "";
-        private String partnerID = "";
-        private String failedCount = "";
+
+        @Element(name = "cust_nm", required = false)
+        private String cust_nm = "";
+
+        @Element(name = "partner_id", required = false)
+        private String partner_id = "";
+
+        @Element(name = "failed_count", required = false)
+        private String failed_count = "";
+
+        @Element(name = "route", required = false)
         private String route = "";
+
+        @Element(name = "cust_no", required = false)
         private String cust_no = "";
 
         public String getContrNo() {
-            return contrNo;
+            return contr_no;
         }
 
         public void setContrNo(String contrNo) {
-            this.contrNo = contrNo;
+            this.contr_no = contrNo;
         }
 
         public String getPartnerRefNo() {
-            return partnerRefNo;
+            return partner_ref_no;
         }
 
         public void setPartnerRefNo(String partnerRefNo) {
-            this.partnerRefNo = partnerRefNo;
+            this.partner_ref_no = partnerRefNo;
         }
 
         public String getInvoiceNo() {
-            return invoiceNo;
+            return invoice_no;
         }
 
         public void setInvoiceNo(String invoiceNo) {
-            this.invoiceNo = invoiceNo;
+            this.invoice_no = invoiceNo;
         }
 
         public String getStat() {
@@ -89,43 +140,43 @@ public class CnRPickupResult {
         }
 
         public String getReqName() {
-            return reqName;
+            return req_nm;
         }
 
         public void setReqName(String reqName) {
-            this.reqName = reqName;
+            this.req_nm = reqName;
         }
 
         public String getReqDate() {
-            return reqDate;
+            return req_dt;
         }
 
         public void setReqDate(String reqDate) {
-            this.reqDate = reqDate;
+            this.req_dt = reqDate;
         }
 
         public String getTelNo() {
-            return telNo;
+            return tel_no;
         }
 
         public void setTelNo(String telNo) {
-            this.telNo = telNo;
+            this.tel_no = telNo;
         }
 
         public String getHpNo() {
-            return hpNo;
+            return hp_no;
         }
 
         public void setHpNo(String hpNo) {
-            this.hpNo = hpNo;
+            this.hp_no = hpNo;
         }
 
         public String getZipCode() {
-            return zipCode;
+            return zip_code;
         }
 
         public void setZipCode(String zipCode) {
-            this.zipCode = zipCode;
+            this.zip_code = zipCode;
         }
 
         public String getAddress() {
@@ -137,51 +188,51 @@ public class CnRPickupResult {
         }
 
         public String getPickupHopeDay() {
-            return pickupHopeDay;
+            return pickup_hopeday;
         }
 
         public void setPickupHopeDay(String pickupHopeDay) {
-            this.pickupHopeDay = pickupHopeDay;
+            this.pickup_hopeday = pickupHopeDay;
         }
 
         public String getPickupHopeTime() {
-            return pickupHopeTime;
+            return pickup_hopetime;
         }
 
         public void setPickupHopeTime(String pickupHopeTime) {
-            this.pickupHopeTime = pickupHopeTime;
+            this.pickup_hopetime = pickupHopeTime;
         }
 
         public String getSenderName() {
-            return senderName;
+            return sender_nm;
         }
 
         public void setSenderName(String senderName) {
-            this.senderName = senderName;
+            this.sender_nm = senderName;
         }
 
         public String getDelMemo() {
-            return delMemo;
+            return del_memo;
         }
 
         public void setDelMemo(String delMemo) {
-            this.delMemo = delMemo;
+            this.del_memo = delMemo;
         }
 
         public String getDriverMemo() {
-            return driverMemo;
+            return driver_memo;
         }
 
         public void setDriverMemo(String driverMemo) {
-            this.driverMemo = driverMemo;
+            this.driver_memo = driverMemo;
         }
 
         public String getFailReason() {
-            return failReason;
+            return fail_reason;
         }
 
         public void setFailReason(String failReason) {
-            this.failReason = failReason;
+            this.fail_reason = failReason;
         }
 
         public String getQty() {
@@ -193,27 +244,27 @@ public class CnRPickupResult {
         }
 
         public String getCustName() {
-            return custName;
+            return cust_nm;
         }
 
         public void setCustName(String custName) {
-            this.custName = custName;
+            this.cust_nm = custName;
         }
 
         public String getPartnerID() {
-            return partnerID;
+            return partner_id;
         }
 
         public void setPartnerID(String partnerID) {
-            this.partnerID = partnerID;
+            this.partner_id = partnerID;
         }
 
         public String getFailedCount() {
-            return failedCount;
+            return failed_count;
         }
 
         public void setFailedCount(String failedCount) {
-            this.failedCount = failedCount;
+            this.failed_count = failedCount;
         }
 
         public String getRoute() {

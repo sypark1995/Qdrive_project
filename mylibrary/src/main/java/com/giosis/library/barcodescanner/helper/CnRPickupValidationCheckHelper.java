@@ -24,7 +24,7 @@ import java.text.SimpleDateFormat;
 import java.util.Date;
 import java.util.TimeZone;
 
-// TODO_ Retrofit 변경하기
+@Deprecated
 public class CnRPickupValidationCheckHelper {
     String TAG = "CnRPickupValidationCheckHelper";
 
@@ -111,18 +111,15 @@ public class CnRPickupValidationCheckHelper {
                 if (result.getResultCode() == 0) {
 
                     boolean isDBDuplicate = checkDBDuplicate(result.getResultObject().getContrNo(), result.getResultObject().getInvoiceNo());
-
-                    String requester;
                     Log.e(TAG, "  DB Duplicate  > " + isDBDuplicate);
 
                     if (isDBDuplicate) {
 
-                        requester = getCnrRequester(result.getResultObject().getInvoiceNo());
+                        getCnrRequester(result.getResultObject().getInvoiceNo());
                     } else {
 
-                        requester = insertCnRData(result.getResultObject());
+                        insertCnRData(result.getResultObject());
                     }
-                    Log.e(TAG, "requester  > " + requester);
 
                     if (eventListener != null)
                         eventListener.OnCnRPickupValidationCheckResult(result);

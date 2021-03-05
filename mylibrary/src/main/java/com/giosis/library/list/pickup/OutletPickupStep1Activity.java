@@ -21,6 +21,7 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import com.giosis.library.R;
+import com.giosis.library.barcodescanner.CaptureActivity;
 import com.giosis.library.list.OutletInfo;
 import com.giosis.library.server.Custom_JsonParser;
 import com.giosis.library.util.BarcodeType;
@@ -127,22 +128,33 @@ public class OutletPickupStep1Activity extends CommonActivity {
 
                     if (0 < result.getResultObject().getTrackingNoList().size()) {
 
-                        try {
+//                        try {
+//
+//                            Intent intent = new Intent(OutletPickupStep1Activity.this, Class.forName("com.giosis.util.qdrive.barcodescanner.CaptureActivityTemp"));
+//                            intent.putExtra("title", mTitle);
+//                            intent.putExtra("type", BarcodeType.OUTLET_PICKUP_SCAN);
+//                            intent.putExtra("pickup_no", mPickupNo);
+//                            intent.putExtra("applicant", mApplicant);
+//                            intent.putExtra("qty", mQty);
+//                            intent.putExtra("tracking_data", result);
+//                            intent.putExtra("route", mRoute);
+//                            startActivity(intent);
+//                        } catch (Exception e) {
+//
+//                            Log.e("Exception", "  Exception : " + e.toString());
+//                            Toast.makeText(OutletPickupStep1Activity.this, "Exception : " + e.toString(), Toast.LENGTH_SHORT).show();
+//                        }
 
-                            Intent intent = new Intent(OutletPickupStep1Activity.this, Class.forName("com.giosis.util.qdrive.barcodescanner.CaptureActivity"));
-                            intent.putExtra("title", mTitle);
-                            intent.putExtra("type", BarcodeType.OUTLET_PICKUP_SCAN);
-                            intent.putExtra("pickup_no", mPickupNo);
-                            intent.putExtra("applicant", mApplicant);
-                            intent.putExtra("qty", mQty);
-                            intent.putExtra("tracking_data", result);
-                            intent.putExtra("route", mRoute);
-                            startActivity(intent);
-                        } catch (Exception e) {
-
-                            Log.e("Exception", "  Exception : " + e.toString());
-                            Toast.makeText(OutletPickupStep1Activity.this, "Exception : " + e.toString(), Toast.LENGTH_SHORT).show();
-                        }
+                        // FIXME_ New CaptureActivity
+                        Intent intent = new Intent(OutletPickupStep1Activity.this, CaptureActivity.class);
+                        intent.putExtra("title", mTitle);
+                        intent.putExtra("type", BarcodeType.OUTLET_PICKUP_SCAN);
+                        intent.putExtra("pickup_no", mPickupNo);
+                        intent.putExtra("applicant", mApplicant);
+                        intent.putExtra("qty", mQty);
+                        intent.putExtra("tracking_data", result);
+                        intent.putExtra("route", mRoute);
+                        startActivity(intent);
                     } else {
 
                         Toast.makeText(OutletPickupStep1Activity.this, "Not Exist Tracking No.", Toast.LENGTH_SHORT).show();

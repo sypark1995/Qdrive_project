@@ -27,6 +27,7 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import com.giosis.library.R;
+import com.giosis.library.barcodescanner.CaptureActivity;
 import com.giosis.library.bluetooth.BluetoothListener;
 import com.giosis.library.list.delivery.DeliveryDoneActivity;
 import com.giosis.library.list.delivery.DeliveryFailedActivity;
@@ -867,18 +868,27 @@ public class ListInProgressAdapter extends BaseExpandableListAdapter {
 
 
         btn_list_item_child_pickup_scan.setOnClickListener(v -> {
-            try {
 
-                Intent intent = new Intent(v.getContext(), Class.forName("com.giosis.util.qdrive.barcodescanner.CaptureActivity"));
-                intent.putExtra("title", v.getContext().getResources().getString(R.string.text_start_to_scan));
-                intent.putExtra("type", BarcodeType.PICKUP_SCAN_ALL);
-                intent.putExtra("pickup_no", tracking_no);
-                intent.putExtra("applicant", requester);
-                v.getContext().startActivity(intent);
+//            try {
+//
+//                Intent intent = new Intent(v.getContext(), Class.forName("com.giosis.util.qdrive.barcodescanner.CaptureActivityTemp"));
+//                intent.putExtra("title", v.getContext().getResources().getString(R.string.text_start_to_scan));
+//                intent.putExtra("type", BarcodeType.PICKUP_SCAN_ALL);
+//                intent.putExtra("pickup_no", tracking_no);
+//                intent.putExtra("applicant", requester);
+//                v.getContext().startActivity(intent);
+//
+//            } catch (Exception e) {
+//
+//            }
 
-            } catch (Exception e) {
-
-            }
+            // FIXME_ New CaptureActivity
+            Intent intent = new Intent(v.getContext(), CaptureActivity.class);
+            intent.putExtra("title", v.getContext().getResources().getString(R.string.text_start_to_scan));
+            intent.putExtra("type", BarcodeType.PICKUP_SCAN_ALL);
+            intent.putExtra("pickup_no", tracking_no);
+            intent.putExtra("applicant", requester);
+            v.getContext().startActivity(intent);
         });
 
 
