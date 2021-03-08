@@ -20,7 +20,7 @@
         android:layout_height="wrap_content"
         android:layout_marginStart="45dp"
         android:layout_marginEnd="45dp"
-        android:background="@drawable/back_round_5_ffffff_border"
+        android:background="@drawable/border_round_5_707070"
         android:paddingStart="20dp"
         android:paddingTop="20dp"
         android:paddingEnd="20dp"

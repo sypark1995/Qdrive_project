@@ -9,6 +9,7 @@ import android.net.Uri;
 import android.os.Bundle;
 import android.os.Handler;
 
+import com.giosis.library.BuildConfig;
 import com.giosis.library.setting.bluetooth.BluetoothDeviceData;
 import com.giosis.library.util.LocaleManager;
 

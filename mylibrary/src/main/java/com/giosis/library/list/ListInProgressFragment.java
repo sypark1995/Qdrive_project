@@ -166,7 +166,7 @@ public class ListInProgressFragment extends Fragment
 
             if (!pickupSortCondition.equals("R")) {
 
-                btn_list_pickup_sort_request.setBackgroundResource(R.drawable.back_round_4_ffffff);
+                btn_list_pickup_sort_request.setBackgroundResource(R.drawable.bg_round_4_ffffff);
                 btn_list_pickup_sort_request.setTextColor(getResources().getColor(R.color.color_4e4e4e));
                 btn_list_pickup_sort_trip.setBackgroundResource(R.color.transparent);
                 btn_list_pickup_sort_trip.setTextColor(getResources().getColor(R.color.color_8f8f8f));
@@ -184,7 +184,7 @@ public class ListInProgressFragment extends Fragment
 
                 btn_list_pickup_sort_request.setBackgroundResource(R.color.transparent);
                 btn_list_pickup_sort_request.setTextColor(getResources().getColor(R.color.color_8f8f8f));
-                btn_list_pickup_sort_trip.setBackgroundResource(R.drawable.back_round_4_ffffff);
+                btn_list_pickup_sort_trip.setBackgroundResource(R.drawable.bg_round_4_ffffff);
                 btn_list_pickup_sort_trip.setTextColor(getResources().getColor(R.color.color_4e4e4e));
 
                 pickupSortCondition = "T";
