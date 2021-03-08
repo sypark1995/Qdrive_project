@@ -6,6 +6,7 @@ import android.os.Bundle
 import android.view.View
 import android.widget.Toast
 import androidx.lifecycle.ViewModelProvider
+import androidx.lifecycle.observe
 import com.giosis.library.BR
 import com.giosis.library.BaseActivity
 import com.giosis.library.R
@@ -71,7 +72,7 @@ class SettingActivity : BaseActivity<ActivitySettingBinding, SettingViewModel>()
 
         initDeveloperMode()
 
-        mViewModel.deleteAlert.observe(this, {
+        mViewModel.deleteAlert.observe(this) {
 
             if (it) {
                 val text = DialogUiConfig(
@@ -107,7 +108,7 @@ class SettingActivity : BaseActivity<ActivitySettingBinding, SettingViewModel>()
             } else {
                 deleteAlert.visibility = View.GONE
             }
-        })
+        }
     }
 
 
