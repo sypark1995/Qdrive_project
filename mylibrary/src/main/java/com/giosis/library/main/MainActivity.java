@@ -36,12 +36,12 @@ import com.giosis.library.barcodescanner.CaptureActivity;
 import com.giosis.library.gps.FusedProviderService;
 import com.giosis.library.gps.GPSTrackerManager;
 import com.giosis.library.gps.LocationManagerService;
-import com.giosis.library.gps.QuickAppUserInfoUploadHelper;
 import com.giosis.library.list.ListActivity;
 import com.giosis.library.main.submenu.OutletOrderStatusActivity;
 import com.giosis.library.main.submenu.RpcListActivity;
 import com.giosis.library.pickup.CreatePickupOrderActivity;
 import com.giosis.library.server.Custom_JsonParser;
+import com.giosis.library.server.RetrofitClient;
 import com.giosis.library.setting.bluetooth.BluetoothDeviceData;
 import com.giosis.library.util.BarcodeType;
 import com.giosis.library.util.DataUtil;
@@ -73,6 +73,9 @@ import java.util.Calendar;
 import java.util.Date;
 import java.util.List;
 import java.util.TimeZone;
+
+import io.reactivex.rxjava3.android.schedulers.AndroidSchedulers;
+import io.reactivex.rxjava3.schedulers.Schedulers;
 
 
 public class MainActivity extends AppBaseActivity {
@@ -809,6 +812,7 @@ public class MainActivity extends AppBaseActivity {
         }
     }
 
+    @SuppressLint("SimpleDateFormat")
     public void setDestroyUserInfo() {
 
         String api_level = Integer.toString(Build.VERSION.SDK_INT);     // API Level
@@ -818,13 +822,42 @@ public class MainActivity extends AppBaseActivity {
         String device_os_version = System.getProperty("os.version");    // OS version
         Log.e(TAG, " DATA " + api_level + " / " + device_info + " / " + device_model + " / " + device_product + " / " + device_os_version);
 
-        new QuickAppUserInfoUploadHelper.Builder(this, opID, "", api_level, device_info,
-                device_model, device_product, device_os_version, "killapp")
-                .setOnQuickQppUserInfoUploadEventListener(() -> {
-                }).build().execute();
+//        new QuickAppUserInfoUploadHelper.Builder(this, opID, "", api_level, device_info,
+//                device_model, device_product, device_os_version, "killapp")
+//                .setOnQuickQppUserInfoUploadEventListener(() -> {
+//                }).build().execute();
+
+
+        SimpleDateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
+        String regDataString = dateFormat.format(new Date());
+
+        RetrofitClient.INSTANCE.instanceDynamic().requestSetAppUserInfo("killapp", api_level, device_info, device_model, device_product, device_os_version,
+                NetworkUtil.getNetworkType(this), "", regDataString, "QDRIVE", "", "",
+                "", "", "", "", "", "", opID, opID, opID, DataUtil.appID, Preferences.INSTANCE.getUserNation())
+                .subscribeOn(Schedulers.io())
+                .observeOn(AndroidSchedulers.mainThread())
+                .subscribe(it -> {
+
+                    try {
+
+                        Log.e("Server", " requestSetAppUserInfo  result  " + it.getResultCode());
+
+                        if (it.getResultCode() < 0) {
+
+                            AlertDialog.Builder builder = new AlertDialog.Builder(this);
+                            builder.setCancelable(false);
+                            builder.setTitle(getResources().getString(R.string.text_upload_result));
+                            builder.setMessage(it.getResultMsg());
+                            builder.setPositiveButton(getResources().getString(R.string.button_ok), (dialog1, which) -> dialog1.dismiss());
+                            builder.show();
+                        }
+                    } catch (Exception e) {
+                        Log.e("Exception", "  requestSetAppUserInfo  Exception " + e.toString());
+                    }
+                }, it -> Toast.makeText(this, getResources().getString(com.giosis.library.R.string.msg_error_check_again), Toast.LENGTH_SHORT).show());
+
 
         double accuracy = 0;
-
         try {
 
             if (gpsOnceEnable && gpsTrackerManager != null) {

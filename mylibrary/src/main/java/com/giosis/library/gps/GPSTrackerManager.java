@@ -8,7 +8,6 @@ import android.util.Log;
 import com.giosis.library.util.Preferences;
 import com.google.android.gms.common.ConnectionResult;
 import com.google.android.gms.common.GoogleApiAvailability;
-import com.google.android.gms.common.api.GoogleApiClient;
 
 // 일회성으로 위/경도 필요
 public class GPSTrackerManager {
@@ -28,8 +27,10 @@ public class GPSTrackerManager {
 
 
     // Google Play Service - Y
-    private FusedProviderOnceListener fusedProviderListener = null;
-    private GoogleApiClient mGoogleApiClient;
+//    private FusedProviderOnceListener fusedProviderListener = null;
+//    private GoogleApiClient mGoogleApiClient;
+
+    private FusedProviderOnceListener1 fusedProviderListener1 = null;
 
     // Google Play Service - N
     private LocationManagerOnceListener locationMngListener = null;
@@ -76,12 +77,15 @@ public class GPSTrackerManager {
 
     private void createFusedProvider() {
 
-        fusedProviderListener = new FusedProviderOnceListener(context);
-        mGoogleApiClient = fusedProviderListener.getGoogleApiClient();
+//        fusedProviderListener = new FusedProviderOnceListener(context);
+//        mGoogleApiClient = fusedProviderListener.getGoogleApiClient();
+//
+//        if (mGoogleApiClient != null) {
+//            mGoogleApiClient.connect();
+//        }
 
-        if (mGoogleApiClient != null) {
-            mGoogleApiClient.connect();
-        }
+        fusedProviderListener1 = new FusedProviderOnceListener1(context);
+        fusedProviderListener1.startLocationUpdates();
     }
 
 
@@ -96,13 +100,17 @@ public class GPSTrackerManager {
 
     public void stopFusedProviderService() {
 
-        if (fusedProviderListener != null)
-            fusedProviderListener.removeLocationUpdates();
+//        if (fusedProviderListener != null)
+//            fusedProviderListener.removeLocationUpdates();
+//
+//        if (mGoogleApiClient != null) {
+//
+//            mGoogleApiClient.disconnect();
+//        }
 
-        if (mGoogleApiClient != null) {
+        if (fusedProviderListener1 != null)
+            fusedProviderListener1.removeLocationUpdates();
 
-            mGoogleApiClient.disconnect();
-        }
 
         if (locationManager != null) {
             if (locationMngListener != null) {
@@ -119,7 +127,8 @@ public class GPSTrackerManager {
 
         if (isGooglePlayService) {
 
-            latitude = fusedProviderListener.getLatitude();
+            //    latitude = fusedProviderListener.getLatitude();
+            latitude = fusedProviderListener1.getLatitude();
         } else {
 
             latitude = locationMngListener.getLatitude();
@@ -135,7 +144,8 @@ public class GPSTrackerManager {
 
         if (isGooglePlayService) {
 
-            longitude = fusedProviderListener.getLongitude();
+            //  longitude = fusedProviderListener.getLongitude();
+            longitude = fusedProviderListener1.getLongitude();
         } else {
 
             longitude = locationMngListener.getLongitude();
@@ -149,7 +159,8 @@ public class GPSTrackerManager {
         double accuracy = 0;
 
         if (isGooglePlayService) {
-            accuracy = fusedProviderListener.getAccuracy();
+            //   accuracy = fusedProviderListener.getAccuracy();
+            accuracy = fusedProviderListener1.getAccuracy();
         }
 
         return accuracy;

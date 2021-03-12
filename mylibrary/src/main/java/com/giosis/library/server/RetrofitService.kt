@@ -223,4 +223,61 @@ interface RetrofitService {
             @Field("app_id") app_id: String = DataUtil.appID,
             @Field("nation_cd") nation_cd: String = Preferences.userNation
     ): Single<APIModel>
+
+    @POST("setGPSLocationVersion2")
+    @FormUrlEncoded
+    fun requestSetGPSLocation(
+            @Field("channel") channel: String,
+            @Field("latitude") latitude: Double,
+            @Field("longitude") longitude: Double,
+            @Field("accuracy") accuracy: Double,
+            @Field("reference") reference: String,
+            @Field("log_desc") log_desc: String,
+            @Field("network_type") network_type: String,
+            @Field("reg_id") reg_id: String = Preferences.userId,
+            @Field("chg_id") chg_id: String = Preferences.userId,
+            @Field("device_id") device_id: String = Preferences.deviceUUID,
+            @Field("op_id") op_id: String = Preferences.userId,
+            @Field("app_id") app_id: String = DataUtil.appID,
+            @Field("nation_cd") nation_cd: String = Preferences.userNation
+    ): Single<APIModel>
+
+    @POST("setQuickAppUserInfo")
+    @FormUrlEncoded
+    fun requestSetAppUserInfo(
+            @Field("type") type: String,
+            @Field("api_level") api_level: String,
+            @Field("device_info") device_info: String,
+            @Field("device_model") device_model: String,
+            @Field("device_product") device_product: String,
+            @Field("device_os_version") device_os_version: String,
+            @Field("network_type") network_type: String,
+            @Field("fused_provider_stat") fused_provider_stat: String,
+            @Field("logout_dt") logout_dt: String,
+            @Field("channel") channel: String = "QDRIVE",
+            @Field("vehicle_code") vehicle_code: String = "",
+            @Field("device_id") device_id: String = "",
+            @Field("location_mng_stat") location_mng_stat: String = "",
+            @Field("desc1") desc1: String = "",
+            @Field("desc2") desc2: String = "",
+            @Field("desc3") desc3: String = "",
+            @Field("desc4") desc4: String = "",
+            @Field("desc5") desc5: String = "",
+            @Field("op_id") op_id: String = Preferences.userId,
+            @Field("reg_id") reg_id: String = Preferences.userId,
+            @Field("chg_id") chg_id: String = Preferences.userId,
+            @Field("app_id") app_id: String = DataUtil.appID,
+            @Field("nation_cd") nation_cd: String = Preferences.userNation
+    ): Single<APIModel>
+
+
+    @POST("getTodayPickupDone")
+    @FormUrlEncoded
+    fun requestGetTodayPickupDoneList(
+            @Field("opId") opId: String = Preferences.userId,
+            @Field("done_date") done_date: String = "",
+            @Field("pickup_type") pickup_type: String = "",
+            @Field("app_id") app_id: String = DataUtil.appID,
+            @Field("nation_cd") nation_cd: String = Preferences.userNation
+    ): Single<APIModel>
 }

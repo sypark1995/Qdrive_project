@@ -13,6 +13,7 @@ import com.giosis.library.util.Preferences;
 
 import org.json.JSONObject;
 
+@Deprecated
 public class FusedProviderListenerUploadHelper {
     private final String TAG = "FusedProviderListenerUploadHelper";
 

@@ -17,7 +17,6 @@ import androidx.core.app.NotificationCompat;
 import com.giosis.library.R;
 import com.giosis.library.main.MainActivity;
 import com.giosis.library.util.Preferences;
-import com.google.android.gms.common.api.GoogleApiClient;
 
 // Main 에서 호출 / 5분 또는 500m 거리 이동 시 마다 호출
 public class FusedProviderService extends Service {
@@ -28,8 +27,8 @@ public class FusedProviderService extends Service {
     FusedProviderWorker fusedProviderTimeWorker;
     FusedProviderWorker fusedProviderDistanceWorker;
 
-    GoogleApiClient mGoogleApiClient1;
-    GoogleApiClient mGoogleApiClient2;
+//    GoogleApiClient mGoogleApiClient1;
+//    GoogleApiClient mGoogleApiClient2;
 
     @Override
     public IBinder onBind(Intent intent) {
@@ -66,7 +65,7 @@ public class FusedProviderService extends Service {
             Intent notificationIntent = new Intent(this, MainActivity.class);
             PendingIntent pendingIntent = PendingIntent.getActivity(this, 0, notificationIntent, 0);
 
-            
+
             int resourceId = getResources().getIdentifier("qdrive_icon", "drawable", getPackageName());
             if (!Preferences.INSTANCE.getUserNation().equalsIgnoreCase("SG")) {
 
@@ -92,15 +91,19 @@ public class FusedProviderService extends Service {
         fusedProviderTimeWorker = new FusedProviderWorker(context, "time_fused");
         fusedProviderDistanceWorker = new FusedProviderWorker(context, "distance_fused");
 
-        mGoogleApiClient1 = fusedProviderTimeWorker.getGoogleApiClient();
-        mGoogleApiClient2 = fusedProviderDistanceWorker.getGoogleApiClient();
+        fusedProviderTimeWorker.startLocationUpdates();
+        fusedProviderDistanceWorker.startLocationUpdates();
 
-        if (mGoogleApiClient1 != null) {
-            mGoogleApiClient1.connect();
-        }
-        if (mGoogleApiClient2 != null) {
-            mGoogleApiClient2.connect();
-        }
+
+//        mGoogleApiClient1 = fusedProviderTimeWorker.getGoogleApiClient();
+//        mGoogleApiClient2 = fusedProviderDistanceWorker.getGoogleApiClient();
+//
+//        if (mGoogleApiClient1 != null) {
+//            mGoogleApiClient1.connect();
+//        }
+//        if (mGoogleApiClient2 != null) {
+//            mGoogleApiClient2.connect();
+//        }
     }
 
 
@@ -119,11 +122,11 @@ public class FusedProviderService extends Service {
             Log.e("Exception", TAG + "  onDestroy Exception : " + e.toString());
         }
 
-        if (mGoogleApiClient1 != null) {
-            mGoogleApiClient1.disconnect();
-        }
-        if (mGoogleApiClient2 != null) {
-            mGoogleApiClient2.disconnect();
-        }
+//        if (mGoogleApiClient1 != null) {
+//            mGoogleApiClient1.disconnect();
+//        }
+//        if (mGoogleApiClient2 != null) {
+//            mGoogleApiClient2.disconnect();
+//        }
     }
 }

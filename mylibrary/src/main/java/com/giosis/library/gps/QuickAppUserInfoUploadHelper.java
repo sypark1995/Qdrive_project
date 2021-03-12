@@ -17,6 +17,7 @@ import org.json.JSONObject;
 import java.text.SimpleDateFormat;
 import java.util.Date;
 
+@Deprecated
 public class QuickAppUserInfoUploadHelper {
     private final String TAG = "QuickAppUserInfoUploadHelper";
 
@@ -176,7 +177,7 @@ public class QuickAppUserInfoUploadHelper {
                 job.accumulate("network_type", networkType);
                 job.accumulate("location_mng_stat", "");
 
-                if (type.equals("exception") || type.equals("killapp")) {
+                if (type.equals("killapp")) {
                     job.accumulate("fused_provider_stat", "");
                 } else {
                     job.accumulate("fused_provider_stat", failed_reason);
@@ -186,12 +187,7 @@ public class QuickAppUserInfoUploadHelper {
                 String regDataString = dateFormat.format(new Date());
                 job.accumulate("logout_dt", regDataString);
 
-                if (type.equals("exception")) {
-                    job.accumulate("desc1", failed_reason);
-                } else {
-                    job.accumulate("desc1", "");
-                }
-
+                job.accumulate("desc1", "");
                 job.accumulate("desc2", "");
                 job.accumulate("desc3", "");
                 job.accumulate("desc4", "");
