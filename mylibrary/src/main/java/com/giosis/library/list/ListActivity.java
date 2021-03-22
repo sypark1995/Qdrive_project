@@ -2,7 +2,6 @@ package com.giosis.library.list;
 
 
 import android.content.Intent;
-import android.database.Cursor;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.KeyEvent;
@@ -26,12 +25,7 @@ import com.giosis.library.bluetooth.BluetoothClass;
 import com.giosis.library.main.MainActivity;
 import com.giosis.library.util.CommonActivity;
 import com.giosis.library.util.DataUtil;
-import com.giosis.library.util.DatabaseHelper;
 import com.giosis.library.util.Preferences;
-import com.giosis.library.util.ServerResult;
-
-import java.text.SimpleDateFormat;
-import java.util.Date;
 
 /**
  * @editor krm0219

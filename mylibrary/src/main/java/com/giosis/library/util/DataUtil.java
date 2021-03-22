@@ -108,6 +108,7 @@ public class DataUtil {
         } catch (Exception e) {
 
             e.printStackTrace();
+            Log.e("Exception", "captureSign  Exception : " + e.toString());
         }
     }
 

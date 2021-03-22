@@ -1295,7 +1295,7 @@ public final class CaptureActivity extends CommonActivity implements DecoratedBa
                         .observeOn(AndroidSchedulers.mainThread())
                         .subscribe(it -> {
 
-                            Log.e("Server", "result  " + it.getResultCode());
+                            Log.e("Server", "requestValidationCheckDpc3Out  result  " + it.getResultCode());
 
                             if (it.getResultCode() < 0) {
 

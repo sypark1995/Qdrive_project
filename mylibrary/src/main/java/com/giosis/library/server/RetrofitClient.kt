@@ -72,7 +72,7 @@ object RetrofitClient {
     fun instanceDynamic(): RetrofitService {
 
         val serverURL = Preferences.serverURL + DataUtil.API_ADDRESS
-        Log.e("Server", "Server URL  $serverURL")
+    //    Log.e("Server", "Server URL  $serverURL")
 
         val retrofit = Retrofit.Builder()
                 .baseUrl(serverURL)

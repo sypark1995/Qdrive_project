@@ -416,30 +416,31 @@ public class MainActivity extends AppBaseActivity {
         }
 
 
-        //Qx 소속 드라이버는 Assign 된 픽업 조회
-        if (officeName.contains("Qxpress")) {
-            new PickupAssignCheckHelper.Builder(this, opID)
-                    .setOnPickupAssignCheckListener(new PickupAssignCheckHelper.OnPickupAssignCheckListener() {
-                        @Override
-                        public void onDownloadResult(Integer result) {
-                            getLocalCount();
-                        }
-
-                        @Override
-                        public void onDownloadFailList(Integer result) {
-                            //Deactivated 사용자
-                            if (result == -1) {
-
-                                String msg = getResources().getString(R.string.msg_your_account_deactivated);
-                                new AlertDialog.Builder(MainActivity.this)
-                                        .setMessage(msg)
-                                        .setTitle(getResources().getString(R.string.text_alert))
-                                        .setCancelable(false).setPositiveButton(getResources().getString(R.string.button_ok),
-                                        (dialog, which) -> finish()).show();
-                            }
-                        }
-                    }).build().execute();
-        }
+        // 2021.03 삭제 예정 Login 호출함수에서 Deactivated 이미 확인함
+//        //Qx 소속 드라이버는 Assign 된 픽업 조회
+//        if (officeName.contains("Qxpress")) {
+//            new PickupAssignCheckHelper.Builder(this, opID)
+//                    .setOnPickupAssignCheckListener(new PickupAssignCheckHelper.OnPickupAssignCheckListener() {
+//                        @Override
+//                        public void onDownloadResult(Integer result) {
+//                            getLocalCount();
+//                        }
+//
+//                        @Override
+//                        public void onDownloadFailList(Integer result) {
+//                            //Deactivated 사용자
+//                            if (result == -1) {
+//
+//                                String msg = getResources().getString(R.string.msg_your_account_deactivated);
+//                                new AlertDialog.Builder(MainActivity.this)
+//                                        .setMessage(msg)
+//                                        .setTitle(getResources().getString(R.string.text_alert))
+//                                        .setCancelable(false).setPositiveButton(getResources().getString(R.string.button_ok),
+//                                        (dialog, which) -> finish()).show();
+//                            }
+//                        }
+//                    }).build().execute();
+//        }
 
         getLocalCount();
     }
