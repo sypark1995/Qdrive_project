@@ -99,6 +99,7 @@ public class MainActivity extends AppBaseActivity {
     Button btn_home_outlet_order_status;
     Button btn_home_create_pickup_order;
     Button btn_home_assign_pickup_driver;
+    Button btn_home_today_my_route;
 
 
     String fcmToken;
@@ -207,6 +208,9 @@ public class MainActivity extends AppBaseActivity {
 
                 Intent intent = new Intent(MainActivity.this, CreatePickupOrderActivity.class);
                 startActivity(intent);
+            } else if (id == R.id.btn_home_today_my_route) {
+
+                // TODO_Route
             }
         }
     };
@@ -235,7 +239,7 @@ public class MainActivity extends AppBaseActivity {
 
 //        // TEST Outlet
 //        Preferences.INSTANCE.setOutletDriver("Y");
-        //    Preferences.INSTANCE.setUserId("7Eleven.Ajib");      // 7Eleven.Ajib
+//        Preferences.INSTANCE.setUserId("7Eleven.Ajib");      // 7Eleven.Ajib
 
 
         dbHelper = DatabaseHelper.getInstance();
@@ -284,6 +288,7 @@ public class MainActivity extends AppBaseActivity {
         btn_home_change_delivery_driver = findViewById(R.id.btn_home_change_delivery_driver);
         btn_home_outlet_order_status = findViewById(R.id.btn_home_outlet_order_status);    // 19.01 krm0219
         btn_home_create_pickup_order = findViewById(R.id.btn_home_create_pickup_order);
+        btn_home_today_my_route = findViewById(R.id.btn_home_today_my_route);
 
 
         getLocalCount();
@@ -329,6 +334,9 @@ public class MainActivity extends AppBaseActivity {
 
             if (btn_home_create_pickup_order.getVisibility() == View.VISIBLE) {
                 btn_home_create_pickup_order.setLayoutParams(lp);
+            } else if (btn_home_today_my_route.getVisibility() == View.VISIBLE) {
+
+                btn_home_today_my_route.setLayoutParams(lp);
             } else {
                 btn_home_change_delivery_driver.setLayoutParams(lp);
             }
@@ -339,6 +347,7 @@ public class MainActivity extends AppBaseActivity {
         btn_home_outlet_order_status.setOnClickListener(clickListener);
         btn_home_create_pickup_order.setOnClickListener(clickListener);
         btn_home_assign_pickup_driver.setOnClickListener(clickListener);
+        btn_home_today_my_route.setOnClickListener(clickListener);
 
 
         //

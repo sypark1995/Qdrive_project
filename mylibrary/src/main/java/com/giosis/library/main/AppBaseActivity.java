@@ -3,14 +3,12 @@ package com.giosis.library.main;
 import android.content.Intent;
 import android.graphics.Color;
 import android.os.Bundle;
-import android.util.Log;
 import android.view.View;
 import android.widget.ExpandableListView;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
-import android.widget.Toast;
 
 import androidx.appcompat.app.ActionBarDrawerToggle;
 import androidx.appcompat.widget.Toolbar;
@@ -20,6 +18,7 @@ import androidx.drawerlayout.widget.DrawerLayout;
 import com.giosis.library.R;
 import com.giosis.library.barcodescanner.CaptureActivity;
 import com.giosis.library.list.ListActivity;
+import com.giosis.library.main.route.TodayMyRouteActivity;
 import com.giosis.library.main.submenu.ListNotInHousedActivity;
 import com.giosis.library.main.submenu.OutletOrderStatusActivity;
 import com.giosis.library.main.submenu.StatisticsActivity;
@@ -190,17 +189,18 @@ public class AppBaseActivity extends CommonActivity {
             arrayList1 = new ArrayList<>(Arrays.asList(getString(R.string.navi_sub_in_progress), getString(R.string.navi_sub_upload_fail), getString(R.string.navi_sub_today_done),
                     getString(R.string.navi_sub_not_in_housed)));
         }
-
-
         adapter.addItem(ContextCompat.getDrawable(this, R.drawable.side_icon_home_selector), getString(R.string.navi_home), null, -1);
         adapter.addItem(ContextCompat.getDrawable(this, R.drawable.side_icon_scan_selector), getString(R.string.navi_scan), arrayList, -1);
         adapter.addItem(ContextCompat.getDrawable(this, R.drawable.side_icon_list_selector), getString(R.string.navi_list), arrayList1, -1);
         adapter.addItem(ContextCompat.getDrawable(this, R.drawable.side_icon_statistics_selector), getString(R.string.navi_statistics), null, -1);
+        adapter.addItem(ContextCompat.getDrawable(this, R.drawable.side_icon_my_route_selector), getString(R.string.text_today_my_route), null, -1);
         adapter.addItem(ContextCompat.getDrawable(this, R.drawable.side_icon_settings_selector), getString(R.string.navi_setting), null, -1);
 
         if (Preferences.INSTANCE.getUserNation().equalsIgnoreCase("SG") && pickup_driver_yn.equals("Y")) {
-            adapter.addItem(ContextCompat.getDrawable(this, R.drawable.icon_pickup_order), getString(R.string.text_create_pickup_order), null, 4);
+            adapter.addItem(ContextCompat.getDrawable(this, R.drawable.side_icon_create_pickup_order_selector), getString(R.string.text_create_pickup_order), null, 5);
         }
+
+
 
 
         nav_list.setOnGroupClickListener((expandableListView, view, position, l) -> {
@@ -241,6 +241,16 @@ public class AppBaseActivity extends CommonActivity {
 
                 drawerLayout.closeDrawers();
                 Intent intent = new Intent(AppBaseActivity.this, CreatePickupOrderActivity.class);
+                startActivity(intent);
+
+                if (!(top_title_string.contains(getString(R.string.navi_home)))) {
+                    finish();
+                }
+            } else if (title.equals(getString(R.string.text_today_my_route))) {
+
+                drawerLayout.closeDrawers();
+                // TODO_ROUTE
+                Intent intent = new Intent(AppBaseActivity.this, TodayMyRouteActivity.class);
                 startActivity(intent);
 
                 if (!(top_title_string.contains(getString(R.string.navi_home)))) {

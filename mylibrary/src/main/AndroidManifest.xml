@@ -17,6 +17,9 @@
     <uses-permission android:name="android.permission.WAKE_LOCK" />
     <uses-permission android:name="android.permission.FOREGROUND_SERVICE" />
 
+    <uses-feature android:name="android.hardware.camera.any" />
+    <uses-permission android:name="android.permission.CAMERA" />
+
     <application>
 
         <activity
@@ -117,6 +120,10 @@
 
         <activity
             android:name=".main.SMSVerificationActivity"
+            android:screenOrientation="portrait" />
+
+        <activity
+            android:name=".main.route.TodayMyRouteActivity"
             android:screenOrientation="portrait" />
 
         <activity

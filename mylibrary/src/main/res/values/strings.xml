@@ -515,8 +515,6 @@
 
     <string name="button_open">Open</string>
 
-
-    <!--   2019.06   -->
     <string name="text_delivery_pickup">Delivery &amp; Pickup for Qxpress</string>
     <string name="text_select_nation">Select Nation</string>
     <string name="text_password">Password</string>
@@ -541,14 +539,28 @@
     <string name="msg_please_print_again">Please print it again.</string>
 
 
-    <!--  2020  Login  -->
     <string name="login_desc">Delivery &amp; Pickup for Qxpress SG</string>
     <string name="login_password">Password</string>
     <string name="login_sign">Sign</string>
     <string name="login_footer">Only Qxpress partner driver can use the application</string>
 
 
-    <!--  STOP   -->
+    <string name="text_today_my_route" translatable="false">Today\'s My Route</string>
+    <string name="text_my_pickup_route" translatable="false">My Pickup Route</string>
+    <string name="text_my_delivery_route" translatable="false">My Delivery Route</string>
+    <string name="text_pickup_assigned_e" translatable="false">Pickup\nAssigned</string>
+    <string name="text_pickup_confirmed_e" translatable="false">Pickup\nConfirmed</string>
+    <string name="text_pickup_done_e" translatable="false">Pickup\nDone</string>
+    <string name="text_pickup_failed_e" translatable="false">Pickup\nFailed</string>
+    <string name="text_on_delivery_e" translatable="false">On\nDelivery</string>
+    <string name="text_delivery_failed_e" translatable="false">Delivery\nFailed</string>
+    <string name="text_run" translatable="false">Run</string>
+    <string name="text_hour_s" translatable="false">H</string>
+    <string name="text_minute_s" translatable="false">Min</string>
+    <string name="text_kilometer_s" translatable="false">Km</string>
+    <string name="text_trip" translatable="false">Trip</string>
+    <string name="text_start_navigator" translatable="false">Start Navigator</string>
+
 
     <string name="msg_intent_failed">Sorry, the requested application could not be launched. The barcode contents may be invalid.</string>
     <string name="msg_not_our_results">You are leaving this application. The search results you will see are not related to this application.</string>

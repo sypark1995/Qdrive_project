@@ -5,6 +5,10 @@
         <item>Indonesia</item>
     </string-array>
 
+    <string-array name="route_type">
+        <item>My Pickup Route</item>
+        <item>My Delivery Route</item>
+    </string-array>
 
 
 
