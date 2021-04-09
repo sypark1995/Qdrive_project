@@ -5,8 +5,12 @@ import android.util.Log
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import com.giosis.library.BaseViewModel
+import com.giosis.library.BuildConfig
+import com.giosis.library.server.RetrofitClient
 import com.giosis.library.util.DatabaseHelper
 import com.giosis.library.util.Preferences
+import io.reactivex.rxjava3.android.schedulers.AndroidSchedulers
+import io.reactivex.rxjava3.schedulers.Schedulers
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
@@ -109,6 +113,40 @@ class TodayMyRouteViewModel : BaseViewModel() {
     // route 받을 API 호출
     fun clickRun() {
 
+        progressVisible.value = true
+
+
+        var lat = "0"
+        var lng = "0"
+
+        if (BuildConfig.DEBUG) {
+            lat = "1.353095"
+            lng = "103.942726"
+        }
+
+        val invoice_list: ArrayList<String> = ArrayList(0)
+
+        val invoice = invoice_list.toString().replace("[", "")
+                .replace("]", "")
+                .replace(" ", "")
+
+        Log.e("route", "$lat - $lng / $invoice")
+        RetrofitClient.instanceXRoute().requestGetTripList(lat, lng, invoice)
+                .subscribeOn(Schedulers.io())
+                .observeOn(AndroidSchedulers.mainThread())
+                .subscribe({
+
+                    // TODO_route
+                    Log.e("route", " requestGetTripList result ${it.errCode} / ${it.data} ")
+
+                    progressVisible.value = false
+                }, {
+
+                    progressVisible.value = false
+                })
+
+
+        // instanceXRoute
         //  _routeData.value =
     }
 
@@ -267,7 +305,7 @@ class TodayMyRouteViewModel : BaseViewModel() {
 
     fun onClickItem(item: Route) {
 
-        // TODO     start navigation Button
-        Log.e("Route", "HERE onClickItem")
+        // TODO_route     start navigation Button
+        Log.e("Route", "onClickItem  Route Navigation")
     }
 }

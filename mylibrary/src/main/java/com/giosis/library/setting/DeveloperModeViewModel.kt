@@ -30,9 +30,26 @@ class DeveloperModeViewModel : BaseViewModel() {
         get() = _checkedId
 
 
+    private val _xRouteUrl = MutableLiveData<String>()
+    val xRouteUrl: MutableLiveData<String>
+        get() = _xRouteUrl
+
+    private val _xRouteUrlReal = MutableLiveData(DataUtil.XROUTE_SERVER_REAL)
+    val xRouteUrlReal: MutableLiveData<String> = _xRouteUrlReal
+
+    private val _xRouteUrlStaging = MutableLiveData(DataUtil.XROUTE_SERVER_STAGING)
+    val xRouteUrlStaging: MutableLiveData<String> = _xRouteUrlStaging
+
+    private val _xRouteCheckedId = MutableLiveData<Int>()
+    val xRouteCheckedId: MutableLiveData<Int>
+        get() = _xRouteCheckedId
+
+
     init {
 
         _serverUrl.value = Preferences.serverURL
+        _xRouteUrl.value = Preferences.xRouteServerURL
+
 
         when (Preferences.serverURL) {
             DataUtil.SERVER_REAL -> {
@@ -52,6 +69,18 @@ class DeveloperModeViewModel : BaseViewModel() {
                 _checkedId.value = R.id.rb_developer_server_url_local
             }
         }
+
+
+        when (Preferences.xRouteServerURL) {
+            DataUtil.XROUTE_SERVER_REAL -> {
+
+                _xRouteCheckedId.value = R.id.rb_developer_xroute_url_real
+            }
+            DataUtil.XROUTE_SERVER_STAGING -> {
+
+                _xRouteCheckedId.value = R.id.rb_developer_xroute_url_staging
+            }
+        }
     }
 
 
@@ -59,5 +88,11 @@ class DeveloperModeViewModel : BaseViewModel() {
 
         Preferences.serverURL = url
         _serverUrl.value = url
+    }
+
+    fun changeXRouteServer(url: String) {
+
+        Preferences.xRouteServerURL = url
+        _xRouteUrl.value = url
     }
 }

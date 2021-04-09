@@ -17,10 +17,7 @@ import java.util.concurrent.TimeUnit
 object RetrofitClient {
 
     const val TAG = "Retrofit"
-    private var BASE_URL: String = ""
-        get() {
-            return "https://qxapi.qxpress.net/GMKT.INC.GLPS.MobileApiService/GlobalMobileService.qapi/"
-        }
+
 
     class AppInterceptor : Interceptor {
         override fun intercept(chain: Interceptor.Chain): Response = with(chain) {
@@ -72,7 +69,7 @@ object RetrofitClient {
     fun instanceDynamic(): RetrofitService {
 
         val serverURL = Preferences.serverURL + DataUtil.API_ADDRESS
-    //    Log.e("Server", "Server URL  $serverURL")
+        //    Log.e("Server", "Server URL  $serverURL")
 
         val retrofit = Retrofit.Builder()
                 .baseUrl(serverURL)
@@ -121,8 +118,7 @@ object RetrofitClient {
 
     fun instanceXRoute(): RetrofitService {
 
-        //val xRouteUrl = "http://xrouter.qxpress.net/"
-        val xRouteUrl = "http://211.115.100.24/"
+        val xRouteUrl = Preferences.xRouteServerURL
 
         val retrofit = Retrofit.Builder()
                 .baseUrl(xRouteUrl)

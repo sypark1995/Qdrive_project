@@ -280,4 +280,14 @@ interface RetrofitService {
             @Field("app_id") app_id: String = DataUtil.appID,
             @Field("nation_cd") nation_cd: String = Preferences.userNation
     ): Single<APIModel>
+
+
+    @POST("get_trip_list.qx")
+    @FormUrlEncoded
+    fun requestGetTripList(
+            @Field("latitude") latitude: String,
+            @Field("longitude") longitude: String,
+            @Field("invoice_no_items", encoded = true) invoice_no_items: String,
+            @Field("id") id: String = Preferences.userId,
+    ): Single<APIModel>
 }

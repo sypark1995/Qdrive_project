@@ -1,8 +1,8 @@
 package com.giosis.library.setting
 
 import android.os.Bundle
+import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModelProvider
-import androidx.lifecycle.observe
 import com.giosis.library.BR
 import com.giosis.library.BaseActivity
 import com.giosis.library.R
@@ -63,10 +63,30 @@ class DeveloperModeActivity : BaseActivity<ActivityDeveloperModeBinding, Develop
         }
 
 
-        getViewModel().serverUrl.observe(this) {
+        getViewModel().serverUrl.observe(this, Observer {
 
             edit_developer_server_url.setText(it)
+        })
+
+
+        rg_developer_xroute_url.setOnCheckedChangeListener { _, checkedId ->
+
+            when (checkedId) {
+                R.id.rb_developer_xroute_url_real -> {
+
+                    getViewModel().changeXRouteServer(DataUtil.XROUTE_SERVER_REAL)
+                }
+                R.id.rb_developer_xroute_url_staging -> {
+
+                    getViewModel().changeXRouteServer(DataUtil.XROUTE_SERVER_STAGING)
+                }
+            }
         }
+
+        getViewModel().xRouteUrl.observe(this, Observer {
+
+            edit_developer_xroute_url.setText(it)
+        })
     }
 
 //

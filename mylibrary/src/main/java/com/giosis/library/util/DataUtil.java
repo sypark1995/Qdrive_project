@@ -42,8 +42,13 @@ public class DataUtil {
     public static String SERVER_TEST = "https://test-api.qxpress.net";
     public static String SERVER_STAGING = "http://staging-qxapi.qxpress.net";
     public static String SERVER_REAL = "https://qxapi.qxpress.net";
+
     public static String API_ADDRESS = "/GMKT.INC.GLPS.MobileApiService/GlobalMobileService.qapi/";
     public static String API_ADDRESS_QX_APP_COMMON = "/GMKT.INC.GLPS.MobileApiService/QxAppCommonService.qapi/";
+
+    public static String XROUTE_SERVER_STAGING = "http://211.115.100.24/api/";
+    public static String XROUTE_SERVER_REAL = "http://xrouter.qxpress.net/api/";
+
 
     public static String qrcode_url = "https://dp.image-gmkt.com/qr.bar?scale=7&version=4&code=";
     public static String barcode_url = "http://image.qxpress.net/code128/code128.php?no=";

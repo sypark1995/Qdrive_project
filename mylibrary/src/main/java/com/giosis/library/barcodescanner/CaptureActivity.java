@@ -1290,7 +1290,7 @@ public final class CaptureActivity extends CommonActivity implements DecoratedBa
                     type = "OL";        // Outlet
 
                 RetrofitClient.INSTANCE.instanceDynamic().requestValidationCheckDpc3Out(strBarcodeNo, type, Preferences.INSTANCE.getUserId(),
-                        com.giosis.library.util.DataUtil.appID, Preferences.INSTANCE.getUserNation())
+                        DataUtil.appID, Preferences.INSTANCE.getUserNation())
                         .subscribeOn(Schedulers.io())
                         .observeOn(AndroidSchedulers.mainThread())
                         .subscribe(it -> {
@@ -1318,7 +1318,7 @@ public final class CaptureActivity extends CommonActivity implements DecoratedBa
                                 beepManager.playBeepSoundAndVibrate(BeepManager.BELL_SOUNDS_SUCCESS);
                                 addScannedBarcode(scanNo, "checkValidation - CONFIRM_MY_DELIVERY_ORDER");
                             }
-                        }, it -> Toast.makeText(context, context.getResources().getString(com.giosis.library.R.string.msg_error_check_again), Toast.LENGTH_SHORT).show());
+                        }, it -> Toast.makeText(context, context.getResources().getString(R.string.msg_error_check_again), Toast.LENGTH_SHORT).show());
 
 
 //                new ConfirmMyOrderValidationCheckHelper.Builder(this, opID, outletDriverYN, strBarcodeNo)
@@ -1353,7 +1353,7 @@ public final class CaptureActivity extends CommonActivity implements DecoratedBa
                 final String scanNo = strBarcodeNo;
 
                 RetrofitClient.INSTANCE.instanceDynamic().requestValidationCheckChangeDriver(strBarcodeNo, Preferences.INSTANCE.getUserId(),
-                        com.giosis.library.util.DataUtil.appID, Preferences.INSTANCE.getUserNation())
+                        DataUtil.appID, Preferences.INSTANCE.getUserNation())
                         .subscribeOn(Schedulers.io())
                         .observeOn(AndroidSchedulers.mainThread())
                         .subscribe(it -> {
@@ -1384,7 +1384,7 @@ public final class CaptureActivity extends CommonActivity implements DecoratedBa
                                 changeDriverResult = gson.fromJson(it.getResultObject(), ChangeDriverResult.Data.class);
                                 addScannedBarcode(scanNo, "checkValidation - CHANGE_DELIVERY_DRIVER");
                             }
-                        }, it -> Toast.makeText(context, context.getResources().getString(com.giosis.library.R.string.msg_error_check_again), Toast.LENGTH_SHORT).show());
+                        }, it -> Toast.makeText(context, context.getResources().getString(R.string.msg_error_check_again), Toast.LENGTH_SHORT).show());
 
 
 //                new ChangeDriverValidationCheckHelper.Builder(this, opID, strBarcodeNo)
@@ -1418,7 +1418,7 @@ public final class CaptureActivity extends CommonActivity implements DecoratedBa
                 final String scanNo = strBarcodeNo;
 
                 RetrofitClient.INSTANCE.instanceDynamic().requestValidationCheckCnR(strBarcodeNo, Preferences.INSTANCE.getUserId(),
-                        com.giosis.library.util.DataUtil.appID, Preferences.INSTANCE.getUserNation())
+                        DataUtil.appID, Preferences.INSTANCE.getUserNation())
                         .subscribeOn(Schedulers.io())
                         .observeOn(AndroidSchedulers.mainThread())
                         .subscribe(it -> {
@@ -1461,7 +1461,7 @@ public final class CaptureActivity extends CommonActivity implements DecoratedBa
                                 pickupCNRRequester = cnRPickupData.getReqName();
                                 addScannedBarcode(scanNo, "checkValidation - PICKUP_CNR");
                             }
-                        }, it -> Toast.makeText(context, context.getResources().getString(com.giosis.library.R.string.msg_error_check_again), Toast.LENGTH_SHORT).show());
+                        }, it -> Toast.makeText(context, context.getResources().getString(R.string.msg_error_check_again), Toast.LENGTH_SHORT).show());
 
 //
 //                new CnRPickupValidationCheckHelper.Builder(this, opID, strBarcodeNo)
@@ -1490,7 +1490,7 @@ public final class CaptureActivity extends CommonActivity implements DecoratedBa
                 final String scanNo = strBarcodeNo;
 
                 RetrofitClient.INSTANCE.instanceDynamic().requestValidationCheckPickup(pickupNo, strBarcodeNo, "QX",
-                        Preferences.INSTANCE.getUserId(), com.giosis.library.util.DataUtil.appID, Preferences.INSTANCE.getUserNation())
+                        Preferences.INSTANCE.getUserId(), DataUtil.appID, Preferences.INSTANCE.getUserNation())
                         .subscribeOn(Schedulers.io())
                         .observeOn(AndroidSchedulers.mainThread())
                         .subscribe(it -> {
@@ -1518,7 +1518,7 @@ public final class CaptureActivity extends CommonActivity implements DecoratedBa
                                 beepManager.playBeepSoundAndVibrate(BeepManager.BELL_SOUNDS_SUCCESS);
                                 addScannedBarcode(scanNo, "checkValidation - PICKUP_SCAN_ALL");
                             }
-                        }, it -> Toast.makeText(context, context.getResources().getString(com.giosis.library.R.string.msg_error_check_again), Toast.LENGTH_SHORT).show());
+                        }, it -> Toast.makeText(context, context.getResources().getString(R.string.msg_error_check_again), Toast.LENGTH_SHORT).show());
 
 
 //                new PickupScanValidationCheckHelper.Builder(this, opID, pickupNo, strBarcodeNo)
@@ -1543,7 +1543,7 @@ public final class CaptureActivity extends CommonActivity implements DecoratedBa
                 final String scanNo = strBarcodeNo;
 
                 RetrofitClient.INSTANCE.instanceDynamic().requestValidationCheckPickup(pickupNo, scanNo, "QX",
-                        Preferences.INSTANCE.getUserId(), com.giosis.library.util.DataUtil.appID, Preferences.INSTANCE.getUserNation())
+                        Preferences.INSTANCE.getUserId(), DataUtil.appID, Preferences.INSTANCE.getUserNation())
                         .subscribeOn(Schedulers.io())
                         .observeOn(AndroidSchedulers.mainThread())
                         .subscribe(it -> {
@@ -1571,7 +1571,7 @@ public final class CaptureActivity extends CommonActivity implements DecoratedBa
                                 beepManager.playBeepSoundAndVibrate(BeepManager.BELL_SOUNDS_SUCCESS);
                                 addScannedBarcode(scanNo, "checkValidation - PICKUP_ADD_SCAN");
                             }
-                        }, it -> Toast.makeText(context, context.getResources().getString(com.giosis.library.R.string.msg_error_check_again), Toast.LENGTH_SHORT).show());
+                        }, it -> Toast.makeText(context, context.getResources().getString(R.string.msg_error_check_again), Toast.LENGTH_SHORT).show());
 
 
 //                new PickupScanValidationCheckHelper.Builder(this, opID, pickupNo, strBarcodeNo)
@@ -1596,7 +1596,7 @@ public final class CaptureActivity extends CommonActivity implements DecoratedBa
                 final String scanNo = strBarcodeNo;
 
                 RetrofitClient.INSTANCE.instanceDynamic().requestValidationCheckTakeBack(pickupNo, scanNo, Preferences.INSTANCE.getUserId(),
-                        com.giosis.library.util.DataUtil.appID, Preferences.INSTANCE.getUserNation())
+                        DataUtil.appID, Preferences.INSTANCE.getUserNation())
                         .subscribeOn(Schedulers.io())
                         .observeOn(AndroidSchedulers.mainThread())
                         .subscribe(it -> {
@@ -1624,7 +1624,7 @@ public final class CaptureActivity extends CommonActivity implements DecoratedBa
                                 beepManager.playBeepSoundAndVibrate(BeepManager.BELL_SOUNDS_SUCCESS);
                                 addScannedBarcode(scanNo, "checkValidation - PICKUP_TAKE_BACK");
                             }
-                        }, it -> Toast.makeText(context, context.getResources().getString(com.giosis.library.R.string.msg_error_check_again), Toast.LENGTH_SHORT).show());
+                        }, it -> Toast.makeText(context, context.getResources().getString(R.string.msg_error_check_again), Toast.LENGTH_SHORT).show());
 
 
 //                new PickupTakeBackValidationCheckHelper.Builder(this, opID, pickupNo, strBarcodeNo)
@@ -1649,7 +1649,7 @@ public final class CaptureActivity extends CommonActivity implements DecoratedBa
                 final String scanNo = strBarcodeNo;
 
                 RetrofitClient.INSTANCE.instanceDynamic().requestValidationCheckPickup(pickupNo, strBarcodeNo, mRoute,
-                        Preferences.INSTANCE.getUserId(), com.giosis.library.util.DataUtil.appID, Preferences.INSTANCE.getUserNation())
+                        Preferences.INSTANCE.getUserId(), DataUtil.appID, Preferences.INSTANCE.getUserNation())
                         .subscribeOn(Schedulers.io())
                         .observeOn(AndroidSchedulers.mainThread())
                         .subscribe(it -> {
@@ -1677,7 +1677,7 @@ public final class CaptureActivity extends CommonActivity implements DecoratedBa
                                 beepManager.playBeepSoundAndVibrate(BeepManager.BELL_SOUNDS_SUCCESS);
                                 addScannedBarcode(scanNo, "checkValidation - OUTLET_PICKUP_SCAN");
                             }
-                        }, it -> Toast.makeText(context, context.getResources().getString(com.giosis.library.R.string.msg_error_check_again), Toast.LENGTH_SHORT).show());
+                        }, it -> Toast.makeText(context, context.getResources().getString(R.string.msg_error_check_again), Toast.LENGTH_SHORT).show());
 
 
 //                new OutletPickupScanValidationCheckHelper.Builder(this, opID, pickupNo, strBarcodeNo, mRoute)
@@ -1837,7 +1837,7 @@ public final class CaptureActivity extends CommonActivity implements DecoratedBa
 
         if (mScanType.equals(BarcodeType.CONFIRM_MY_DELIVERY_ORDER)) {
 
-            com.giosis.library.util.DataUtil.logEvent("button_click", TAG, "SetShippingStatDpc3out");
+            DataUtil.logEvent("button_click", TAG, "SetShippingStatDpc3out");
 
             new ConfirmMyOrderHelper.Builder(this, opID, officeCode, deviceID, scanBarcodeArrayList)
                     .setOnDriverAssignEventListener(stdResult -> {
@@ -1867,7 +1867,7 @@ public final class CaptureActivity extends CommonActivity implements DecoratedBa
                     }).build().execute();
         } else if (mScanType.equals(BarcodeType.CHANGE_DELIVERY_DRIVER)) {
 
-            com.giosis.library.util.DataUtil.logEvent("button_click", TAG, "SetChangeDeliveryDriver");
+            DataUtil.logEvent("button_click", TAG, "SetChangeDeliveryDriver");
 
             if (gpsEnable && gpsTrackerManager != null) {
 

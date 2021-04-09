@@ -168,4 +168,11 @@ object Preferences {
         set(value) = preferences.edit().putString(PREF_KEY_PICKUP_FAILED_CODE, value).apply()
 
 
+    // 202104. xRoute Server
+    private val PREF_KEY_XROUTE_SERVER_URL = "xRouteServerURL"
+
+    var xRouteServerURL: String
+        get() = preferences.getString(PREF_KEY_XROUTE_SERVER_URL, DataUtil.XROUTE_SERVER_REAL).toString()
+        set(value) = preferences.edit().putString(PREF_KEY_XROUTE_SERVER_URL, value).apply()
+
 }
