@@ -51,14 +51,15 @@ fun bindSpinnerSelect(spinner: Spinner, result: MutableLiveData<Int>) {
     }
 }
 
-@BindingAdapter("routeData")
-fun bindRouteData(recyclerView: RecyclerView, routes: ArrayList<Route>?) {
-
-    val adapter = recyclerView.adapter as RouteAdapter
-
-    if (routes != null)
-        adapter.submitList(routes)       // For ListAdapter
-}
+//
+//@BindingAdapter("routeData")
+//fun bindRouteData(recyclerView: RecyclerView, routes: ArrayList<Route>?) {
+//
+//    val adapter = recyclerView.adapter as RouteAdapter
+//
+//    if (routes != null)
+//        adapter.submitList(routes)       // For ListAdapter
+//}
 
 //@BindingAdapter("viewModel")
 //fun setViewModel(view: RecyclerView, vm: TodayMyRouteViewModel) {

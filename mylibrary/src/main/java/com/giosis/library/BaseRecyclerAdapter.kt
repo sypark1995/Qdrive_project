@@ -1,8 +1,9 @@
 package com.giosis.library
 
+import androidx.recyclerview.widget.DiffUtil
 import androidx.recyclerview.widget.RecyclerView
 
-abstract class BaseRecyclerAdapter<VH : RecyclerView.ViewHolder, T>
+abstract class BaseRecyclerAdapter<VH : RecyclerView.ViewHolder, T>(diffCallback: DiffUtil.ItemCallback<T>?)
     : RecyclerView.Adapter<VH>() {
 
     abstract fun getListModel(): ListViewModel<T>
@@ -14,6 +15,4 @@ abstract class BaseRecyclerAdapter<VH : RecyclerView.ViewHolder, T>
     override fun getItemCount(): Int {
         return getListModel().getItemCount()
     }
-
-
 }

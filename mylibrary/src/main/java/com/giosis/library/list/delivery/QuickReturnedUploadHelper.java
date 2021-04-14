@@ -274,6 +274,7 @@ public class QuickReturnedUploadHelper {
                 job.accumulate("disk_size", disk_size);
                 job.accumulate("lat", lat);
                 job.accumulate("lon", lon);
+                job.accumulate("del_channel", "QDRIVE");
                 job.accumulate("app_id", DataUtil.appID);
                 job.accumulate("nation_cd", Preferences.INSTANCE.getUserNation());
 

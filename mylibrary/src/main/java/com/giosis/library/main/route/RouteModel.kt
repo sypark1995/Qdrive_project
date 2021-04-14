@@ -23,15 +23,3 @@ data class Route(
         @SerializedName("contents") val contents: ArrayList<String>,
         @SerializedName("clickable") val clickable: String
 )
-
-
-data class RecyclerItem(
-        val viewModel: Any,
-        val item: Any,
-        @LayoutRes val layoutId: Int
-) {
-    fun bind(binding: ViewDataBinding) {
-        binding.setVariable(BR.viewModel, viewModel)
-        binding.setVariable(BR.item, item)
-    }
-}

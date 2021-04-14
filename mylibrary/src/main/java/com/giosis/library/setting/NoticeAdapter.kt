@@ -9,7 +9,7 @@ import androidx.recyclerview.widget.RecyclerView
 import com.giosis.library.*
 import com.giosis.library.server.data.NoticeResult
 
-class NoticeAdapter(private val viewModel: NoticeViewModel) : BaseRecyclerAdapter<NoticeAdapter.ViewHolder, NoticeResult.NoticeItem>() {
+class NoticeAdapter(private val viewModel: NoticeViewModel) : BaseRecyclerAdapter<NoticeAdapter.ViewHolder, NoticeResult.NoticeItem>(null) {
 
     override fun getListModel(): ListViewModel<NoticeResult.NoticeItem> {
         return viewModel

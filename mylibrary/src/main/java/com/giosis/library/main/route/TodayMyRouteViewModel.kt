@@ -2,10 +2,11 @@ package com.giosis.library.main.route
 
 import android.database.Cursor
 import android.util.Log
+import android.view.View
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
-import com.giosis.library.BaseViewModel
 import com.giosis.library.BuildConfig
+import com.giosis.library.ListViewModel
 import com.giosis.library.server.RetrofitClient
 import com.giosis.library.util.DatabaseHelper
 import com.giosis.library.util.Preferences
@@ -20,44 +21,49 @@ import kotlinx.coroutines.launch
 // Application 객체를 넘길 것을 권장 !!
 // Context를 갖고 있으면 메모리 누수의 원인이 된다
 
-class TodayMyRouteViewModel : BaseViewModel() {
+class TodayMyRouteViewModel : ListViewModel<Route>() {
 
+    // Spinner Position 구분  0 : Pickup , 1 : Delivery
     private val _routeType = MutableLiveData<Int>()
     val routeType: MutableLiveData<Int>
         get() = _routeType
 
-    private val _PACount = MutableLiveData<Int>()
-    val PACount: LiveData<Int>
+    private val _PACount = MutableLiveData<String>()
+    val PACount: LiveData<String>
         get() = _PACount
 
-    private val _P2Count = MutableLiveData<Int>()
-    val P2Count: LiveData<Int>
+    private val _P2Count = MutableLiveData<String>()
+    val P2Count: LiveData<String>
         get() = _P2Count
 
-    private val _P3Count = MutableLiveData<Int>()
-    val P3Count: LiveData<Int>
+    private val _P3Count = MutableLiveData<String>()
+    val P3Count: LiveData<String>
         get() = _P3Count
 
-    private val _PFCount = MutableLiveData<Int>()
-    val PFCount: LiveData<Int>
+    private val _PFCount = MutableLiveData<String>()
+    val PFCount: LiveData<String>
         get() = _PFCount
 
-    private val _D3Count = MutableLiveData<Int>()
-    val D3Count: LiveData<Int>
+    private val _D3Count = MutableLiveData<String>()
+    val D3Count: LiveData<String>
         get() = _D3Count
 
-    private val _D4Count = MutableLiveData<Int>()
-    val D4Count: LiveData<Int>
+    private val _D4Count = MutableLiveData<String>()
+    val D4Count: LiveData<String>
         get() = _D4Count
 
-    private val _DFCount = MutableLiveData<Int>()
-    val DFCount: LiveData<Int>
+    private val _DFCount = MutableLiveData<String>()
+    val DFCount: LiveData<String>
         get() = _DFCount
 
 
     private val _routeData = MutableLiveData<RouteData>()
     val routeData: MutableLiveData<RouteData>
         get() = _routeData
+
+    private val _progress = MutableLiveData<Int>()
+    val progress: MutableLiveData<Int>
+        get() = _progress
 
 
     init {
@@ -66,6 +72,8 @@ class TodayMyRouteViewModel : BaseViewModel() {
 
             _routeType.value = 1
         }
+
+        _progress.value = View.GONE
     }
 
 
@@ -91,15 +99,15 @@ class TodayMyRouteViewModel : BaseViewModel() {
 
                     if (_routeType.value == 0) {
 
-                        _PACount.postValue(cs.getInt(cs.getColumnIndex("pa_count")))
-                        _P2Count.postValue(cs.getInt(cs.getColumnIndex("p2_count")))
-                        _P3Count.postValue(cs.getInt(cs.getColumnIndex("p3_count")))
-                        _PFCount.postValue(cs.getInt(cs.getColumnIndex("pf_count")))
+                        _PACount.postValue(cs.getString(cs.getColumnIndex("pa_count")))
+                        _P2Count.postValue(cs.getString(cs.getColumnIndex("p2_count")))
+                        _P3Count.postValue(cs.getString(cs.getColumnIndex("p3_count")))
+                        _PFCount.postValue(cs.getString(cs.getColumnIndex("pf_count")))
                     } else {
 
-                        _D3Count.postValue(cs.getInt(cs.getColumnIndex("d3_count")))
-                        _D4Count.postValue(cs.getInt(cs.getColumnIndex("d4_count")))
-                        _DFCount.postValue(cs.getInt(cs.getColumnIndex("df_count")))
+                        _D3Count.postValue(cs.getString(cs.getColumnIndex("d3_count")))
+                        _D4Count.postValue(cs.getString(cs.getColumnIndex("d4_count")))
+                        _DFCount.postValue(cs.getString(cs.getColumnIndex("df_count")))
                     }
                 }
             } catch (e: Exception) {
@@ -114,6 +122,7 @@ class TodayMyRouteViewModel : BaseViewModel() {
     fun clickRun() {
 
         progressVisible.value = true
+        _progress.value = View.VISIBLE
 
 
         var lat = "0"
@@ -138,13 +147,28 @@ class TodayMyRouteViewModel : BaseViewModel() {
 
                     // TODO_route
                     Log.e("route", " requestGetTripList result ${it.errCode} / ${it.data} ")
+/*
+*
+                        if (result.size == 0) {
 
+                            clearList()
+                            notifyChange()
+                            _errorMsg.value = R.string.msg_no_results
+                        } else {
+
+                            //    Log.e("krm0219", "Server  ${result.size}  ${result[0].zipCode}  ${result[0].frontAddress}")
+                            setItemList(result)
+                            notifyChange()
+                        }*/
+
+                    //setItemList(it.data)
                     progressVisible.value = false
+                    _progress.value = View.GONE
                 }, {
 
                     progressVisible.value = false
+                    _progress.value = View.GONE
                 })
-
 
         // instanceXRoute
         //  _routeData.value =
@@ -303,9 +327,15 @@ class TodayMyRouteViewModel : BaseViewModel() {
     }
     * */
 
-    fun onClickItem(item: Route) {
+
+    fun onClickItem(pos: Int) {
+
+//        val bundle = Bundle()
+        //     bundle.putString("zipCode",        getItem(pos).zipCode)
+        //    bundle.putString("frontAddress", getItem(pos).frontAddress)
+        //    finish(bundle)
 
         // TODO_route     start navigation Button
-        Log.e("Route", "onClickItem  Route Navigation")
+        Log.e("Route", "onClickItem  Route Navigation $pos")
     }
 }
