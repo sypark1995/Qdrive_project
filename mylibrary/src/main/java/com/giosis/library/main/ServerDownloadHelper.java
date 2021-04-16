@@ -182,6 +182,9 @@ public class ServerDownloadHelper {
         contentVal.put("lat", latLng[0]);
         contentVal.put("lng", latLng[1]);
 
+        // 2021.04  High Value
+        contentVal.put("high_amount_yn", data.getHigh_amount_yn());
+
         return DatabaseHelper.getInstance().insert(DatabaseHelper.DB_TABLE_INTEGRATION_LIST, contentVal);
     }
 
@@ -224,6 +227,9 @@ public class ServerDownloadHelper {
         String[] latLng = GeoCodeUtil.getLatLng(data.getLat_lng());
         contentVal.put("lat", latLng[0]);
         contentVal.put("lng", latLng[1]);
+
+        // 2021.04  High Value
+        contentVal.put("high_amount_yn", data.getHigh_amount_yn());
 
         return DatabaseHelper.getInstance().insert(DatabaseHelper.DB_TABLE_INTEGRATION_LIST, contentVal);
     }

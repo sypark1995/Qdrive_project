@@ -477,7 +477,8 @@ public class ListInProgressFragment extends Fragment
                         cs.getString(cs.getColumnIndex("partner_id")),
                         cs.getString(cs.getColumnIndex("secure_delivery_yn")),
                         cs.getString(cs.getColumnIndex("parcel_amount")),
-                        cs.getString(cs.getColumnIndex("currency"))
+                        cs.getString(cs.getColumnIndex("currency")),
+                        cs.getString(cs.getColumnIndex("high_amount_yn"))
                 );
                 rowitem.setZip_code(cs.getString(cs.getColumnIndex("zip_code")));
 

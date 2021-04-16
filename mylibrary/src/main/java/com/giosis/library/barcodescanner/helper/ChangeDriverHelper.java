@@ -96,6 +96,9 @@ public class ChangeDriverHelper {
         contentVal.put("lat", latLng[0]);
         contentVal.put("lng", latLng[1]);
 
+        // 2021.04  High Value
+        contentVal.put("high_amount_yn", assignInfo.getHigh_amount_yn());
+
         long insertCount = DatabaseHelper.getInstance().insert(DatabaseHelper.DB_TABLE_INTEGRATION_LIST, contentVal);
         return insertCount >= 0;
     }

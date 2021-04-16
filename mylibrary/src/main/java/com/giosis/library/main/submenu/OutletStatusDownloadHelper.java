@@ -450,6 +450,9 @@ public class OutletStatusDownloadHelper {
         contentVal.put("lat", "0");
         contentVal.put("lng", "0");
 
+        // 2021.04  High Value
+        contentVal.put("high_amount_yn", data.getHigh_amount_yn());
+
         dbHelper.insert(DatabaseHelper.DB_TABLE_INTEGRATION_LIST, contentVal);
     }
 

@@ -21,7 +21,8 @@ class RowItem(var contrNo: String,
               var partnerID: String?,
               val secure_delivery_yn: String?,
               val parcel_amount: String?,
-              val currency: String?) {
+              val currency: String?,
+              val high_amount_yn: String?) {
 
     private var childItems: ArrayList<ChildItem>? = null
 

@@ -23,7 +23,6 @@ class NoticeViewModel : ListViewModel<NoticeResult.NoticeItem>() {
 
     fun callServer() {
 
-        Log.e("krm0219", "Nation  ${Preferences.userNation}")
         progressVisible.value = true
 
         RetrofitClient.instanceDynamic().requestGetNoticeData("0", "List", 1, 30)
@@ -35,7 +34,6 @@ class NoticeViewModel : ListViewModel<NoticeResult.NoticeItem>() {
                         val result = Gson().fromJson<ArrayList<NoticeResult.NoticeItem>>(
                                 it.resultObject.toString(), object : TypeToken<ArrayList<NoticeResult.NoticeItem>>() {}.type
                         )
-                        Log.e("krm0219", it.resultObject.toString())
 
                         setItemList(result)
                         notifyChange()

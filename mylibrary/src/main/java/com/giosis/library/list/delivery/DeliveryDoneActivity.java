@@ -122,6 +122,8 @@ public class DeliveryDoneActivity extends CommonActivity implements Camera2APIs.
     String senderName;
     String receiverName;
 
+    String highAmountYn = "N";
+
 
     // Camera & Gallery
     Camera2APIs camera2;
@@ -211,6 +213,7 @@ public class DeliveryDoneActivity extends CommonActivity implements Camera2APIs.
         officeCode = Preferences.INSTANCE.getOfficeCode();
         deviceID = Preferences.INSTANCE.getDeviceUUID();
 
+        highAmountYn = getIntent().getStringExtra("high_amount_yn");
         mStrWaybillNo = getIntent().getStringExtra("waybillNo");
 
 
@@ -670,12 +673,24 @@ public class DeliveryDoneActivity extends CommonActivity implements Camera2APIs.
             boolean hasVisitImage = camera2.hasImage(img_sign_d_visit_log);
             Log.e("krm0219", TAG + "  has DATA : " + hasSignImage + " / " + hasVisitImage);
 
-            if (!hasSignImage && !hasVisitImage) {
+            
+            if (highAmountYn.equals("Y")) {
 
-                String msg = getResources().getString(R.string.msg_signature_require) + " or \n" + getResources().getString(R.string.msg_visit_photo_require);
+                if (!hasSignImage || !hasVisitImage) {
 
-                Toast.makeText(this.getApplicationContext(), msg, Toast.LENGTH_SHORT).show();
-                return;
+                    String msg = getResources().getString(R.string.msg_high_amount_sign_photo);
+                    Toast.makeText(this.getApplicationContext(), msg, Toast.LENGTH_SHORT).show();
+                    return;
+                }
+            } else {
+
+                if (!hasSignImage && !hasVisitImage) {
+
+                    String msg = getResources().getString(R.string.msg_signature_require) + " or \n" + getResources().getString(R.string.msg_visit_photo_require);
+
+                    Toast.makeText(this.getApplicationContext(), msg, Toast.LENGTH_SHORT).show();
+                    return;
+                }
             }
 
             //서버에 올리기전 용량체크  내장메모리가 100Kbyte 안남은경우

@@ -150,6 +150,10 @@ public class DriverAssignResult {
         @SerializedName("lat_lng")
         private String lat_lng = "";
 
+        @Element(name="high_amount_yn", required = false)
+        @SerializedName("high_amount_yn")
+        private String high_amount_yn = "";
+
 
         public String getContrNo() {
             return contr_no;
@@ -257,6 +261,11 @@ public class DriverAssignResult {
 
         public String getLat_lng() {
             return lat_lng;
+        }
+
+
+        public String getHigh_amount_yn() {
+            return high_amount_yn;
         }
     }
 }

@@ -105,10 +105,6 @@ public class PickupAssignResult {
         @Element(name = "failed_count", required = false)
         private String failed_count = "";
 
-        @Element(name = "dr_req_no", required = false)
-        private String dr_req_no = "";
-
-
         @Element(name = "cust_no", required = false)
         private String cust_no = "";
 
@@ -123,10 +119,6 @@ public class PickupAssignResult {
             return cust_no;
         }
 
-
-        public String getDrReqNo() {
-            return dr_req_no;
-        }
 
         public String getContrNo() {
             return contr_no;

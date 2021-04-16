@@ -1,4 +1,6 @@
 apply plugin: 'com.android.application'
+apply plugin: 'com.google.firebase.crashlytics'
+
 
 android {
     dexOptions {
@@ -57,8 +59,14 @@ dependencies {
     implementation 'androidx.annotation:annotation:1.1.0'
 
 
+    // Import the BoM for the Firebase platform
+    implementation platform('com.google.firebase:firebase-bom:26.7.0')
+
     implementation 'com.google.firebase:firebase-core:17.5.0'
     implementation 'com.google.firebase:firebase-messaging:20.3.0'
+    implementation 'com.google.firebase:firebase-crashlytics-ktx'
+    implementation 'com.google.firebase:firebase-analytics-ktx'
+
     implementation 'com.google.android.gms:play-services-basement:17.6.0'
     implementation 'com.google.android.gms:play-services-location:17.1.0'
     implementation 'com.google.android.gms:play-services-maps:17.0.0'

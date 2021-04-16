@@ -146,6 +146,7 @@ public class ListInProgressAdapter extends BaseExpandableListAdapter {
         ImageView img_list_item_station_icon = convertView.findViewById(R.id.img_list_item_station_icon);
         TextView text_list_item_tracking_no = convertView.findViewById(R.id.text_list_item_tracking_no);
         TextView text_list_item_pickup_state = convertView.findViewById(R.id.text_list_item_pickup_state);
+        TextView text_list_item_high_amount = convertView.findViewById(R.id.text_list_item_high_amount);
         ImageView img_list_item_up_icon = convertView.findViewById(R.id.img_list_item_up_icon);
 
         TextView text_list_item_address = convertView.findViewById(R.id.text_list_item_address);
@@ -230,6 +231,7 @@ public class ListInProgressAdapter extends BaseExpandableListAdapter {
 
             text_list_item_tracking_no.setTextColor(parent.getContext().getResources().getColor(R.color.color_363BE7));
             img_list_item_secure_delivery.setVisibility(View.GONE);
+            text_list_item_high_amount.setVisibility(View.GONE);
 
             if (row_pos.getStat().equals("RE")) {
 
@@ -286,6 +288,16 @@ public class ListInProgressAdapter extends BaseExpandableListAdapter {
 
                 text_list_item_pickup_state.setVisibility(View.GONE);
             }
+
+            // 2021.04  High amount
+            if (row_pos.getHigh_amount_yn().equals("Y")) {
+
+                text_list_item_high_amount.setVisibility(View.VISIBLE);
+            } else {
+
+                text_list_item_high_amount.setVisibility(View.GONE);
+            }
+
 
             layout_list_item_delivery_info.setVisibility(View.VISIBLE);
             layout_list_item_pickup_info.setVisibility(View.GONE);
@@ -494,6 +506,7 @@ public class ListInProgressAdapter extends BaseExpandableListAdapter {
         final String requester = rowItem.get(groupPosition).getName();
         final String route = rowItem.get(groupPosition).getRoute();
         final String qty = rowItem.get(groupPosition).getQty();
+        final String highAmountYn = rowItem.get(groupPosition).getHigh_amount_yn();
 
 
         if (child.getSecretNoType().equals("T")) {    // Qtalk 안심번호 타입 T - Qnumber 사용
@@ -851,6 +864,7 @@ public class ListInProgressAdapter extends BaseExpandableListAdapter {
 
             intent.putExtra("waybillNo", tracking_no);
             intent.putExtra("route", route);
+            intent.putExtra("high_amount_yn", highAmountYn);
             v.getContext().startActivity(intent);
 
         });
