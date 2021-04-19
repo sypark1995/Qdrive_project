@@ -52,7 +52,6 @@ public class CnRPickupResult {
         private String qty = "";
         private String custName = "";
         private String partnerID = "";
-        private String failedCount = "";
         private String route = "";
         private String cust_no = "";
 
@@ -206,14 +205,6 @@ public class CnRPickupResult {
 
         public void setPartnerID(String partnerID) {
             this.partnerID = partnerID;
-        }
-
-        public String getFailedCount() {
-            return failedCount;
-        }
-
-        public void setFailedCount(String failedCount) {
-            this.failedCount = failedCount;
         }
 
         public String getRoute() {

@@ -14,6 +14,7 @@ import com.giosis.library.util.DatabaseHelper;
 import com.giosis.library.util.LocaleManager;
 import com.giosis.library.util.Preferences;
 import com.giosis.util.qdrive.util.MySharedPreferences;
+import com.google.firebase.crashlytics.FirebaseCrashlytics;
 
 import java.util.Calendar;
 
@@ -34,6 +35,8 @@ public class MyApplication extends MultiDexApplication {
     @Override
     public void onCreate() {
         super.onCreate();
+
+        FirebaseCrashlytics.getInstance().setCrashlyticsCollectionEnabled(!BuildConfig.DEBUG);
 
         preferences = new MySharedPreferences(getApplicationContext());
         DatabaseHelper.getInstance(this);

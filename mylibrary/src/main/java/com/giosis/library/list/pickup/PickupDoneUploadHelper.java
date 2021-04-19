@@ -255,7 +255,6 @@ public class PickupDoneUploadHelper {
             ContentValues contentVal = new ContentValues();
             contentVal.put("stat", "P3");
             contentVal.put("real_qty", scannedQty);
-            contentVal.put("chg_id", opID);
             contentVal.put("fail_reason", "");
             contentVal.put("driver_memo", driverMemo);
             contentVal.put("retry_dt", "");
@@ -358,7 +357,6 @@ public class PickupDoneUploadHelper {
                             ContentValues contentVal3 = new ContentValues();
                             contentVal3.put("stat", "P3");
                             contentVal3.put("real_qty", "1");
-                            contentVal3.put("chg_id", opID);
                             contentVal3.put("chg_dt", dateFormat.format(date));
                             contentVal3.put("fail_reason", "");
                             contentVal3.put("retry_dt", "");

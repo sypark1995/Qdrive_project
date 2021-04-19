@@ -22,13 +22,14 @@ class DatabaseHelper private constructor(private val mContext: Context) : SQLite
         const val DB_TABLE_REST_DAYS = "REST_DAYS"
 
         private const val CREATE_TABLE_INTEGRATION_LIST = "CREATE TABLE IF NOT EXISTS " +
-                DB_TABLE_INTEGRATION_LIST + "(contr_no unique, seq_orderby, partner_ref_no, " +
+                DB_TABLE_INTEGRATION_LIST + "(contr_no unique, partner_ref_no, " +
                 "invoice_no, stat, tel_no, hp_no, zip_code, address, self_memo, type, route, " +
                 "sender_nm, rcv_nm, rcv_request,  desired_date, req_qty, req_nm, " +
-                "failed_count, delivery_dt, delivery_cnt, chg_dt, chg_id, reg_dt, reg_id, " +
+                "delivery_dt, chg_dt, reg_dt, reg_id, " +
                 "real_qty, retry_dt, driver_memo, fail_reason, desired_time, " +
                 "rcv_type, punchOut_stat, partner_id, cust_no, secret_no_type, secret_no, lat, lng , " +
-                "secure_delivery_yn, parcel_amount, currency, order_type_etc, high_amount_yn)"
+                "secure_delivery_yn, parcel_amount, currency, order_type_etc, " +
+                "high_amount_yn, state, city, street)"
 
         private const val CREATE_TABLE_REST_DAYS = "CREATE TABLE IF NOT EXISTS " +
                 DB_TABLE_REST_DAYS + "(rest_dt, title)"
@@ -63,10 +64,18 @@ class DatabaseHelper private constructor(private val mContext: Context) : SQLite
 
     // 버전이 업데이트 되었을 때 DB 재생성
     override fun onUpgrade(db: SQLiteDatabase, oldVersion: Int, newVersion: Int) {
-        Log.e(TAG, "onUpgrade")
-        db.execSQL("DROP TABLE IF EXISTS $DB_TABLE_INTEGRATION_LIST")
-        db.execSQL("DROP TABLE IF EXISTS $DB_TABLE_REST_DAYS")
-        onCreate(db)
+        Log.e(TAG, "onUpgrade  $oldVersion > $newVersion")
+
+        if (oldVersion == 1) {
+
+            // 필요없는 db column 정리 후 첫 업그레이드
+            db.execSQL("DROP TABLE IF EXISTS $DB_TABLE_INTEGRATION_LIST")
+            db.execSQL("DROP TABLE IF EXISTS $DB_TABLE_REST_DAYS")
+            onCreate(db)
+        } else {
+
+            // ALERT 사용
+        }
     }
 
     val dbPath: String

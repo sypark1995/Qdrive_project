@@ -390,20 +390,6 @@ public class ListInProgressAdapter extends BaseExpandableListAdapter {
                         originalRowItem.addAll(rowItem);
                         notifyDataSetChanged();
 
-                        for (int i = 0; i < originalRowItem.size(); i++) {
-                            String val = String.valueOf(i);
-                            if (i < 10) {
-                                val = "00" + val;
-                            } else if (i < 100) {
-                                val = "0" + val;
-                            }
-                            ContentValues ContentVal = new ContentValues();
-                            ContentVal.put("seq_orderby", val);
-
-                            DatabaseHelper.getInstance().update(DatabaseHelper.DB_TABLE_INTEGRATION_LIST, ContentVal,
-                                    "invoice_no=? COLLATE NOCASE ", new String[]{originalRowItem.get(i).getShipping()});
-                        }
-
                         if (onMoveUpListener != null) {
                             onMoveUpListener.onMoveUp(position - 1);
                         }
@@ -416,21 +402,6 @@ public class ListInProgressAdapter extends BaseExpandableListAdapter {
                         originalRowItem.clear();
                         originalRowItem.addAll(rowItem);
                         notifyDataSetChanged();
-
-                        for (int i = 0; i < originalRowItem.size(); i++) {
-                            String val = String.valueOf(i);
-                            if (i < 10) {
-                                val = "00" + val;
-                            } else if (i < 100) {
-                                val = "0" + val;
-                            }
-
-                            ContentValues ContentVal = new ContentValues();
-                            ContentVal.put("seq_orderby", val);
-
-                            DatabaseHelper.getInstance().update(DatabaseHelper.DB_TABLE_INTEGRATION_LIST, ContentVal,
-                                    "invoice_no=? COLLATE NOCASE ", new String[]{originalRowItem.get(i).getShipping()});
-                        }
 
                         if (onMoveUpListener != null) {
                             onMoveUpListener.onMoveUp(position + 1);

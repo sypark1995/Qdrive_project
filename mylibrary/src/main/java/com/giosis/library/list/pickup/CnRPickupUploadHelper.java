@@ -278,7 +278,6 @@ public class CnRPickupUploadHelper {
             ContentValues contentVal = new ContentValues();
             contentVal.put("stat", "P3");
             contentVal.put("real_qty", "1");
-            contentVal.put("chg_id", opID);
             contentVal.put("chg_dt", dateFormat.format(date));
             contentVal.put("fail_reason", "");
             contentVal.put("retry_dt", "");

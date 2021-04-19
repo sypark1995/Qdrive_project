@@ -229,7 +229,6 @@ public class DeliveryFailedUploadHelper {
 
             ContentValues contentVal = new ContentValues();
             contentVal.put("stat", "DX");
-            contentVal.put("chg_id", opID);
             contentVal.put("chg_dt", dateFormat.format(date));
             contentVal.put("fail_reason", failedCode);
             contentVal.put("driver_memo", driverMemo);
@@ -341,7 +340,6 @@ public class DeliveryFailedUploadHelper {
 
         ContentValues contentVal = new ContentValues();
         contentVal.put("stat", "DX");
-        contentVal.put("chg_id", opID);
         contentVal.put("chg_dt", dateFormat.format(date));
         contentVal.put("real_qty", "0");        // 업로드시 값 Parse 시 에러나서 0 넘김
         contentVal.put("fail_reason", failedCode);

@@ -222,7 +222,6 @@ public class QuickReturnFailedUploadHelper {
 
             ContentValues contentVal = new ContentValues();
             contentVal.put("stat", "");
-            contentVal.put("chg_id", opID);
             contentVal.put("chg_dt", dateFormat.format(date));
             contentVal.put("driver_memo", driverMemo);
 
@@ -323,7 +322,6 @@ public class QuickReturnFailedUploadHelper {
 
         ContentValues contentVal = new ContentValues();
         contentVal.put("stat", "RF");
-        contentVal.put("chg_id", opId);
         contentVal.put("chg_dt", dateFormat.format(date));
         contentVal.put("real_qty", "0");
         contentVal.put("driver_memo", driverMemo);

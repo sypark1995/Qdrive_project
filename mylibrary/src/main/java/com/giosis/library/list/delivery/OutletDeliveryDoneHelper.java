@@ -277,7 +277,6 @@ public class OutletDeliveryDoneHelper {
             contentVal.put("stat", "D3");
             contentVal.put("rcv_type", receiveType);
             contentVal.put("driver_memo", driverMemo);
-            contentVal.put("chg_id", opID);
             contentVal.put("chg_dt", dateFormat.format(date));
             contentVal.put("fail_reason", "");
 

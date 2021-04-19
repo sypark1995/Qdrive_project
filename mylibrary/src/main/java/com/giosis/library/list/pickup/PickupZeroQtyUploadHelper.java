@@ -249,7 +249,6 @@ public class PickupZeroQtyUploadHelper {
             contentVal.put("stat", "P3");
             contentVal.put("real_qty", "0");
             contentVal.put("rcv_type", "ZQ");
-            contentVal.put("chg_id", opID);
             contentVal.put("chg_dt", changeDataString);
             contentVal.put("driver_memo", driverMemo);
             contentVal.put("fail_reason", "");

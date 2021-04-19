@@ -70,7 +70,6 @@ public class ConfirmMyOrderHelper {
         contentVal.put("address", assignInfo.getAddress());
         contentVal.put("rcv_request", assignInfo.getDelMemo());
         contentVal.put("delivery_dt", assignInfo.getDeliveryFirstDate());
-        contentVal.put("delivery_cnt", assignInfo.getDeliveryCount());
         contentVal.put("type", BarcodeType.TYPE_DELIVERY);
         contentVal.put("route", assignInfo.getRoute());
         contentVal.put("reg_id", opId);

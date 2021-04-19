@@ -101,21 +101,9 @@ public class DriverAssignResult {
         @SerializedName("fail_reason")
         private String fail_reason = "";
 
-        @Element(name = "partner_ref_no_fail_assign", required = false)
-        @SerializedName("partner_ref_no_fail_assign")
-        private String partner_ref_no_fail_assign = "";
-
-        @Element(name = "reason_fail_assign", required = false)
-        @SerializedName("reason_fail_assign")
-        private String reason_fail_assign = "";
-
         @Element(name = "delivery_first_date", required = false)
         @SerializedName("delivery_first_date")
         private String delivery_first_date = "";
-
-        @Element(name = "delivery_count", required = false)
-        @SerializedName("delivery_count")
-        private String delivery_count = "";
 
         @Element(name = "route", required = false)
         @SerializedName("route")
@@ -150,7 +138,7 @@ public class DriverAssignResult {
         @SerializedName("lat_lng")
         private String lat_lng = "";
 
-        @Element(name="high_amount_yn", required = false)
+        @Element(name = "high_amount_yn", required = false)
         @SerializedName("high_amount_yn")
         private String high_amount_yn = "";
 
@@ -207,28 +195,8 @@ public class DriverAssignResult {
             return fail_reason;
         }
 
-        public String getPartnerRefNoFailAssign() {
-            return partner_ref_no_fail_assign;
-        }
-
-        public void setPartnerRefNoFailAssign(String assignNo) {
-            this.partner_ref_no_fail_assign = assignNo;
-        }
-
-        public String getReasonFailAssign() {
-            return reason_fail_assign;
-        }
-
-        public void setReasonFailAssign(String reasonFailAssign) {
-            this.reason_fail_assign = reasonFailAssign;
-        }
-
         public String getDeliveryFirstDate() {
             return delivery_first_date;
-        }
-
-        public String getDeliveryCount() {
-            return delivery_count;
         }
 
         public String getRoute() {

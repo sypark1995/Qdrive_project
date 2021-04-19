@@ -76,7 +76,6 @@ public class ChangeDriverHelper {
         contentVal.put("address", assignInfo.getAddress());
         contentVal.put("rcv_request", assignInfo.getDelMemo());
         contentVal.put("delivery_dt", assignInfo.getDeliveryFirstDate());
-        contentVal.put("delivery_cnt", assignInfo.getDeliveryCount());
         contentVal.put("type", BarcodeType.TYPE_DELIVERY);
         contentVal.put("route", assignInfo.getRoute());
         contentVal.put("reg_id", opId);
@@ -268,7 +267,7 @@ public class ChangeDriverHelper {
 
                 String methodName = "SetChangeDeliveryDriver";
                 String jsonString = Custom_JsonParser.requestServerDataReturnJSON(methodName, job);
-                // {"ResultObject":[{"contr_no":"90256451","partner_ref_no":"SGSG23614214","invoice_no":"SGP163532597","stat":"D3","rcv_nm":"Ang Boon Sin","tel_no":"+65--","hp_no":"+65-9172-5419","zip_code":"791412","address":"412A FERNVALE LINK#05-13,  Singapore","sender_nm":"jenny","del_memo":"","driver_memo":"","fail_reason":"  ","partner_ref_no_fail_assign":null,"reason_fail_assign":null,"delivery_count":"0","delivery_first_date":"2020-08-23","route":"GIO","secret_no_type":" ","secret_no":"","del_hopeday":null,"course":null,"course_driver":null,"secure_delivery_yn":"N","parcel_amount":"20.41","currency":"SGD","qwms_yn":null,"order_type_etc":"DPC","del_hopedaybyDBData":null,"del_hopetime":null,"GoogleMap":null,"delivery_nation_cd":null,"lat_lng":"1.389179,103.877918"}],"ResultCode":0,"ResultMsg":"Success"}
+                // {"ResultObject":[{"contr_no":"90256451","partner_ref_no":"SGSG23614214","invoice_no":"SGP163532597","stat":"D3","rcv_nm":"Ang Boon Sin","tel_no":"+65--","hp_no":"+65-9172-5419","zip_code":"791412","address":"412A FERNVALE LINK#05-13,  Singapore","sender_nm":"jenny","del_memo":"","driver_memo":"","fail_reason":"  ","delivery_first_date":"2020-08-23","route":"GIO","secret_no_type":" ","secret_no":"","del_hopeday":null,"course":null,"course_driver":null,"secure_delivery_yn":"N","parcel_amount":"20.41","currency":"SGD","qwms_yn":null,"order_type_etc":"DPC","del_hopedaybyDBData":null,"del_hopetime":null,"GoogleMap":null,"delivery_nation_cd":null,"lat_lng":"1.389179,103.877918"}],"ResultCode":0,"ResultMsg":"Success"}
                 resultObj = gson.fromJson(jsonString, DriverAssignResult.class);
             } catch (Exception e) {
 

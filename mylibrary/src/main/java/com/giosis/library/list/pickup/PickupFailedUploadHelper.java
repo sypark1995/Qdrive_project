@@ -253,7 +253,6 @@ public class PickupFailedUploadHelper {
             contentVal.put("stat", "PF");
             contentVal.put("rcv_type", rcvType);
             contentVal.put("real_qty", "0");
-            contentVal.put("chg_id", opID);
             contentVal.put("chg_dt", dateFormat.format(date));
             contentVal.put("fail_reason", failedCode);
             contentVal.put("retry_dt", retryDay);

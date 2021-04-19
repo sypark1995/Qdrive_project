@@ -138,14 +138,6 @@ public class RowItem {
         this.sender = sender;
     }
 
-    public String getDesiredDate() {
-        return desired_date;
-    }
-
-    public void setDesiredDate(String desired_date) {
-        this.desired_date = desired_date;
-    }
-
     public String getQty() {
         return qty;
     }
