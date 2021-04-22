@@ -215,4 +215,43 @@ interface RetrofitService {
             @Field("nation_cd") nation_cd: String = Preferences.userNation
     ): Single<APIModel>
 
+
+    @POST("GetQdriveMyPickupRoute")
+    @FormUrlEncoded
+    fun requestGetMyPickupRoute(
+            @Field("driver_id") driver_id: String = Preferences.userId,
+            @Field("nation_cd") nation_cd: String = Preferences.userNation
+    ): Single<APIModel>
+
+    @POST("GetQdriveMyDeliveryRoute")
+    @FormUrlEncoded
+    fun requestGetMyDeliveryRoute(
+            @Field("driver_id") driver_id: String = Preferences.userId,
+            @Field("nation_cd") nation_cd: String = Preferences.userNation
+    ): Single<APIModel>
+
+
+    @POST("get_qdriver_trip_list.qx")
+    @FormUrlEncoded
+    fun requestGetTripList(
+            @Field("latitude") latitude: String,
+            @Field("longitude") longitude: String,
+            @Field("items", encoded = true) invoice_no_items: String,
+            @Field("type") type: String,    // P, D
+            @Field("id") id: String = Preferences.userId
+    ): Single<APIModel>
+
+
+    @POST("SetIntegrationAddressUsingDriver")
+    @FormUrlEncoded
+    fun requestSetAddressUsingDriver(
+            @Field("zipcode") zipcode: String,
+            @Field("state") state: String,
+            @Field("city") city: String,
+            @Field("street") street: String,
+            @Field("latitude") latitude: Double,
+            @Field("longitude") longitude: Double,
+            @Field("driver_id") driver_id: String = Preferences.userId,
+            @Field("nation_cd") nation_cd: String = Preferences.userNation
+    ): Single<APIModel>
 }

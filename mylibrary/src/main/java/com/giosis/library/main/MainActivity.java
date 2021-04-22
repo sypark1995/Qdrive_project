@@ -37,6 +37,7 @@ import com.giosis.library.gps.GPSTrackerManager;
 import com.giosis.library.gps.LocationManagerService;
 import com.giosis.library.gps.QuickAppUserInfoUploadHelper;
 import com.giosis.library.list.ListActivity;
+import com.giosis.library.main.route.TodayMyRouteActivity;
 import com.giosis.library.main.submenu.OutletOrderStatusActivity;
 import com.giosis.library.main.submenu.RpcListActivity;
 import com.giosis.library.pickup.CreatePickupOrderActivity;
@@ -95,6 +96,7 @@ public class MainActivity extends AppBaseActivity {
     Button btn_home_outlet_order_status;
     Button btn_home_create_pickup_order;
     Button btn_home_assign_pickup_driver;
+    Button btn_home_today_my_route;
 
 
     String fcmToken;
@@ -191,6 +193,10 @@ public class MainActivity extends AppBaseActivity {
 
                 Intent intent = new Intent(MainActivity.this, CreatePickupOrderActivity.class);
                 startActivity(intent);
+            } else if (id == R.id.btn_home_today_my_route) {
+
+                Intent intent = new Intent(MainActivity.this, TodayMyRouteActivity.class);
+                startActivity(intent);
             }
         }
     };
@@ -268,6 +274,7 @@ public class MainActivity extends AppBaseActivity {
         btn_home_change_delivery_driver = findViewById(R.id.btn_home_change_delivery_driver);
         btn_home_outlet_order_status = findViewById(R.id.btn_home_outlet_order_status);    // 19.01 krm0219
         btn_home_create_pickup_order = findViewById(R.id.btn_home_create_pickup_order);
+        btn_home_today_my_route = findViewById(R.id.btn_home_today_my_route);
 
 
         getLocalCount();
@@ -295,6 +302,16 @@ public class MainActivity extends AppBaseActivity {
             btn_home_create_pickup_order.setVisibility(View.GONE);
         }
 
+        // MY/ID Route
+        // TODO_route  MY/ID 적용 / SG는 테스트용으로
+        if (Preferences.INSTANCE.getUserNation().equalsIgnoreCase("SG")) {
+
+            btn_home_today_my_route.setVisibility(View.VISIBLE);
+        } else {
+            btn_home_today_my_route.setVisibility(View.GONE);
+        }
+
+
         if (outletDriverYN.equals("Y")) {
 
             btn_home_confirm_my_delivery_order.setText(getResources().getString(R.string.text_start_delivery_for_outlet));
@@ -312,9 +329,23 @@ public class MainActivity extends AppBaseActivity {
             lp.setMargins(0, DisplayUtil.dpTopx(this, 15), 0, DisplayUtil.dpTopx(this, 30));
 
             if (btn_home_create_pickup_order.getVisibility() == View.VISIBLE) {
-                btn_home_create_pickup_order.setLayoutParams(lp);
+
+                if (btn_home_today_my_route.getVisibility() == View.VISIBLE) {
+
+                    btn_home_today_my_route.setLayoutParams(lp);
+                } else {
+
+                    btn_home_create_pickup_order.setLayoutParams(lp);
+                }
             } else {
-                btn_home_change_delivery_driver.setLayoutParams(lp);
+
+                if (btn_home_today_my_route.getVisibility() == View.VISIBLE) {
+
+                    btn_home_today_my_route.setLayoutParams(lp);
+                } else {
+
+                    btn_home_change_delivery_driver.setLayoutParams(lp);
+                }
             }
         }
 
@@ -323,6 +354,7 @@ public class MainActivity extends AppBaseActivity {
         btn_home_outlet_order_status.setOnClickListener(clickListener);
         btn_home_create_pickup_order.setOnClickListener(clickListener);
         btn_home_assign_pickup_driver.setOnClickListener(clickListener);
+        btn_home_today_my_route.setOnClickListener(clickListener);
 
 
         //

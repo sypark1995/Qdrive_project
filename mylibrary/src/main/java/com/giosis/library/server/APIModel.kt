@@ -15,4 +15,14 @@ class APIModel : JsonModel(), Serializable {
     @SerializedName("ResultObject")
     var resultObject: JsonElement? = null
 
+
+    //
+    @SerializedName("err_code")
+    var errCode: String? = null
+
+    @SerializedName("desc")
+    var desc: String? = null
+
+    @SerializedName("data")
+    var data: JsonElement? = null
 }

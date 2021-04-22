@@ -167,7 +167,7 @@
             android:windowSoftInputMode="stateAlwaysHidden|adjustPan" />
 
         <activity
-            android:name=".list.pickup.PickupScannedListActivity"
+            android:name=".main.route.TodayMyRouteActivity"
             android:screenOrientation="portrait" />
 
         <activity

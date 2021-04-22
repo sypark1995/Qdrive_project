@@ -2,7 +2,6 @@ package com.giosis.library.setting
 
 import android.os.Bundle
 import androidx.lifecycle.ViewModelProvider
-import androidx.lifecycle.observe
 import com.giosis.library.BR
 import com.giosis.library.BaseActivity
 import com.giosis.library.R
@@ -62,11 +61,34 @@ class DeveloperModeActivity : BaseActivity<ActivityDeveloperModeBinding, Develop
             }
         }
 
+        rg_developer_xroute_url.setOnCheckedChangeListener { _, checkedId ->
 
-        getViewModel().serverUrl.observe(this) {
+            when (checkedId) {
+                R.id.rb_developer_xroute_url_real -> {
 
-            edit_developer_server_url.setText(it)
+                    getViewModel().changeXRouteServer(DataUtil.XROUTE_SERVER_REAL)
+                }
+                R.id.rb_developer_xroute_url_staging -> {
+
+                    getViewModel().changeXRouteServer(DataUtil.XROUTE_SERVER_STAGING)
+                }
+            }
         }
+
+        rg_developer_gps.setOnCheckedChangeListener { _, checkedId ->
+            when (checkedId) {
+                R.id.rb_developer_gps_real -> {
+
+                    getViewModel().changeGPS("REAL")
+                }
+                R.id.rb_developer_gps_test -> {
+
+                    getViewModel().changeGPS("TEST")
+                }
+            }
+        }
+
+
     }
 
 //

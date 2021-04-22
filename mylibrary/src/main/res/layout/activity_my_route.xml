@@ -1,0 +1,486 @@
+<?xml version="1.0" encoding="utf-8"?>
+<layout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools">
+
+    <data>
+
+        <import type="android.view.View" />
+
+        <variable
+            name="viewModel"
+            type="com.giosis.library.main.route.TodayMyRouteViewModel" />
+
+        <variable
+            name="routeData"
+            type="com.giosis.library.main.route.RouteData" />
+    </data>
+
+    <androidx.constraintlayout.widget.ConstraintLayout
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:background="@color/white">
+
+        <include
+            android:id="@+id/layout_top_title"
+            layout="@layout/top_title"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="parent" />
+
+        <RelativeLayout
+            android:id="@+id/layout_my_route_type"
+            android:layout_width="match_parent"
+            android:layout_height="35dp"
+            android:layout_margin="20dp"
+            android:background="@drawable/border_round_5_cccccc"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@id/layout_top_title">
+
+            <RelativeLayout
+                android:id="@+id/layout_my_route_type_text"
+                android:layout_width="wrap_content"
+                android:layout_height="match_parent"
+                android:paddingHorizontal="8dp">
+
+                <TextView
+                    android:id="@+id/text_my_route_type"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_centerVertical="true"
+                    android:layout_marginEnd="5dp"
+                    android:layout_toStartOf="@id/img_my_route_type_arrow"
+                    android:text="@string/text_select"
+                    android:textColor="@color/color_303030"
+                    android:textSize="@dimen/text_size_26px" />
+
+                <ImageView
+                    android:id="@+id/img_my_route_type_arrow"
+                    android:layout_width="10dp"
+                    android:layout_height="6dp"
+                    android:layout_alignParentEnd="true"
+                    android:layout_centerVertical="true"
+                    android:layout_marginStart="4dp"
+                    android:layout_marginEnd="10dp"
+                    android:background="@drawable/btn_arrow_down_black" />
+            </RelativeLayout>
+
+            <Spinner
+                android:id="@+id/spinner_my_route_type"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:layout_below="@id/layout_my_route_type_text"
+                android:layout_centerInParent="true"
+                android:layout_marginHorizontal="8dp"
+                android:layout_marginVertical="2dp"
+                android:background="#FFFFFF"
+                android:entries="@array/route_type"
+                android:prompt="@string/text_select"
+                app:spinnerSelect="@{viewModel.spinnerPosition}" />
+        </RelativeLayout>
+
+        <RelativeLayout
+            android:id="@+id/layout_my_route_count"
+            android:layout_width="match_parent"
+            android:layout_height="130dp"
+            android:layout_marginHorizontal="20dp"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@id/layout_my_route_type">
+
+            <View
+                android:layout_width="match_parent"
+                android:layout_height="1dp"
+                android:layout_marginHorizontal="44dp"
+                android:layout_marginTop="42dp"
+                android:background="@color/color_4fb648" />
+
+            <LinearLayout
+                android:id="@+id/layout_my_route_pickup"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:orientation="horizontal"
+                android:paddingVertical="20dp"
+                android:visibility="gone"
+                android:weightSum="4">
+
+                <LinearLayout
+                    android:layout_width="0dp"
+                    android:layout_height="match_parent"
+                    android:layout_weight="1"
+                    android:orientation="vertical">
+
+                    <TextView
+                        android:id="@+id/text_my_route_pa_count"
+                        android:layout_width="45dp"
+                        android:layout_height="45dp"
+                        android:layout_gravity="center"
+                        android:background="@drawable/border_round_4fb648"
+                        android:gravity="center"
+                        android:text="@{viewModel.PACount}"
+                        android:textColor="@color/color_4fb648"
+                        android:textSize="@dimen/text_size_40px"
+                        android:textStyle="bold"
+                        tools:text="999" />
+
+                    <TextView
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_gravity="center"
+                        android:layout_marginTop="8dp"
+                        android:gravity="center"
+                        android:text="@string/text_pickup_assigned_e"
+                        android:textColor="@color/color_767676"
+                        android:textSize="12sp" />
+                </LinearLayout>
+
+                <LinearLayout
+                    android:layout_width="0dp"
+                    android:layout_height="match_parent"
+                    android:layout_weight="1"
+                    android:orientation="vertical">
+
+                    <TextView
+                        android:id="@+id/text_my_route_p2_count"
+                        android:layout_width="45dp"
+                        android:layout_height="45dp"
+                        android:layout_gravity="center"
+                        android:background="@drawable/border_round_4fb648"
+                        android:gravity="center"
+                        android:text="@{viewModel.P2Count}"
+                        android:textColor="@color/color_4fb648"
+                        android:textSize="@dimen/text_size_40px"
+                        android:textStyle="bold"
+                        tools:text="999" />
+
+                    <TextView
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_gravity="center"
+                        android:layout_marginTop="8dp"
+                        android:gravity="center"
+                        android:text="@string/text_pickup_confirmed_e"
+                        android:textColor="@color/color_767676"
+                        android:textSize="12sp" />
+                </LinearLayout>
+
+                <LinearLayout
+                    android:layout_width="0dp"
+                    android:layout_height="match_parent"
+                    android:layout_weight="1"
+                    android:orientation="vertical">
+
+                    <TextView
+                        android:id="@+id/text_my_route_p3_count"
+                        android:layout_width="45dp"
+                        android:layout_height="45dp"
+                        android:layout_gravity="center"
+                        android:background="@drawable/bg_round_4fb648"
+                        android:gravity="center"
+                        android:text="@{viewModel.P3Count}"
+                        android:textColor="@color/white"
+                        android:textSize="@dimen/text_size_40px"
+                        android:textStyle="bold"
+                        tools:text="999" />
+
+                    <TextView
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_gravity="center"
+                        android:layout_marginTop="8dp"
+                        android:gravity="center"
+                        android:text="@string/text_pickup_done_e"
+                        android:textColor="@color/color_4fb648"
+                        android:textSize="12sp" />
+                </LinearLayout>
+
+                <LinearLayout
+                    android:layout_width="0dp"
+                    android:layout_height="match_parent"
+                    android:layout_weight="1"
+                    android:orientation="vertical">
+
+                    <TextView
+                        android:id="@+id/text_my_route_pf_count"
+                        android:layout_width="45dp"
+                        android:layout_height="45dp"
+                        android:layout_gravity="center"
+                        android:background="@drawable/border_round_4fb648"
+                        android:gravity="center"
+                        android:text="@{viewModel.PFCount}"
+                        android:textColor="@color/color_4fb648"
+                        android:textSize="@dimen/text_size_40px"
+                        android:textStyle="bold"
+                        tools:text="999" />
+
+                    <TextView
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_gravity="center"
+                        android:layout_marginTop="8dp"
+                        android:gravity="center"
+                        android:text="@string/text_pickup_failed_e"
+                        android:textColor="@color/color_767676"
+                        android:textSize="12sp" />
+                </LinearLayout>
+            </LinearLayout>
+
+            <LinearLayout
+                android:id="@+id/layout_my_route_delivery"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:orientation="horizontal"
+                android:paddingVertical="20dp"
+                android:visibility="visible"
+                android:weightSum="3">
+
+                <LinearLayout
+                    android:layout_width="0dp"
+                    android:layout_height="match_parent"
+                    android:layout_weight="1"
+                    android:orientation="vertical">
+
+                    <TextView
+                        android:id="@+id/text_my_route_d3_count"
+                        android:layout_width="45dp"
+                        android:layout_height="45dp"
+                        android:layout_gravity="center"
+                        android:background="@drawable/border_round_4fb648"
+                        android:gravity="center"
+                        android:text="@{viewModel.D3Count}"
+                        android:textColor="@color/color_4fb648"
+                        android:textSize="@dimen/text_size_40px"
+                        android:textStyle="bold"
+                        tools:text="999" />
+
+                    <TextView
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_gravity="center"
+                        android:layout_marginTop="8dp"
+                        android:gravity="center"
+                        android:text="@string/text_on_delivery_e"
+                        android:textColor="@color/color_767676"
+                        android:textSize="12sp" />
+                </LinearLayout>
+
+                <LinearLayout
+                    android:layout_width="0dp"
+                    android:layout_height="match_parent"
+                    android:layout_weight="1"
+                    android:orientation="vertical">
+
+                    <TextView
+                        android:id="@+id/text_my_route_d4_count"
+                        android:layout_width="45dp"
+                        android:layout_height="45dp"
+                        android:layout_gravity="center"
+                        android:background="@drawable/bg_round_4fb648"
+                        android:gravity="center"
+                        android:text="@{viewModel.D4Count}"
+                        android:textColor="@color/white"
+                        android:textSize="@dimen/text_size_40px"
+                        android:textStyle="bold"
+                        tools:text="999" />
+
+                    <TextView
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_gravity="center"
+                        android:layout_marginTop="8dp"
+                        android:gravity="center"
+                        android:text="@string/text_delivered"
+                        android:textColor="@color/color_4fb648"
+                        android:textSize="12sp" />
+                </LinearLayout>
+
+                <LinearLayout
+                    android:layout_width="0dp"
+                    android:layout_height="match_parent"
+                    android:layout_weight="1"
+                    android:orientation="vertical">
+
+                    <TextView
+                        android:id="@+id/text_my_route_df_count"
+                        android:layout_width="45dp"
+                        android:layout_height="45dp"
+                        android:layout_gravity="center"
+                        android:background="@drawable/border_round_4fb648"
+                        android:gravity="center"
+                        android:text="@{viewModel.DFCount}"
+                        android:textColor="@color/color_4fb648"
+                        android:textSize="@dimen/text_size_40px"
+                        android:textStyle="bold"
+                        tools:text="999" />
+
+                    <TextView
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_gravity="center"
+                        android:layout_marginTop="8dp"
+                        android:gravity="center"
+                        android:text="@string/text_delivery_failed_e"
+                        android:textColor="@color/color_767676"
+                        android:textSize="12sp" />
+                </LinearLayout>
+            </LinearLayout>
+        </RelativeLayout>
+
+        <Button
+            android:id="@+id/btn_route_run"
+            android:layout_width="131dp"
+            android:layout_height="40dp"
+            android:background="@drawable/bg_round_30_4fb648"
+            android:onClick="@{()->viewModel.clickRun()}"
+            android:text="@string/text_run"
+            android:textAllCaps="false"
+            android:textColor="@color/white"
+            android:textSize="@dimen/text_size_36px"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@id/layout_my_route_count" />
+
+        <View
+            android:id="@+id/view_divider"
+            android:layout_width="match_parent"
+            android:layout_height="1dp"
+            android:layout_marginHorizontal="10dp"
+            android:layout_marginTop="20dp"
+            android:background="@color/color_4fb648"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@id/btn_route_run" />
+
+        <LinearLayout
+            android:id="@+id/layout_my_route_result"
+            android:layout_width="match_parent"
+            android:layout_height="0dp"
+            android:layout_marginTop="20dp"
+            android:orientation="vertical"
+            android:visibility="@{viewModel.resultVisible}"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@id/view_divider">
+
+            <LinearLayout
+                android:id="@+id/layout_my_route_summary"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginHorizontal="20dp"
+                android:orientation="horizontal"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toBottomOf="@id/view_divider">
+
+                <TextView
+                    android:id="@+id/text_my_route_hour"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="@{routeData.getTotalHour}"
+                    android:textColor="@color/color_333333"
+                    android:textSize="18sp"
+                    android:textStyle="bold"
+                    tools:text="3" />
+
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginStart="4dp"
+                    android:text="@string/text_hour_s"
+                    android:textColor="@color/color_333333"
+                    android:textSize="15sp" />
+
+                <TextView
+                    android:id="@+id/text_my_route_min"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginStart="4dp"
+                    android:text="@{routeData.getTotalMin}"
+                    android:textColor="@color/color_333333"
+                    android:textSize="18sp"
+                    android:textStyle="bold"
+                    tools:text="35" />
+
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginStart="4dp"
+                    android:text="@string/text_minute_s"
+                    android:textColor="@color/color_333333"
+                    android:textSize="15sp" />
+
+                <View
+                    android:layout_width="1dp"
+                    android:layout_height="15dp"
+                    android:layout_gravity="center"
+                    android:layout_marginHorizontal="15dp"
+                    android:background="@color/color_1a000000" />
+
+                <TextView
+                    android:id="@+id/text_my_route_distance"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="@{routeData.getDistanceKm}"
+                    android:textColor="@color/color_333333"
+                    android:textSize="18sp"
+                    android:textStyle="bold"
+                    tools:text="25.3" />
+
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginStart="4dp"
+                    android:text="@string/text_kilometer_s"
+                    android:textColor="@color/color_333333"
+                    android:textSize="15sp" />
+
+                <View
+                    android:layout_width="1dp"
+                    android:layout_height="15dp"
+                    android:layout_gravity="center"
+                    android:layout_marginHorizontal="15dp"
+                    android:background="@color/color_1a000000" />
+
+                <TextView
+                    android:id="@+id/text_my_route_trip"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="@{routeData.tripCount}"
+                    android:textColor="@color/color_333333"
+                    android:textSize="18sp"
+                    android:textStyle="bold"
+                    tools:text="4" />
+
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginStart="4dp"
+                    android:text="@string/text_trip"
+                    android:textColor="@color/color_333333"
+                    android:textSize="15sp" />
+            </LinearLayout>
+
+            <androidx.recyclerview.widget.RecyclerView
+                android:id="@+id/recyclerView"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="20dp"
+                android:scrollbarSize="4dp"
+                android:scrollbarThumbVertical="@color/color_707070"
+                android:scrollbars="vertical"
+                app:layoutManager="androidx.recyclerview.widget.LinearLayoutManager"
+                app:routeData="@{viewModel.routeData.routeList}"
+                tools:listitem="@layout/item_my_route" />
+        </LinearLayout>
+
+        <ProgressBar
+            android:id="@+id/progress_main"
+            style="?android:attr/progressBarStyle"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:visibility="@{viewModel.progress}"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="parent" />
+    </androidx.constraintlayout.widget.ConstraintLayout>
+</layout>

@@ -37,7 +37,7 @@
             android:textColor="@color/color_303030"
             android:textSize="@dimen/text_size_36px"
             android:textStyle="bold"
-            tools:text="SGSG1232132123 | DPC3-OUT | karam.kim" />
+            tools:text="SGSG1232132123 | DPC3-OUT | vin.re" />
     </LinearLayout>
 
     <Button
