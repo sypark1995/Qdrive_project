@@ -12,6 +12,7 @@ import android.widget.Toast
 import com.giosis.library.MemoryStatus
 import com.giosis.library.R
 import com.giosis.library.gps.GPSTrackerManager
+import com.giosis.library.gps.LocationModel
 import com.giosis.library.util.*
 import kotlinx.android.synthetic.main.activity_pickup_start_to_scan.*
 import kotlinx.android.synthetic.main.top_title.*
@@ -34,6 +35,9 @@ class PickupDoneActivity : CommonActivity() {
     var gpsEnable = false
     var latitude = 0.0
     var longitude = 0.0
+
+    private var locationModel = LocationModel()
+
 
     var isPermissionTrue = false
 
@@ -58,6 +62,22 @@ class PickupDoneActivity : CommonActivity() {
         img_sign_p_start_scan.setBackgroundResource(R.drawable.qdrive_btn_icon_check_on)
         img_sign_p_zero_qty.setBackgroundResource(R.drawable.qdrive_btn_icon_check_off)
         text_sign_p_total_qty.text = strReqQty
+
+
+        // 위, 경도
+        val cs = DatabaseHelper.getInstance()["SELECT * FROM " + DatabaseHelper.DB_TABLE_INTEGRATION_LIST + " WHERE invoice_no='" + pickupNo + "'"]
+        if (cs.moveToFirst()) {
+
+            val parcelLat = cs.getDouble(cs.getColumnIndex("lat"))
+            val parcelLng = cs.getDouble(cs.getColumnIndex("lng"))
+            val zipCode = cs.getString(cs.getColumnIndex("zip_code"))
+            val state = cs.getString(cs.getColumnIndex("state"))
+            val city = cs.getString(cs.getColumnIndex("city"))
+            val street = cs.getString(cs.getColumnIndex("street"))
+            Log.e("GPSUpdate", "Parcel $pickupNo // $parcelLat, $parcelLng // $zipCode - $state - $city - $street")
+
+            locationModel.setParcelLocation(parcelLat, parcelLng, zipCode, state, city, street)
+        }
 
 
         // Memo 입력제한
@@ -145,7 +165,9 @@ class PickupDoneActivity : CommonActivity() {
             if (gpsTrackerManager != null) {
                 latitude = gpsTrackerManager!!.latitude
                 longitude = gpsTrackerManager!!.longitude
-                Log.e("Location", "$tag saveServerUploadSign  GPSTrackerManager : $latitude  $longitude  ")
+
+                locationModel.setDriverLocation(latitude, longitude)
+                Log.e("Location", "$tag saveServerUploadSign  GPSTrackerManager : $latitude  $longitude  - ${locationModel.driverLat}, ${locationModel.driverLng}")
             }
 
 
@@ -179,7 +201,7 @@ class PickupDoneActivity : CommonActivity() {
 
             PickupDoneUploadHelper.Builder(this@PickupDoneActivity, Preferences.userId, Preferences.officeCode, Preferences.deviceUUID,
                     pickupNo, mStrWaybillNo, realQty, sign_view_sign_p_applicant_signature, sign_view_sign_p_collector_signature, driverMemo,
-                    MemoryStatus.getAvailableInternalMemorySize(), latitude, longitude)
+                    MemoryStatus.getAvailableInternalMemorySize(), locationModel)
                     .setOnServerEventListener(object : OnServerEventListener {
                         override fun onPostResult() {
 

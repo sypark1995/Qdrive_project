@@ -481,6 +481,10 @@ public class ListInProgressFragment extends Fragment
                         cs.getString(cs.getColumnIndex("high_amount_yn"))
                 );
                 rowitem.setZip_code(cs.getString(cs.getColumnIndex("zip_code")));
+                rowitem.setState(cs.getString(cs.getColumnIndex("state")));
+                rowitem.setCity(cs.getString(cs.getColumnIndex("city")));
+                rowitem.setStreet(cs.getString(cs.getColumnIndex("street")));
+                //
 
                 // NOTIFICATION.  2019.10  invoice와 같은지 체크! 같으면 저장 x
                 if (deliveryType.equals("P")) {

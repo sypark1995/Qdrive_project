@@ -1,8 +1,9 @@
 package com.giosis.library.main;
 
+import java.io.Serializable;
 import java.util.ArrayList;
 
-public class RowItem {
+public class RowItem implements Serializable {
 
     float distance;
     private String contr_no;

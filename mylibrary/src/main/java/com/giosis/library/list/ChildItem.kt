@@ -1,6 +1,8 @@
 package com.giosis.library.list
 
-class ChildItem {
+import java.io.Serializable
+
+class ChildItem : Serializable {
     var tel: String? = null
     var hp: String? = null
     var stat: String? = null

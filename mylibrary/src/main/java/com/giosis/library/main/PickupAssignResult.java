@@ -1,5 +1,7 @@
 package com.giosis.library.main;
 
+import com.google.gson.annotations.SerializedName;
+
 import org.simpleframework.xml.Element;
 import org.simpleframework.xml.ElementList;
 import org.simpleframework.xml.Root;
@@ -110,6 +112,17 @@ public class PickupAssignResult {
         @Element(name = "lat_lng", required = false)
         private String lat_lng = "";
 
+        @Element(name = "state", required = false)
+        @SerializedName("state")
+        private String state = "";
+
+        @Element(name = "city", required = false)
+        @SerializedName("city")
+        private String city = "";
+
+        @Element(name = "street", required = false)
+        @SerializedName("street")
+        private String street = "";
 
         public String getCustNo() {
             return cust_no;
@@ -204,6 +217,18 @@ public class PickupAssignResult {
 
         public String getLat_lng() {
             return lat_lng;
+        }
+
+        public String getState() {
+            return state;
+        }
+
+        public String getCity() {
+            return city;
+        }
+
+        public String getStreet() {
+            return street;
         }
     }
 }

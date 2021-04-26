@@ -304,12 +304,13 @@ public class MainActivity extends AppBaseActivity {
 
         // MY/ID Route
         // TODO_route  MY/ID 적용 / SG는 테스트용으로
-        if (Preferences.INSTANCE.getUserNation().equalsIgnoreCase("SG")) {
-
-            btn_home_today_my_route.setVisibility(View.VISIBLE);
-        } else {
-            btn_home_today_my_route.setVisibility(View.GONE);
-        }
+//        if (!Preferences.INSTANCE.getUserNation().equalsIgnoreCase("SG")) {
+//
+//            btn_home_today_my_route.setVisibility(View.VISIBLE);
+//        } else {
+//
+//            btn_home_today_my_route.setVisibility(View.GONE);
+//        }
 
 
         if (outletDriverYN.equals("Y")) {

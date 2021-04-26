@@ -98,6 +98,10 @@ public class ChangeDriverHelper {
         // 2021.04  High Value
         contentVal.put("high_amount_yn", assignInfo.getHigh_amount_yn());
 
+        contentVal.put("state", assignInfo.getState());
+        contentVal.put("city", assignInfo.getCity());
+        contentVal.put("street", assignInfo.getStreet());
+
         long insertCount = DatabaseHelper.getInstance().insert(DatabaseHelper.DB_TABLE_INTEGRATION_LIST, contentVal);
         return insertCount >= 0;
     }

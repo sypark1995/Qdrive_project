@@ -182,7 +182,6 @@ public class CnRPickupValidationCheckHelper {
                 cnRPickupData.setAddress(resultObject.getString("address"));
                 cnRPickupData.setRoute(resultObject.getString("route"));
                 cnRPickupData.setPickupHopeDay(resultObject.getString("pickup_hopeday"));
-                cnRPickupData.setPickupHopeTime(resultObject.getString("pickup_hopetime"));
                 cnRPickupData.setQty(resultObject.getString("qty"));
                 cnRPickupData.setReqName(resultObject.getString("req_nm"));
                 cnRPickupData.setFailReason(resultObject.getString("fail_reason"));
@@ -265,6 +264,10 @@ public class CnRPickupValidationCheckHelper {
 
                 contentVal.put("lat", "0");
                 contentVal.put("lng", "0");
+
+                contentVal.put("state", "");
+                contentVal.put("city", "");
+                contentVal.put("street", "");
 
                 DatabaseHelper.getInstance().insert(DatabaseHelper.DB_TABLE_INTEGRATION_LIST, contentVal);
             } catch (Exception ignored) {

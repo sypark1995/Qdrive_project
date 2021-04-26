@@ -184,6 +184,10 @@ public class ServerDownloadHelper {
         // 2021.04  High Value
         contentVal.put("high_amount_yn", data.getHigh_amount_yn());
 
+        contentVal.put("state", data.getState());
+        contentVal.put("city", data.getCity());
+        contentVal.put("street", data.getStreet());
+
         return DatabaseHelper.getInstance().insert(DatabaseHelper.DB_TABLE_INTEGRATION_LIST, contentVal);
     }
 
@@ -228,6 +232,10 @@ public class ServerDownloadHelper {
 
         // 2021.04  High Value
         contentVal.put("high_amount_yn", data.getHigh_amount_yn());
+
+        contentVal.put("state", data.getState());
+        contentVal.put("city", data.getCity());
+        contentVal.put("street", data.getStreet());
 
         return DatabaseHelper.getInstance().insert(DatabaseHelper.DB_TABLE_INTEGRATION_LIST, contentVal);
     }
@@ -281,6 +289,10 @@ public class ServerDownloadHelper {
         contentVal.put("lat", latLng[0]);
         contentVal.put("lng", latLng[1]);
 
+        contentVal.put("state", data.getState());
+        contentVal.put("city", data.getCity());
+        contentVal.put("street", data.getStreet());
+        
         return DatabaseHelper.getInstance().insert(DatabaseHelper.DB_TABLE_INTEGRATION_LIST, contentVal);
     }
 

@@ -4,8 +4,6 @@ import android.app.AlertDialog;
 import android.app.ProgressDialog;
 import android.content.ContentValues;
 import android.content.Context;
-import android.content.DialogInterface;
-import android.content.DialogInterface.OnClickListener;
 import android.database.Cursor;
 import android.graphics.Bitmap;
 import android.os.AsyncTask;
@@ -13,6 +11,7 @@ import android.util.Log;
 
 import com.giosis.library.R;
 import com.giosis.library.barcodescanner.StdResult;
+import com.giosis.library.gps.LocationModel;
 import com.giosis.library.list.SigningView;
 import com.giosis.library.server.Custom_JsonParser;
 import com.giosis.library.server.ImageUpload;
@@ -46,67 +45,24 @@ public class PickupDoneUploadHelper {
     private final String driverMemo;
 
     private final long disk_size;
-    private final double lat;
-    private final double lon;
+    private final LocationModel locationModel;
 
     private final OnServerEventListener eventListener;
     private final String networkType;
     private final ProgressDialog progressDialog;
     private final AlertDialog resultDialog;
+    int count = 0;
+    boolean gpsUpdate = false;
 
-    public static class Builder {
+    private ProgressDialog getProgressDialog(Context context) {
 
-        private final Context context;
-        private final String opID;
-        private final String officeCode;
-        private final String deviceID;
-
-        private final String pickup_no;
-        private final String scanned_str;
-        private final String scannedQty;
-        private final SigningView signingView;
-        private final SigningView collectorSigningView;
-        private final String driverMemo;
-
-        private final long disk_size;
-        private final double lat;
-        private final double lon;
-
-        private String networkType;
-        private OnServerEventListener eventListener;
-
-        public Builder(Context context, String opID, String officeCode, String deviceID,
-                       String pickup_no, String scanned_str, String scannedQty, SigningView signingView, SigningView collectorSigningView, String driverMemo,
-                       long disk_size, double lat, double lon) {
-
-            this.context = context;
-            this.opID = opID;
-            this.officeCode = officeCode;
-            this.deviceID = deviceID;
-            this.networkType = NetworkUtil.getNetworkType(context);
-
-            this.pickup_no = pickup_no;
-            this.scanned_str = scanned_str;
-            this.scannedQty = scannedQty;
-            this.signingView = signingView;
-            this.collectorSigningView = collectorSigningView;
-            this.driverMemo = driverMemo;
-
-            this.disk_size = disk_size;
-            this.lat = lat;
-            this.lon = lon;
-        }
-
-        public PickupDoneUploadHelper build() {
-            return new PickupDoneUploadHelper(this);
-        }
-
-        public Builder setOnServerEventListener(OnServerEventListener eventListener) {
-            this.eventListener = eventListener;
-
-            return this;
-        }
+        ProgressDialog progressDialog = new ProgressDialog(context);
+        progressDialog.setProgressStyle(ProgressDialog.STYLE_HORIZONTAL);
+        progressDialog.setMessage(context.getResources().getString(R.string.text_set_transfer));
+        progressDialog.setCancelable(false);
+        return progressDialog;
     }
+
 
     private PickupDoneUploadHelper(Builder builder) {
 
@@ -123,8 +79,7 @@ public class PickupDoneUploadHelper {
         this.driverMemo = builder.driverMemo;
 
         this.disk_size = builder.disk_size;
-        this.lat = builder.lat;
-        this.lon = builder.lon;
+        this.locationModel = builder.locationModel;
 
         this.networkType = builder.networkType;
         this.eventListener = builder.eventListener;
@@ -132,38 +87,71 @@ public class PickupDoneUploadHelper {
         this.resultDialog = getResultAlertDialog(this.context);
     }
 
-    private ProgressDialog getProgressDialog(Context context) {
-
-        ProgressDialog progressDialog = new ProgressDialog(context);
-        progressDialog.setProgressStyle(ProgressDialog.STYLE_HORIZONTAL);
-        progressDialog.setMessage(context.getResources().getString(R.string.text_set_transfer));
-        progressDialog.setCancelable(false);
-        return progressDialog;
-    }
-
     private AlertDialog getResultAlertDialog(final Context context) {
 
         AlertDialog dialog = new AlertDialog.Builder(context)
                 .setTitle(context.getResources().getString(R.string.text_upload_result))
-                .setCancelable(false).setPositiveButton(context.getResources().getString(R.string.button_ok), new OnClickListener() {
+                .setCancelable(false)
+                .setPositiveButton(context.getResources().getString(R.string.button_ok), (dialog1, which) -> {
 
-                    @Override
-                    public void onClick(DialogInterface dialog, int which) {
-                        if (dialog != null)
-                            dialog.dismiss();
-
-                        if (eventListener != null) {
-                            eventListener.onPostResult();
-                        }
+                    Log.e("GpsUpdate", "Count : " + count);
+                    try {
+                        if (dialog1 != null)
+                            dialog1.dismiss();
+                    } catch (Exception e) {
+                        Log.e("Exception", TAG + "getResultAlertDialog Exception : " + e.toString());
                     }
+                    if (eventListener != null) {
+                        eventListener.onPostResult();
+                    }
+//
+//                    Log.e("GpsUpdate", "DATA : " + locationModel.getDifferenceLat() + " / " + locationModel.getDifferenceLng());
+//                    //  !Preferences.INSTANCE.getUserNation().equals("SG") &&  TEST
+//                    if (Preferences.INSTANCE.getUserNation().equalsIgnoreCase("SG")) {   // MY,ID
+//                        if (locationModel.getDriverLat() != 0 && locationModel.getDriverLng() != 0
+//                                && locationModel.getParcelLat() != 0 && locationModel.getParcelLng() != 0) {
+//                            // Parcel & Driver 위치정보 수집 했을 때      (0일 경우 제외)
+//                            if (locationModel.getDifferenceLat() < 0.05 && locationModel.getDifferenceLng() < 0.05) {
+//                                // 두 값의 차이가 0.05 이내의 범위일 경우     (0.05 이상이면 부정확)
+//                                if (0.001 <= locationModel.getDifferenceLat() || 0.001 <= locationModel.getDifferenceLng()) {
+//                                    // 소수점 이하 3까지만 비교       (값이 너무 작으면 빈번하게 호출됨)
+//                                    gpsUpdate = true;
+//                                } else {
+//                                    gpsUpdate = false;
+//                                }
+//                            } else {
+//                                gpsUpdate = false;
+//                            }
+//                        } else {
+//                            gpsUpdate = false;
+//                        }
+//                    } else {
+//                        gpsUpdate = false;
+//                    }
+//
+//
+//                    if (gpsUpdate) {
+//
+//                        GPSUpdateDialog gpsDialog = new GPSUpdateDialog(context, locationModel, eventListener);
+//                        gpsDialog.show();
+//                        gpsDialog.setCanceledOnTouchOutside(false);
+//                        Window window = gpsDialog.getWindow();
+//                        window.setBackgroundDrawable(new ColorDrawable(Color.TRANSPARENT));
+//                        window.setLayout(LinearLayout.LayoutParams.MATCH_PARENT, LinearLayout.LayoutParams.WRAP_CONTENT);
+//                    } else {
+//
+//                        if (eventListener != null) {
+//                            eventListener.onPostResult();
+//                        }
+//                    }
                 })
                 .create();
 
         return dialog;
     }
 
-
     private void showResultDialog(String message) {
+
         resultDialog.setMessage(message);
         resultDialog.show();
     }
@@ -173,14 +161,63 @@ public class PickupDoneUploadHelper {
         alert_internet_status.setTitle(context.getResources().getString(R.string.text_upload_failed));
         alert_internet_status.setMessage(msg);
         alert_internet_status.setPositiveButton(context.getResources().getString(R.string.button_close),
-                new OnClickListener() {
-                    public void onClick(DialogInterface dialog, int which) {
-                        dialog.dismiss(); // 닫기
-                    }
+                (dialog, which) -> {
+                    dialog.dismiss(); // 닫기
                 });
         alert_internet_status.show();
     }
 
+    public static class Builder {
+
+        private final Context context;
+        private final String opID;
+        private final String officeCode;
+        private final String deviceID;
+
+        private final String pickup_no;
+        private final String scanned_str;
+        private final String scannedQty;
+        private final SigningView signingView;
+        private final SigningView collectorSigningView;
+        private final String driverMemo;
+
+        private final long disk_size;
+        private final LocationModel locationModel;
+
+        private String networkType;
+        private OnServerEventListener eventListener;
+
+        public Builder(Context context, String opID, String officeCode, String deviceID,
+                       String pickup_no, String scanned_str, String scannedQty, SigningView signingView, SigningView collectorSigningView, String driverMemo,
+                       long disk_size, LocationModel locationModel) {
+
+            this.context = context;
+            this.opID = opID;
+            this.officeCode = officeCode;
+            this.deviceID = deviceID;
+            this.networkType = NetworkUtil.getNetworkType(context);
+
+            this.pickup_no = pickup_no;
+            this.scanned_str = scanned_str;
+            this.scannedQty = scannedQty;
+            this.signingView = signingView;
+            this.collectorSigningView = collectorSigningView;
+            this.driverMemo = driverMemo;
+
+            this.disk_size = disk_size;
+            this.locationModel = locationModel;
+        }
+
+        public PickupDoneUploadHelper build() {
+            return new PickupDoneUploadHelper(this);
+        }
+
+        public Builder setOnServerEventListener(OnServerEventListener eventListener) {
+            this.eventListener = eventListener;
+
+            return this;
+        }
+    }
 
     class PickupUploadTask extends AsyncTask<Void, Integer, StdResult> {
 
@@ -313,8 +350,8 @@ public class PickupDoneUploadHelper {
                 job.accumulate("fileData2", bitmapString2);
                 job.accumulate("remark", driverMemo);           // 드라이버 메세지 driver_memo	== remark
                 job.accumulate("disk_size", disk_size);
-                job.accumulate("lat", lat);
-                job.accumulate("lon", lon);
+                job.accumulate("lat", locationModel.getDriverLat());
+                job.accumulate("lon", locationModel.getDriverLng());
                 job.accumulate("real_qty", scannedQty);         // 실제픽업수량
                 job.accumulate("fail_reason", "");
                 job.accumulate("retry_day", "");

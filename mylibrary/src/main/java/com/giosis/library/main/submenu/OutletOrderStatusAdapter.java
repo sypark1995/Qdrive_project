@@ -430,8 +430,7 @@ public class OutletOrderStatusAdapter extends BaseExpandableListAdapter {
             if (type.equals("D")) {
 
                 Intent intent = new Intent(context, DeliveryDoneActivity.class);
-                intent.putExtra("waybillNo", tracking_no);
-                intent.putExtra("route", route);
+                intent.putExtra("parcel", rowItem.get(groupPosition));
                 ((Activity) context).startActivityForResult(intent, 1);
             } else if (type.equals("P")) {
 

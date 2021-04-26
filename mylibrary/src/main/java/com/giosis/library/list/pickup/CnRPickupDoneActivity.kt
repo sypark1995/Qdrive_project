@@ -4,6 +4,7 @@ import android.app.Activity
 import android.app.AlertDialog
 import android.content.DialogInterface
 import android.content.Intent
+import android.database.Cursor
 import android.os.Bundle
 import android.util.Log
 import android.view.View
@@ -11,11 +12,14 @@ import android.widget.Toast
 import com.giosis.library.MemoryStatus
 import com.giosis.library.R
 import com.giosis.library.gps.GPSTrackerManager
+import com.giosis.library.gps.LocationModel
 import com.giosis.library.list.BarcodeData
 import com.giosis.library.util.*
+import com.giosis.library.util.DatabaseHelper.Companion.getInstance
 import kotlinx.android.synthetic.main.activity_pickup_done.*
 import kotlinx.android.synthetic.main.top_title.*
 import java.util.*
+
 
 /**
  * @editor krm0219
@@ -34,6 +38,9 @@ class CnRPickupDoneActivity : CommonActivity() {
     var gpsEnable = false
     var latitude = 0.0
     var longitude = 0.0
+
+    private var locationModel = LocationModel()
+
     var isPermissionTrue = false
 
     public override fun onCreate(savedInstanceState: Bundle?) {
@@ -61,21 +68,33 @@ class CnRPickupDoneActivity : CommonActivity() {
         var pickupBarcodeData: BarcodeData
 
         mWaybillList = mStrWaybillNo.split(",".toRegex()).toTypedArray()
+        Log.e("krm0219", "Size : ${mWaybillList.size}")
 
-        if (mWaybillList.isNotEmpty()) {
-            for (s in mWaybillList) {
+        for (s in mWaybillList) {
 
-                pickupBarcodeData = BarcodeData()
-                pickupBarcodeData.barcode = s.trim { it <= ' ' }
-                pickupBarcodeData.state = mType
-                pickupNoList!!.add(pickupBarcodeData)
-            }
-        } else {
-
+            val barcode = s.trim()
             pickupBarcodeData = BarcodeData()
-            pickupBarcodeData.barcode = mStrWaybillNo
+            pickupBarcodeData.barcode = barcode
             pickupBarcodeData.state = mType
             pickupNoList!!.add(pickupBarcodeData)
+
+            // 위, 경도
+            if (strReqQty.equals("1")) {
+
+                val cs: Cursor = getInstance()["SELECT * FROM " + DatabaseHelper.DB_TABLE_INTEGRATION_LIST + " WHERE invoice_no='" + barcode + "'"]
+                if (cs.moveToFirst()) {
+
+                    val parcelLat: Double = cs.getDouble(cs.getColumnIndex("lat"))
+                    val parcelLng: Double = cs.getDouble(cs.getColumnIndex("lng"))
+                    val zipCode: String = cs.getString(cs.getColumnIndex("zip_code"))
+                    val state: String = cs.getString(cs.getColumnIndex("state"))
+                    val city: String = cs.getString(cs.getColumnIndex("city"))
+                    val street: String = cs.getString(cs.getColumnIndex("street"))
+                    Log.e("GPSUpdate", "Parcel $barcode // $parcelLat, $parcelLng // $zipCode - $state - $city - $street")
+
+                    locationModel.setParcelLocation(parcelLat, parcelLng, zipCode, state, city, street)
+                }
+            }
         }
 
         var barcodeMsg: String? = ""
@@ -173,7 +192,7 @@ class CnRPickupDoneActivity : CommonActivity() {
      * 실시간 Upload 처리
      * add by jmkang 2014-07-15
      */
-    fun saveServerUploadSign() {
+    private fun saveServerUploadSign() {
         try {
             if (!NetworkUtil.isNetworkAvailable(this@CnRPickupDoneActivity)) {
 
@@ -184,7 +203,9 @@ class CnRPickupDoneActivity : CommonActivity() {
             if (gpsTrackerManager != null) {
                 latitude = gpsTrackerManager!!.latitude
                 longitude = gpsTrackerManager!!.longitude
-                Log.e("Location", "$tag saveServerUploadSign  GPSTrackerManager : $latitude  $longitude  ")
+
+                locationModel.setDriverLocation(latitude, longitude)
+                Log.e("Location", "$tag saveServerUploadSign  GPSTrackerManager : $latitude  $longitude  - ${locationModel.driverLat}, ${locationModel.driverLng}")
             }
 
 
@@ -209,7 +230,7 @@ class CnRPickupDoneActivity : CommonActivity() {
 
             CnRPickupUploadHelper.Builder(this@CnRPickupDoneActivity, Preferences.userId, Preferences.officeCode, Preferences.deviceUUID,
                     pickupNoList, sign_view_sign_p_applicant_signature, sign_view_sign_p_collector_signature,
-                    MemoryStatus.getAvailableInternalMemorySize(), latitude, longitude)
+                    MemoryStatus.getAvailableInternalMemorySize(), locationModel)
                     .setOnServerEventListener(object : OnServerEventListener {
                         override fun onPostResult() {
 

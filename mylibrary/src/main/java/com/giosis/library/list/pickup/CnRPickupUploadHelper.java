@@ -4,8 +4,6 @@ import android.app.AlertDialog;
 import android.app.ProgressDialog;
 import android.content.ContentValues;
 import android.content.Context;
-import android.content.DialogInterface;
-import android.content.DialogInterface.OnClickListener;
 import android.graphics.Bitmap;
 import android.os.AsyncTask;
 import android.text.TextUtils;
@@ -13,6 +11,7 @@ import android.util.Log;
 
 import com.giosis.library.R;
 import com.giosis.library.barcodescanner.StdResult;
+import com.giosis.library.gps.LocationModel;
 import com.giosis.library.list.BarcodeData;
 import com.giosis.library.list.SigningView;
 import com.giosis.library.server.Custom_JsonParser;
@@ -47,13 +46,113 @@ public class CnRPickupUploadHelper {
     private final SigningView collectorSigningView;
 
     private final long disk_size;
-    private final double lat;
-    private final double lon;
+    private final LocationModel locationModel;
 
     private final String networkType;
     private final OnServerEventListener eventListener;
     private final ProgressDialog progressDialog;
     private final AlertDialog resultDialog;
+    int count = 0;
+    boolean gpsUpdate = false;
+
+    private ProgressDialog getProgressDialog(Context context) {
+
+        ProgressDialog progressDialog = new ProgressDialog(context);
+        progressDialog.setProgressStyle(ProgressDialog.STYLE_HORIZONTAL);
+        progressDialog.setMessage(context.getResources().getString(R.string.text_set_transfer));
+        progressDialog.setCancelable(false);
+        return progressDialog;
+    }
+
+
+    private CnRPickupUploadHelper(Builder builder) {
+
+        this.context = builder.context;
+        this.opID = builder.opID;
+        this.officeCode = builder.officeCode;
+        this.deviceID = builder.deviceID;
+
+        this.assignBarcodeList = builder.assignBarcodeList;
+        this.signingView = builder.signingView;
+        this.collectorSigningView = builder.collectorSigningView;
+
+        this.disk_size = builder.disk_size;
+        this.locationModel = builder.locationModel;
+
+        this.networkType = builder.networkType;
+        this.eventListener = builder.eventListener;
+        this.progressDialog = getProgressDialog(this.context);
+        this.resultDialog = getResultAlertDialog(this.context);
+    }
+
+    private AlertDialog getResultAlertDialog(final Context context) {
+
+        AlertDialog dialog = new AlertDialog.Builder(context)
+                .setTitle(context.getResources().getString(R.string.text_upload_result))
+                .setCancelable(false).setPositiveButton(context.getResources().getString(R.string.button_ok), (dialog1, which) -> {
+
+                    Log.e("GpsUpdate", "Count : " + count);
+                    try {
+                        if (dialog1 != null)
+                            dialog1.dismiss();
+                    } catch (Exception e) {
+                        Log.e("Exception", TAG + "getResultAlertDialog Exception : " + e.toString());
+                    }
+                    if (eventListener != null) {
+                        eventListener.onPostResult();
+                    }
+//
+//                    Log.e("GpsUpdate", "DATA : " + locationModel.getDifferenceLat() + " / " + locationModel.getDifferenceLng());
+//                    //  !Preferences.INSTANCE.getUserNation().equals("SG") &&  TEST
+//                    if (Preferences.INSTANCE.getUserNation().equalsIgnoreCase("SG") && count == 1) {   // MY,ID
+//                        if (locationModel.getDriverLat() != 0 && locationModel.getDriverLng() != 0
+//                                && locationModel.getParcelLat() != 0 && locationModel.getParcelLng() != 0) {
+//                            // Parcel & Driver 위치정보 수집 했을 때      (0일 경우 제외)
+//                            if (locationModel.getDifferenceLat() < 0.05 && locationModel.getDifferenceLng() < 0.05) {
+//                                // 두 값의 차이가 0.05 이내의 범위일 경우     (0.05 이상이면 부정확)
+//                                if (0.001 <= locationModel.getDifferenceLat() || 0.001 <= locationModel.getDifferenceLng()) {
+//                                    // 소수점 이하 3까지만 비교       (값이 너무 작으면 빈번하게 호출됨)
+//                                    gpsUpdate = true;
+//                                } else {
+//                                    gpsUpdate = false;
+//                                }
+//                            } else {
+//                                gpsUpdate = false;
+//                            }
+//                        } else {
+//                            gpsUpdate = false;
+//                        }
+//                    } else {
+//                        gpsUpdate = false;
+//                    }
+//
+//
+//                    if (gpsUpdate) {
+//
+//                        GPSUpdateDialog gpsDialog = new GPSUpdateDialog(context, locationModel, eventListener);
+//                        gpsDialog.show();
+//                        gpsDialog.setCanceledOnTouchOutside(false);
+//                        Window window = gpsDialog.getWindow();
+//                        window.setBackgroundDrawable(new ColorDrawable(Color.TRANSPARENT));
+//                        window.setLayout(LinearLayout.LayoutParams.MATCH_PARENT, LinearLayout.LayoutParams.WRAP_CONTENT);
+//                    } else {
+//
+//                        if (eventListener != null) {
+//                            eventListener.onPostResult();
+//                        }
+//                    }
+                })
+                .create();
+
+        return dialog;
+    }
+
+    private void showResultDialog(String message, int count) {
+
+        this.count = count;
+        resultDialog.setMessage(message);
+        resultDialog.show();
+    }
 
     public static class Builder {
 
@@ -67,15 +166,14 @@ public class CnRPickupUploadHelper {
         private final SigningView collectorSigningView;
 
         private final long disk_size;
-        private final double lat;
-        private final double lon;
+        private final LocationModel locationModel;
 
         private OnServerEventListener eventListener;
         private final String networkType;
 
         public Builder(Context context, String opID, String officeCode, String deviceID,
                        ArrayList<BarcodeData> assignBarcodeList, SigningView signingView, SigningView collectorSigningView,
-                       long disk_size, double lat, double lon) {
+                       long disk_size, LocationModel locationModel) {
 
             this.context = context;
             this.opID = opID;
@@ -87,8 +185,7 @@ public class CnRPickupUploadHelper {
             this.collectorSigningView = collectorSigningView;
 
             this.disk_size = disk_size;
-            this.lat = lat;
-            this.lon = lon;
+            this.locationModel = locationModel;
 
             this.networkType = NetworkUtil.getNetworkType(context);
         }
@@ -103,64 +200,6 @@ public class CnRPickupUploadHelper {
             return this;
         }
     }
-
-    private CnRPickupUploadHelper(Builder builder) {
-
-        this.context = builder.context;
-        this.opID = builder.opID;
-        this.officeCode = builder.officeCode;
-        this.deviceID = builder.deviceID;
-
-        this.assignBarcodeList = builder.assignBarcodeList;
-        this.signingView = builder.signingView;
-        this.collectorSigningView = builder.collectorSigningView;
-
-        this.disk_size = builder.disk_size;
-        this.lat = builder.lat;
-        this.lon = builder.lon;
-
-        this.networkType = builder.networkType;
-        this.eventListener = builder.eventListener;
-        this.progressDialog = getProgressDialog(this.context);
-        this.resultDialog = getResultAlertDialog(this.context);
-    }
-
-    private ProgressDialog getProgressDialog(Context context) {
-
-        ProgressDialog progressDialog = new ProgressDialog(context);
-        progressDialog.setProgressStyle(ProgressDialog.STYLE_HORIZONTAL);
-        progressDialog.setMessage(context.getResources().getString(R.string.text_set_transfer));
-        progressDialog.setCancelable(false);
-        return progressDialog;
-    }
-
-
-    private AlertDialog getResultAlertDialog(final Context context) {
-
-        AlertDialog dialog = new AlertDialog.Builder(context)
-                .setTitle(context.getResources().getString(R.string.text_upload_result))
-                .setCancelable(false).setPositiveButton(context.getResources().getString(R.string.button_ok), new OnClickListener() {
-
-                    @Override
-                    public void onClick(DialogInterface dialog, int which) {
-                        if (dialog != null)
-                            dialog.dismiss();
-
-                        if (eventListener != null) {
-                            eventListener.onPostResult();
-                        }
-                    }
-                })
-                .create();
-
-        return dialog;
-    }
-
-    private void showResultDialog(String message) {
-        resultDialog.setMessage(message);
-        resultDialog.show();
-    }
-
 
     class CnRPickupUploadTask extends AsyncTask<Void, Integer, ArrayList<StdResult>> {
         int progress = 0;
@@ -246,16 +285,17 @@ public class CnRPickupUploadHelper {
                     }
                 }
 
-                if (successCount > 0 && failCount == 0) {
+                if (0 < successCount && failCount == 0) {
+
                     String msg = String.format(context.getResources().getString(R.string.text_upload_success_count), successCount);
-                    showResultDialog(msg);
+                    showResultDialog(msg, successCount);
                 } else {
 
                     if (resultCode == -16) {
-                        showResultDialog(context.getResources().getString(R.string.msg_network_connect_error_saved));
+                        showResultDialog(context.getResources().getString(R.string.msg_network_connect_error_saved), 0);
                     } else {
                         String msg = String.format(context.getResources().getString(R.string.text_upload_fail_count), successCount, failCount, fail_reason);
-                        showResultDialog(msg);
+                        showResultDialog(msg, 0);
                     }
                 }
 
@@ -341,8 +381,8 @@ public class CnRPickupUploadHelper {
                 job.accumulate("fileData2", bitmapString2);
                 job.accumulate("remark", "");                   // 드라이버 메세지 driver_memo	== remark
                 job.accumulate("disk_size", disk_size);
-                job.accumulate("lat", lat);
-                job.accumulate("lon", lon);
+                job.accumulate("lat", locationModel.getDriverLat());
+                job.accumulate("lon", locationModel.getDriverLng());
                 job.accumulate("real_qty", "1");
                 job.accumulate("fail_reason", "");
                 job.accumulate("retry_day", "");

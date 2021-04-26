@@ -142,6 +142,18 @@ public class DriverAssignResult {
         @SerializedName("high_amount_yn")
         private String high_amount_yn = "";
 
+        @Element(name = "state", required = false)
+        @SerializedName("state")
+        private String state = "";
+
+        @Element(name = "city", required = false)
+        @SerializedName("city")
+        private String city = "";
+
+        @Element(name = "street", required = false)
+        @SerializedName("street")
+        private String street = "";
+
 
         public String getContrNo() {
             return contr_no;
@@ -234,6 +246,18 @@ public class DriverAssignResult {
 
         public String getHigh_amount_yn() {
             return high_amount_yn;
+        }
+
+        public String getState() {
+            return state;
+        }
+
+        public String getCity() {
+            return city;
+        }
+
+        public String getStreet() {
+            return street;
         }
     }
 }

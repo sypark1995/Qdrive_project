@@ -38,20 +38,16 @@ public class CnRPickupResult {
         private String invoiceNo = "";
         private String stat = "";
         private String reqName = "";
-        private String reqDate = "";
         private String telNo = "";
         private String hpNo = "";
         private String zipCode = "";
         private String address = "";
         private String pickupHopeDay = "";
-        private String pickupHopeTime = "";
         private String senderName = "";
         private String delMemo = "";
         private String driverMemo = "";
         private String failReason = "";
         private String qty = "";
-        private String custName = "";
-        private String partnerID = "";
         private String route = "";
         private String cust_no = "";
 
@@ -95,14 +91,6 @@ public class CnRPickupResult {
             this.reqName = reqName;
         }
 
-        public String getReqDate() {
-            return reqDate;
-        }
-
-        public void setReqDate(String reqDate) {
-            this.reqDate = reqDate;
-        }
-
         public String getTelNo() {
             return telNo;
         }
@@ -143,14 +131,6 @@ public class CnRPickupResult {
             this.pickupHopeDay = pickupHopeDay;
         }
 
-        public String getPickupHopeTime() {
-            return pickupHopeTime;
-        }
-
-        public void setPickupHopeTime(String pickupHopeTime) {
-            this.pickupHopeTime = pickupHopeTime;
-        }
-
         public String getSenderName() {
             return senderName;
         }
@@ -189,22 +169,6 @@ public class CnRPickupResult {
 
         public void setQty(String qty) {
             this.qty = qty;
-        }
-
-        public String getCustName() {
-            return custName;
-        }
-
-        public void setCustName(String custName) {
-            this.custName = custName;
-        }
-
-        public String getPartnerID() {
-            return partnerID;
-        }
-
-        public void setPartnerID(String partnerID) {
-            this.partnerID = partnerID;
         }
 
         public String getRoute() {

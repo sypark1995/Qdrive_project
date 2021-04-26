@@ -833,9 +833,7 @@ public class ListInProgressAdapter extends BaseExpandableListAdapter {
                 intent.putExtra("title", v.getContext().getResources().getString(R.string.text_signature));
             }
 
-            intent.putExtra("waybillNo", tracking_no);
-            intent.putExtra("route", route);
-            intent.putExtra("high_amount_yn", highAmountYn);
+            intent.putExtra("parcel", rowItem.get(groupPosition));
             v.getContext().startActivity(intent);
 
         });
