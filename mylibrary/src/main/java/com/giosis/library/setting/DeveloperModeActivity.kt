@@ -87,8 +87,6 @@ class DeveloperModeActivity : BaseActivity<ActivityDeveloperModeBinding, Develop
                 }
             }
         }
-
-
     }
 
 //
@@ -117,8 +115,4 @@ class DeveloperModeActivity : BaseActivity<ActivityDeveloperModeBinding, Develop
 //
 //            timePickerDialog.show()
 //        }
-
-
-//
-
 }

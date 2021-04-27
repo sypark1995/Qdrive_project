@@ -101,9 +101,15 @@ class TodayMyRouteActivity : AppCompatActivity() {
 
         viewModel.googleMap.observe(this, Observer {
 
-            val intent = Intent(Intent.ACTION_VIEW, Uri.parse(it))
-            intent.setPackage("com.google.android.apps.maps")
-            startActivity(intent)
+            try {
+
+                val intent = Intent(Intent.ACTION_VIEW, Uri.parse(it))
+                intent.setPackage("com.google.android.apps.maps")
+                startActivity(intent)
+            } catch (e: Exception) {
+
+                Toast.makeText(this, getString(R.string.msg_install_google_maps), Toast.LENGTH_SHORT).show()
+            }
         })
 
 

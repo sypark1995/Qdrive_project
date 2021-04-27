@@ -257,7 +257,7 @@ class TodayMyRouteViewModel(application: Application) : AndroidViewModel(applica
             lat = "1.353095"
             lng = "103.942726"
         }
-        
+
         val list = _trackingList.value.toString()
                 .replace("[", "")
                 .replace("]", "")
