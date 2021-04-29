@@ -255,7 +255,6 @@ public class PickupTakeBackUploadHelper {
             ContentValues contentVal = new ContentValues();
             contentVal.put("stat", "P3");
             contentVal.put("real_qty", realQty);
-            contentVal.put("chg_id", opID);
             contentVal.put("chg_dt", changeDataString);
             contentVal.put("fail_reason", "");
             contentVal.put("driver_memo", "");

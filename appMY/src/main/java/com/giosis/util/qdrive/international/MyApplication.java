@@ -10,6 +10,7 @@ import android.util.Log;
 
 import androidx.multidex.MultiDexApplication;
 
+import com.giosis.library.BuildConfig;
 import com.giosis.library.util.DatabaseHelper;
 import com.giosis.library.util.LocaleManager;
 import com.giosis.library.util.Preferences;
@@ -36,7 +37,7 @@ public class MyApplication extends MultiDexApplication {
     public void onCreate() {
         super.onCreate();
 
-        FirebaseCrashlytics.getInstance().setCrashlyticsCollectionEnabled(true);
+        FirebaseCrashlytics.getInstance().setCrashlyticsCollectionEnabled(!BuildConfig.DEBUG);
 
         preferences = new MySharedPreferences(getApplicationContext());
         DatabaseHelper.getInstance(this);

@@ -1,32 +1,55 @@
 package com.giosis.library.main.route
 
-import android.database.Cursor
+import android.annotation.SuppressLint
+import android.app.Application
 import android.util.Log
 import android.view.View
+import androidx.lifecycle.AndroidViewModel
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import com.giosis.library.BuildConfig
-import com.giosis.library.ListViewModel
+import com.giosis.library.gps.GPSTrackerManager
 import com.giosis.library.server.RetrofitClient
-import com.giosis.library.util.DatabaseHelper
+import com.giosis.library.util.Event
 import com.giosis.library.util.Preferences
+import com.google.gson.Gson
+import com.google.gson.reflect.TypeToken
 import io.reactivex.rxjava3.android.schedulers.AndroidSchedulers
 import io.reactivex.rxjava3.schedulers.Schedulers
-import kotlinx.coroutines.CoroutineScope
-import kotlinx.coroutines.Dispatchers
-import kotlinx.coroutines.launch
+import java.text.SimpleDateFormat
+import java.util.*
+import kotlin.collections.ArrayList
 
 
 // ViewModel에서 Context가 필요한 경우 AndroidViewModel 클래스를 상속받아
 // Application 객체를 넘길 것을 권장 !!
 // Context를 갖고 있으면 메모리 누수의 원인이 된다
+class TodayMyRouteViewModel(application: Application) : AndroidViewModel(application) {
 
-class TodayMyRouteViewModel : ListViewModel<Route>() {
+    // Location
+    private val gpsTrackerManager = GPSTrackerManager(application)
+    fun getGpsManager() = gpsTrackerManager
 
-    // Spinner Position 구분  0 : Pickup , 1 : Delivery
-    private val _routeType = MutableLiveData<Int>()
-    val routeType: MutableLiveData<Int>
+    private val _permissionCheck = MutableLiveData<Boolean>()
+    val permissionCheck: MutableLiveData<Boolean>
+        get() = _permissionCheck
+
+    private val _latitude = MutableLiveData<Double>()
+    val latitude: MutableLiveData<Double>
+        get() = _latitude
+
+    private val _longitude = MutableLiveData<Double>()
+    val longitude: MutableLiveData<Double>
+        get() = _longitude
+
+    //
+    private val _routeType = MutableLiveData<String>()
+    val routeType: MutableLiveData<String>
         get() = _routeType
+
+    private val _spinnerPosition = MutableLiveData<Int>()
+    val spinnerPosition: MutableLiveData<Int>
+        get() = _spinnerPosition
 
     private val _PACount = MutableLiveData<String>()
     val PACount: LiveData<String>
@@ -56,7 +79,11 @@ class TodayMyRouteViewModel : ListViewModel<Route>() {
     val DFCount: LiveData<String>
         get() = _DFCount
 
+    private val _trackingList = MutableLiveData<List<String>>()
+    val trackingList: MutableLiveData<List<String>>
+        get() = _trackingList
 
+    //
     private val _routeData = MutableLiveData<RouteData>()
     val routeData: MutableLiveData<RouteData>
         get() = _routeData
@@ -65,277 +92,252 @@ class TodayMyRouteViewModel : ListViewModel<Route>() {
     val progress: MutableLiveData<Int>
         get() = _progress
 
+    private val _resultVisible = MutableLiveData<Int>()
+    val resultVisible: MutableLiveData<Int>
+        get() = _resultVisible
+
+    private val _showToast = MutableLiveData<Event<String>>()
+    val showToast: MutableLiveData<Event<String>>
+        get() = _showToast
+
+    //
+    private val _googleMap = MutableLiveData<String>()
+    val googleMap: MutableLiveData<String>
+        get() = _googleMap
 
     init {
         // Pickup / Delivery 각 타입에 맞는 route 우선 보여줌.
-        if (Preferences.pickupDriver != "Y") {
+        if (Preferences.pickupDriver == "Y") {
 
-            _routeType.value = 1
+            _spinnerPosition.value = 0
+            _routeType.value = "P"
+        } else {
+
+            _spinnerPosition.value = 1
+            _routeType.value = "D"
         }
 
         _progress.value = View.GONE
+        _resultVisible.value = View.GONE
     }
 
 
-    fun getCount() {
+    fun getCount(position: Int) {
 
-        CoroutineScope(Dispatchers.IO).launch {
+        _progress.value = View.VISIBLE
+        _resultVisible.value = View.GONE
 
-            try {
+        if (position == 0) {
 
-                val selectQuery = (
-                        "select   ifnull(sum(case when stat='P1' or stat='PA' or stat='RE' then 1 else 0 end), 0) as pa_count," +
-                                "ifnull(sum(case when stat='P2' then 1 else 0 end) ,0) as p2_count, " +
-                                "ifnull(sum(case when stat='P3' then 1 else 0 end), 0) as p3_count, " +
-                                "ifnull(sum(case when stat='PF' then 1 else 0 end), 0) as pf_count, " +
-                                "ifnull(sum(case when stat='D3' then 1 else 0 end), 0) as d3_count, " +
-                                "ifnull(sum(case when stat='D4' then 1 else 0 end), 0) as d4_count, " +
-                                "ifnull(sum(case when stat='DX' then 1 else 0 end), 0) as df_count " +
-                                "from " + DatabaseHelper.DB_TABLE_INTEGRATION_LIST + " where reg_id='" + Preferences.userId + "'")
+            _routeType.value = "P"
+            RetrofitClient.instanceDynamic().requestGetMyPickupRoute()
+                    .subscribeOn(Schedulers.io())
+                    .observeOn(AndroidSchedulers.mainThread())
+                    .subscribe({
 
-                val cs: Cursor = DatabaseHelper.getInstance()[selectQuery]
+                        if (it.resultCode == 0) {
 
-                if (cs.moveToFirst()) {
+                            val result = Gson().fromJson<List<TrackingModel>>(
+                                    it.resultObject, object : TypeToken<List<TrackingModel>>() {}.type
+                            )
 
-                    if (_routeType.value == 0) {
 
-                        _PACount.postValue(cs.getString(cs.getColumnIndex("pa_count")))
-                        _P2Count.postValue(cs.getString(cs.getColumnIndex("p2_count")))
-                        _P3Count.postValue(cs.getString(cs.getColumnIndex("p3_count")))
-                        _PFCount.postValue(cs.getString(cs.getColumnIndex("pf_count")))
-                    } else {
+                            val list = ArrayList<String>()
+                            var assignedCount = 0
+                            var confirmedCount = 0
+                            var doneCount = 0
+                            var failedCount = 0
 
-                        _D3Count.postValue(cs.getString(cs.getColumnIndex("d3_count")))
-                        _D4Count.postValue(cs.getString(cs.getColumnIndex("d4_count")))
-                        _DFCount.postValue(cs.getString(cs.getColumnIndex("df_count")))
-                    }
-                }
-            } catch (e: Exception) {
+                            for (data in result) {
 
-                Log.e("Exception", "getCount() Exception : $e")
-            }
+                                when (data.stat) {
+                                    "P3" -> {
+                                        doneCount++
+                                    }
+                                    "PF" -> {
+                                        failedCount++
+                                    }
+                                    "P2" -> {
+                                        confirmedCount++
+                                        list.add(data.trackingNo)
+                                    }
+                                    else -> {
+                                        assignedCount++
+                                        list.add(data.trackingNo)
+                                    }
+                                }
+                            }
+
+                            Log.e("route", "Count $confirmedCount / $doneCount / $failedCount")
+                            _PACount.postValue(assignedCount.toString())
+                            _P2Count.postValue(confirmedCount.toString())
+                            _P3Count.postValue(doneCount.toString())
+                            _PFCount.postValue(failedCount.toString())
+                            _trackingList.postValue(list)
+                        } else {
+
+                            showToast.value = Event(it.resultMsg)
+                        }
+
+                        _progress.value = View.GONE
+                    }, {
+
+                        _progress.value = View.GONE
+                        _resultVisible.value = View.GONE
+                        showToast.value = Event(it.message)
+                    })
+        } else {
+
+            _routeType.value = "D"
+            RetrofitClient.instanceDynamic().requestGetMyDeliveryRoute()
+                    .subscribeOn(Schedulers.io())
+                    .observeOn(AndroidSchedulers.mainThread())
+                    .subscribe({
+
+                        if (it.resultCode == 0) {
+
+                            val result = Gson().fromJson<List<TrackingModel>>(
+                                    it.resultObject, object : TypeToken<List<TrackingModel>>() {}.type
+                            )
+
+
+                            val list = ArrayList<String>()
+                            var progressCount = 0
+                            var doneCount = 0
+                            var failedCount = 0
+
+                            for (data in result) {
+
+                                when (data.stat) {
+                                    "D4" -> {
+                                        doneCount++
+                                    }
+                                    "DX" -> {
+                                        failedCount++
+                                    }
+                                    else -> {
+                                        progressCount++
+                                        list.add(data.trackingNo)
+                                    }
+                                }
+                            }
+
+                            Log.e("route", "Count $progressCount / $doneCount / $failedCount")
+                            _D3Count.postValue(progressCount.toString())
+                            _D4Count.postValue(doneCount.toString())
+                            _DFCount.postValue(failedCount.toString())
+                            _trackingList.postValue(list)
+                        } else {
+
+                            showToast.value = Event(it.resultMsg)
+                        }
+
+                        _progress.value = View.GONE
+                    }, {
+
+                        _progress.value = View.GONE
+                        _resultVisible.value = View.GONE
+                        showToast.value = Event(it.message)
+                    })
         }
     }
 
 
     // route 받을 API 호출
+    @SuppressLint("SimpleDateFormat")
     fun clickRun() {
 
-        progressVisible.value = true
         _progress.value = View.VISIBLE
 
-
-        var lat = "0"
-        var lng = "0"
+        var lat = gpsTrackerManager.latitude.toString()
+        var lng = gpsTrackerManager.longitude.toString()
+        Log.e("route", "Lat_Lng   $lat / $lng")
 
         if (BuildConfig.DEBUG) {
             lat = "1.353095"
             lng = "103.942726"
         }
 
-        val invoice_list: ArrayList<String> = ArrayList(0)
-
-        val invoice = invoice_list.toString().replace("[", "")
+        val list = _trackingList.value.toString()
+                .replace("[", "")
                 .replace("]", "")
-                .replace(" ", "")
+        Log.e("route", "$lat - $lng / (${_trackingList.value?.size})$list / ${_routeType.value}")
 
-        Log.e("route", "$lat - $lng / $invoice")
-        RetrofitClient.instanceXRoute().requestGetTripList(lat, lng, invoice)
+        RetrofitClient.instanceXRoute().requestGetTripList(lat, lng, list, _routeType.value!!)
                 .subscribeOn(Schedulers.io())
                 .observeOn(AndroidSchedulers.mainThread())
                 .subscribe({
 
-                    // TODO_route
-                    Log.e("route", " requestGetTripList result ${it.errCode} / ${it.data} ")
-/*
-*
-                        if (result.size == 0) {
+                    if (it.errCode == "0000") {      // 성공
 
-                            clearList()
-                            notifyChange()
-                            _errorMsg.value = R.string.msg_no_results
+                        // TODO_route
+                        Log.e("route", " requestGetTripList result ${it.errCode} / ${it.data} ")
+
+                        if (it.data != null) {
+
+                            val routeData = Gson().fromJson(it.data, RouteData::class.java)
+
+                            val calendar = Calendar.getInstance()
+                            for ((index, route) in routeData.routeList.withIndex()) {
+
+                                val timeMin: Int = (route.next_trip_duration.toDouble() / 60).toInt()
+
+                                if (0 == index) {
+                                    calendar.time = Date()
+                                } else {
+                                    calendar.time = SimpleDateFormat("yyyy-MM-dd HH:mm").parse(routeData.routeList[index - 1].nextTripDate)!!
+                                }
+                                calendar.add(Calendar.MINUTE, timeMin)
+
+                                if (index == routeData.routeList.size - 1) {
+
+                                    route.nextTripDate = ""
+                                    route.nextTripTime = ""
+                                } else {
+
+                                    route.nextTripDate = SimpleDateFormat("yyyy-MM-dd HH:mm").format(calendar.time)
+                                    route.nextTripTime = SimpleDateFormat("HH:mm").format(calendar.time)
+                                }
+
+                                if (index == 0) {
+                                    route.estimatedTime = SimpleDateFormat("HH:mm").format(Calendar.getInstance().time)
+                                } else {
+                                    route.estimatedTime = routeData.routeList[index - 1].nextTripTime
+                                }
+                            }
+
+                            _routeData.postValue(routeData)
+                            _resultVisible.value = View.VISIBLE
                         } else {
 
-                            //    Log.e("krm0219", "Server  ${result.size}  ${result[0].zipCode}  ${result[0].frontAddress}")
-                            setItemList(result)
-                            notifyChange()
-                        }*/
+                            showToast.value = Event(it.desc)
+                            _resultVisible.value = View.GONE
+                        }
+                    } else {    // 실패
 
-                    //setItemList(it.data)
-                    progressVisible.value = false
+                        showToast.value = Event(it.desc)
+                        _resultVisible.value = View.GONE
+                    }
+
                     _progress.value = View.GONE
                 }, {
 
-                    progressVisible.value = false
                     _progress.value = View.GONE
+                    _resultVisible.value = View.GONE
+                    showToast.value = Event(it.message)
                 })
-
-        // instanceXRoute
-        //  _routeData.value =
     }
 
-    /*
-    * fun getInvoice() {
+    fun onClickItem() {
 
-        val invoice_list: ArrayList<String> = ArrayList(0)
-
-        val query: String =
-            String.format(IntegrationTable.INTEGRATION_LIST.SELECT_INVOICE_MY_ROUTE)
-        val result: DbResult = DataBaseManager.getInstance().getExecuteQueryResult(query)
-        if (result.isSucceed) {
-            if (result.data.row.isEmpty()) {
-                mListItem.clear()
-                showNoJobOrder(getString(R.string.text_no_job_order))
-            } else if ((0.0 == LocationService.mLatitude)
-                || (0.0 == LocationService.mLongitude)
-            ) {
-                showNoJobOrder(getString(R.string.msg_location_info_checking))
-            } else {
-
-                for (row in result.data.row) {
-                    if (isCheck) {
-                        invoice_list.add(row[IntegrationTable.COLUMN.INVOICE_NO]!!.s)
-                    } else {
-                        val stat = row[IntegrationTable.COLUMN.STAT]!!.s
-                        if (stat != "DX") {
-                            invoice_list.add(row[IntegrationTable.COLUMN.INVOICE_NO]!!.s)
-                        }
-                    }
-                }
-
-                val invoice = invoice_list.toString().replace("[", "")
-                    .replace("]", "")
-                    .replace(" ", "")
-
-                var lat: String = LocationService.mLatitude.toString()
-                var lng: String = LocationService.mLongitude.toString()
-
-                if (BuildConfig.DEBUG) {
-                    lat = "1.353095"
-                    lng = "103.942726"
-                }
-
-                wait_login_api(true)
-                RetrofitClient.instanceXRoute().requestGetTripList(lat, lng, invoice)
-                    .enqueue(object : Callback<APIModel> {
-                        override fun onFailure(call: Call<APIModel>, t: Throwable) {
-                            setRunStat(true)
-                            wait_login_api(false)
-                        }
-
-                        @SuppressLint("SimpleDateFormat")
-                        override fun onResponse(
-                            call: Call<APIModel>,
-                            response: Response<APIModel>,
-                        ) {
-                            try {
-                                if (response.isSuccessful && response.body() != null) {
-                                    if (response.body()!!.errCode == "0000") {
-                                        val trapData = Gson().fromJson(
-                                            response.body()!!.data,
-                                            GetTripData::class.java
-                                        )
-
-                                        val totalTimeMin = (trapData.duration.toDouble() / 60).toInt()
-
-                                        text_my_route_info_hour.text = totalTimeMin.div(60).toString()
-                                        text_my_route_info_min.text = String.format("%02d", totalTimeMin.rem(60))
-                                        text_my_route_info_distance.text = String.format("%.1f", trapData.distance.toDouble() / 1000)
-                                        text_my_route_info_trip.text = trapData.tripCnt
-
-                                        if (trapData.tripItems.isEmpty()) {
-                                            showNoJobOrder(getString(R.string.text_no_job_order))
-                                        } else {
-
-                                            val cal = Calendar.getInstance()
-                                            for ((index, trip) in trapData.tripItems.withIndex()) {
-
-                                                if (index < trapData.maps.size) {
-                                                    trip.map = trapData.maps[index]
-                                                }
-
-                                                val timeMin: Int =
-                                                    (trip.nextTripDuration.toDouble() / 60).toInt()
-
-                                                if (0 == index) {
-                                                    cal.time = Date()
-                                                } else {
-                                                    cal.time =
-                                                        SimpleDateFormat("yyyy-MM-dd HH:mm").parse(
-                                                            trapData.tripItems[index - 1].nextTripDate
-                                                        )!!
-                                                }
-                                                cal.add(Calendar.MINUTE, timeMin)
-
-                                                if (index == trapData.tripItems.size - 1) {
-
-                                                    trip.nextTripDate = ""
-                                                    trip.nextTripTime = ""
-                                                    trip.nextTripDistance = ""
-
-                                                } else {
-
-                                                    trip.nextTripDate =
-                                                        SimpleDateFormat("yyyy-MM-dd HH:mm")
-                                                            .format(cal.time)
-                                                    trip.nextTripTime =
-                                                        SimpleDateFormat("HH:mm").format(cal.time)
-                                                    trip.nextTripDistance = String.format(
-                                                        "%.1f",
-                                                        trip.nextTripDistance.toDouble() / 1000
-                                                    )
-                                                }
-
-                                                trip.orderType = getOrderType(trip.orderType)
-
-                                                if (index == 0) {
-                                                    trip.estimatedTime = nowTime()
-                                                } else {
-                                                    trip.estimatedTime =
-                                                        trapData.tripItems[index - 1].nextTripTime
-                                                }
-
-                                            }
-
-                                            layout_my_route_info_summary.visibility = View.VISIBLE
-                                            list_my_route_job.visibility = View.VISIBLE
-
-                                            mListItem.clear()
-                                            mListItem.addAll(trapData.tripItems)
-
-                                            listAdapter.notifyDataSetChanged()
-                                        }
-                                    } else {
-                                        QUtil.showAlert(
-                                            this@TodayMyRouteActivity,
-                                            R.string.alert_title_information,
-                                            "Today's my route failed.\n${response.body()!!.desc}"
-                                        )
-                                    }
-                                }
-                            } catch (e: Exception) {
-
-                            }
-
-                            setRunStat(true)
-                            wait_login_api(false)
-
-                        }
-                    })
-            }
-        }
+        // TODO     start navigation Button
+        _googleMap.value = routeData.value?.maps?.get(0)
+        Log.e("Route", "HERE onClickItem   ${_googleMap.value}")
     }
-    * */
 
 
-    fun onClickItem(pos: Int) {
+    fun setPermission(check: Boolean) {
 
-//        val bundle = Bundle()
-        //     bundle.putString("zipCode",        getItem(pos).zipCode)
-        //    bundle.putString("frontAddress", getItem(pos).frontAddress)
-        //    finish(bundle)
-
-        // TODO_route     start navigation Button
-        Log.e("Route", "onClickItem  Route Navigation $pos")
+        _permissionCheck.value = check
     }
 }

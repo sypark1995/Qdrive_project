@@ -20,10 +20,9 @@ class APIModel : JsonModel(), Serializable {
     @SerializedName("err_code")
     var errCode: String? = null
 
-    @SerializedName("data")
-    var data: JsonElement? = null
-
     @SerializedName("desc")
     var desc: String? = null
 
+    @SerializedName("data")
+    var data: JsonElement? = null
 }

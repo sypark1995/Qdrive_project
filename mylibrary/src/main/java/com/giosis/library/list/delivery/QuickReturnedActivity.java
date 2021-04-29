@@ -21,7 +21,6 @@ import android.widget.Toast;
 import androidx.annotation.Nullable;
 
 import com.giosis.library.MemoryStatus;
-import com.giosis.library.OnServerEventListener;
 import com.giosis.library.R;
 import com.giosis.library.gps.GPSTrackerManager;
 import com.giosis.library.list.SigningView;
@@ -29,6 +28,7 @@ import com.giosis.library.util.CommonActivity;
 import com.giosis.library.util.DataUtil;
 import com.giosis.library.util.DatabaseHelper;
 import com.giosis.library.util.NetworkUtil;
+import com.giosis.library.util.OnServerEventListener;
 import com.giosis.library.util.PermissionActivity;
 import com.giosis.library.util.PermissionChecker;
 import com.giosis.library.util.Preferences;

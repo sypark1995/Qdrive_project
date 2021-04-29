@@ -21,7 +21,6 @@ import android.widget.ArrayAdapter
 import android.widget.ImageView
 import android.widget.Toast
 import com.giosis.library.MemoryStatus
-import com.giosis.library.OnServerEventListener
 import com.giosis.library.R
 import com.giosis.library.gps.GPSTrackerManager
 import com.giosis.library.server.data.FailedCodeResult
@@ -334,15 +333,13 @@ class DeliveryFailedActivity : CommonActivity(), Camera2APIs.Camera2Interface, S
                     MemoryStatus.getAvailableInternalMemorySize(), latitude, longitude)
                     .setOnServerEventListener(object : OnServerEventListener {
                         override fun onPostResult() {
-
                             DataUtil.inProgressListPosition = 0
                             finish()
                         }
 
-                        override fun onPostFailList() {}
+                        override fun onPostFailList() {
+                        }
                     }).build().execute()
-
-
         } catch (e: Exception) {
 
             Log.e(tag, "   serverUpload  Exception : $e")

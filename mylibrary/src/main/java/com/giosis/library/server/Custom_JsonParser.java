@@ -2,11 +2,9 @@ package com.giosis.library.server;
 
 import android.util.Log;
 
-import com.giosis.library.message.MessageListResult;
 import com.giosis.library.util.DataUtil;
 import com.giosis.library.util.Preferences;
 
-import org.json.JSONArray;
 import org.json.JSONObject;
 
 import java.io.ByteArrayOutputStream;
@@ -14,8 +12,6 @@ import java.io.InputStream;
 import java.io.OutputStream;
 import java.net.HttpURLConnection;
 import java.net.URL;
-import java.util.ArrayList;
-import java.util.List;
 
 public class Custom_JsonParser {
     static String TAG = "Custom_JsonParser";
@@ -99,98 +95,5 @@ public class Custom_JsonParser {
         }
 
         return response;
-    }
-
-
-    public static String requestGetDataReturnJSON(String apiUrl, String method, String data) {
-
-        URL url;
-        HttpURLConnection conn;
-        InputStream is;
-        ByteArrayOutputStream baos;
-
-        String response = "";
-
-        try {
-
-            url = new URL(apiUrl + "/" + method + "?driver_id=" + data);
-            Log.e("krm0219", "URL : " + url.toString());
-
-            // URL 연결
-            conn = (HttpURLConnection) url.openConnection();
-            conn.setRequestMethod("GET");
-            //    conn.setDoOutput(true);
-            conn.setDoInput(true);
-            conn.setUseCaches(false);
-            conn.setAllowUserInteraction(false);
-
-            int responseCode = conn.getResponseCode();
-
-            if (responseCode == HttpURLConnection.HTTP_OK) {
-
-                is = conn.getInputStream();
-                baos = new ByteArrayOutputStream();
-                byte[] byteBuffer = new byte[1024];
-                byte[] byteData;
-                int nLength;
-
-                while ((nLength = is.read(byteBuffer, 0, byteBuffer.length)) != -1) {
-                    baos.write(byteBuffer, 0, nLength);
-                }
-                byteData = baos.toByteArray();
-
-                response = new String(byteData);
-
-                String[] URLStrings = apiUrl.split("/");
-                Log.e("Server", URLStrings[URLStrings.length - 1] + " > " + method + "  Result : " + response);
-            }
-        } catch (Exception e) {
-
-            response = e.toString();
-            Log.e("Server", method + "   JsonParser Exception " + e.toString());
-        }
-
-        return response;
-    }
-
-
-    // Main - Navigation - Message
-    public static MessageListResult getAdminMessageList(String jsonString) {
-
-        MessageListResult result = new MessageListResult();
-
-        try {
-
-            JSONObject jsonObject = new JSONObject(jsonString);
-            result.setResultCode(jsonObject.getInt("ResultCode"));
-            result.setResultMsg(jsonObject.getString("ResultMsg"));
-
-
-            JSONArray jsonArray = jsonObject.getJSONArray("ResultObject");
-            List<MessageListResult.MessageList> messageLists = new ArrayList<>();
-
-            for (int i = 0; i < jsonArray.length(); i++) {
-
-                JSONObject resultObject = jsonArray.getJSONObject(i);
-
-                MessageListResult.MessageList messageListItem = new MessageListResult.MessageList();
-                messageListItem.setSender_id(resultObject.getString("sender_id"));
-                messageListItem.setMessage(resultObject.getString("contents"));
-                messageListItem.setTime(resultObject.getString("send_dt"));
-                messageListItem.setRead_yn(resultObject.getString("read_yn"));
-                messageListItem.setQuestion_seq_no(resultObject.getInt("question_seq_no"));
-                messageLists.add(messageListItem);
-            }
-
-            result.setResultObject(messageLists);
-        } catch (Exception e) {
-
-            Log.e("Exception", TAG + "  getAdminMessageList Exception : " + e.toString());
-
-            result.setResultCode(-15);
-            result.setResultMsg(e.toString());
-        }
-
-        return result;
     }
 }

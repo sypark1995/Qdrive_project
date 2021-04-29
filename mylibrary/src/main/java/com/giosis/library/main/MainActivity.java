@@ -37,6 +37,7 @@ import com.giosis.library.gps.FusedProviderService;
 import com.giosis.library.gps.GPSTrackerManager;
 import com.giosis.library.gps.LocationManagerService;
 import com.giosis.library.list.ListActivity;
+import com.giosis.library.main.route.TodayMyRouteActivity;
 import com.giosis.library.main.submenu.OutletOrderStatusActivity;
 import com.giosis.library.main.submenu.RpcListActivity;
 import com.giosis.library.pickup.CreatePickupOrderActivity;
@@ -154,23 +155,17 @@ public class MainActivity extends AppBaseActivity {
                 Upload();
             } else if (id == R.id.btn_home_confirm_my_delivery_order) {
 
-//                try {
-//
-//                    Intent intent = new Intent(MainActivity.this, Class.forName("com.giosis.util.qdrive.barcodescanner.CaptureActivityTemp"));
-//                    intent.putExtra("title", getResources().getString(R.string.text_title_driver_assign));
-//                    intent.putExtra("type", BarcodeType.CONFIRM_MY_DELIVERY_ORDER);
-//                    startActivity(intent);
-//                } catch (Exception e) {
-//
-//                    Log.e("Exception", "  Exception : " + e.toString());
-//                    Toast.makeText(MainActivity.this, "Exception : " + e.toString(), Toast.LENGTH_SHORT).show();
-//                }
+                try {
 
-                // FIXME_ New CaptureActivity
-                Intent intent = new Intent(MainActivity.this, CaptureActivity.class);
-                intent.putExtra("title", getResources().getString(R.string.text_title_driver_assign));
-                intent.putExtra("type", BarcodeType.CONFIRM_MY_DELIVERY_ORDER);
-                startActivity(intent);
+                    Intent intent = new Intent(MainActivity.this, Class.forName("com.giosis.util.qdrive.barcodescanner.CaptureActivity"));
+                    intent.putExtra("title", getResources().getString(R.string.text_title_driver_assign));
+                    intent.putExtra("type", BarcodeType.CONFIRM_MY_DELIVERY_ORDER);
+                    startActivity(intent);
+                } catch (Exception e) {
+
+                    Log.e("Exception", "  Exception : " + e.toString());
+                    Toast.makeText(MainActivity.this, "Exception : " + e.toString(), Toast.LENGTH_SHORT).show();
+                }
             } else if (id == R.id.btn_home_assign_pickup_driver) {
 
                 Intent intent = new Intent(MainActivity.this, RpcListActivity.class);
@@ -179,23 +174,17 @@ public class MainActivity extends AppBaseActivity {
 
                 if (gpsOnceEnable && gpsTrackerManager != null) {
 
-//                    try {
-//
-//                        Intent intent = new Intent(MainActivity.this, Class.forName("com.giosis.util.qdrive.barcodescanner.CaptureActivityTemp"));
-//                        intent.putExtra("title", getResources().getString(R.string.button_change_delivery_driver));
-//                        intent.putExtra("type", BarcodeType.CHANGE_DELIVERY_DRIVER);
-//                        startActivity(intent);
-//                    } catch (Exception e) {
-//
-//                        Log.e("Exception", "  Exception : " + e.toString());
-//                        Toast.makeText(MainActivity.this, "Exception : " + e.toString(), Toast.LENGTH_SHORT).show();
-//                    }
+                    try {
 
-                    // FIXME_ New CaptureActivity
-                    Intent intent = new Intent(MainActivity.this, CaptureActivity.class);
-                    intent.putExtra("title", getResources().getString(R.string.button_change_delivery_driver));
-                    intent.putExtra("type", BarcodeType.CHANGE_DELIVERY_DRIVER);
-                    startActivity(intent);
+                        Intent intent = new Intent(MainActivity.this, Class.forName("com.giosis.util.qdrive.barcodescanner.CaptureActivity"));
+                        intent.putExtra("title", getResources().getString(R.string.button_change_delivery_driver));
+                        intent.putExtra("type", BarcodeType.CHANGE_DELIVERY_DRIVER);
+                        startActivity(intent);
+                    } catch (Exception e) {
+
+                        Log.e("Exception", "  Exception : " + e.toString());
+                        Toast.makeText(MainActivity.this, "Exception : " + e.toString(), Toast.LENGTH_SHORT).show();
+                    }
                 } else {
 
                     DataUtil.enableLocationSettings(MainActivity.this);
@@ -210,7 +199,8 @@ public class MainActivity extends AppBaseActivity {
                 startActivity(intent);
             } else if (id == R.id.btn_home_today_my_route) {
 
-                // TODO_Route
+                Intent intent = new Intent(MainActivity.this, TodayMyRouteActivity.class);
+                startActivity(intent);
             }
         }
     };
@@ -239,7 +229,7 @@ public class MainActivity extends AppBaseActivity {
 
 //        // TEST Outlet
 //        Preferences.INSTANCE.setOutletDriver("Y");
-//        Preferences.INSTANCE.setUserId("7Eleven.Ajib");      // 7Eleven.Ajib
+//        Preferences.INSTANCE.setUserId("Syed_7E");      // 7Eleven.Ajib
 
 
         dbHelper = DatabaseHelper.getInstance();
@@ -316,6 +306,15 @@ public class MainActivity extends AppBaseActivity {
             btn_home_create_pickup_order.setVisibility(View.GONE);
         }
 
+        // MY/ID Route
+        if (!Preferences.INSTANCE.getUserNation().equalsIgnoreCase("SG")) {
+
+            btn_home_today_my_route.setVisibility(View.VISIBLE);
+        } else {
+
+            btn_home_today_my_route.setVisibility(View.GONE);
+        }
+
         if (outletDriverYN.equals("Y")) {
 
             btn_home_confirm_my_delivery_order.setText(getResources().getString(R.string.text_start_delivery_for_outlet));
@@ -333,12 +332,23 @@ public class MainActivity extends AppBaseActivity {
             lp.setMargins(0, DisplayUtil.dpTopx(this, 15), 0, DisplayUtil.dpTopx(this, 30));
 
             if (btn_home_create_pickup_order.getVisibility() == View.VISIBLE) {
-                btn_home_create_pickup_order.setLayoutParams(lp);
-            } else if (btn_home_today_my_route.getVisibility() == View.VISIBLE) {
 
-                btn_home_today_my_route.setLayoutParams(lp);
+                if (btn_home_today_my_route.getVisibility() == View.VISIBLE) {
+
+                    btn_home_today_my_route.setLayoutParams(lp);
+                } else {
+
+                    btn_home_create_pickup_order.setLayoutParams(lp);
+                }
             } else {
-                btn_home_change_delivery_driver.setLayoutParams(lp);
+
+                if (btn_home_today_my_route.getVisibility() == View.VISIBLE) {
+
+                    btn_home_today_my_route.setLayoutParams(lp);
+                } else {
+
+                    btn_home_change_delivery_driver.setLayoutParams(lp);
+                }
             }
         }
 

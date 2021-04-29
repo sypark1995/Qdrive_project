@@ -10,7 +10,6 @@ import android.graphics.Bitmap;
 import android.os.AsyncTask;
 import android.util.Log;
 
-import com.giosis.library.OnServerEventListener;
 import com.giosis.library.R;
 import com.giosis.library.barcodescanner.StdResult;
 import com.giosis.library.list.SigningView;
@@ -20,6 +19,7 @@ import com.giosis.library.util.DataUtil;
 import com.giosis.library.util.DatabaseHelper;
 import com.giosis.library.util.DisplayUtil;
 import com.giosis.library.util.NetworkUtil;
+import com.giosis.library.util.OnServerEventListener;
 import com.giosis.library.util.Preferences;
 
 import org.json.JSONObject;
@@ -229,7 +229,6 @@ public class QuickReturnedUploadHelper {
 
             ContentValues contentVal = new ContentValues();
             contentVal.put("stat", "");
-            contentVal.put("chg_id", opID);
             contentVal.put("chg_dt", dateFormat.format(date));
             contentVal.put("driver_memo", driverMemo);
 
@@ -328,7 +327,6 @@ public class QuickReturnedUploadHelper {
 
         ContentValues contentVal = new ContentValues();
         contentVal.put("stat", "RT");
-        contentVal.put("chg_id", opId);
         contentVal.put("chg_dt", dateFormat.format(date));
         contentVal.put("real_qty", "0");                // 업로드시 값 Parse 시 에러나서 0 넘김
         contentVal.put("driver_memo", driverMemo);

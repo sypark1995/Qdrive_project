@@ -37,8 +37,10 @@ import androidx.annotation.Nullable;
 import com.giosis.library.MemoryStatus;
 import com.giosis.library.R;
 import com.giosis.library.gps.GPSTrackerManager;
+import com.giosis.library.gps.LocationModel;
 import com.giosis.library.list.BarcodeData;
 import com.giosis.library.list.OutletInfo;
+import com.giosis.library.list.RowItem;
 import com.giosis.library.list.SigningView;
 import com.giosis.library.server.Custom_JsonParser;
 import com.giosis.library.util.BarcodeType;
@@ -48,6 +50,7 @@ import com.giosis.library.util.DataUtil;
 import com.giosis.library.util.DatabaseHelper;
 import com.giosis.library.util.DisplayUtil;
 import com.giosis.library.util.NetworkUtil;
+import com.giosis.library.util.OnServerEventListener;
 import com.giosis.library.util.PermissionActivity;
 import com.giosis.library.util.PermissionChecker;
 import com.giosis.library.util.Preferences;
@@ -122,6 +125,8 @@ public class DeliveryDoneActivity extends CommonActivity implements Camera2APIs.
     String senderName;
     String receiverName;
 
+    String highAmountYn = "N";
+
 
     // Camera & Gallery
     Camera2APIs camera2;
@@ -134,6 +139,9 @@ public class DeliveryDoneActivity extends CommonActivity implements Camera2APIs.
     boolean gpsEnable = false;
     double latitude = 0;
     double longitude = 0;
+
+    private LocationModel locationModel = new LocationModel();
+
 
     // Outlet
     OutletInfo outletInfo;
@@ -211,17 +219,25 @@ public class DeliveryDoneActivity extends CommonActivity implements Camera2APIs.
         officeCode = Preferences.INSTANCE.getOfficeCode();
         deviceID = Preferences.INSTANCE.getDeviceUUID();
 
-        mStrWaybillNo = getIntent().getStringExtra("waybillNo");
 
+        songjanglist = new ArrayList<>();
 
-        ArrayList<BarcodeData> barcodeList = null;
+        // in List (단건)
         try {
-            if (getIntent().hasExtra("data")) {
-                barcodeList = (ArrayList<BarcodeData>) getIntent().getSerializableExtra("data");
-            }
 
-        } catch (Exception e) {
+            RowItem parcel = (RowItem) getIntent().getSerializableExtra("parcel");
+            highAmountYn = parcel.getHigh_amount_yn();
+            mStrWaybillNo = parcel.getShipping();
+            locationModel.setParcelLocation(parcel.getLat(), parcel.getLng(), parcel.getZip_code(), parcel.getState(), parcel.getCity(), parcel.getStreet());
+            Log.e("GPSUpdate", "Parcel " + parcel.getShipping() + " // " + parcel.getLat() + ", " + parcel.getLng() + " // "
+                    + parcel.getZip_code() + " - " + parcel.getState() + " - " + parcel.getCity() + " - " + parcel.getStreet());
 
+            BarcodeData songData;
+            songData = new BarcodeData();
+            songData.setBarcode(parcel.getShipping().toUpperCase());
+            songData.setState(BarcodeType.TYPE_DELIVERY);
+            songjanglist.add(songData);
+        } catch (Exception ignored) {
         }
 
         try {
@@ -234,27 +250,52 @@ public class DeliveryDoneActivity extends CommonActivity implements Camera2APIs.
             routeNumber = null;
         }
 
-        // 단건 다수건 바코드정보에 대한 바코드정보 리스트 재정의 songjanglist
-        songjanglist = new ArrayList<>();
-        BarcodeData songData;
 
-        if (barcodeList == null) {
+        // in Capture (bulk)
+        ArrayList<BarcodeData> barcodeList = null;
+        try {
 
-            songData = new BarcodeData();
-            songData.setBarcode(mStrWaybillNo.toUpperCase());
-            songData.setState(mType);
-            songjanglist.add(songData);
-        } else {
+            barcodeList = (ArrayList<BarcodeData>) getIntent().getSerializableExtra("data");
 
-            int size = barcodeList.size();
+            for (int i = 0; i < barcodeList.size(); i++) {
 
-            for (int i = 0; i < size; i++) {
+                String trackingNo = barcodeList.get(i).getBarcode().toUpperCase();
+
+                BarcodeData songData;
                 songData = new BarcodeData();
-                songData.setBarcode(barcodeList.get(i).getBarcode().toUpperCase());
-                songData.setState(barcodeList.get(i).getState());
+                songData.setBarcode(trackingNo);
+                songData.setState(BarcodeType.TYPE_DELIVERY);
                 songjanglist.add(songData);
+
+                // 위, 경도 & high amount
+                Cursor cs = DatabaseHelper.getInstance().get("SELECT * FROM " + DatabaseHelper.DB_TABLE_INTEGRATION_LIST + " WHERE invoice_no='" + trackingNo + "'");
+
+                if (cs.moveToFirst()) {
+
+                    String value = cs.getString(cs.getColumnIndex("high_amount_yn"));
+                    if (value.equalsIgnoreCase("Y")) {
+
+                        highAmountYn = value;
+                    }
+
+                    if (barcodeList.size() == 1) {
+
+                        double parcelLat = cs.getDouble(cs.getColumnIndex("lat"));
+                        double parcelLng = cs.getDouble(cs.getColumnIndex("lng"));
+                        String zipCode = cs.getString(cs.getColumnIndex("zip_code"));
+                        String state = cs.getString(cs.getColumnIndex("state"));
+                        String city = cs.getString(cs.getColumnIndex("city"));
+                        String street = cs.getString(cs.getColumnIndex("street"));
+                        Log.e("GPSUpdate", "Parcel " + trackingNo + " // " + parcelLat + ", " + parcelLng + " // "
+                                + zipCode + " - " + state + " - " + city + " - " + street);
+
+                        locationModel.setParcelLocation(parcelLat, parcelLng, zipCode, state, city, street);
+                    }
+                }
             }
+        } catch (Exception ignored) {
         }
+
 
         String barcodeMsg = "";
         int songJangListSize = songjanglist.size();
@@ -660,6 +701,8 @@ public class DeliveryDoneActivity extends CommonActivity implements Camera2APIs.
                 latitude = gpsTrackerManager.getLatitude();
                 longitude = gpsTrackerManager.getLongitude();
                 Log.e("Location", TAG + " saveServerUploadSign  GPSTrackerManager : " + latitude + "  " + longitude + "  ");
+
+                locationModel.setDriverLocation(latitude, longitude);
             }
 
             String driverMemo = edit_sign_d_memo.getText().toString();
@@ -670,12 +713,24 @@ public class DeliveryDoneActivity extends CommonActivity implements Camera2APIs.
             boolean hasVisitImage = camera2.hasImage(img_sign_d_visit_log);
             Log.e("krm0219", TAG + "  has DATA : " + hasSignImage + " / " + hasVisitImage);
 
-            if (!hasSignImage && !hasVisitImage) {
 
-                String msg = getResources().getString(R.string.msg_signature_require) + " or \n" + getResources().getString(R.string.msg_visit_photo_require);
+            if (highAmountYn.equals("Y")) {
 
-                Toast.makeText(this.getApplicationContext(), msg, Toast.LENGTH_SHORT).show();
-                return;
+                if (!hasSignImage || !hasVisitImage) {
+
+                    String msg = getResources().getString(R.string.msg_high_amount_sign_photo);
+                    Toast.makeText(this.getApplicationContext(), msg, Toast.LENGTH_SHORT).show();
+                    return;
+                }
+            } else {
+
+                if (!hasSignImage && !hasVisitImage) {
+
+                    String msg = getResources().getString(R.string.msg_signature_require) + " or \n" + getResources().getString(R.string.msg_visit_photo_require);
+
+                    Toast.makeText(this.getApplicationContext(), msg, Toast.LENGTH_SHORT).show();
+                    return;
+                }
             }
 
             //서버에 올리기전 용량체크  내장메모리가 100Kbyte 안남은경우
@@ -684,22 +739,25 @@ public class DeliveryDoneActivity extends CommonActivity implements Camera2APIs.
                 return;
             }
 
+            DataUtil.logEvent("button_click", TAG, DataUtil.requestSetUploadDeliveryData);
 
-            DataUtil.logEvent("button_click", TAG, com.giosis.library.util.DataUtil.requestSetUploadDeliveryData);
-
-//            DataUtil.captureSign("/Qdrive", songjanglist.get(0).getBarcode(), sign_view_sign_d_signature);
-//            DataUtil.captureSign("/Qdrive", songjanglist.get(0).getBarcode() + "_1", img_sign_d_visit_log);
 
             new DeliveryDoneUploadHelper.Builder(this, opID, officeCode, deviceID,
                     songjanglist, mReceiveType, driverMemo,
                     sign_view_sign_d_signature, hasSignImage, img_sign_d_visit_log, hasVisitImage,
-                    MemoryStatus.getAvailableInternalMemorySize(), latitude, longitude)
-                    .setOnServerUploadEventListener(() -> {
+                    MemoryStatus.getAvailableInternalMemorySize(), locationModel)
+                    .setOnServerUploadEventListener(new OnServerEventListener() {
+                        @Override
+                        public void onPostResult() {
 
-                        DataUtil.inProgressListPosition = 0;
+                            DataUtil.inProgressListPosition = 0;
+                            setResult(Activity.RESULT_OK);
+                            finish();
+                        }
 
-                        setResult(Activity.RESULT_OK);
-                        finish();
+                        @Override
+                        public void onPostFailList() {
+                        }
                     }).build().execute();
         } catch (Exception e) {
 

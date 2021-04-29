@@ -4,16 +4,20 @@ import android.app.AlertDialog;
 import android.app.ProgressDialog;
 import android.content.ContentValues;
 import android.content.Context;
-import android.content.DialogInterface;
-import android.content.DialogInterface.OnClickListener;
 import android.graphics.Bitmap;
+import android.graphics.Color;
+import android.graphics.drawable.ColorDrawable;
 import android.os.AsyncTask;
 import android.text.TextUtils;
 import android.util.Log;
+import android.view.Window;
 import android.widget.ImageView;
+import android.widget.LinearLayout;
 
 import com.giosis.library.R;
 import com.giosis.library.barcodescanner.StdResult;
+import com.giosis.library.gps.GpsUpdateDialog;
+import com.giosis.library.gps.LocationModel;
 import com.giosis.library.list.BarcodeData;
 import com.giosis.library.list.SigningView;
 import com.giosis.library.server.Custom_JsonParser;
@@ -22,6 +26,7 @@ import com.giosis.library.util.DataUtil;
 import com.giosis.library.util.DatabaseHelper;
 import com.giosis.library.util.DisplayUtil;
 import com.giosis.library.util.NetworkUtil;
+import com.giosis.library.util.OnServerEventListener;
 import com.giosis.library.util.Preferences;
 
 import org.json.JSONObject;
@@ -51,13 +56,108 @@ public class DeliveryDoneUploadHelper {
     private final boolean hasVisitImage;
 
     private final long disk_size;
-    private final double lat;
-    private final double lon;
+    private final OnServerEventListener eventListener;
 
     private final String networkType;
-    private final OnServerUploadEventListener eventListener;
+    LocationModel locationModel;
     private final ProgressDialog progressDialog;
     private final AlertDialog resultDialog;
+    int count = 0;
+    boolean gpsUpdate = false;
+
+    private ProgressDialog getProgressDialog(Context context) {
+
+        ProgressDialog progressDialog = new ProgressDialog(context);
+        progressDialog.setProgressStyle(ProgressDialog.STYLE_HORIZONTAL);
+        progressDialog.setMessage(context.getResources().getString(R.string.text_set_transfer));
+        progressDialog.setCancelable(false);
+        return progressDialog;
+    }
+
+
+    private DeliveryDoneUploadHelper(Builder builder) {
+
+        this.context = builder.context;
+        this.opID = builder.opID;
+        this.officeCode = builder.officeCode;
+        this.deviceID = builder.deviceID;
+
+        this.assignBarcodeList = builder.assignBarcodeList;
+        this.receiveType = builder.receiveType;
+        this.driverMemo = builder.driverMemo;
+
+        this.signingView = builder.signingView;
+        this.hasSignImage = builder.hasSignImage;
+        this.imageView = builder.imageView;
+        this.hasVisitImage = builder.hasVisitImage;
+
+        this.disk_size = builder.disk_size;
+        this.locationModel = builder.locationModel;
+
+        this.networkType = builder.networkType;
+        this.eventListener = builder.eventListener;
+        this.progressDialog = getProgressDialog(this.context);
+        this.resultDialog = getResultAlertDialog(this.context);
+    }
+
+    private AlertDialog getResultAlertDialog(final Context context) {
+
+        AlertDialog dialog = new AlertDialog.Builder(context)
+                .setTitle(context.getResources().getString(R.string.text_upload_result))
+                .setCancelable(false)
+                .setPositiveButton(context.getResources().getString(R.string.button_ok), (dialog1, which) -> {
+
+                    try {
+                        if (dialog1 != null)
+                            dialog1.dismiss();
+                    } catch (Exception e) {
+                        Log.e("Exception", TAG + "getResultAlertDialog Exception : " + e.toString());
+                    }
+
+//                    if (eventListener != null) {
+//                        eventListener.onPostResult();
+//                    }
+
+                    Log.e("GpsUpdate", "Count : " + count);
+                    Log.e("GpsUpdate", "DATA : " + locationModel.getDifferenceLat() + " / " + locationModel.getDifferenceLng());
+                    if (!Preferences.INSTANCE.getUserNation().equals("SG") && count == 1) {   // MY,ID && 단건
+                        if (locationModel.getDriverLat() != 0 && locationModel.getDriverLng() != 0
+                                && locationModel.getParcelLat() != 0 && locationModel.getParcelLng() != 0) {
+                            // Parcel & Driver 위치정보 수집 했을 때      (0일 경우 제외)
+                            if (locationModel.getDifferenceLat() < 0.05 && locationModel.getDifferenceLng() < 0.05) {
+                                // 두 값의 차이가 0.05 이내의 범위일 경우     (0.05 이상이면 부정확)
+                                // 소수점 이하 3까지만 비교       (값이 너무 작으면 빈번하게 호출됨)
+                                gpsUpdate = 0.001 <= locationModel.getDifferenceLat() || 0.001 <= locationModel.getDifferenceLng();
+                            }
+                        }
+                    }
+
+                    if (gpsUpdate) {
+
+                        GpsUpdateDialog gpsDialog = new GpsUpdateDialog(context, locationModel, eventListener);
+                        gpsDialog.show();
+                        gpsDialog.setCanceledOnTouchOutside(false);
+                        Window window = gpsDialog.getWindow();
+                        window.setBackgroundDrawable(new ColorDrawable(Color.TRANSPARENT));
+                        window.setLayout(LinearLayout.LayoutParams.MATCH_PARENT, LinearLayout.LayoutParams.WRAP_CONTENT);
+                    } else {
+
+                        if (eventListener != null) {
+                            eventListener.onPostResult();
+                        }
+                    }
+                })
+                .create();
+
+        return dialog;
+    }
+
+    private void showResultDialog(String message, int count) {
+
+        this.count = count;
+        resultDialog.setMessage(message);
+        resultDialog.show();
+    }
 
     public static class Builder {
 
@@ -77,16 +177,15 @@ public class DeliveryDoneUploadHelper {
 
 
         private final long disk_size;
-        private final double lat;
-        private final double lon;
+        LocationModel locationModel;
 
         private String networkType;
-        private OnServerUploadEventListener eventListener;
+        private OnServerEventListener eventListener;
 
         public Builder(Context context, String opID, String officeCode, String deviceID,
                        ArrayList<BarcodeData> assignBarcodeList, String receiveType, String driverMemo,
                        SigningView signingView, boolean hasSignImage, ImageView imageView, boolean hasVisitImage,
-                       long disk_size, double lat, double lon) {
+                       long disk_size, LocationModel locationModel) {
 
             this.context = context;
             this.opID = opID;
@@ -104,86 +203,19 @@ public class DeliveryDoneUploadHelper {
             this.hasVisitImage = hasVisitImage;
 
             this.disk_size = disk_size;
-            this.lat = lat;
-            this.lon = lon;
+            this.locationModel = locationModel;
         }
 
         public DeliveryDoneUploadHelper build() {
             return new DeliveryDoneUploadHelper(this);
         }
 
-        public Builder setOnServerUploadEventListener(OnServerUploadEventListener eventListener) {
+        public Builder setOnServerUploadEventListener(OnServerEventListener eventListener) {
             this.eventListener = eventListener;
 
             return this;
         }
     }
-
-    private DeliveryDoneUploadHelper(Builder builder) {
-
-        this.context = builder.context;
-        this.opID = builder.opID;
-        this.officeCode = builder.officeCode;
-        this.deviceID = builder.deviceID;
-
-        this.assignBarcodeList = builder.assignBarcodeList;
-        this.receiveType = builder.receiveType;
-        this.driverMemo = builder.driverMemo;
-
-        this.signingView = builder.signingView;
-        this.hasSignImage = builder.hasSignImage;
-        this.imageView = builder.imageView;
-        this.hasVisitImage = builder.hasVisitImage;
-
-        this.disk_size = builder.disk_size;
-        this.lat = builder.lat;
-        this.lon = builder.lon;
-
-        this.networkType = builder.networkType;
-        this.eventListener = builder.eventListener;
-        this.progressDialog = getProgressDialog(this.context);
-        this.resultDialog = getResultAlertDialog(this.context);
-    }
-
-    private ProgressDialog getProgressDialog(Context context) {
-
-        ProgressDialog progressDialog = new ProgressDialog(context);
-        progressDialog.setProgressStyle(ProgressDialog.STYLE_HORIZONTAL);
-        progressDialog.setMessage(context.getResources().getString(R.string.text_set_transfer));
-        progressDialog.setCancelable(false);
-        return progressDialog;
-    }
-
-    private AlertDialog getResultAlertDialog(final Context context) {
-
-        AlertDialog dialog = new AlertDialog.Builder(context)
-                .setTitle(context.getResources().getString(R.string.text_upload_result))
-                .setCancelable(false).setPositiveButton(context.getResources().getString(R.string.button_ok), new OnClickListener() {
-
-                    @Override
-                    public void onClick(DialogInterface dialog, int which) {
-                        try {
-                            if (dialog != null)
-                                dialog.dismiss();
-                        } catch (Exception e) {
-                            Log.e("Exception", TAG + "getResultAlertDialog Exception : " + e.toString());
-                        }
-
-                        if (eventListener != null) {
-                            eventListener.onPostResult();
-                        }
-                    }
-                })
-                .create();
-
-        return dialog;
-    }
-
-    private void showResultDialog(String message) {
-        resultDialog.setMessage(message);
-        resultDialog.show();
-    }
-
 
     class DeliveryUploadTask extends AsyncTask<Void, Integer, ArrayList<StdResult>> {
         int progress = 0;
@@ -260,7 +292,7 @@ public class DeliveryDoneUploadHelper {
                 if (0 < successCount && failCount == 0) {
 
                     String msg = String.format(context.getResources().getString(R.string.text_upload_success_count), successCount);
-                    showResultDialog(msg);
+                    showResultDialog(msg, successCount);
                 } else {
 
                     String msg;
@@ -270,7 +302,7 @@ public class DeliveryDoneUploadHelper {
                         msg = String.format(context.getResources().getString(R.string.text_upload_fail_count1), failCount, fail_reason);
                     }
 
-                    showResultDialog(msg);
+                    showResultDialog(msg, 0);
                 }
             } catch (Exception e) {
 
@@ -325,7 +357,6 @@ public class DeliveryDoneUploadHelper {
             contentVal.put("stat", "D4");
             contentVal.put("rcv_type", receiveType);
             contentVal.put("driver_memo", driverMemo);
-            contentVal.put("chg_id", opID);
             contentVal.put("chg_dt", dateFormat.format(date));
             contentVal.put("fail_reason", "");
 
@@ -368,8 +399,8 @@ public class DeliveryDoneUploadHelper {
                 job.accumulate("delivery_photo_url", bitmapString1);
                 job.accumulate("remark", driverMemo);            // 드라이버 메세지 driver_memo	== remark
                 job.accumulate("disk_size", disk_size);
-                job.accumulate("lat", lat);
-                job.accumulate("lon", lon);
+                job.accumulate("lat", locationModel.getDriverLat());
+                job.accumulate("lon", locationModel.getDriverLng());
                 job.accumulate("stat_reason", "");
                 job.accumulate("del_channel", "QR");        // 업로드 채널: Qsign Realtime
                 job.accumulate("app_id", DataUtil.appID);
@@ -412,9 +443,5 @@ public class DeliveryDoneUploadHelper {
         DeliveryUploadTask deliveryUploadTask = new DeliveryUploadTask();
         deliveryUploadTask.execute();
         return this;
-    }
-
-    public interface OnServerUploadEventListener {
-        void onPostResult();
     }
 }

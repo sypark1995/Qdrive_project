@@ -167,7 +167,6 @@ object Preferences {
         get() = preferences.getString(PREF_KEY_PICKUP_FAILED_CODE, "").toString()
         set(value) = preferences.edit().putString(PREF_KEY_PICKUP_FAILED_CODE, value).apply()
 
-
     // 202104. xRoute Server
     private val PREF_KEY_XROUTE_SERVER_URL = "xRouteServerURL"
 
@@ -175,4 +174,13 @@ object Preferences {
         get() = preferences.getString(PREF_KEY_XROUTE_SERVER_URL, DataUtil.XROUTE_SERVER_REAL).toString()
         set(value) = preferences.edit().putString(PREF_KEY_XROUTE_SERVER_URL, value).apply()
 
+    private val PREF_KEY_GPS_MODE = "gpsMode"
+    var gpsMode: String
+        get() = preferences.getString(PREF_KEY_GPS_MODE, "REAL").toString()
+        set(value) = preferences.edit().putString(PREF_KEY_GPS_MODE, value).apply()
+
+    private val PREF_KEY_GPS_TEST_VALUE = "gpsTestValue"
+    var gpsTestValue: String
+        get() = preferences.getString(PREF_KEY_GPS_TEST_VALUE, "0, 0").toString()
+        set(value) = preferences.edit().putString(PREF_KEY_GPS_TEST_VALUE, value).apply()
 }

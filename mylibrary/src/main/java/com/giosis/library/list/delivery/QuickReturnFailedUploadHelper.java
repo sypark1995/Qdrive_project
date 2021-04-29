@@ -11,7 +11,6 @@ import android.os.AsyncTask;
 import android.util.Log;
 import android.widget.ImageView;
 
-import com.giosis.library.OnServerEventListener;
 import com.giosis.library.R;
 import com.giosis.library.barcodescanner.StdResult;
 import com.giosis.library.server.Custom_JsonParser;
@@ -20,6 +19,7 @@ import com.giosis.library.util.DataUtil;
 import com.giosis.library.util.DatabaseHelper;
 import com.giosis.library.util.DisplayUtil;
 import com.giosis.library.util.NetworkUtil;
+import com.giosis.library.util.OnServerEventListener;
 import com.giosis.library.util.Preferences;
 
 import org.json.JSONObject;
@@ -222,7 +222,6 @@ public class QuickReturnFailedUploadHelper {
 
             ContentValues contentVal = new ContentValues();
             contentVal.put("stat", "");
-            contentVal.put("chg_id", opID);
             contentVal.put("chg_dt", dateFormat.format(date));
             contentVal.put("driver_memo", driverMemo);
 
@@ -323,7 +322,6 @@ public class QuickReturnFailedUploadHelper {
 
         ContentValues contentVal = new ContentValues();
         contentVal.put("stat", "RF");
-        contentVal.put("chg_id", opId);
         contentVal.put("chg_dt", dateFormat.format(date));
         contentVal.put("real_qty", "0");
         contentVal.put("driver_memo", driverMemo);

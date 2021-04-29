@@ -70,7 +70,6 @@ public class ConfirmMyOrderHelper {
         contentVal.put("address", assignInfo.getAddress());
         contentVal.put("rcv_request", assignInfo.getDelMemo());
         contentVal.put("delivery_dt", assignInfo.getDeliveryFirstDate());
-        contentVal.put("delivery_cnt", assignInfo.getDeliveryCount());
         contentVal.put("type", BarcodeType.TYPE_DELIVERY);
         contentVal.put("route", assignInfo.getRoute());
         contentVal.put("reg_id", opId);
@@ -89,6 +88,13 @@ public class ConfirmMyOrderHelper {
         String[] latLng = GeoCodeUtil.getLatLng(assignInfo.getLat_lng());
         contentVal.put("lat", latLng[0]);
         contentVal.put("lng", latLng[1]);
+
+        // 2021.04  High Value
+        contentVal.put("high_amount_yn", assignInfo.getHigh_amount_yn());
+
+        contentVal.put("state", assignInfo.getState());
+        contentVal.put("city", assignInfo.getCity());
+        contentVal.put("street", assignInfo.getStreet());
 
         DatabaseHelper.getInstance().insert(DatabaseHelper.DB_TABLE_INTEGRATION_LIST, contentVal);
     }

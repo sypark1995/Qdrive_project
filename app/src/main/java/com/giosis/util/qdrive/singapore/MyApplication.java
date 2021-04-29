@@ -38,7 +38,6 @@ public class MyApplication extends MultiDexApplication {
 
         FirebaseCrashlytics.getInstance().setCrashlyticsCollectionEnabled(!BuildConfig.DEBUG);
 
-
         preferences = new MySharedPreferences(getApplicationContext());
         DatabaseHelper.getInstance(this);
         LocaleManager.Companion.getInstance(this);

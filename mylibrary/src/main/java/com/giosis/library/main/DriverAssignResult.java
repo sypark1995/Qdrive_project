@@ -101,21 +101,9 @@ public class DriverAssignResult {
         @SerializedName("fail_reason")
         private String fail_reason = "";
 
-        @Element(name = "partner_ref_no_fail_assign", required = false)
-        @SerializedName("partner_ref_no_fail_assign")
-        private String partner_ref_no_fail_assign = "";
-
-        @Element(name = "reason_fail_assign", required = false)
-        @SerializedName("reason_fail_assign")
-        private String reason_fail_assign = "";
-
         @Element(name = "delivery_first_date", required = false)
         @SerializedName("delivery_first_date")
         private String delivery_first_date = "";
-
-        @Element(name = "delivery_count", required = false)
-        @SerializedName("delivery_count")
-        private String delivery_count = "";
 
         @Element(name = "route", required = false)
         @SerializedName("route")
@@ -149,6 +137,22 @@ public class DriverAssignResult {
         @Element(name = "lat_lng", required = false)
         @SerializedName("lat_lng")
         private String lat_lng = "";
+
+        @Element(name = "high_amount_yn", required = false)
+        @SerializedName("high_amount_yn")
+        private String high_amount_yn = "";
+
+        @Element(name = "receive_state", required = false)
+        @SerializedName("receive_state")
+        private String state = "";
+
+        @Element(name = "receive_city", required = false)
+        @SerializedName("receive_city")
+        private String city = "";
+
+        @Element(name = "receive_street", required = false)
+        @SerializedName("receive_street")
+        private String street = "";
 
 
         public String getContrNo() {
@@ -203,28 +207,8 @@ public class DriverAssignResult {
             return fail_reason;
         }
 
-        public String getPartnerRefNoFailAssign() {
-            return partner_ref_no_fail_assign;
-        }
-
-        public void setPartnerRefNoFailAssign(String assignNo) {
-            this.partner_ref_no_fail_assign = assignNo;
-        }
-
-        public String getReasonFailAssign() {
-            return reason_fail_assign;
-        }
-
-        public void setReasonFailAssign(String reasonFailAssign) {
-            this.reason_fail_assign = reasonFailAssign;
-        }
-
         public String getDeliveryFirstDate() {
             return delivery_first_date;
-        }
-
-        public String getDeliveryCount() {
-            return delivery_count;
         }
 
         public String getRoute() {
@@ -257,6 +241,23 @@ public class DriverAssignResult {
 
         public String getLat_lng() {
             return lat_lng;
+        }
+
+
+        public String getHigh_amount_yn() {
+            return high_amount_yn;
+        }
+
+        public String getState() {
+            return state;
+        }
+
+        public String getCity() {
+            return city;
+        }
+
+        public String getStreet() {
+            return street;
         }
     }
 }

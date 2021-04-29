@@ -1,5 +1,7 @@
 package com.giosis.library.main;
 
+import com.google.gson.annotations.SerializedName;
+
 import org.simpleframework.xml.Element;
 import org.simpleframework.xml.ElementList;
 import org.simpleframework.xml.Root;
@@ -101,13 +103,6 @@ public class PickupAssignResult {
         @Element(name = "secret_no", required = false)
         private String secret_no = "";
 
-        @Element(name = "failed_count", required = false)
-        private String failed_count = "";
-
-        @Element(name = "dr_req_no", required = false)
-        private String dr_req_no = "";
-
-
         @Element(name = "cust_no", required = false)
         private String cust_no = "";
 
@@ -117,6 +112,17 @@ public class PickupAssignResult {
         @Element(name = "lat_lng", required = false)
         private String lat_lng = "";
 
+        @Element(name = "sender_state", required = false)
+        @SerializedName("sender_state")
+        private String state = "";
+
+        @Element(name = "sender_city", required = false)
+        @SerializedName("sender_city")
+        private String city = "";
+
+        @Element(name = "sender_street", required = false)
+        @SerializedName("sender_street")
+        private String street = "";
 
         public String getCustNo() {
             return cust_no;
@@ -186,10 +192,6 @@ public class PickupAssignResult {
             return secret_no;
         }
 
-        public String getFailedCount() {
-            return failed_count;
-        }
-
         public String getReqDate() {
             return req_dt;
         }
@@ -215,6 +217,18 @@ public class PickupAssignResult {
 
         public String getLat_lng() {
             return lat_lng;
+        }
+
+        public String getState() {
+            return state;
+        }
+
+        public String getCity() {
+            return city;
+        }
+
+        public String getStreet() {
+            return street;
         }
     }
 }

@@ -93,11 +93,27 @@
                 android:layout_alignWithParentIfMissing="true"
                 android:layout_centerVertical="true"
                 android:layout_marginStart="7dp"
-                android:layout_toStartOf="@id/img_list_item_up_icon"
+                android:layout_toStartOf="@id/text_list_item_high_amount"
                 android:gravity="center"
                 android:textColor="@color/color_ff7611"
                 android:visibility="gone"
                 tools:text="Pickup Reassigned" />
+
+            <TextView
+                android:id="@+id/text_list_item_high_amount"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_alignWithParentIfMissing="true"
+                android:layout_centerVertical="true"
+                android:layout_marginStart="8dp"
+                android:layout_marginEnd="8dp"
+                android:layout_toStartOf="@id/img_list_item_up_icon"
+                android:gravity="center"
+                android:text="H"
+                android:textColor="@color/color_4fb648"
+                android:textSize="@dimen/text_size_32px"
+                android:textStyle="bold"
+                android:visibility="gone" />
 
             <ImageView
                 android:id="@+id/img_list_item_up_icon"
@@ -105,9 +121,9 @@
                 android:layout_height="6dp"
                 android:layout_alignParentEnd="true"
                 android:layout_centerVertical="true"
-                android:layout_marginStart="6dp"
+                android:layout_marginStart="8dp"
                 android:background="@drawable/icon_arrow_up_orange"
-                android:visibility="gone" />
+                android:visibility="visible" />
         </RelativeLayout>
 
         <RelativeLayout

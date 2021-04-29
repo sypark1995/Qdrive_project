@@ -1,5 +1,6 @@
 package com.giosis.library.list
 
+import java.io.Serializable
 import java.util.*
 
 class RowItem(var contrNo: String,
@@ -21,11 +22,12 @@ class RowItem(var contrNo: String,
               var partnerID: String?,
               val secure_delivery_yn: String?,
               val parcel_amount: String?,
-              val currency: String?) {
+              val currency: String?,
+              val high_amount_yn: String?) : Serializable {
 
     private var childItems: ArrayList<ChildItem>? = null
 
-    // krm0219
+    //
     var order_type_etc: String? = null
     var outlet_qty = 0
     var outlet_company: String? = null
@@ -35,6 +37,11 @@ class RowItem(var contrNo: String,
     var desired_time: String? = null
     var zip_code: String? = null
     var ref_pickup_no: String? = null
+
+    var state: String? = null
+    var city: String? = null
+    var street: String? = null
+
 
     // 2020.06  Trip 단위 묶음
     var tripNo = 0

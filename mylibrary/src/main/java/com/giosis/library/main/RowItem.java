@@ -1,8 +1,9 @@
 package com.giosis.library.main;
 
+import java.io.Serializable;
 import java.util.ArrayList;
 
-public class RowItem {
+public class RowItem implements Serializable {
 
     float distance;
     private String contr_no;
@@ -136,14 +137,6 @@ public class RowItem {
 
     public void setSender(String sender) {
         this.sender = sender;
-    }
-
-    public String getDesiredDate() {
-        return desired_date;
-    }
-
-    public void setDesiredDate(String desired_date) {
-        this.desired_date = desired_date;
     }
 
     public String getQty() {

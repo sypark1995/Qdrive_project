@@ -432,7 +432,6 @@ public class OutletStatusDownloadHelper {
         contentVal.put("address", data.getAddress());
         contentVal.put("rcv_request", data.getDelMemo());
         contentVal.put("delivery_dt", data.getDeliveryFirstDate());
-        contentVal.put("delivery_cnt", data.getDeliveryCount());
         contentVal.put("type", BarcodeType.TYPE_DELIVERY);
         contentVal.put("route", data.getRoute());
         contentVal.put("reg_id", opID);
@@ -449,6 +448,13 @@ public class OutletStatusDownloadHelper {
 
         contentVal.put("lat", "0");
         contentVal.put("lng", "0");
+
+        // 2021.04  High Value
+        contentVal.put("high_amount_yn", data.getHigh_amount_yn());
+
+        contentVal.put("state", data.getState());
+        contentVal.put("city", data.getCity());
+        contentVal.put("street", data.getStreet());
 
         dbHelper.insert(DatabaseHelper.DB_TABLE_INTEGRATION_LIST, contentVal);
     }
@@ -475,7 +481,6 @@ public class OutletStatusDownloadHelper {
         contentVal.put("desired_date", data.getPickupHopeDay());
         contentVal.put("req_qty", data.getQty());
         contentVal.put("req_nm", data.getReqName());
-        contentVal.put("failed_count", data.getFailedCount());
         contentVal.put("rcv_request", data.getDelMemo());
         contentVal.put("sender_nm", "");
         contentVal.put("punchOut_stat", "N");
@@ -489,6 +494,10 @@ public class OutletStatusDownloadHelper {
 
         contentVal.put("lat", "0");
         contentVal.put("lng", "0");
+
+        contentVal.put("state", data.getState());
+        contentVal.put("city", data.getCity());
+        contentVal.put("street", data.getStreet());
 
         dbHelper.insert(DatabaseHelper.DB_TABLE_INTEGRATION_LIST, contentVal);
     }

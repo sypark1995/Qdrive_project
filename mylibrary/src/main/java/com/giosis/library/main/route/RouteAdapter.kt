@@ -1,31 +1,20 @@
 package com.giosis.library.main.route
 
+import android.util.Log
 import android.view.LayoutInflater
-import android.view.View
 import android.view.ViewGroup
 import androidx.databinding.DataBindingUtil
 import androidx.recyclerview.widget.DiffUtil
 import androidx.recyclerview.widget.ListAdapter
 import androidx.recyclerview.widget.RecyclerView
-import com.giosis.library.BR
-import com.giosis.library.BaseRecyclerAdapter
-import com.giosis.library.ListViewModel
 import com.giosis.library.R
 import com.giosis.library.databinding.ItemMyRouteBinding
-import com.giosis.library.pickup.AddressDialogViewModel
 
-class RouteAdapter(private val viewModel: TodayMyRouteViewModel) : BaseRecyclerAdapter<RouteAdapter.ViewHolder, Route>(RouteDiffUtil) {
-
-    /*
-    class RouteAdapter(private val viewModel: TodayMyRouteViewModel) : ListAdapter<Route, RouteAdapter.ViewHolder>(
+class RouteAdapter(private val viewModel: TodayMyRouteViewModel) : ListAdapter<RouteModel, RouteAdapter.ViewHolder>(
         RouteDiffUtil
-) {*/
+) {
 
-    var routes: List<Route> = listOf()
-
-    override fun getListModel(): ListViewModel<Route> {
-       return viewModel
-    }
+    var routes: List<RouteModel> = listOf()
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): ViewHolder {
 
@@ -38,9 +27,11 @@ class RouteAdapter(private val viewModel: TodayMyRouteViewModel) : BaseRecyclerA
         return R.layout.item_my_route
     }
 
+    override fun getItemCount(): Int {
+        return super.getItemCount()
+    }
 
     override fun onBindViewHolder(holder: ViewHolder, position: Int) {
-
         holder.bind(viewModel, position)
     }
 
@@ -49,45 +40,32 @@ class RouteAdapter(private val viewModel: TodayMyRouteViewModel) : BaseRecyclerA
 
         fun bind(viewModel: TodayMyRouteViewModel, position: Int) {
 
-            if(position == 0) {
+            val route = getItem(position)
 
-                binding.btnItemRouteNavigator.visibility = View.VISIBLE
-                binding.textItemRouteJobCount.visibility = View.GONE
-                binding.layoutItemRouteTypeInfoContainer.visibility = View.GONE
-            } else {
-
-                binding.btnItemRouteNavigator.visibility = View.GONE
-                binding.textItemRouteJobCount.visibility = View.VISIBLE
-                binding.layoutItemRouteTypeInfoContainer.visibility = View.VISIBLE
-            }
-
-
-            binding.setVariable(BR.viewModel, viewModel)
-            binding.setVariable(BR.item, viewModel.items.value!![position])
-            binding.setVariable(BR.position, position)
-
-
+            Log.e("route", "Pos $position  // data ${route.next_trip_distance}")
+            binding.position = position
+            binding.route = route
+            binding.viewModel = viewModel
             binding.executePendingBindings()
         }
     }
 
 
-    fun setData(routes: List<Route>) {
+    companion object RouteDiffUtil : DiffUtil.ItemCallback<RouteModel>() {
 
-        this.routes = routes
-        notifyDataSetChanged()
-    }
-
-
-    companion object RouteDiffUtil : DiffUtil.ItemCallback<Route>() {
-
-        override fun areItemsTheSame(oldItem: Route, newItem: Route): Boolean {
+        override fun areItemsTheSame(oldItem: RouteModel, newItem: RouteModel): Boolean {
             // 각 아이템들의 고유한 값을 비교해야 한다.
             return oldItem == newItem
         }
 
-        override fun areContentsTheSame(oldItem: Route, newItem: Route): Boolean {
+        override fun areContentsTheSame(oldItem: RouteModel, newItem: RouteModel): Boolean {
             return oldItem == newItem
         }
+    }
+
+    fun setRouteList(routes: List<RouteModel>) {
+
+        this.routes = routes
+        notifyDataSetChanged()
     }
 }

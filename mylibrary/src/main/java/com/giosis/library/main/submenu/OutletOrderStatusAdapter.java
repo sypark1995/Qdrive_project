@@ -201,20 +201,6 @@ public class OutletOrderStatusAdapter extends BaseExpandableListAdapter {
                         originalrowItem.clear();
                         originalrowItem.addAll(rowItem);
                         notifyDataSetChanged();
-
-                        for (int i = 0; i < originalrowItem.size(); i++) {
-                            String val = String.valueOf(i);
-                            if (i < 10) {
-                                val = "00" + val;
-                            } else if (i < 100) {
-                                val = "0" + val;
-                            }
-                            ContentValues ContentVal = new ContentValues();
-                            ContentVal.put("seq_orderby", val);
-
-                            dbHelper.update(DatabaseHelper.DB_TABLE_INTEGRATION_LIST, ContentVal,
-                                    "invoice_no=? COLLATE NOCASE ", new String[]{originalrowItem.get(i).getShipping()});
-                        }
                     }
                 } else if (itemId == R.id.menu_down) {
 
@@ -224,20 +210,6 @@ public class OutletOrderStatusAdapter extends BaseExpandableListAdapter {
                         originalrowItem.clear();
                         originalrowItem.addAll(rowItem);
                         notifyDataSetChanged();
-
-                        for (int i = 0; i < originalrowItem.size(); i++) {
-                            String val = String.valueOf(i);
-                            if (i < 10) {
-                                val = "00" + val;
-                            } else if (i < 100) {
-                                val = "0" + val;
-                            }
-                            ContentValues ContentVal = new ContentValues();
-                            ContentVal.put("seq_orderby", val);
-
-                            dbHelper.update(DatabaseHelper.DB_TABLE_INTEGRATION_LIST, ContentVal,
-                                    "invoice_no=? COLLATE NOCASE ", new String[]{originalrowItem.get(i).getShipping()});
-                        }
                     }
                 }
                 return true;
@@ -458,8 +430,7 @@ public class OutletOrderStatusAdapter extends BaseExpandableListAdapter {
             if (type.equals("D")) {
 
                 Intent intent = new Intent(context, DeliveryDoneActivity.class);
-                intent.putExtra("waybillNo", tracking_no);
-                intent.putExtra("route", route);
+                intent.putExtra("parcel", rowItem.get(groupPosition));
                 ((Activity) context).startActivityForResult(intent, 1);
             } else if (type.equals("P")) {
 

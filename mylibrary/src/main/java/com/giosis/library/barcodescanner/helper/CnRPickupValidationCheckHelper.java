@@ -160,7 +160,7 @@ public class CnRPickupValidationCheckHelper {
 
                 String methodName = "GetCnROrderCheck";
                 String jsonString = Custom_JsonParser.requestServerDataReturnJSON(methodName, job);
-                // {"ResultObject":{"contr_no":"55003355","partner_ref_no":"C2859SGSG","invoice_no":"C2859SGSG","stat":"P2","req_nm":"normal order","req_dt":"2019-08-2010:00-19:00","tel_no":"+65--","hp_no":"+65-8424-2354","zip_code":"048741","address":"11 PEKIN STREEThyemi3333","pickup_hopeday":"2019-08-20","pickup_hopetime":"10:00-19:00","sender_nm":"normal order","del_memo":"","driver_memo":"","fail_reason":"WA","qty":"1","cust_nm":"test191919","partner_id":"hyemi223","dr_assign_requestor":"","dr_assign_req_dt":"","dr_assign_stat":"","dr_req_no":"","failed_count":"0","route":"C2C","del_driver_id":null,"cust_no":"100054639"},"ResultCode":0,"ResultMsg":"Success"}
+                // {"ResultObject":{"contr_no":"55003355","partner_ref_no":"C2859SGSG","invoice_no":"C2859SGSG","stat":"P2","req_nm":"normal order","req_dt":"2019-08-2010:00-19:00","tel_no":"+65--","hp_no":"+65-8424-2354","zip_code":"048741","address":"11 PEKIN STREEThyemi3333","pickup_hopeday":"2019-08-20","pickup_hopetime":"10:00-19:00","sender_nm":"normal order","del_memo":"","driver_memo":"","fail_reason":"WA","qty":"1","cust_nm":"test191919","partner_id":"hyemi223","dr_assign_requestor":"","dr_assign_req_dt":"","dr_assign_stat":"","route":"C2C","del_driver_id":null,"cust_no":"100054639"},"ResultCode":0,"ResultMsg":"Success"}
 
                 JSONObject jsonObject = new JSONObject(jsonString);
                 result.setResultCode(jsonObject.getInt("ResultCode"));
@@ -180,10 +180,8 @@ public class CnRPickupValidationCheckHelper {
                 cnRPickupData.setAddress(resultObject.getString("address"));
                 cnRPickupData.setRoute(resultObject.getString("route"));
                 cnRPickupData.setPickupHopeDay(resultObject.getString("pickup_hopeday"));
-                cnRPickupData.setPickupHopeTime(resultObject.getString("pickup_hopetime"));
                 cnRPickupData.setQty(resultObject.getString("qty"));
                 cnRPickupData.setReqName(resultObject.getString("req_nm"));
-                cnRPickupData.setFailedCount(resultObject.getString("failed_count"));
                 cnRPickupData.setFailReason(resultObject.getString("fail_reason"));
                 cnRPickupData.setDelMemo(resultObject.getString("del_memo"));
 
@@ -253,7 +251,6 @@ public class CnRPickupValidationCheckHelper {
                 contentVal.put("desired_date", data.getPickupHopeDay());
                 contentVal.put("req_qty", data.getQty());
                 contentVal.put("req_nm", data.getReqName());
-                contentVal.put("failed_count", data.getFailedCount());
                 contentVal.put("rcv_request", data.getDelMemo());
                 contentVal.put("sender_nm", "");
                 contentVal.put("punchOut_stat", "N");
@@ -265,6 +262,10 @@ public class CnRPickupValidationCheckHelper {
 
                 contentVal.put("lat", "0");
                 contentVal.put("lng", "0");
+
+                contentVal.put("state", "");
+                contentVal.put("city", "");
+                contentVal.put("street", "");
 
                 DatabaseHelper.getInstance().insert(DatabaseHelper.DB_TABLE_INTEGRATION_LIST, contentVal);
             } catch (Exception ignored) {

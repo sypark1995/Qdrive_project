@@ -258,7 +258,6 @@ public class OutletPickupDoneHelper {
             ContentValues contentVal = new ContentValues();
             contentVal.put("stat", "P3");
             contentVal.put("real_qty", scannedQty);
-            contentVal.put("chg_id", opID);
             contentVal.put("fail_reason", "");
             contentVal.put("driver_memo", driverMemo);
             contentVal.put("retry_dt", "");

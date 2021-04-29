@@ -147,6 +147,7 @@ public class ListInProgressAdapter extends BaseExpandableListAdapter {
         ImageView img_list_item_station_icon = convertView.findViewById(R.id.img_list_item_station_icon);
         TextView text_list_item_tracking_no = convertView.findViewById(R.id.text_list_item_tracking_no);
         TextView text_list_item_pickup_state = convertView.findViewById(R.id.text_list_item_pickup_state);
+        TextView text_list_item_high_amount = convertView.findViewById(R.id.text_list_item_high_amount);
         ImageView img_list_item_up_icon = convertView.findViewById(R.id.img_list_item_up_icon);
 
         TextView text_list_item_address = convertView.findViewById(R.id.text_list_item_address);
@@ -231,6 +232,7 @@ public class ListInProgressAdapter extends BaseExpandableListAdapter {
 
             text_list_item_tracking_no.setTextColor(parent.getContext().getResources().getColor(R.color.color_363BE7));
             img_list_item_secure_delivery.setVisibility(View.GONE);
+            text_list_item_high_amount.setVisibility(View.GONE);
 
             if (row_pos.getStat().equals("RE")) {
 
@@ -287,6 +289,16 @@ public class ListInProgressAdapter extends BaseExpandableListAdapter {
 
                 text_list_item_pickup_state.setVisibility(View.GONE);
             }
+
+            // 2021.04  High amount
+            if (row_pos.getHigh_amount_yn().equals("Y")) {
+
+                text_list_item_high_amount.setVisibility(View.VISIBLE);
+            } else {
+
+                text_list_item_high_amount.setVisibility(View.GONE);
+            }
+
 
             layout_list_item_delivery_info.setVisibility(View.VISIBLE);
             layout_list_item_pickup_info.setVisibility(View.GONE);
@@ -379,20 +391,6 @@ public class ListInProgressAdapter extends BaseExpandableListAdapter {
                         originalRowItem.addAll(rowItem);
                         notifyDataSetChanged();
 
-                        for (int i = 0; i < originalRowItem.size(); i++) {
-                            String val = String.valueOf(i);
-                            if (i < 10) {
-                                val = "00" + val;
-                            } else if (i < 100) {
-                                val = "0" + val;
-                            }
-                            ContentValues ContentVal = new ContentValues();
-                            ContentVal.put("seq_orderby", val);
-
-                            DatabaseHelper.getInstance().update(DatabaseHelper.DB_TABLE_INTEGRATION_LIST, ContentVal,
-                                    "invoice_no=? COLLATE NOCASE ", new String[]{originalRowItem.get(i).getShipping()});
-                        }
-
                         if (onMoveUpListener != null) {
                             onMoveUpListener.onMoveUp(position - 1);
                         }
@@ -405,21 +403,6 @@ public class ListInProgressAdapter extends BaseExpandableListAdapter {
                         originalRowItem.clear();
                         originalRowItem.addAll(rowItem);
                         notifyDataSetChanged();
-
-                        for (int i = 0; i < originalRowItem.size(); i++) {
-                            String val = String.valueOf(i);
-                            if (i < 10) {
-                                val = "00" + val;
-                            } else if (i < 100) {
-                                val = "0" + val;
-                            }
-
-                            ContentValues ContentVal = new ContentValues();
-                            ContentVal.put("seq_orderby", val);
-
-                            DatabaseHelper.getInstance().update(DatabaseHelper.DB_TABLE_INTEGRATION_LIST, ContentVal,
-                                    "invoice_no=? COLLATE NOCASE ", new String[]{originalRowItem.get(i).getShipping()});
-                        }
 
                         if (onMoveUpListener != null) {
                             onMoveUpListener.onMoveUp(position + 1);
@@ -495,6 +478,7 @@ public class ListInProgressAdapter extends BaseExpandableListAdapter {
         final String requester = rowItem.get(groupPosition).getName();
         final String route = rowItem.get(groupPosition).getRoute();
         final String qty = rowItem.get(groupPosition).getQty();
+        final String highAmountYn = rowItem.get(groupPosition).getHigh_amount_yn();
 
 
         if (child.getSecretNoType().equals("T")) {    // Qtalk 안심번호 타입 T - Qnumber 사용
@@ -850,8 +834,7 @@ public class ListInProgressAdapter extends BaseExpandableListAdapter {
                 intent.putExtra("title", v.getContext().getResources().getString(R.string.text_signature));
             }
 
-            intent.putExtra("waybillNo", tracking_no);
-            intent.putExtra("route", route);
+            intent.putExtra("parcel", rowItem.get(groupPosition));
             v.getContext().startActivity(intent);
 
         });

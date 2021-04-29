@@ -1,13 +1,20 @@
 package com.giosis.library.main.route
 
+import android.content.Intent
+import android.net.Uri
 import android.os.Bundle
 import android.view.View
+import android.widget.Toast
 import androidx.activity.viewModels
 import androidx.appcompat.app.AppCompatActivity
 import androidx.databinding.DataBindingUtil
 import androidx.lifecycle.Observer
 import com.giosis.library.R
 import com.giosis.library.databinding.ActivityMyRouteBinding
+import com.giosis.library.gps.GPSTrackerManager
+import com.giosis.library.util.DataUtil
+import com.giosis.library.util.PermissionActivity
+import com.giosis.library.util.PermissionChecker
 import kotlinx.android.synthetic.main.activity_my_route.*
 import kotlinx.android.synthetic.main.top_title.*
 
@@ -15,6 +22,15 @@ class TodayMyRouteActivity : AppCompatActivity() {
 
     private lateinit var binding: ActivityMyRouteBinding
     val viewModel: TodayMyRouteViewModel by viewModels()
+
+    // Permission
+    var isPermissionTrue = false
+    val PERMISSION_REQUEST_CODE = 1000
+    val PERMISSIONS = arrayOf(PermissionChecker.ACCESS_FINE_LOCATION, PermissionChecker.ACCESS_COARSE_LOCATION)
+
+    private val gpsTrackerManager: GPSTrackerManager by lazy {
+        GPSTrackerManager(this@TodayMyRouteActivity)
+    }
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -31,15 +47,8 @@ class TodayMyRouteActivity : AppCompatActivity() {
             finish()
         }
 
-
-        //
-        val adapter = RouteAdapter(viewModel)
-        binding.recyclerView.adapter = adapter
-        binding.recyclerView.setHasFixedSize(true)
-
-
-        // spinner
-        val routeTypes = resources.getStringArray(R.array.route_type)
+        // View
+        setRecyclerView()
 
         layout_my_route_type_text.setOnClickListener {
 
@@ -47,9 +56,12 @@ class TodayMyRouteActivity : AppCompatActivity() {
         }
 
 
-        viewModel.routeType.observe(this, Observer {
+        // Observe
+        viewModel.spinnerPosition.observe(this, Observer {
 
             spinner_my_route_type.setSelection(it)
+
+            val routeTypes = resources.getStringArray(R.array.route_type)
             text_my_route_type.text = routeTypes[it]
 
             if (it == 0) {
@@ -62,10 +74,86 @@ class TodayMyRouteActivity : AppCompatActivity() {
                 layout_my_route_delivery.visibility = View.VISIBLE
             }
 
-            viewModel.getCount()
+            viewModel.getCount(it)
+        })
+
+        viewModel.showToast.observe(this, Observer { event ->
+
+            event.getContentIfNotHandled()?.let {
+
+                Toast.makeText(this, it, Toast.LENGTH_SHORT).show()
+            }
+        })
+
+        viewModel.permissionCheck.observe(this, Observer {
+
+            if (it) {
+
+                val gpsEnable = viewModel.getGpsManager().enableGPSSetting()
+
+                if (gpsEnable) {
+                    viewModel.getGpsManager().GPSTrackerStart()
+                } else {
+                    DataUtil.enableLocationSettings(this@TodayMyRouteActivity)
+                }
+            }
+        })
+
+        viewModel.googleMap.observe(this, Observer {
+
+            try {
+
+                val intent = Intent(Intent.ACTION_VIEW, Uri.parse(it))
+                intent.setPackage("com.google.android.apps.maps")
+                startActivity(intent)
+            } catch (e: Exception) {
+
+                Toast.makeText(this, getString(R.string.msg_install_google_maps), Toast.LENGTH_SHORT).show()
+            }
         })
 
 
-        //   setDataObserve()
+        // permission
+        val checker = PermissionChecker(this)
+
+        if (checker.lacksPermissions(*PERMISSIONS)) {
+
+            viewModel.setPermission(false)
+            PermissionActivity.startActivityForResult(this, PERMISSION_REQUEST_CODE, *PERMISSIONS)
+            overridePendingTransition(0, 0)
+        } else {
+
+            viewModel.setPermission(true)
+        }
+    }
+
+
+    private fun setRecyclerView() {
+
+        val adapter = RouteAdapter(viewModel)
+
+        binding.recyclerView.adapter = adapter
+        binding.recyclerView.setHasFixedSize(true)
+
+        viewModel.routeData.observe(this, Observer {
+
+            binding.routeData = it
+            adapter.setRouteList(it.routeList)
+        })
+    }
+
+
+    override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
+        super.onActivityResult(requestCode, resultCode, data)
+
+        if (requestCode == PERMISSION_REQUEST_CODE && resultCode == PermissionActivity.PERMISSIONS_GRANTED) {
+
+            viewModel.setPermission(true)
+        }
+    }
+
+    override fun onDestroy() {
+        super.onDestroy()
+        DataUtil.stopGPSManager(gpsTrackerManager)
     }
 }

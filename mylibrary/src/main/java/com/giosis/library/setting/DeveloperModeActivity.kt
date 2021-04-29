@@ -1,7 +1,6 @@
 package com.giosis.library.setting
 
 import android.os.Bundle
-import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModelProvider
 import com.giosis.library.BR
 import com.giosis.library.BaseActivity
@@ -79,6 +78,19 @@ class DeveloperModeActivity : BaseActivity<ActivityDeveloperModeBinding, Develop
                 R.id.rb_developer_xroute_url_staging -> {
 
                     getViewModel().changeXRouteServer(DataUtil.XROUTE_SERVER_STAGING)
+                }
+            }
+        }
+
+        rg_developer_gps.setOnCheckedChangeListener { _, checkedId ->
+            when (checkedId) {
+                R.id.rb_developer_gps_real -> {
+
+                    getViewModel().changeGPS("REAL")
+                }
+                R.id.rb_developer_gps_test -> {
+
+                    getViewModel().changeGPS("TEST")
                 }
             }
         }

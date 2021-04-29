@@ -1,6 +1,8 @@
 package com.giosis.library.main;
 
-public class ChildItem {
+import java.io.Serializable;
+
+public class ChildItem implements Serializable {
 
     private String tel;
     private String hp;

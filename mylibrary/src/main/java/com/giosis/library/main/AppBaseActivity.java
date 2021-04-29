@@ -16,7 +16,6 @@ import androidx.core.content.ContextCompat;
 import androidx.drawerlayout.widget.DrawerLayout;
 
 import com.giosis.library.R;
-import com.giosis.library.barcodescanner.CaptureActivity;
 import com.giosis.library.list.ListActivity;
 import com.giosis.library.main.route.TodayMyRouteActivity;
 import com.giosis.library.main.submenu.ListNotInHousedActivity;
@@ -189,6 +188,8 @@ public class AppBaseActivity extends CommonActivity {
             arrayList1 = new ArrayList<>(Arrays.asList(getString(R.string.navi_sub_in_progress), getString(R.string.navi_sub_upload_fail), getString(R.string.navi_sub_today_done),
                     getString(R.string.navi_sub_not_in_housed)));
         }
+
+
         adapter.addItem(ContextCompat.getDrawable(this, R.drawable.side_icon_home_selector), getString(R.string.navi_home), null, -1);
         adapter.addItem(ContextCompat.getDrawable(this, R.drawable.side_icon_scan_selector), getString(R.string.navi_scan), arrayList, -1);
         adapter.addItem(ContextCompat.getDrawable(this, R.drawable.side_icon_list_selector), getString(R.string.navi_list), arrayList1, -1);
@@ -197,10 +198,11 @@ public class AppBaseActivity extends CommonActivity {
         adapter.addItem(ContextCompat.getDrawable(this, R.drawable.side_icon_settings_selector), getString(R.string.navi_setting), null, -1);
 
         if (Preferences.INSTANCE.getUserNation().equalsIgnoreCase("SG") && pickup_driver_yn.equals("Y")) {
-            adapter.addItem(ContextCompat.getDrawable(this, R.drawable.side_icon_create_pickup_order_selector), getString(R.string.text_create_pickup_order), null, 5);
+            adapter.addItem(ContextCompat.getDrawable(this, R.drawable.icon_pickup_order), getString(R.string.text_create_pickup_order), null, 4);
+        } else if (!Preferences.INSTANCE.getUserNation().equalsIgnoreCase("SG")) {   // MY / ID
+
+            adapter.addItem(ContextCompat.getDrawable(this, R.drawable.side_icon_route_selector), getString(R.string.text_today_my_route), null, 4);
         }
-
-
 
 
         nav_list.setOnGroupClickListener((expandableListView, view, position, l) -> {
@@ -249,7 +251,6 @@ public class AppBaseActivity extends CommonActivity {
             } else if (title.equals(getString(R.string.text_today_my_route))) {
 
                 drawerLayout.closeDrawers();
-                // TODO_ROUTE
                 Intent intent = new Intent(AppBaseActivity.this, TodayMyRouteActivity.class);
                 startActivity(intent);
 
@@ -280,89 +281,65 @@ public class AppBaseActivity extends CommonActivity {
                 switch (child_position) {
                     case 0: {   // Confirm my delivery order  / Start Delivery for Outlet
 
-//                        try {
-//
-//                            Intent intent = new Intent(AppBaseActivity.this, Class.forName("com.giosis.util.qdrive.barcodescanner.CaptureActivityTemp"));
-//                            intent.putExtra("title", getResources().getString(R.string.text_title_driver_assign));
-//                            intent.putExtra("type", BarcodeType.CONFIRM_MY_DELIVERY_ORDER);
-//                            startActivity(intent);
-//                        } catch (Exception e) {
-//
-//                            Log.e("Exception", "  Exception : " + e.toString());
-//                            Toast.makeText(AppBaseActivity.this, "Exception : " + e.toString(), Toast.LENGTH_SHORT).show();
-//                        }
+                        try {
 
-                        // FIXME_ New CaptureActivity
-                        Intent intent = new Intent(AppBaseActivity.this, CaptureActivity.class);
-                        intent.putExtra("title", getResources().getString(R.string.text_title_driver_assign));
-                        intent.putExtra("type", BarcodeType.CONFIRM_MY_DELIVERY_ORDER);
-                        startActivity(intent);
+                            Intent intent = new Intent(AppBaseActivity.this, Class.forName("com.giosis.util.qdrive.barcodescanner.CaptureActivity"));
+                            intent.putExtra("title", getResources().getString(R.string.text_title_driver_assign));
+                            intent.putExtra("type", BarcodeType.CONFIRM_MY_DELIVERY_ORDER);
+                            startActivity(intent);
+                        } catch (Exception e) {
+
+                            Log.e("Exception", "  Exception : " + e.toString());
+                            Toast.makeText(AppBaseActivity.this, "Exception : " + e.toString(), Toast.LENGTH_SHORT).show();
+                        }
                     }
                     break;
 
                     case 1: {   // Delivery done
 
-//                        try {
-//
-//                            Intent intent = new Intent(AppBaseActivity.this, Class.forName("com.giosis.util.qdrive.barcodescanner.CaptureActivityTemp"));
-//                            intent.putExtra("title", getResources().getString(R.string.text_delivered));
-//                            intent.putExtra("type", BarcodeType.DELIVERY_DONE);
-//                            startActivity(intent);
-//                        } catch (Exception e) {
-//
-//                            Log.e("Exception", "  Exception : " + e.toString());
-//                            Toast.makeText(AppBaseActivity.this, "Exception : " + e.toString(), Toast.LENGTH_SHORT).show();
-//                        }
+                        try {
 
-                        // FIXME_ New CaptureActivity
-                        Intent intent = new Intent(AppBaseActivity.this, CaptureActivity.class);
-                        intent.putExtra("title", getResources().getString(R.string.text_delivered));
-                        intent.putExtra("type", BarcodeType.DELIVERY_DONE);
-                        startActivity(intent);
+                            Intent intent = new Intent(AppBaseActivity.this, Class.forName("com.giosis.util.qdrive.barcodescanner.CaptureActivity"));
+                            intent.putExtra("title", getResources().getString(R.string.text_delivered));
+                            intent.putExtra("type", BarcodeType.DELIVERY_DONE);
+                            startActivity(intent);
+                        } catch (Exception e) {
+
+                            Log.e("Exception", "  Exception : " + e.toString());
+                            Toast.makeText(AppBaseActivity.this, "Exception : " + e.toString(), Toast.LENGTH_SHORT).show();
+                        }
                     }
                     break;
 
                     case 2: {   // Pickup C&R Parcels
 
-//                        try {
-//
-//                            Intent intent = new Intent(AppBaseActivity.this, Class.forName("com.giosis.util.qdrive.barcodescanner.CaptureActivityTemp"));
-//                            intent.putExtra("title", getResources().getString(R.string.text_title_scan_pickup_cnr));
-//                            intent.putExtra("type", BarcodeType.PICKUP_CNR);
-//                            startActivity(intent);
-//                        } catch (Exception e) {
-//
-//                            Log.e("Exception", "  Exception : " + e.toString());
-//                            Toast.makeText(AppBaseActivity.this, "Exception : " + e.toString(), Toast.LENGTH_SHORT).show();
-//                        }
+                        try {
 
-                        // FIXME_ New CaptureActivity
-                        Intent intent = new Intent(AppBaseActivity.this, CaptureActivity.class);
-                        intent.putExtra("title", getResources().getString(R.string.text_title_scan_pickup_cnr));
-                        intent.putExtra("type", BarcodeType.PICKUP_CNR);
-                        startActivity(intent);
+                            Intent intent = new Intent(AppBaseActivity.this, Class.forName("com.giosis.util.qdrive.barcodescanner.CaptureActivity"));
+                            intent.putExtra("title", getResources().getString(R.string.text_title_scan_pickup_cnr));
+                            intent.putExtra("type", BarcodeType.PICKUP_CNR);
+                            startActivity(intent);
+                        } catch (Exception e) {
+
+                            Log.e("Exception", "  Exception : " + e.toString());
+                            Toast.makeText(AppBaseActivity.this, "Exception : " + e.toString(), Toast.LENGTH_SHORT).show();
+                        }
                     }
                     break;
 
                     case 3: {   // Self-collection
 
-//                        try {
-//
-//                            Intent intent = new Intent(AppBaseActivity.this, Class.forName("com.giosis.util.qdrive.barcodescanner.CaptureActivityTemp"));
-//                            intent.putExtra("title", getResources().getString(R.string.navi_sub_self));
-//                            intent.putExtra("type", BarcodeType.SELF_COLLECTION);
-//                            startActivity(intent);
-//                        } catch (Exception e) {
-//
-//                            Log.e("Exception", "  Exception : " + e.toString());
-//                            Toast.makeText(AppBaseActivity.this, "Exception : " + e.toString(), Toast.LENGTH_SHORT).show();
-//                        }
+                        try {
 
-                        // FIXME_ New CaptureActivity
-                        Intent intent = new Intent(AppBaseActivity.this, CaptureActivity.class);
-                        intent.putExtra("title", getResources().getString(R.string.navi_sub_self));
-                        intent.putExtra("type", BarcodeType.SELF_COLLECTION);
-                        startActivity(intent);
+                            Intent intent = new Intent(AppBaseActivity.this, Class.forName("com.giosis.util.qdrive.barcodescanner.CaptureActivity"));
+                            intent.putExtra("title", getResources().getString(R.string.navi_sub_self));
+                            intent.putExtra("type", BarcodeType.SELF_COLLECTION);
+                            startActivity(intent);
+                        } catch (Exception e) {
+
+                            Log.e("Exception", "  Exception : " + e.toString());
+                            Toast.makeText(AppBaseActivity.this, "Exception : " + e.toString(), Toast.LENGTH_SHORT).show();
+                        }
                     }
                     break;
                 }
