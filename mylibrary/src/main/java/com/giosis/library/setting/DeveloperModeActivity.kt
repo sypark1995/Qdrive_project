@@ -62,7 +62,7 @@ class DeveloperModeActivity : BaseActivity<ActivityDeveloperModeBinding, Develop
         }
 
 
-        getViewModel().serverUrl.observe(this, Observer {
+        getViewModel().serverUrl.observe(this, {
 
             edit_developer_server_url.setText(it)
         })
@@ -95,7 +95,7 @@ class DeveloperModeActivity : BaseActivity<ActivityDeveloperModeBinding, Develop
             }
         }
 
-        getViewModel().xRouteUrl.observe(this, Observer {
+        getViewModel().xRouteUrl.observe(this, {
 
             edit_developer_xroute_url.setText(it)
         })

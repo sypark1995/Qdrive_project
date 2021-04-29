@@ -11,6 +11,10 @@ import com.giosis.library.util.Preferences
 
 class DeveloperModeViewModel : BaseViewModel() {
 
+    private val _serverUrl = MutableLiveData<String>()
+    val serverUrl: MutableLiveData<String>
+        get() = _serverUrl
+
     private val _urlReal = MutableLiveData(DataUtil.SERVER_REAL)
     val urlReal: MutableLiveData<String> = _urlReal
 
@@ -27,6 +31,10 @@ class DeveloperModeViewModel : BaseViewModel() {
     val checkedId: MutableLiveData<Int>
         get() = _checkedId
 
+
+    private val _xRouteUrl = MutableLiveData<String>()
+    val xRouteUrl: MutableLiveData<String>
+        get() = _xRouteUrl
 
     private val _xRouteUrlReal = MutableLiveData(DataUtil.XROUTE_SERVER_REAL)
     val xRouteUrlReal: MutableLiveData<String> = _xRouteUrlReal
@@ -127,10 +135,6 @@ class DeveloperModeViewModel : BaseViewModel() {
         }
     }
 
-    fun changeXRouteServer(url: String) {
-
-        Preferences.xRouteServerURL = url
-    }
 
     fun changeGPS(str: String) {
 

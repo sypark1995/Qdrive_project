@@ -161,6 +161,123 @@
                     android:textSize="@dimen/text_size_28px" />
             </RelativeLayout>
 
+            <!--  GPS Change -->
+            <LinearLayout
+                android:id="@+id/layout_developer_gps"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:orientation="vertical"
+                android:paddingTop="20dp"
+                android:visibility="@{viewModel.gpsVisible}"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toBottomOf="@id/layout_developer_xroute_url">
+
+                <TextView
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:paddingHorizontal="20dp"
+                    android:text="GPS Location"
+                    android:textColor="@color/color_767676"
+                    android:textSize="@dimen/text_size_28px" />
+
+                <RadioGroup
+                    android:id="@+id/rg_developer_gps"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="8dp"
+                    android:checkedButton="@={viewModel.gpsCheckedId}"
+                    android:orientation="vertical"
+                    android:paddingHorizontal="20dp">
+
+                    <RadioButton
+                        android:id="@+id/rb_developer_gps_real"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:buttonTint="@color/radio_colors"
+                        android:text="REAL Mode"
+                        android:textColor="#303030"
+                        android:textSize="14sp" />
+
+                    <RadioButton
+                        android:id="@+id/rb_developer_gps_test"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:buttonTint="@color/radio_colors"
+                        android:text="TEST Mode"
+                        android:textColor="#303030"
+                        android:textSize="14sp" />
+                </RadioGroup>
+
+                <RelativeLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:paddingHorizontal="4dp"
+                    android:paddingTop="8dp"
+                    android:visibility="@{viewModel.gpsInputVisible}">
+
+                    <LinearLayout
+                        android:layout_width="match_parent"
+                        android:layout_height="match_parent"
+                        android:layout_toStartOf="@id/btn_developer_gps_save"
+                        android:orientation="horizontal"
+                        android:weightSum="2">
+
+                        <LinearLayout
+                            android:layout_width="0dp"
+                            android:layout_height="match_parent"
+                            android:layout_marginEnd="4dp"
+                            android:layout_weight="1"
+                            android:orientation="horizontal">
+
+                            <TextView
+                                android:layout_width="wrap_content"
+                                android:layout_height="wrap_content"
+                                android:text="Lat : "
+                                android:textColor="@color/color_303030"
+                                android:textSize="@dimen/text_size_30px" />
+
+                            <EditText
+                                android:layout_width="match_parent"
+                                android:layout_height="wrap_content"
+                                android:inputType="numberSigned|numberDecimal"
+                                android:text="@={viewModel.gpsLatitude}" />
+                        </LinearLayout>
+
+                        <LinearLayout
+                            android:layout_width="0dp"
+                            android:layout_height="match_parent"
+                            android:layout_marginStart="4dp"
+                            android:layout_weight="1"
+                            android:orientation="horizontal">
+
+                            <TextView
+                                android:layout_width="wrap_content"
+                                android:layout_height="wrap_content"
+                                android:text="Lng : "
+                                android:textColor="@color/color_303030"
+                                android:textSize="@dimen/text_size_30px" />
+
+                            <EditText
+                                android:layout_width="match_parent"
+                                android:layout_height="wrap_content"
+                                android:inputType="numberSigned|numberDecimal"
+                                android:text="@={viewModel.gpsLongitude}" />
+                        </LinearLayout>
+                    </LinearLayout>
+
+                    <Button
+                        android:id="@+id/btn_developer_gps_save"
+                        android:layout_width="80dp"
+                        android:layout_height="match_parent"
+                        android:layout_alignParentEnd="true"
+                        android:layout_marginStart="8dp"
+                        android:background="@drawable/border_rect_b1b1b1"
+                        android:onClick="@{() -> viewModel.gpsValueSave()}"
+                        android:text="@string/button_save" />
+                </RelativeLayout>
+            </LinearLayout>
+
             <!--  Auto LogOut TEST -->
             <!--            <RelativeLayout-->
             <!--                android:layout_width="match_parent"-->
