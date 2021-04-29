@@ -26,7 +26,6 @@ import com.giosis.library.util.NetworkUtil
 import com.giosis.library.util.PermissionActivity
 import com.giosis.library.util.PermissionChecker
 import com.giosis.util.qdrive.util.*
-import com.giosis.util.qdrive.util.ui.CommonActivity
 import kotlinx.android.synthetic.main.activity_login.*
 import org.json.JSONObject
 import java.io.File
