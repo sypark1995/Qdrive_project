@@ -3,7 +3,6 @@ package com.giosis.library.setting
 import android.os.Bundle
 import androidx.core.content.ContextCompat
 import androidx.lifecycle.ViewModelProvider
-import androidx.lifecycle.observe
 import com.giosis.library.BR
 import com.giosis.library.BaseActivity
 import com.giosis.library.R

@@ -8,7 +8,6 @@ import android.widget.Toast
 import androidx.annotation.LayoutRes
 import androidx.databinding.DataBindingUtil
 import androidx.databinding.ViewDataBinding
-import androidx.lifecycle.observe
 import com.giosis.library.util.CommonActivity
 import com.giosis.library.util.dialog.ProgressDialog
 

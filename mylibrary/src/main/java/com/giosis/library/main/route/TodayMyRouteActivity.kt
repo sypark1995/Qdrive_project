@@ -8,7 +8,6 @@ import android.widget.Toast
 import androidx.activity.viewModels
 import androidx.appcompat.app.AppCompatActivity
 import androidx.databinding.DataBindingUtil
-import androidx.lifecycle.Observer
 import com.giosis.library.R
 import com.giosis.library.databinding.ActivityMyRouteBinding
 import com.giosis.library.gps.GPSTrackerManager
@@ -57,7 +56,7 @@ class TodayMyRouteActivity : AppCompatActivity() {
 
 
         // Observe
-        viewModel.spinnerPosition.observe(this, Observer {
+        viewModel.spinnerPosition.observe(this, {
 
             spinner_my_route_type.setSelection(it)
 
@@ -77,7 +76,7 @@ class TodayMyRouteActivity : AppCompatActivity() {
             viewModel.getCount(it)
         })
 
-        viewModel.showToast.observe(this, Observer { event ->
+        viewModel.showToast.observe(this, { event ->
 
             event.getContentIfNotHandled()?.let {
 
@@ -85,7 +84,7 @@ class TodayMyRouteActivity : AppCompatActivity() {
             }
         })
 
-        viewModel.permissionCheck.observe(this, Observer {
+        viewModel.permissionCheck.observe(this, {
 
             if (it) {
 
@@ -99,7 +98,7 @@ class TodayMyRouteActivity : AppCompatActivity() {
             }
         })
 
-        viewModel.googleMap.observe(this, Observer {
+        viewModel.googleMap.observe(this, {
 
             try {
 
@@ -135,7 +134,7 @@ class TodayMyRouteActivity : AppCompatActivity() {
         binding.recyclerView.adapter = adapter
         binding.recyclerView.setHasFixedSize(true)
 
-        viewModel.routeData.observe(this, Observer {
+        viewModel.routeData.observe(this, {
 
             binding.routeData = it
             adapter.setRouteList(it.routeList)

@@ -10,7 +10,6 @@ import android.util.Log
 import android.view.View
 import android.widget.AdapterView
 import androidx.lifecycle.ViewModelProvider
-import androidx.lifecycle.observe
 import com.giosis.library.ActivityRequestCode
 import com.giosis.library.BR
 import com.giosis.library.BaseActivity
