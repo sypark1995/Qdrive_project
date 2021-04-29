@@ -311,13 +311,18 @@ class LoginActivity : CommonActivity() {
 
 
     private fun showDialog(msg: String?) {
-        val alertBuilder = AlertDialog.Builder(this)
-        alertBuilder.setTitle(resources.getString(R.string.text_alert))
-        alertBuilder.setMessage(msg)
-        alertBuilder.setPositiveButton(resources.getString(R.string.button_ok)
-        ) { dialog, _ -> dialog.dismiss() }
-        val alertDialog = alertBuilder.create()
-        alertDialog.show()
+
+        if (!this@LoginActivity.isFinishing) {
+
+            val alertBuilder = AlertDialog.Builder(this@LoginActivity)
+            alertBuilder.setTitle(resources.getString(R.string.text_alert))
+            alertBuilder.setMessage(msg)
+            alertBuilder.setPositiveButton(resources.getString(R.string.button_ok)
+            ) { dialog, _ -> dialog.dismiss() }
+
+            val alertDialog = alertBuilder.create()
+            alertDialog.show()
+        }
     }
 
     private fun hideKeyboard() {
