@@ -6,11 +6,16 @@ import android.content.ContentValues;
 import android.content.Context;
 import android.database.Cursor;
 import android.graphics.Bitmap;
+import android.graphics.Color;
+import android.graphics.drawable.ColorDrawable;
 import android.os.AsyncTask;
 import android.util.Log;
+import android.view.Window;
+import android.widget.LinearLayout;
 
 import com.giosis.library.R;
 import com.giosis.library.barcodescanner.StdResult;
+import com.giosis.library.gps.GpsUpdateDialog;
 import com.giosis.library.gps.LocationModel;
 import com.giosis.library.list.SigningView;
 import com.giosis.library.server.Custom_JsonParser;
@@ -51,7 +56,6 @@ public class PickupDoneUploadHelper {
     private final String networkType;
     private final ProgressDialog progressDialog;
     private final AlertDialog resultDialog;
-    int count = 0;
     boolean gpsUpdate = false;
 
     private ProgressDialog getProgressDialog(Context context) {
@@ -94,56 +98,43 @@ public class PickupDoneUploadHelper {
                 .setCancelable(false)
                 .setPositiveButton(context.getResources().getString(R.string.button_ok), (dialog1, which) -> {
 
-                    Log.e("GpsUpdate", "Count : " + count);
                     try {
                         if (dialog1 != null)
                             dialog1.dismiss();
                     } catch (Exception e) {
                         Log.e("Exception", TAG + "getResultAlertDialog Exception : " + e.toString());
                     }
-                    if (eventListener != null) {
-                        eventListener.onPostResult();
+//                    if (eventListener != null) {
+//                        eventListener.onPostResult();
+//                    }
+
+                    Log.e("GpsUpdate", "DATA : " + locationModel.getDifferenceLat() + " / " + locationModel.getDifferenceLng());
+                    if (!Preferences.INSTANCE.getUserNation().equalsIgnoreCase("SG")) {   // MY,ID
+                        if (locationModel.getDriverLat() != 0 && locationModel.getDriverLng() != 0
+                                && locationModel.getParcelLat() != 0 && locationModel.getParcelLng() != 0) {
+                            // Parcel & Driver 위치정보 수집 했을 때      (0일 경우 제외)
+                            if (locationModel.getDifferenceLat() < 0.05 && locationModel.getDifferenceLng() < 0.05) {
+                                // 두 값의 차이가 0.05 이내의 범위일 경우     (0.05 이상이면 부정확)
+                                // 소수점 이하 3까지만 비교       (값이 너무 작으면 빈번하게 호출됨)
+                                gpsUpdate = 0.001 <= locationModel.getDifferenceLat() || 0.001 <= locationModel.getDifferenceLng();
+                            }
+                        }
                     }
-//
-//                    Log.e("GpsUpdate", "DATA : " + locationModel.getDifferenceLat() + " / " + locationModel.getDifferenceLng());
-//                    //  !Preferences.INSTANCE.getUserNation().equals("SG") &&  TEST
-//                    if (Preferences.INSTANCE.getUserNation().equalsIgnoreCase("SG")) {   // MY,ID
-//                        if (locationModel.getDriverLat() != 0 && locationModel.getDriverLng() != 0
-//                                && locationModel.getParcelLat() != 0 && locationModel.getParcelLng() != 0) {
-//                            // Parcel & Driver 위치정보 수집 했을 때      (0일 경우 제외)
-//                            if (locationModel.getDifferenceLat() < 0.05 && locationModel.getDifferenceLng() < 0.05) {
-//                                // 두 값의 차이가 0.05 이내의 범위일 경우     (0.05 이상이면 부정확)
-//                                if (0.001 <= locationModel.getDifferenceLat() || 0.001 <= locationModel.getDifferenceLng()) {
-//                                    // 소수점 이하 3까지만 비교       (값이 너무 작으면 빈번하게 호출됨)
-//                                    gpsUpdate = true;
-//                                } else {
-//                                    gpsUpdate = false;
-//                                }
-//                            } else {
-//                                gpsUpdate = false;
-//                            }
-//                        } else {
-//                            gpsUpdate = false;
-//                        }
-//                    } else {
-//                        gpsUpdate = false;
-//                    }
-//
-//
-//                    if (gpsUpdate) {
-//
-//                        GPSUpdateDialog gpsDialog = new GPSUpdateDialog(context, locationModel, eventListener);
-//                        gpsDialog.show();
-//                        gpsDialog.setCanceledOnTouchOutside(false);
-//                        Window window = gpsDialog.getWindow();
-//                        window.setBackgroundDrawable(new ColorDrawable(Color.TRANSPARENT));
-//                        window.setLayout(LinearLayout.LayoutParams.MATCH_PARENT, LinearLayout.LayoutParams.WRAP_CONTENT);
-//                    } else {
-//
-//                        if (eventListener != null) {
-//                            eventListener.onPostResult();
-//                        }
-//                    }
+
+                    if (gpsUpdate) {
+
+                        GpsUpdateDialog gpsDialog = new GpsUpdateDialog(context, locationModel, eventListener);
+                        gpsDialog.show();
+                        gpsDialog.setCanceledOnTouchOutside(false);
+                        Window window = gpsDialog.getWindow();
+                        window.setBackgroundDrawable(new ColorDrawable(Color.TRANSPARENT));
+                        window.setLayout(LinearLayout.LayoutParams.MATCH_PARENT, LinearLayout.LayoutParams.WRAP_CONTENT);
+                    } else {
+
+                        if (eventListener != null) {
+                            eventListener.onPostResult();
+                        }
+                    }
                 })
                 .create();
 

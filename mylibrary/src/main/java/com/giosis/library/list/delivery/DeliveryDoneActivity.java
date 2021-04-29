@@ -229,6 +229,8 @@ public class DeliveryDoneActivity extends CommonActivity implements Camera2APIs.
             highAmountYn = parcel.getHigh_amount_yn();
             mStrWaybillNo = parcel.getShipping();
             locationModel.setParcelLocation(parcel.getLat(), parcel.getLng(), parcel.getZip_code(), parcel.getState(), parcel.getCity(), parcel.getStreet());
+            Log.e("GPSUpdate", "Parcel " + parcel.getShipping() + " // " + parcel.getLat() + ", " + parcel.getLng() + " // "
+                    + parcel.getZip_code() + " - " + parcel.getState() + " - " + parcel.getCity() + " - " + parcel.getStreet());
 
             BarcodeData songData;
             songData = new BarcodeData();
@@ -284,6 +286,8 @@ public class DeliveryDoneActivity extends CommonActivity implements Camera2APIs.
                         String state = cs.getString(cs.getColumnIndex("state"));
                         String city = cs.getString(cs.getColumnIndex("city"));
                         String street = cs.getString(cs.getColumnIndex("street"));
+                        Log.e("GPSUpdate", "Parcel " + trackingNo + " // " + parcelLat + ", " + parcelLng + " // "
+                                + zipCode + " - " + state + " - " + city + " - " + street);
 
                         locationModel.setParcelLocation(parcelLat, parcelLng, zipCode, state, city, street);
                     }

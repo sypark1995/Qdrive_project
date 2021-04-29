@@ -35,14 +35,14 @@ class LocationModel {
         driverLat = lat
         driverLng = lng
 
-//        if (Preferences.serverURL.contains("staging") && Preferences.gpsMode == "TEST") {
-//
-//            val gpsValue = Preferences.gpsTestValue.split(",")
-//
-//            driverLat = parcelLat + gpsValue[0].toDouble()
-//            driverLng = parcelLng + gpsValue[1].toDouble()
-//            Log.e("GPSUpdate", " GPS TEST Mode  >>")
-//        }
+        if (Preferences.userNation != "SG" && Preferences.serverURL.contains("staging") && Preferences.gpsMode == "TEST") {
+
+            val gpsValue = Preferences.gpsTestValue.split(",")
+
+            driverLat = parcelLat + gpsValue[0].toDouble()
+            driverLng = parcelLng + gpsValue[1].toDouble()
+            Log.e("GPSUpdate", " GPS TEST Mode  >>")
+        }
 
         Log.e("GPSUpdate", "GPS : $parcelLat, $parcelLng  >> $driverLat, $driverLng")
 

@@ -73,7 +73,9 @@ class DeveloperModeViewModel : BaseViewModel() {
             DataUtil.SERVER_STAGING -> {
 
                 _checkedId.value = R.id.rb_developer_server_url_staging
-                _gpsVisible.value = View.VISIBLE
+
+                if (Preferences.userNation != "SG")
+                    _gpsVisible.value = View.VISIBLE
             }
             DataUtil.SERVER_TEST -> {
 
@@ -116,7 +118,7 @@ class DeveloperModeViewModel : BaseViewModel() {
 
         Preferences.serverURL = url
 
-        if (url == DataUtil.SERVER_STAGING) {
+        if (url == DataUtil.SERVER_STAGING && Preferences.userNation != "SG") {
 
             _gpsVisible.value = View.VISIBLE
         } else {

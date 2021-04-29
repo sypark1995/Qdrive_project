@@ -112,16 +112,16 @@ public class PickupAssignResult {
         @Element(name = "lat_lng", required = false)
         private String lat_lng = "";
 
-        @Element(name = "state", required = false)
-        @SerializedName("state")
+        @Element(name = "sender_state", required = false)
+        @SerializedName("sender_state")
         private String state = "";
 
-        @Element(name = "city", required = false)
-        @SerializedName("city")
+        @Element(name = "sender_city", required = false)
+        @SerializedName("sender_city")
         private String city = "";
 
-        @Element(name = "street", required = false)
-        @SerializedName("street")
+        @Element(name = "sender_street", required = false)
+        @SerializedName("sender_street")
         private String street = "";
 
         public String getCustNo() {

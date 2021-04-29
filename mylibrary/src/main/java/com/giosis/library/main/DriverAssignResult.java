@@ -142,16 +142,16 @@ public class DriverAssignResult {
         @SerializedName("high_amount_yn")
         private String high_amount_yn = "";
 
-        @Element(name = "state", required = false)
-        @SerializedName("state")
+        @Element(name = "receive_state", required = false)
+        @SerializedName("receive_state")
         private String state = "";
 
-        @Element(name = "city", required = false)
-        @SerializedName("city")
+        @Element(name = "receive_city", required = false)
+        @SerializedName("receive_city")
         private String city = "";
 
-        @Element(name = "street", required = false)
-        @SerializedName("street")
+        @Element(name = "receive_street", required = false)
+        @SerializedName("receive_street")
         private String street = "";
 
 

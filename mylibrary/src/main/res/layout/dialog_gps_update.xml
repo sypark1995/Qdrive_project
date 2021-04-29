@@ -1,0 +1,120 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:background="@android:color/transparent">
+
+    <androidx.constraintlayout.widget.ConstraintLayout
+        android:id="@+id/layout_trip_detail"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:layout_marginHorizontal="20dp"
+        android:background="@drawable/back_round_5_ffffff_border"
+        android:padding="20dp"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent"
+        tools:ignore="MissingConstraints">
+
+        <TextView
+            android:id="@+id/text_gps_qlps_title"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="@string/text_qlps_gps_location"
+            android:textColor="@color/color_4e4e4e"
+            android:textSize="@dimen/text_size_32px"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="parent" />
+
+        <TextView
+            android:id="@+id/text_gps_qlps"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="4dp"
+            android:layout_marginTop="8dp"
+            android:textColor="@color/color_4e4e4e"
+            android:textSize="@dimen/text_size_32px"
+            android:textStyle="bold"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintTop_toBottomOf="@id/text_gps_qlps_title"
+            tools:text="1.389040, 103.876543" />
+
+        <TextView
+            android:id="@+id/text_gps_your_title"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="16dp"
+            android:text="@string/text_your_gps_location"
+            android:textColor="@color/color_4e4e4e"
+            android:textSize="@dimen/text_size_32px"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@id/text_gps_qlps" />
+
+        <TextView
+            android:id="@+id/text_gps_your"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="8dp"
+            android:textColor="@color/color_4e4e4e"
+            android:textSize="@dimen/text_size_32px"
+            android:textStyle="bold"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintTop_toBottomOf="@id/text_gps_your_title"
+            tools:text="1.389040, 103.876543" />
+
+
+        <View
+            android:id="@+id/view_gps_divider"
+            android:layout_width="match_parent"
+            android:layout_height="1dp"
+            android:layout_marginTop="12dp"
+            android:background="@color/color_d2d2d2"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@id/text_gps_your" />
+
+        <TextView
+            android:id="@+id/text_gps_update_msg"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="12dp"
+            android:lineSpacingMultiplier="1.2"
+            android:text="@string/msg_qlps_gps_update"
+            android:textColor="@color/color_3e3e3e"
+            android:textSize="@dimen/text_size_28px"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@id/view_gps_divider" />
+
+        <Button
+            android:id="@+id/btn_gps_update_ok"
+            android:layout_width="wrap_content"
+            android:layout_height="40dp"
+            android:layout_marginTop="16dp"
+            android:background="@drawable/border_rect_b1b1b1"
+            android:text="@string/button_ok"
+            android:textAllCaps="false"
+            android:textColor="@color/color_3e3e3e"
+            android:textSize="@dimen/text_size_30px"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintEnd_toStartOf="@id/btn_gps_update_cancel"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@id/text_gps_update_msg" />
+
+        <Button
+            android:id="@+id/btn_gps_update_cancel"
+            android:layout_width="wrap_content"
+            android:layout_height="40dp"
+            android:background="@drawable/border_rect_b1b1b1"
+            android:text="@string/button_cancel"
+            android:textAllCaps="false"
+            android:textColor="@color/color_3e3e3e"
+            android:textSize="@dimen/text_size_30px"
+            app:layout_constraintBottom_toBottomOf="@id/btn_gps_update_ok"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toEndOf="@id/btn_gps_update_ok"
+            app:layout_constraintTop_toTopOf="@id/btn_gps_update_ok" />
+    </androidx.constraintlayout.widget.ConstraintLayout>
+</androidx.constraintlayout.widget.ConstraintLayout>
