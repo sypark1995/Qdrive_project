@@ -1790,7 +1790,6 @@ public final class CaptureActivity extends CommonActivity implements DecoratedBa
             contentVal.put("desired_date", data.getPickupHopeDay());
             contentVal.put("req_qty", data.getQty());
             contentVal.put("req_nm", data.getReqName());
-            contentVal.put("failed_count", data.getFailedCount());
             contentVal.put("rcv_request", data.getDelMemo());
             contentVal.put("sender_nm", "");
             contentVal.put("punchOut_stat", "N");

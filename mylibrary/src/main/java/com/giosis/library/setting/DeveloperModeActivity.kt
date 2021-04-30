@@ -61,13 +61,6 @@ class DeveloperModeActivity : BaseActivity<ActivityDeveloperModeBinding, Develop
             }
         }
 
-
-        getViewModel().serverUrl.observe(this, {
-
-            edit_developer_server_url.setText(it)
-        })
-
-
         rg_developer_xroute_url.setOnCheckedChangeListener { _, checkedId ->
 
             when (checkedId) {
@@ -94,11 +87,6 @@ class DeveloperModeActivity : BaseActivity<ActivityDeveloperModeBinding, Develop
                 }
             }
         }
-
-        getViewModel().xRouteUrl.observe(this, {
-
-            edit_developer_xroute_url.setText(it)
-        })
     }
 
 //
@@ -127,8 +115,4 @@ class DeveloperModeActivity : BaseActivity<ActivityDeveloperModeBinding, Develop
 //
 //            timePickerDialog.show()
 //        }
-
-
-//
-
 }

@@ -155,17 +155,22 @@ public class MainActivity extends AppBaseActivity {
                 Upload();
             } else if (id == R.id.btn_home_confirm_my_delivery_order) {
 
-                try {
+//                try {
+//
+//                    Intent intent = new Intent(MainActivity.this, Class.forName("com.giosis.util.qdrive.barcodescanner.CaptureActivity"));
+//                    intent.putExtra("title", getResources().getString(R.string.text_title_driver_assign));
+//                    intent.putExtra("type", BarcodeType.CONFIRM_MY_DELIVERY_ORDER);
+//                    startActivity(intent);
+//                } catch (Exception e) {
+//
+//                    Log.e("Exception", "  Exception : " + e.toString());
+//                    Toast.makeText(MainActivity.this, "Exception : " + e.toString(), Toast.LENGTH_SHORT).show();
+//                }
 
-                    Intent intent = new Intent(MainActivity.this, Class.forName("com.giosis.util.qdrive.barcodescanner.CaptureActivity"));
-                    intent.putExtra("title", getResources().getString(R.string.text_title_driver_assign));
-                    intent.putExtra("type", BarcodeType.CONFIRM_MY_DELIVERY_ORDER);
-                    startActivity(intent);
-                } catch (Exception e) {
-
-                    Log.e("Exception", "  Exception : " + e.toString());
-                    Toast.makeText(MainActivity.this, "Exception : " + e.toString(), Toast.LENGTH_SHORT).show();
-                }
+                Intent intent = new Intent(MainActivity.this, CaptureActivity.class);
+                intent.putExtra("title", getResources().getString(R.string.text_title_driver_assign));
+                intent.putExtra("type", BarcodeType.CONFIRM_MY_DELIVERY_ORDER);
+                startActivity(intent);
             } else if (id == R.id.btn_home_assign_pickup_driver) {
 
                 Intent intent = new Intent(MainActivity.this, RpcListActivity.class);
@@ -174,17 +179,22 @@ public class MainActivity extends AppBaseActivity {
 
                 if (gpsOnceEnable && gpsTrackerManager != null) {
 
-                    try {
+//                    try {
+//
+//                        Intent intent = new Intent(MainActivity.this, Class.forName("com.giosis.util.qdrive.barcodescanner.CaptureActivity"));
+//                        intent.putExtra("title", getResources().getString(R.string.button_change_delivery_driver));
+//                        intent.putExtra("type", BarcodeType.CHANGE_DELIVERY_DRIVER);
+//                        startActivity(intent);
+//                    } catch (Exception e) {
+//
+//                        Log.e("Exception", "  Exception : " + e.toString());
+//                        Toast.makeText(MainActivity.this, "Exception : " + e.toString(), Toast.LENGTH_SHORT).show();
+//                    }
 
-                        Intent intent = new Intent(MainActivity.this, Class.forName("com.giosis.util.qdrive.barcodescanner.CaptureActivity"));
-                        intent.putExtra("title", getResources().getString(R.string.button_change_delivery_driver));
-                        intent.putExtra("type", BarcodeType.CHANGE_DELIVERY_DRIVER);
-                        startActivity(intent);
-                    } catch (Exception e) {
-
-                        Log.e("Exception", "  Exception : " + e.toString());
-                        Toast.makeText(MainActivity.this, "Exception : " + e.toString(), Toast.LENGTH_SHORT).show();
-                    }
+                    Intent intent = new Intent(MainActivity.this, CaptureActivity.class);
+                    intent.putExtra("title", getResources().getString(R.string.button_change_delivery_driver));
+                    intent.putExtra("type", BarcodeType.CHANGE_DELIVERY_DRIVER);
+                    startActivity(intent);
                 } else {
 
                     DataUtil.enableLocationSettings(MainActivity.this);
@@ -300,7 +310,7 @@ public class MainActivity extends AppBaseActivity {
         RoundedBitmapDrawable roundedImageDrawable = createRoundedBitmapImageDrawableWithBorder(mBitmap);
         img_home_driver_profile.setImageDrawable(roundedImageDrawable);
 
-        if ("Y".equals(pickup_driver_yn)) {
+        if ("Y".equals(pickup_driver_yn) && Preferences.INSTANCE.getUserNation().equalsIgnoreCase("SG")) {
             btn_home_create_pickup_order.setVisibility(View.VISIBLE);
         } else {
             btn_home_create_pickup_order.setVisibility(View.GONE);

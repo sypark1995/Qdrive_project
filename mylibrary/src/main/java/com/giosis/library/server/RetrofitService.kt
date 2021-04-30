@@ -283,15 +283,6 @@ interface RetrofitService {
     ): Single<APIModel>
 
 
-    @POST("get_trip_list.qx")
-    @FormUrlEncoded
-    fun requestGetTripList(
-            @Field("latitude") latitude: String,
-            @Field("longitude") longitude: String,
-            @Field("invoice_no_items", encoded = true) invoice_no_items: String,
-            @Field("id") id: String = Preferences.userId,
-    ): Single<APIModel>
-
     @POST("GetQdriveMyPickupRoute")
     @FormUrlEncoded
     fun requestGetMyPickupRoute(
