@@ -2,6 +2,7 @@ package com.giosis.library.setting
 
 import android.os.Bundle
 import android.view.View
+import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModelProvider
 import com.giosis.library.BR
 import com.giosis.library.BaseActivity
@@ -44,7 +45,7 @@ class ChangePwdActivity : BaseActivity<ActivityChangePwdBinding, ChangePwdViewMo
             finish()
         }
 
-        mViewModel.checkAlert.observe(this, {
+        mViewModel.checkAlert.observe(this, Observer {
             if (it != null) {
 
                 DisplayUtil.hideKeyboard(this)
@@ -58,7 +59,7 @@ class ChangePwdActivity : BaseActivity<ActivityChangePwdBinding, ChangePwdViewMo
         })
 
 
-        mViewModel.errorAlert.observe(this, {
+        mViewModel.errorAlert.observe(this, Observer {
 
             DisplayUtil.hideKeyboard(this)
 
@@ -94,7 +95,7 @@ class ChangePwdActivity : BaseActivity<ActivityChangePwdBinding, ChangePwdViewMo
         })
 
 
-        getViewModel().resultAlert.observe(this) {
+        getViewModel().resultAlert.observe(this, Observer {
 
             val text = DialogUiConfig(
                     title = R.string.text_alert,
@@ -115,7 +116,7 @@ class ChangePwdActivity : BaseActivity<ActivityChangePwdBinding, ChangePwdViewMo
 
             resultDialog.bindingData = Pair(text, listener)
             resultDialog.visibility = View.VISIBLE
-        }
+        })
     }
 
 

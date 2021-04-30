@@ -2,6 +2,7 @@ package com.giosis.library.setting
 
 import android.os.Bundle
 import android.widget.Toast
+import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModelProvider
 import com.giosis.library.BR
 import com.giosis.library.BaseActivity
@@ -43,7 +44,7 @@ class NoticeActivity : BaseActivity<ActivityNoticeBinding, NoticeViewModel>() {
 
         recycler_notice.adapter = adapter
 
-        getViewModel().errorMsg.observe(this) {
+        getViewModel().errorMsg.observe(this, Observer {
 
             if (it is String) {
 
@@ -52,7 +53,7 @@ class NoticeActivity : BaseActivity<ActivityNoticeBinding, NoticeViewModel>() {
 
                 Toast.makeText(this, resources.getString(it), Toast.LENGTH_SHORT).show()
             }
-        }
+        })
 
     }
 

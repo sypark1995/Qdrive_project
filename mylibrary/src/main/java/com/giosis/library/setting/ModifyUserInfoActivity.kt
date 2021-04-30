@@ -2,6 +2,7 @@ package com.giosis.library.setting
 
 import android.os.Bundle
 import android.view.View
+import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModelProvider
 import com.giosis.library.BR
 import com.giosis.library.BaseActivity
@@ -49,7 +50,7 @@ class ModifyUserInfoActivity : BaseActivity<ActivityModifyUserInfoBinding, Modif
         }
 
 
-        getViewModel().checkAlert.observe(this) {
+        getViewModel().checkAlert.observe(this, Observer {
 
             if (it != null) {
 
@@ -61,10 +62,10 @@ class ModifyUserInfoActivity : BaseActivity<ActivityModifyUserInfoBinding, Modif
 
                 dialog.visibility = View.GONE
             }
-        }
+        })
 
 
-        getViewModel().errorAlert.observe(this) {
+        getViewModel().errorAlert.observe(this, Observer {
 
             DisplayUtil.hideKeyboard(this)
 
@@ -91,10 +92,10 @@ class ModifyUserInfoActivity : BaseActivity<ActivityModifyUserInfoBinding, Modif
 
             errDialog.bindingData = Pair(text, listener)
             errDialog.visibility = View.VISIBLE
-        }
+        })
 
 
-        getViewModel().resultAlert.observe(this) {
+        getViewModel().resultAlert.observe(this, Observer {
 
             val text = DialogUiConfig(
                     title = R.string.text_alert,
@@ -107,7 +108,7 @@ class ModifyUserInfoActivity : BaseActivity<ActivityModifyUserInfoBinding, Modif
 
                         resultDialog.visibility = View.GONE
 
-                        if(it.resultCode == 0) {
+                        if (it.resultCode == 0) {
 
                             finish()
                         }
@@ -116,7 +117,7 @@ class ModifyUserInfoActivity : BaseActivity<ActivityModifyUserInfoBinding, Modif
 
             resultDialog.bindingData = Pair(text, listener)
             resultDialog.visibility = View.VISIBLE
-        }
+        })
     }
 
 

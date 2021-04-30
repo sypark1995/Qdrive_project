@@ -3,6 +3,7 @@ package com.giosis.library.setting
 import android.os.Bundle
 import android.util.Log
 import android.view.View
+import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModelProvider
 import com.giosis.library.BR
 import com.giosis.library.BaseActivity
@@ -40,23 +41,23 @@ class NoticeDetailActivity : BaseActivity<ActivityNoticeDetailBinding, NoticeDet
         val noticeNo = intent.getStringExtra("notice_no").toString()
         getViewModel().setSeqNo(noticeNo)
 
-        getViewModel().seqNo.observe(this) {
+        getViewModel().seqNo.observe(this, Observer {
 
             getViewModel().callServer()
-        }
+        })
 
 
-        getViewModel().content.observe(this) {
+        getViewModel().content.observe(this, Observer {
 
             text_notice_detail_content.text = it
-        }
+        })
 
-        getViewModel().date.observe(this) {
+        getViewModel().date.observe(this, Observer {
 
             text_notice_detail_date.text = it
-        }
+        })
 
-        getViewModel().prevNo.observe(this) {
+        getViewModel().prevNo.observe(this, Observer {
 
             if (it.isEmpty()) {
 
@@ -65,9 +66,9 @@ class NoticeDetailActivity : BaseActivity<ActivityNoticeDetailBinding, NoticeDet
 
                 layout_notice_detail_prev.visibility = View.VISIBLE
             }
-        }
+        })
 
-        getViewModel().nextNo.observe(this) {
+        getViewModel().nextNo.observe(this, Observer {
 
             if (it.isEmpty()) {
 
@@ -76,17 +77,17 @@ class NoticeDetailActivity : BaseActivity<ActivityNoticeDetailBinding, NoticeDet
 
                 layout_notice_detail_next.visibility = View.VISIBLE
             }
-        }
+        })
 
 
 
-        getViewModel().errorAlert.observe(this) {
+        getViewModel().errorAlert.observe(this, Observer {
 
             layout_notice_detail_reload.visibility = View.VISIBLE
             layout_notice_detail.visibility = View.GONE
-        }
+        })
 
-        getViewModel().resultAlert.observe(this) {
+        getViewModel().resultAlert.observe(this, Observer {
 
             if (it is String || it is Int) {
 
@@ -99,9 +100,7 @@ class NoticeDetailActivity : BaseActivity<ActivityNoticeDetailBinding, NoticeDet
                 layout_notice_detail_reload.visibility = View.GONE
                 layout_notice_detail.visibility = View.VISIBLE
             }
-        }
-
-
+        })
     }
 }
 //

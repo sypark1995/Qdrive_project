@@ -9,6 +9,7 @@ import android.os.Bundle
 import android.util.TypedValue
 import android.view.View
 import android.widget.Toast
+import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModelProvider
 import com.giosis.library.BR
 import com.giosis.library.BaseActivity
@@ -37,8 +38,6 @@ class LockerUserInfoActivity : BaseActivity<ActivityLockerUserInfoBinding, Locke
     }
 
 
-
-
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
 
@@ -60,31 +59,31 @@ class LockerUserInfoActivity : BaseActivity<ActivityLockerUserInfoBinding, Locke
         }
 
 
-        getViewModel().userKey.observe(this) {
+        getViewModel().userKey.observe(this, Observer {
 
             DataUtil.copyClipBoard(this, it)
 
             text_locker_user_user_key.text = it
             text_locker_user_user_key_1.text = it
             text_locker_user_user_key_1.visibility = View.GONE
-        }
+        })
 
-        getViewModel().status.observe(this) {
+        getViewModel().status.observe(this, Observer {
 
             text_locker_user_status.text = it
-        }
+        })
 
-        getViewModel().mobile.observe(this) {
+        getViewModel().mobile.observe(this, Observer {
 
             text_locker_user_mobile_no.text = it
-        }
+        })
 
-        getViewModel().expiryDate.observe(this) {
+        getViewModel().expiryDate.observe(this, Observer {
 
             text_locker_user_expiry_pin_date.text = it
-        }
+        })
 
-        getViewModel().barcodeImg.observe(this) {
+        getViewModel().barcodeImg.observe(this, Observer {
 
             if (it != null) {
 
@@ -100,13 +99,13 @@ class LockerUserInfoActivity : BaseActivity<ActivityLockerUserInfoBinding, Locke
                 layout_locker_user_barcode.visibility = View.GONE
                 text_locker_user_barcode_error.visibility = View.VISIBLE
             }
-        }
+        })
 
 
-        getViewModel().errorAlert.observe(this) {
+        getViewModel().errorAlert.observe(this, Observer {
 
             Toast.makeText(this, resources.getString(it), Toast.LENGTH_SHORT).show()
-        }
+        })
     }
 
 

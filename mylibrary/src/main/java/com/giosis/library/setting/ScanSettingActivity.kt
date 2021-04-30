@@ -2,6 +2,7 @@ package com.giosis.library.setting
 
 import android.os.Bundle
 import androidx.core.content.ContextCompat
+import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModelProvider
 import com.giosis.library.BR
 import com.giosis.library.BaseActivity
@@ -39,7 +40,7 @@ class ScanSettingActivity : BaseActivity<ActivityScanSettingBinding, ScanSetting
         }
 
 
-        getViewModel().vibration.observe(this) {
+        getViewModel().vibration.observe(this, Observer {
 
             Preferences.scanVibration = it
 
@@ -78,7 +79,7 @@ class ScanSettingActivity : BaseActivity<ActivityScanSettingBinding, ScanSetting
                 btn_scan_setting_vibration_on.isSelected = true
                 btn_scan_setting_vibration_off.isSelected = false
             }
-        }
+        })
 
 
 //
