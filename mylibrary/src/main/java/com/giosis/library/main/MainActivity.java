@@ -1017,7 +1017,7 @@ public class MainActivity extends AppBaseActivity {
         }
     }
 
-    // NOTIFICATION.  MessageCountAsyncTask
+    // NOTIFICATION.
     @SuppressLint("StaticFieldLeak")
     private class MessageCountAsyncTask extends AsyncTask<Void, Void, ArrayList<Integer>> {
 

@@ -143,7 +143,7 @@ class AdminMessageListDetailActivity : CommonActivity() {
     }
 
 
-    //NOTIFICATION.  AdminMessageDetailAsyncTask
+    //NOTIFICATION.
     private inner class AdminMessageDetailAsyncTask(var sender_id: String?) : AsyncTask<Void?, Void?, MessageDetailResult?>() {
 
         var progressDialog = ProgressDialog(this@AdminMessageListDetailActivity)
@@ -197,7 +197,7 @@ class AdminMessageListDetailActivity : CommonActivity() {
 
                 if (oldResultString != null && oldResultString.equals(newResultString, ignoreCase = true)) {
 
-                    Log.e("Message", "$tag  AdminMessageDetailAsyncTask  EQUAL")
+                    Log.e("Message", "$tag  GetQdriverMessageDetailFromMessenger  EQUAL")
                 } else {
 
                     if (result != null) {
@@ -224,7 +224,7 @@ class AdminMessageListDetailActivity : CommonActivity() {
             } catch (e: Exception) {
 
                 Toast.makeText(this@AdminMessageListDetailActivity, resources.getString(R.string.text_error) + "!! " + resources.getString(R.string.msg_please_try_again), Toast.LENGTH_SHORT).show()
-                Log.e("Exception", "$tag AdminMessageDetailAsyncTask Exception : $e")
+                Log.e("Exception", "$tag GetQdriverMessageDetailFromMessenger Exception : $e")
             }
         }
     }
@@ -243,7 +243,7 @@ class AdminMessageListDetailActivity : CommonActivity() {
         sendMessageAdminAsyncTask.execute()
     }
 
-    //NOTIFICATION.  SendMessageAdminAsyncTask
+    //NOTIFICATION.
     private inner class SendMessageAdminAsyncTask(var contents: String, var sender_id: String?) : AsyncTask<Void?, Void?, MessageSendResult?>() {
 
         var progressDialog = ProgressDialog(this@AdminMessageListDetailActivity)
@@ -306,21 +306,21 @@ class AdminMessageListDetailActivity : CommonActivity() {
 
                     messageDetailList!!.add(item)
                     messageDetailAdapter!!.notifyDataSetChanged()
-                    Log.e("Message", "SendMessageAdminAsyncTask Size : " + messageDetailList!!.size)
+                    Log.e("Message", "SendQdriveToMessengerMessage Size : " + messageDetailList!!.size)
                 } else {
 
                     Toast.makeText(this@AdminMessageListDetailActivity, "${resources.getString(R.string.msg_send_message_error)} ${resources.getString(R.string.msg_please_try_again)}", Toast.LENGTH_SHORT).show()
-                    Log.e("Message", "SendMessageAdminAsyncTask  result null")
+                    Log.e("Message", "SendQdriveToMessengerMessage  result null")
                 }
             } catch (e: Exception) {
 
                 Toast.makeText(this@AdminMessageListDetailActivity, "${resources.getString(R.string.msg_send_message_error)} ${resources.getString(R.string.msg_please_try_again)}", Toast.LENGTH_SHORT).show()
-                Log.e("Exception", "$tag SendMessageAdminAsyncTask Exception : $e")
+                Log.e("Exception", "$tag SendQdriveToMessengerMessage Exception : $e")
             }
         }
 
         init {
-            Log.e("Message", "$tag  SendMessageAdminAsyncTask  $contents  ${Preferences.userId}  $sender_id")
+            Log.e("Message", "$tag  SendQdriveToMessengerMessage  $contents  ${Preferences.userId}  $sender_id")
         }
     }
 

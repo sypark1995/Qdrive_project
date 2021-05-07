@@ -19,6 +19,7 @@ import android.widget.TextView;
 
 import com.giosis.library.R;
 import com.giosis.library.bluetooth.BluetoothListener;
+import com.giosis.library.util.DataUtil;
 import com.giosis.library.util.NetworkUtil;
 import com.giosis.library.util.Preferences;
 
@@ -257,6 +258,7 @@ public class ListTodayDoneAdapter extends BaseExpandableListAdapter {
 
         btn_list_item_child_done_print_label.setOnClickListener(v -> {
 
+            DataUtil.logEvent("button_click", "ListActivity", "Print_CNR");
             bluetoothListener.isConnectPortablePrint(tracking_no);
 
         });

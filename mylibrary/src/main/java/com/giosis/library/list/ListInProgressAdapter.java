@@ -942,8 +942,8 @@ public class ListInProgressAdapter extends BaseExpandableListAdapter {
 
         btn_list_item_child_cnr_print.setOnClickListener(v -> {
 
+            DataUtil.logEvent("button_click", "ListActivity", "Print_CNR");
             bluetoothListener.isConnectPortablePrint(tracking_no);
-
         });
 
         return convertView;

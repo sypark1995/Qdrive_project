@@ -234,7 +234,7 @@ public class CustomerMessageListFragment extends Fragment {
         }
     }
 
-    //NOTIFICATION.  CustomerMessageListAsyncTask
+    //NOTIFICATION.
     private class CustomerMessageListAsyncTask extends AsyncTask<Void, Void, MessageListResult> {
 
         String qdriver_id;
@@ -273,7 +273,7 @@ public class CustomerMessageListFragment extends Fragment {
         @Override
         protected MessageListResult doInBackground(Void... params) {
 
-            Log.i("krm0219", TAG + "  CustomerMessageListAsyncTask  PageNumber : " + page_no);
+            Log.i("krm0219", TAG + "  CustomerMessageList PageNumber : " + page_no);
             MessageListResult resultObj;
             Gson gson = new Gson();
 
@@ -331,7 +331,7 @@ public class CustomerMessageListFragment extends Fragment {
 
                 if (old_resultString != null && old_resultString.equalsIgnoreCase(new_resultString)) {
 
-                    Log.e("krm0219", TAG + "  CustomerMessageListAsyncTask  EQUAL");
+                    Log.e("krm0219", TAG + "  GetQdriverMessageList  EQUAL");
                 } else {
 
                     if (result != null) {
@@ -379,7 +379,7 @@ public class CustomerMessageListFragment extends Fragment {
                 text_message_list_empty.setText(getResources().getString(R.string.text_error));
 
                 Toast.makeText(getActivity(), getResources().getString(R.string.text_error) + "!! " + getResources().getString(R.string.msg_please_try_again), Toast.LENGTH_SHORT).show();
-                Log.e("krm0219", TAG + "  CustomerMessageListAsyncTask Exception : " + e.toString());
+                Log.e("krm0219", TAG + "  GetQdriverMessageList Exception : " + e.toString());
             }
         }
     }

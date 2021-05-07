@@ -20,12 +20,17 @@ import com.giosis.library.gps.GPSTrackerManager
 import com.giosis.library.main.MainActivity
 import com.giosis.library.main.SMSVerificationActivity
 import com.giosis.library.server.Custom_JsonParser
+import com.giosis.library.server.RetrofitClient
 import com.giosis.library.setting.DeveloperModeActivity
 import com.giosis.library.util.DatabaseHelper
 import com.giosis.library.util.NetworkUtil
 import com.giosis.library.util.PermissionActivity
 import com.giosis.library.util.PermissionChecker
-import com.giosis.util.qdrive.util.*
+import com.giosis.util.qdrive.util.CommonActivity
+import com.giosis.util.qdrive.util.DataUtil
+import com.google.gson.Gson
+import io.reactivex.rxjava3.android.schedulers.AndroidSchedulers
+import io.reactivex.rxjava3.schedulers.Schedulers
 import kotlinx.android.synthetic.main.activity_login.*
 import org.json.JSONObject
 import java.io.File
@@ -194,8 +199,85 @@ class LoginActivity : CommonActivity() {
                     MyApplication.preferences.appVersion = appVersion
 
                     progressBar.visibility = View.VISIBLE
-                    val loginAsyncTask = LoginAsyncTask(latitude.toString(), longitude.toString())
-                    loginAsyncTask.execute()
+//                    val loginAsyncTask = LoginAsyncTask(latitude.toString(), longitude.toString())
+//                    loginAsyncTask.execute()
+
+                    // FIXME_Retrofit      TEST
+                    RetrofitClient.instanceDynamic().requestServerLogin(userID, userPW, "QDRIVE_V2", "", deviceUUID, "",
+                            latitude.toString(), longitude.toString(), DataUtil.appID, userNationCode)
+                            .subscribeOn(Schedulers.io())
+                            .observeOn(AndroidSchedulers.mainThread())
+                            .subscribe({
+
+                                Log.e("Server", "result  ${it.resultCode}  ${it.resultMsg}")
+
+                                if (it.resultCode != 0) {        // Login Failed
+
+                                    progressBar.visibility = View.GONE
+                                    MyApplication.preferences.userPw = ""
+                                    edit_login_password.setText("")
+
+                                    when {
+                                        it.resultCode == -10 -> {
+
+                                            showDialog(resources.getString(R.string.msg_account_deactivated))
+                                        }
+                                        it.resultMsg != "" -> {
+
+                                            showDialog(it.resultMsg)
+                                        }
+                                        else -> {
+
+                                            showDialog(resources.getString(R.string.msg_not_valid_info))
+                                        }
+                                    }
+                                } else {        // Login Success
+
+                                    progressBar.visibility = View.GONE
+                                    val loginData = Gson().fromJson(it.resultObject, LoginResult.LoginData::class.java)
+                                    Log.e(RetrofitClient.TAG, "response : ${it.resultObject}")
+
+                                    if (MyApplication.preferences.appVersion < loginData.serverVersion) {
+
+                                        val msg = java.lang.String.format(resources.getString(R.string.msg_update_version),
+                                                loginData.serverVersion, MyApplication.preferences.appVersion)
+                                        goGooglePlay(msg)
+                                    } else {
+
+                                        DataUtil.nationCode = MyApplication.preferences.userNation
+                                        MyApplication.preferences.userId = loginData.userId
+                                        MyApplication.preferences.userName = loginData.userName
+                                        MyApplication.preferences.userEmail = loginData.userEmail
+                                        MyApplication.preferences.officeCode = loginData.officeCode
+                                        MyApplication.preferences.officeName = loginData.officeName
+                                        MyApplication.preferences.pickupDriver = loginData.pickupDriver
+                                        MyApplication.preferences.outletDriver = loginData.outletDriver
+                                        MyApplication.preferences.lockerStatus = loginData.lockerStatus
+                                        MyApplication.preferences.default = loginData.defaultYn
+                                        MyApplication.preferences.authNo = loginData.authNo
+
+                                        Log.e(tag, "SERVER  DOWNLOAD  DATA : ${loginData.officeCode} / ${loginData.officeName} / " +
+                                                "${loginData.pickupDriver} / ${loginData.outletDriver} / ${loginData.lockerStatus} / " +
+                                                "${loginData.defaultYn} / ${loginData.authNo}")
+                                        Log.e(tag, "  SMS / Device Auth - ${loginData.smsYn}, ${loginData.deviceYn}")
+
+
+                                        if (loginData.smsYn == "Y" && loginData.deviceYn == "Y") {
+
+                                            val intent = Intent(this@LoginActivity, MainActivity::class.java)
+                                            startActivity(intent)
+                                            finish()
+                                        } else {
+
+                                            goSMSVerification(resources.getString(R.string.msg_go_sms_verification))
+                                        }
+                                    }
+                                }
+                            }, {
+
+                                progressBar.visibility = View.GONE
+                                showDialog(it.toString())
+                            })
                 }
             }
         }
@@ -425,61 +507,6 @@ class LoginActivity : CommonActivity() {
 
                         goSMSVerification(resources.getString(R.string.msg_go_sms_verification))
                     }
-
-
-                    //    DatabaseHelper.getInstance().delete(DatabaseHelper.DB_TABLE_REST_DAYS, "")
-
-//                    GetRestDaysAsyncTask(MyApplication.preferences.userNation, Calendar.getInstance().get(Calendar.YEAR), object : onEventListner {
-//                        override fun onSuccess() {
-//
-//                            GetRestDaysAsyncTask(MyApplication.preferences.userNation, Calendar.getInstance().get(Calendar.YEAR) + 1, object : onEventListner {
-//                                override fun onSuccess() {
-//                                    Log.e(tag, "Rest Day   DB insert finish")
-//
-//                                    progressBar.visibility = View.GONE
-//                                    DataUtil.nationCode = MyApplication.preferences.userNation
-//
-//                                    MyApplication.preferences.userId = result.resultObject.userId
-//                                    MyApplication.preferences.userName = result.resultObject.userName
-//                                    MyApplication.preferences.userEmail = result.resultObject.userEmail
-//                                    MyApplication.preferences.officeCode = result.resultObject.officeCode
-//                                    MyApplication.preferences.officeName = result.resultObject.officeName
-//                                    MyApplication.preferences.pickupDriver = result.resultObject.pickupDriver
-//                                    MyApplication.preferences.outletDriver = result.resultObject.outletDriver
-//                                    MyApplication.preferences.lockerStatus = result.resultObject.lockerStatus
-//                                    MyApplication.preferences.default = result.resultObject.defaultYn
-//                                    MyApplication.preferences.authNo = result.resultObject.authNo
-//
-//                                    Log.e(tag, "SERVER  DOWNLOAD  DATA : ${result.resultObject.officeCode} / ${result.resultObject.officeName} / " +
-//                                            "${result.resultObject.pickupDriver} / ${result.resultObject.outletDriver} / ${result.resultObject.lockerStatus} / " +
-//                                            "${result.resultObject.defaultYn} / ${result.resultObject.authNo}")
-//
-//
-//                                    Log.e(tag, "  SMS / Device Auth - ${result.resultObject.smsYn}, ${result.resultObject.deviceYn}")
-//                                    // Notification.  GO Main
-//                                    if (result.resultObject.smsYn == "Y" && result.resultObject.deviceYn == "Y") {
-//
-//                                        val intent = Intent(this@LoginActivity, MainActivity::class.java)
-//                                        startActivity(intent)
-//                                        finish()
-//                                    } else {
-//
-//                                        goSMSVerification(context.resources.getString(R.string.msg_go_sms_verification))
-//                                    }
-//                                }
-//
-//                                override fun onFailure() {
-//
-//                                    showDialog("Rest Day API Error. ${context.resources.getString(R.string.msg_please_try_again)}")
-//                                }
-//                            }).execute()
-//                        }
-//
-//                        override fun onFailure() {
-//
-//                            showDialog("Rest Day API Error. ${context.resources.getString(R.string.msg_please_try_again)}")
-//                        }
-//                    }).execute()
                 }
             }
         }

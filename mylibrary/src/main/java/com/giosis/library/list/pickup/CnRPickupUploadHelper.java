@@ -119,7 +119,7 @@ public class CnRPickupUploadHelper {
                             }
                         }
                     }
-                    
+
                     if (gpsUpdate) {
 
                         GpsUpdateDialog gpsDialog = new GpsUpdateDialog(context, locationModel, eventListener);

@@ -276,7 +276,7 @@ public class CustomerMessageListDetailActivity extends CommonActivity {
         }
     }
 
-    //NOTIFICATION.  SendMessageAsyncTask
+    //NOTIFICATION.
     private class SendMessageAsyncTask extends AsyncTask<Void, Void, MessageSendResult> {
 
         String tracking_no;
@@ -299,7 +299,7 @@ public class CustomerMessageListDetailActivity extends CommonActivity {
             question_seq_no = QuestionNo;
             send_place = SendPlace;
 
-            Log.e("message", TAG + "  SendMessageAsyncTask DATA \n" + tracking_no + " / " + svc_nation_cd + " / " + title + " / " +
+            Log.e("message", TAG + "  SendMessage DATA \n" + tracking_no + " / " + svc_nation_cd + " / " + title + " / " +
                     contents + " / " + driver_id + " / " + question_seq_no + " / " + send_place);
         }
 
@@ -376,24 +376,24 @@ public class CustomerMessageListDetailActivity extends CommonActivity {
 
                         Toast.makeText(CustomerMessageListDetailActivity.this, getResources().getString(R.string.msg_send_message_error) +
                                 " : " + result.getResultObject().getResultMsg(), Toast.LENGTH_SHORT).show();
-                        Log.e("krm0219", "SendMessageAsyncTask  ResultCode : " + result.getResultObject().getResultCode());
+                        Log.e("krm0219", "SendQdriverMessage  ResultCode : " + result.getResultObject().getResultCode());
                     }
                 } else {
 
                     Toast.makeText(CustomerMessageListDetailActivity.this, getResources().getString(R.string.msg_send_message_error) +
                             " \n" + getResources().getString(R.string.msg_please_try_again), Toast.LENGTH_SHORT).show();
-                    Log.e("krm0219", "SendMessageAsyncTask  result null");
+                    Log.e("krm0219", "SendQdriverMessage  result null");
                 }
             } catch (Exception e) {
 
                 Toast.makeText(CustomerMessageListDetailActivity.this, getResources().getString(R.string.msg_send_message_error) +
                         " \n" + getResources().getString(R.string.msg_please_try_again), Toast.LENGTH_SHORT).show();
-                Log.e("krm0219", TAG + "  SendMessageAsyncTask Exception : " + e.toString());
+                Log.e("krm0219", TAG + "  SendQdriverMessage Exception : " + e.toString());
             }
         }
     }
 
-    //NOTIFICATION.  GetQuestionNumberAsyncTask
+    //NOTIFICATION.
     private class GetQuestionNumberAsyncTask extends AsyncTask<Void, Void, MessageQuestionNumberResult> {
 
         String qdriver_id;
@@ -465,12 +465,12 @@ public class CustomerMessageListDetailActivity extends CommonActivity {
             } catch (Exception e) {
 
                 Toast.makeText(CustomerMessageListDetailActivity.this, getResources().getString(R.string.text_error) + "!! " + getResources().getString(R.string.msg_please_try_again), Toast.LENGTH_SHORT).show();
-                Log.e("krm0219", TAG + " GetQuestionNumberAsyncTask Exception : " + e.toString());
+                Log.e("krm0219", TAG + " GetMessageToQPostOnPickupMenu Exception : " + e.toString());
             }
         }
     }
 
-    //NOTIFICATION.  CustomerMessageDetailAsyncTask      1분  refresh
+    //NOTIFICATION.        1분  refresh
     private class CustomerMessageDetailAsyncTask extends AsyncTask<Void, Void, MessageDetailResult> {
 
         String qdriver_id;
@@ -541,13 +541,13 @@ public class CustomerMessageListDetailActivity extends CommonActivity {
             try {
                 if (old_resultString != null && old_resultString.equalsIgnoreCase(new_resultString)) {
 
-                    Log.e("krm0219", TAG + "  CustomerMessageDetailAsyncTask  EQUAL");
+                    Log.e("krm0219", TAG + "  GetQdriverMessageDetail  EQUAL");
                 } else {
 
                     if (result != null) {
 
                         messageDetailList = (ArrayList<MessageDetailResult.MessageDetailList>) result.getResultObject();
-                        Log.e("krm0219", TAG + " CustomerMessageDetailAsyncTask  LIST Size : " + messageDetailList.size());
+                        Log.e("krm0219", TAG + " GetQdriverMessageDetail  LIST Size : " + messageDetailList.size());
 
                         if (messageDetailList.size() > 0) {
 
@@ -577,7 +577,7 @@ public class CustomerMessageListDetailActivity extends CommonActivity {
             } catch (Exception e) {
 
                 Toast.makeText(CustomerMessageListDetailActivity.this, getResources().getString(R.string.text_error) + "!! " + getResources().getString(R.string.msg_please_try_again), Toast.LENGTH_SHORT).show();
-                Log.e("krm0219", TAG + " CustomerMessageDetailAsyncTask Exception : " + e.toString());
+                Log.e("krm0219", TAG + " GetQdriverMessageDetail Exception : " + e.toString());
             }
         }
     }

@@ -127,7 +127,7 @@ class AdminMessageListFragment : Fragment() {
     }
 
 
-    //NOTIFICATION.  AdminMessageListAsyncTask
+    //NOTIFICATION.
     inner class AdminMessageListAsyncTask() : AsyncTask<Void?, Void?, MessageListResult?>() {
 
         var progressDialog = ProgressDialog(activity)
@@ -178,7 +178,7 @@ class AdminMessageListFragment : Fragment() {
             try {
 
                 if (oldResultString != "" && oldResultString.equals(newResultString, ignoreCase = true)) {
-                    Log.e("Message", "$TAG  AdminMessageListAsyncTask  EQUAL")
+                    Log.e("Message", "$TAG  GetQdriverMessageListFromMessenger  EQUAL")
                 } else {
 
                     if (result != null) {
@@ -217,7 +217,7 @@ class AdminMessageListFragment : Fragment() {
                 text_message_list_empty.visibility = View.VISIBLE
                 text_message_list_empty.text = resources.getString(R.string.text_error)
                 Toast.makeText(activity, resources.getString(R.string.text_error) + "!! " + resources.getString(R.string.msg_please_try_again), Toast.LENGTH_SHORT).show()
-                Log.e("Exception", "$TAG  AdminMessageListAsyncTask Exception : $e")
+                Log.e("Exception", "$TAG  GetQdriverMessageListFromMessenger Exception : $e")
             }
         }
     }

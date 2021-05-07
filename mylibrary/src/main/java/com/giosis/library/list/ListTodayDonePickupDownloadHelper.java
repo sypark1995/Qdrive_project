@@ -15,7 +15,7 @@ import java.util.ArrayList;
 
 @Deprecated
 public class ListTodayDonePickupDownloadHelper {
-    String TAG = "TodayDonePickupListDownloadHelper";
+    String TAG = "ListTodayDonePickupDownloadHelper";
 
     private final String opID;
     private OnTodayDonePickupOrderDownloadEventListener eventListener;

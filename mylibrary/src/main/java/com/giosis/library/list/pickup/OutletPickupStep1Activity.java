@@ -501,7 +501,7 @@ public class OutletPickupStep1Activity extends CommonActivity {
                 return myBitmap;
             } catch (Exception e) {
 
-                Log.e("krm0219", "QRCodeAsyncTask Exception : " + e.toString());
+                Log.e("krm0219", "QRCode to Bitmap  Exception : " + e.toString());
                 e.printStackTrace();
                 return null;
             }

@@ -214,6 +214,8 @@ public class Camera2APIs {
         }
     };
 
+    ImageReader reader;
+
     public void closeCamera() {
 
         if (mCaptureSession != null) {
@@ -225,15 +227,18 @@ public class Camera2APIs {
             mCameraDevice.close();
             mCameraDevice = null;
         }
-    }
 
+        if (reader != null) {
+            reader.close();
+        }
+    }
 
     // NOTIFICATION.  Image Capture
     public void takePhoto(TextureView textureView, ImageView imageView) {
 
         mImageView = imageView;
 
-        ImageReader reader = ImageReader.newInstance(mCameraSize.getWidth(), mCameraSize.getHeight(), ImageFormat.JPEG, 1);
+        reader = ImageReader.newInstance(mCameraSize.getWidth(), mCameraSize.getHeight(), ImageFormat.JPEG, 1);
         List<Surface> outputSurface = new ArrayList<>(2);
         outputSurface.add(reader.getSurface());
         outputSurface.add(new Surface(textureView.getSurfaceTexture()));
