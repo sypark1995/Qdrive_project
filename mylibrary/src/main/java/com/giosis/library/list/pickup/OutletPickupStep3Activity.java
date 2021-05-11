@@ -40,8 +40,8 @@ public class OutletPickupStep3Activity extends CommonActivity {
     private static final String[] PERMISSIONS = new String[]{PermissionChecker.READ_EXTERNAL_STORAGE, PermissionChecker.WRITE_EXTERNAL_STORAGE,
             PermissionChecker.ACCESS_FINE_LOCATION, PermissionChecker.ACCESS_COARSE_LOCATION};
     String TAG = "OutletPickupDoneActivity";
+
     TextView text_top_title;
-    //krm0219
     FrameLayout layout_top_back;
     TextView text_sign_p_outlet_pickup_no;
     TextView text_sign_p_outlet_applicant;
@@ -322,7 +322,7 @@ public class OutletPickupStep3Activity extends CommonActivity {
         } catch (Exception e) {
 
             String msg = String.format(getResources().getString(R.string.text_exception), e.toString());
-            Log.e("krm0219", msg);
+            Log.e(TAG, msg);
             Toast.makeText(OutletPickupStep3Activity.this, msg, Toast.LENGTH_SHORT).show();
         }
     }

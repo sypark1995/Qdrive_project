@@ -25,6 +25,7 @@ import com.giosis.library.bluetooth.BluetoothClass;
 import com.giosis.library.main.MainActivity;
 import com.giosis.library.util.CommonActivity;
 import com.giosis.library.util.DataUtil;
+import com.giosis.library.util.ListFragmentFactoryImpl;
 import com.giosis.library.util.Preferences;
 
 /**
@@ -77,6 +78,7 @@ public class ListActivity extends CommonActivity implements OnClickListener,
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
+        getSupportFragmentManager().setFragmentFactory(new ListFragmentFactoryImpl(this));
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_list);
 

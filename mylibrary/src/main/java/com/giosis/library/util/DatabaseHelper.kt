@@ -24,10 +24,10 @@ class DatabaseHelper private constructor(private val mContext: Context) : SQLite
         private const val CREATE_TABLE_INTEGRATION_LIST = "CREATE TABLE IF NOT EXISTS " +
                 DB_TABLE_INTEGRATION_LIST + "(contr_no unique, partner_ref_no, " +
                 "invoice_no, stat, tel_no, hp_no, zip_code, address, self_memo, type, route, " +
-                "sender_nm, rcv_nm, rcv_request,  desired_date, req_qty, req_nm, " +
+                "sender_nm, rcv_nm, rcv_request, desired_date, req_qty, req_nm, " +
                 "delivery_dt, chg_dt, reg_dt, reg_id, " +
                 "real_qty, retry_dt, driver_memo, fail_reason, desired_time, " +
-                "rcv_type, punchOut_stat, partner_id, cust_no, secret_no_type, secret_no, lat, lng , " +
+                "rcv_type, punchOut_stat, partner_id, cust_no, secret_no_type, secret_no, lat, lng, " +
                 "secure_delivery_yn, parcel_amount, currency, order_type_etc, " +
                 "high_amount_yn, state, city, street)"
 

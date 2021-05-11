@@ -1,5 +1,6 @@
 package com.giosis.library.list.pickup;
 
+import android.app.Activity;
 import android.app.AlertDialog;
 import android.app.ProgressDialog;
 import android.content.ContentValues;
@@ -159,8 +160,15 @@ public class PickupTakeBackUploadHelper {
     }
 
     private void showResultDialog(String message) {
-        resultDialog.setMessage(message);
-        resultDialog.show();
+
+        try {
+            if (!((Activity) context).isFinishing()) {
+
+                resultDialog.setMessage(message);
+                resultDialog.show();
+            }
+        } catch (Exception ignore) {
+        }
     }
 
     private void AlertShow(String msg) {

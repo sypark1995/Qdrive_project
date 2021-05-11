@@ -52,7 +52,6 @@ import javax.net.ssl.X509TrustManager;
 public class OutletPickupStep1Activity extends CommonActivity {
     String TAG = "OutletPickupStep1Activity";
 
-    //krm0219
     FrameLayout layout_top_back;
     TextView text_top_title;
 
@@ -121,8 +120,6 @@ public class OutletPickupStep1Activity extends CommonActivity {
                     outletPickupDoneAsyncTask.execute();
                 }
             } else if (id == R.id.btn_sign_p_outlet_next) {
-
-                Log.e("krm0219", "count : " + result.getResultObject().getTrackingNoList().size());
 
                 if (showQRCode) {        // QR Code Show
 
@@ -220,7 +217,7 @@ public class OutletPickupStep1Activity extends CommonActivity {
 
 
         mRoute = outletInfo.getRoute().substring(0, 2);
-        Log.e("krm0219", TAG + " Data : " + mRoute + " / " + mPickupNo);
+        Log.e(TAG, TAG + " Data : " + mRoute + " / " + mPickupNo);
 
         text_top_title.setText(mTitle);
         if (mRoute.equals("FL")) {
@@ -231,7 +228,7 @@ public class OutletPickupStep1Activity extends CommonActivity {
         // 2019.04
         String outletAddress = outletInfo.getAddress().toUpperCase();
         String operationHour = null;
-        Log.e("krm0219", "TEST  Operation : " + outletInfo.getAddress() + " / " + getResources().getString(R.string.text_operation_hours));
+        Log.e(TAG, "TEST  Operation : " + outletInfo.getAddress() + " / " + getResources().getString(R.string.text_operation_hours));
 
         if (outletAddress.contains(getResources().getString(R.string.text_operation_hours).toUpperCase())) {
 
@@ -240,7 +237,7 @@ public class OutletPickupStep1Activity extends CommonActivity {
 
             operationHour = outletInfo.getAddress().substring(operationHourIndex + indexString.length(), outletAddress.length() - 1);
             outletAddress = outletInfo.getAddress().substring(0, operationHourIndex);
-            Log.e("krm0219", "TEST  Operation Hour : " + operationHour + " / " + operationHourIndex);
+            Log.e(TAG, "TEST  Operation Hour : " + operationHour + " / " + operationHourIndex);
         } else if (outletAddress.contains(getResources().getString(R.string.text_operation_hour).toUpperCase())) {
 
             String indexString = "(" + getResources().getString(R.string.text_operation_hour).toUpperCase() + ":";
@@ -248,7 +245,7 @@ public class OutletPickupStep1Activity extends CommonActivity {
 
             operationHour = outletInfo.getAddress().substring(operationHourIndex + indexString.length(), outletAddress.length() - 1);
             outletAddress = outletInfo.getAddress().substring(0, operationHourIndex);
-            Log.e("krm0219", "TEST  Operation Hour : " + operationHour + " / " + operationHourIndex);
+            Log.e(TAG, "TEST  Operation Hour : " + operationHour + " / " + operationHourIndex);
         }
 
         if (operationHour != null) {
@@ -296,7 +293,7 @@ public class OutletPickupStep1Activity extends CommonActivity {
             }
         } catch (Exception e) {
 
-            Log.e("krm0219", TAG + "  onResume Exception : " + e.toString() + "  ::  PickupNo : " + mPickupNo);
+            Log.e(TAG, "  onResume Exception : " + e.toString() + "  ::  PickupNo : " + mPickupNo);
             progressDialog = new ProgressDialog(OutletPickupStep1Activity.this);
 
             if (mRoute.contains("7E")) {
@@ -371,11 +368,8 @@ public class OutletPickupStep1Activity extends CommonActivity {
 
                 result = gson.fromJson(jsonString, OutletPickupDoneResult.class);
 
-                Log.e("krm0219", "111");
 
                 if (result != null && outlet_type.equals("7E")) {
-
-                    Log.e("krm0219", "222   " + result.getResultObject().TrackingNumbers);
 
                     result.getResultObject().setTrackingNumbers(result.getResultObject().getTrackingNumbers());
                     JSONObject jsonObject = new JSONObject(result.getResultObject().getQRCode());
@@ -488,7 +482,7 @@ public class OutletPickupStep1Activity extends CommonActivity {
             try {
 
                 imgUrl = DataUtil.qrcode_url + qrcode_data;
-                Log.e("krm0219", TAG + " QR CODE ULR = " + imgUrl);
+                Log.e(TAG, " QR CODE ULR = " + imgUrl);
 
                 URL url = new URL(imgUrl);
                 trustAllHosts();
@@ -501,7 +495,7 @@ public class OutletPickupStep1Activity extends CommonActivity {
                 return myBitmap;
             } catch (Exception e) {
 
-                Log.e("krm0219", "QRCode to Bitmap  Exception : " + e.toString());
+                Log.e(TAG, "QRCode to Bitmap  Exception : " + e.toString());
                 e.printStackTrace();
                 return null;
             }

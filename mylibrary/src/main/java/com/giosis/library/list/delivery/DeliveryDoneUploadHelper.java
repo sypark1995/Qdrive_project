@@ -407,7 +407,7 @@ public class DeliveryDoneUploadHelper {
                 job.accumulate("nation_cd", Preferences.INSTANCE.getUserNation());
 
 
-                String jsonString = Custom_JsonParser.requestServerDataReturnJSON(com.giosis.library.util.DataUtil.requestSetUploadDeliveryData, job);
+                String jsonString = Custom_JsonParser.requestServerDataReturnJSON(DataUtil.requestSetUploadDeliveryData, job);
                 // {"ResultCode":0,"ResultMsg":"SUCCESS"}
                 // {"ResultCode":-11,"ResultMsg":"Upload Failed."}
 
