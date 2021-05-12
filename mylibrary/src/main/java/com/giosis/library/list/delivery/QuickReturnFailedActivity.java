@@ -74,6 +74,7 @@ public class QuickReturnFailedActivity extends CommonActivity implements Camera2
     // Camera & Gallery
     Camera2APIs camera2;
     String cameraId;
+    boolean isClickedPhoto = false;
     private static final int RESULT_LOAD_IMAGE = 3;
     boolean isGalleryActivate = false;
 
@@ -135,8 +136,13 @@ public class QuickReturnFailedActivity extends CommonActivity implements Camera2
         layout_sign_d_r_f_take_photo.setOnClickListener(view -> {
 
             if (cameraId != null) {
-                camera2.takePhoto(texture_sign_d_r_f_preview, img_sign_d_r_f_visit_log);
+                if (!isClickedPhoto) {
+
+                    isClickedPhoto = true;
+                    camera2.takePhoto(texture_sign_d_r_f_preview, img_sign_d_r_f_visit_log);
+                }
             } else {
+
                 Toast.makeText(QuickReturnFailedActivity.this, getResources().getString(R.string.msg_back_camera_required), Toast.LENGTH_SHORT).show();
             }
         });
@@ -410,7 +416,8 @@ public class QuickReturnFailedActivity extends CommonActivity implements Camera2
     }
 
     @Override
-    public void onCameraDeviceOpened(CameraDevice cameraDevice, Size cameraSize, int rotation) {
+    public void onCameraDeviceOpened(CameraDevice cameraDevice, Size cameraSize, int rotation, String it) {
+        Log.e("krm0219", "onCameraDeviceOpened  " + it);
         texture_sign_d_r_f_preview.setRotation(rotation);
 
         SurfaceTexture texture = texture_sign_d_r_f_preview.getSurfaceTexture();
@@ -418,6 +425,12 @@ public class QuickReturnFailedActivity extends CommonActivity implements Camera2
         Surface surface = new Surface(texture);
 
         camera2.setCaptureSessionRequest(cameraDevice, surface);
+    }
+
+    @Override
+    public void onCaptureCompleted() {
+
+        isClickedPhoto = false;
     }
 
     @Override

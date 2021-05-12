@@ -36,15 +36,43 @@ import java.nio.ByteBuffer;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
+import java.util.concurrent.Semaphore;
 
 public class Camera2APIs {
-    private String TAG = "Camera2APIs";
+    private final String TAG = "Camera2APIs";
+    private final Camera2Interface mInterface;
+    private final CameraDevice.StateCallback CameraDeviceStateCallback = new CameraDevice.StateCallback() {
 
-    public interface Camera2Interface {
-        void onCameraDeviceOpened(CameraDevice cameraDevice, Size cameraSize, int rotation);
-    }
+        // 카메라 정상 오픈 시 호출
+        @Override
+        public void onOpened(@NonNull CameraDevice camera) {
 
-    private Camera2Interface mInterface;
+            mCameraDevice = camera;
+            mInterface.onCameraDeviceOpened(camera, mCameraSize, mRotation, "DeviceStateCallback");
+        }
+
+        @Override
+        public void onDisconnected(@NonNull CameraDevice camera) {
+
+            if (mCameraDevice != null) {
+
+                mCameraDevice.close();
+                mCameraDevice = null;
+            }
+        }
+
+        @Override
+        public void onError(@NonNull CameraDevice camera, int error) {
+
+            if (mCameraDevice != null) {
+
+                mCameraDevice.close();
+                mCameraDevice = null;
+
+                //     Toast.makeText(mActivity, "Camera State Error : " + error + "\nPlease try again…", Toast.LENGTH_SHORT).show();
+            }
+        }
+    };
     private Size mCameraSize;
     private int mRotation = 0;
 
@@ -98,7 +126,6 @@ public class Camera2APIs {
                     for (Size size : sizes) {
 
                         // 최적의 사이즈 찾아내기!
-                        // Log.e("krm0219", "Size ; " + size.getWidth() + " / " + size.getHeight() + " / " + mCameraSize.getWidth());
                         if (size.getWidth() > mCameraSize.getWidth()) {
 
                             mCameraSize = size;
@@ -129,37 +156,15 @@ public class Camera2APIs {
             e.printStackTrace();
         }
     }
-
-    private CameraDevice.StateCallback CameraDeviceStateCallback = new CameraDevice.StateCallback() {
-
-        // 카메라 정상 오픈 시 호출
+    private final CameraCaptureSession.CaptureCallback preViewCaptureCallback = new CameraCaptureSession.CaptureCallback() {
         @Override
-        public void onOpened(@NonNull CameraDevice camera) {
-
-            mCameraDevice = camera;
-            mInterface.onCameraDeviceOpened(camera, mCameraSize, mRotation);
+        public void onCaptureProgressed(@NonNull CameraCaptureSession session, @NonNull CaptureRequest request, @NonNull CaptureResult partialResult) {
+            super.onCaptureProgressed(session, request, partialResult);
         }
 
         @Override
-        public void onDisconnected(@NonNull CameraDevice camera) {
-
-            if (mCameraDevice != null) {
-
-                mCameraDevice.close();
-                mCameraDevice = null;
-            }
-        }
-
-        @Override
-        public void onError(@NonNull CameraDevice camera, int error) {
-
-            if (mCameraDevice != null) {
-
-                mCameraDevice.close();
-                mCameraDevice = null;
-
-                //     Toast.makeText(mActivity, "Camera State Error : " + error + "\nPlease try again…", Toast.LENGTH_SHORT).show();
-            }
+        public void onCaptureCompleted(@NonNull CameraCaptureSession session, @NonNull CaptureRequest request, @NonNull TotalCaptureResult result) {
+            super.onCaptureCompleted(session, request, result);
         }
     };
 
@@ -178,8 +183,7 @@ public class Camera2APIs {
             e.printStackTrace();
         }
     }
-
-    private CameraCaptureSession.StateCallback CaptureSessionCallback = new CameraCaptureSession.StateCallback() {
+    private final CameraCaptureSession.StateCallback CaptureSessionCallback = new CameraCaptureSession.StateCallback() {
         @Override
         public void onConfigured(@NonNull CameraCaptureSession cameraCaptureSession) {
 
@@ -201,16 +205,13 @@ public class Camera2APIs {
         public void onConfigureFailed(@NonNull CameraCaptureSession cameraCaptureSession) {
         }
     };
-
-    private CameraCaptureSession.CaptureCallback preViewCaptureCallback = new CameraCaptureSession.CaptureCallback() {
-        @Override
-        public void onCaptureProgressed(@NonNull CameraCaptureSession session, @NonNull CaptureRequest request, @NonNull CaptureResult partialResult) {
-            super.onCaptureProgressed(session, request, partialResult);
-        }
-
+    // Capture 완료 후 호출
+    private final CameraCaptureSession.CaptureCallback captureCallback = new CameraCaptureSession.CaptureCallback() {
         @Override
         public void onCaptureCompleted(@NonNull CameraCaptureSession session, @NonNull CaptureRequest request, @NonNull TotalCaptureResult result) {
             super.onCaptureCompleted(session, request, result);
+            mInterface.onCaptureCompleted();
+            mInterface.onCameraDeviceOpened(mCameraDevice, mCameraSize, mRotation, "captureCallback");
         }
     };
 
@@ -232,61 +233,8 @@ public class Camera2APIs {
             reader.close();
         }
     }
-
-    // NOTIFICATION.  Image Capture
-    public void takePhoto(TextureView textureView, ImageView imageView) {
-
-        mImageView = imageView;
-
-        reader = ImageReader.newInstance(mCameraSize.getWidth(), mCameraSize.getHeight(), ImageFormat.JPEG, 1);
-        List<Surface> outputSurface = new ArrayList<>(2);
-        outputSurface.add(reader.getSurface());
-        outputSurface.add(new Surface(textureView.getSurfaceTexture()));
-        reader.setOnImageAvailableListener(readerListener, null);
-
-
-        try {
-
-            captureBuilder = mCameraDevice.createCaptureRequest(CameraDevice.TEMPLATE_STILL_CAPTURE);
-            captureBuilder.addTarget(reader.getSurface());
-            captureBuilder.set(CaptureRequest.CONTROL_AF_MODE, CameraMetadata.CONTROL_AF_MODE_CONTINUOUS_PICTURE);
-
-            mCameraDevice.createCaptureSession(outputSurface, new CameraCaptureSession.StateCallback() {
-                @Override
-                public void onConfigured(@NonNull CameraCaptureSession cameraCaptureSession) {
-
-                    try {
-
-                        cameraCaptureSession.capture(captureBuilder.build(), captureCallback, null);
-                    } catch (Exception e) {
-
-                        Toast.makeText(mActivity, "Take Photo_1 Exception : : " + e.toString(), Toast.LENGTH_SHORT).show();
-                    }
-                }
-
-                @Override
-                public void onConfigureFailed(@NonNull CameraCaptureSession cameraCaptureSession) {
-                }
-            }, null);
-        } catch (Exception e) {
-
-            Toast.makeText(mActivity, "Take Photo_2 Exception : : " + e.toString(), Toast.LENGTH_SHORT).show();
-            Log.e("Exception", "Camera2APIs  Take Photo_2  Exception : " + e.toString());
-        }
-    }
-
-
-    private CameraCaptureSession.CaptureCallback captureCallback = new CameraCaptureSession.CaptureCallback() {
-        @Override
-        public void onCaptureCompleted(@NonNull CameraCaptureSession session, @NonNull CaptureRequest request, @NonNull TotalCaptureResult result) {
-            super.onCaptureCompleted(session, request, result);
-
-            mInterface.onCameraDeviceOpened(mCameraDevice, mCameraSize, mRotation);
-        }
-    };
-
     // 이미지 저장
-    private ImageReader.OnImageAvailableListener readerListener = new ImageReader.OnImageAvailableListener() {
+    private final ImageReader.OnImageAvailableListener readerListener = new ImageReader.OnImageAvailableListener() {
         @Override
         public void onImageAvailable(ImageReader imageReader) {
 
@@ -318,6 +266,48 @@ public class Camera2APIs {
         }
     };
 
+    // NOTIFICATION.  Image Capture
+    public void takePhoto(TextureView textureView, ImageView imageView) {
+
+        mImageView = imageView;
+
+        reader = ImageReader.newInstance(mCameraSize.getWidth(), mCameraSize.getHeight(), ImageFormat.JPEG, 1);
+        List<Surface> outputSurface = new ArrayList<>(2);
+        outputSurface.add(reader.getSurface());
+        outputSurface.add(new Surface(textureView.getSurfaceTexture()));
+        reader.setOnImageAvailableListener(readerListener, null);
+
+        try {
+
+            captureBuilder = mCameraDevice.createCaptureRequest(CameraDevice.TEMPLATE_STILL_CAPTURE);
+            captureBuilder.addTarget(reader.getSurface());
+            captureBuilder.set(CaptureRequest.CONTROL_AF_MODE, CameraMetadata.CONTROL_AF_MODE_CONTINUOUS_PICTURE);
+
+            mCameraDevice.createCaptureSession(outputSurface, new CameraCaptureSession.StateCallback() {
+                @Override
+                public void onConfigured(@NonNull CameraCaptureSession cameraCaptureSession) {
+
+                    try {
+
+                        cameraCaptureSession.capture(captureBuilder.build(), captureCallback, null);
+                    } catch (Exception e) {
+
+                        mInterface.onCaptureCompleted();
+                        Toast.makeText(mActivity, "Take Photo_1 Exception : : " + e.toString(), Toast.LENGTH_SHORT).show();
+                    }
+                }
+
+                @Override
+                public void onConfigureFailed(@NonNull CameraCaptureSession cameraCaptureSession) {
+                }
+            }, null);
+        } catch (Exception e) {
+
+            mInterface.onCaptureCompleted();
+            Toast.makeText(mActivity, "Take Photo_2 Exception : : " + e.toString(), Toast.LENGTH_SHORT).show();
+            Log.e("Exception", "Camera2APIs  Take Photo_2  Exception : " + e.toString());
+        }
+    }
 
     public Bitmap getResizeBitmap(Bitmap originalBitmap) {
 
@@ -331,8 +321,7 @@ public class Camera2APIs {
 
             int height = originalBitmap.getHeight();
             int width = originalBitmap.getWidth();
-
-            Log.e(TAG, "★★★★★   first  :: width - " + width + " ,height - " + height);
+            //   Log.e(TAG, "★★★★★   first  :: width - " + width + " ,height - " + height);
 
             if (height > 900) {
 
@@ -354,8 +343,7 @@ public class Camera2APIs {
                     width = 1000;
                 }
 
-                Log.e(TAG, "★★★★★    :: width - " + width + " ,height - " + height);
-
+                //    Log.e(TAG, "★★★★★    :: width - " + width + " ,height - " + height);
                 if (0 < height) {
 
                     Bitmap resized = Bitmap.createScaledBitmap(originalBitmap, width, height, false);
@@ -374,6 +362,13 @@ public class Camera2APIs {
         }
 
         return rotatebmp;
+    }
+
+
+    public interface Camera2Interface {
+        void onCameraDeviceOpened(CameraDevice cameraDevice, Size cameraSize, int rotation, String it);
+
+        void onCaptureCompleted();
     }
 
     public boolean hasImage(ImageView view) {

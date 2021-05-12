@@ -58,7 +58,6 @@ public class DeliveryDoneUploadHelper {
     private final long disk_size;
     private final OnServerEventListener eventListener;
 
-    private final String networkType;
     LocationModel locationModel;
     private final ProgressDialog progressDialog;
     private final AlertDialog resultDialog;
@@ -94,7 +93,6 @@ public class DeliveryDoneUploadHelper {
         this.disk_size = builder.disk_size;
         this.locationModel = builder.locationModel;
 
-        this.networkType = builder.networkType;
         this.eventListener = builder.eventListener;
         this.progressDialog = getProgressDialog(this.context);
         this.resultDialog = getResultAlertDialog(this.context);
@@ -102,7 +100,7 @@ public class DeliveryDoneUploadHelper {
 
     private AlertDialog getResultAlertDialog(final Context context) {
 
-        AlertDialog dialog = new AlertDialog.Builder(context)
+        return new AlertDialog.Builder(context)
                 .setTitle(context.getResources().getString(R.string.text_upload_result))
                 .setCancelable(false)
                 .setPositiveButton(context.getResources().getString(R.string.button_ok), (dialog1, which) -> {
@@ -148,8 +146,6 @@ public class DeliveryDoneUploadHelper {
                     }
                 })
                 .create();
-
-        return dialog;
     }
 
     private void showResultDialog(String message, int count) {
@@ -179,7 +175,6 @@ public class DeliveryDoneUploadHelper {
         private final long disk_size;
         LocationModel locationModel;
 
-        private String networkType;
         private OnServerEventListener eventListener;
 
         public Builder(Context context, String opID, String officeCode, String deviceID,
@@ -191,7 +186,6 @@ public class DeliveryDoneUploadHelper {
             this.opID = opID;
             this.officeCode = officeCode;
             this.deviceID = deviceID;
-            this.networkType = NetworkUtil.getNetworkType(context);
 
             this.assignBarcodeList = assignBarcodeList;
             this.receiveType = receiveType;
@@ -265,23 +259,21 @@ public class DeliveryDoneUploadHelper {
         @Override
         protected void onPostExecute(ArrayList<StdResult> resultList) {
             super.onPostExecute(resultList);
-
             DisplayUtil.dismissProgressDialog(progressDialog);
-
-            StdResult result = null;
-            int successCount = 0;
-            int failCount = 0;
-            String fail_reason = "";
 
             try {
 
+                int successCount = 0;
+                int failCount = 0;
+                StringBuilder fail_reason = new StringBuilder();
+
                 for (int i = 0; i < resultList.size(); i++) {
 
-                    result = resultList.get(i);
+                    StdResult result = resultList.get(i);
 
                     if (result.getResultCode() < 0) {
 
-                        fail_reason += result.getResultMsg();
+                        fail_reason.append(result.getResultMsg());
                         failCount++;
                     } else {
 
@@ -297,11 +289,10 @@ public class DeliveryDoneUploadHelper {
 
                     String msg;
                     if (0 < successCount) {
-                        msg = String.format(context.getResources().getString(R.string.text_upload_fail_count), successCount, failCount, fail_reason);
+                        msg = String.format(context.getResources().getString(R.string.text_upload_fail_count), successCount, failCount, fail_reason.toString());
                     } else {
-                        msg = String.format(context.getResources().getString(R.string.text_upload_fail_count1), failCount, fail_reason);
+                        msg = String.format(context.getResources().getString(R.string.text_upload_fail_count1), failCount, fail_reason.toString());
                     }
-
                     showResultDialog(msg, 0);
                 }
             } catch (Exception e) {
@@ -319,7 +310,7 @@ public class DeliveryDoneUploadHelper {
             String bitmapString1 = "";
 
             if (hasSignImage) {
-                Log.e("krm0219", " save  sign");
+
                 DataUtil.captureSign("/Qdrive", assignNo, signingView);
 
                 signingView.buildDrawingCache();
@@ -334,7 +325,7 @@ public class DeliveryDoneUploadHelper {
             }
 
             if (hasVisitImage) {
-                Log.e("krm0219", " save  visit log");
+
                 DataUtil.captureSign("/Qdrive", assignNo + "_1", imageView);
 
                 imageView.buildDrawingCache();
@@ -348,7 +339,7 @@ public class DeliveryDoneUploadHelper {
                 }
             }
 
-            Log.e("krm0219", TAG + " DATA  :  " + bitmapString + " / " + bitmapString1);
+            Log.e(TAG, "sign DATA  :  " + bitmapString + " / " + bitmapString1);
 
             SimpleDateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
             Date date = new Date();
@@ -372,7 +363,6 @@ public class DeliveryDoneUploadHelper {
                 return result;
             }
 
-
 //            // TEST_Upload Failed 시 주석 풀고 실행
 //            if (true) {
 //
@@ -381,7 +371,6 @@ public class DeliveryDoneUploadHelper {
 //
 //                return result;
 //            }
-
 
             try {
 
@@ -393,7 +382,7 @@ public class DeliveryDoneUploadHelper {
                 job.accumulate("opId", opID);
                 job.accumulate("officeCd", officeCode);
                 job.accumulate("device_id", deviceID);
-                job.accumulate("network_type", networkType);
+                job.accumulate("network_type", NetworkUtil.getNetworkType(context));
                 job.accumulate("no_songjang", assignNo);
                 job.accumulate("fileData", bitmapString);
                 job.accumulate("delivery_photo_url", bitmapString1);
@@ -412,18 +401,18 @@ public class DeliveryDoneUploadHelper {
                 // {"ResultCode":-11,"ResultMsg":"Upload Failed."}
 
                 JSONObject jsonObject = new JSONObject(jsonString);
-                int ResultCode = jsonObject.getInt("ResultCode");
-                result.setResultCode(ResultCode);
+                int resultCode = jsonObject.getInt("ResultCode");
+                result.setResultCode(resultCode);
                 result.setResultMsg(jsonObject.getString("ResultMsg"));
 
-                if (ResultCode == 0) {
+                if (resultCode == 0) {
 
                     ContentValues contentVal2 = new ContentValues();
                     contentVal2.put("punchOut_stat", "S");
 
                     dbHelper.update(DatabaseHelper.DB_TABLE_INTEGRATION_LIST, contentVal2,
                             "invoice_no=? COLLATE NOCASE " + "and reg_id = ?", new String[]{assignNo, opID});
-                } else if (ResultCode == -25) {
+                } else if (resultCode == -25) {
 
                     dbHelper.delete(DatabaseHelper.DB_TABLE_INTEGRATION_LIST, "invoice_no= '" + assignNo + "' COLLATE NOCASE");
                 }

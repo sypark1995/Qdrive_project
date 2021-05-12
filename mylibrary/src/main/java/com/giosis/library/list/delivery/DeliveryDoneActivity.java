@@ -3,7 +3,6 @@ package com.giosis.library.list.delivery;
 import android.app.Activity;
 import android.app.AlertDialog;
 import android.app.ProgressDialog;
-import android.content.DialogInterface;
 import android.content.Intent;
 import android.database.Cursor;
 import android.graphics.Bitmap;
@@ -119,7 +118,7 @@ public class DeliveryDoneActivity extends CommonActivity implements Camera2APIs.
     String mType = BarcodeType.TYPE_DELIVERY;
     String routeNumber;
 
-    ArrayList<BarcodeData> songjanglist;
+    ArrayList<BarcodeData> barcodeList;
     String senderName;
     String receiverName;
 
@@ -127,8 +126,9 @@ public class DeliveryDoneActivity extends CommonActivity implements Camera2APIs.
 
 
     // Camera & Gallery
-    Camera2APIs camera2;
+    Camera2APIs camera2 = new Camera2APIs(this);
     String cameraId;
+    boolean isClickedPhoto = false;
     private static final int RESULT_LOAD_IMAGE = 3;
     boolean isGalleryActivate = false;
 
@@ -138,7 +138,7 @@ public class DeliveryDoneActivity extends CommonActivity implements Camera2APIs.
     double latitude = 0;
     double longitude = 0;
 
-    private LocationModel locationModel = new LocationModel();
+    LocationModel locationModel = new LocationModel();
 
 
     // Outlet
@@ -154,7 +154,56 @@ public class DeliveryDoneActivity extends CommonActivity implements Camera2APIs.
     private static final int PERMISSION_REQUEST_CODE = 1000;
     private static final String[] PERMISSIONS = new String[]{PermissionChecker.READ_EXTERNAL_STORAGE, PermissionChecker.WRITE_EXTERNAL_STORAGE,
             PermissionChecker.ACCESS_COARSE_LOCATION, PermissionChecker.ACCESS_FINE_LOCATION, PermissionChecker.CAMERA};
+    View.OnClickListener clickListener = new View.OnClickListener() {
+        @Override
+        public void onClick(View view) {
 
+            int id = view.getId();
+            if (id == R.id.layout_top_back) {
+
+                cancelSigning();
+            } else if (id == R.id.img_sign_d_receiver_self || id == R.id.text_sign_d_receiver_self) {
+
+                img_sign_d_receiver_self.setBackgroundResource(R.drawable.qdrive_btn_icon_check_on);
+                img_sign_d_receiver_substitute.setBackgroundResource(R.drawable.qdrive_btn_icon_check_off);
+                img_sign_d_receiver_other.setBackgroundResource(R.drawable.qdrive_btn_icon_check_off);
+                mReceiveType = "RC";
+            } else if (id == R.id.img_sign_d_receiver_substitute || id == R.id.text_sign_d_receiver_substitute) {
+
+                img_sign_d_receiver_self.setBackgroundResource(R.drawable.qdrive_btn_icon_check_off);
+                img_sign_d_receiver_substitute.setBackgroundResource(R.drawable.qdrive_btn_icon_check_on);
+                img_sign_d_receiver_other.setBackgroundResource(R.drawable.qdrive_btn_icon_check_off);
+                mReceiveType = "AG";
+            } else if (id == R.id.img_sign_d_receiver_other || id == R.id.text_sign_d_receiver_other) {
+
+                img_sign_d_receiver_self.setBackgroundResource(R.drawable.qdrive_btn_icon_check_off);
+                img_sign_d_receiver_substitute.setBackgroundResource(R.drawable.qdrive_btn_icon_check_off);
+                img_sign_d_receiver_other.setBackgroundResource(R.drawable.qdrive_btn_icon_check_on);
+                mReceiveType = "ET";
+            } else if (id == R.id.layout_sign_d_sign_eraser) {
+
+                sign_view_sign_d_signature.clearText();
+            } else if (id == R.id.layout_sign_d_take_photo) {
+
+                if (cameraId != null) {
+                    if (!isClickedPhoto) {  // Camera CaptureSession 완료되면 다시 클릭할 수 있도록 수정
+
+                        isClickedPhoto = true;
+                        camera2.takePhoto(texture_sign_d_preview, img_sign_d_visit_log);
+                    }
+                } else {
+
+                    Toast.makeText(DeliveryDoneActivity.this, getResources().getString(R.string.msg_back_camera_required), Toast.LENGTH_SHORT).show();
+                }
+            } else if (id == R.id.layout_sign_d_gallery) {
+
+                getImageFromAlbum();
+            } else if (id == R.id.btn_sign_d_save) {
+
+                confirmSigning();
+            }
+        }
+    };
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
@@ -218,7 +267,7 @@ public class DeliveryDoneActivity extends CommonActivity implements Camera2APIs.
         deviceID = Preferences.INSTANCE.getDeviceUUID();
 
 
-        songjanglist = new ArrayList<>();
+        barcodeList = new ArrayList<>();
 
         // in List (단건)
         try {
@@ -234,7 +283,7 @@ public class DeliveryDoneActivity extends CommonActivity implements Camera2APIs.
             songData = new BarcodeData();
             songData.setBarcode(parcel.getShipping().toUpperCase());
             songData.setState(BarcodeType.TYPE_DELIVERY);
-            songjanglist.add(songData);
+            barcodeList.add(songData);
         } catch (Exception ignored) {
         }
 
@@ -250,30 +299,33 @@ public class DeliveryDoneActivity extends CommonActivity implements Camera2APIs.
 
 
         // in Capture (bulk)
-        ArrayList<BarcodeData> barcodeList = null;
         try {
 
-            barcodeList = (ArrayList<BarcodeData>) getIntent().getSerializableExtra("data");
+            ArrayList<BarcodeData> list = (ArrayList<BarcodeData>) getIntent().getSerializableExtra("data");
 
-            for (int i = 0; i < barcodeList.size(); i++) {
+            for (int i = 0; i < list.size(); i++) {
 
-                String trackingNo = barcodeList.get(i).getBarcode().toUpperCase();
+                String trackingNo = list.get(i).getBarcode().toUpperCase();
 
                 BarcodeData songData;
                 songData = new BarcodeData();
                 songData.setBarcode(trackingNo);
                 songData.setState(BarcodeType.TYPE_DELIVERY);
-                songjanglist.add(songData);
+                barcodeList.add(songData);
 
                 // 위, 경도 & high amount
                 Cursor cs = DatabaseHelper.getInstance().get("SELECT * FROM " + DatabaseHelper.DB_TABLE_INTEGRATION_LIST + " WHERE invoice_no='" + trackingNo + "'");
 
                 if (cs.moveToFirst()) {
+                    try {
 
-                    String value = cs.getString(cs.getColumnIndex("high_amount_yn"));
-                    if (value.equalsIgnoreCase("Y")) {
+                        String value = cs.getString(cs.getColumnIndex("high_amount_yn"));
 
-                        highAmountYn = value;
+                        if (value.equalsIgnoreCase("Y")) {
+
+                            highAmountYn = value;
+                        }
+                    } catch (Exception ignore) {
                     }
 
                     if (barcodeList.size() == 1) {
@@ -295,52 +347,46 @@ public class DeliveryDoneActivity extends CommonActivity implements Camera2APIs.
         }
 
 
-        String barcodeMsg = "";
-        int songJangListSize = songjanglist.size();
-        for (int i = 0; i < songJangListSize; i++) {
-            barcodeMsg += songjanglist.get(i).getBarcode().toUpperCase() + "  ";
+        StringBuilder barcodeMsg = new StringBuilder();
+        int size = barcodeList.size();
+        for (int i = 0; i < size; i++) {
+            barcodeMsg.append(barcodeList.get(i).getBarcode()).append("  ");
         }
 
         text_sign_d_tracking_no_title.setText(R.string.text_tracking_no);
-        if (songJangListSize > 1) {  //다수건
+        if (1 < size) {  // 다수건
 
-            String qtyFormat = String.format(getResources().getString(R.string.text_total_qty_count), songJangListSize);
+            String qtyFormat = String.format(getResources().getString(R.string.text_total_qty_count), size);
             text_sign_d_tracking_no.setText(qtyFormat);
             text_sign_d_tracking_no_more.setVisibility(View.VISIBLE);
-            text_sign_d_tracking_no_more.setText(barcodeMsg);
+            text_sign_d_tracking_no_more.setText(barcodeMsg.toString());
             layout_sign_d_sender.setVisibility(View.GONE);
         } else {  //1건
 
-            text_sign_d_tracking_no.setText(barcodeMsg.trim());
+            text_sign_d_tracking_no.setText(barcodeMsg.toString().trim());
             text_sign_d_tracking_no_more.setVisibility(View.GONE);
         }
 
 
-        getDeliveryInfo(songjanglist.get(0).getBarcode());
-        outletInfo = getOutletInfo(songjanglist.get(0).getBarcode());
+        getDeliveryInfo(barcodeList.get(0).getBarcode());
+        outletInfo = getOutletInfo(barcodeList.get(0).getBarcode());
 
-        if (getIntent().hasExtra("title")) {
-            text_top_title.setText(getIntent().getStringExtra("title"));
-        } else {
-            text_top_title.setText(R.string.text_delivered);
-        }
-
+        text_top_title.setText(R.string.text_delivered);
         text_sign_d_receiver.setText(receiverName);
         text_sign_d_sender.setText(senderName);
         DisplayUtil.setPreviewCamera(img_sign_d_preview_bg);
-
-        Log.e("krm0219", TAG + "  Outlet info Route : " + outletInfo.getRoute().substring(0, 2) + " / " + outletInfo.getRoute());
+        Log.e(TAG, TAG + "  Outlet info Route : " + outletInfo.getRoute().substring(0, 2) + " / " + outletInfo.getRoute());
 
         // NOTIFICATION.  Outlet Delivery
         if (outletInfo.getRoute().substring(0, 2).contains("7E") || outletInfo.getRoute().substring(0, 2).contains("FL")) {
 
             layout_sign_d_outlet_address.setVisibility(View.VISIBLE);
-            text_sign_d_outlet_address.setText("(" + outletInfo.getZip_code() + ") " + outletInfo.getZip_code());
+            text_sign_d_outlet_address.setText("(" + outletInfo.getZip_code() + ") " + outletInfo.getAddress());
 
             // 2019.04
             String outletAddress = outletInfo.getAddress().toUpperCase();
             String operationHour = null;
-            Log.e("krm0219", "Operation Address : " + outletInfo.getAddress());
+            Log.e(TAG, "Operation Address : " + outletInfo.getAddress());
 
             if (outletAddress.contains(getResources().getString(R.string.text_operation_hours).toUpperCase())) {
 
@@ -349,7 +395,7 @@ public class DeliveryDoneActivity extends CommonActivity implements Camera2APIs.
 
                 operationHour = outletInfo.getAddress().substring(operationHourIndex + indexString.length(), outletAddress.length() - 1);
                 outletAddress = outletInfo.getAddress().substring(0, operationHourIndex);
-                Log.e("krm0219", "Operation Hour : " + operationHour);
+                Log.e(TAG, "Operation Hour : " + operationHour);
             } else if (outletAddress.contains(getResources().getString(R.string.text_operation_hour).toUpperCase())) {
 
                 String indexString = "(" + getResources().getString(R.string.text_operation_hour).toUpperCase() + ":";
@@ -357,7 +403,7 @@ public class DeliveryDoneActivity extends CommonActivity implements Camera2APIs.
 
                 operationHour = outletInfo.getAddress().substring(operationHourIndex + indexString.length(), outletAddress.length() - 1);
                 outletAddress = outletInfo.getAddress().substring(0, operationHourIndex);
-                Log.e("krm0219", "Operation Hour : " + operationHour);
+                Log.e(TAG, "Operation Hour : " + operationHour);
             }
 
             if (operationHour != null) {
@@ -380,10 +426,10 @@ public class DeliveryDoneActivity extends CommonActivity implements Camera2APIs.
 
             if (routeNumber == null) {      // SCAN > Delivery Done
 
-                for (int i = 0; i < songjanglist.size(); i++) {
+                for (int i = 0; i < barcodeList.size(); i++) {
 
                     Cursor cs = dbHelper.get("SELECT rcv_nm FROM " + DatabaseHelper.DB_TABLE_INTEGRATION_LIST
-                            + " WHERE punchOut_stat = 'N' and chg_dt is null and type = 'D' and reg_id='" + opID + "' and invoice_no='" + songjanglist.get(i).getBarcode() + "'");
+                            + " WHERE punchOut_stat = 'N' and chg_dt is null and type = 'D' and reg_id='" + opID + "' and invoice_no='" + barcodeList.get(i).getBarcode() + "'");
 
                     if (cs.moveToFirst()) {
                         do {
@@ -391,7 +437,7 @@ public class DeliveryDoneActivity extends CommonActivity implements Camera2APIs.
                             String receiver_name = cs.getString(cs.getColumnIndex("rcv_nm"));
 
                             OutletDeliveryDoneListItem outletDeliveryDoneListItem = new OutletDeliveryDoneListItem();
-                            outletDeliveryDoneListItem.setTrackingNo(songjanglist.get(i).getBarcode());
+                            outletDeliveryDoneListItem.setTrackingNo(barcodeList.get(i).getBarcode());
                             outletDeliveryDoneListItem.setReceiverName(receiver_name);
                             outletDeliveryDoneListItemArrayList.add(outletDeliveryDoneListItem);
                         } while (cs.moveToNext());
@@ -399,7 +445,7 @@ public class DeliveryDoneActivity extends CommonActivity implements Camera2APIs.
                 }
             } else {    // LIST > In Progress
 
-                songjanglist = new ArrayList<>();
+                barcodeList = new ArrayList<>();
                 BarcodeData barcodeData;
 
                 Cursor cs = dbHelper.get("SELECT invoice_no, rcv_nm FROM " + DatabaseHelper.DB_TABLE_INTEGRATION_LIST
@@ -414,7 +460,7 @@ public class DeliveryDoneActivity extends CommonActivity implements Camera2APIs.
                         barcodeData = new BarcodeData();
                         barcodeData.setBarcode(invoice_no);
                         barcodeData.setState(mType);
-                        songjanglist.add(barcodeData);
+                        barcodeList.add(barcodeData);
 
                         OutletDeliveryDoneListItem outletDeliveryDoneListItem = new OutletDeliveryDoneListItem();
                         outletDeliveryDoneListItem.setTrackingNo(invoice_no);
@@ -442,7 +488,7 @@ public class DeliveryDoneActivity extends CommonActivity implements Camera2APIs.
 
                 if (!NetworkUtil.isNetworkAvailable(this)) {
 
-                    AlertShow(getResources().getString(R.string.text_warning), getResources().getString(R.string.msg_network_connect_error), getResources().getString(R.string.button_close));
+                    AlertShow(getResources().getString(R.string.msg_network_connect_error));
                     return;
                 } else {
 
@@ -475,7 +521,6 @@ public class DeliveryDoneActivity extends CommonActivity implements Camera2APIs.
         edit_sign_d_memo.addTextChangedListener(new TextWatcher() {
             @Override
             public void beforeTextChanged(CharSequence charSequence, int i, int i1, int i2) {
-
             }
 
             @Override
@@ -488,7 +533,6 @@ public class DeliveryDoneActivity extends CommonActivity implements Camera2APIs.
 
             @Override
             public void afterTextChanged(Editable editable) {
-
             }
         });
 
@@ -504,39 +548,6 @@ public class DeliveryDoneActivity extends CommonActivity implements Camera2APIs.
         } else {
 
             isPermissionTrue = true;
-        }
-    }
-
-    @Override
-    protected void onResume() {
-        super.onResume();
-
-        if (isPermissionTrue) {
-            // Camera
-            camera2 = new Camera2APIs(this);
-
-            if (texture_sign_d_preview.isAvailable()) {
-
-                openCamera();
-            } else {
-
-                texture_sign_d_preview.setSurfaceTextureListener(this);
-            }
-
-            // Location
-            gpsTrackerManager = new GPSTrackerManager(this);
-            gpsEnable = gpsTrackerManager.enableGPSSetting();
-
-            if (gpsEnable && gpsTrackerManager != null) {
-
-                gpsTrackerManager.GPSTrackerStart();
-                latitude = gpsTrackerManager.getLatitude();
-                longitude = gpsTrackerManager.getLongitude();
-                Log.e("Location", TAG + " GPSTrackerManager onResume : " + latitude + "  " + longitude + "  ");
-            } else {
-
-                DataUtil.enableLocationSettings(DeliveryDoneActivity.this);
-            }
         }
     }
 
@@ -587,26 +598,35 @@ public class DeliveryDoneActivity extends CommonActivity implements Camera2APIs.
         cancelSigning();
     }
 
+    @Override
+    protected void onResume() {
+        super.onResume();
 
-    public void cancelSigning() {
+        if (isPermissionTrue) {
+            // Camera
 
-        new AlertDialog.Builder(this)
-                .setMessage(R.string.msg_delivered_sign_cancel)
-                .setPositiveButton(R.string.button_ok, new DialogInterface.OnClickListener() {
-                    @Override
-                    public void onClick(DialogInterface dialog, int which) {
+            if (texture_sign_d_preview.isAvailable()) {
 
-                        setResult(Activity.RESULT_CANCELED);
-                        finish();
-                    }
-                })
-                .setNegativeButton(R.string.button_cancel, new DialogInterface.OnClickListener() {
+                openCamera("onResume");
+            } else {
 
-                    @Override
-                    public void onClick(DialogInterface dialog, int which) {
-                        dialog.dismiss();
-                    }
-                }).show();
+                texture_sign_d_preview.setSurfaceTextureListener(this);
+            }
+
+            // Location
+            gpsTrackerManager = new GPSTrackerManager(this);
+            gpsEnable = gpsTrackerManager.enableGPSSetting();
+
+            if (gpsEnable && gpsTrackerManager != null) {
+
+                gpsTrackerManager.GPSTrackerStart();
+                latitude = gpsTrackerManager.getLatitude();
+                longitude = gpsTrackerManager.getLongitude();
+            } else {
+
+                DataUtil.enableLocationSettings(DeliveryDoneActivity.this);
+            }
+        }
     }
 
 
@@ -642,10 +662,21 @@ public class DeliveryDoneActivity extends CommonActivity implements Camera2APIs.
         cursor.close();
     }
 
+    public void cancelSigning() {
+
+        new AlertDialog.Builder(this)
+                .setMessage(R.string.msg_delivered_sign_cancel)
+                .setPositiveButton(R.string.button_ok, (dialog, which) -> {
+
+                    setResult(Activity.RESULT_CANCELED);
+                    finish();
+                })
+                .setNegativeButton(R.string.button_cancel, (dialog, which) -> dialog.dismiss()).show();
+    }
+
     public OutletInfo getOutletInfo(String barcodeNo) {
 
-        Cursor cursor = DatabaseHelper.getInstance()
-                .get("SELECT route, zip_code, address FROM " + DatabaseHelper.DB_TABLE_INTEGRATION_LIST + " WHERE invoice_no='" + barcodeNo + "' COLLATE NOCASE");
+        Cursor cursor = DatabaseHelper.getInstance().get("SELECT route, zip_code, address FROM " + DatabaseHelper.DB_TABLE_INTEGRATION_LIST + " WHERE invoice_no='" + barcodeNo + "' COLLATE NOCASE");
 
         OutletInfo outletInfo = new OutletInfo();
 
@@ -659,26 +690,6 @@ public class DeliveryDoneActivity extends CommonActivity implements Camera2APIs.
 
         return outletInfo;
     }
-
-
-    private void AlertShow(final String title, String msg, String btnText) {
-
-        final AlertDialog.Builder alert_internet_status = new AlertDialog.Builder(this);
-        alert_internet_status.setTitle(title);
-        alert_internet_status.setMessage(msg);
-        alert_internet_status.setPositiveButton(btnText,
-                (dialog, which) -> {
-
-                    if (title.contains("Result")) {
-
-                    } else {
-                        dialog.dismiss(); // 닫기
-                        finish();
-                    }
-                });
-        alert_internet_status.show();
-    }
-
 
     /*
      * 실시간 Upload 처리
@@ -699,7 +710,6 @@ public class DeliveryDoneActivity extends CommonActivity implements Camera2APIs.
                 latitude = gpsTrackerManager.getLatitude();
                 longitude = gpsTrackerManager.getLongitude();
                 Log.e("Location", TAG + " saveServerUploadSign  GPSTrackerManager : " + latitude + "  " + longitude + "  ");
-
                 locationModel.setDriverLocation(latitude, longitude);
             }
 
@@ -709,8 +719,7 @@ public class DeliveryDoneActivity extends CommonActivity implements Camera2APIs.
             // 사인 or 사진 둘 중 하나는 있어야 함
             boolean hasSignImage = sign_view_sign_d_signature.isTouch();
             boolean hasVisitImage = camera2.hasImage(img_sign_d_visit_log);
-            Log.e("krm0219", TAG + "  has DATA : " + hasSignImage + " / " + hasVisitImage);
-
+            //   Log.e(TAG, TAG + "  has DATA : " + hasSignImage + " / " + hasVisitImage);
 
             if (highAmountYn.equals("Y")) {
 
@@ -725,7 +734,6 @@ public class DeliveryDoneActivity extends CommonActivity implements Camera2APIs.
                 if (!hasSignImage && !hasVisitImage) {
 
                     String msg = getResources().getString(R.string.msg_signature_require) + " or \n" + getResources().getString(R.string.msg_visit_photo_require);
-
                     Toast.makeText(this.getApplicationContext(), msg, Toast.LENGTH_SHORT).show();
                     return;
                 }
@@ -733,15 +741,14 @@ public class DeliveryDoneActivity extends CommonActivity implements Camera2APIs.
 
             //서버에 올리기전 용량체크  내장메모리가 100Kbyte 안남은경우
             if (MemoryStatus.getAvailableInternalMemorySize() != MemoryStatus.ERROR && MemoryStatus.getAvailableInternalMemorySize() < MemoryStatus.PRESENT_BYTE) {
-                AlertShow(getResources().getString(R.string.text_warning), getResources().getString(R.string.msg_disk_size_error), getResources().getString(R.string.button_close));
+                AlertShow(getResources().getString(R.string.msg_disk_size_error));
                 return;
             }
 
+
             DataUtil.logEvent("button_click", TAG, DataUtil.requestSetUploadDeliveryData);
-
-
             new DeliveryDoneUploadHelper.Builder(this, opID, officeCode, deviceID,
-                    songjanglist, mReceiveType, driverMemo,
+                    barcodeList, mReceiveType, driverMemo,
                     sign_view_sign_d_signature, hasSignImage, img_sign_d_visit_log, hasVisitImage,
                     MemoryStatus.getAvailableInternalMemorySize(), locationModel)
                     .setOnServerUploadEventListener(new OnServerEventListener() {
@@ -759,21 +766,21 @@ public class DeliveryDoneActivity extends CommonActivity implements Camera2APIs.
                     }).build().execute();
         } catch (Exception e) {
 
-            Log.e("krm0219", TAG + "  Exception : " + e.toString());
+            Log.e("Exception", "saveServerUploadSign  Exception : " + e.toString());
             Toast.makeText(this, getResources().getString(R.string.text_error) + " - " + e.toString(), Toast.LENGTH_SHORT).show();
         }
     }
 
     private void AlertShow(String msg) {
+
         AlertDialog.Builder alert_internet_status = new AlertDialog.Builder(this);
         alert_internet_status.setTitle(getResources().getString(R.string.text_warning));
         alert_internet_status.setMessage(msg);
         alert_internet_status.setPositiveButton(getResources().getString(R.string.button_close),
-                new DialogInterface.OnClickListener() {
-                    public void onClick(DialogInterface dialog, int which) {
-                        dialog.dismiss(); // 닫기
-                        finish();
-                    }
+                (dialog, which) -> {
+
+                    dialog.dismiss();
+                    finish();
                 });
         alert_internet_status.show();
     }
@@ -792,7 +799,6 @@ public class DeliveryDoneActivity extends CommonActivity implements Camera2APIs.
 
                 latitude = gpsTrackerManager.getLatitude();
                 longitude = gpsTrackerManager.getLongitude();
-
                 Log.e("Location", TAG + " saveOutletDeliveryDone  GPSTrackerManager : " + latitude + "  " + longitude + "  ");
             }
 
@@ -803,77 +809,28 @@ public class DeliveryDoneActivity extends CommonActivity implements Camera2APIs.
                 }
             }
             if (MemoryStatus.getAvailableInternalMemorySize() != MemoryStatus.ERROR && MemoryStatus.getAvailableInternalMemorySize() < MemoryStatus.PRESENT_BYTE) {
-                AlertShow(getResources().getString(R.string.text_warning), getResources().getString(R.string.msg_disk_size_error), getResources().getString(R.string.button_close));
+                AlertShow(getResources().getString(R.string.msg_disk_size_error));
                 return;
             }
 
             String driverMemo = edit_sign_d_memo.getText().toString();
 
             DataUtil.logEvent("button_click", TAG + "_OUTLET", "SetOutletDeliveryUploadData");
-
             // 2019.02 - stat : D3 로..   서버에서 outlet stat 변경
             new OutletDeliveryDoneHelper.Builder(this, opID, officeCode, deviceID,
-                    songjanglist, outletInfo.getRoute().substring(0, 2), mReceiveType, sign_view_sign_d_signature, driverMemo,
+                    barcodeList, outletInfo.getRoute().substring(0, 2), mReceiveType, sign_view_sign_d_signature, driverMemo,
                     MemoryStatus.getAvailableInternalMemorySize(), latitude, longitude)
-                    .setOnOutletDataUploadEventListener(new OnOutletDataUploadEventListener() {
+                    .setOnOutletDataUploadEventListener(() -> {
 
-                        @Override
-                        public void onPostResult() {
-
-                            setResult(Activity.RESULT_OK);
-                            finish();
-                        }
+                        setResult(Activity.RESULT_OK);
+                        finish();
                     }).build().execute();
         } catch (Exception e) {
 
-            Log.e("krm0219", "Exception ; " + e.toString());
+            Log.e("Exception", "saveOutletDeliveryDone   Exception ; " + e.toString());
             Toast.makeText(this, getResources().getString(R.string.text_error) + " - " + e.toString(), Toast.LENGTH_SHORT).show();
         }
     }
-
-
-    View.OnClickListener clickListener = new View.OnClickListener() {
-        @Override
-        public void onClick(View view) {
-
-            int id = view.getId();
-            if (id == R.id.layout_top_back) {
-                cancelSigning();
-            } else if (id == R.id.img_sign_d_receiver_self || id == R.id.text_sign_d_receiver_self) {
-                img_sign_d_receiver_self.setBackgroundResource(R.drawable.qdrive_btn_icon_check_on);
-                img_sign_d_receiver_substitute.setBackgroundResource(R.drawable.qdrive_btn_icon_check_off);
-                img_sign_d_receiver_other.setBackgroundResource(R.drawable.qdrive_btn_icon_check_off);
-
-                mReceiveType = "RC";
-            } else if (id == R.id.img_sign_d_receiver_substitute || id == R.id.text_sign_d_receiver_substitute) {
-                img_sign_d_receiver_self.setBackgroundResource(R.drawable.qdrive_btn_icon_check_off);
-                img_sign_d_receiver_substitute.setBackgroundResource(R.drawable.qdrive_btn_icon_check_on);
-                img_sign_d_receiver_other.setBackgroundResource(R.drawable.qdrive_btn_icon_check_off);
-
-                mReceiveType = "AG";
-            } else if (id == R.id.img_sign_d_receiver_other || id == R.id.text_sign_d_receiver_other) {
-                img_sign_d_receiver_self.setBackgroundResource(R.drawable.qdrive_btn_icon_check_off);
-                img_sign_d_receiver_substitute.setBackgroundResource(R.drawable.qdrive_btn_icon_check_off);
-                img_sign_d_receiver_other.setBackgroundResource(R.drawable.qdrive_btn_icon_check_on);
-
-                mReceiveType = "ET";
-            } else if (id == R.id.layout_sign_d_sign_eraser) {
-                sign_view_sign_d_signature.clearText();
-            } else if (id == R.id.layout_sign_d_take_photo) {
-                if (cameraId != null) {
-
-                    camera2.takePhoto(texture_sign_d_preview, img_sign_d_visit_log);
-                } else {
-
-                    Toast.makeText(DeliveryDoneActivity.this, getResources().getString(R.string.msg_back_camera_required), Toast.LENGTH_SHORT).show();
-                }
-            } else if (id == R.id.layout_sign_d_gallery) {
-                getImageFromAlbum();
-            } else if (id == R.id.btn_sign_d_save) {
-                confirmSigning();
-            }
-        }
-    };
 
 
     // Gallery
@@ -895,14 +852,12 @@ public class DeliveryDoneActivity extends CommonActivity implements Camera2APIs.
         }
     }
 
-
     // CAMERA
-    private void openCamera() {
+    private void openCamera(String it) {
 
         CameraManager cameraManager = camera2.getCameraManager(this);
         cameraId = camera2.getCameraCharacteristics(cameraManager);
-
-        Log.e("krm0219", TAG + "  openCamera " + cameraId);
+        Log.e("Camera", TAG + "  openCamera " + cameraId + "   >>> " + it);
 
         if (cameraId != null) {
 
@@ -921,21 +876,31 @@ public class DeliveryDoneActivity extends CommonActivity implements Camera2APIs.
 
 
     @Override
-    public void onCameraDeviceOpened(CameraDevice cameraDevice, Size cameraSize, int rotation) {
-
+    public void onCameraDeviceOpened(CameraDevice cameraDevice, Size cameraSize, int rotation, String it) {
+        Log.e("Camera", "onCameraDeviceOpened  " + it);
         texture_sign_d_preview.setRotation(rotation);
 
-        SurfaceTexture texture = texture_sign_d_preview.getSurfaceTexture();
-        texture.setDefaultBufferSize(cameraSize.getWidth(), cameraSize.getHeight());
-        Surface surface = new Surface(texture);
+        try {
 
-        camera2.setCaptureSessionRequest(cameraDevice, surface);
+            SurfaceTexture texture = texture_sign_d_preview.getSurfaceTexture();
+            texture.setDefaultBufferSize(cameraSize.getWidth(), cameraSize.getHeight());
+            Surface surface = new Surface(texture);
+            camera2.setCaptureSessionRequest(cameraDevice, surface);
+        } catch (Exception e) {
+            Log.e("Exception", "onCameraDeviceOpened  Exception : " + e.toString());
+        }
+    }
+
+    @Override
+    public void onCaptureCompleted() {
+
+        isClickedPhoto = false;
     }
 
     @Override
     public void onSurfaceTextureAvailable(SurfaceTexture surface, int width, int height) {
 
-        openCamera();
+        openCamera("onSurfaceTextureAvailable");
     }
 
     @Override
@@ -965,7 +930,6 @@ public class DeliveryDoneActivity extends CommonActivity implements Camera2APIs.
 
             this.outlet_type = outletType;
             this.outletDeliveryDoneListItemArrayList = outletDeliveryDoneListItemArrayList;
-
             qrCodeResultArrayList = new ArrayList<>();
         }
 
@@ -990,17 +954,6 @@ public class DeliveryDoneActivity extends CommonActivity implements Camera2APIs.
 
                     if (result != null) {
 
-                       /* //  7E TEST
-                        //   ServerDownloadHelper.java 에서 테스트 데이터 넣고  테스트 가능
-                        //   테스트 데이터를 넣은 만큼 데이터 셋팅
-                        if (i == 0) {
-                            result.setQrcode_data("{\"Q\":\"D\",\"J\":\"CR20181022001\",\"V\":\"QT\",\"S\":\"\",\"C\":1}");
-                        } else if (i == 1) {
-                            result.setQrcode_data("{\"Q\":\"D\",\"J\":\"CR20181107001\",\"V\":\"QT\",\"S\":\"\",\"C\":1}");
-                        } else if (i == 2) {
-                            result.setQrcode_data("{\"Q\":\"D\",\"J\":\"CR20181022001\",\"V\":\"QT\",\"S\":\"\",\"C\":1}");
-                        }*/
-
                         JSONObject jsonObject = new JSONObject(result.getQrcode_data());
                         String type = jsonObject.getString("Q");
 
@@ -1021,8 +974,8 @@ public class DeliveryDoneActivity extends CommonActivity implements Camera2APIs.
                         outletDeliveryDoneListItemArrayList.get(i).setVendorCode(vendorCode);
 
                         imgUrl = DataUtil.qrcode_url + result.getQrcode_data();
-                        // test Data. https://dp.image-gmkt.com/qr.bar?scale=7&version=4&code={"Q":"D","J":"CR20190313001","V":"QT","S":"472","C":1}
-                        Log.e("krm0219", "QR Code URL > " + imgUrl);
+                        // https://dp.image-gmkt.com/qr.bar?scale=7&version=4&code={"Q":"D","J":"CR20190313001","V":"QT","S":"472","C":1}
+                        Log.e(TAG, "QR Code URL > " + imgUrl);
                         outletDeliveryDoneListItemArrayList.get(i).setQrCode(imgUrl);
                     }
                 }
@@ -1030,7 +983,7 @@ public class DeliveryDoneActivity extends CommonActivity implements Camera2APIs.
                 return "SUCCESS";
             } catch (Exception e) {
 
-                Log.e("krm0219", "QRCodeForQStationDelivery Exception : " + e.toString());
+                Log.e("Exception", "QRCodeForQStationDelivery Exception : " + e.toString());
                 e.printStackTrace();
                 return null;
             }
@@ -1057,7 +1010,7 @@ public class DeliveryDoneActivity extends CommonActivity implements Camera2APIs.
         }
 
         private QRCodeResult getQRCodeData(String tracking_no) {
-            Log.e("krm0219", TAG + "  getQRCodeData  " + outlet_type + " / " + tracking_no);
+            Log.e(TAG, TAG + "  getQRCodeData  " + outlet_type + " / " + tracking_no);
 
             QRCodeResult resultObj;
             Gson gson = new Gson();
@@ -1077,7 +1030,7 @@ public class DeliveryDoneActivity extends CommonActivity implements Camera2APIs.
                 resultObj = gson.fromJson(jsonString, QRCodeResult.class);
             } catch (Exception e) {
 
-                Log.e("Exception", TAG + "  QRCodeForQStationDelivery Json Exception : " + e.toString());
+                Log.e("Exception", "  QRCodeForQStationDelivery Json Exception : " + e.toString());
                 resultObj = null;
             }
 

@@ -202,7 +202,7 @@ class LoginActivity : CommonActivity() {
 //                    val loginAsyncTask = LoginAsyncTask(latitude.toString(), longitude.toString())
 //                    loginAsyncTask.execute()
 
-                    // FIXME_Retrofit      TEST
+                    // FIXME_Retrofit
                     RetrofitClient.instanceDynamic().requestServerLogin(userID, userPW, "QDRIVE_V2", "", deviceUUID, "",
                             latitude.toString(), longitude.toString(), DataUtil.appID, userNationCode)
                             .subscribeOn(Schedulers.io())

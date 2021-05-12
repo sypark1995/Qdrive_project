@@ -829,11 +829,6 @@ public class ListInProgressAdapter extends BaseExpandableListAdapter {
         btn_list_item_child_delivered.setOnClickListener(v -> {
 
             Intent intent = new Intent(v.getContext(), DeliveryDoneActivity.class);
-
-            if (!"SG".equals(Preferences.INSTANCE.getUserNation())) {
-                intent.putExtra("title", v.getContext().getResources().getString(R.string.text_signature));
-            }
-
             intent.putExtra("parcel", rowItem.get(groupPosition));
             v.getContext().startActivity(intent);
 
@@ -842,7 +837,6 @@ public class ListInProgressAdapter extends BaseExpandableListAdapter {
         btn_list_item_child_delivery_failed.setOnClickListener(v -> {
 
             Intent intent = new Intent(v.getContext(), DeliveryFailedActivity.class);
-            intent.putExtra("title", v.getContext().getResources().getString(R.string.text_visit_log));
             intent.putExtra("trackingNo", tracking_no);
             intent.putExtra("receiverName", receiver);
             intent.putExtra("senderName", sender);

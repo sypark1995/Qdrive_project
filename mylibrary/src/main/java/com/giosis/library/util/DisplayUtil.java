@@ -120,12 +120,9 @@ public class DisplayUtil {
                     public void onGlobalLayout() {
 
                         //뷰의 생성된 후 크기와 위치 구하기
-                        int a = imageview.getWidth();
-                        int b = imageview.getHeight();
+                        int width = imageview.getWidth();
 
-                        Log.e("krm0219", "Size : " + a + " / " + b);
-
-                        RelativeLayout.LayoutParams layoutParams = new RelativeLayout.LayoutParams(a, a);
+                        RelativeLayout.LayoutParams layoutParams = new RelativeLayout.LayoutParams(width, width);
                         imageview.setLayoutParams(layoutParams);
 
                         //리스너 해제

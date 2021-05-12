@@ -4,8 +4,6 @@ import android.app.AlertDialog;
 import android.app.ProgressDialog;
 import android.content.ContentValues;
 import android.content.Context;
-import android.content.DialogInterface;
-import android.content.DialogInterface.OnClickListener;
 import android.graphics.Bitmap;
 import android.os.AsyncTask;
 import android.util.Log;
@@ -29,7 +27,7 @@ import java.util.Date;
 
 
 public class DeliveryFailedUploadHelper {
-    private String TAG = "DeliveryFailedUploadHelper";
+    String TAG = "DeliveryFailedUploadHelper";
 
     private final Context context;
     private final String opID;
@@ -51,57 +49,20 @@ public class DeliveryFailedUploadHelper {
     private final ProgressDialog progressDialog;
     private final AlertDialog resultDialog;
 
-    public static class Builder {
+    private AlertDialog getResultAlertDialog(final Context context) {
 
-        private final Context context;
-        private final String opID;
-        private final String officeCode;
-        private final String deviceID;
+        return new AlertDialog.Builder(context)
+                .setTitle(context.getResources().getString(R.string.text_upload_result))
+                .setCancelable(false)
+                .setPositiveButton(context.getResources().getString(R.string.button_ok), (dialog1, which) -> {
+                    if (dialog1 != null)
+                        dialog1.dismiss();
 
-        private final String trackingNo;
-        private final ImageView imageView;
-        private final String failedCode;
-        private final String driverMemo;
-        private final String receiveType;
-
-        private final long disk_size;
-        private final double lat;
-        private final double lon;
-
-        private String networkType;
-        private OnServerEventListener eventListener;
-
-
-        public Builder(Context context, String opID, String officeCode, String deviceID,
-                       String trackingNo, ImageView imageView, String failedCode, String driverMemo,
-                       String receiveType, long disk_size, double lat, double lon) {
-
-            this.context = context;
-            this.opID = opID;
-            this.officeCode = officeCode;
-            this.deviceID = deviceID;
-            this.networkType = NetworkUtil.getNetworkType(context);
-
-            this.trackingNo = trackingNo;
-            this.imageView = imageView;
-            this.failedCode = failedCode;
-            this.driverMemo = driverMemo;
-            this.receiveType = receiveType;
-
-            this.disk_size = disk_size;
-            this.lat = lat;
-            this.lon = lon;
-        }
-
-        public DeliveryFailedUploadHelper build() {
-            return new DeliveryFailedUploadHelper(this);
-        }
-
-        public Builder setOnServerEventListener(OnServerEventListener eventListener) {
-            this.eventListener = eventListener;
-
-            return this;
-        }
+                    if (eventListener != null) {
+                        eventListener.onPostResult();
+                    }
+                })
+                .create();
     }
 
 
@@ -137,33 +98,63 @@ public class DeliveryFailedUploadHelper {
         return progressDialog;
     }
 
-    private AlertDialog getResultAlertDialog(final Context context) {
+    public static class Builder {
 
-        AlertDialog dialog = new AlertDialog.Builder(context)
-                .setTitle(context.getResources().getString(R.string.text_upload_result))
-                .setCancelable(false)
-                .setPositiveButton(context.getResources().getString(R.string.button_ok), new OnClickListener() {
+        private final Context context;
+        private final String opID;
+        private final String officeCode;
+        private final String deviceID;
 
-                    @Override
-                    public void onClick(DialogInterface dialog, int which) {
-                        if (dialog != null)
-                            dialog.dismiss();
+        private final String trackingNo;
+        private final ImageView imageView;
+        private final String failedCode;
+        private final String driverMemo;
+        private final String receiveType;
 
-                        if (eventListener != null) {
-                            eventListener.onPostResult();
-                        }
-                    }
-                })
-                .create();
+        private final long disk_size;
+        private final double lat;
+        private final double lon;
 
-        return dialog;
+        private final String networkType;
+        private OnServerEventListener eventListener;
+
+
+        public Builder(Context context, String opID, String officeCode, String deviceID,
+                       String trackingNo, ImageView imageView, String failedCode, String driverMemo,
+                       String receiveType, long disk_size, double lat, double lon) {
+
+            this.context = context;
+            this.opID = opID;
+            this.officeCode = officeCode;
+            this.deviceID = deviceID;
+            this.networkType = NetworkUtil.getNetworkType(context);
+
+            this.trackingNo = trackingNo;
+            this.imageView = imageView;
+            this.failedCode = failedCode;
+            this.driverMemo = driverMemo;
+            this.receiveType = receiveType;
+
+            this.disk_size = disk_size;
+            this.lat = lat;
+            this.lon = lon;
+        }
+
+        public DeliveryFailedUploadHelper build() {
+            return new DeliveryFailedUploadHelper(this);
+        }
+
+        public Builder setOnServerEventListener(OnServerEventListener eventListener) {
+            this.eventListener = eventListener;
+
+            return this;
+        }
     }
 
     private void showResultDialog(String message) {
         resultDialog.setMessage(message);
         resultDialog.show();
     }
-
 
     class DeliveryFailUploadTask extends AsyncTask<Void, Integer, StdResult> {
         int progress = 0;
@@ -202,17 +193,15 @@ public class DeliveryFailedUploadHelper {
 
             try {
 
-                int resultCode = result.getResultCode();
+                String msg;
+                if (result.getResultCode() < 0) {
 
-                if (resultCode < 0) {
-
-                    String msg = String.format(context.getResources().getString(R.string.text_upload_fail_count1), 1, result.getResultMsg());
-                    showResultDialog(msg);
+                    msg = String.format(context.getResources().getString(R.string.text_upload_fail_count1), 1, result.getResultMsg());
                 } else {
 
-                    String msg = String.format(context.getResources().getString(R.string.text_upload_success_count), 1);
-                    showResultDialog(msg);
+                    msg = String.format(context.getResources().getString(R.string.text_upload_success_count), 1);
                 }
+                showResultDialog(msg);
             } catch (Exception e) {
 
                 Log.e("Exception", TAG + "  onPostExecute Exception : " + e.toString());
@@ -295,18 +284,18 @@ public class DeliveryFailedUploadHelper {
                 // {"ResultCode":-11,"ResultMsg":"Upload Failed."}
 
                 JSONObject jsonObject = new JSONObject(jsonString);
-                int ResultCode = jsonObject.getInt("ResultCode");
-                result.setResultCode(ResultCode);
+                int resultCode = jsonObject.getInt("ResultCode");
+                result.setResultCode(resultCode);
                 result.setResultMsg(jsonObject.getString("ResultMsg"));
 
-                if (ResultCode == 0) {
+                if (resultCode == 0) {
 
                     ContentValues contentVal2 = new ContentValues();
                     contentVal2.put("punchOut_stat", "S");
 
                     dbHelper.update(DatabaseHelper.DB_TABLE_INTEGRATION_LIST, contentVal2,
                             "invoice_no=? COLLATE NOCASE and reg_id = ?", new String[]{assignNo, opID});
-                } else if (ResultCode == -25) {
+                } else if (resultCode == -25) {
 
                     dbHelper.delete(DatabaseHelper.DB_TABLE_INTEGRATION_LIST, "invoice_no= '" + assignNo + "' COLLATE NOCASE");
                 } else {

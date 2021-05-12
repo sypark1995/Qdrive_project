@@ -45,6 +45,7 @@ class DeliveryFailedActivity : CommonActivity(), Camera2APIs.Camera2Interface, S
     // Camera & Gallery
     private val camera2 = Camera2APIs(this@DeliveryFailedActivity)
     private var cameraId: String? = null
+    var isClickedPhoto = false
     private val RESULT_LOAD_IMAGE = 2000
 
     // Permission
@@ -61,21 +62,14 @@ class DeliveryFailedActivity : CommonActivity(), Camera2APIs.Camera2Interface, S
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
 
-        /* setShowWhenLocked(true)
-         setTurnScreenOn(true)*/
-
-        // 어플이 사용되는 동안 화면 끄지 않기
-        window.addFlags(WindowManager.LayoutParams.FLAG_KEEP_SCREEN_ON)
-        // Lock 상태이면 보여주지 않음. (Lock 해제해야만 보임)
-        window.addFlags(WindowManager.LayoutParams.FLAG_DISMISS_KEYGUARD)
-        // Lock 상태이면 보여줌
-        window.addFlags(WindowManager.LayoutParams.FLAG_SHOW_WHEN_LOCKED)
-        // 화면 ON
-        window.addFlags(WindowManager.LayoutParams.FLAG_TURN_SCREEN_ON)
+        window.addFlags(WindowManager.LayoutParams.FLAG_KEEP_SCREEN_ON)     // 어플이 사용되는 동안 화면 끄지 않기
+        window.addFlags(WindowManager.LayoutParams.FLAG_DISMISS_KEYGUARD)   // Lock 상태이면 보여주지 않음. (Lock 해제해야만 보임)
+        window.addFlags(WindowManager.LayoutParams.FLAG_SHOW_WHEN_LOCKED)   // Lock 상태이면 보여줌
+        window.addFlags(WindowManager.LayoutParams.FLAG_TURN_SCREEN_ON)     // 화면 ON
 
         setContentView(R.layout.activity_delivery_visit_log)
 
-        text_top_title.text = intent.getStringExtra("title")
+        text_top_title.text = resources.getString(R.string.text_visit_log)
         trackingNo = intent.getStringExtra("trackingNo").toString()
         text_sign_d_f_tracking_no.text = trackingNo
         text_sign_d_f_receiver.text = intent.getStringExtra("receiverName")
@@ -133,8 +127,13 @@ class DeliveryFailedActivity : CommonActivity(), Camera2APIs.Camera2Interface, S
         layout_sign_d_f_take_photo.setOnClickListener {
 
             if (cameraId != null) {
-                camera2.takePhoto(texture_sign_d_f_preview, img_sign_d_f_visit_log)
+                if (!isClickedPhoto) {
+
+                    isClickedPhoto = true
+                    camera2.takePhoto(texture_sign_d_f_preview, img_sign_d_f_visit_log)
+                }
             } else {
+
                 Toast.makeText(this@DeliveryFailedActivity, resources.getString(R.string.msg_back_camera_required), Toast.LENGTH_SHORT).show()
             }
         }
@@ -188,7 +187,7 @@ class DeliveryFailedActivity : CommonActivity(), Camera2APIs.Camera2Interface, S
         super.onResume()
 
         if (isPermissionTrue) {
-
+            // Camera
             if (texture_sign_d_f_preview.isAvailable) {
                 openCamera()
             } else {
@@ -202,7 +201,6 @@ class DeliveryFailedActivity : CommonActivity(), Camera2APIs.Camera2Interface, S
             if (gpsEnable && gpsTrackerManager != null) {
 
                 gpsTrackerManager!!.GPSTrackerStart()
-                Log.e(tag, " onResume  Location  :  ${gpsTrackerManager!!.latitude} / ${gpsTrackerManager!!.longitude}")
             } else {
 
                 DataUtil.enableLocationSettings(this@DeliveryFailedActivity)
@@ -224,8 +222,8 @@ class DeliveryFailedActivity : CommonActivity(), Camera2APIs.Camera2Interface, S
         }
     }
 
-    override fun onCameraDeviceOpened(cameraDevice: CameraDevice, cameraSize: Size, rotation: Int) {
-
+    override fun onCameraDeviceOpened(cameraDevice: CameraDevice, cameraSize: Size, rotation: Int, it: String) {
+        Log.e("Camera", "onCameraDeviceOpened  $it")
         texture_sign_d_f_preview.rotation = rotation.toFloat()
 
         val texture = texture_sign_d_f_preview.surfaceTexture
@@ -236,6 +234,11 @@ class DeliveryFailedActivity : CommonActivity(), Camera2APIs.Camera2Interface, S
             val surface = Surface(texture)
             camera2.setCaptureSessionRequest(cameraDevice, surface)
         }
+    }
+
+    override fun onCaptureCompleted() {
+
+        isClickedPhoto = false
     }
 
     override fun onSurfaceTextureAvailable(p0: SurfaceTexture, p1: Int, p2: Int) {
@@ -290,10 +293,18 @@ class DeliveryFailedActivity : CommonActivity(), Camera2APIs.Camera2Interface, S
                 return
             }
 
+            var latitude = 0.0
+            var longitude = 0.0
+            gpsTrackerManager.let {
+                latitude = it!!.latitude
+                longitude = it.longitude
+            }
+            Log.e(tag, "  Location $latitude / $longitude")
+
             // other 선택시에만 메모 필수
             val code: FailedCodeResult.FailedCode = arrayList!![spinner_d_f_failed_reason.selectedItemPosition]
             val failedCode: String = code.failedCode
-            Log.e("krm0219", "Fail Reason Code  >  $failedCode")
+            Log.e(tag, "Fail Reason Code  >  $failedCode")
 
             var driverMemo = ""
             if (code.failedString.toUpperCase().contains(resources.getString(R.string.text_other).toUpperCase())) {
@@ -305,7 +316,7 @@ class DeliveryFailedActivity : CommonActivity(), Camera2APIs.Camera2Interface, S
                     return
                 }
             }
-            Log.e("krm0219", "Memo  >  $driverMemo")
+            Log.e(tag, "Memo  >  $driverMemo")
 
             if (!camera2.hasImage(img_sign_d_f_visit_log)) {
                 Toast.makeText(this@DeliveryFailedActivity, resources.getString(R.string.msg_visit_photo_require), Toast.LENGTH_SHORT).show()
@@ -317,17 +328,8 @@ class DeliveryFailedActivity : CommonActivity(), Camera2APIs.Camera2Interface, S
                 return
             }
 
-            var latitude = 0.0
-            var longitude = 0.0
-            gpsTrackerManager.let {
-                latitude = it!!.latitude
-                longitude = it.longitude
-            }
-
-            Log.e(tag, "  Location $latitude / $longitude")
 
             DataUtil.logEvent("button_click", tag, DataUtil.requestSetUploadDeliveryData)
-
             DeliveryFailedUploadHelper.Builder(this@DeliveryFailedActivity, userId, officeCode, deviceId,
                     trackingNo, img_sign_d_f_visit_log, failedCode, driverMemo, "RC",
                     MemoryStatus.getAvailableInternalMemorySize(), latitude, longitude)

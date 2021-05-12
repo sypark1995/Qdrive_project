@@ -43,6 +43,7 @@ class PickupFailedActivity : CommonActivity(), Camera2APIs.Camera2Interface, Tex
     // Camera & Gallery
     private val camera2 = Camera2APIs(this@PickupFailedActivity)
     private var cameraId: String? = null
+    var isClickedPhoto = false
     private val RESULT_LOAD_IMAGE = 2000
 
     // Permission
@@ -223,8 +224,11 @@ class PickupFailedActivity : CommonActivity(), Camera2APIs.Camera2Interface, Tex
         layout_sign_p_f_take_photo.setOnClickListener {
 
             if (cameraId != null) {
+                if (!isClickedPhoto) {
 
-                camera2.takePhoto(texture_sign_p_f_preview, img_sign_p_f_visit_log)
+                    isClickedPhoto = true
+                    camera2.takePhoto(texture_sign_p_f_preview, img_sign_p_f_visit_log)
+                }
             } else {
 
                 Toast.makeText(this@PickupFailedActivity, resources.getString(R.string.msg_back_camera_required), Toast.LENGTH_SHORT).show()
@@ -324,7 +328,8 @@ class PickupFailedActivity : CommonActivity(), Camera2APIs.Camera2Interface, Tex
         }
     }
 
-    override fun onCameraDeviceOpened(cameraDevice: CameraDevice, cameraSize: Size, rotation: Int) {
+    override fun onCameraDeviceOpened(cameraDevice: CameraDevice, cameraSize: Size, rotation: Int, it: String) {
+        Log.e("krm0219", "onCameraDeviceOpened  $it")
 
         texture_sign_p_f_preview.rotation = rotation.toFloat()
 
@@ -333,6 +338,11 @@ class PickupFailedActivity : CommonActivity(), Camera2APIs.Camera2Interface, Tex
 
         val surface = Surface(texture)
         camera2.setCaptureSessionRequest(cameraDevice, surface)
+    }
+
+    override fun onCaptureCompleted() {
+
+        isClickedPhoto = false
     }
 
     override fun onSurfaceTextureAvailable(p0: SurfaceTexture, p1: Int, p2: Int) {
@@ -394,6 +404,15 @@ class PickupFailedActivity : CommonActivity(), Camera2APIs.Camera2Interface, Tex
             }
 
 
+            var latitude = 0.0
+            var longitude = 0.0
+            gpsTrackerManager?.let {
+
+                latitude = it.latitude
+                longitude = it.longitude
+            }
+            Log.i(tag, "  Location $latitude / $longitude")
+
             val code: FailedCodeResult.FailedCode = arrayList!![spinner_p_f_failed_reason.selectedItemPosition]
             val failedCode: String = code.failedCode
             Log.e("krm0219", "Fail Reason Code  >  $failedCode  ${code.failedString}")
@@ -429,17 +448,6 @@ class PickupFailedActivity : CommonActivity(), Camera2APIs.Camera2Interface, Tex
                 DisplayUtil.AlertDialog(this@PickupFailedActivity, resources.getString(R.string.msg_disk_size_error))
                 return
             }
-
-
-            var latitude = 0.0
-            var longitude = 0.0
-            gpsTrackerManager?.let {
-
-                latitude = it.latitude
-                longitude = it.longitude
-            }
-            Log.i(tag, "  Location $latitude / $longitude")
-
 
             DataUtil.logEvent("button_click", tag, DataUtil.requestSetUploadPickupData)
 

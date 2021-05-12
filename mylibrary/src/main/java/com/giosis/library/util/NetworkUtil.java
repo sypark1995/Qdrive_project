@@ -28,8 +28,7 @@ public class NetworkUtil {
     public static String getNetworkType(Context context) {
         String networkType = "";
 
-        ConnectivityManager conectivityManager = (ConnectivityManager) context
-                .getSystemService(Context.CONNECTIVITY_SERVICE);
+        ConnectivityManager conectivityManager = (ConnectivityManager) context.getSystemService(Context.CONNECTIVITY_SERVICE);
         @SuppressLint("MissingPermission") final NetworkInfo activeNetwork = conectivityManager.getActiveNetworkInfo();
 
         if (activeNetwork != null) {
