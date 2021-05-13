@@ -21,7 +21,6 @@ import com.giosis.library.R;
 import com.giosis.library.bluetooth.BluetoothListener;
 import com.giosis.library.util.DataUtil;
 import com.giosis.library.util.NetworkUtil;
-import com.giosis.library.util.Preferences;
 
 import java.util.ArrayList;
 
@@ -248,8 +247,6 @@ public class ListTodayDoneAdapter extends BaseExpandableListAdapter {
         btn_list_item_child_done_add_scan.setOnClickListener(v -> {
 
             Intent intent = new Intent(v.getContext(), TodayDonePickupScanListActivity.class);
-            intent.putExtra("title", v.getContext().getResources().getString(R.string.text_today_done_scan_list));
-            intent.putExtra("opID", Preferences.INSTANCE.getUserId());
             intent.putExtra("pickup_no", tracking_no);
             intent.putExtra("applicant", applicant);
             intent.putExtra("button_type", "Add Scan");
@@ -267,8 +264,6 @@ public class ListTodayDoneAdapter extends BaseExpandableListAdapter {
         btn_list_item_child_done_take_back.setOnClickListener(v -> {
 
             Intent intent = new Intent(v.getContext(), TodayDonePickupScanListActivity.class);
-            intent.putExtra("title", v.getContext().getResources().getString(R.string.text_today_done_scan_list));
-            intent.putExtra("opID", Preferences.INSTANCE.getUserId());
             intent.putExtra("pickup_no", tracking_no);
             intent.putExtra("applicant", applicant);
             intent.putExtra("button_type", "Take Back");

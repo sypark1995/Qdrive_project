@@ -13,9 +13,9 @@ import com.google.gson.Gson;
 
 import org.json.JSONObject;
 
-
+@Deprecated
 public class TodayScanPackingListDownloadHelper {
-    String TAG = "ScanPackingListDownloadHelper";
+    String TAG = "TodayScanPackingListDownloadHelper";
 
     private final Context context;
     private final String pickupNo;
