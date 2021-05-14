@@ -18,18 +18,16 @@ import java.util.*
  * @author krm0219
  * NavigationBar > LIST > Not-IN Parcels
  */
-class ListNotInHousedAdapter(var result: NotInHousedResult) : BaseExpandableListAdapter() {
+class ListNotInHousedAdapter(var result: ArrayList<NotInHousedResult>) : BaseExpandableListAdapter() {
     var TAG = "ListNotInHousedAdapter"
 
     override fun getGroup(i: Int): Any {
 
-        return if (result.resultObject == null) {
-            0
-        } else result.resultObject!![i]
+        return result[i]
     }
 
     override fun getGroupCount(): Int {
-        return result.resultObject!!.size
+        return result.size
     }
 
     override fun getGroupId(i: Int): Long {
@@ -55,9 +53,9 @@ class ListNotInHousedAdapter(var result: NotInHousedResult) : BaseExpandableList
         val text_not_in_parcels_item_not_processed_qty = view.findViewById<TextView>(R.id.text_not_in_parcels_item_not_processed_qty)
 
 
-        val item = result.resultObject!![group_position]
+        val item = result[group_position]
 
-        if (isExpanded && result.resultObject!![group_position].subLists != null) {
+        if (isExpanded && result[group_position].subLists != null) {
 
             layout_not_in_parcels_item_card_view.setBackgroundResource(R.drawable.bg_top_round_10_ffffff)
             img_not_in_parcels_item_up_icon.visibility = View.VISIBLE
@@ -98,13 +96,13 @@ class ListNotInHousedAdapter(var result: NotInHousedResult) : BaseExpandableList
     }
 
     override fun getChildrenCount(i: Int): Int {
-        return if (result.resultObject!![i].subLists == null) {
+        return if (result[i].subLists == null) {
             0
-        } else result.resultObject!![i].subLists!!.size
+        } else result[i].subLists!!.size
     }
 
     override fun getChild(i: Int, i1: Int): Any {
-        return result.resultObject!![i].subLists!![i1]
+        return result[i].subLists!![i1]
     }
 
     override fun getChildId(i: Int, i1: Int): Long {
@@ -130,9 +128,9 @@ class ListNotInHousedAdapter(var result: NotInHousedResult) : BaseExpandableList
         val text_not_in_parcels_child_amount = view.findViewById<TextView>(R.id.text_not_in_parcels_child_amount)
         val text_not_in_parcels_child_currency = view.findViewById<TextView>(R.id.text_not_in_parcels_child_currency)
 
-        val subitem = result.resultObject!![group_position].subLists!![child_position]
-        val sub_size = result.resultObject!![group_position].subLists!!.size
-        Log.e("krm0219", result.resultObject!![group_position].subLists!!.size.toString() + "  " + child_position)
+        val subitem = result[group_position].subLists!![child_position]
+        val sub_size = result[group_position].subLists!!.size
+        Log.e("krm0219", result[group_position].subLists!!.size.toString() + "  " + child_position)
 
         if (sub_size - 1 == child_position) {
 

@@ -1,78 +1,23 @@
 <?xml version="1.0" encoding="utf-8"?>
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:orientation="vertical">
 
     <include layout="@layout/top_title" />
 
-    <LinearLayout
+    <com.google.android.material.tabs.TabLayout
+        android:id="@+id/tab_layout"
         android:layout_width="match_parent"
         android:layout_height="40dp"
-        android:orientation="horizontal">
+        android:theme="@style/Theme.MaterialComponents.Light.DarkActionBar"
+        app:tabIndicatorColor="@color/color_46a73f"
+        app:tabSelectedTextColor="@color/color_46a73f"
+        app:tabTextColor="@color/color_303030" />
 
-        <RelativeLayout
-            android:id="@+id/layout_message_list_customer"
-            android:layout_width="0dp"
-            android:layout_height="match_parent"
-            android:layout_weight="1"
-            android:background="@drawable/selector_tab_bottom">
-
-            <TextView
-                android:id="@+id/text_message_list_customer"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_centerInParent="true"
-                android:text="@string/text_customer"
-                android:textColor="@drawable/selector_tab_text"
-                android:textSize="@dimen/text_size_28px"
-                android:textStyle="bold" />
-
-            <ImageView
-                android:id="@+id/img_message_list_customer_new"
-                android:layout_width="18dp"
-                android:layout_height="18dp"
-                android:layout_centerVertical="true"
-                android:layout_marginStart="5dp"
-                android:layout_toEndOf="@id/text_message_list_customer"
-                android:background="@drawable/img_badge_new"
-                android:visibility="gone" />
-        </RelativeLayout>
-
-        <RelativeLayout
-            android:id="@+id/layout_message_list_admin"
-            android:layout_width="0dp"
-            android:layout_height="match_parent"
-            android:layout_weight="1"
-            android:background="@drawable/selector_tab_bottom">
-
-            <TextView
-                android:id="@+id/text_message_list_admin"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_centerInParent="true"
-                android:text="@string/text_administrator"
-                android:textColor="@drawable/selector_tab_text"
-                android:textSize="@dimen/text_size_28px"
-                android:textStyle="bold" />
-
-            <ImageView
-                android:id="@+id/img_message_list_admin_new"
-                android:layout_width="18dp"
-                android:layout_height="18dp"
-                android:layout_centerVertical="true"
-                android:layout_marginStart="5dp"
-                android:layout_toEndOf="@id/text_message_list_admin"
-                android:background="@drawable/img_badge_new"
-                android:visibility="gone" />
-        </RelativeLayout>
-    </LinearLayout>
-
-    <androidx.viewpager.widget.ViewPager
-        android:id="@+id/viewpager_message_list"
+    <androidx.viewpager2.widget.ViewPager2
+        android:id="@+id/pager"
         android:layout_width="match_parent"
-        android:layout_height="match_parent"
-        android:layout_marginTop="1dp"
-        android:background="@color/color_f0f0f0"
-        android:requiresFadingEdge="horizontal" />
+        android:layout_height="match_parent" />
 </LinearLayout>

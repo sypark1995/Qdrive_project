@@ -605,6 +605,7 @@ public class DeliveryDoneActivity extends CommonActivity implements Camera2APIs.
         if (isPermissionTrue) {
             // Camera
 
+            // When the screen is turned off and turned back on, the SurfaceTexture is already available.
             if (texture_sign_d_preview.isAvailable()) {
 
                 openCamera("onResume");

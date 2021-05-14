@@ -341,4 +341,13 @@ interface RetrofitService {
             @Field("app_id") app_id: String = DataUtil.appID,
             @Field("nation_cd") nation_cd: String = Preferences.userNation
     ): Single<APIModel>
+
+
+    @POST("GetQdriverMessageListFromMessenger")
+    @FormUrlEncoded
+    fun requestGetMessageListFromAdmin(
+            @Field("qdriver_id") opId: String = Preferences.userId,
+            @Field("app_id") app_id: String = DataUtil.appID,
+            @Field("nation_cd") nation_cd: String = Preferences.userNation
+    ): Single<APIModel>
 }

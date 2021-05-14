@@ -36,7 +36,6 @@ import java.nio.ByteBuffer;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
-import java.util.concurrent.Semaphore;
 
 public class Camera2APIs {
     private final String TAG = "Camera2APIs";
@@ -156,6 +155,7 @@ public class Camera2APIs {
             e.printStackTrace();
         }
     }
+
     private final CameraCaptureSession.CaptureCallback preViewCaptureCallback = new CameraCaptureSession.CaptureCallback() {
         @Override
         public void onCaptureProgressed(@NonNull CameraCaptureSession session, @NonNull CaptureRequest request, @NonNull CaptureResult partialResult) {
@@ -183,9 +183,12 @@ public class Camera2APIs {
             e.printStackTrace();
         }
     }
+
     private final CameraCaptureSession.StateCallback CaptureSessionCallback = new CameraCaptureSession.StateCallback() {
         @Override
         public void onConfigured(@NonNull CameraCaptureSession cameraCaptureSession) {
+
+            if (mCameraDevice == null) return;
 
             try {
 
@@ -233,6 +236,7 @@ public class Camera2APIs {
             reader.close();
         }
     }
+
     // 이미지 저장
     private final ImageReader.OnImageAvailableListener readerListener = new ImageReader.OnImageAvailableListener() {
         @Override

@@ -8,54 +8,42 @@ import com.google.gson.annotations.SerializedName
  */
 class NotInHousedResult {
 
-    @SerializedName("ResultCode")
-    var resultCode = -1
+    @SerializedName("invoice_no")
+    var invoiceNo = ""
 
-    @SerializedName("ResultMsg")
-    var resultMsg = ""
+    @SerializedName("req_nm")
+    var reqName = ""
 
-    @SerializedName("ResultObject")
-    var resultObject: List<NotInHousedList>? = null
+    @SerializedName("partner_ref_no")
+    var partner_id = ""
 
-    class NotInHousedList {
+    @SerializedName("zip_code")
+    var zipCode = ""
 
-        @SerializedName("invoice_no")
-        var invoiceNo = ""
+    @SerializedName("address")
+    var address = ""
 
-        @SerializedName("req_nm")
-        var reqName = ""
+    @SerializedName("pickup_cmpl_dt")
+    var pickup_date: String = ""
 
-        @SerializedName("partner_ref_no")
-        var partner_id = ""
+    @SerializedName("qty")
+    var real_qty = ""
 
-        @SerializedName("zip_code")
-        var zipCode = ""
+    @SerializedName("not_processed_qty")
+    var not_processed_qty = ""
 
-        @SerializedName("address")
-        var address = ""
+    @SerializedName("qdriveOutstandingInhousedPickupLists")
+    var subLists: List<NotInHousedSubList>? = null
 
-        @SerializedName("pickup_cmpl_dt")
-        var pickup_date: String = ""
+    class NotInHousedSubList {
 
-        @SerializedName("qty")
-        var real_qty = ""
+        @SerializedName("packing_no")
+        var packingNo = ""
 
-        @SerializedName("not_processed_qty")
-        var not_processed_qty = ""
+        @SerializedName("purchased_amt")
+        var purchasedAmount = ""
 
-        @SerializedName("qdriveOutstandingInhousedPickupLists")
-        var subLists: List<NotInHousedSubList>? = null
-
-        class NotInHousedSubList {
-
-            @SerializedName("packing_no")
-            var packingNo = ""
-
-            @SerializedName("purchased_amt")
-            var purchasedAmount = ""
-
-            @SerializedName("purchased_currency")
-            var purchaseCurrency = ""
-        }
+        @SerializedName("purchased_currency")
+        var purchaseCurrency = ""
     }
 }
