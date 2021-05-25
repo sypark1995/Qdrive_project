@@ -199,10 +199,12 @@ public class AppBaseActivity extends CommonActivity {
 
         if (Preferences.INSTANCE.getUserNation().equalsIgnoreCase("SG") && pickup_driver_yn.equals("Y")) {
             adapter.addItem(ContextCompat.getDrawable(this, R.drawable.icon_pickup_order), getString(R.string.text_create_pickup_order), null, 4);
-        } else if (!Preferences.INSTANCE.getUserNation().equalsIgnoreCase("SG")) {   // MY / ID
-
-            adapter.addItem(ContextCompat.getDrawable(this, R.drawable.side_icon_route_selector), getString(R.string.text_today_my_route), null, 4);
         }
+        // NOTIFICATION. 추후 반영
+//        else if (!Preferences.INSTANCE.getUserNation().equalsIgnoreCase("SG")) {   // MY / ID
+//
+//             adapter.addItem(ContextCompat.getDrawable(this, R.drawable.side_icon_route_selector), getString(R.string.text_today_my_route), null, 4);
+//        }
 
 
         nav_list.setOnGroupClickListener((expandableListView, view, position, l) -> {

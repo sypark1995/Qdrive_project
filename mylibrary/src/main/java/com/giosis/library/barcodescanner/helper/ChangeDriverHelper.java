@@ -56,9 +56,10 @@ public class ChangeDriverHelper {
 
         // eylee 2015.08.26 add nonqoo10 - contr_no 로 sqlite 체크 후 있다면 삭제하는 로직 add start
         String contr_no = assignInfo.getContrNo();
-        int cnt = getContrNoCount(contr_no);
+        int cnt = DataUtil.getContrNoCount(contr_no);
+        Log.e("TAG", "insertDriverAssignInfo  check count : " + cnt);
         if (0 < cnt) {
-            delSelectedContrNo(contr_no);
+            DataUtil.deleteContrNo(contr_no);
         }
 
         // eylee 2015.08.26 add end
@@ -283,6 +284,28 @@ public class ChangeDriverHelper {
         }
     }
 
+    private void deleteContrNo(String contr_no) {
+
+        DatabaseHelper.getInstance().delete(DatabaseHelper.DB_TABLE_INTEGRATION_LIST, "contr_no='" + contr_no + "' COLLATE NOCASE");
+    }
+
+
+    private int getContrNoCount(String contr_no) {
+
+        String sql = "SELECT count(*) as contrno_cnt FROM " + DatabaseHelper.DB_TABLE_INTEGRATION_LIST + " WHERE contr_no='" + contr_no + "' COLLATE NOCASE";
+        Cursor cursor = DatabaseHelper.getInstance().get(sql);
+
+        int count = 0;
+
+        if (cursor.moveToFirst()) {
+            count = cursor.getInt(cursor.getColumnIndexOrThrow("contrno_cnt"));
+        }
+
+        cursor.close();
+
+        return count;
+    }
+
     // Message 이동
     @SuppressLint("StaticFieldLeak")
     class ChangeMessageAsyncTask extends AsyncTask<Void, Void, StdResult> {
@@ -335,35 +358,12 @@ public class ChangeDriverHelper {
 
             if (result.getResultCode() == 0) {
 
-                Log.e(TAG, "  ChangeMessageAsyncTask Success");
+                Log.e(TAG, "  SetQdriverMessageChangeQdriver Success");
             } else {
 
                 Toast.makeText(context, context.getResources().getString(R.string.msg_message_change_error), Toast.LENGTH_SHORT).show();
             }
         }
-    }
-
-
-    private int getContrNoCount(String contr_no) {
-
-        String sql = "SELECT count(*) as contrno_cnt FROM " + DatabaseHelper.DB_TABLE_INTEGRATION_LIST + " WHERE contr_no='" + contr_no + "' COLLATE NOCASE";
-        Cursor cursor = DatabaseHelper.getInstance().get(sql);
-
-        int count = 0;
-
-        if (cursor.moveToFirst()) {
-            count = cursor.getInt(cursor.getColumnIndexOrThrow("contrno_cnt"));
-        }
-
-        cursor.close();
-
-        return count;
-    }
-
-
-    private void delSelectedContrNo(String contr_no) {
-
-        DatabaseHelper.getInstance().delete(DatabaseHelper.DB_TABLE_INTEGRATION_LIST, "contr_no='" + contr_no + "' COLLATE NOCASE");
     }
 
     public ChangeDriverHelper execute() {

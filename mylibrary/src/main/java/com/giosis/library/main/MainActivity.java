@@ -316,14 +316,14 @@ public class MainActivity extends AppBaseActivity {
             btn_home_create_pickup_order.setVisibility(View.GONE);
         }
 
-        // MY/ID Route
-        if (!Preferences.INSTANCE.getUserNation().equalsIgnoreCase("SG")) {
-
-            btn_home_today_my_route.setVisibility(View.VISIBLE);
-        } else {
-
-            btn_home_today_my_route.setVisibility(View.GONE);
-        }
+        // NOTIFICATION.  추후 반영  MY/ID Route
+//        if (!Preferences.INSTANCE.getUserNation().equalsIgnoreCase("SG")) {
+//
+//            btn_home_today_my_route.setVisibility(View.VISIBLE);
+//        } else {
+//
+//            btn_home_today_my_route.setVisibility(View.GONE);
+//        }
 
         if (outletDriverYN.equals("Y")) {
 

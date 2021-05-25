@@ -50,9 +50,10 @@ public class ConfirmMyOrderHelper {
 
         // eylee 2015.08.26 add non q10 - contr_no 로 sqlite 체크 후 있다면 삭제하는 로직 add start
         String contr_no = assignInfo.getContrNo();
-        int cnt = getContrNoCount(contr_no);
+        int cnt = DataUtil.getContrNoCount(contr_no);
+        Log.e("TAG", "insertDriverAssignInfo  check count : " + cnt);
         if (0 < cnt) {
-            deleteContrNo(contr_no);
+            DataUtil.deleteContrNo(contr_no);
         }
 
         // eylee 2015.08.26 add end
