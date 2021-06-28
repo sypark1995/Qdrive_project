@@ -21,17 +21,21 @@ import com.giosis.library.setting.DeveloperModeActivity
 import com.giosis.library.util.DatabaseHelper
 import com.giosis.library.util.PermissionActivity
 import com.giosis.library.util.PermissionChecker
-import com.giosis.util.qdrive.util.DataUtil
+import com.giosis.util.qdrive.singapore.databinding.ActivityLoginBinding
 import com.giosis.util.qdrive.util.CommonActivity
+import com.giosis.util.qdrive.util.DataUtil
 import com.google.gson.Gson
 import io.reactivex.rxjava3.android.schedulers.AndroidSchedulers
 import io.reactivex.rxjava3.schedulers.Schedulers
-import kotlinx.android.synthetic.main.activity_login.*
 import java.io.File
 
 class LoginActivity : CommonActivity() {
 
     val tag = "LoginActivity"
+    private  val binding by lazy {
+        ActivityLoginBinding.inflate(layoutInflater)
+    }
+
     private val progressBar by lazy {
         ProgressBar(this@LoginActivity)
     }
@@ -53,12 +57,12 @@ class LoginActivity : CommonActivity() {
     @SuppressLint("SetTextI18n")
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        setContentView(R.layout.activity_login)
+        setContentView(binding.root)
         DatabaseHelper.getInstance()            // DB 생성
 
         var showDeveloperModeClickCount = 0
 
-        img_login_bottom_logo.setOnClickListener {
+        binding.imgLoginBottomLogo.setOnClickListener {
 
             if (showDeveloperModeClickCount == 10) {
                 showDeveloperModeClickCount = 0
@@ -71,21 +75,22 @@ class LoginActivity : CommonActivity() {
         }
 
         progressBar.layoutParams = LinearLayout.LayoutParams(ViewGroup.LayoutParams.WRAP_CONTENT, ViewGroup.LayoutParams.WRAP_CONTENT)
-        layout_login.addView(progressBar)
+        binding.layoutLogin.addView(progressBar)
         progressBar.visibility = View.GONE
 
-        edit_login_id.setText(MyApplication.preferences.userId)
-        edit_login_password.setText(MyApplication.preferences.userPw)
+        binding.editLoginId.setText(MyApplication.preferences.userId)
+        binding.editLoginPassword.setText(MyApplication.preferences.userPw)
         Log.e(tag, "  init Data  -   ${MyApplication.preferences.userNation}  ${MyApplication.preferences.userId}  ${MyApplication.preferences.userPw}")
         appVersion = getVersion()
 
         // Login
-        btn_login_sign.setOnClickListener {
+
+        binding.btnLoginSign.setOnClickListener {
 
             hideKeyboard()
 
-            val userID = edit_login_id.text.toString().trim()
-            val userPW = edit_login_password.text.toString().trim()
+            val userID = binding.editLoginId.text.toString().trim()
+            val userPW = binding.editLoginPassword.text.toString().trim()
             val deviceUUID = getDeviceUUID()
             Log.e(tag, " Input Data  -  SG  / $userID  / $userPW  / $deviceUUID")
 
@@ -242,7 +247,7 @@ class LoginActivity : CommonActivity() {
                                         showDialog("Sorry, your sign-in information is not valid. Please try again with your correct ID and password.")
                                     }
 
-                                    edit_login_password.setText("")
+                                    binding.editLoginPassword.setText("")
                                 }
                             }, {
                                 Log.e(RetrofitClient.TAG, it.message.toString())
@@ -279,7 +284,8 @@ class LoginActivity : CommonActivity() {
         } else if (MyApplication.preferences.serverURL.contains("staging")) {
             info = "staging / "
         }
-        text_login_version.text = "$info${resources.getString(R.string.text_app_version)} - $appVersion"
+
+        binding.textLoginVersion.text = "$info${resources.getString(R.string.text_app_version)} - $appVersion"
 
 
         if (isPermissionTrue) {

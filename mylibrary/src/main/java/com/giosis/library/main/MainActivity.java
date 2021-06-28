@@ -57,7 +57,7 @@ import com.giosis.library.util.QDataUtil;
 import com.google.android.gms.common.ConnectionResult;
 import com.google.android.gms.common.GoogleApiAvailability;
 import com.google.firebase.analytics.FirebaseAnalytics;
-import com.google.firebase.iid.FirebaseInstanceId;
+import com.google.firebase.messaging.FirebaseMessaging;
 
 import org.json.JSONObject;
 
@@ -917,10 +917,20 @@ public class MainActivity extends AppBaseActivity {
 
     public void saveServerFCMToken() {
 
-        FirebaseInstanceId.getInstance().getInstanceId().addOnSuccessListener(instanceIdResult -> {
+//        FirebaseInstanceId.getInstance().getInstanceId().addOnSuccessListener(instanceIdResult -> {
+//
+//            fcmToken = instanceIdResult.getToken();
+//            sendAPIkey();
+//        });
 
-            fcmToken = instanceIdResult.getToken();
-            sendAPIkey();
+        FirebaseMessaging.getInstance().getToken().addOnCompleteListener(task -> {
+
+            if (task.isSuccessful()) {
+
+                // Get new FCM registration token
+                fcmToken = task.getResult();
+                sendAPIkey();
+            }
         });
     }
 

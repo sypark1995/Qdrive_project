@@ -26,12 +26,12 @@ import com.giosis.library.util.DatabaseHelper
 import com.giosis.library.util.NetworkUtil
 import com.giosis.library.util.PermissionActivity
 import com.giosis.library.util.PermissionChecker
+import com.giosis.util.qdrive.international.databinding.ActivityLoginBinding
 import com.giosis.util.qdrive.util.CommonActivity
 import com.giosis.util.qdrive.util.DataUtil
 import com.google.gson.Gson
 import io.reactivex.rxjava3.android.schedulers.AndroidSchedulers
 import io.reactivex.rxjava3.schedulers.Schedulers
-import kotlinx.android.synthetic.main.activity_login.*
 import org.json.JSONObject
 import java.io.File
 import java.util.*
@@ -43,6 +43,9 @@ import java.util.*
 class LoginActivity : CommonActivity() {
 
     val tag = "LoginActivity"
+    private val binding by lazy {
+        ActivityLoginBinding.inflate(layoutInflater)
+    }
     val context: Context = MyApplication.getContext()
     private val progressBar = ProgressBar(context)
 
@@ -63,19 +66,19 @@ class LoginActivity : CommonActivity() {
     @SuppressLint("SetTextI18n")
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        setContentView(R.layout.activity_login)
+        setContentView(binding.root)
 
         // Image Shake Animation
-        img_login_top_bg.startAnimation(AnimationUtils.loadAnimation(this, R.anim.shake_animation))
+        binding.imgLoginTopBg.startAnimation(AnimationUtils.loadAnimation(this, R.anim.shake_animation))
 
-        img_login_top_logo.setOnClickListener {
-            img_login_top_bg.startAnimation(AnimationUtils.loadAnimation(this, R.anim.shake_animation))
+        binding.imgLoginTopLogo.setOnClickListener {
+            binding.imgLoginTopBg.startAnimation(AnimationUtils.loadAnimation(this, R.anim.shake_animation))
         }
 
 
         var showDeveloperModeClickCount = 0
 
-        img_login_bottom_logo.setOnClickListener {
+        binding.imgLoginBottomLogo.setOnClickListener {
 
             if (showDeveloperModeClickCount == 10) {
 
@@ -91,37 +94,36 @@ class LoginActivity : CommonActivity() {
 
 
         progressBar.layoutParams = LinearLayout.LayoutParams(ViewGroup.LayoutParams.WRAP_CONTENT, ViewGroup.LayoutParams.WRAP_CONTENT)
-        layout_login.addView(progressBar)
+        binding.layoutLogin.addView(progressBar)
         progressBar.visibility = View.GONE
 
 
         // Nation
         spinnerList.add(LoginNation(resources.getString(R.string.text_malaysia), "MY", "login_icon_my"))
         spinnerList.add(LoginNation(resources.getString(R.string.text_Indonesia), "ID", "login_icon_id"))
-        spinner_select_nation.adapter = LoginSpinnerAdapter(this, spinnerList)
+        binding.spinnerSelectNation.adapter = LoginSpinnerAdapter(this, spinnerList)
 
         when (MyApplication.preferences.userNation) {
             "MY" -> {
 
-                spinner_select_nation.setSelection(0)
+                binding.spinnerSelectNation.setSelection(0)
             }
             "ID" -> {
 
-                spinner_select_nation.setSelection(1)
+                binding.spinnerSelectNation.setSelection(1)
             }
             else -> {
                 // TEST
-                spinner_select_nation.setSelection(0)
+                binding.spinnerSelectNation.setSelection(0)
             }
         }
 
+        binding.layoutLoginSelectNation.setOnClickListener {
 
-        layout_login_select_nation.setOnClickListener {
-
-            spinner_select_nation.performClick()
+            binding.spinnerSelectNation.performClick()
         }
 
-        spinner_select_nation.onItemSelectedListener = object : AdapterView.OnItemSelectedListener {
+        binding.spinnerSelectNation.onItemSelectedListener = object : AdapterView.OnItemSelectedListener {
             override fun onItemSelected(parent: AdapterView<*>?, view: View?, position: Int, id: Long) {
 
                 parent?.let {
@@ -131,9 +133,9 @@ class LoginActivity : CommonActivity() {
                     spinnerPosition = position
 
                     val resourceId = context.resources.getIdentifier(spinnerList[position].nationImg, "drawable", context.packageName)
-                    img_login_nation.setBackgroundResource(resourceId)
-                    text_login_nation.text = spinnerList[position].nation
-                    Log.e(tag, " Select Nation : ${text_login_nation.text}")
+                    binding.imgLoginNation.setBackgroundResource(resourceId)
+                    binding.textLoginNation.text = spinnerList[position].nation
+                    Log.e(tag, " Select Nation : ${binding.textLoginNation.text}")
                 }
             }
 
@@ -143,22 +145,22 @@ class LoginActivity : CommonActivity() {
 
 
         //
-        edit_login_id.setText(MyApplication.preferences.userId)
-        edit_login_password.setText(MyApplication.preferences.userPw)
+        binding.editLoginId.setText(MyApplication.preferences.userId)
+        binding.editLoginPassword.setText(MyApplication.preferences.userPw)
         Log.e(tag, "  init Data  -   ${MyApplication.preferences.userNation}  ${MyApplication.preferences.userId}  ${MyApplication.preferences.userPw}")
         appVersion = getVersion()
 
 
         // Login
-        btn_login_sign.setOnClickListener {
+        binding.btnLoginSign.setOnClickListener {
 
             hideKeyboard()
 
             var userNationCode = spinnerList[spinnerPosition].nationCode
             /* // TEST
              userNationCode = "SG"*/
-            val userID = edit_login_id.text.toString().trim()
-            val userPW = edit_login_password.text.toString().trim()
+            val userID = binding.editLoginId.text.toString().trim()
+            val userPW = binding.editLoginPassword.text.toString().trim()
             val deviceUUID = getDeviceUUID()
             Log.e(tag, " Input Data  -  $userNationCode  / $userID  / $userPW  / $deviceUUID")
 
@@ -215,7 +217,7 @@ class LoginActivity : CommonActivity() {
 
                                     progressBar.visibility = View.GONE
                                     MyApplication.preferences.userPw = ""
-                                    edit_login_password.setText("")
+                                    binding.editLoginPassword.setText("")
 
                                     when {
                                         it.resultCode == -10 -> {
@@ -309,7 +311,7 @@ class LoginActivity : CommonActivity() {
 
             info = "staging / "
         }
-        text_login_version.text = "$info${resources.getString(R.string.text_app_version)} - $appVersion"
+        binding.textLoginVersion.text = "$info${resources.getString(R.string.text_app_version)} - $appVersion"
 
 
         if (isPermissionTrue) {
@@ -449,7 +451,7 @@ class LoginActivity : CommonActivity() {
 
                 progressBar.visibility = View.GONE
                 MyApplication.preferences.userPw = ""
-                edit_login_password.setText("")
+                binding.editLoginPassword.setText("")
 
                 when {
                     result.resultCode == "-10" -> {
