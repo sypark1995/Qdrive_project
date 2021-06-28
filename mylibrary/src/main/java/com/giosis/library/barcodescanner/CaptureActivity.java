@@ -594,6 +594,7 @@ public final class CaptureActivity extends CommonActivity implements DecoratedBa
                     Log.e("Barcode", "Camera   Barcode  " + barcode);
                     scannedBarcode.add(barcode);
 
+                //    DataUtil.logEvent("capture", TAG, "Camera");
                     checkValidation(barcode, false, "Camera");
                 }
             }
@@ -981,6 +982,7 @@ public final class CaptureActivity extends CommonActivity implements DecoratedBa
 
         if (keyCode == KeyEvent.KEYCODE_NUMPAD_ENTER || keyCode == KeyEvent.KEYCODE_ENTER) {
 
+            DataUtil.logEvent("capture", TAG, "Scanner");
             String tempStrScanNo = edit_capture_type_number.getText().toString().trim();
 
             if (!tempStrScanNo.equals("")) {
@@ -1022,6 +1024,7 @@ public final class CaptureActivity extends CommonActivity implements DecoratedBa
     // Bluetooth
     private void onBluetoothBarcodeAdd(String strBarcodeNo) {
 
+        DataUtil.logEvent("capture", TAG, "Bluetooth");
         // bluetooth "\n"이 포함되어서 다른번호로 인식 > trim 으로 공백 없애기
         strBarcodeNo = strBarcodeNo.trim();
 
@@ -1068,6 +1071,7 @@ public final class CaptureActivity extends CommonActivity implements DecoratedBa
             }
             Log.i(TAG, "  onAddButtonClick > " + inputBarcodeNumber + " / " + isDuplicate);
 
+            DataUtil.logEvent("capture", TAG, "EditText");
             checkValidation(inputBarcodeNumber, isDuplicate, "onAddButtonClick");
         }
     }

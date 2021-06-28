@@ -12,6 +12,10 @@ import com.giosis.library.util.Preferences
 class DeveloperModeViewModel : BaseViewModel() {
 
     // Server
+    private val _inputUrl = MutableLiveData<String>()
+    val inputUrl: MutableLiveData<String>
+        get() = _inputUrl
+
     private val _urlReal = MutableLiveData(DataUtil.SERVER_REAL)
     val urlReal: MutableLiveData<String> = _urlReal
 
@@ -66,6 +70,7 @@ class DeveloperModeViewModel : BaseViewModel() {
         _gpsVisible.value = View.GONE
         _gpsInputVisible.value = View.GONE
 
+        _inputUrl.value = Preferences.serverURL
         when (Preferences.serverURL) {
             DataUtil.SERVER_REAL -> {
 
@@ -118,6 +123,7 @@ class DeveloperModeViewModel : BaseViewModel() {
     fun changeServer(url: String) {
 
         Preferences.serverURL = url
+        _inputUrl.value = url
 
         if (url == DataUtil.SERVER_STAGING && Preferences.userNation != "SG") {
 

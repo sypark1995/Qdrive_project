@@ -44,7 +44,7 @@ public class DataUtil {
 
     public static String appID = "QDRIVE";
 
-    public static String SERVER_LOCAL = "http://172.30.88.73";
+    public static String SERVER_LOCAL = "http://kwher-dev.qxpress.net";
     public static String SERVER_TEST = "https://test-api.qxpress.net";
     public static String SERVER_STAGING = "http://staging-qxapi.qxpress.net";
     public static String SERVER_REAL = "https://qxapi.qxpress.net";
@@ -143,7 +143,7 @@ public class DataUtil {
             Bundle params = new Bundle();
             params.putString(FirebaseAnalytics.Param.CONTENT_TYPE, type);
             params.putString(FirebaseAnalytics.Param.ITEM_ID, id);
-            DataUtil.mFirebaseAnalytics.logEvent(FirebaseAnalytics.Event.SELECT_CONTENT, params);
+            mFirebaseAnalytics.logEvent(FirebaseAnalytics.Event.SELECT_CONTENT, params);
         } catch (Exception e) {
 
             Log.e("Firebase", "FirebaseSelectEvents error : " + e.toString());
@@ -361,7 +361,6 @@ public class DataUtil {
 
         return arrayList;
     }
-
 
 
     public static int getContrNoCount(String contr_no) {

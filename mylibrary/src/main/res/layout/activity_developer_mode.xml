@@ -57,6 +57,30 @@
                         android:textColor="@color/color_767676"
                         android:textSize="@dimen/text_size_28px" />
 
+                    <RelativeLayout
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content">
+
+                        <EditText
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            android:layout_marginEnd="8dp"
+                            android:layout_toStartOf="@id/btn_developer_save"
+                            android:text="@={viewModel.inputUrl}"
+                            android:textColor="@color/color_303030"
+                            android:textSize="14sp"
+                            tools:text="http://staging-qxapi.qxpress.net" />
+
+                        <Button
+                            android:id="@+id/btn_developer_save"
+                            android:layout_width="80dp"
+                            android:layout_height="40dp"
+                            android:layout_alignParentEnd="true"
+                            android:background="@drawable/border_rect_b1b1b1"
+                            android:onClick="@{()->viewModel.changeServer(viewModel.inputUrl)}"
+                            android:text="@string/button_save" />
+                    </RelativeLayout>
+
                     <RadioGroup
                         android:id="@+id/rg_developer_server_url"
                         android:layout_width="match_parent"
