@@ -594,7 +594,7 @@ public final class CaptureActivity extends CommonActivity implements DecoratedBa
                     Log.e("Barcode", "Camera   Barcode  " + barcode);
                     scannedBarcode.add(barcode);
 
-                //    DataUtil.logEvent("capture", TAG, "Camera");
+                    //    DataUtil.logEvent("capture", TAG, "Camera");
                     checkValidation(barcode, false, "Camera");
                 }
             }
@@ -1749,6 +1749,8 @@ public final class CaptureActivity extends CommonActivity implements DecoratedBa
         String selectQuery = "SELECT  partner_ref_no, invoice_no, stat, rcv_nm, sender_nm "
                 + " FROM " + DatabaseHelper.DB_TABLE_INTEGRATION_LIST + " WHERE invoice_no= '" + invoiceNo + "'" + " and contr_no= '" + contrNo + "'";
         Cursor cs = DatabaseHelper.getInstance().get(selectQuery);
+
+        Log.e("krm0219", "DATA >>>>> " + contrNo + " / " + invoiceNo + " ==== " + cs.getCount());
         return 0 < cs.getCount();
     }
 
@@ -1805,6 +1807,10 @@ public final class CaptureActivity extends CommonActivity implements DecoratedBa
 
             contentVal.put("lat", "0");
             contentVal.put("lng", "0");
+
+            contentVal.put("state", "");
+            contentVal.put("city", "");
+            contentVal.put("street", "");
 
             DatabaseHelper.getInstance().insert(DatabaseHelper.DB_TABLE_INTEGRATION_LIST, contentVal);
         } catch (Exception ignored) {
