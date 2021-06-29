@@ -32,6 +32,7 @@ import java.util.concurrent.TimeUnit;
 /**
  * Finishes an activity after a period of inactivity if the device is on battery power.
  */
+@Deprecated
 final class InactivityTimer {
 
     private static final int INACTIVITY_DELAY_SECONDS = 5 * 60;

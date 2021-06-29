@@ -1,0 +1,418 @@
+<?xml version="1.0" encoding="utf-8"?>
+<layout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools">
+
+    <data>
+
+        <import type="android.view.View" />
+
+
+        <variable
+            name="viewModel"
+            type="com.giosis.library.pickup.CreatePickupOrderViewModel" />
+    </data>
+
+    <RelativeLayout
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:background="@color/color_f6f6f6">
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:focusable="true"
+            android:focusableInTouchMode="true"
+            android:orientation="vertical">
+
+            <include layout="@layout/top_title" />
+
+            <ScrollView
+                android:layout_width="match_parent"
+                android:layout_height="match_parent">
+
+                <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:orientation="vertical">
+
+                    <LinearLayout
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:background="#ffffff"
+                        android:orientation="vertical"
+                        android:padding="16dp">
+
+                        <RelativeLayout
+                            android:layout_width="match_parent"
+                            android:layout_height="40dp"
+                            android:background="@drawable/border_e6e6e6">
+
+                            <Spinner
+                                android:id="@+id/select_spinner"
+                                android:layout_width="match_parent"
+                                android:layout_height="match_parent" />
+
+                        </RelativeLayout>
+
+                        <RelativeLayout
+                            android:layout_width="match_parent"
+                            android:layout_height="40dp"
+                            android:layout_marginTop="8dp"
+                            android:background="@color/white">
+
+                            <EditText
+                                android:id="@+id/edit_seller_id"
+                                android:layout_width="match_parent"
+                                android:layout_height="40dp"
+                                android:layout_centerVertical="true"
+                                android:layout_marginEnd="4dp"
+                                android:layout_toStartOf="@id/layout_seller_id_search"
+                                android:background="@drawable/border_e6e6e6"
+                                android:maxLines="1"
+                                android:paddingStart="10dp"
+                                android:text="@={viewModel.sellerId}"
+                                android:textColor="@color/color_232323"
+                                android:textSize="@dimen/text_size_28px"
+                                tools:text="sh5000" />
+
+                            <LinearLayout
+                                android:id="@+id/layout_seller_id_search"
+                                android:layout_width="102dp"
+                                android:layout_height="40dp"
+                                android:layout_alignParentEnd="true"
+                                android:layout_centerVertical="true"
+                                android:background="@drawable/back_round_3_border_4fb648"
+                                android:gravity="center"
+                                android:onClick="@{()->viewModel.idSearchClick()}"
+                                android:orientation="horizontal"
+                                android:paddingStart="12dp"
+                                android:paddingEnd="12dp">
+
+                                <ImageView
+                                    android:layout_width="14dp"
+                                    android:layout_height="14dp"
+                                    android:background="@drawable/btn_search_green" />
+
+                                <TextView
+                                    android:layout_width="wrap_content"
+                                    android:layout_height="wrap_content"
+                                    android:layout_marginStart="5dp"
+                                    android:text="@string/text_search"
+                                    android:textColor="@color/color_4fb648"
+                                    android:textSize="@dimen/text_size_32px" />
+                            </LinearLayout>
+                        </RelativeLayout>
+
+                        <LinearLayout
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:onClick="@{()->viewModel.setVisiblePickupLayout()}"
+                            android:paddingRight="30dp"
+                            android:paddingBottom="2dp">
+
+                            <TextView
+                                android:id="@+id/text_pickup_no"
+                                android:layout_width="wrap_content"
+                                android:layout_height="wrap_content"
+                                android:layout_marginTop="17dp"
+                                android:paddingBottom="1dp"
+                                android:textColor="@color/color_232323"
+                                android:textSize="@dimen/text_size_28px"
+                                tools:text="Pickup no" />
+
+                            <ImageView
+                                android:id="@+id/pickup_image"
+                                android:layout_width="26dp"
+                                android:layout_height="26dp"
+                                android:layout_marginLeft="5dp"
+                                android:layout_marginTop="13dp"
+                                android:src="@drawable/icon_round_arrow_down" />
+                        </LinearLayout>
+
+                        <RelativeLayout
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            android:layout_marginTop="8dp"
+                            android:visibility="@{viewModel.visiblePickupLayout?View.VISIBLE:View.GONE}"
+                            tools:visibility="visible">
+
+                            <EditText
+                                android:layout_width="match_parent"
+                                android:layout_height="40dp"
+                                android:layout_centerVertical="true"
+                                android:layout_marginEnd="4dp"
+                                android:layout_toStartOf="@id/layout_pick_no_id_search"
+                                android:background="@drawable/border_e6e6e6"
+                                android:maxLines="1"
+                                android:paddingStart="10dp"
+                                android:text="@={viewModel.pickupNo}"
+                                android:textSize="@dimen/text_size_28px"
+                                tools:text="P1234456666" />
+
+                            <LinearLayout
+                                android:id="@+id/layout_pick_no_id_search"
+                                android:layout_width="102dp"
+                                android:layout_height="40dp"
+                                android:layout_alignParentEnd="true"
+                                android:layout_centerVertical="true"
+                                android:background="@drawable/back_round_3_border_4fb648"
+                                android:gravity="center"
+                                android:onClick="@{()->viewModel.pickupSearchClick()}"
+                                android:orientation="horizontal"
+                                android:paddingStart="12dp"
+                                android:paddingEnd="12dp">
+
+                                <ImageView
+                                    android:layout_width="14dp"
+                                    android:layout_height="14dp"
+                                    android:background="@drawable/btn_search_green" />
+
+                                <TextView
+                                    android:layout_width="wrap_content"
+                                    android:layout_height="wrap_content"
+                                    android:layout_marginStart="5dp"
+                                    android:text="@string/text_search"
+                                    android:textColor="@color/color_4fb648"
+                                    android:textSize="@dimen/text_size_32px" />
+                            </LinearLayout>
+
+                        </RelativeLayout>
+
+                    </LinearLayout>
+
+                    <LinearLayout
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_marginTop="16dp"
+                        android:layout_marginBottom="8dp"
+                        android:orientation="horizontal"
+                        android:paddingLeft="16dp">
+
+                        <TextView
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:text="@string/text_sender_info"
+                            android:textColor="@color/color_232323"
+                            android:textSize="@dimen/text_size_24px" />
+
+
+                    </LinearLayout>
+
+                    <LinearLayout
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:background="#ffffff"
+                        android:orientation="vertical"
+                        android:padding="16dp">
+
+                        <TextView
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:text="@string/text_pickup_address"
+                            android:textColor="@color/color_232323"
+                            android:textSize="@dimen/text_size_24px" />
+
+                        <LinearLayout
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            android:onClick="@{()->viewModel.addressLayout()}"
+                            android:orientation="vertical">
+
+                            <RelativeLayout
+                                android:layout_width="match_parent"
+                                android:layout_height="wrap_content"
+                                android:layout_marginTop="8dp">
+
+                                <TextView
+                                    android:layout_width="match_parent"
+                                    android:layout_height="40dp"
+                                    android:layout_centerVertical="true"
+                                    android:layout_marginEnd="4dp"
+                                    android:layout_toStartOf="@id/layout_address_search"
+                                    android:background="@drawable/border_e6e6e6"
+                                    android:gravity="center_vertical"
+                                    android:maxLines="1"
+                                    android:paddingStart="10dp"
+                                    android:text="@{viewModel.zipCode}"
+                                    android:textColor="@color/color_232323"
+                                    android:textSize="@dimen/text_size_28px"
+                                    tools:text="12345" />
+
+                                <LinearLayout
+                                    android:id="@+id/layout_address_search"
+                                    android:layout_width="102dp"
+                                    android:layout_height="40dp"
+                                    android:layout_centerVertical="true"
+                                    android:layout_marginEnd="4dp"
+                                    android:layout_toStartOf="@id/layout_address_pin"
+                                    android:background="@drawable/back_round_3_border_4fb648"
+                                    android:gravity="center"
+                                    android:orientation="horizontal"
+                                    android:paddingStart="12dp"
+                                    android:paddingEnd="12dp">
+
+                                    <ImageView
+                                        android:layout_width="14dp"
+                                        android:layout_height="14dp"
+                                        android:background="@drawable/btn_search_green" />
+
+                                    <TextView
+                                        android:layout_width="wrap_content"
+                                        android:layout_height="wrap_content"
+                                        android:layout_marginStart="5dp"
+                                        android:text="@string/text_search"
+                                        android:textColor="@color/color_4fb648"
+                                        android:textSize="@dimen/text_size_32px" />
+                                </LinearLayout>
+
+                                <FrameLayout
+                                    android:id="@+id/layout_address_pin"
+                                    android:layout_width="52dp"
+                                    android:layout_height="40dp"
+                                    android:layout_alignParentEnd="true"
+                                    android:layout_centerVertical="true"
+                                    android:background="@drawable/back_round_3_border_4fb648"
+                                    android:gravity="center"
+                                    android:orientation="horizontal"
+                                    android:paddingStart="12dp"
+                                    android:paddingEnd="12dp">
+
+                                    <ImageView
+                                        android:layout_width="15dp"
+                                        android:layout_height="20dp"
+                                        android:layout_gravity="center"
+                                        android:background="@drawable/icon_map_green" />
+                                </FrameLayout>
+
+                            </RelativeLayout>
+
+                            <TextView
+                                android:layout_width="match_parent"
+                                android:layout_height="40dp"
+                                android:layout_marginTop="4dp"
+                                android:background="@drawable/border_e6e6e6"
+                                android:gravity="center_vertical"
+                                android:paddingStart="10dp"
+                                android:text="@{viewModel.addressFront}"
+                                android:textColor="@color/color_232323"
+                                android:textSize="@dimen/text_size_28px"
+                                tools:text="12345" />
+                        </LinearLayout>
+
+                        <EditText
+                            android:layout_width="match_parent"
+                            android:layout_height="40dp"
+                            android:layout_marginTop="4dp"
+                            android:background="@drawable/border_e6e6e6"
+                            android:gravity="center_vertical"
+                            android:paddingStart="10dp"
+                            android:text="@={viewModel.addressLast}"
+                            android:textColor="@color/color_232323"
+                            android:textSize="@dimen/text_size_28px"
+                            tools:text="testest" />
+
+                        <LinearLayout
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:layout_marginTop="16dp"
+                            android:layout_marginBottom="8dp"
+                            android:orientation="horizontal">
+
+                            <TextView
+                                android:layout_width="wrap_content"
+                                android:layout_height="wrap_content"
+                                android:text="@string/text_mobile_no"
+                                android:textColor="@color/color_232323"
+                                android:textSize="@dimen/text_size_24px" />
+
+                        </LinearLayout>
+
+                        <LinearLayout
+                            android:layout_width="match_parent"
+                            android:layout_height="40dp"
+                            android:orientation="horizontal"
+                            android:weightSum="3">
+
+                            <TextView
+                                android:id="@+id/text_nation_code"
+                                android:layout_width="0dp"
+                                android:layout_height="match_parent"
+                                android:layout_marginEnd="1.5dp"
+                                android:layout_weight="1"
+                                android:background="@drawable/border_e6e6e6"
+                                android:gravity="center_vertical"
+                                android:minHeight="50dp"
+                                android:paddingStart="16dp"
+                                android:paddingEnd="16dp"
+                                android:text="+65"
+                                android:textColor="@color/color_aeaeae"
+                                android:textSize="@dimen/text_size_36px"
+                                tools:text="+65(SG)" />
+
+                            <EditText
+                                android:id="@+id/edit_mobile_no"
+                                android:layout_width="0dp"
+                                android:layout_height="match_parent"
+                                android:layout_marginStart="1.5dp"
+                                android:layout_weight="2"
+                                android:background="@drawable/border_e6e6e6"
+                                android:gravity="center_vertical"
+                                android:inputType="phone"
+                                android:paddingStart="16dp"
+                                android:paddingEnd="16dp"
+                                android:text="@={viewModel.phoneNo}"
+                                android:textColor="@color/color_232323"
+                                android:textSize="@dimen/text_size_36px"
+                                tools:text="1095555687" />
+                        </LinearLayout>
+
+                        <TextView
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:layout_marginTop="20dp"
+                            android:text="@string/text_remarks"
+                            android:textColor="@color/color_232323"
+                            android:textSize="@dimen/text_size_24px" />
+
+                        <EditText
+                            android:id="@+id/edit_order_remarks"
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            android:layout_marginTop="8dp"
+                            android:background="@drawable/border_e6e6e6"
+                            android:gravity="center_vertical"
+                            android:lineSpacingMultiplier="1.2"
+                            android:maxLines="2"
+                            android:minHeight="40dp"
+                            android:paddingStart="10dp"
+                            android:paddingTop="10dp"
+                            android:paddingEnd="16dp"
+                            android:paddingBottom="10dp"
+                            android:text="@={viewModel.remarks}"
+                            android:textColor="@color/color_232323"
+                            android:textSize="@dimen/text_size_24px"
+                            tools:text="remark" />
+
+                    </LinearLayout>
+
+                    <Button
+                        android:id="@+id/btn_b2c_order_register"
+                        android:layout_width="131dp"
+                        android:layout_height="40dp"
+                        android:layout_gravity="center"
+                        android:layout_marginTop="20dp"
+                        android:layout_marginBottom="100dp"
+                        android:background="@drawable/bg_round_20_4fb648"
+                        android:gravity="center"
+                        android:onClick="@{()->viewModel.clickRegister()}"
+                        android:text="@string/text_register"
+                        android:textAllCaps="false"
+                        android:textColor="@color/white"
+                        android:textSize="@dimen/text_size_28px"
+                        android:textStyle="bold" />
+                </LinearLayout>
+            </ScrollView>
+        </LinearLayout>
+
+    </RelativeLayout>
+</layout>

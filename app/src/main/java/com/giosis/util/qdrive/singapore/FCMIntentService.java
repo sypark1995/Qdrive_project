@@ -8,7 +8,6 @@ import android.app.PendingIntent.CanceledException;
 import android.content.ComponentName;
 import android.content.Context;
 import android.content.Intent;
-import android.content.SharedPreferences;
 import android.content.pm.PackageManager;
 import android.content.pm.ResolveInfo;
 import android.net.Uri;
@@ -19,16 +18,14 @@ import android.util.Log;
 
 import androidx.core.app.NotificationCompat;
 
-import com.giosis.util.qdrive.list.ListActivity;
-import com.giosis.util.qdrive.main.MainActivity;
-import com.giosis.util.qdrive.message.MessageListActivity;
+import com.giosis.library.list.ListActivity;
+import com.giosis.library.main.MainActivity;
+import com.giosis.library.message.MessageListActivity;
+import com.giosis.library.util.DatabaseHelper;
 import com.giosis.util.qdrive.util.DataUtil;
-import com.giosis.util.qdrive.util.DatabaseHelper;
 import com.google.firebase.messaging.FirebaseMessagingService;
 import com.google.firebase.messaging.RemoteMessage;
 
-import java.text.SimpleDateFormat;
-import java.util.Date;
 import java.util.List;
 import java.util.Random;
 
@@ -162,23 +159,6 @@ public class FCMIntentService extends FirebaseMessagingService {
             } else if (action_key.equals("LAE")) {
                 // Locker Alliance Expired - User key(12자리) 값 클립보드에 복사
                 DataUtil.copyClipBoard(context, action_value);
-            } else if (action_key.equals("SRL") || action_key.equals("TEST_SRL")) {
-
-                // Smart Route 만들어지면 PUSH !!
-                SimpleDateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd");
-                Date date = new Date();
-                String strDate = dateFormat.format(date);
-
-                SharedPreferences sharedPreferences = getSharedPreferences(DataUtil.SHARED_PREFERENCE_FILE, MODE_PRIVATE);
-
-                int count = sharedPreferences.getInt("createdSRCount", 0) + 1;
-
-                SharedPreferences.Editor editor = sharedPreferences.edit();
-                editor.putInt("createdSRCount", count);
-                editor.putString("createdSRDate", strDate);
-                editor.apply();
-
-                Log.e("FCM", TAG + "  SmartRoute Count / Date : " + count + " / " + strDate);
             }
 
             // 진동
@@ -228,45 +208,15 @@ public class FCMIntentService extends FirebaseMessagingService {
             notificationIntent = new Intent(context, MainActivity.class);
         }
 
-        //krm0219  Admin Message
-        if (action_key.equalsIgnoreCase("QXMSG")) {
 
+        if (action_key.equalsIgnoreCase("QXMSG")) {
+            //  Admin Message
             notificationIntent = new Intent(context, MessageListActivity.class);
             notificationIntent.putExtra("position", 1);
-
-            // FCM thread 안에서 refreshData > RuntimeException 이중 스레드가 됨.
-            /*if (topClassname.contains("AdminMessageListDetailActivity")) {
-
-                if (DataUtil.getAdminMessageListDetailActivity() != null) {
-
-                    DataUtil.getAdminMessageListDetailActivity().refreshData();
-                }
-            } else if (topClassname.contains("MessageListActivity")) {
-
-                if (DataUtil.getMessageListActivity() != null) {
-
-                    DataUtil.getMessageListActivity().refreshAdminData();
-                }
-            }*/
         } else if (action_key.equalsIgnoreCase("QST")) {
-            // krm0219  Customer Message
-
+            //   Customer Message
             notificationIntent = new Intent(context, MessageListActivity.class);
             notificationIntent.putExtra("position", 0);
-
-            /*if (topClassname.contains("CustomerMessageListDetailActivity")) {
-
-                if (DataUtil.getCustomerMessageListDetailActivity() != null) {
-
-                    DataUtil.getCustomerMessageListDetailActivity().refreshData();
-                }
-            } else if (topClassname.contains("MessageListActivity")) {
-
-                if (DataUtil.getMessageListActivity() != null) {
-
-                    DataUtil.getMessageListActivity().refreshCustomerData();
-                }
-            }*/
         } else if (action_key.equals("LAE")) {
 
             if (action_value != null) {

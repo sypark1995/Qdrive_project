@@ -1,0 +1,139 @@
+<?xml version="1.0" encoding="utf-8"?>
+<layout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    tools:context="com.giosis.library.TestActivity">
+
+    <data>
+
+        <import type="android.view.View" />
+
+        <variable
+            name="viewModel"
+            type="com.giosis.library.TestViewModel" />
+    </data>
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:background="@color/white"
+        android:orientation="vertical">
+
+        <include layout="@layout/top_title" />
+
+        <RelativeLayout
+            android:layout_width="match_parent"
+            android:layout_height="50dp"
+            android:layout_marginStart="20dp"
+            android:layout_marginTop="20dp"
+            android:layout_marginEnd="20dp">
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_centerVertical="true"
+                android:text="@string/text_old_password"
+                android:textColor="@color/color_767676"
+                android:textSize="@dimen/text_size_26px" />
+
+            <EditText
+                android:id="@+id/edit_setting_change_old_password"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_centerVertical="true"
+                android:layout_marginStart="140dp"
+                android:ellipsize="end"
+                android:hint="@string/text_write_hint"
+                android:inputType="textPassword"
+                android:maxLines="1"
+                android:textColor="@color/color_303030"
+                android:textColorHint="@color/color_d4d3d3"
+                android:textSize="@dimen/text_size_32px" />
+        </RelativeLayout>
+
+        <RelativeLayout
+            android:layout_width="match_parent"
+            android:layout_height="50dp"
+            android:layout_marginStart="20dp"
+            android:layout_marginEnd="20dp">
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_centerVertical="true"
+                android:text="@string/text_new_password"
+                android:textColor="@color/color_767676"
+                android:textSize="@dimen/text_size_26px" />
+
+            <EditText
+                android:id="@+id/edit_setting_change_new_password"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_centerVertical="true"
+                android:layout_marginStart="140dp"
+                android:ellipsize="end"
+                android:hint="@string/text_write_hint"
+                android:inputType="textPassword"
+                android:maxLines="1"
+                android:textColor="@color/color_303030"
+                android:textColorHint="@color/color_d4d3d3"
+                android:textSize="@dimen/text_size_32px" />
+        </RelativeLayout>
+
+
+        <RelativeLayout
+            android:layout_width="match_parent"
+            android:layout_height="50dp"
+            android:layout_marginStart="20dp"
+            android:layout_marginEnd="20dp">
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_centerVertical="true"
+                android:text="@string/text_confirm_password"
+                android:textColor="@color/color_767676"
+                android:textSize="@dimen/text_size_26px" />
+
+            <EditText
+                android:id="@+id/edit_setting_change_confirm_password"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_centerVertical="true"
+                android:layout_marginStart="140dp"
+                android:ellipsize="end"
+                android:hint="@string/text_write_hint"
+                android:inputType="textPassword"
+                android:maxLines="1"
+                android:textColor="@color/color_303030"
+                android:textColorHint="@color/color_d4d3d3"
+                android:textSize="@dimen/text_size_32px" />
+        </RelativeLayout>
+
+        <Button
+            android:id="@+id/btn_setting_change_confirm"
+            android:layout_width="131dp"
+            android:layout_height="40dp"
+            android:layout_gravity="center"
+            android:layout_marginTop="50dp"
+            android:layout_marginBottom="35dp"
+            android:text="@string/button_confirm"
+            android:textAllCaps="false"
+            android:textColor="@color/white"
+            android:textSize="@dimen/text_size_32px" />
+
+        <!--            android:onClick="@{()->viewModel.onclick()}"-->
+        <!--            android:background="@drawable/bg_round_30_4fb648"-->
+
+
+        <TextView
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginLeft="20dp"
+            android:layout_marginRight="20dp"
+            android:lineSpacingMultiplier="1.2"
+            android:text="@string/msg_password_info"
+            android:textColor="@color/color_767676"
+            android:textSize="@dimen/text_size_26px" />
+    </LinearLayout>
+
+</layout>

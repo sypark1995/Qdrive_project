@@ -21,16 +21,6 @@
         tools:targetApi="n">
 
         <activity
-            android:name="com.giosis.util.qdrive.main.AppBaseActivity"
-            android:screenOrientation="portrait" />
-
-        <activity
-            android:name="com.giosis.util.qdrive.util.PermissionActivity"
-            android:configChanges="orientation|screenSize|screenLayout|keyboard|keyboardHidden"
-            android:screenOrientation="unspecified"
-            android:theme="@style/Theme.AppCompat.Transparent" />
-
-        <activity
             android:name=".AlertDialogActivity"
             android:launchMode="singleTop"
             android:theme="@android:style/Theme.Dialog">
@@ -46,7 +36,6 @@
             android:screenOrientation="portrait">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
-
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>
@@ -57,222 +46,19 @@
             android:label="@string/app_name"
             android:screenOrientation="portrait" />
 
-        <activity
-            android:name=".ScanActivity"
-            android:screenOrientation="portrait" />
-
 
         <activity
-            android:name="com.giosis.util.qdrive.main.RpcListActivity"
-            android:configChanges="orientation|keyboardHidden"
-            android:label="@string/app_name"
-            android:screenOrientation="portrait" />
-        <activity
-            android:name="com.giosis.util.qdrive.message.MessageListActivity"
-            android:screenOrientation="portrait" />
-        <activity
-            android:name="com.giosis.util.qdrive.message.CustomerMessageListDetailActivity"
-            android:screenOrientation="portrait" />
-        <activity
-            android:name="com.giosis.util.qdrive.message.AdminMessageListDetailActivity"
-            android:screenOrientation="portrait" />
-
-        <activity
-            android:name="com.giosis.util.qdrive.main.OutletOrderStatusActivity"
-            android:screenOrientation="portrait" />
-        <activity
-            android:name="com.giosis.util.qdrive.list.ListActivity"
-            android:configChanges="orientation|keyboardHidden"
-            android:label="@string/app_name"
-            android:screenOrientation="portrait">
-            <intent-filter>
-                <action android:name="android.intent.action.VIEW" />
-
-                <category android:name="android.intent.category.DEFAULT" />
-                <category android:name="android.intent.category.BROWSABLE" />
-
-                <data
-                    android:host="qtalk_call"
-                    android:scheme="qtalk" />
-                <data
-                    android:host="link"
-                    android:scheme="qtalk" />
-            </intent-filter>
-        </activity>
-        <activity
-            android:name="com.giosis.util.qdrive.main.ListNotInHousedActivity"
-            android:screenOrientation="portrait" />
-        <activity
-            android:name="com.giosis.util.qdrive.barcodescanner.FailListActivity"
-            android:configChanges="orientation|keyboardHidden"
-            android:label="@string/app_name"
-            android:screenOrientation="portrait"
-            android:windowSoftInputMode="stateAlwaysHidden|adjustPan" />
-        <activity
-            android:name="com.giosis.util.qdrive.main.MainActivity"
-            android:configChanges="orientation|keyboardHidden"
-            android:label="@string/app_name"
-            android:screenOrientation="portrait"
-            android:windowSoftInputMode="stateAlwaysHidden|adjustPan" />
-        <activity
-            android:name="com.giosis.util.qdrive.main.MainTestVisitLog"
-            android:screenOrientation="portrait" />
-        <activity
-            android:name="com.giosis.util.qdrive.barcodescanner.CaptureActivity"
+            android:name="com.giosis.util.qdrive.barcodescanner.CaptureActivityTemp"
             android:configChanges="orientation|keyboardHidden"
             android:screenOrientation="portrait"
             android:windowSoftInputMode="adjustNothing" />
-        <activity
-            android:name="com.giosis.util.qdrive.main.SelfCollectionDoneActivity"
-            android:configChanges="orientation|keyboardHidden"
-            android:screenOrientation="portrait"
-            android:windowSoftInputMode="stateAlwaysHidden|adjustPan" />
-        <activity
-            android:name="com.giosis.util.qdrive.list.pickup.OutletPickupScanActivity"
-            android:configChanges="orientation|keyboardHidden"
-            android:screenOrientation="portrait"
-            android:windowSoftInputMode="stateAlwaysHidden|adjustPan" />
 
-        <activity
-            android:name="com.giosis.util.qdrive.list.pickup.OutletPickupDoneActivity"
-            android:configChanges="orientation|keyboardHidden"
-            android:screenOrientation="portrait"
-            android:windowSoftInputMode="stateAlwaysHidden|adjustPan" />
 
-        <activity
-            android:name="com.giosis.util.qdrive.list.delivery.DeliveryFailedActivity"
-            android:configChanges="orientation|keyboardHidden"
-            android:screenOrientation="portrait"
-            android:windowSoftInputMode="stateAlwaysHidden|adjustPan" />
-        <activity
-            android:name="com.giosis.util.qdrive.list.delivery.DeliveryDoneActivity"
-            android:configChanges="orientation|keyboardHidden"
-            android:screenOrientation="portrait"
-            android:windowSoftInputMode="stateAlwaysHidden|adjustPan" />
-        <activity
-            android:name="com.giosis.util.qdrive.list.pickup.CnRPickupDoneActivity"
-            android:configChanges="orientation|keyboardHidden"
-            android:screenOrientation="portrait"
-            android:windowSoftInputMode="stateAlwaysHidden|adjustPan" />
-        <activity
-            android:name="com.giosis.util.qdrive.list.pickup.PickupDoneActivity"
-            android:configChanges="orientation|keyboardHidden"
-            android:screenOrientation="portrait"
-            android:windowSoftInputMode="stateAlwaysHidden|adjustPan" />
-        <activity
-            android:name="com.giosis.util.qdrive.list.pickup.PickupZeroQtyActivity"
-            android:configChanges="orientation|keyboardHidden"
-            android:screenOrientation="portrait"
-            android:windowSoftInputMode="stateAlwaysHidden|adjustPan" />
-        <activity
-            android:name="com.giosis.util.qdrive.list.pickup.PickupAddScanActivity"
-            android:configChanges="orientation|keyboardHidden"
-            android:screenOrientation="portrait"
-            android:windowSoftInputMode="stateAlwaysHidden|adjustPan" />
-        <activity
-            android:name="com.giosis.util.qdrive.list.pickup.PickupTakeBackActivity"
-            android:configChanges="orientation|keyboardHidden"
-            android:screenOrientation="portrait"
-            android:windowSoftInputMode="stateAlwaysHidden|adjustPan" />
-        <activity
-            android:name="com.giosis.util.qdrive.list.pickup.PickupFailedActivity"
-            android:configChanges="orientation|keyboardHidden"
-            android:screenOrientation="portrait"
-            android:windowSoftInputMode="stateAlwaysHidden|adjustPan" />
-
-        <activity
-            android:name="com.giosis.util.qdrive.list.delivery.QuickReturnedActivity"
-            android:configChanges="orientation|keyboardHidden"
-            android:screenOrientation="portrait"
-            android:windowSoftInputMode="stateAlwaysHidden|adjustPan" />
-
-        <activity
-            android:name="com.giosis.util.qdrive.list.delivery.QuickReturnFailedActivity"
-            android:configChanges="orientation|keyboardHidden"
-            android:screenOrientation="portrait"
-            android:windowSoftInputMode="stateAlwaysHidden|adjustPan" />
         <activity
             android:name="com.giosis.util.qdrive.barcodescanner.PreferencesActivity"
             android:label=""
             android:screenOrientation="portrait" />
-        <activity
-            android:name=".SMSVerificationActivity"
-            android:label="@string/app_name"
-            android:screenOrientation="portrait" />
-        <activity
-            android:name=".StatisticsActivity"
-            android:screenOrientation="portrait" />
-        <activity
-            android:name="com.giosis.util.qdrive.settings.SettingActivity"
-            android:screenOrientation="portrait" />
 
-        <activity
-            android:name="com.giosis.util.qdrive.settings.DeveloperModeActivity"
-            android:screenOrientation="portrait" />
-
-        <activity
-            android:name="com.giosis.util.qdrive.settings.ModifyUserInfoActivity"
-            android:label="@string/app_name"
-            android:screenOrientation="portrait" />
-        <activity
-            android:name="com.giosis.util.qdrive.settings.LanguageSettingActivity"
-            android:screenOrientation="portrait" />
-
-        <activity
-            android:name="com.giosis.util.qdrive.settings.LockerUserInfoActivity"
-            android:label="@string/app_name"
-            android:screenOrientation="portrait" />
-        <activity
-            android:name="com.giosis.util.qdrive.settings.ChangePwdActivity"
-            android:label="@string/app_name"
-            android:screenOrientation="portrait" />
-        <activity
-            android:name="com.giosis.util.qdrive.settings.NoticeActivity"
-            android:screenOrientation="portrait" />
-        <activity
-            android:name="com.giosis.util.qdrive.settings.NoticeDetailActivity"
-            android:screenOrientation="portrait" />
-        <activity
-            android:name="com.giosis.util.qdrive.settings.ScanSettingActivity"
-            android:screenOrientation="portrait" />
-        <activity
-            android:name="com.giosis.util.qdrive.settings.PrinterSettingActivity"
-            android:label="@string/app_name"
-            android:screenOrientation="portrait" />
-        <activity
-            android:name="com.giosis.util.qdrive.settings.ModifyDeviceInfoActivity"
-            android:label="@string/app_name"
-            android:screenOrientation="portrait" />
-        <activity
-            android:name="com.giosis.util.qdrive.list.TodayDonePickupScanListActivity"
-            android:configChanges="orientation|keyboardHidden"
-            android:screenOrientation="portrait"
-            android:windowSoftInputMode="adjustNothing" />
-
-        <activity
-            android:name="com.giosis.util.qdrive.main.pickupOrder.CreatePickupOrderB2CActivity"
-            android:configChanges="orientation|keyboardHidden"
-            android:screenOrientation="portrait"
-            android:windowSoftInputMode="adjustNothing" />
-        <activity
-            android:name="com.giosis.util.qdrive.main.pickupOrder.CreatePickupOrderC2CActivity"
-            android:configChanges="orientation|keyboardHidden"
-            android:screenOrientation="portrait"
-            android:windowSoftInputMode="adjustNothing" />
-
-        <activity
-            android:name="com.giosis.util.qdrive.main.pickupOrder.ChoosePickupTypeActivity"
-            android:configChanges="orientation|keyboardHidden"
-            android:screenOrientation="portrait"
-            android:theme="@style/CustomDialog"
-            android:windowSoftInputMode="adjustResize" />
-
-        <activity
-            android:name="com.giosis.util.qdrive.main.pickupOrder.SearchAddressActivity"
-            android:configChanges="orientation|keyboardHidden"
-            android:screenOrientation="portrait"
-            android:theme="@style/CustomDialog"
-            android:windowSoftInputMode="adjustResize" />
 
         <activity android:name="com.giosis.util.qdrive.barcodescanner.bluetooth.Settings" />
         <activity android:name="com.giosis.util.qdrive.barcodescanner.bluetooth.SystemSetting" />
@@ -286,7 +72,6 @@
         <activity android:name="com.giosis.util.qdrive.barcodescanner.bluetooth.SetBarcode" />
         <activity
             android:name="com.giosis.util.qdrive.barcodescanner.bluetooth.DeviceListActivity"
-            android:label=""
             android:theme="@android:style/Theme.Dialog" />
 
         <meta-data
@@ -315,10 +100,6 @@
                 <action android:name="com.google.firebase.INSTANCE_ID_EVENT" />
             </intent-filter>
         </service>
-
-        <service android:name="com.giosis.util.qdrive.gps.FusedProviderService" />
-
-        <service android:name="com.giosis.util.qdrive.gps.LocationManagerService" />
 
 
         <uses-library
@@ -378,7 +159,8 @@
     <uses-permission android:name="com.google.android.providers.gsf.permission.WRITE_GSERVICES" />
 
     <uses-permission android:name="android.permission.GET_TASKS" />
-    <uses-permission android:name="android.permission.QUERY_ALL_PACKAGES"
+    <uses-permission
+        android:name="android.permission.QUERY_ALL_PACKAGES"
         tools:ignore="QueryAllPackagesPermission" />
 
 </manifest>

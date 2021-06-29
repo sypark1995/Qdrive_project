@@ -1,0 +1,98 @@
+<?xml version="1.0" encoding="utf-8"?>
+<layout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    tools:context="com.giosis.library.pickup.AddressDialogActivity">
+
+    <data>
+
+        <import type="android.view.View" />
+
+        <variable
+            name="viewModel"
+            type="com.giosis.library.pickup.AddressDialogViewModel" />
+    </data>
+
+    <androidx.constraintlayout.widget.ConstraintLayout
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:paddingHorizontal="20dp">
+
+        <Button
+            android:id="@+id/btn_search_address_close"
+            android:layout_width="37dp"
+            android:layout_height="37dp"
+            android:layout_alignParentEnd="true"
+            android:layout_marginBottom="4dp"
+            android:background="@drawable/icon_close_white"
+            app:layout_constraintBottom_toTopOf="@id/layout_search_address"
+            app:layout_constraintEnd_toEndOf="parent" />
+
+        <LinearLayout
+            android:id="@+id/layout_search_address"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:background="@drawable/bg_round_5_ffffff"
+            android:orientation="vertical"
+            android:padding="20dp"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="parent">
+
+            <TextView
+                android:id="@+id/text_search_address_title"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="@string/text_search_address"
+                android:textColor="@color/color_3e3e3e"
+                android:textSize="@dimen/text_size_34px"
+                android:textStyle="bold" />
+
+            <RelativeLayout
+                android:id="@+id/layout_input_address"
+                android:layout_width="match_parent"
+                android:layout_height="40dp"
+                android:layout_marginTop="10dp"
+                android:background="@drawable/border_bottom_4fb648">
+
+                <EditText
+                    android:id="@+id/edit_search_address"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_centerVertical="true"
+                    android:layout_toStartOf="@id/btn_search_address_search"
+                    android:background="@color/transparent"
+                    android:hint="@string/text_zip_code_or_address"
+                    android:imeOptions="actionSearch"
+                    android:paddingTop="5dp"
+                    android:singleLine="true"
+                    android:text="@={viewModel.searchText}"
+                    android:textColor="@color/color_3e3e3e"
+                    android:textColorHint="@color/color_aeaeae"
+                    android:textSize="@dimen/text_size_32px" />
+
+                <Button
+                    android:id="@+id/btn_search_address_search"
+                    android:layout_width="24dp"
+                    android:layout_height="24dp"
+                    android:layout_alignParentEnd="true"
+                    android:layout_centerVertical="true"
+                    android:layout_marginEnd="2dp"
+                    android:background="@drawable/icon_search_green"
+                    android:onClick="@{()->viewModel.clickSearch()}" />
+            </RelativeLayout>
+
+            <androidx.recyclerview.widget.RecyclerView
+                android:id="@+id/recycler_search_address"
+                android:layout_width="match_parent"
+                android:layout_height="180dp"
+                android:layout_marginTop="4dp"
+                android:divider="@null"
+                android:dividerHeight="0dp"
+                android:fillViewport="true"
+                app:layoutManager="androidx.recyclerview.widget.LinearLayoutManager"
+                tools:listitem="@layout/item_search_address" />
+        </LinearLayout>
+    </androidx.constraintlayout.widget.ConstraintLayout>
+</layout>

@@ -1,0 +1,98 @@
+{
+  "project_info": {
+    "project_number": "777364279754",
+    "firebase_url": "https://qsign-qdrive.firebaseio.com",
+    "project_id": "qsign-qdrive",
+    "storage_bucket": "qsign-qdrive.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:777364279754:android:2546b3ec2a0a5842",
+        "android_client_info": {
+          "package_name": "com.giosis.util.qdrive.international"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "777364279754-1st5lnosau6fn6l531v1vt309a47grrk.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyDdR9xYiMKaLajHBEF80A-tGYx_XwVLAsQ"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "777364279754-1st5lnosau6fn6l531v1vt309a47grrk.apps.googleusercontent.com",
+              "client_type": 3
+            }
+          ]
+        }
+      }
+    },
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:777364279754:android:f2f6a07fbc87f17b",
+        "android_client_info": {
+          "package_name": "com.giosis.util.qdrive.quick"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "777364279754-1st5lnosau6fn6l531v1vt309a47grrk.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyDdR9xYiMKaLajHBEF80A-tGYx_XwVLAsQ"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "777364279754-1st5lnosau6fn6l531v1vt309a47grrk.apps.googleusercontent.com",
+              "client_type": 3
+            }
+          ]
+        }
+      }
+    },
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:777364279754:android:66bdc416d316217a",
+        "android_client_info": {
+          "package_name": "com.giosis.util.qdrive.singapore"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "777364279754-1st5lnosau6fn6l531v1vt309a47grrk.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyDdR9xYiMKaLajHBEF80A-tGYx_XwVLAsQ"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "777364279754-1st5lnosau6fn6l531v1vt309a47grrk.apps.googleusercontent.com",
+              "client_type": 3
+            }
+          ]
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}

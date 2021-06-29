@@ -14,7 +14,7 @@ import android.widget.TextView;
 
 import androidx.core.app.NotificationManagerCompat;
 
-import com.giosis.util.qdrive.main.MainActivity;
+import com.giosis.library.main.MainActivity;
 import com.giosis.util.qdrive.util.DataUtil;
 
 public class AlertDialogActivity extends Activity {

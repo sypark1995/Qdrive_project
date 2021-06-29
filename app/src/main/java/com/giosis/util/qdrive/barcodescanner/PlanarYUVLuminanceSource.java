@@ -30,6 +30,7 @@ import android.graphics.Bitmap;
  *
  * @author dswitkin@google.com (Daniel Switkin)
  */
+@Deprecated
 public final class PlanarYUVLuminanceSource extends LuminanceSource {
 
   private final byte[] yuvData;

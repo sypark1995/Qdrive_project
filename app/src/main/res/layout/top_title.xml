@@ -15,7 +15,7 @@
             android:layout_width="17dp"
             android:layout_height="21dp"
             android:layout_gravity="center_vertical"
-            android:background="@drawable/qdrive_setting_icon_arrow_l" />
+            android:background="@drawable/icon_white_arrow_l" />
     </FrameLayout>
 
     <TextView
@@ -37,20 +37,6 @@
         android:layout_alignParentEnd="true">
 
         <FrameLayout
-            android:id="@+id/layout_top_smart_route"
-            android:layout_width="match_parent"
-            android:layout_height="match_parent"
-            android:paddingStart="24dp"
-            android:visibility="gone">
-
-            <ImageView
-                android:layout_width="18dp"
-                android:layout_height="25dp"
-                android:layout_gravity="center_vertical"
-                android:background="@drawable/qdrive_icon_map" />
-        </FrameLayout>
-
-        <FrameLayout
             android:id="@+id/layout_top_signout"
             android:layout_width="match_parent"
             android:layout_height="match_parent"
@@ -61,21 +47,7 @@
                 android:layout_width="17dp"
                 android:layout_height="21dp"
                 android:layout_gravity="center_vertical"
-                android:background="@drawable/qdrive_setting_icon_signout" />
-        </FrameLayout>
-
-        <FrameLayout
-            android:id="@+id/layout_top_change_pickup"
-            android:layout_width="match_parent"
-            android:layout_height="match_parent"
-            android:paddingStart="24dp"
-            android:visibility="gone">
-
-            <ImageView
-                android:layout_width="20dp"
-                android:layout_height="20dp"
-                android:layout_gravity="center_vertical"
-                android:background="@drawable/btn_layerpop_change" />
+                android:background="@drawable/icon_singout" />
         </FrameLayout>
 
         <FrameLayout

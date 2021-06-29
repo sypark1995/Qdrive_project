@@ -26,6 +26,10 @@ class MySharedPreferences(context: Context) {
     private val PREF_KEY_DEFAULT_YN = "default"
     private val PREF_KEY_AUTH_NO = "authNo"
 
+    private val PREF_KEY_LIST_SORT_INDEX = "sortIndex"
+    private val PREF_KEY_SCAN_VIBRATION = "scanVibration"
+    private val PREF_KEY_LOCALE = "localeLanguage"
+
 
     var userId: String
         get() = prefs.getString(PREF_KEY_USER_ID, "").toString()
@@ -77,6 +81,16 @@ class MySharedPreferences(context: Context) {
         get() = prefs.getString(PREF_KEY_OUTLET_LOCKER_STATUS, "").toString()
         set(value) = prefs.edit().putString(PREF_KEY_OUTLET_LOCKER_STATUS, value).apply()
 
+
+    var sortIndex: Int
+        get() = prefs.getInt(PREF_KEY_LIST_SORT_INDEX, 0)
+        set(value) = prefs.edit().putInt(PREF_KEY_LIST_SORT_INDEX, value).apply()
+
+    var scanVibration: String
+        get() = prefs.getString(PREF_KEY_SCAN_VIBRATION, "OFF").toString()
+        set(value) = prefs.edit().putString(PREF_KEY_SCAN_VIBRATION, value).apply()
+
+
     var default: String
         get() = prefs.getString(PREF_KEY_DEFAULT_YN, "").toString()
         set(value) = prefs.edit().putString(PREF_KEY_DEFAULT_YN, value).apply()
@@ -86,16 +100,10 @@ class MySharedPreferences(context: Context) {
         set(value) = prefs.edit().putString(PREF_KEY_AUTH_NO, value).apply()
 
 
-    private val PREF_KEY_LIST_SORT_INDEX = "sortIndex"
-    private val PREF_KEY_SCAN_VIBRATION = "scanVibration"
+    var localeLanguage: String
+        get() = prefs.getString(PREF_KEY_LOCALE, Locale.getDefault().language).toString()
+        set(value) = prefs.edit().putString(PREF_KEY_LOCALE, value).apply()
 
-    var sortIndex: Int
-        get() = prefs.getInt(PREF_KEY_LIST_SORT_INDEX, 0)
-        set(value) = prefs.edit().putInt(PREF_KEY_LIST_SORT_INDEX, value).apply()
-
-    var scanVibration: String
-        get() = prefs.getString(PREF_KEY_SCAN_VIBRATION, "OFF").toString()
-        set(value) = prefs.edit().putString(PREF_KEY_SCAN_VIBRATION, value).apply()
 
 
     // 202008.  Auto Logout
@@ -129,8 +137,15 @@ class MySharedPreferences(context: Context) {
         set(value) = prefs.edit().putBoolean(PREF_KEY_DEVELOPER_MODE, value).apply()
 
 
-    private val PREF_KEY_LOCALE = "localeLanguage"
-    var localeLanguage: String
-        get() = prefs.getString(PREF_KEY_LOCALE, Locale.getDefault().language).toString()
-        set(value) = prefs.edit().putString(PREF_KEY_LOCALE, value).apply()
+    // 202012. Failed Code
+    private val PREF_KEY_DELIVERY_FAILED_CODE = "dFailedCode"
+    private val PREF_KEY_PICKUP_FAILED_CODE = "pFailedCode"
+
+    var dFailedCode: String
+        get() = prefs.getString(PREF_KEY_DELIVERY_FAILED_CODE, "").toString()
+        set(value) = prefs.edit().putString(PREF_KEY_DELIVERY_FAILED_CODE, value).apply()
+
+    var pFailedCode: String
+        get() = prefs.getString(PREF_KEY_PICKUP_FAILED_CODE, "").toString()
+        set(value) = prefs.edit().putString(PREF_KEY_PICKUP_FAILED_CODE, value).apply()
 }
