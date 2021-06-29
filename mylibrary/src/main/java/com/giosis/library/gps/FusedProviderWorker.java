@@ -263,7 +263,7 @@ public class FusedProviderWorker { //implements GoogleApiClient.ConnectionCallba
                     } catch (Exception e) {
                         Log.e("Exception", "  requestSetAppUserInfo  Exception " + e.toString());
                     }
-                }, it -> Toast.makeText(context, context.getResources().getString(com.giosis.library.R.string.msg_error_check_again), Toast.LENGTH_SHORT).show());
+                }, it -> Toast.makeText(context, context.getResources().getString(R.string.msg_error_check_again), Toast.LENGTH_SHORT).show());
 
 
 //        new QuickAppUserInfoUploadHelper.Builder(context, opID, "FusedProvider Location is null", api_level, device_info,

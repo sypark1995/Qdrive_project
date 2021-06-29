@@ -5,7 +5,8 @@
     android:background="@color/color_f6f6f6"
     android:orientation="vertical">
 
-    <include layout="@layout/top_title" />
+    <include layout="@layout/top_title"
+        android:id="@+id/layout_top_title"/>
 
     <TextView
         android:layout_width="wrap_content"
@@ -19,7 +20,7 @@
         android:textSize="@dimen/text_size_28px" />
 
     <RelativeLayout
-        android:id="@+id/layout_scan_confirm_my_delivery_order"
+        android:id="@+id/layout_confirm_my_delivery_order"
         android:layout_width="match_parent"
         android:layout_height="50dp"
         android:background="@color/white"
@@ -27,7 +28,7 @@
         android:paddingStart="20dp">
 
         <TextView
-            android:id="@+id/text_scan_confirm_my_delivery_order"
+            android:id="@+id/text_confirm_my_delivery_order"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_centerVertical="true"
@@ -58,7 +59,7 @@
     </FrameLayout>
 
     <RelativeLayout
-        android:id="@+id/layout_scan_delivery_done"
+        android:id="@+id/layout_delivery_done"
         android:layout_width="match_parent"
         android:layout_height="50dp"
         android:background="@color/white"
@@ -98,7 +99,7 @@
         android:textSize="@dimen/text_size_26px" />
 
     <TextView
-        android:id="@+id/text_scan_delivery_scan_msg"
+        android:id="@+id/text_delivery_scan_msg"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_marginTop="5dp"
@@ -121,7 +122,7 @@
         android:textSize="@dimen/text_size_28px" />
 
     <RelativeLayout
-        android:id="@+id/layout_scan_pickup_cnr"
+        android:id="@+id/layout_pickup_cnr"
         android:layout_width="match_parent"
         android:layout_height="50dp"
         android:background="@color/white"
@@ -152,7 +153,7 @@
         android:background="@color/color_ebebeb" />
 
     <LinearLayout
-        android:id="@+id/layout_scan_self_collection_shown"
+        android:id="@+id/layout_self_collection_shown"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:orientation="vertical">
@@ -169,7 +170,7 @@
             android:textSize="@dimen/text_size_28px" />
 
         <RelativeLayout
-            android:id="@+id/layout_scan_self_collection"
+            android:id="@+id/layout_self_collection"
             android:layout_width="match_parent"
             android:layout_height="50dp"
             android:background="@color/white"

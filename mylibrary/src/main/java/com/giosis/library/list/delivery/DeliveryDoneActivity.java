@@ -273,18 +273,20 @@ public class DeliveryDoneActivity extends CommonActivity implements Camera2APIs.
         try {
 
             RowItem parcel = (RowItem) getIntent().getSerializableExtra("parcel");
-            highAmountYn = parcel.getHigh_amount_yn();
-            mStrWaybillNo = parcel.getShipping();
-            locationModel.setParcelLocation(parcel.getLat(), parcel.getLng(), parcel.getZip_code(), parcel.getState(), parcel.getCity(), parcel.getStreet());
-            Log.e("GPSUpdate", "Parcel " + parcel.getShipping() + " // " + parcel.getLat() + ", " + parcel.getLng() + " // "
-                    + parcel.getZip_code() + " - " + parcel.getState() + " - " + parcel.getCity() + " - " + parcel.getStreet());
 
             BarcodeData songData;
             songData = new BarcodeData();
             songData.setBarcode(parcel.getShipping().toUpperCase());
             songData.setState(BarcodeType.TYPE_DELIVERY);
             barcodeList.add(songData);
+
+            highAmountYn = parcel.getHigh_amount_yn();
+            mStrWaybillNo = parcel.getShipping();
+            locationModel.setParcelLocation(parcel.getLat(), parcel.getLng(), parcel.getZip_code(), parcel.getState(), parcel.getCity(), parcel.getStreet());
+            Log.e("GPSUpdate", "Parcel " + parcel.getShipping() + " // " + parcel.getLat() + ", " + parcel.getLng() + " // "
+                    + parcel.getZip_code() + " - " + parcel.getState() + " - " + parcel.getCity() + " - " + parcel.getStreet());
         } catch (Exception ignored) {
+
         }
 
         try {

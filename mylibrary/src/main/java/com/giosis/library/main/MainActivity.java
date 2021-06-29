@@ -237,9 +237,9 @@ public class MainActivity extends AppBaseActivity {
         setTopTitle(getResources().getString(R.string.navi_home));
 
 
-//        // TEST Outlet
+    // TEST Outlet
 //        Preferences.INSTANCE.setOutletDriver("Y");
-//        Preferences.INSTANCE.setUserId("Syed_7E");      // 7Eleven.Ajib
+//        Preferences.INSTANCE.setUserId("7Eleven.Ajib");      // 7Eleven.Ajib
 
 
         dbHelper = DatabaseHelper.getInstance();
@@ -884,7 +884,7 @@ public class MainActivity extends AppBaseActivity {
                     } catch (Exception e) {
                         Log.e("Exception", "  requestSetAppUserInfo  Exception " + e.toString());
                     }
-                }, it -> Toast.makeText(this, getResources().getString(com.giosis.library.R.string.msg_error_check_again), Toast.LENGTH_SHORT).show());
+                }, it -> Toast.makeText(this, getResources().getString(R.string.msg_error_check_again), Toast.LENGTH_SHORT).show());
 
 
         double accuracy = 0;

@@ -371,7 +371,7 @@ public class ListInProgressFragment extends Fragment
                         }.getType());
                         fragmentListener.onTodayDoneCountRefresh(list != null ? list.size() : 0);
                     }
-                }, it -> Toast.makeText(getActivity(), getResources().getString(com.giosis.library.R.string.msg_error_check_again), Toast.LENGTH_SHORT).show());
+                }, it -> Toast.makeText(getActivity(), getResources().getString(R.string.msg_error_check_again), Toast.LENGTH_SHORT).show());
 
 
 //        new ListTodayDonePickupDownloadHelper.Builder(Preferences.INSTANCE.getUserId())

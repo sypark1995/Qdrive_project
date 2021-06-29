@@ -6,7 +6,8 @@
     android:background="@color/color_f0f0f0"
     android:orientation="vertical">
 
-    <include layout="@layout/top_title" />
+    <include layout="@layout/top_title"
+        android:id="@+id/layout_top_title"/>
 
     <RelativeLayout
         android:layout_width="match_parent"
@@ -38,7 +39,7 @@
                         android:textSize="@dimen/text_size_30px" />
 
                     <TextView
-                        android:id="@+id/text_add_scan_pickup_no"
+                        android:id="@+id/text_pickup_no"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:layout_alignParentEnd="true"
@@ -68,7 +69,7 @@
                         android:textSize="@dimen/text_size_30px" />
 
                     <TextView
-                        android:id="@+id/text_add_scan_scanned_qty"
+                        android:id="@+id/text_scanned_qty"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:layout_alignParentEnd="true"
@@ -84,7 +85,7 @@
                     android:background="@color/color_e5e5e5" />
 
                 <Button
-                    android:id="@+id/btn_add_scan_add"
+                    android:id="@+id/btn_add"
                     android:layout_width="117dp"
                     android:layout_height="32dp"
                     android:layout_gravity="center"
@@ -98,7 +99,7 @@
             </LinearLayout>
 
             <ListView
-                android:id="@+id/list_add_scan_scanned_list"
+                android:id="@+id/list_scanned_list"
                 android:layout_width="match_parent"
                 android:layout_height="match_parent"
                 android:layout_marginTop="10dp"
@@ -106,6 +107,7 @@
                 android:childDivider="@null"
                 android:divider="@null"
                 android:groupIndicator="@null"
+                tools:listitem="@layout/item_pickup_scanned_list"
                 android:listSelector="@android:color/transparent" />
         </LinearLayout>
 
