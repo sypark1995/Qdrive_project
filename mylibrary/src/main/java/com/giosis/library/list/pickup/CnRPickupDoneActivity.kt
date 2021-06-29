@@ -87,7 +87,11 @@ class CnRPickupDoneActivity : CommonActivity() {
                     val parcelLat: Double = cs.getDouble(cs.getColumnIndex("lat"))
                     val parcelLng: Double = cs.getDouble(cs.getColumnIndex("lng"))
                     val zipCode: String = cs.getString(cs.getColumnIndex("zip_code"))
-                    val state: String = cs.getString(cs.getColumnIndex("state"))
+                    val state: String = if (cs.getString(cs.getColumnIndex("state")) != null) {
+                        cs.getString(cs.getColumnIndex("state"))
+                    } else {
+                        ""
+                    }
                     val city: String = cs.getString(cs.getColumnIndex("city"))
                     val street: String = cs.getString(cs.getColumnIndex("street"))
                     Log.e("GPSUpdate", "Parcel $barcode // $parcelLat, $parcelLng // $zipCode - $state - $city - $street")
