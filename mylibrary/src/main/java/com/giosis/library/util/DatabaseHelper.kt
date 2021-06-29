@@ -15,7 +15,7 @@ class DatabaseHelper private constructor(private val mContext: Context) : SQLite
         private var mInstance: DatabaseHelper? = null
         private var sqLiteDatabase: SQLiteDatabase? = null
 
-        private const val DB_VERSION = 2
+        private const val DB_VERSION = 3
         private const val DB_NAME = "QdriveDB.db"
 
         const val DB_TABLE_INTEGRATION_LIST = "INTEGRATION_LIST"
@@ -66,16 +66,10 @@ class DatabaseHelper private constructor(private val mContext: Context) : SQLite
     override fun onUpgrade(db: SQLiteDatabase, oldVersion: Int, newVersion: Int) {
         Log.e(TAG, "onUpgrade  $oldVersion > $newVersion")
 
-        if (oldVersion == 1) {
-
-            // 필요없는 db column 정리 후 첫 업그레이드
-            db.execSQL("DROP TABLE IF EXISTS $DB_TABLE_INTEGRATION_LIST")
-            db.execSQL("DROP TABLE IF EXISTS $DB_TABLE_REST_DAYS")
-            onCreate(db)
-        } else {
-
-            // ALERT 사용
-        }
+        // 필요없는 db column 정리 후 첫 업그레이드
+        db.execSQL("DROP TABLE IF EXISTS $DB_TABLE_INTEGRATION_LIST")
+        db.execSQL("DROP TABLE IF EXISTS $DB_TABLE_REST_DAYS")
+        onCreate(db)
     }
 
     val dbPath: String
