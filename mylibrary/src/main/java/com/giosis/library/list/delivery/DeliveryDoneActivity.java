@@ -282,11 +282,15 @@ public class DeliveryDoneActivity extends CommonActivity implements Camera2APIs.
 
             highAmountYn = parcel.getHigh_amount_yn();
             mStrWaybillNo = parcel.getShipping();
-            locationModel.setParcelLocation(parcel.getLat(), parcel.getLng(), parcel.getZip_code(), parcel.getState(), parcel.getCity(), parcel.getStreet());
-            Log.e("GPSUpdate", "Parcel " + parcel.getShipping() + " // " + parcel.getLat() + ", " + parcel.getLng() + " // "
-                    + parcel.getZip_code() + " - " + parcel.getState() + " - " + parcel.getCity() + " - " + parcel.getStreet());
-        } catch (Exception ignored) {
 
+            if (!Preferences.INSTANCE.getUserNation().equals("SG")) {
+                locationModel.setParcelLocation(parcel.getLat(), parcel.getLng(), parcel.getZip_code(), parcel.getState(), parcel.getCity(), parcel.getStreet());
+                Log.e("GPSUpdate", "Parcel " + parcel.getShipping() + " // " + parcel.getLat() + ", " + parcel.getLng() + " // "
+                        + parcel.getZip_code() + " - " + parcel.getState() + " - " + parcel.getCity() + " - " + parcel.getStreet());
+            }
+        } catch (Exception e) {
+
+            Log.e("Exception", "Exception " + e.toString());
         }
 
         try {
