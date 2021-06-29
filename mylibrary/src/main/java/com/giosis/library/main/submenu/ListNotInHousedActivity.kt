@@ -4,6 +4,7 @@ import android.os.Bundle
 import android.view.View
 import android.widget.Toast
 import com.giosis.library.R
+import com.giosis.library.databinding.ActivityNotInHousedBinding
 import com.giosis.library.server.RetrofitClient
 import com.giosis.library.util.CommonActivity
 import com.giosis.library.util.NetworkUtil
@@ -11,8 +12,6 @@ import com.google.gson.Gson
 import com.google.gson.reflect.TypeToken
 import io.reactivex.rxjava3.android.schedulers.AndroidSchedulers
 import io.reactivex.rxjava3.schedulers.Schedulers
-import kotlinx.android.synthetic.main.activity_not_in_housed.*
-import kotlinx.android.synthetic.main.top_title.*
 import java.util.*
 
 /**
@@ -21,24 +20,27 @@ import java.util.*
 class ListNotInHousedActivity : CommonActivity() {
     var tag = "ListNotInHousedActivity"
 
+    private val binding by lazy {
+        ActivityNotInHousedBinding.inflate(layoutInflater)
+    }
 
     lateinit var listNotInHousedAdapter: ListNotInHousedAdapter
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        setContentView(R.layout.activity_not_in_housed)
+        setContentView(binding.root)
 
 
-        text_top_title.setText(R.string.navi_sub_not_in_housed)
-        layout_top_back.setOnClickListener { finish() }
+        binding.layoutTopTitle.textTopTitle.setText(R.string.navi_sub_not_in_housed)
+        binding.layoutTopTitle.layoutTopBack.setOnClickListener { finish() }
 
-        exlist_not_in_housed_list.setOnGroupExpandListener { groupPosition: Int ->
+        binding.exlistList.setOnGroupExpandListener { groupPosition: Int ->
 
             val groupCount = listNotInHousedAdapter.groupCount
 
             for (i in 0 until groupCount) {
 
-                if (i != groupPosition) exlist_not_in_housed_list.collapseGroup(i)
+                if (i != groupPosition) binding.exlistList.collapseGroup(i)
             }
         }
     }
@@ -48,7 +50,7 @@ class ListNotInHousedActivity : CommonActivity() {
 
         if (NetworkUtil.isNetworkAvailable(this@ListNotInHousedActivity)) {
 
-            progressBar.visibility = View.VISIBLE
+            binding.progressBar.visibility = View.VISIBLE
             RetrofitClient.instanceDynamic().requestGetOutStandingPickupList(NetworkUtil.getNetworkType(this@ListNotInHousedActivity))
                     .subscribeOn(Schedulers.io())
                     .observeOn(AndroidSchedulers.mainThread())
@@ -59,26 +61,26 @@ class ListNotInHousedActivity : CommonActivity() {
 
                         if (list.isEmpty()) {
 
-                            text_not_in_housed_empty.text = resources.getString(R.string.text_empty)
-                            text_not_in_housed_empty.visibility = View.VISIBLE
-                            exlist_not_in_housed_list.visibility = View.GONE
+                            binding.textEmpty.text = resources.getString(R.string.text_empty)
+                            binding.textEmpty.visibility = View.VISIBLE
+                            binding.exlistList.visibility = View.GONE
                         } else {
 
-                            text_not_in_housed_empty.visibility = View.GONE
-                            exlist_not_in_housed_list.visibility = View.VISIBLE
+                            binding.textEmpty.visibility = View.GONE
+                            binding.exlistList.visibility = View.VISIBLE
 
                             listNotInHousedAdapter = ListNotInHousedAdapter(list)
-                            exlist_not_in_housed_list.setAdapter(listNotInHousedAdapter)
+                            binding.exlistList.setAdapter(listNotInHousedAdapter)
                         }
 
-                        progressBar.visibility = View.GONE
+                        binding.progressBar.visibility = View.GONE
                     }, {
 
-                        progressBar.visibility = View.GONE
+                        binding.progressBar.visibility = View.GONE
 
-                        text_not_in_housed_empty.text = resources.getString(R.string.msg_please_try_again)
-                        text_not_in_housed_empty.visibility = View.VISIBLE
-                        exlist_not_in_housed_list.visibility = View.GONE
+                        binding.textEmpty.text = resources.getString(R.string.msg_please_try_again)
+                        binding.textEmpty.visibility = View.VISIBLE
+                        binding.exlistList.visibility = View.GONE
                     })
         } else {
 

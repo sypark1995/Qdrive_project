@@ -226,7 +226,7 @@ public class ListTodayDoneFragment extends Fragment implements SearchView.OnQuer
                         mCountCallback.onTodayDoneCountRefresh(groupCount);
 
                     }
-                }, it -> Toast.makeText(getActivity(), getResources().getString(com.giosis.library.R.string.msg_error_check_again), Toast.LENGTH_SHORT).show());
+                }, it -> Toast.makeText(getActivity(), getResources().getString(R.string.msg_error_check_again), Toast.LENGTH_SHORT).show());
 
 
 //        new ListTodayDonePickupDownloadHelper.Builder(Preferences.INSTANCE.getUserId())

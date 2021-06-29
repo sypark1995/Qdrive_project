@@ -135,7 +135,7 @@ public class LocationManagerListener implements LocationListener {
                         builder.setPositiveButton(context.getResources().getString(R.string.button_ok), (dialog1, which) -> dialog1.dismiss());
                         builder.show();
                     }
-                }, it -> Toast.makeText(context, context.getResources().getString(com.giosis.library.R.string.msg_error_check_again), Toast.LENGTH_SHORT).show());
+                }, it -> Toast.makeText(context, context.getResources().getString(R.string.msg_error_check_again), Toast.LENGTH_SHORT).show());
     }
 
     @Override

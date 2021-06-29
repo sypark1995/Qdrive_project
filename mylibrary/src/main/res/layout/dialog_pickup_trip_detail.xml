@@ -7,7 +7,7 @@
     android:background="@android:color/transparent">
 
     <Button
-        android:id="@+id/btn_trip_detail_close"
+        android:id="@+id/btn_close"
         android:layout_width="40dp"
         android:layout_height="40dp"
         android:background="@drawable/btn_close"
@@ -21,9 +21,8 @@
         android:layout_marginStart="45dp"
         android:layout_marginEnd="45dp"
         android:background="@drawable/border_round_5_707070"
-        android:paddingStart="20dp"
+        android:paddingHorizontal="20dp"
         android:paddingTop="20dp"
-        android:paddingEnd="20dp"
         android:paddingBottom="4dp"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
@@ -32,7 +31,7 @@
         tools:ignore="MissingConstraints">
 
         <TextView
-            android:id="@+id/text_trip_detail_count_title"
+            android:id="@+id/text_count_title"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:text="@string/text_trip_detail_requests"
@@ -43,16 +42,16 @@
             app:layout_constraintTop_toTopOf="parent" />
 
         <View
-            android:id="@+id/line_trip_detail_divider"
+            android:id="@+id/line_divider"
             android:layout_width="match_parent"
             android:layout_height="1dp"
             android:layout_marginTop="12dp"
             android:background="@color/color_d2d2d2"
             app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toBottomOf="@id/text_trip_detail_count_title" />
+            app:layout_constraintTop_toBottomOf="@id/text_count_title" />
 
         <androidx.recyclerview.widget.RecyclerView
-            android:id="@+id/list_dialog_trip_detail"
+            android:id="@+id/list_trip_detail"
             android:layout_width="0dp"
             android:layout_height="wrap_content"
             android:layout_marginTop="4dp"
@@ -63,6 +62,8 @@
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toBottomOf="@id/line_trip_detail_divider" />
+            app:layout_constraintTop_toBottomOf="@id/line_divider"
+            tools:itemCount="3"
+            tools:listitem="@layout/item_trip_detail" />
     </androidx.constraintlayout.widget.ConstraintLayout>
 </androidx.constraintlayout.widget.ConstraintLayout>

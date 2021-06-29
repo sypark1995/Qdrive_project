@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:tools="http://schemas.android.com/tools"
-    android:id="@+id/layout_trip_detail_item"
+    android:id="@+id/layout_item"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
     android:background="@color/white"
@@ -9,13 +9,13 @@
     android:orientation="vertical">
 
     <RelativeLayout
-        android:id="@+id/layout_trip_detail_tracking_no"
+        android:id="@+id/layout_tracking_no"
         android:layout_width="match_parent"
         android:layout_height="30dp"
         android:layout_marginTop="10dp">
 
         <LinearLayout
-            android:id="@+id/layout_trip_detail_cnr_print"
+            android:id="@+id/layout_cnr_print"
             android:layout_width="wrap_content"
             android:layout_height="match_parent"
             android:layout_alignParentEnd="true"
@@ -41,7 +41,7 @@
         </LinearLayout>
 
         <TextView
-            android:id="@+id/text_trip_detail_tracking_no"
+            android:id="@+id/text_tracking_no"
             android:layout_width="wrap_content"
             android:layout_height="match_parent"
             android:paddingTop="4dp"
@@ -52,7 +52,7 @@
     </RelativeLayout>
 
     <TextView
-        android:id="@+id/text_trip_detail_address"
+        android:id="@+id/text_address"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_marginTop="8dp"

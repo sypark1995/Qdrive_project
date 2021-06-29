@@ -1,17 +1,20 @@
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
     android:background="@color/color_f0f0f0"
     android:orientation="vertical">
 
-    <include layout="@layout/top_title" />
+    <include
+        android:id="@+id/layout_top_title"
+        layout="@layout/top_title" />
 
     <RelativeLayout
         android:layout_width="match_parent"
         android:layout_height="match_parent">
 
         <TextView
-            android:id="@+id/text_not_in_housed_empty"
+            android:id="@+id/text_empty"
             android:layout_width="match_parent"
             android:layout_height="match_parent"
             android:gravity="center"
@@ -21,17 +24,17 @@
             android:visibility="gone" />
 
         <ExpandableListView
-            android:id="@+id/exlist_not_in_housed_list"
+            android:id="@+id/exlist_list"
             android:layout_width="match_parent"
             android:layout_height="match_parent"
+            android:layout_marginHorizontal="20dp"
             android:layout_marginBottom="10dp"
             android:cacheColorHint="#0000"
             android:childDivider="@null"
             android:divider="@null"
             android:groupIndicator="@null"
             android:listSelector="@android:color/transparent"
-            android:paddingStart="20dp"
-            android:paddingEnd="20dp" />
+            tools:listitem="@layout/item_not_in_housed" />
 
         <ProgressBar
             android:id="@+id/progressBar"

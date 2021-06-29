@@ -6,30 +6,34 @@ import android.os.Bundle
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.giosis.library.R
 import com.giosis.library.bluetooth.BluetoothListener
-import kotlinx.android.synthetic.main.dialog_pickup_trip_detail.*
+import com.giosis.library.databinding.DialogPickupTripDetailBinding
 
 
 class PickupTripDetailDialog(context: Context, private val list: ArrayList<RowItem>, private val listener: BluetoothListener)
     : Dialog(context), PickupTripDetailAdapter.GetViewHeightListener {
+
+    val binding by lazy {
+        DialogPickupTripDetailBinding.inflate(layoutInflater)
+    }
 
     private var totalHeight = 0
 
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        setContentView(R.layout.dialog_pickup_trip_detail)
+        setContentView(binding.root)
 
-        btn_trip_detail_close.setOnClickListener {
+        binding.btnClose.setOnClickListener {
             dismiss()
         }
 
         val msg = String.format(context.resources.getString(R.string.text_trip_detail_requests), list.size)
-        text_trip_detail_count_title.text = msg
+        binding.textCountTitle.text = msg
 
-        list_dialog_trip_detail.layoutManager = LinearLayoutManager(context)
+        binding.listTripDetail.layoutManager = LinearLayoutManager(context)
 
-        val tripDetailAdapter = PickupTripDetailAdapter(context, list, listener)
-        list_dialog_trip_detail.adapter = tripDetailAdapter
+        val tripDetailAdapter = PickupTripDetailAdapter(list, listener)
+        binding.listTripDetail.adapter = tripDetailAdapter
         tripDetailAdapter.setGetViewHeightListener(this)
     }
 
@@ -46,9 +50,9 @@ class PickupTripDetailDialog(context: Context, private val list: ArrayList<RowIt
         if (position == (maxCount - 1)) {
 
             //    Log.e("trip", "Final Height $height  ->  $totalHeight")
-            val params = list_dialog_trip_detail.layoutParams
+            val params = binding.listTripDetail.layoutParams
             params.height = totalHeight
-            list_dialog_trip_detail.layoutParams = params
+            binding.listTripDetail.layoutParams = params
         }
     }
 }

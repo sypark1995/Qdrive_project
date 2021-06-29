@@ -1,12 +1,12 @@
 package com.giosis.library.list.pickup
 
-import android.app.Activity
 import android.app.AlertDialog
 import android.app.DatePickerDialog
 import android.content.Intent
 import android.graphics.SurfaceTexture
 import android.hardware.camera2.CameraDevice
 import android.hardware.camera2.CameraManager
+import android.net.Uri
 import android.os.Bundle
 import android.provider.MediaStore
 import android.text.Editable
@@ -19,19 +19,23 @@ import android.view.View
 import android.view.WindowManager
 import android.widget.*
 import android.widget.AdapterView.OnItemSelectedListener
+import androidx.activity.result.contract.ActivityResultContracts
 import com.giosis.library.MemoryStatus
 import com.giosis.library.R
+import com.giosis.library.databinding.ActivityPickupVisitLogBinding
 import com.giosis.library.gps.GPSTrackerManager
 import com.giosis.library.server.data.FailedCodeResult
 import com.giosis.library.util.*
-import kotlinx.android.synthetic.main.activity_pickup_visit_log.*
-import kotlinx.android.synthetic.main.top_title.*
 import java.text.SimpleDateFormat
 import java.util.*
 
 // 일반 Pickup 실패  &  CNR Pickup 실패
 class PickupFailedActivity : CommonActivity(), Camera2APIs.Camera2Interface, TextureView.SurfaceTextureListener {
     val tag = "PickupFailedActivity"
+
+    private val binding by lazy {
+        ActivityPickupVisitLogBinding.inflate(layoutInflater)
+    }
 
     private lateinit var pickupType: String     // P, CNR
     private lateinit var pickupNo: String
@@ -64,24 +68,24 @@ class PickupFailedActivity : CommonActivity(), Camera2APIs.Camera2Interface, Tex
         window.addFlags(WindowManager.LayoutParams.FLAG_DISMISS_KEYGUARD)   // Lock 상태이면 보여주지 않음. (Lock 해제해야만 보임)
         window.addFlags(WindowManager.LayoutParams.FLAG_SHOW_WHEN_LOCKED)   // Lock 상태이면 보여줌
         window.addFlags(WindowManager.LayoutParams.FLAG_TURN_SCREEN_ON)     // 화면 ON
-        setContentView(R.layout.activity_pickup_visit_log)
+        setContentView(binding.root)
 
 
         pickupType = intent.getStringExtra("type").toString()
         pickupNo = intent.getStringExtra("pickupNo").toString()
 
-        text_top_title.text = resources.getString(R.string.text_visit_log)
-        text_sign_p_f_pickup_no.text = pickupNo
-        text_sign_p_f_applicant.text = intent.getStringExtra("applicant")
-        text_sign_p_f_requested_qty.text = intent.getStringExtra("reqQty")
+        binding.layoutTopTitle.textTopTitle.text = resources.getString(R.string.text_visit_log)
+        binding.textPickupNo.text = pickupNo
+        binding.textApplicant.text = intent.getStringExtra("applicant")
+        binding.textRequestedQty.text = intent.getStringExtra("reqQty")
 
         if (pickupType == BarcodeType.TYPE_PICKUP) {
 
-            text_sign_p_f_applicant_title.text = resources.getString(R.string.text_applicant)
+            binding.textApplicantTitle.text = resources.getString(R.string.text_applicant)
             rcvType = "VL"
         } else if (pickupType == BarcodeType.TYPE_CNR) {
 
-            text_sign_p_f_applicant_title.text = resources.getString(R.string.text_requestor)
+            binding.textApplicantTitle.text = resources.getString(R.string.text_requestor)
             rcvType = "RC"
         }
 
@@ -106,13 +110,13 @@ class PickupFailedActivity : CommonActivity(), Camera2APIs.Camera2Interface, Tex
                     restDay.isNotEmpty() -> {
 
                         Toast.makeText(this@PickupFailedActivity, "$restDay " + resources.getString(R.string.msg_choose_another_day), Toast.LENGTH_SHORT).show()
-                        text_sign_p_f_retry_date.text = resources.getString(R.string.text_select)
+                        binding.textRetryDate.text = resources.getString(R.string.text_select)
                     }
                     else -> {
 
                         val dateFormat = "yyyy-MM-dd"
                         val simpleDateFormat = SimpleDateFormat(dateFormat, Locale.ENGLISH)
-                        text_sign_p_f_retry_date.text = simpleDateFormat.format(calendar.time)
+                        binding.textRetryDate.text = simpleDateFormat.format(calendar.time)
                     }
                 }
             } else {
@@ -121,18 +125,18 @@ class PickupFailedActivity : CommonActivity(), Camera2APIs.Camera2Interface, Tex
                     calendar.get(Calendar.DAY_OF_WEEK) == Calendar.SUNDAY -> {
 
                         Toast.makeText(this@PickupFailedActivity, resources.getString(R.string.msg_choose_sunday_error), Toast.LENGTH_SHORT).show()
-                        text_sign_p_f_retry_date.text = resources.getString(R.string.text_select)
+                        binding.textRetryDate.text = resources.getString(R.string.text_select)
                     }
                     restDay.isNotEmpty() -> {
 
                         Toast.makeText(this@PickupFailedActivity, "$restDay " + resources.getString(R.string.msg_choose_another_day), Toast.LENGTH_SHORT).show()
-                        text_sign_p_f_retry_date.text = resources.getString(R.string.text_select)
+                        binding.textRetryDate.text = resources.getString(R.string.text_select)
                     }
                     else -> {
 
                         val dateFormat = "yyyy-MM-dd"
                         val simpleDateFormat = SimpleDateFormat(dateFormat, Locale.ENGLISH)
-                        text_sign_p_f_retry_date.text = simpleDateFormat.format(calendar.time)
+                        binding.textRetryDate.text = simpleDateFormat.format(calendar.time)
                     }
                 }
             }
@@ -169,7 +173,7 @@ class PickupFailedActivity : CommonActivity(), Camera2APIs.Camera2Interface, Tex
         // 2020.12  Pickup Failed Code
         setFailedCode()
 
-        spinner_p_f_failed_reason.onItemSelectedListener = object : OnItemSelectedListener {
+        binding.spinnerFailedReason.onItemSelectedListener = object : OnItemSelectedListener {
             override fun onNothingSelected(p0: AdapterView<*>?) {
             }
 
@@ -179,17 +183,17 @@ class PickupFailedActivity : CommonActivity(), Camera2APIs.Camera2Interface, Tex
 
                 if (reason.toUpperCase().contains(resources.getString(R.string.text_other).toUpperCase())) {
 
-                    layout_sign_p_f_memo.visibility = View.VISIBLE
+                    binding.layoutMemo.visibility = View.VISIBLE
                 } else {
 
-                    layout_sign_p_f_memo.visibility = View.GONE
+                    binding.layoutMemo.visibility = View.GONE
                 }
 
-                text_sign_p_f_failed_reason.text = reason
+                binding.textFailedReason.text = reason
             }
         }
 
-        edit_sign_p_f_memo.addTextChangedListener(object : TextWatcher {
+        binding.editMemo.addTextChangedListener(object : TextWatcher {
             override fun afterTextChanged(p0: Editable?) {
             }
 
@@ -198,7 +202,7 @@ class PickupFailedActivity : CommonActivity(), Camera2APIs.Camera2Interface, Tex
 
             override fun onTextChanged(p0: CharSequence?, p1: Int, p2: Int, p3: Int) {
 
-                if (99 <= edit_sign_p_f_memo.length()) {
+                if (99 <= binding.editMemo.length()) {
 
                     Toast.makeText(this@PickupFailedActivity, resources.getString(R.string.msg_memo_too_long), Toast.LENGTH_SHORT).show()
                 }
@@ -206,28 +210,28 @@ class PickupFailedActivity : CommonActivity(), Camera2APIs.Camera2Interface, Tex
         })
 
 
-        layout_top_back.setOnClickListener {
+        binding.layoutTopTitle.layoutTopBack.setOnClickListener {
 
             cancelUpload()
         }
 
-        layout_sign_p_f_retry_date.setOnClickListener {
+        binding.layoutRetryDate.setOnClickListener {
 
             datePickupDialog.show()
         }
 
-        layout_sign_p_f_failed_reason.setOnClickListener {
+        binding.layoutFailedReason.setOnClickListener {
 
-            spinner_p_f_failed_reason.performClick()
+            binding.spinnerFailedReason.performClick()
         }
 
-        layout_sign_p_f_take_photo.setOnClickListener {
+        binding.layoutTakePhoto.setOnClickListener {
 
             if (cameraId != null) {
                 if (!isClickedPhoto) {
 
                     isClickedPhoto = true
-                    camera2.takePhoto(texture_sign_p_f_preview, img_sign_p_f_visit_log)
+                    camera2.takePhoto(binding.texturePreview, binding.imgVisitLog)
                 }
             } else {
 
@@ -235,12 +239,12 @@ class PickupFailedActivity : CommonActivity(), Camera2APIs.Camera2Interface, Tex
             }
         }
 
-        layout_sign_p_f_gallery.setOnClickListener {
+        binding.layoutGallery.setOnClickListener {
 
-            getImageFromGallery()
+            getGalleryImage.launch("image/*")
         }
 
-        btn_sign_p_f_save.setOnClickListener {
+        binding.btnSave.setOnClickListener {
 
             serverUpload()
         }
@@ -277,10 +281,10 @@ class PickupFailedActivity : CommonActivity(), Camera2APIs.Camera2Interface, Tex
                 failedCodeArrayList!!.add(failedCode.failedString)
             }
 
-            spinner_p_f_failed_reason.prompt = resources.getString(R.string.text_failed_reason)
+            binding.spinnerFailedReason.prompt = resources.getString(R.string.text_failed_reason)
             val failedCodeArrayAdapter = ArrayAdapter(this@PickupFailedActivity, android.R.layout.simple_spinner_item, failedCodeArrayList!!)
             failedCodeArrayAdapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item)
-            spinner_p_f_failed_reason.adapter = failedCodeArrayAdapter
+            binding.spinnerFailedReason.adapter = failedCodeArrayAdapter
         }
     }
 
@@ -291,12 +295,12 @@ class PickupFailedActivity : CommonActivity(), Camera2APIs.Camera2Interface, Tex
 
         if (isPermissionTrue) {
 
-            if (texture_sign_p_f_preview.isAvailable) {
+            if (binding.texturePreview.isAvailable) {
 
                 openCamera()
             } else {
 
-                texture_sign_p_f_preview.surfaceTextureListener = this@PickupFailedActivity
+                binding.texturePreview.surfaceTextureListener = this@PickupFailedActivity
             }
 
             // Location
@@ -331,9 +335,9 @@ class PickupFailedActivity : CommonActivity(), Camera2APIs.Camera2Interface, Tex
     override fun onCameraDeviceOpened(cameraDevice: CameraDevice, cameraSize: Size, rotation: Int, it: String) {
         Log.e("krm0219", "onCameraDeviceOpened  $it")
 
-        texture_sign_p_f_preview.rotation = rotation.toFloat()
+        binding.texturePreview.rotation = rotation.toFloat()
 
-        val texture = texture_sign_p_f_preview.surfaceTexture
+        val texture = binding.texturePreview.surfaceTexture
         texture?.setDefaultBufferSize(cameraSize.width, cameraSize.height)
 
         val surface = Surface(texture)
@@ -365,12 +369,16 @@ class PickupFailedActivity : CommonActivity(), Camera2APIs.Camera2Interface, Tex
     }
 
     // Gallery
-    private fun getImageFromGallery() {
+    private val getGalleryImage = registerForActivityResult(ActivityResultContracts.GetContent()) { uri: Uri? ->
 
-        val intent = Intent()
-        intent.type = "image/*"
-        intent.action = Intent.ACTION_GET_CONTENT
-        startActivityForResult(Intent.createChooser(intent, "Select Picture"), RESULT_LOAD_IMAGE)
+        try {
+            val selectedImage = MediaStore.Images.Media.getBitmap(contentResolver, uri)
+            val resizeImage = camera2.getResizeBitmap(selectedImage)
+            binding.imgVisitLog.setImageBitmap(resizeImage)
+            binding.imgVisitLog.scaleType = ImageView.ScaleType.CENTER_INSIDE
+        } catch (e: Exception) {
+
+        }
     }
 
 
@@ -413,14 +421,14 @@ class PickupFailedActivity : CommonActivity(), Camera2APIs.Camera2Interface, Tex
             }
             Log.i(tag, "  Location $latitude / $longitude")
 
-            val code: FailedCodeResult.FailedCode = arrayList!![spinner_p_f_failed_reason.selectedItemPosition]
+            val code: FailedCodeResult.FailedCode = arrayList!![binding.spinnerFailedReason.selectedItemPosition]
             val failedCode: String = code.failedCode
             Log.e("krm0219", "Fail Reason Code  >  $failedCode  ${code.failedString}")
 
             var driverMemo = ""
             if (code.failedString.toUpperCase().contains(resources.getString(R.string.text_other).toUpperCase())) {
 
-                driverMemo = edit_sign_p_f_memo.text.toString()
+                driverMemo = binding.editMemo.text.toString()
                 if (driverMemo.isEmpty()) {
 
                     Toast.makeText(this@PickupFailedActivity, resources.getString(R.string.msg_must_enter_memo1), Toast.LENGTH_SHORT).show()
@@ -430,14 +438,14 @@ class PickupFailedActivity : CommonActivity(), Camera2APIs.Camera2Interface, Tex
             Log.e("krm0219", "Memo  >  $driverMemo")
 
 
-            val retryDay = text_sign_p_f_retry_date.text.toString()
+            val retryDay = binding.textRetryDate.text.toString()
             if (retryDay == resources.getString(R.string.text_select)) {
 
                 Toast.makeText(this@PickupFailedActivity, resources.getString(R.string.msg_select_retry_date), Toast.LENGTH_SHORT).show()
                 return
             }
 
-            if (!camera2.hasImage(img_sign_p_f_visit_log)) {
+            if (!camera2.hasImage(binding.imgVisitLog)) {
 
                 Toast.makeText(this@PickupFailedActivity, resources.getString(R.string.msg_visit_photo_require), Toast.LENGTH_SHORT).show()
                 return
@@ -452,7 +460,7 @@ class PickupFailedActivity : CommonActivity(), Camera2APIs.Camera2Interface, Tex
             DataUtil.logEvent("button_click", tag, DataUtil.requestSetUploadPickupData)
 
             PickupFailedUploadHelper.Builder(this@PickupFailedActivity, Preferences.userId, Preferences.officeCode, Preferences.deviceUUID,
-                    rcvType, pickupNo, failedCode, retryDay, driverMemo, img_sign_p_f_visit_log,
+                    rcvType, pickupNo, failedCode, retryDay, driverMemo, binding.imgVisitLog,
                     MemoryStatus.getAvailableInternalMemorySize(), latitude, longitude)
                     .setOnServerEventListener(object : OnServerEventListener {
                         override fun onPostResult() {
@@ -494,19 +502,6 @@ class PickupFailedActivity : CommonActivity(), Camera2APIs.Camera2Interface, Tex
             if (resultCode == PermissionActivity.PERMISSIONS_GRANTED) {
 
                 isPermissionTrue = true
-            }
-        } else if (requestCode == RESULT_LOAD_IMAGE && resultCode == Activity.RESULT_OK) {
-
-            data?.let {
-                try {
-
-                    val imageUri = data.data
-                    val selectedImage = MediaStore.Images.Media.getBitmap(contentResolver, imageUri)
-                    val resizeImage = camera2.getResizeBitmap(selectedImage)
-                    img_sign_p_f_visit_log.setImageBitmap(resizeImage)
-                    img_sign_p_f_visit_log.scaleType = ImageView.ScaleType.CENTER_INSIDE
-                } catch (e: Exception) {
-                }
             }
         }
     }
