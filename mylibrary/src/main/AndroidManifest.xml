@@ -83,6 +83,7 @@
             android:name=".message.MessageListActivity"
             android:screenOrientation="portrait" />
 
+
         <activity
             android:name=".message.CustomerMessageListDetailActivity"
             android:screenOrientation="portrait" />
@@ -133,6 +134,10 @@
             android:configChanges="orientation|keyboardHidden"
             android:screenOrientation="portrait"
             android:windowSoftInputMode="stateAlwaysHidden|adjustPan" />
+
+        <activity
+            android:name=".list.delivery.QuickReturnedActivity"
+            android:screenOrientation="portrait" />
 
         <activity
             android:name=".list.pickup.CnRPickupDoneActivity"
