@@ -831,7 +831,6 @@ public class ListInProgressAdapter extends BaseExpandableListAdapter {
             Intent intent = new Intent(v.getContext(), DeliveryDoneActivity.class);
             intent.putExtra("parcel", rowItem.get(groupPosition));
             v.getContext().startActivity(intent);
-
         });
 
         btn_list_item_child_delivery_failed.setOnClickListener(v -> {

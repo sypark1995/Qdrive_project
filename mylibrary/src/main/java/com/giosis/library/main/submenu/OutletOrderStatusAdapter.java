@@ -429,9 +429,9 @@ public class OutletOrderStatusAdapter extends BaseExpandableListAdapter {
 
             if (type.equals("D")) {
 
-                Intent intent = new Intent(context, DeliveryDoneActivity.class);
+                Intent intent = new Intent(v.getContext(), DeliveryDoneActivity.class);
                 intent.putExtra("parcel", rowItem.get(groupPosition));
-                ((Activity) context).startActivityForResult(intent, 1);
+                ((Activity) v.getContext()).startActivityForResult(intent, 1);
             } else if (type.equals("P")) {
 
                 Intent intent = new Intent(context, OutletPickupStep1Activity.class);

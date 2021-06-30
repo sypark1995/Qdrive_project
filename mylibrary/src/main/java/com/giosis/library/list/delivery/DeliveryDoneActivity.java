@@ -498,6 +498,7 @@ public class DeliveryDoneActivity extends CommonActivity implements Camera2APIs.
                     return;
                 } else {
 
+                    closeCamera();
                     QRCodeAsyncTask qrCodeAsyncTask = new QRCodeAsyncTask(getString(R.string.text_outlet_7e), outletDeliveryDoneListItemArrayList);
                     qrCodeAsyncTask.execute();
                 }
@@ -611,13 +612,16 @@ public class DeliveryDoneActivity extends CommonActivity implements Camera2APIs.
         if (isPermissionTrue) {
             // Camera
 
-            // When the screen is turned off and turned back on, the SurfaceTexture is already available.
-            if (texture_sign_d_preview.isAvailable()) {
+            if (!outletInfo.getRoute().substring(0, 2).contains("7E")) {
 
-                openCamera("onResume");
-            } else {
+                // When the screen is turned off and turned back on, the SurfaceTexture is already available.
+                if (texture_sign_d_preview.isAvailable()) {
 
-                texture_sign_d_preview.setSurfaceTextureListener(this);
+                    openCamera("onResume");
+                } else {
+
+                    texture_sign_d_preview.setSurfaceTextureListener(this);
+                }
             }
 
             // Location
