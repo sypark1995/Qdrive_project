@@ -29,10 +29,10 @@ import android.widget.Toast;
 
 import com.giosis.library.R;
 import com.giosis.library.barcodescanner.StdResult;
+import com.giosis.library.list.ChildItem;
+import com.giosis.library.list.RowItem;
 import com.giosis.library.list.delivery.DeliveryDoneActivity;
 import com.giosis.library.list.pickup.OutletPickupStep1Activity;
-import com.giosis.library.main.ChildItem;
-import com.giosis.library.main.RowItem;
 import com.giosis.library.message.CustomerMessageListDetailActivity;
 import com.giosis.library.server.Custom_JsonParser;
 import com.giosis.library.util.DataUtil;

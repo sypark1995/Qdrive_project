@@ -7,10 +7,10 @@ import android.content.Context;
 import android.os.AsyncTask;
 import android.util.Log;
 
-import com.giosis.library.main.ChildItem;
+import com.giosis.library.list.ChildItem;
+import com.giosis.library.list.RowItem;
 import com.giosis.library.main.DriverAssignResult;
 import com.giosis.library.main.PickupAssignResult;
-import com.giosis.library.main.RowItem;
 import com.giosis.library.server.Custom_JsonParser;
 import com.giosis.library.util.BarcodeType;
 import com.giosis.library.util.DataUtil;
@@ -220,8 +220,6 @@ public class OutletStatusDownloadHelper {
             JSONObject job = new JSONObject();
             job.accumulate("opId", opID);
             job.accumulate("officeCd", officeCode);
-            job.accumulate("exceptList", "");
-            job.accumulate("assignList", "");
             job.accumulate("device_id", deviceID);
             job.accumulate("network_type", networkType);
             job.accumulate("app_id", DataUtil.appID);
@@ -292,7 +290,7 @@ public class OutletStatusDownloadHelper {
             RowItem rowItem = new RowItem(data.getContrNo(), "D+" + delay, data.getInvoiceNo(), data.getRcvName(),
                     "(" + data.getZipCode() + ")" + data.getAddress(), data.getDelMemo(), "D", data.getRoute(),
                     data.getSenderName(), "", "", "", 0, 0, data.getStat(), "",
-                    "", data.getSecureDeliveryYN(), data.getParcelAmount(), data.getCurrency());
+                    "", data.getSecureDeliveryYN(), data.getParcelAmount(), data.getCurrency(), data.getHigh_amount_yn());
 
             rowItem.setOrder_type_etc(data.getOrder_type_etc());
             rowItem.setOutlet_company(data.getRoute());
@@ -360,7 +358,7 @@ public class OutletStatusDownloadHelper {
             RowItem rowItem = new RowItem(data.getContrNo(), "D+" + delay, data.getInvoiceNo(), data.getReqName(),
                     "(" + data.getZipCode() + ")" + data.getAddress(), data.getDelMemo(), "P", data.getRoute(),
                     "", data.getPickupHopeDay(), data.getQty(), "", 0, 0, data.getStat(), data.getCustNo(),
-                    data.getPartnerID(), "", "", "");
+                    data.getPartnerID(), "", "", "", "");
 
             if (data.getRoute().equals("RPC")) {
                 rowItem.setDesired_time(data.getPickupHopeTime());

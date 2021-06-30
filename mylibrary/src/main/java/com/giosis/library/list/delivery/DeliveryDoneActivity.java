@@ -1009,6 +1009,15 @@ public class DeliveryDoneActivity extends CommonActivity implements Camera2APIs.
                 outletTrackingNoAdapter = new OutletTrackingNoAdapter(DeliveryDoneActivity.this, outletDeliveryDoneListItemArrayList, "7E");
                 list_sign_d_outlet_list.setAdapter(outletTrackingNoAdapter);
                 setListViewHeightBasedOnChildren(list_sign_d_outlet_list);
+
+
+                if (texture_sign_d_preview.isAvailable()) {
+
+                    openCamera("Outlet");
+                } else {
+
+                    texture_sign_d_preview.setSurfaceTextureListener(DeliveryDoneActivity.this);
+                }
             } else {
 
                 showQRCode = false;
