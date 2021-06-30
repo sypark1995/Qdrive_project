@@ -334,18 +334,21 @@ public class DeliveryDoneActivity extends CommonActivity implements Camera2APIs.
                     } catch (Exception ignore) {
                     }
 
-                    if (barcodeList.size() == 1) {
 
-                        double parcelLat = cs.getDouble(cs.getColumnIndex("lat"));
-                        double parcelLng = cs.getDouble(cs.getColumnIndex("lng"));
-                        String zipCode = cs.getString(cs.getColumnIndex("zip_code"));
-                        String state = cs.getString(cs.getColumnIndex("state"));
-                        String city = cs.getString(cs.getColumnIndex("city"));
-                        String street = cs.getString(cs.getColumnIndex("street"));
-                        Log.e("GPSUpdate", "Parcel " + trackingNo + " // " + parcelLat + ", " + parcelLng + " // "
-                                + zipCode + " - " + state + " - " + city + " - " + street);
+                    if (!Preferences.INSTANCE.getUserNation().equals("SG")) {
+                        if (barcodeList.size() == 1) {
 
-                        locationModel.setParcelLocation(parcelLat, parcelLng, zipCode, state, city, street);
+                            double parcelLat = cs.getDouble(cs.getColumnIndex("lat"));
+                            double parcelLng = cs.getDouble(cs.getColumnIndex("lng"));
+                            String zipCode = cs.getString(cs.getColumnIndex("zip_code"));
+                            String state = cs.getString(cs.getColumnIndex("state"));
+                            String city = cs.getString(cs.getColumnIndex("city"));
+                            String street = cs.getString(cs.getColumnIndex("street"));
+                            Log.e("GPSUpdate", "Parcel " + trackingNo + " // " + parcelLat + ", " + parcelLng + " // "
+                                    + zipCode + " - " + state + " - " + city + " - " + street);
+
+                            locationModel.setParcelLocation(parcelLat, parcelLng, zipCode, state, city, street);
+                        }
                     }
                 }
             }

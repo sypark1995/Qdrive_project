@@ -830,6 +830,7 @@ public class ListInProgressAdapter extends BaseExpandableListAdapter {
 
             Intent intent = new Intent(v.getContext(), DeliveryDoneActivity.class);
             intent.putExtra("parcel", rowItem.get(groupPosition));
+            intent.putExtra("route", route);
             v.getContext().startActivity(intent);
         });
 
