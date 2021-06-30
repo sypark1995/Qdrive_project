@@ -237,9 +237,9 @@ public class MainActivity extends AppBaseActivity {
         setTopTitle(getResources().getString(R.string.navi_home));
 
 
-    // TEST Outlet
+        // TEST Outlet
 //        Preferences.INSTANCE.setOutletDriver("Y");
-//        Preferences.INSTANCE.setUserId("7Eleven.Ajib");      // 7Eleven.Ajib
+//        Preferences.INSTANCE.setUserId("Johari_ISM_Shuttle");      // 7Eleven.Ajib
 
 
         dbHelper = DatabaseHelper.getInstance();
