@@ -42,27 +42,31 @@ class GpsUpdateDialog(context: Context, private val model: LocationModel, val li
             } else {
 
                 Log.e("GPSUpdate", "${Preferences.userNation} / ${model.zipCode} / ${model.state} / ${model.city} / ${model.street} / ${model.driverLat}, ${model.driverLng}")
-                RetrofitClient.instanceDynamic().requestSetAddressUsingDriver(model.zipCode, model.state, model.city, model.street, model.driverLat, model.driverLng)
-                        .subscribeOn(Schedulers.io())
-                        .observeOn(AndroidSchedulers.mainThread())
-                        .subscribe({
 
-                            Log.e("GPSUpdate", "SetAddressUsingDriver Result ${it.resultCode}")
-                            if (it.resultCode == 0) {
+                if (model.state != null && model.city != null && model.street != null) {
+                    
+                    RetrofitClient.instanceDynamic().requestSetAddressUsingDriver(model.zipCode, model.state!!, model.city!!, model.street!!, model.driverLat, model.driverLng)
+                            .subscribeOn(Schedulers.io())
+                            .observeOn(AndroidSchedulers.mainThread())
+                            .subscribe({
 
-                                Toast.makeText(context, context.getString(R.string.msg_gps_update_success), Toast.LENGTH_SHORT).show()
+                                Log.e("GPSUpdate", "SetAddressUsingDriver Result ${it.resultCode}")
+                                if (it.resultCode == 0) {
+
+                                    Toast.makeText(context, context.getString(R.string.msg_gps_update_success), Toast.LENGTH_SHORT).show()
+                                    dismiss()
+                                    listener.onPostResult()
+                                } else {
+
+                                    updateCount++
+                                    Toast.makeText(context, context.resources.getString(R.string.msg_please_try_again), Toast.LENGTH_SHORT).show()
+                                }
+                            }, {
+
                                 dismiss()
                                 listener.onPostResult()
-                            } else {
-
-                                updateCount++
-                                Toast.makeText(context, context.resources.getString(R.string.msg_please_try_again), Toast.LENGTH_SHORT).show()
-                            }
-                        }, {
-
-                            dismiss()
-                            listener.onPostResult()
-                        })
+                            })
+                }
             }
         }
 

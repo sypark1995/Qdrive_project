@@ -9,9 +9,9 @@ class LocationModel {
     var parcelLat: Double = 0.0
     var parcelLng: Double = 0.0
     var zipCode: String = ""
-    var state: String = ""
-    var city: String = ""
-    var street: String = ""
+    var state: String? = ""
+    var city: String? = ""
+    var street: String? = ""
 
     var driverLat: Double = 0.0
     var driverLng: Double = 0.0
@@ -20,7 +20,7 @@ class LocationModel {
     var differenceLng: Double = 0.0
 
 
-    fun setParcelLocation(parcelLat: Double, parcelLng: Double, zipCode: String, state: String, city: String, street: String) {
+    fun setParcelLocation(parcelLat: Double, parcelLng: Double, zipCode: String, state: String?, city: String?, street: String?) {
 
         this.parcelLat = parcelLat
         this.parcelLng = parcelLng
