@@ -61,6 +61,7 @@ import com.giosis.library.list.pickup.PickupDoneActivity;
 import com.giosis.library.list.pickup.PickupTakeBackActivity;
 import com.giosis.library.main.submenu.SelfCollectionDoneActivity;
 import com.giosis.library.server.RetrofitClient;
+import com.giosis.library.server.data.CnRPickupResult;
 import com.giosis.library.util.BarcodeType;
 import com.giosis.library.util.CommonActivity;
 import com.giosis.library.util.DataUtil;
@@ -1316,7 +1317,8 @@ public final class CaptureActivity extends CommonActivity implements DecoratedBa
                                     scannedBarcode.remove(scanNo);
                                     dialog1.dismiss();
                                 });
-                                builder.show();
+                                if (!CaptureActivity.this.isFinishing())
+                                    builder.show();
                             } else {
 
                                 beepManager.playBeepSoundAndVibrate(BeepManager.BELL_SOUNDS_SUCCESS);
@@ -1379,7 +1381,8 @@ public final class CaptureActivity extends CommonActivity implements DecoratedBa
                                     scannedBarcode.remove(scanNo);
                                     dialog1.dismiss();
                                 });
-                                builder.show();
+                                if (!CaptureActivity.this.isFinishing())
+                                    builder.show();
                             } else {
 
                                 Gson gson = new Gson();
@@ -1444,11 +1447,12 @@ public final class CaptureActivity extends CommonActivity implements DecoratedBa
                                     scannedBarcode.remove(scanNo);
                                     dialog1.dismiss();
                                 });
-                                builder.show();
+                                if (!CaptureActivity.this.isFinishing())
+                                    builder.show();
                             } else {
 
                                 Gson gson = new Gson();
-                                CnRPickupResult.CnRPickupData cnRPickupData = gson.fromJson(it.getResultObject(), CnRPickupResult.CnRPickupData.class);
+                                CnRPickupResult cnRPickupData = gson.fromJson(it.getResultObject(), CnRPickupResult.class);
 
                                 boolean isDBDuplicate = checkDBDuplicate(cnRPickupData.getContrNo(), cnRPickupData.getInvoiceNo());
                                 Log.e(TAG, "  DB Duplicate  > " + isDBDuplicate + " / " + cnRPickupData.getInvoiceNo());
@@ -1466,27 +1470,6 @@ public final class CaptureActivity extends CommonActivity implements DecoratedBa
                                 addScannedBarcode(scanNo, "checkValidation - PICKUP_CNR");
                             }
                         }, it -> Toast.makeText(context, context.getResources().getString(R.string.msg_error_check_again), Toast.LENGTH_SHORT).show());
-
-//
-//                new CnRPickupValidationCheckHelper.Builder(this, opID, strBarcodeNo)
-//                        .setOnCnRPickupValidationCheckListener(new CnRPickupValidationCheckHelper.OnCnRPickupValidationCheckListener() {
-//
-//                            @Override
-//                            public void OnCnRPickupValidationCheckResult(CnRPickupResult result) {
-//
-//                                beepManager.playBeepSoundAndVibrate(BeepManager.BELL_SOUNDS_SUCCESS);
-//                                pickupCNRRequester = result.getResultObject().getReqName();
-//                                addScannedBarcode(scanNo, "checkValidation - PICKUP_CNR");
-//                            }
-//
-//                            @Override
-//                            public void OnCnRPickupValidationCheckFail() {
-//
-//                                beepManager.playBeepSoundAndVibrate(BeepManager.BELL_SOUNDS_ERROR);
-//                                scannedBarcode.remove(scanNo);
-//                                edit_capture_type_number.setText("");
-//                            }
-//                        }).build().execute();
             }
             break;
             case BarcodeType.PICKUP_SCAN_ALL: {
@@ -1516,7 +1499,8 @@ public final class CaptureActivity extends CommonActivity implements DecoratedBa
                                     scannedBarcode.remove(scanNo);
                                     dialog1.dismiss();
                                 });
-                                builder.show();
+                                if (!CaptureActivity.this.isFinishing())
+                                    builder.show();
                             } else {
 
                                 beepManager.playBeepSoundAndVibrate(BeepManager.BELL_SOUNDS_SUCCESS);
@@ -1569,7 +1553,8 @@ public final class CaptureActivity extends CommonActivity implements DecoratedBa
                                     scannedBarcode.remove(scanNo);
                                     dialog1.dismiss();
                                 });
-                                builder.show();
+                                if (!CaptureActivity.this.isFinishing())
+                                    builder.show();
                             } else {
 
                                 beepManager.playBeepSoundAndVibrate(BeepManager.BELL_SOUNDS_SUCCESS);
@@ -1622,7 +1607,8 @@ public final class CaptureActivity extends CommonActivity implements DecoratedBa
                                     scannedBarcode.remove(scanNo);
                                     dialog1.dismiss();
                                 });
-                                builder.show();
+                                if (!CaptureActivity.this.isFinishing())
+                                    builder.show();
                             } else {
 
                                 beepManager.playBeepSoundAndVibrate(BeepManager.BELL_SOUNDS_SUCCESS);
@@ -1675,7 +1661,8 @@ public final class CaptureActivity extends CommonActivity implements DecoratedBa
                                     scannedBarcode.remove(scanNo);
                                     dialog1.dismiss();
                                 });
-                                builder.show();
+                                if (!CaptureActivity.this.isFinishing())
+                                    builder.show();
                             } else {
 
                                 beepManager.playBeepSoundAndVibrate(BeepManager.BELL_SOUNDS_SUCCESS);
@@ -1774,7 +1761,7 @@ public final class CaptureActivity extends CommonActivity implements DecoratedBa
     }
 
 
-    private String insertCnRData(CnRPickupResult.CnRPickupData data) {
+    private String insertCnRData(CnRPickupResult data) {
 
         SimpleDateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
         dateFormat.setTimeZone(TimeZone.getTimeZone("GMT"));

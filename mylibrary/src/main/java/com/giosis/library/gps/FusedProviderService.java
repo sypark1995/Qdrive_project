@@ -27,9 +27,6 @@ public class FusedProviderService extends Service {
     FusedProviderWorker fusedProviderTimeWorker;
     FusedProviderWorker fusedProviderDistanceWorker;
 
-//    GoogleApiClient mGoogleApiClient1;
-//    GoogleApiClient mGoogleApiClient2;
-
     @Override
     public IBinder onBind(Intent intent) {
         return null;
@@ -93,17 +90,6 @@ public class FusedProviderService extends Service {
 
         fusedProviderTimeWorker.startLocationUpdates();
         fusedProviderDistanceWorker.startLocationUpdates();
-
-
-//        mGoogleApiClient1 = fusedProviderTimeWorker.getGoogleApiClient();
-//        mGoogleApiClient2 = fusedProviderDistanceWorker.getGoogleApiClient();
-//
-//        if (mGoogleApiClient1 != null) {
-//            mGoogleApiClient1.connect();
-//        }
-//        if (mGoogleApiClient2 != null) {
-//            mGoogleApiClient2.connect();
-//        }
     }
 
 
@@ -121,12 +107,5 @@ public class FusedProviderService extends Service {
 
             Log.e("Exception", TAG + "  onDestroy Exception : " + e.toString());
         }
-
-//        if (mGoogleApiClient1 != null) {
-//            mGoogleApiClient1.disconnect();
-//        }
-//        if (mGoogleApiClient2 != null) {
-//            mGoogleApiClient2.disconnect();
-//        }
     }
 }

@@ -9,7 +9,6 @@ import android.widget.Toast
 import com.giosis.library.R
 import com.giosis.library.server.RetrofitClient
 import com.giosis.library.util.OnServerEventListener
-import com.giosis.library.util.Preferences
 import io.reactivex.rxjava3.android.schedulers.AndroidSchedulers
 import io.reactivex.rxjava3.schedulers.Schedulers
 import kotlinx.android.synthetic.main.dialog_gps_update.*
@@ -41,10 +40,9 @@ class GpsUpdateDialog(context: Context, private val model: LocationModel, val li
                 listener.onPostResult()
             } else {
 
-                Log.e("GPSUpdate", "${Preferences.userNation} / ${model.zipCode} / ${model.state} / ${model.city} / ${model.street} / ${model.driverLat}, ${model.driverLng}")
-
                 if (model.state != null && model.city != null && model.street != null) {
-                    
+
+                    //   Log.e("GPSUpdate", "${Preferences.userNation} / ${model.zipCode} / ${model.state} / ${model.city} / ${model.street} / ${model.driverLat}, ${model.driverLng}")
                     RetrofitClient.instanceDynamic().requestSetAddressUsingDriver(model.zipCode, model.state!!, model.city!!, model.street!!, model.driverLat, model.driverLng)
                             .subscribeOn(Schedulers.io())
                             .observeOn(AndroidSchedulers.mainThread())

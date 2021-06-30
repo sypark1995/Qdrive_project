@@ -9,6 +9,7 @@ import com.giosis.library.R
 import com.giosis.library.barcodescanner.CaptureActivity
 import com.giosis.library.databinding.ActivityPickupScanListBinding
 import com.giosis.library.server.RetrofitClient
+import com.giosis.library.server.data.PickupPackingListResult
 import com.giosis.library.util.BarcodeType
 import com.giosis.library.util.CommonActivity
 import com.google.gson.Gson
@@ -70,8 +71,8 @@ class TodayDonePickupScanListActivity : CommonActivity() {
 
                     if (it.resultCode == 0) {
 
-                        val list = Gson().fromJson<ArrayList<PickupPackingListResult.ScanPackingList>>(it.resultObject,
-                                object : TypeToken<ArrayList<PickupPackingListResult.ScanPackingList?>?>() {}.type)
+                        val list = Gson().fromJson<ArrayList<PickupPackingListResult>>(it.resultObject,
+                                object : TypeToken<ArrayList<PickupPackingListResult?>?>() {}.type)
                         setScannedList(list)
                     }
 
@@ -82,7 +83,7 @@ class TodayDonePickupScanListActivity : CommonActivity() {
                 })
     }
 
-    private fun setScannedList(result: ArrayList<PickupPackingListResult.ScanPackingList>) {
+    private fun setScannedList(result: ArrayList<PickupPackingListResult>) {
 
         scannedQty = result.size.toString()
         binding.textScannedQty.text = scannedQty

@@ -1,11 +1,7 @@
-package com.giosis.library.main.submenu
+package com.giosis.library.server.data
 
 import com.google.gson.annotations.SerializedName
 
-/**
- * @author krm0219  2018.07.26
- * @editor krm0219 2020.09
- */
 class NotInHousedResult {
 
     @SerializedName("invoice_no")

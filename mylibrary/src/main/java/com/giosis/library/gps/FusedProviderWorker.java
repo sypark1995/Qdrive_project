@@ -29,7 +29,7 @@ import java.util.Date;
 import io.reactivex.rxjava3.android.schedulers.AndroidSchedulers;
 import io.reactivex.rxjava3.schedulers.Schedulers;
 
-public class FusedProviderWorker { //implements GoogleApiClient.ConnectionCallbacks, GoogleApiClient.OnConnectionFailedListener {
+public class FusedProviderWorker {
     private final String TAG = "FusedProviderWorker";
 
     private final Context context;
@@ -62,7 +62,7 @@ public class FusedProviderWorker { //implements GoogleApiClient.ConnectionCallba
 
         if (reference.equals("time_fused")) {
 
-//             // TEST_GPS Time
+//             // TEST_ GPS Time
 //            MIN_TIME_BW_UPDATES = 1000 * 60;
 //            MIN_FAST_INTERVAL_UPDATES = 1000 * 60;
 
@@ -145,53 +145,7 @@ public class FusedProviderWorker { //implements GoogleApiClient.ConnectionCallba
         }
     };
 
-
-//
-//    public GoogleApiClient getGoogleApiClient() {
-//
-//        return new GoogleApiClient.Builder(context)
-//                .addApi(LocationServices.API)
-//                .addConnectionCallbacks(this)
-//                .addOnConnectionFailedListener(this).build();
-//    }
-
-
-//    @Override
-//    public void onConnected(Bundle bundle) {
-//
-//
-//        if (ActivityCompat.checkSelfPermission(context, Manifest.permission.ACCESS_FINE_LOCATION) != PackageManager.PERMISSION_GRANTED
-//                && ActivityCompat.checkSelfPermission(context, Manifest.permission.ACCESS_COARSE_LOCATION) != PackageManager.PERMISSION_GRANTED) {
-//
-//            return;
-//        }
-//
-//        fusedLocationProviderClient.getLastLocation().addOnSuccessListener(location -> {
-//
-//            if (location != null) {
-//
-//                latitude = location.getLatitude();
-//                longitude = location.getLongitude();
-//                accuracy = location.getAccuracy();
-//
-//                Log.e("Location", TAG + " onConnected  getLastLocation : " + location.getLatitude() + "  /  " + location.getLongitude());
-//            }
-//        });
-//
-//        LocationRequest locationRequest = new LocationRequest();
-//        locationRequest.setPriority(LocationRequest.PRIORITY_BALANCED_POWER_ACCURACY);
-//        locationRequest.setInterval(MIN_TIME_BW_UPDATES);
-//        locationRequest.setFastestInterval(MIN_FAST_INTERVAL_UPDATES);
-//        locationRequest.setSmallestDisplacement(MIN_DISTANCE_CHANGE_FOR_UPDATES);
-//
-//
-//        fusedLocationProviderClient.requestLocationUpdates(locationRequest, locationCallback, null);
-//    }
-
-
     private void uploadGPSData(double latitude, double longitude, double accuracy, String provider) {
-
-        //     new FusedProviderListenerUploadHelper.Builder(context, opID, deviceID, latitude, longitude, accuracy, reference, provider).build().execute();
 
         String channel = "QDRIVE";
 
@@ -264,13 +218,6 @@ public class FusedProviderWorker { //implements GoogleApiClient.ConnectionCallba
                         Log.e("Exception", "  requestSetAppUserInfo  Exception " + e.toString());
                     }
                 }, it -> Toast.makeText(context, context.getResources().getString(R.string.msg_error_check_again), Toast.LENGTH_SHORT).show());
-
-
-//        new QuickAppUserInfoUploadHelper.Builder(context, opID, "FusedProvider Location is null", api_level, device_info,
-//                device_model, device_product, device_os_version, "")
-//                .setOnQuickQppUserInfoUploadEventListener(() -> {
-//
-//                }).build().execute();
     }
 
     public void removeLocationUpdates() {
@@ -278,14 +225,4 @@ public class FusedProviderWorker { //implements GoogleApiClient.ConnectionCallba
         Log.e("Location", TAG + "  removeLocationUpdates");
         fusedLocationProviderClient.removeLocationUpdates(locationCallback);
     }
-
-
-//    @Override
-//    public void onConnectionSuspended(int arg0) {
-//    }
-//
-//    @Override
-//    public void onConnectionFailed(@NonNull ConnectionResult connectionResult) {
-//        Log.e("Location", TAG + "  onConnectionFailed");
-//    }
 }

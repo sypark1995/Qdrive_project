@@ -107,11 +107,11 @@ public class CnRPickupUploadHelper {
 //                    }
 
                     Log.e("GpsUpdate", "Count : " + count);
-                    Log.e("GpsUpdate", "DATA : " + locationModel.getDifferenceLat() + " / " + locationModel.getDifferenceLng());
                     if (!Preferences.INSTANCE.getUserNation().equalsIgnoreCase("SG") && count == 1) {   // MY,ID
                         if (locationModel.getDriverLat() != 0 && locationModel.getDriverLng() != 0
                                 && locationModel.getParcelLat() != 0 && locationModel.getParcelLng() != 0) {
                             // Parcel & Driver 위치정보 수집 했을 때      (0일 경우 제외)
+                            //    Log.e("GpsUpdate", "DATA : " + locationModel.getDifferenceLat() + " / " + locationModel.getDifferenceLng());
                             if (locationModel.getDifferenceLat() < 0.05 && locationModel.getDifferenceLng() < 0.05) {
                                 // 두 값의 차이가 0.05 이내의 범위일 경우     (0.05 이상이면 부정확)
                                 // 소수점 이하 3까지만 비교       (값이 너무 작으면 빈번하게 호출됨)

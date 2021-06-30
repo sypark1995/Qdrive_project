@@ -2,6 +2,7 @@ package com.giosis.library.main;
 
 import android.annotation.SuppressLint;
 import android.app.AlertDialog;
+import android.content.ContentValues;
 import android.content.Context;
 import android.content.Intent;
 import android.content.pm.PackageManager;
@@ -43,6 +44,7 @@ import com.giosis.library.main.submenu.RpcListActivity;
 import com.giosis.library.pickup.CreatePickupOrderActivity;
 import com.giosis.library.server.Custom_JsonParser;
 import com.giosis.library.server.RetrofitClient;
+import com.giosis.library.server.data.RestDaysResult;
 import com.giosis.library.setting.bluetooth.BluetoothDeviceData;
 import com.giosis.library.util.BarcodeType;
 import com.giosis.library.util.DataUtil;
@@ -58,6 +60,8 @@ import com.google.android.gms.common.ConnectionResult;
 import com.google.android.gms.common.GoogleApiAvailability;
 import com.google.firebase.analytics.FirebaseAnalytics;
 import com.google.firebase.messaging.FirebaseMessaging;
+import com.google.gson.Gson;
+import com.google.gson.reflect.TypeToken;
 
 import org.json.JSONObject;
 
@@ -237,7 +241,7 @@ public class MainActivity extends AppBaseActivity {
         setTopTitle(getResources().getString(R.string.navi_home));
 
 
-        // TEST Outlet
+        // TEST_ Outlet
 //        Preferences.INSTANCE.setOutletDriver("Y");
 //        Preferences.INSTANCE.setUserId("Johari_ISM_Shuttle");      // 7Eleven.Ajib
 
@@ -443,33 +447,6 @@ public class MainActivity extends AppBaseActivity {
                 Toast.makeText(MainActivity.this, "Exception : " + e.toString(), Toast.LENGTH_SHORT).show();
             }
         }
-
-
-        // 2021.03 삭제 예정 Login 호출함수에서 Deactivated 이미 확인함
-//        //Qx 소속 드라이버는 Assign 된 픽업 조회
-//        if (officeName.contains("Qxpress")) {
-//            new PickupAssignCheckHelper.Builder(this, opID)
-//                    .setOnPickupAssignCheckListener(new PickupAssignCheckHelper.OnPickupAssignCheckListener() {
-//                        @Override
-//                        public void onDownloadResult(Integer result) {
-//                            getLocalCount();
-//                        }
-//
-//                        @Override
-//                        public void onDownloadFailList(Integer result) {
-//                            //Deactivated 사용자
-//                            if (result == -1) {
-//
-//                                String msg = getResources().getString(R.string.msg_your_account_deactivated);
-//                                new AlertDialog.Builder(MainActivity.this)
-//                                        .setMessage(msg)
-//                                        .setTitle(getResources().getString(R.string.text_alert))
-//                                        .setCancelable(false).setPositiveButton(getResources().getString(R.string.button_ok),
-//                                        (dialog, which) -> finish()).show();
-//                            }
-//                        }
-//                    }).build().execute();
-//        }
 
         getLocalCount();
     }
@@ -689,8 +666,34 @@ public class MainActivity extends AppBaseActivity {
         //  2020.02 휴무일 가져오기
         int delete = DatabaseHelper.getInstance().delete(DatabaseHelper.DB_TABLE_REST_DAYS, "");
         Log.e(TAG, "DELETE  DB_TABLE_REST_DAYS  Count : " + delete);
-        new GetRestDaysAsyncTask(Preferences.INSTANCE.getUserNation(), Calendar.getInstance().get(Calendar.YEAR)).execute();
-        new GetRestDaysAsyncTask(Preferences.INSTANCE.getUserNation(), Calendar.getInstance().get(Calendar.YEAR) + 1).execute();
+//        new GetRestDaysAsyncTask(Preferences.INSTANCE.getUserNation(), Calendar.getInstance().get(Calendar.YEAR)).execute();
+//        new GetRestDaysAsyncTask(Preferences.INSTANCE.getUserNation(), Calendar.getInstance().get(Calendar.YEAR) + 1).execute();
+
+        RetrofitClient.INSTANCE.instanceDynamic().requestGetRestDays(Calendar.getInstance().get(Calendar.YEAR), Preferences.INSTANCE.getUserNation(),
+                DataUtil.appID, Preferences.INSTANCE.getUserNation())
+                .subscribeOn(Schedulers.io())
+                .observeOn(AndroidSchedulers.mainThread())
+                .subscribe(it -> {
+
+                    Gson gson = new Gson();
+                    ArrayList<RestDaysResult> list = gson.fromJson(it.getResultObject(), new TypeToken<ArrayList<RestDaysResult>>() {
+                    }.getType());
+
+                    insertRestDays(list);
+                });
+
+        RetrofitClient.INSTANCE.instanceDynamic().requestGetRestDays(Calendar.getInstance().get(Calendar.YEAR) + 1, Preferences.INSTANCE.getUserNation(),
+                DataUtil.appID, Preferences.INSTANCE.getUserNation())
+                .subscribeOn(Schedulers.io())
+                .observeOn(AndroidSchedulers.mainThread())
+                .subscribe(it -> {
+
+                    Gson gson = new Gson();
+                    ArrayList<RestDaysResult> list = gson.fromJson(it.getResultObject(), new TypeToken<ArrayList<RestDaysResult>>() {
+                    }.getType());
+
+                    insertRestDays(list);
+                });
 
 
         if (gpsOnceEnable && gpsTrackerManager != null) {
@@ -737,6 +740,22 @@ public class MainActivity extends AppBaseActivity {
         new ServerDownloadHelper.Builder(this, opID, officeCode, deviceID)
                 .setOnServerDownloadEventListener(this::getLocalCount).build().execute();
     }
+
+    public void insertRestDays(ArrayList<RestDaysResult> list) {
+
+        long insert = 0;
+        for (RestDaysResult data : list) {
+
+            ContentValues contentValues = new ContentValues();
+            contentValues.put("title", data.getTitle());
+            contentValues.put("rest_dt", data.getRest_dt());
+
+            insert = DatabaseHelper.getInstance().insert(DatabaseHelper.DB_TABLE_REST_DAYS, contentValues);
+        }
+
+        Log.e("DB", "Rest Day   DB Insert: " + insert);
+    }
+
 
     public void GPSTrackerServiceStart() {
 
@@ -851,12 +870,6 @@ public class MainActivity extends AppBaseActivity {
         String device_product = Build.PRODUCT;               // Product
         String device_os_version = System.getProperty("os.version");    // OS version
         Log.e(TAG, " DATA " + api_level + " / " + device_info + " / " + device_model + " / " + device_product + " / " + device_os_version);
-
-//        new QuickAppUserInfoUploadHelper.Builder(this, opID, "", api_level, device_info,
-//                device_model, device_product, device_os_version, "killapp")
-//                .setOnQuickQppUserInfoUploadEventListener(() -> {
-//                }).build().execute();
-
 
         SimpleDateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
         String regDataString = dateFormat.format(new Date());

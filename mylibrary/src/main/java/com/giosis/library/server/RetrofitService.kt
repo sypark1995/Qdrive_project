@@ -343,6 +343,17 @@ interface RetrofitService {
     ): Single<APIModel>
 
 
+    @POST("GetRestDays")
+    @FormUrlEncoded
+    fun requestGetRestDays(
+            @Field("year") year: Int,
+            @Field("svc_nation_cd") svc_nation_cd: String = Preferences.userNation,
+            @Field("app_id") app_id: String = DataUtil.appID,
+            @Field("nation_cd") nation_cd: String = Preferences.userNation
+    ): Single<APIModel>
+
+
+    // message
     @POST("GetQdriverMessageListFromMessenger")
     @FormUrlEncoded
     fun requestGetMessageListFromAdmin(

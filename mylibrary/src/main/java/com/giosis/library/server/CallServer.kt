@@ -26,37 +26,11 @@ object CallServer {
                 .observeOn(AndroidSchedulers.mainThread())
                 .subscribe({
 
-                    Log.e("krm0219", "result  ${it.resultCode}")
                     callback.onServerResult(it)
                 }, {
 
                     Log.e(RetrofitClient.TAG, it.message.toString())
                     callback.onServerError(R.string.msg_please_try_again)
-                })
-    }
-
-    interface GetFailedCodeCallback1 {
-        fun onServerResult(value: APIModel)
-    }
-
-    fun getNotice(callback: GetFailedCodeCallback1) {
-        Log.e("krm0219", "getFailedCode2")
-        RetrofitClient.instanceDynamic().requestGetNoticeData("0", "List", 1, 5)
-                .subscribeOn(Schedulers.io())
-                .observeOn(AndroidSchedulers.mainThread())
-                .subscribe({
-
-                    try {
-
-                        Log.e("krm0219", "getFailedCode3")
-                        callback.onServerResult(it)
-
-                    } catch (e: Exception) {
-
-                        Log.e("Exception", "requestGetNoticeData  $e")
-                    }
-                }, {
-
                 })
     }
 }

@@ -6,6 +6,7 @@ import android.widget.Toast
 import com.giosis.library.R
 import com.giosis.library.databinding.ActivityNotInHousedBinding
 import com.giosis.library.server.RetrofitClient
+import com.giosis.library.server.data.NotInHousedResult
 import com.giosis.library.util.CommonActivity
 import com.giosis.library.util.NetworkUtil
 import com.google.gson.Gson

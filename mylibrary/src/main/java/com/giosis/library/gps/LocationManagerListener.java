@@ -43,7 +43,7 @@ public class LocationManagerListener implements LocationListener {
 
         if (reference.equals("time_location")) {
 
-            // TEST_GPS Time
+            // TEST_ GPS Time
             // minTime = 1000 * 60;
 
             minTime = 1000 * 60 * 10;
@@ -100,8 +100,6 @@ public class LocationManagerListener implements LocationListener {
         double latitude = location.getLatitude();
         double longitude = location.getLongitude();
         Log.e("Location", TAG + "  onLocationChanged : " + latitude + " / " + longitude);
-
-        //  new FusedProviderListenerUploadHelper.Builder(context, opID, deviceID, latitude, longitude, 0, reference, provider).build().execute();
 
         String channel = "QDRIVE";
 

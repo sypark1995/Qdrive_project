@@ -27,9 +27,6 @@ public class GPSTrackerManager {
 
 
     // Google Play Service - Y
-//    private FusedProviderOnceListener fusedProviderListener = null;
-//    private GoogleApiClient mGoogleApiClient;
-
     private FusedProviderOnceListener1 fusedProviderListener1 = null;
 
     // Google Play Service - N
@@ -57,11 +54,10 @@ public class GPSTrackerManager {
 
         if (Build.MANUFACTURER.equals("HUAWEI") && Preferences.INSTANCE.getServerURL().contains("staging")) {  // KR 화웨이폰 - google 위치정보 못가져옴
 
-            Log.e("krm0219", TAG + "   MANUFACTURER = " + Build.MANUFACTURER); //제조사
             isGooglePlayService = false;
         }
 
-        // TEST
+        // TEST_
         // isGooglePlayService = true;
         // isGooglePlayService = false;
 
@@ -76,13 +72,6 @@ public class GPSTrackerManager {
 
 
     private void createFusedProvider() {
-
-//        fusedProviderListener = new FusedProviderOnceListener(context);
-//        mGoogleApiClient = fusedProviderListener.getGoogleApiClient();
-//
-//        if (mGoogleApiClient != null) {
-//            mGoogleApiClient.connect();
-//        }
 
         fusedProviderListener1 = new FusedProviderOnceListener1(context);
         fusedProviderListener1.startLocationUpdates();
@@ -99,14 +88,6 @@ public class GPSTrackerManager {
 
 
     public void stopFusedProviderService() {
-
-//        if (fusedProviderListener != null)
-//            fusedProviderListener.removeLocationUpdates();
-//
-//        if (mGoogleApiClient != null) {
-//
-//            mGoogleApiClient.disconnect();
-//        }
 
         if (fusedProviderListener1 != null)
             fusedProviderListener1.removeLocationUpdates();
@@ -127,7 +108,6 @@ public class GPSTrackerManager {
 
         if (isGooglePlayService) {
 
-            //    latitude = fusedProviderListener.getLatitude();
             latitude = fusedProviderListener1.getLatitude();
         } else {
 
@@ -144,7 +124,6 @@ public class GPSTrackerManager {
 
         if (isGooglePlayService) {
 
-            //  longitude = fusedProviderListener.getLongitude();
             longitude = fusedProviderListener1.getLongitude();
         } else {
 
@@ -159,7 +138,7 @@ public class GPSTrackerManager {
         double accuracy = 0;
 
         if (isGooglePlayService) {
-            //   accuracy = fusedProviderListener.getAccuracy();
+
             accuracy = fusedProviderListener1.getAccuracy();
         }
 

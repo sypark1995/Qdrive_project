@@ -21,6 +21,7 @@ import androidx.fragment.app.Fragment;
 
 import com.giosis.library.R;
 import com.giosis.library.bluetooth.BluetoothListener;
+import com.giosis.library.main.PickupAssignResult;
 import com.giosis.library.server.RetrofitClient;
 import com.giosis.library.util.DataUtil;
 import com.giosis.library.util.PermissionActivity;
@@ -227,74 +228,6 @@ public class ListTodayDoneFragment extends Fragment implements SearchView.OnQuer
 
                     }
                 }, it -> Toast.makeText(getActivity(), getResources().getString(R.string.msg_error_check_again), Toast.LENGTH_SHORT).show());
-
-
-//        new ListTodayDonePickupDownloadHelper.Builder(Preferences.INSTANCE.getUserId())
-//                .setOnTodayDonePickupOrderDownloadEventListener(resultList -> {
-//
-//                    final int resultCode = Integer.parseInt((String) resultList.get(0));
-//
-//                    if (resultCode == 0) {
-//
-//                        PickupAssignResult pickupAssignResult = (PickupAssignResult) resultList.get(2);
-//                        rowItems = new ArrayList<>();
-//
-//                        for (PickupAssignResult.QSignPickupList pickupInfo : pickupAssignResult.getResultObject()) {
-//
-//                            childItems = new ArrayList<>();
-//                            ChildItem child = new ChildItem();
-//                            child.setHp(pickupInfo.getHpNo());
-//                            child.setTel(pickupInfo.getTelNo());
-//                            child.setStat(pickupInfo.getStat());
-//                            child.setStatMsg(pickupInfo.getDriverMemo());
-//                            child.setStatReason(pickupInfo.getFailReason());
-//                            child.setSecretNoType(pickupInfo.getSecretNoType());
-//                            child.setSecretNo(pickupInfo.getSecretNo());
-//                            childItems.add(child);
-//
-//                            RowItem rowitem = new RowItem(pickupInfo.getContrNo(),
-//                                    "D+0",
-//                                    pickupInfo.getInvoiceNo(),
-//                                    pickupInfo.getReqName(),
-//                                    "(" + pickupInfo.getZipCode() + ") " + pickupInfo.getAddress(),
-//                                    pickupInfo.getDelMemo(),
-//                                    "P",
-//                                    pickupInfo.getRoute(),
-//                                    "", //cs.getString(cs.getColumnIndex("sender_nm")),
-//                                    pickupInfo.getPickupHopeDay(),
-//                                    pickupInfo.getQty(),
-//                                    "", // cs.getString(cs.getColumnIndex("self_memo")),
-//                                    0, // cs.getDouble(cs.getColumnIndex("lat")),
-//                                    0, //cs.getDouble(cs.getColumnIndex("lng")),
-//                                    pickupInfo.getStat(), //cs.getString(cs.getColumnIndex("stat")),
-//                                    pickupInfo.getCustNo(), //cs.getString(cs.getColumnIndex("cust_no")),
-//                                    pickupInfo.getPartnerID(),//cs.getString(cs.getColumnIndex("partner_id"))
-//                                    "",
-//                                    "",
-//                                    ""
-//                            );
-//
-//                            rowitem.setItems(childItems);
-//                            rowItems.add(rowitem);
-//                        }
-//
-//                        adapter = new ListTodayDoneAdapter(rowItems, bluetoothListener);
-//                        exlist_card_list.setAdapter(adapter);
-//                        adapter.setSorting(rowItems);
-//
-//                        int groupCount = adapter.getGroupCount();
-//
-//                        for (int i = 0; i < groupCount; i++) {
-//                            exlist_card_list.collapseGroup(i);
-//                        }
-//
-//                        //카운트 전달
-//                        mCountCallback.onTodayDoneCountRefresh(groupCount);
-//                    } else {
-//
-//                        Toast.makeText(getActivity(), "Download Error..", Toast.LENGTH_SHORT).show();
-//                    }
-//                }).build().execute();
     }
 
     @Override

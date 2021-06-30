@@ -27,6 +27,7 @@ import androidx.fragment.app.Fragment;
 
 import com.giosis.library.R;
 import com.giosis.library.bluetooth.BluetoothListener;
+import com.giosis.library.main.PickupAssignResult;
 import com.giosis.library.server.RetrofitClient;
 import com.giosis.library.util.DataUtil;
 import com.giosis.library.util.DatabaseHelper;
@@ -209,11 +210,11 @@ public class ListInProgressFragment extends Fragment
         // Search
         SearchManager searchManager = (SearchManager) getActivity().getSystemService(Context.SEARCH_SERVICE);
         searchview_list.setSearchableInfo(searchManager.getSearchableInfo(getActivity().getComponentName()));
-        searchview_list.setQueryHint(getContext().getResources().getString(R.string.text_search));
+        searchview_list.setQueryHint(getResources().getString(R.string.text_search));
         searchview_list.setOnQueryTextListener(this);
         searchview_list.setOnCloseListener(this);
 
-        int id = searchview_list.getContext().getResources().getIdentifier("android:id/search_src_text", null, null);
+        int id = searchview_list.getResources().getIdentifier("android:id/search_src_text", null, null);
         edit_list_searchview = searchview_list.findViewById(id);
         edit_list_searchview.setTextColor(getResources().getColor(R.color.color_8f8f8f));
         edit_list_searchview.setTextSize(TypedValue.COMPLEX_UNIT_PX, getResources().getDimension(R.dimen.text_size_26px));
@@ -353,38 +354,30 @@ public class ListInProgressFragment extends Fragment
 
         fragmentListener.onCountRefresh(groupCount);
 
-        // 2019.01  krm0219
-        // LIST 들어갈 때 TODAY DONE Count 표시하기 위함.
-        // ViewPage 특성상 TODAY DONE 페이지는 처음에 호출되지 않아서 0 으로 표시되어있음.
-        RetrofitClient.INSTANCE.instanceDynamic().requestGetTodayPickupDoneList(Preferences.INSTANCE.getUserId(), "", "",
-                DataUtil.appID, Preferences.INSTANCE.getUserNation())
-                .subscribeOn(Schedulers.io())
-                .observeOn(AndroidSchedulers.mainThread())
-                .subscribe(it -> {
+        Log.e("krm0219", "Pickup Driver " + Preferences.INSTANCE.getPickupDriver());
+        if (Preferences.INSTANCE.getPickupDriver().equals("Y")) {
+            // 2019.01  krm0219
+            // LIST 들어갈 때 TODAY DONE Count 표시하기 위함.
+            // ViewPage 특성상 TODAY DONE 페이지는 처음에 호출되지 않아서 0 으로 표시되어있음.
+            RetrofitClient.INSTANCE.instanceDynamic().requestGetTodayPickupDoneList(Preferences.INSTANCE.getUserId(), "", "",
+                    DataUtil.appID, Preferences.INSTANCE.getUserNation())
+                    .subscribeOn(Schedulers.io())
+                    .observeOn(AndroidSchedulers.mainThread())
+                    .subscribe(it -> {
 
-                    Log.e("Server", " requestGetTodayPickupDoneList  result  " + it.getResultCode());
+                        Log.e("Server", " requestGetTodayPickupDoneList  result  " + it.getResultCode());
+                        try {
+                            if (it.getResultCode() == 0) {
 
-                    if (it.getResultCode() == 0) {
-
-                        Gson gson = new Gson();
-                        ArrayList<PickupAssignResult.QSignPickupList> list = gson.fromJson(it.getResultObject(), new TypeToken<ArrayList<PickupAssignResult.QSignPickupList>>() {
-                        }.getType());
-                        fragmentListener.onTodayDoneCountRefresh(list != null ? list.size() : 0);
-                    }
-                }, it -> Toast.makeText(getActivity(), getResources().getString(R.string.msg_error_check_again), Toast.LENGTH_SHORT).show());
-
-
-//        new ListTodayDonePickupDownloadHelper.Builder(Preferences.INSTANCE.getUserId())
-//                .setOnTodayDonePickupOrderDownloadEventListener(resultList -> {
-//                    final int resultCode = Integer.parseInt((String) resultList.get(0));
-//
-//                    if (resultCode == 0) {
-//                        PickupAssignResult pickupAssignResult = (PickupAssignResult) resultList.get(2);
-//
-//                        int todayDoneCount = pickupAssignResult.getResultObject().size();
-//                        fragmentListener.onTodayDoneCountRefresh(todayDoneCount);
-//                    }
-//                }).build().execute();
+                                Gson gson = new Gson();
+                                ArrayList<PickupAssignResult.QSignPickupList> list = gson.fromJson(it.getResultObject(), new TypeToken<ArrayList<PickupAssignResult.QSignPickupList>>() {
+                                }.getType());
+                                fragmentListener.onTodayDoneCountRefresh(list != null ? list.size() : 0);
+                            }
+                        } catch (Exception ignore) {
+                        }
+                    }, it -> Toast.makeText(getActivity(), getResources().getString(R.string.msg_error_check_again), Toast.LENGTH_SHORT).show());
+        }
     }
 
 

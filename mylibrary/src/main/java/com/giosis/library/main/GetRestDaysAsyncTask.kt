@@ -7,6 +7,7 @@ import com.giosis.library.server.Custom_JsonParser
 import com.giosis.library.util.DatabaseHelper
 import org.json.JSONObject
 
+@Deprecated("2021.07")
 class GetRestDaysAsyncTask(private val nation: String, private val year: Int) : AsyncTask<Void, Void, Void>() {
 
 

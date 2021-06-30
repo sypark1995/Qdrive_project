@@ -5,7 +5,6 @@ import android.app.AlertDialog
 import android.content.Context
 import android.content.Intent
 import android.net.Uri
-import android.os.AsyncTask
 import android.os.Bundle
 import android.provider.Settings
 import android.util.Log
@@ -19,11 +18,9 @@ import android.widget.ProgressBar
 import com.giosis.library.gps.GPSTrackerManager
 import com.giosis.library.main.MainActivity
 import com.giosis.library.main.SMSVerificationActivity
-import com.giosis.library.server.Custom_JsonParser
 import com.giosis.library.server.RetrofitClient
 import com.giosis.library.setting.DeveloperModeActivity
 import com.giosis.library.util.DatabaseHelper
-import com.giosis.library.util.NetworkUtil
 import com.giosis.library.util.PermissionActivity
 import com.giosis.library.util.PermissionChecker
 import com.giosis.util.qdrive.international.databinding.ActivityLoginBinding
@@ -32,7 +29,6 @@ import com.giosis.util.qdrive.util.DataUtil
 import com.google.gson.Gson
 import io.reactivex.rxjava3.android.schedulers.AndroidSchedulers
 import io.reactivex.rxjava3.schedulers.Schedulers
-import org.json.JSONObject
 import java.io.File
 import java.util.*
 
@@ -201,10 +197,7 @@ class LoginActivity : CommonActivity() {
                     MyApplication.preferences.appVersion = appVersion
 
                     progressBar.visibility = View.VISIBLE
-//                    val loginAsyncTask = LoginAsyncTask(latitude.toString(), longitude.toString())
-//                    loginAsyncTask.execute()
 
-                    // FIXME_Retrofit
                     RetrofitClient.instanceDynamic().requestServerLogin(userID, userPW, "QDRIVE_V2", "", deviceUUID, "",
                             latitude.toString(), longitude.toString(), DataUtil.appID, userNationCode)
                             .subscribeOn(Schedulers.io())
@@ -368,152 +361,6 @@ class LoginActivity : CommonActivity() {
             imm.hideSoftInputFromWindow(view.windowToken, 0)
         }
     }
-
-
-    // NOTIFICATION.  Login API
-    @SuppressLint("StaticFieldLeak")
-    inner class LoginAsyncTask(val latitude: String, val longitude: String) : AsyncTask<Void, Void, LoginResult>() {
-
-        override fun doInBackground(vararg p0: Void?): LoginResult {
-
-            val result = LoginResult()
-
-            if (!NetworkUtil.isNetworkAvailable(context)) {
-
-                result.resultCode = "-16"
-                result.resultMsg = resources.getString(R.string.msg_network_connect_error_saved)
-                return result
-            }
-
-            try {
-
-                val job = JSONObject()
-                job.accumulate("login_id", MyApplication.preferences.userId)
-                job.accumulate("password", MyApplication.preferences.userPw)
-                job.accumulate("chanel", "QDRIVE_V2")
-                job.accumulate("referer", MyApplication.preferences.deviceUUID)
-                job.accumulate("ip", "")
-                job.accumulate("vehicle", "")
-                job.accumulate("latitude", latitude)
-                job.accumulate("longitude", longitude)
-                job.accumulate("app_id", DataUtil.appID)
-                job.accumulate("nation_cd", MyApplication.preferences.userNation)
-
-                Log.e(tag, "SERVER  UPLOAD  DATA : ${MyApplication.preferences.userId} / ${MyApplication.preferences.userPw} / " +
-                        "$latitude / $longitude / ${MyApplication.preferences.deviceUUID} / ${DataUtil.appID} / ${MyApplication.preferences.userNation}")
-
-
-                val methodName = "LoginQDRIVE"
-                val jsonString = Custom_JsonParser.requestServerDataReturnJSON(methodName, job)
-                // {"ResultObject":{"OpNo":"5044","OpId":"vin.re","OpNm":"k driver name 1","OpType":"DR","OfficeCode":"0000","OfficeName":"Qxpress SG West","AgentCode":"karam.kim","AdminAuthYn":"Y","DsmAuthYn":"Y","CustNo":"100000194","Email":"qfs@qxpress.sg","DefaultYn":"N","QLPSCustNo":null,"GroupNo":"42","AuthNo":"68 , 69 , 70 , 71 , 74 , 80 , 85 , 93 , 96 , 97 , 98 , 99 , 101 , 102 , 104 , 105 , 106 , 107 , 108 , 111 , 112 , 114 , 115 , 116 , 117 , 118 , 119 , 121 , 122 , 123 , 133 , 134 , 135 , 136 , 137 , 138 , 139 , 140 , 141 , 142 , 143 , 148 , 153 , 154 , 156 , 157 , 158 , 159 , 161 , 164 , 165 , 166 , 171 , 172 , 173 , 174 , 176 , 177 , 181 , 186 , 190 , 193 , 204 , 219 , 221 , 222","Version":"1.0.0","SmsYn":"Y","DeviceYn":"Y","EpEmail":"kim@abc.com","PickupDriverYN":"Y","shuttle_driver_yn":"N","locker_driver_status":"","country_code":"SG"},"ResultCode":0,"ResultMsg":""}
-
-                val jsonObject = JSONObject(jsonString)
-                result.resultCode = jsonObject.getString("ResultCode")
-                result.resultMsg = jsonObject.getString("ResultMsg")
-
-                if (result.resultCode == "0") {
-
-                    val resultObject = jsonObject.getJSONObject("ResultObject")
-                    val data = LoginResult.LoginData()
-
-                    data.userId = resultObject.getString("OpId")
-                    data.userName = resultObject.getString("OpNm")
-                    data.officeCode = resultObject.getString("OfficeCode")
-                    data.officeName = resultObject.getString("OfficeName")
-                    data.userEmail = resultObject.getString("EpEmail")
-                    data.serverVersion = resultObject.getString("Version")
-                    data.pickupDriver = resultObject.getString("PickupDriverYN")
-                    data.outletDriver = resultObject.getString("shuttle_driver_yn")
-                    data.lockerStatus = resultObject.getString("locker_driver_status")
-                    data.smsYn = resultObject.getString("SmsYn")
-                    data.deviceYn = resultObject.getString("DeviceYn")
-                    data.defaultYn = resultObject.getString("DefaultYn")
-                    data.authNo = resultObject.getString("AuthNo")
-                    data.nationCode = resultObject.getString("country_code")
-
-                    result.resultObject = data
-                }
-            } catch (e: Exception) {
-
-                Log.e("krm0219", "Exception : $e")
-                result.resultCode = "-15"
-                result.resultMsg = java.lang.String.format(resources.getString(R.string.text_exception), e.toString())
-            }
-
-            return result
-        }
-
-        override fun onPostExecute(result: LoginResult) {
-            super.onPostExecute(result)
-
-            if (result.resultCode != "0") {
-                // NOTIFICATION.  Login Fail
-
-                progressBar.visibility = View.GONE
-                MyApplication.preferences.userPw = ""
-                binding.editLoginPassword.setText("")
-
-                when {
-                    result.resultCode == "-10" -> {
-
-                        showDialog(resources.getString(R.string.msg_account_deactivated))
-                    }
-                    result.resultMsg != "" -> {
-
-                        showDialog(result.resultMsg)
-                    }
-                    else -> {
-
-                        showDialog(resources.getString(R.string.msg_not_valid_info))
-                    }
-                }
-            } else {
-                // NOTIFICATION.  Login Success
-
-                Log.e(tag, " Login Version -  ${MyApplication.preferences.appVersion} < ${result.resultObject.serverVersion}")
-                progressBar.visibility = View.GONE
-
-
-                if (MyApplication.preferences.appVersion < result.resultObject.serverVersion) {
-
-                    val msg = java.lang.String.format(resources.getString(R.string.msg_update_version),
-                            result.resultObject.serverVersion, MyApplication.preferences.appVersion)
-                    goGooglePlay(msg)
-                } else {
-
-                    DataUtil.nationCode = MyApplication.preferences.userNation
-                    MyApplication.preferences.userId = result.resultObject.userId
-                    MyApplication.preferences.userName = result.resultObject.userName
-                    MyApplication.preferences.userEmail = result.resultObject.userEmail
-                    MyApplication.preferences.officeCode = result.resultObject.officeCode
-                    MyApplication.preferences.officeName = result.resultObject.officeName
-                    MyApplication.preferences.pickupDriver = result.resultObject.pickupDriver
-                    MyApplication.preferences.outletDriver = result.resultObject.outletDriver
-                    MyApplication.preferences.lockerStatus = result.resultObject.lockerStatus
-                    MyApplication.preferences.default = result.resultObject.defaultYn
-                    MyApplication.preferences.authNo = result.resultObject.authNo
-
-                    Log.e(tag, "SERVER  DOWNLOAD  DATA : ${result.resultObject.officeCode} / ${result.resultObject.officeName} / " +
-                            "${result.resultObject.pickupDriver} / ${result.resultObject.outletDriver} / ${result.resultObject.lockerStatus} / " +
-                            "${result.resultObject.defaultYn} / ${result.resultObject.authNo}")
-
-
-                    Log.e(tag, "  SMS / Device Auth - ${result.resultObject.smsYn}, ${result.resultObject.deviceYn}")
-                    // Notification.  GO Main
-                    if (result.resultObject.smsYn == "Y" && result.resultObject.deviceYn == "Y") {
-
-                        val intent = Intent(this@LoginActivity, MainActivity::class.java)
-                        startActivity(intent)
-                        finish()
-                    } else {
-
-                        goSMSVerification(resources.getString(R.string.msg_go_sms_verification))
-                    }
-                }
-            }
-        }
-    }
-
 
     fun goGooglePlay(msg: String?) {
 

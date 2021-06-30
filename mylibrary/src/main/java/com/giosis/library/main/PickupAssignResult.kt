@@ -1,234 +1,96 @@
-package com.giosis.library.main;
+package com.giosis.library.main
 
-import com.google.gson.annotations.SerializedName;
+import com.google.gson.annotations.SerializedName
 
-import org.simpleframework.xml.Element;
-import org.simpleframework.xml.ElementList;
-import org.simpleframework.xml.Root;
+class PickupAssignResult {
 
-import java.util.List;
+    @SerializedName("ResultCode")
+    var resultCode = -1
 
-@Root(strict = false, name = "StdCustomResultOfListOfQSignPickupList")
-public class PickupAssignResult {
+    @SerializedName("ResultMsg")
+    var resultMsg = ""
 
-    @Element(name = "ResultCode", required = false)
-    private int ResultCode = -1;
+    @SerializedName("ResultObject")
+    var resultObject: List<QSignPickupList>? = null
 
-    @Element(name = "ResultMsg", required = false)
-    private String ResultMsg = "";
-    @ElementList(required = false, name = "ResultObject")
-    private List<QSignPickupList> ResultObject;
+    class QSignPickupList {
 
-    public int getResultCode() {
-        return ResultCode;
-    }
+        @SerializedName("contr_no")
+        val contrNo = ""
 
-    public void setResultCode(int resultCode) {
-        this.ResultCode = resultCode;
-    }
+        @SerializedName("partner_ref_no")
+        val partnerRefNo = ""
 
-    public String getResultMsg() {
-        return ResultMsg;
-    }
+        @SerializedName("invoice_no")
+        val invoiceNo = ""
 
-    public void setResultMsg(String resultMsg) {
-        this.ResultMsg = resultMsg;
-    }
+        @SerializedName("stat")
+        val stat = ""
 
-    public List<QSignPickupList> getResultObject() {
-        return ResultObject;
-    }
+        @SerializedName("req_nm")
+        val reqName = ""
 
-    public void setResultObject(List<QSignPickupList> resultObj) {
-        this.ResultObject = resultObj;
-    }
+        @SerializedName("partner_id")
+        val partnerID = ""
 
-    @Root(strict = false, name = "QSignPickupList")
-    public static class QSignPickupList {
+        @SerializedName("req_dt")
+        val reqDate = ""
 
-        @Element(name = "contr_no", required = false)
-        private String contr_no = "";
+        @SerializedName("tel_no")
+        val telNo = ""
 
-        @Element(name = "partner_ref_no", required = false)
-        private String partner_ref_no = "";
+        @SerializedName("hp_no")
+        val hpNo = ""
 
-        @Element(name = "invoice_no", required = false)
-        private String invoice_no = "";
+        @SerializedName("zip_code")
+        val zipCode = ""
 
-        @Element(name = "stat", required = false)
-        private String stat = "";
+        @SerializedName("address")
+        val address = ""
 
-        @Element(name = "req_nm", required = false)
-        private String req_nm = "";
+        @SerializedName("del_memo")
+        val delMemo = ""
 
-        @Element(name = "partner_id", required = false)
-        private String partner_id = "";
+        @SerializedName("driver_memo")
+        val driverMemo = ""
 
-        @Element(name = "req_dt", required = false)
-        private String req_dt = "";
+        @SerializedName("fail_reason")
+        val failReason = ""
 
-        @Element(name = "tel_no", required = false)
-        private String tel_no = "";
+        @SerializedName("pickup_hopeday")
+        val pickupHopeDay = ""
 
-        @Element(name = "hp_no", required = false)
-        private String hp_no = "";
+        @SerializedName("qty")
+        val qty = ""
 
-        @Element(name = "zip_code", required = false)
-        private String zip_code = "";
+        @SerializedName("route")
+        val route = ""
 
-        @Element(name = "address", required = false)
-        private String address = "";
+        @SerializedName("secret_no_type")
+        val secretNoType = ""
 
-        @Element(name = "del_memo", required = false)
-        private String del_memo = "";
+        @SerializedName("secret_no")
+        val secretNo = ""
 
-        @Element(name = "driver_memo", required = false)
-        private String driver_memo = "";
+        @SerializedName("cust_no")
+        val custNo = ""
 
-        @Element(name = "fail_reason", required = false)
-        private String fail_reason = "";
+        @SerializedName("ref_pickup_no")
+        val ref_pickup_no = ""
 
-        @Element(name = "pickup_hopeday", required = false)
-        private String pickup_hopeday = "";
+        @SerializedName("lat_lng")
+        val lat_lng = ""
 
-        @Element(name = "qty", required = false)
-        private String qty = "";
-
-        @Element(name = "route", required = false)
-        private String route = "";
-
-        @Element(name = "secret_no_type", required = false)
-        private String secret_no_type = "";
-
-        @Element(name = "secret_no", required = false)
-        private String secret_no = "";
-
-        @Element(name = "cust_no", required = false)
-        private String cust_no = "";
-
-        @Element(name = "ref_pickup_no", required = false)
-        private String ref_pickup_no = "";
-
-        @Element(name = "lat_lng", required = false)
-        private String lat_lng = "";
-
-        @Element(name = "sender_state", required = false)
         @SerializedName("sender_state")
-        private String state = "";
+        val state = ""
 
-        @Element(name = "sender_city", required = false)
         @SerializedName("sender_city")
-        private String city = "";
+        val city = ""
 
-        @Element(name = "sender_street", required = false)
         @SerializedName("sender_street")
-        private String street = "";
+        val street = ""
 
-        public String getCustNo() {
-            return cust_no;
-        }
-
-        public String getContrNo() {
-            return contr_no;
-        }
-
-        public String getPartnerRefNo() {
-            return partner_ref_no;
-        }
-
-        public String getInvoiceNo() {
-            return invoice_no;
-        }
-
-        public String getStat() {
-            return stat;
-        }
-
-        public String getReqName() {
-            return req_nm;
-        }
-
-        public String getTelNo() {
-            return tel_no;
-        }
-
-        public String getHpNo() {
-            return hp_no;
-        }
-
-        public String getZipCode() {
-            return zip_code;
-        }
-
-        public String getAddress() {
-            return address;
-        }
-
-        public String getDelMemo() {
-            return del_memo;
-        }
-
-        public String getDriverMemo() {
-            return driver_memo;
-        }
-
-        public String getFailReason() {
-            return fail_reason;
-        }
-
-        public String getQty() {
-            return qty;
-        }
-
-        public String getRoute() {
-            return route;
-        }
-
-        public String getSecretNoType() {
-            return secret_no_type;
-        }
-
-        public String getSecretNo() {
-            return secret_no;
-        }
-
-        public String getReqDate() {
-            return req_dt;
-        }
-
-        public String getPartnerID() {
-            return partner_id;
-        }
-
-        public String getPickupHopeDay() {
-            return pickup_hopeday;
-        }
-
-        public String getPickupHopeTime() {
-
-            String pickupHopeTime = req_dt.substring(10, req_dt.length());
-
-            return pickupHopeTime;
-        }
-
-        public String getRef_pickup_no() {
-            return ref_pickup_no;
-        }
-
-        public String getLat_lng() {
-            return lat_lng;
-        }
-
-        public String getState() {
-            return state;
-        }
-
-        public String getCity() {
-            return city;
-        }
-
-        public String getStreet() {
-            return street;
-        }
+        val pickupHopeTime: String
+            get() = reqDate.substring(10, reqDate.length)
     }
 }
