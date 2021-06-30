@@ -24,6 +24,7 @@ import com.giosis.library.util.PermissionChecker
 import com.giosis.util.qdrive.singapore.databinding.ActivityLoginBinding
 import com.giosis.util.qdrive.util.CommonActivity
 import com.giosis.util.qdrive.util.DataUtil
+import com.google.firebase.crashlytics.FirebaseCrashlytics
 import com.google.gson.Gson
 import io.reactivex.rxjava3.android.schedulers.AndroidSchedulers
 import io.reactivex.rxjava3.schedulers.Schedulers
@@ -32,7 +33,7 @@ import java.io.File
 class LoginActivity : CommonActivity() {
 
     val tag = "LoginActivity"
-    private  val binding by lazy {
+    private val binding by lazy {
         ActivityLoginBinding.inflate(layoutInflater)
     }
 
@@ -216,6 +217,9 @@ class LoginActivity : CommonActivity() {
                                                 }
 
                                                 if (loginData.smsYn == "Y" && loginData.deviceYn == "Y") {
+
+                                                    FirebaseCrashlytics.getInstance().setCustomKey("ID", MyApplication.preferences.userId)
+
                                                     val intent = Intent(this@LoginActivity, MainActivity::class.java)
                                                     startActivity(intent)
                                                     finish()
