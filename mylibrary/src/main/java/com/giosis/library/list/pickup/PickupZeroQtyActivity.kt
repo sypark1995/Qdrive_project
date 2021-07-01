@@ -2,21 +2,36 @@ package com.giosis.library.list.pickup
 
 import android.app.AlertDialog
 import android.content.Intent
+import android.graphics.Bitmap
 import android.os.Bundle
 import android.text.Editable
 import android.text.TextWatcher
 import android.util.Log
+import android.view.View
 import android.widget.Toast
+import androidx.lifecycle.lifecycleScope
 import com.giosis.library.MemoryStatus
 import com.giosis.library.R
+import com.giosis.library.databinding.ActivityPickupStartToScanBinding
 import com.giosis.library.gps.GPSTrackerManager
+import com.giosis.library.server.ImageUpload
 import com.giosis.library.util.*
-import kotlinx.android.synthetic.main.activity_pickup_start_to_scan.*
-import kotlinx.android.synthetic.main.top_title.*
+import com.giosis.library.util.dialog.ProgressDialog
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.launch
+import kotlinx.coroutines.withContext
 
 class PickupZeroQtyActivity : CommonActivity() {
 
     val tag = "PickupZeroQtyActivity"
+
+    private val binding by lazy {
+        ActivityPickupStartToScanBinding.inflate(layoutInflater)
+    }
+
+    val progressBar by lazy {
+        ProgressDialog(this@PickupZeroQtyActivity)
+    }
 
     lateinit var pickupNo: String
 
@@ -32,19 +47,19 @@ class PickupZeroQtyActivity : CommonActivity() {
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        setContentView(R.layout.activity_pickup_start_to_scan)
+        setContentView(binding.root)
 
         pickupNo = intent.getStringExtra("pickupNo").toString()
 
-        text_top_title.text = resources.getString(R.string.text_zero_qty)
-        text_sign_p_pickup_no.text = pickupNo
-        text_sign_p_applicant.text = intent.getStringExtra("applicant")
-        img_sign_p_start_scan.setBackgroundResource(R.drawable.qdrive_btn_icon_check_off)
-        img_sign_p_zero_qty.setBackgroundResource(R.drawable.qdrive_btn_icon_check_on)
-        text_sign_p_total_qty.text = "0"
+        binding.layoutTopTitle.textTopTitle.text = resources.getString(R.string.text_zero_qty)
+        binding.textPickupNo.text = pickupNo
+        binding.textApplicant.text = intent.getStringExtra("applicant")
+        binding.imgStartScanCheck.setBackgroundResource(R.drawable.qdrive_btn_icon_check_off)
+        binding.imgZeroQtyCheck.setBackgroundResource(R.drawable.qdrive_btn_icon_check_on)
+        binding.textTotalQty.text = "0"
 
 
-        edit_sign_p_memo.addTextChangedListener(object : TextWatcher {
+        binding.editMemo.addTextChangedListener(object : TextWatcher {
             override fun afterTextChanged(p0: Editable?) {
             }
 
@@ -53,7 +68,7 @@ class PickupZeroQtyActivity : CommonActivity() {
 
             override fun onTextChanged(p0: CharSequence?, p1: Int, p2: Int, p3: Int) {
 
-                if (99 <= edit_sign_p_memo.length()) {
+                if (99 <= binding.editMemo.length()) {
 
                     Toast.makeText(this@PickupZeroQtyActivity, resources.getString(R.string.msg_memo_too_long), Toast.LENGTH_SHORT).show()
                 }
@@ -61,22 +76,22 @@ class PickupZeroQtyActivity : CommonActivity() {
         })
 
 
-        layout_top_back.setOnClickListener {
+        binding.layoutTopTitle.layoutTopBack.setOnClickListener {
 
             cancelUpload()
         }
 
-        layout_sign_p_applicant_eraser.setOnClickListener {
+        binding.layoutApplicantEraser.setOnClickListener {
 
-            sign_view_sign_p_applicant_signature.clearText()
+            binding.signApplicantSignature.clearText()
         }
 
-        layout_sign_p_collector_eraser.setOnClickListener {
+        binding.layoutCollectorEraser.setOnClickListener {
 
-            sign_view_sign_p_collector_signature.clearText()
+            binding.signCollectorSignature.clearText()
         }
 
-        btn_sign_p_save.setOnClickListener {
+        binding.btnSave.setOnClickListener {
 
             serverUpload()
         }
@@ -158,19 +173,19 @@ class PickupZeroQtyActivity : CommonActivity() {
             Log.e(tag, "  Location $latitude / $longitude")
 
 
-            if (!sign_view_sign_p_applicant_signature.isTouch) {
+            if (!binding.signApplicantSignature.isTouch) {
 
                 Toast.makeText(this@PickupZeroQtyActivity, resources.getString(R.string.msg_signature_require), Toast.LENGTH_SHORT).show()
                 return
             }
 
-            if (!sign_view_sign_p_collector_signature.isTouch) {
+            if (!binding.signCollectorSignature.isTouch) {
 
                 Toast.makeText(this@PickupZeroQtyActivity, resources.getString(R.string.msg_collector_signature_require), Toast.LENGTH_SHORT).show()
                 return
             }
 
-            val driverMemo = edit_sign_p_memo.text.toString()
+            val driverMemo = binding.editMemo.text.toString()
             if (driverMemo.isEmpty()) {
 
                 Toast.makeText(this@PickupZeroQtyActivity, resources.getString(R.string.msg_must_enter_memo1), Toast.LENGTH_SHORT).show()
@@ -187,8 +202,26 @@ class PickupZeroQtyActivity : CommonActivity() {
 
             DataUtil.logEvent("button_click", tag, DataUtil.requestSetUploadPickupData)
 
+
+            // TODO_ ImageUpload 테스트
+//            progressBar.visibility = View.VISIBLE
+//            lifecycleScope.launch(Dispatchers.IO) {
+//
+//                binding.signApplicantSignature.buildDrawingCache()
+//                binding.signCollectorSignature.buildDrawingCache()
+//                val captureView: Bitmap =  binding.signApplicantSignature.drawingCache
+//                val captureView2: Bitmap =  binding.signCollectorSignature.drawingCache
+//                val bitmapString = DataUtil.bitmapToString(this@PickupZeroQtyActivity, captureView, ImageUpload.QXPOP, "qdriver/sign", pickupNo)
+//                val bitmapString2 = DataUtil.bitmapToString(this@PickupZeroQtyActivity, captureView2, ImageUpload.QXPOP, "qdriver/sign", pickupNo)
+//
+//                withContext(Dispatchers.Main) {
+//
+//                    progressBar.visibility = View.GONE
+//                }
+//            }
+
             PickupZeroQtyUploadHelper.Builder(this@PickupZeroQtyActivity, Preferences.userId, Preferences.officeCode, Preferences.deviceUUID,
-                    pickupNo, sign_view_sign_p_applicant_signature, sign_view_sign_p_collector_signature, driverMemo,
+                    pickupNo, binding.signApplicantSignature,  binding.signCollectorSignature, driverMemo,
                     MemoryStatus.getAvailableInternalMemorySize(), latitude, longitude)
                     .setOnServerEventListener(object : OnServerEventListener {
                         override fun onPostResult() {

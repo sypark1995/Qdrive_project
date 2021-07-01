@@ -1,14 +1,18 @@
 package com.giosis.library.list;
 
+import com.google.gson.annotations.SerializedName;
+
 import org.simpleframework.xml.Element;
 import org.simpleframework.xml.Root;
 
 @Root(strict = false, name = "StdCustomResultOfPrintDataResult")
 public class PrintDataResult {
 
+    @SerializedName("ResultCode")
     @Element(name = "ResultCode", required = false)
     private int ResultCode = -1;
 
+    @SerializedName("ResultMsg")
     @Element(name = "ResultMsg", required = false)
     private String ResultMsg = "";
 
@@ -28,6 +32,7 @@ public class PrintDataResult {
         this.ResultMsg = resultMsg;
     }
 
+    @SerializedName("ResultObject")
     @Element(required = false, name = "ResultObject")
     private ResultObject ResultObject;
 
@@ -43,36 +48,40 @@ public class PrintDataResult {
 //	public static class QdriveCNRList {
     @Root(strict = false, name = "ResultObject")
     public static class ResultObject {
-        @Element(name = "contr_no", required = false)
-        private String contr_no = "";
 
-        @Element(name = "partner_ref_no", required = false)
-        private String partner_ref_no = "";
-
+        @SerializedName("invoice_no")
         @Element(name = "invoice_no", required = false)
         private String invoice_no = "";
 
+        @SerializedName("tel_no")
         @Element(name = "tel_no", required = false)
         private String tel_no = "";
 
+        @SerializedName("hp_no")
         @Element(name = "hp_no", required = false)
         private String hp_no = "";
 
+        @SerializedName("zip_code")
         @Element(name = "zip_code", required = false)
         private String zip_code = "";
 
+        @SerializedName("front_address")
         @Element(name = "front_address", required = false)
         private String front_address = "";
 
+        @SerializedName("back_address")
         @Element(name = "back_address", required = false)
         private String back_address = "";
 
+        @SerializedName("seller_shop_nm")
         @Element(name = "seller_shop_nm", required = false)
         private String seller_shop_nm = "";
 
+        @SerializedName("delivery_course_code")
         @Element(name = "delivery_course_code", required = false)
         private String delivery_course_code = "";
 
+        @SerializedName("rcv_nm")
         @Element(name = "rcv_nm", required = false)
         private String rcv_nm = "";
 
@@ -91,15 +100,6 @@ public class PrintDataResult {
 
         public String getDeliveryCouse() {
             return delivery_course_code;
-        }
-
-
-        public String getContrNo() {
-            return contr_no;
-        }
-
-        public String getPartnerRefNo() {
-            return partner_ref_no;
         }
 
         public String getInvoiceNo() {

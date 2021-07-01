@@ -7,15 +7,13 @@ import android.os.Bundle
 import android.text.Editable
 import android.text.TextWatcher
 import android.util.Log
-import android.view.View
 import android.widget.Toast
 import com.giosis.library.MemoryStatus
 import com.giosis.library.R
+import com.giosis.library.databinding.ActivityPickupStartToScanBinding
 import com.giosis.library.gps.GPSTrackerManager
 import com.giosis.library.gps.LocationModel
 import com.giosis.library.util.*
-import kotlinx.android.synthetic.main.activity_pickup_start_to_scan.*
-import kotlinx.android.synthetic.main.top_title.*
 
 /**
  * @author eylee
@@ -26,6 +24,10 @@ import kotlinx.android.synthetic.main.top_title.*
  */
 class PickupDoneActivity : CommonActivity() {
     var tag = "PickupDoneActivity"
+
+    private val binding by lazy {
+        ActivityPickupStartToScanBinding.inflate(layoutInflater)
+    }
 
     //
     lateinit var pickupNo: String
@@ -43,25 +45,19 @@ class PickupDoneActivity : CommonActivity() {
 
     public override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        setContentView(R.layout.activity_pickup_start_to_scan)
+        setContentView(binding.root)
 
-        layout_top_back.setOnClickListener(clickListener)
-        layout_sign_p_applicant_eraser.setOnClickListener(clickListener)
-        layout_sign_p_collector_eraser.setOnClickListener(clickListener)
-        btn_sign_p_save.setOnClickListener(clickListener)
-
-        //
         pickupNo = intent.getStringExtra("pickupNo").toString()
         val applicant = intent.getStringExtra("applicant")
         mStrWaybillNo = intent.getStringExtra("scannedList").toString()
         val strReqQty = intent.getStringExtra("scannedQty")
 
-        text_top_title.text = resources.getString(R.string.text_start_to_scan)
-        text_sign_p_pickup_no.text = pickupNo
-        text_sign_p_applicant.text = applicant
-        img_sign_p_start_scan.setBackgroundResource(R.drawable.qdrive_btn_icon_check_on)
-        img_sign_p_zero_qty.setBackgroundResource(R.drawable.qdrive_btn_icon_check_off)
-        text_sign_p_total_qty.text = strReqQty
+        binding.layoutTopTitle.textTopTitle.text = resources.getString(R.string.text_start_to_scan)
+        binding.textPickupNo.text = pickupNo
+        binding.textApplicant.text = applicant
+        binding.imgStartScanCheck.setBackgroundResource(R.drawable.qdrive_btn_icon_check_on)
+        binding.imgZeroQtyCheck.setBackgroundResource(R.drawable.qdrive_btn_icon_check_off)
+        binding.textTotalQty.text = strReqQty
 
 
         // 위, 경도
@@ -81,11 +77,11 @@ class PickupDoneActivity : CommonActivity() {
 
 
         // Memo 입력제한
-        edit_sign_p_memo.addTextChangedListener(object : TextWatcher {
+        binding.editMemo.addTextChangedListener(object : TextWatcher {
             override fun beforeTextChanged(charSequence: CharSequence, i: Int, i1: Int, i2: Int) {}
             override fun onTextChanged(charSequence: CharSequence, i: Int, i1: Int, i2: Int) {
 
-                if (99 <= edit_sign_p_memo.length()) {
+                if (99 <= binding.editMemo.length()) {
 
                     Toast.makeText(this@PickupDoneActivity, resources.getText(R.string.msg_memo_too_long), Toast.LENGTH_SHORT).show()
                 }
@@ -94,10 +90,31 @@ class PickupDoneActivity : CommonActivity() {
             override fun afterTextChanged(editable: Editable) {}
         })
 
-        //
+
+
+        binding.layoutTopTitle.layoutTopBack.setOnClickListener {
+            cancelSigning()
+        }
+
+        binding.layoutApplicantEraser.setOnClickListener {
+
+            binding.signApplicantSignature.clearText()
+        }
+
+        binding.layoutCollectorEraser.setOnClickListener {
+
+            binding.signCollectorSignature.clearText()
+        }
+
+        binding.btnSave.setOnClickListener {
+
+            saveServerUploadSign()
+        }
+
+
+        // permission
         val checker = PermissionChecker(this@PickupDoneActivity)
 
-        // 권한 여부 체크 (없으면 true, 있으면 false)
         if (checker.lacksPermissions(*PERMISSIONS)) {
             isPermissionTrue = false
             PermissionActivity.startActivityForResult(this@PickupDoneActivity, PERMISSION_REQUEST_CODE, *PERMISSIONS)
@@ -171,20 +188,20 @@ class PickupDoneActivity : CommonActivity() {
             }
 
 
-            val realQty = text_sign_p_total_qty.text.toString()
+            val realQty = binding.textTotalQty.text.toString()
 
             //사인이미지를 그리지 않았다면
-            if (!sign_view_sign_p_applicant_signature.isTouch) {
+            if (!binding.signApplicantSignature.isTouch) {
                 Toast.makeText(this@PickupDoneActivity, resources.getString(R.string.msg_signature_require), Toast.LENGTH_SHORT).show()
                 return
             }
             //사인이미지를 그리지 않았다면
-            if (!sign_view_sign_p_collector_signature.isTouch) {
+            if (!binding.signCollectorSignature.isTouch) {
                 Toast.makeText(this@PickupDoneActivity, resources.getString(R.string.msg_collector_signature_require), Toast.LENGTH_SHORT).show()
                 return
             }
 
-            val driverMemo = edit_sign_p_memo.text.toString().trim { it <= ' ' }
+            val driverMemo = binding.editMemo.text.toString().trim { it <= ' ' }
             if (driverMemo == "") {
                 Toast.makeText(this@PickupDoneActivity, resources.getString(R.string.msg_must_enter_memo), Toast.LENGTH_SHORT).show()
                 return
@@ -200,7 +217,7 @@ class PickupDoneActivity : CommonActivity() {
             DataUtil.logEvent("button_click", tag, "SetPickupUploadData_ScanAll")
 
             PickupDoneUploadHelper.Builder(this@PickupDoneActivity, Preferences.userId, Preferences.officeCode, Preferences.deviceUUID,
-                    pickupNo, mStrWaybillNo, realQty, sign_view_sign_p_applicant_signature, sign_view_sign_p_collector_signature, driverMemo,
+                    pickupNo, mStrWaybillNo, realQty, binding.signApplicantSignature, binding.signCollectorSignature, driverMemo,
                     MemoryStatus.getAvailableInternalMemorySize(), locationModel)
                     .setOnServerEventListener(object : OnServerEventListener {
                         override fun onPostResult() {
@@ -222,28 +239,6 @@ class PickupDoneActivity : CommonActivity() {
     override fun onDestroy() {
         super.onDestroy()
         DataUtil.stopGPSManager(gpsTrackerManager)
-    }
-
-    var clickListener = View.OnClickListener { view ->
-
-        when (view.id) {
-            R.id.layout_top_back -> {
-
-                cancelSigning()
-            }
-            R.id.layout_sign_p_applicant_eraser -> {
-
-                sign_view_sign_p_applicant_signature.clearText()
-            }
-            R.id.layout_sign_p_collector_eraser -> {
-
-                sign_view_sign_p_collector_signature.clearText()
-            }
-            R.id.btn_sign_p_save -> {
-
-                saveServerUploadSign()
-            }
-        }
     }
 
     companion object {

@@ -26,7 +26,7 @@ public class Custom_JsonParser {
 
         String response = "";
         String apiURL = Preferences.INSTANCE.getServerURL() + DataUtil.API_ADDRESS;
-        Log.e("krm0219", "JsonParser URL " + apiURL + method);
+        Log.e("SERVER", "JsonParser URL " + apiURL + method);
 
 
         try {

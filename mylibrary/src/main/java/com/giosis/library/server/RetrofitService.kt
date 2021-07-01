@@ -352,12 +352,64 @@ interface RetrofitService {
             @Field("nation_cd") nation_cd: String = Preferences.userNation
     ): Single<APIModel>
 
-
     // message
     @POST("GetQdriverMessageListFromMessenger")
     @FormUrlEncoded
     fun requestGetMessageListFromAdmin(
             @Field("qdriver_id") opId: String = Preferences.userId,
+            @Field("app_id") app_id: String = DataUtil.appID,
+            @Field("nation_cd") nation_cd: String = Preferences.userNation
+    ): Single<APIModel>
+
+    // CnR Print Data
+    @POST("GetCnRPrintData")
+    @FormUrlEncoded
+    fun requestGetCnRPrintData(
+            @Field("pickup_no") pickup_no: String,
+            @Field("driver_id") driver_id: String = Preferences.userId,
+            @Field("app_id") app_id: String = DataUtil.appID,
+            @Field("nation_cd") nation_cd: String = Preferences.userNation
+    ): Single<APIModel>
+
+    // SMS AuthCode Request
+    @POST("GetAuthCodeRequest")
+    @FormUrlEncoded
+    fun requestGetAuthCodeRequest(
+            @Field("mobile") mobile: String,
+            @Field("deviceID") deviceID: String = Preferences.deviceUUID,
+            @Field("op_id") op_id: String = Preferences.userId,
+            @Field("app_id") app_id: String = DataUtil.appID,
+            @Field("nation_cd") nation_cd: String = Preferences.userNation
+    ): Single<APIModel>
+
+    // SMS AuthCode Submit
+    @POST("SetAuthCodeCheck")
+    @FormUrlEncoded
+    fun requestSetAuthCodeCheck(
+            @Field("mobile") mobile: String,
+            @Field("authCode") authCode: String,
+            @Field("name") name: String,
+            @Field("email") email: String,
+            @Field("deviceID") deviceID: String = Preferences.deviceUUID,
+            @Field("op_id") op_id: String = Preferences.userId,
+            @Field("app_id") app_id: String = DataUtil.appID,
+            @Field("nation_cd") nation_cd: String = Preferences.userNation
+    ): Single<APIModel>
+
+    // Message Count
+    @POST("GetNewMessageCount")
+    @FormUrlEncoded
+    fun requestGetNewMessageCount(
+            @Field("start_date") start_date: String,
+            @Field("qdriver_id") qdriver_id: String = Preferences.userId,
+            @Field("app_id") app_id: String = DataUtil.appID,
+            @Field("nation_cd") nation_cd: String = Preferences.userNation
+    ): Single<APIModel>
+
+    @POST("GetNewMessageCountFromQxSystem")
+    @FormUrlEncoded
+    fun requestGetNewMessageCountFromQxSystem(
+            @Field("qdriver_id") qdriver_id: String = Preferences.userId,
             @Field("app_id") app_id: String = DataUtil.appID,
             @Field("nation_cd") nation_cd: String = Preferences.userNation
     ): Single<APIModel>

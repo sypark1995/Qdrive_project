@@ -6,7 +6,9 @@
     android:background="@color/color_f6f6f6"
     android:orientation="vertical">
 
-    <include layout="@layout/top_title" />
+    <include
+        android:id="@+id/layout_top_title"
+        layout="@layout/top_title" />
 
     <ScrollView
         android:layout_width="match_parent"
@@ -51,7 +53,7 @@
                     android:background="@drawable/bg_rect_ffffff_shadows">
 
                     <EditText
-                        android:id="@+id/edit_verify_phone_number"
+                        android:id="@+id/edit_phone_number"
                         android:layout_width="match_parent"
                         android:layout_height="match_parent"
                         android:layout_marginStart="10dp"
@@ -66,7 +68,7 @@
                 </FrameLayout>
 
                 <Button
-                    android:id="@+id/btn_verify_request"
+                    android:id="@+id/btn_request"
                     android:layout_width="111dp"
                     android:layout_height="49dp"
                     android:layout_alignParentEnd="true"
@@ -105,7 +107,7 @@
                 android:background="@drawable/bg_rect_ffffff_shadows">
 
                 <EditText
-                    android:id="@+id/edit_verify_4_digit"
+                    android:id="@+id/edit_4_digit"
                     android:layout_width="match_parent"
                     android:layout_height="match_parent"
                     android:layout_marginStart="10dp"
@@ -167,7 +169,7 @@
                 android:background="@drawable/bg_rect_ffffff_shadows">
 
                 <EditText
-                    android:id="@+id/edit_verify_name"
+                    android:id="@+id/edit_name"
                     android:layout_width="match_parent"
                     android:layout_height="match_parent"
                     android:layout_marginStart="10dp"
@@ -198,7 +200,7 @@
                 android:background="@drawable/bg_rect_ffffff_shadows">
 
                 <EditText
-                    android:id="@+id/edit_verify_email"
+                    android:id="@+id/edit_email"
                     android:layout_width="match_parent"
                     android:layout_height="match_parent"
                     android:layout_marginStart="10dp"
@@ -212,7 +214,7 @@
             </FrameLayout>
 
             <Button
-                android:id="@+id/btn_verify_submit"
+                android:id="@+id/btn_submit"
                 android:layout_width="131dp"
                 android:layout_height="40dp"
                 android:layout_gravity="center"

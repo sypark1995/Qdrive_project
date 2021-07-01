@@ -42,7 +42,6 @@ import com.giosis.library.main.route.TodayMyRouteActivity;
 import com.giosis.library.main.submenu.OutletOrderStatusActivity;
 import com.giosis.library.main.submenu.RpcListActivity;
 import com.giosis.library.pickup.CreatePickupOrderActivity;
-import com.giosis.library.server.Custom_JsonParser;
 import com.giosis.library.server.RetrofitClient;
 import com.giosis.library.server.data.RestDaysResult;
 import com.giosis.library.setting.bluetooth.BluetoothDeviceData;
@@ -62,8 +61,6 @@ import com.google.firebase.analytics.FirebaseAnalytics;
 import com.google.firebase.messaging.FirebaseMessaging;
 import com.google.gson.Gson;
 import com.google.gson.reflect.TypeToken;
-
-import org.json.JSONObject;
 
 import java.io.BufferedReader;
 import java.io.InputStreamReader;
@@ -417,7 +414,7 @@ public class MainActivity extends AppBaseActivity {
             }
         }
 
-        initMessageCount(opID);
+        initMessageCount();
 
         // TODO_TEST  badge
 //        MyApplication myApp = (MyApplication) getApplicationContext();
@@ -1028,60 +1025,9 @@ public class MainActivity extends AppBaseActivity {
         }
     }
 
-    public void initMessageCount(String driver_id) {
+    public void initMessageCount() {
 
         if (NetworkUtil.isNetworkAvailable(MainActivity.this)) {
-
-            MessageCountAsyncTask messageCountAsynctask = new MessageCountAsyncTask(driver_id);
-            messageCountAsynctask.execute();
-        } else {
-
-            Toast.makeText(MainActivity.this, getString(R.string.msg_network_connect_error), Toast.LENGTH_SHORT).show();
-        }
-    }
-
-    // NOTIFICATION.
-    @SuppressLint("StaticFieldLeak")
-    private class MessageCountAsyncTask extends AsyncTask<Void, Void, ArrayList<Integer>> {
-
-        String driverId;
-
-        MessageCountAsyncTask(String driverID) {
-
-            driverId = driverID;
-        }
-
-        @Override
-        protected ArrayList<Integer> doInBackground(Void... params) {
-
-            ArrayList<Integer> resultArray = new ArrayList<>();
-
-            resultArray.add(getCustomerMessageCount());
-            resultArray.add(getAdminMessageCount());
-
-            return resultArray;
-        }
-
-        @Override
-        protected void onPostExecute(ArrayList<Integer> results) {
-
-
-            int customerMessageCount = results.get(0);
-            int adminMessageCount = results.get(1);
-
-            if (0 < customerMessageCount || 0 < adminMessageCount) {
-
-                setMessageCount(customerMessageCount, adminMessageCount);
-            } else {
-
-                goneMessageCount();
-            }
-        }
-
-
-        int getCustomerMessageCount() {
-
-            int result = 0;
 
             try {
 
@@ -1091,54 +1037,41 @@ public class MainActivity extends AppBaseActivity {
                 Date yDate = cal.getTime();
                 SimpleDateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd");
                 String yesterday = dateFormat.format(yDate) + " 00:00:00";
+                String date = URLEncoder.encode(yesterday, "UTF-8");
 
-                JSONObject job = new JSONObject();
-                job.accumulate("qdriver_id", driverId);
-                job.accumulate("start_date", URLEncoder.encode(yesterday, "UTF-8"));
-                job.accumulate("app_id", DataUtil.appID);
-                job.accumulate("nation_cd", Preferences.INSTANCE.getUserNation());
+                RetrofitClient.INSTANCE.instanceDynamic().requestGetNewMessageCount(date, Preferences.INSTANCE.getUserId(),
+                        DataUtil.appID, Preferences.INSTANCE.getUserNation())
+                        .subscribeOn(Schedulers.io())
+                        .subscribe(it -> {
 
-                String methodName = "GetNewMessageCount";
-                String jsonString = Custom_JsonParser.requestServerDataReturnJSON(methodName, job);
-                // {"ResultObject":0,"ResultCode":0,"ResultMsg":"OK"}
+                            int count = new Gson().fromJson(it.getResultObject(), new TypeToken<Integer>() {
+                            }.getType());
 
-                JSONObject jsonObject = new JSONObject(jsonString);
-                result = jsonObject.getInt("ResultObject");
-            } catch (Exception e) {
+                            RetrofitClient.INSTANCE.instanceDynamic().requestGetNewMessageCountFromQxSystem(Preferences.INSTANCE.getUserId(),
+                                    DataUtil.appID, Preferences.INSTANCE.getUserNation())
+                                    .subscribeOn(Schedulers.io())
+                                    .observeOn(AndroidSchedulers.mainThread())
+                                    .subscribe(it1 -> {
 
-                Log.e("Exception", TAG + "  GetNewMessageCount Exception : " + e.toString());
+                                        int adminCount = new Gson().fromJson(it1.getResultObject(), new TypeToken<Integer>() {
+                                        }.getType());
+
+                                        Log.e("Message", "count >>>> " + count + " / " + adminCount);
+
+                                        if (0 < count || 0 < adminCount) {
+                                            setMessageCount(count, adminCount);
+                                        } else {
+                                            goneMessageCount();
+                                        }
+                                    });
+                        });
+            } catch (Exception ignore) {
             }
+        } else {
 
-            return result;
-        }
-
-        int getAdminMessageCount() {
-
-            int result = 0;
-
-
-            try {
-
-                JSONObject job = new JSONObject();
-                job.accumulate("qdriver_id", driverId);
-                job.accumulate("app_id", DataUtil.appID);
-                job.accumulate("nation_cd", Preferences.INSTANCE.getUserNation());
-
-                String methodName = "GetNewMessageCountFromQxSystem";
-                String jsonString = Custom_JsonParser.requestServerDataReturnJSON(methodName, job);
-                // {"ResultObject":5,"ResultCode":0,"ResultMsg":"OK"}
-
-                JSONObject jsonObject = new JSONObject(jsonString);
-                result = jsonObject.getInt("ResultObject");
-            } catch (Exception e) {
-
-                Log.e("Exception", TAG + "  GetNewMessageCountFromQxSystem Exception : " + e.toString());
-            }
-
-            return result;
+            Toast.makeText(MainActivity.this, getString(R.string.msg_network_connect_error), Toast.LENGTH_SHORT).show();
         }
     }
-
 
     private RoundedBitmapDrawable createRoundedBitmapImageDrawableWithBorder(Bitmap bitmap) {
         int bitmapWidthImage = bitmap.getWidth();

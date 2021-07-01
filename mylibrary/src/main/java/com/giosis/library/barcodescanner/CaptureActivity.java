@@ -1507,23 +1507,6 @@ public final class CaptureActivity extends CommonActivity implements DecoratedBa
                                 addScannedBarcode(scanNo, "checkValidation - PICKUP_SCAN_ALL");
                             }
                         }, it -> Toast.makeText(context, context.getResources().getString(R.string.msg_error_check_again), Toast.LENGTH_SHORT).show());
-
-
-//                new PickupScanValidationCheckHelper.Builder(this, opID, pickupNo, strBarcodeNo)
-//                        .setOnPickupAddScanNoOneByOneUploadListener(result -> {
-//
-//                            if (result.getResultCode() < 0) {
-//
-                // beepManager.playBeepSoundAndVibrate(BeepManager.BELL_SOUNDS_ERROR);
-//                                deletePrevious(scanNo);
-//                                edit_capture_type_number.setText("");
-//                            } else {
-//
-                // beepManager.playBeepSoundAndVibrate(BeepManager.BELL_SOUNDS_SUCCESS);
-//                                addScannedBarcode(scanNo, "checkValidation - PICKUP_SCAN_ALL");
-//                            }
-//                        }).build().execute();
-
                 break;
             }
             case BarcodeType.PICKUP_ADD_SCAN: {

@@ -5,7 +5,9 @@
     android:layout_height="match_parent"
     android:orientation="vertical">
 
-    <include layout="@layout/top_title" />
+    <include
+        android:id="@+id/layout_top_title"
+        layout="@layout/top_title" />
 
     <com.google.android.material.tabs.TabLayout
         android:id="@+id/tab_layout"
@@ -17,7 +19,7 @@
         app:tabTextColor="@color/color_303030" />
 
     <androidx.viewpager2.widget.ViewPager2
-        android:id="@+id/pager"
+        android:id="@+id/pager2"
         android:layout_width="match_parent"
         android:layout_height="match_parent" />
 </LinearLayout>

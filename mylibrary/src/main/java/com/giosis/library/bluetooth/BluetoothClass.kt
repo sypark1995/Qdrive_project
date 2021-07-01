@@ -326,6 +326,7 @@ class BluetoothClass(val mActivity: Activity) : BluetoothListener {
         if (printerConnManagerList[0].currentPrinterCommand == PrinterConnManager.PrinterCommand.TSC) {
             val opId = Preferences.userId
             Log.e("print", TAG + "  printLabel Command : " + printerConnManagerList[0].currentPrinterCommand + " / " + address + " / " + tracking_no)
+
             CnRPickupInfoGetHelper.Builder(mActivity, opId, tracking_no)
                     .setOnCnRPrintDataEventListener { stdResult: PrintDataResult? ->
                         try {
@@ -346,6 +347,24 @@ class BluetoothClass(val mActivity: Activity) : BluetoothListener {
                             Log.e("Exception", "$TAG  GetCnRPrintData Exception : $e")
                         }
                     }.build().execute()
+
+            // TODO_ 프린트로 테스트 해보기
+//            RetrofitClient.instanceDynamic().requestGetCnRPrintData(tracking_no)
+//                    .subscribeOn(Schedulers.io())
+//                    .observeOn(AndroidSchedulers.mainThread())
+//                    .subscribe({
+//
+//                        if (it.resultCode == 0) {
+//
+//                            val resultObj = Gson().fromJson(it.resultObject, ResultObject::class.java)
+//                            Log.e("krm0219", "result " + resultObj.invoiceNo + " / " + resultObj.deliveryCouse)
+//                            // TEST_ 확인 후 sendLabel 호출하기 !!
+//                        } else {
+//                            Toast.makeText(mActivity, it.resultMsg, Toast.LENGTH_SHORT).show()
+//                        }
+//                    }, {
+//                        Toast.makeText(mActivity, "Exception : " + it.message, Toast.LENGTH_SHORT).show()
+//                    })
         } else {
 
             //   Log.e("print", TAG + "  printLabel : " + where + " / " + tracking_no + "  PRINTER_COMMAND_ERROR");

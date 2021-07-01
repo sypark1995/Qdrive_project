@@ -7,62 +7,71 @@ import androidx.fragment.app.Fragment
 import androidx.fragment.app.FragmentActivity
 import androidx.viewpager2.adapter.FragmentStateAdapter
 import com.giosis.library.R
+import com.giosis.library.databinding.ActivityMessageListBinding
 import com.giosis.library.util.CommonActivity
 import com.google.android.material.tabs.TabLayoutMediator
-import kotlinx.android.synthetic.main.activity_message_list.*
-import kotlinx.android.synthetic.main.top_title.*
 
 /**
  * @author krm0219
  */
 class MessageListActivity : CommonActivity() {
 
+    private val binding by lazy {
+        ActivityMessageListBinding.inflate(layoutInflater)
+    }
+
+
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        setContentView(R.layout.activity_message_list)
+        setContentView(binding.root)
         window.addFlags(WindowManager.LayoutParams.FLAG_KEEP_SCREEN_ON)
 
-        text_top_title.setText(R.string.text_title_message)
-        layout_top_back.setOnClickListener {
+        binding.layoutTopTitle.textTopTitle.setText(R.string.text_title_message)
+        binding.layoutTopTitle.layoutTopBack.setOnClickListener {
 
             finish()
         }
 
-
         val viewPagerPosition = intent.getIntExtra("position", 0)
         val customerMessageCount = intent.getIntExtra("customer_count", 0)
         val adminMessageCount = intent.getIntExtra("admin_count", 0)
-        Log.e(TAG, "Position  $viewPagerPosition    // Count $customerMessageCount, $adminMessageCount")
+
+
+        val pagerAdapter = PagerFragmentStateAdapter(this)
+        pagerAdapter.addFragment(CustomerMessageListFragment())
+        pagerAdapter.addFragment(AdminMessageListFragment())
+        binding.pager2.adapter = pagerAdapter
+        binding.pager2.currentItem = viewPagerPosition
+
+        val tabElement = listOf(resources.getString(R.string.text_customer), resources.getString(R.string.text_administrator))
+        TabLayoutMediator(binding.tabLayout, binding.pager2) { tab, position ->
+            tab.text = tabElement[position]
+        }.attach()
+
+
+        Log.e(TAG, "Position $viewPagerPosition \nCount $customerMessageCount, $adminMessageCount")
         setCustomerNewImage(customerMessageCount)
         setAdminNewImage(adminMessageCount)
-
-
-        pager.offscreenPageLimit = 1
-        pager.adapter = MessageAdapter(this)
-        pager.currentItem = viewPagerPosition
-
-        TabLayoutMediator(tab_layout, pager) { tab, position ->
-
-            when (position) {
-                0 -> tab.text = resources.getString(R.string.text_customer)
-                1 -> tab.text = resources.getString(R.string.text_administrator)
-            }
-        }.attach()
     }
 
 
-    private inner class MessageAdapter(fa: FragmentActivity) : FragmentStateAdapter(fa) {
+    private inner class PagerFragmentStateAdapter(activity: FragmentActivity) : FragmentStateAdapter(activity) {
+
+        var fragments: ArrayList<Fragment> = ArrayList()
 
         override fun getItemCount(): Int {
-            return 2
+            return fragments.size
         }
 
         override fun createFragment(position: Int): Fragment {
 
-            return when (position) {
-                0 -> CustomerMessageListFragment()
-                else -> AdminMessageListFragment()
-            }
+            return fragments[position]
+        }
+
+        fun addFragment(fragment: Fragment) {
+
+            fragments.add(fragment)
+            notifyItemInserted(fragments.size - 1)
         }
     }
 
@@ -76,10 +85,10 @@ class MessageListActivity : CommonActivity() {
         Log.e(TAG, "setCustomerNewImage : $count")
         if (count != 0) {
 
-            tab_layout.getTabAt(0)?.orCreateBadge
+            binding.tabLayout.getTabAt(0)?.orCreateBadge
         } else {
 
-            tab_layout.getTabAt(0)?.removeBadge()
+            binding.tabLayout.getTabAt(0)?.removeBadge()
         }
     }
 
@@ -87,10 +96,10 @@ class MessageListActivity : CommonActivity() {
         Log.e(TAG, " setAdminNewImage : $count")
         if (count != 0) {
 
-            tab_layout.getTabAt(1)?.orCreateBadge
+            binding.tabLayout.getTabAt(1)?.orCreateBadge
         } else {
 
-            tab_layout.getTabAt(1)?.removeBadge()
+            binding.tabLayout.getTabAt(1)?.removeBadge()
         }
     }
 
