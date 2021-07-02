@@ -72,7 +72,7 @@ class TodayDonePickupScanListActivity : CommonActivity() {
                     if (it.resultCode == 0) {
 
                         val list = Gson().fromJson<ArrayList<PickupPackingListResult>>(it.resultObject,
-                                object : TypeToken<ArrayList<PickupPackingListResult?>?>() {}.type)
+                                object : TypeToken<ArrayList<PickupPackingListResult>>() {}.type)
                         setScannedList(list)
                     }
 

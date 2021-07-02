@@ -20,7 +20,6 @@ import android.widget.ExpandableListView;
 import android.widget.FrameLayout;
 import android.widget.ProgressBar;
 import android.widget.SearchView;
-import android.widget.Toast;
 
 import androidx.constraintlayout.widget.ConstraintLayout;
 import androidx.fragment.app.Fragment;
@@ -354,11 +353,9 @@ public class ListInProgressFragment extends Fragment
 
         fragmentListener.onCountRefresh(groupCount);
 
-        Log.e("krm0219", "Pickup Driver " + Preferences.INSTANCE.getPickupDriver());
-        if (Preferences.INSTANCE.getPickupDriver().equals("Y")) {
-            // 2019.01  krm0219
-            // LIST 들어갈 때 TODAY DONE Count 표시하기 위함.
-            // ViewPage 특성상 TODAY DONE 페이지는 처음에 호출되지 않아서 0 으로 표시되어있음.
+        // LIST 들어갈 때 TODAY DONE Count 표시하기 위함.
+        // ViewPage 특성상 TODAY DONE 페이지는 처음에 호출되지 않아서 0 으로 표시되어있음.
+        try {
             RetrofitClient.INSTANCE.instanceDynamic().requestGetTodayPickupDoneList(Preferences.INSTANCE.getUserId(), "", "",
                     DataUtil.appID, Preferences.INSTANCE.getUserNation())
                     .subscribeOn(Schedulers.io())
@@ -376,7 +373,9 @@ public class ListInProgressFragment extends Fragment
                             }
                         } catch (Exception ignore) {
                         }
-                    }, it -> Toast.makeText(getActivity(), getResources().getString(R.string.msg_error_check_again), Toast.LENGTH_SHORT).show());
+                    });
+        } catch (Exception e) {
+            Log.e("Exception", "GetTodayPickupDoneList  Exception : " + e.toString());
         }
     }
 

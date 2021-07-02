@@ -2,9 +2,7 @@ package com.giosis.library.server.data;
 
 import java.util.ArrayList;
 
-/**
- * @author krm0219
- */
+
 public class StatisticsResult {
 
     private int resultCode = -1;

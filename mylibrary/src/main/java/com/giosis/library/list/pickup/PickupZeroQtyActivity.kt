@@ -2,22 +2,17 @@ package com.giosis.library.list.pickup
 
 import android.app.AlertDialog
 import android.content.Intent
-import android.graphics.Bitmap
 import android.os.Bundle
 import android.text.Editable
 import android.text.TextWatcher
 import android.util.Log
-import android.view.View
 import android.widget.Toast
-import androidx.lifecycle.lifecycleScope
 import com.giosis.library.MemoryStatus
 import com.giosis.library.R
 import com.giosis.library.databinding.ActivityPickupStartToScanBinding
 import com.giosis.library.gps.GPSTrackerManager
-import com.giosis.library.server.ImageUpload
 import com.giosis.library.util.*
 import com.giosis.library.util.dialog.ProgressDialog
-import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
 

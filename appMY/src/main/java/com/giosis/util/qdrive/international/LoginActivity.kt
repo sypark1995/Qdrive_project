@@ -32,10 +32,7 @@ import io.reactivex.rxjava3.schedulers.Schedulers
 import java.io.File
 import java.util.*
 
-/**
- * @author krm0219
- * Login (Kotlin)
- * */
+
 class LoginActivity : CommonActivity() {
 
     val tag = "LoginActivity"

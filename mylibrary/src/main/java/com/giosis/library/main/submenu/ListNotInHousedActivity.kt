@@ -58,7 +58,7 @@ class ListNotInHousedActivity : CommonActivity() {
                     .subscribe({
 
                         val list = Gson().fromJson<ArrayList<NotInHousedResult>>(it.resultObject,
-                                object : TypeToken<ArrayList<NotInHousedResult>?>() {}.type)
+                                object : TypeToken<ArrayList<NotInHousedResult>>() {}.type)
 
                         if (list.isEmpty()) {
 

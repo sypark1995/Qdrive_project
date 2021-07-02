@@ -138,7 +138,6 @@ class LoginActivity : CommonActivity() {
                             .subscribe({
 
                                 progressBar.visibility = View.GONE
-                                Log.e("krm0219", "result  ${it.resultCode}")
 
                                 if (it.resultObject != null && it.resultCode == 0) {
                                     val loginData = Gson().fromJson(it.resultObject, LoginInfo::class.java)

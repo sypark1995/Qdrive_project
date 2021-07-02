@@ -156,18 +156,6 @@ public class MainActivity extends AppBaseActivity {
                 Upload();
             } else if (id == R.id.btn_home_confirm_my_delivery_order) {
 
-//                try {
-//
-//                    Intent intent = new Intent(MainActivity.this, Class.forName("com.giosis.util.qdrive.barcodescanner.CaptureActivity"));
-//                    intent.putExtra("title", getResources().getString(R.string.text_title_driver_assign));
-//                    intent.putExtra("type", BarcodeType.CONFIRM_MY_DELIVERY_ORDER);
-//                    startActivity(intent);
-//                } catch (Exception e) {
-//
-//                    Log.e("Exception", "  Exception : " + e.toString());
-//                    Toast.makeText(MainActivity.this, "Exception : " + e.toString(), Toast.LENGTH_SHORT).show();
-//                }
-
                 Intent intent = new Intent(MainActivity.this, CaptureActivity.class);
                 intent.putExtra("title", getResources().getString(R.string.text_title_driver_assign));
                 intent.putExtra("type", BarcodeType.CONFIRM_MY_DELIVERY_ORDER);
@@ -179,18 +167,6 @@ public class MainActivity extends AppBaseActivity {
             } else if (id == R.id.btn_home_change_delivery_driver) {
 
                 if (gpsOnceEnable && gpsTrackerManager != null) {
-
-//                    try {
-//
-//                        Intent intent = new Intent(MainActivity.this, Class.forName("com.giosis.util.qdrive.barcodescanner.CaptureActivity"));
-//                        intent.putExtra("title", getResources().getString(R.string.button_change_delivery_driver));
-//                        intent.putExtra("type", BarcodeType.CHANGE_DELIVERY_DRIVER);
-//                        startActivity(intent);
-//                    } catch (Exception e) {
-//
-//                        Log.e("Exception", "  Exception : " + e.toString());
-//                        Toast.makeText(MainActivity.this, "Exception : " + e.toString(), Toast.LENGTH_SHORT).show();
-//                    }
 
                     Intent intent = new Intent(MainActivity.this, CaptureActivity.class);
                     intent.putExtra("title", getResources().getString(R.string.button_change_delivery_driver));
@@ -948,16 +924,10 @@ public class MainActivity extends AppBaseActivity {
 
         String op_id = Preferences.INSTANCE.getUserId();
         String device_id = Preferences.INSTANCE.getDeviceUUID();
-
         Log.i("FCM", TAG + "  Device ID : " + device_id + "  Device Token : " + fcmToken);
 
-        // TEST
-        if (device_id.equals("890525e99f30801a") || device_id.equals("acd248681b26f53f") || device_id.equals("b843772197349df9")) {
+        if (!op_id.equals("") && !device_id.equals("") && !fcmToken.equals("")) {
 
-            Log.i("FCM", "REAL TEST~~~~~");
-        } else if (!op_id.equals("") && !device_id.equals("") && !fcmToken.equals("")) {
-
-            Log.i("FCM", "REAL~~~~~");
             saveFCMTokenTask = new saveFCMTokenTask().execute(fcmToken, op_id, device_id);
         }
     }
