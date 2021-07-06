@@ -19,8 +19,6 @@ import com.giosis.util.qdrive.util.DataUtil;
 
 public class AlertDialogActivity extends Activity {
 
-    private String notiMessage;
-    private String notiTitle;
     private String actionKey;
     private String actionValue;
 
@@ -42,8 +40,8 @@ public class AlertDialogActivity extends Activity {
 
         Bundle bun = getIntent().getExtras();
 
-        notiMessage = bun.getString("notiMessage");
-        notiTitle = bun.getString("notiTitle");
+        String notiMessage = bun.getString("notiMessage");
+        String notiTitle = bun.getString("notiTitle");
         actionKey = bun.getString("actionKey");
         actionValue = bun.getString("actionValue");
 
@@ -91,7 +89,7 @@ public class AlertDialogActivity extends Activity {
                         // ok 버튼 눌러서 이동하면 Notification 지우기
                         NotificationManagerCompat.from(getApplication()).cancel(Integer.parseInt(actionValue.substring(0, 9)));
                     }
-                } catch (Exception e) {
+                } catch (Exception ignore) {
 
                 }
 
@@ -109,4 +107,3 @@ public class AlertDialogActivity extends Activity {
         }
     };
 }
-

@@ -81,12 +81,11 @@ public class FCMIntentService extends FirebaseMessagingService {
 
         Log.e("FCM", "onMessageReceived " + remoteMessage.getData().size());
 
-        /**
+        /*
          * 앱이 Background 일 때, onMessageReceived 메소드를 타지 않아서 notification 관리를 할 수 없는 현상이 발생!
          * > 서버에서 메세지를 보낼 때, notification 키 없이 data 에 값을 보내면 된다.
          * 그러면 foreground, background 상관없이 onMessageReceived 함수 호출 !!
          * */
-
         if (remoteMessage.getData().size() > 0) {
 
             String title = remoteMessage.getData().get("title");
@@ -94,7 +93,7 @@ public class FCMIntentService extends FirebaseMessagingService {
             String action_key = remoteMessage.getData().get("action_key");
             String action_value = remoteMessage.getData().get("action_value");
 
-            // TEST - 값 필수 아니어도 push 받을 수 있도록.. 테스트 용도
+            // TEST_ 값 필수 아니어도 push 받을 수 있도록.. 테스트 용도
             if (title == null) {
                 title = "QDRIVE title";
             }
@@ -124,7 +123,7 @@ public class FCMIntentService extends FirebaseMessagingService {
             myApp.setBadgeCnt(badgeCnt);
             setBadge(context, badgeCnt);
 
-            Log.e("krm0219", "FCM Push : " + topClassname + " / " + action_key + " / " + action_value);
+            Log.e(TAG, "FCM Push : " + action_key + " / " + action_value);
 
             if (title.equals("")) {
                 title = "QSign SG";
@@ -132,33 +131,36 @@ public class FCMIntentService extends FirebaseMessagingService {
 
             sendNotification(context, topClassname, title, message, action_key, action_value); // 안드로이드폰에 Noti기능
 
-            if (action_key.equals("PX")) {
-                int delVal = -10;
-                try {
-                    //DB 삭제
-                    delVal = DatabaseHelper.getInstance().delete(DatabaseHelper.DB_TABLE_INTEGRATION_LIST, "invoice_no='" + action_value + "' COLLATE NOCASE");
-                } catch (Exception e) {
+            switch (action_key) {
+                case "PX":
+                    try {
+                        //DB 삭제
+                        DatabaseHelper.getInstance().delete(DatabaseHelper.DB_TABLE_INTEGRATION_LIST, "invoice_no='" + action_value + "' COLLATE NOCASE");
+                    } catch (Exception ignore) {
+                    }
+                    break;
+                case "7ETB":
+                    // 7E TakeBack : 48시간 초과 후, Pickup Driver가 수거하러 가기 전 고객이 물건을 찾아 갔을 때...
+                    // AlertDialog에서 'OK' 버튼을 누르지 않을 수 있어서(Dialog 바깥부분. 막기는 했지만...) 추가!
+                    try {
 
-                }
-            } else if (action_key.equals("7ETB")) {
-                // 7E TakeBack : 48시간 초과 후, Pickup Driver가 수거하러 가기 전 고객이 물건을 찾아 갔을 때...
-                // AlertDialog에서 'OK' 버튼을 누르지 않을 수 있어서(Dialog 바깥부분. 막기는 했지만...) 추가!
-                try {
+                        DatabaseHelper.getInstance().delete(DatabaseHelper.DB_TABLE_INTEGRATION_LIST, "invoice_no='" + action_value + "' COLLATE NOCASE");
+                    } catch (Exception ignore) {
+                    }
+                    break;
+                case "FLTB":
+                    // FL TakeBack : 48시간 초과 후, Pickup Driver가 수거하러 가기 전 고객이 물건을 찾아 갔을 때...
+                    // AlertDialog에서 'OK' 버튼을 누르지 않을 수 있어서(Dialog 바깥부분. 막기는 했지만...) 추가!
+                    try {
 
-                    DatabaseHelper.getInstance().delete(DatabaseHelper.DB_TABLE_INTEGRATION_LIST, "invoice_no='" + action_value + "' COLLATE NOCASE");
-                } catch (Exception e) {
-                }
-            } else if (action_key.equals("FLTB")) {
-                // FL TakeBack : 48시간 초과 후, Pickup Driver가 수거하러 가기 전 고객이 물건을 찾아 갔을 때...
-                // AlertDialog에서 'OK' 버튼을 누르지 않을 수 있어서(Dialog 바깥부분. 막기는 했지만...) 추가!
-                try {
-
-                    DatabaseHelper.getInstance().delete(DatabaseHelper.DB_TABLE_INTEGRATION_LIST, "invoice_no='" + action_value + "' COLLATE NOCASE");
-                } catch (Exception e) {
-                }
-            } else if (action_key.equals("LAE")) {
-                // Locker Alliance Expired - User key(12자리) 값 클립보드에 복사
-                DataUtil.copyClipBoard(context, action_value);
+                        DatabaseHelper.getInstance().delete(DatabaseHelper.DB_TABLE_INTEGRATION_LIST, "invoice_no='" + action_value + "' COLLATE NOCASE");
+                    } catch (Exception ignore) {
+                    }
+                    break;
+                case "LAE":
+                    // Locker Alliance Expired - User key(12자리) 값 클립보드에 복사
+                    DataUtil.copyClipBoard(context, action_value);
+                    break;
             }
 
             // 진동
@@ -179,7 +181,7 @@ public class FCMIntentService extends FirebaseMessagingService {
                         bun.putString("outletPush", "Y");
                     }
 
-                    // Alert메세지 기능
+                    // Alert 메세지 기능
                     Intent popupIntent = new Intent(getApplicationContext(), AlertDialogActivity.class);
                     popupIntent.putExtras(bun);
                     PendingIntent pie = PendingIntent.getActivity(getApplicationContext(), 0, popupIntent, PendingIntent.FLAG_ONE_SHOT);
@@ -224,7 +226,7 @@ public class FCMIntentService extends FirebaseMessagingService {
                 idNum = Integer.parseInt(action_value.substring(0, 9));
             }
             notificationIntent = new Intent(Intent.ACTION_VIEW, Uri.parse(DataUtil.locker_pin_url));
-        } else if (action_key.equals("SRL") || action_key.equals("TEST_KARAM")) {
+        } else if (action_key.equals("SRL")) {
 
             notificationIntent = new Intent(context, ListActivity.class);
         }

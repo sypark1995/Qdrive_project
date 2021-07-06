@@ -69,10 +69,6 @@ public class MyApplication extends MultiDexApplication {
     }
 
 
-    public static Context getContext() {
-        return context;
-    }
-
     public void setBadgeCnt(int badgeCnt) {
         this.badgeCnt = badgeCnt;
     }

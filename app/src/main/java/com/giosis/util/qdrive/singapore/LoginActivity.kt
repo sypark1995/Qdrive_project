@@ -30,6 +30,7 @@ import io.reactivex.rxjava3.android.schedulers.AndroidSchedulers
 import io.reactivex.rxjava3.schedulers.Schedulers
 import java.io.File
 
+
 class LoginActivity : CommonActivity() {
 
     val tag = "LoginActivity"
@@ -44,7 +45,7 @@ class LoginActivity : CommonActivity() {
     private lateinit var appVersion: String
 
     // Location
-    private val gpsTrackerManager: GPSTrackerManager by lazy {
+    private val gpsTrackerManager: GPSTrackerManager? by lazy {
         GPSTrackerManager(this@LoginActivity)
     }
 
@@ -101,7 +102,7 @@ class LoginActivity : CommonActivity() {
             // 위치 정보
             var latitude = 0.0
             var longitude = 0.0
-            gpsTrackerManager.let {
+            gpsTrackerManager?.let {
                 latitude = it.latitude
                 longitude = it.longitude
             }
@@ -132,7 +133,7 @@ class LoginActivity : CommonActivity() {
 
                     RetrofitClient.instanceDynamic().requestServerLogin(
                             userID, userPW, "QDRIVE", "", deviceUUID, "",
-                            latitude.toString(), longitude.toString(), "QDRIVE", "SG")
+                            latitude.toString(), longitude.toString(), DataUtil.appID, "SG")
                             .subscribeOn(Schedulers.io())
                             .observeOn(AndroidSchedulers.mainThread())
                             .subscribe({
@@ -225,8 +226,7 @@ class LoginActivity : CommonActivity() {
 
                                                 } else {
                                                     if (loginData.deviceYn == "N") {
-                                                        showDialog("You have attempted to login from unauthorized mobile phone.\n" +
-                                                                "If your mobile phone was changed, you have to pass the SMS verification.")
+                                                        showDialog(resources.getString(R.string.msg_go_sms_verification))
                                                     }
 
                                                     val intent = Intent(this@LoginActivity, SMSVerificationActivity::class.java)
@@ -237,17 +237,20 @@ class LoginActivity : CommonActivity() {
                                             }
                                         }
                                     }
-
                                 } else {
-                                    if (it.resultCode == -10) {
+                                    when {
+                                        it.resultCode == -10 -> {
 
-                                        showDialog("You Qdrive account has been deactivated")
-                                    } else if (it.resultMsg != "") {
+                                            showDialog(resources.getString(R.string.msg_account_deactivated))
+                                        }
+                                        it.resultMsg != "" -> {
 
-                                        showDialog(it.resultMsg)
-                                    } else {
+                                            showDialog(it.resultMsg)
+                                        }
+                                        else -> {
 
-                                        showDialog("Sorry, your sign-in information is not valid. Please try again with your correct ID and password.")
+                                            showDialog(resources.getString(R.string.msg_not_valid_info))
+                                        }
                                     }
 
                                     binding.editLoginPassword.setText("")
@@ -278,6 +281,7 @@ class LoginActivity : CommonActivity() {
     }
 
 
+    @SuppressLint("SetTextI18n")
     override fun onResume() {
         super.onResume()
 
@@ -293,12 +297,24 @@ class LoginActivity : CommonActivity() {
 
         if (isPermissionTrue) {
 
-            val gpsEnable = gpsTrackerManager.enableGPSSetting()
+            val gpsEnable = gpsTrackerManager?.enableGPSSetting()
 
-            if (gpsEnable) {
-                gpsTrackerManager.GPSTrackerStart()
+            if (gpsEnable == true && gpsTrackerManager != null) {
+
+                gpsTrackerManager!!.GPSTrackerStart()
             } else {
-                DataUtil.enableLocationSettings(this, this@LoginActivity)
+
+                if (!this@LoginActivity.isFinishing) {
+                    AlertDialog.Builder(this@LoginActivity)
+                            .setCancelable(false)
+                            .setTitle(resources.getString(R.string.text_location_setting))
+                            .setMessage(resources.getString(R.string.msg_location_off))
+                            .setPositiveButton(resources.getString(R.string.button_ok)) { _, _ ->
+                                val intent = Intent(Settings.ACTION_LOCATION_SOURCE_SETTINGS)
+                                intent.addCategory(Intent.CATEGORY_DEFAULT)
+                                startActivity(intent)
+                            }.show()
+                }
             }
         }
     }
@@ -346,10 +362,14 @@ class LoginActivity : CommonActivity() {
 
     override fun onDestroy() {
         super.onDestroy()
-        DataUtil.stopGPSManager(gpsTrackerManager)
+
+        if (gpsTrackerManager != null) {
+
+            gpsTrackerManager!!.stopFusedProviderService()
+        }
     }
 
-    fun goGooglePlay(msg: String?) {
+    private fun goGooglePlay(msg: String?) {
 
         val alertBuilder = android.app.AlertDialog.Builder(this)
         alertBuilder.setTitle(resources.getString(R.string.text_alert))
@@ -371,7 +391,6 @@ class LoginActivity : CommonActivity() {
         if (requestCode == PERMISSION_REQUEST_CODE && resultCode == PermissionActivity.PERMISSIONS_GRANTED) {
 
             isPermissionTrue = true
-            Log.e("permission", "$tag   Permission granted")
         }
     }
 
