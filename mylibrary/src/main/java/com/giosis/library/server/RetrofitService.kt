@@ -1,5 +1,6 @@
 package com.giosis.library.server
 
+import android.os.Build
 import com.giosis.library.server.data.FailedCodeResult
 import com.giosis.library.server.data.ImageResult
 import com.giosis.library.util.DataUtil
@@ -247,15 +248,15 @@ interface RetrofitService {
     @FormUrlEncoded
     fun requestSetAppUserInfo(
             @Field("type") type: String,
-            @Field("api_level") api_level: String,
-            @Field("device_info") device_info: String,
-            @Field("device_model") device_model: String,
-            @Field("device_product") device_product: String,
-            @Field("device_os_version") device_os_version: String,
             @Field("network_type") network_type: String,
             @Field("fused_provider_stat") fused_provider_stat: String,
             @Field("logout_dt") logout_dt: String,
             @Field("channel") channel: String = "QDRIVE",
+            @Field("api_level") api_level: String = Build.VERSION.SDK_INT.toString(),
+            @Field("device_info") device_info: String = Build.DEVICE,
+            @Field("device_model") device_model: String = Build.MODEL,
+            @Field("device_product") device_product: String = Build.PRODUCT,
+            @Field("device_os_version") device_os_version: String = System.getProperty("os.version"),
             @Field("vehicle_code") vehicle_code: String = "",
             @Field("device_id") device_id: String = "",
             @Field("location_mng_stat") location_mng_stat: String = "",
@@ -352,14 +353,6 @@ interface RetrofitService {
             @Field("nation_cd") nation_cd: String = Preferences.userNation
     ): Single<APIModel>
 
-    // message
-    @POST("GetQdriverMessageListFromMessenger")
-    @FormUrlEncoded
-    fun requestGetMessageListFromAdmin(
-            @Field("qdriver_id") opId: String = Preferences.userId,
-            @Field("app_id") app_id: String = DataUtil.appID,
-            @Field("nation_cd") nation_cd: String = Preferences.userNation
-    ): Single<APIModel>
 
     // CnR Print Data
     @POST("GetCnRPrintData")
@@ -410,6 +403,78 @@ interface RetrofitService {
     @FormUrlEncoded
     fun requestGetNewMessageCountFromQxSystem(
             @Field("qdriver_id") qdriver_id: String = Preferences.userId,
+            @Field("app_id") app_id: String = DataUtil.appID,
+            @Field("nation_cd") nation_cd: String = Preferences.userNation
+    ): Single<APIModel>
+
+    // message
+    @POST("GetQdriverMessageList")
+    @FormUrlEncoded
+    fun requestGetMessageListFromCustomer(
+            @Field("page_no") page_no: String,
+            @Field("page_size") page_size: String,
+            @Field("search_start_dt") search_start_dt: String,
+            @Field("search_end_dt") search_end_dt: String,
+            @Field("qdriver_id") qdriver_id: String = Preferences.userId,
+            @Field("app_id") app_id: String = DataUtil.appID,
+            @Field("nation_cd") nation_cd: String = Preferences.userNation
+    ): Single<APIModel>
+
+    @POST("GetQdriverMessageListFromMessenger")
+    @FormUrlEncoded
+    fun requestGetMessageListFromAdmin(
+            @Field("qdriver_id") qdriver_id: String = Preferences.userId,
+            @Field("app_id") app_id: String = DataUtil.appID,
+            @Field("nation_cd") nation_cd: String = Preferences.userNation
+    ): Single<APIModel>
+
+    @POST("GetQdriverMessageDetail")
+    @FormUrlEncoded
+    fun requestGetQdriverMessageDetail(
+            @Field("question_seq_no") question_seq_no: String,
+            @Field("qdriver_id") qdriver_id: String = Preferences.userId,
+            @Field("app_id") app_id: String = DataUtil.appID,
+            @Field("nation_cd") nation_cd: String = Preferences.userNation
+    ): Single<APIModel>
+
+    @POST("GetQdriverMessageDetailFromMessenger")
+    @FormUrlEncoded
+    fun requestGetMessageDetailFromAdmin(
+            @Field("senderID") senderID: String,
+            @Field("qdriver_id") qdriver_id: String = Preferences.userId,
+            @Field("app_id") app_id: String = DataUtil.appID,
+            @Field("nation_cd") nation_cd: String = Preferences.userNation
+    ): Single<APIModel>
+
+    @POST("SendQdriverMessage")
+    @FormUrlEncoded
+    fun requestSendQdriverMessage(
+            @Field("tracking_no") tracking_no: String,
+            @Field("title") title: String,
+            @Field("contents") contents: String,
+            @Field("question_seq_no") question_seq_no: String,
+            @Field("send_place") send_place: String = "P",
+            @Field("svc_nation_cd") svc_nation_cd: String = "SG",
+            @Field("driver_id") driver_id: String = Preferences.userId,
+            @Field("app_id") app_id: String = DataUtil.appID,
+            @Field("nation_cd") nation_cd: String = Preferences.userNation
+    ): Single<APIModel>
+
+    @POST("SendQdriveToMessengerMessage")
+    @FormUrlEncoded
+    fun requestSendQdriveToMessengerMessage(
+            @Field("contents") contents: String,
+            @Field("sender_id") sender_id: String,
+            @Field("driver_id") driver_id: String = Preferences.userId,
+            @Field("app_id") app_id: String = DataUtil.appID,
+            @Field("nation_cd") nation_cd: String = Preferences.userNation
+    ): Single<APIModel>
+
+    @POST("GetMessageToQPostOnPickupMenu")
+    @FormUrlEncoded
+    fun requestGetMessageToQPostOnPickupMenu(
+            @Field("trackingNo") trackingNo: String,
+            @Field("driverId") driverId: String = Preferences.userId,
             @Field("app_id") app_id: String = DataUtil.appID,
             @Field("nation_cd") nation_cd: String = Preferences.userNation
     ): Single<APIModel>

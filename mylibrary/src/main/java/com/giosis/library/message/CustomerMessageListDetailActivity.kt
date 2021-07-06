@@ -1,584 +1,342 @@
-package com.giosis.library.message;
+package com.giosis.library.message
 
-import android.app.AlertDialog;
-import android.app.ProgressDialog;
-import android.os.AsyncTask;
-import android.os.Bundle;
-import android.os.Handler;
-import android.os.Message;
-import android.text.Editable;
-import android.text.TextWatcher;
-import android.util.Log;
-import android.view.View.OnClickListener;
-import android.widget.AbsListView;
-import android.widget.EditText;
-import android.widget.FrameLayout;
-import android.widget.LinearLayout;
-import android.widget.ListView;
-import android.widget.TextView;
-import android.widget.Toast;
-
-import com.giosis.library.R;
-import com.giosis.library.server.Custom_JsonParser;
-import com.giosis.library.util.CommonActivity;
-import com.giosis.library.util.DataUtil;
-import com.giosis.library.util.DisplayUtil;
-import com.giosis.library.util.NetworkUtil;
-import com.giosis.library.util.Preferences;
-import com.google.gson.Gson;
-
-import org.json.JSONObject;
-
-import java.text.SimpleDateFormat;
-import java.util.ArrayList;
-import java.util.Calendar;
+import android.annotation.SuppressLint
+import android.app.AlertDialog
+import android.content.DialogInterface
+import android.os.*
+import android.text.Editable
+import android.text.TextWatcher
+import android.util.Log
+import android.view.View
+import android.widget.*
+import com.giosis.library.R
+import com.giosis.library.databinding.ActivityMessageDetailBinding
+import com.giosis.library.server.RetrofitClient
+import com.giosis.library.util.*
+import com.giosis.library.util.dialog.ProgressDialog
+import com.google.gson.Gson
+import com.google.gson.reflect.TypeToken
+import io.reactivex.rxjava3.android.schedulers.AndroidSchedulers
+import io.reactivex.rxjava3.schedulers.Schedulers
+import java.text.SimpleDateFormat
+import java.util.*
+import kotlin.collections.ArrayList
 
 /**
  * @author krm0219
  */
-public class CustomerMessageListDetailActivity extends CommonActivity {
-    String TAG = "CustomerMessageListDetailActivity";
+class CustomerMessageListDetailActivity : CommonActivity() {
+    var TAG = "CustomerMessageListDetailActivity"
 
-    FrameLayout layout_top_back;
-    TextView text_top_title;
-
-    TextView text_message_detail_title;
-    ListView list_message_detail_message;
-    EditText edit_message_detail_input;
-    LinearLayout layout_message_detail_send;
-
-
-    Gson gson = new Gson();
-
-    String opID;
-
-    String questionNo;
-    String trackingNo;
-
-    MessageDetailAdapter messageDetailAdapter;
-    private static ArrayList<MessageDetailResult.MessageDetailList> messageDetailList;
-
-    AsyncHandler handler;
-    CustomerThread customerThread = null;
-    public static final int SEND_CUTOMER_START = 100;
-
-    String old_resultString = null;
-    String new_resultString = null;
-
-    String send_title;
-    String send_message;
-
-
-    OnClickListener clickListener = view -> {
-
-        int id = view.getId();
-        if (id == R.id.layout_top_back) {
-            finish();
-        } else if (id == R.id.layout_message_detail_send) {
-            if (!NetworkUtil.isNetworkAvailable(CustomerMessageListDetailActivity.this)) {
-
-                try {
-
-                    showDialog(getResources().getString(R.string.text_warning), getResources().getString(R.string.msg_network_connect_error));
-                } catch (Exception ignored) {
-
-                }
-            } else {
-
-                sendChatMessage();
-            }
-        }
-    };
-
-    @Override
-    protected void onResume() {
-        super.onResume();
-
-        if (!NetworkUtil.isNetworkAvailable(this)) {
-
-            try {
-
-                showDialog(getResources().getString(R.string.text_warning), getResources().getString(R.string.msg_network_connect_error));
-            } catch (Exception ignored) {
-
-            }
-        } else if (questionNo.equals("0")) {
-
-            Log.e("krm0219", "in LIST");
-            GetQuestionNumberAsyncTask getQuestionNumberAsyncTask = new GetQuestionNumberAsyncTask(opID, trackingNo);
-            getQuestionNumberAsyncTask.execute();
-        } else {
-
-            handler = new AsyncHandler();
-            customerThread = new CustomerThread();
-            customerThread.start();
-        }
+    private val binding by lazy {
+        ActivityMessageDetailBinding.inflate(layoutInflater)
     }
 
-
-    private class AsyncHandler extends Handler {
-
-        @Override
-        public void handleMessage(Message msg) {
-
-            try {
-
-                if (!isFinishing()) {
-
-                    CustomerMessageDetailAsyncTask CustomerMessageDetailAsyncTask = new CustomerMessageDetailAsyncTask(opID, questionNo);
-                    CustomerMessageDetailAsyncTask.execute();
-                }
-            } catch (Exception e) {
-
-                Log.e("krm0219", TAG + "  AsyncHandler Exception : " + e.toString());
-            }
-        }
+    val progressBar by lazy {
+        ProgressDialog(this@CustomerMessageListDetailActivity)
     }
 
-    @Override
-    public void onCreate(Bundle savedInstanceState) {
-        super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_message_detail);
+    var messageDetailAdapter: MessageDetailAdapter? = null
+    var handler: AsyncHandler? = null
+    var customerThread: CustomerThread? = null
 
-        layout_top_back = findViewById(R.id.layout_top_back);
-        text_top_title = findViewById(R.id.text_top_title);
+    var oldResultString: String = ""
+    var newResultString: String = ""
+    var messageList: ArrayList<MessageDetailResult> = ArrayList()
 
-        text_message_detail_title = findViewById(R.id.text_message_detail_title);
-        list_message_detail_message = findViewById(R.id.list_message_detail_message);
-        edit_message_detail_input = findViewById(R.id.edit_message_detail_input);
-        layout_message_detail_send = findViewById(R.id.layout_message_detail_send);
+    var questionNo: String = "0"
+    var trackingNo: String = ""
+    private var sendTitle: String = ""
+    private var sendMessage: String = ""
 
-        layout_top_back.setOnClickListener(clickListener);
-        layout_message_detail_send.setOnClickListener(clickListener);
 
-        list_message_detail_message.setTranscriptMode(AbsListView.TRANSCRIPT_MODE_ALWAYS_SCROLL);       // message 입력 후, List 최하단으로 이동
+    @SuppressLint("ClickableViewAccessibility")
+    public override fun onCreate(savedInstanceState: Bundle?) {
+        super.onCreate(savedInstanceState)
+        setContentView(binding.root)
 
         //
-        opID = Preferences.INSTANCE.getUserId();
+        questionNo = intent.getIntExtra("question_no", 0).toString() // 최초 0
+        trackingNo = intent.getStringExtra("tracking_no").toString()
+        Log.e(TAG, "$TAG  $questionNo / $trackingNo")
 
-        questionNo = Integer.toString(getIntent().getIntExtra("question_no", 0));       // 최초 0
-        trackingNo = getIntent().getStringExtra("tracking_no");
+        binding.layoutTopTitle.textTopTitle.text = trackingNo
 
-        Log.e("krm0219", TAG + "  " + questionNo + " / " + trackingNo);
+        binding.editMessage.addTextChangedListener(object : TextWatcher {
+            override fun beforeTextChanged(charSequence: CharSequence, i: Int, i1: Int, i2: Int) {}
+            override fun onTextChanged(charSequence: CharSequence, i: Int, i1: Int, i2: Int) {}
+            override fun afterTextChanged(editable: Editable) {
 
-        text_top_title.setText(trackingNo);
-
-
-        edit_message_detail_input.addTextChangedListener(new TextWatcher() {
-            @Override
-            public void beforeTextChanged(CharSequence charSequence, int i, int i1, int i2) {
+                binding.layoutSend.setBackgroundResource(R.drawable.btn_send_qpost)
+                binding.editMessage.hint = ""
             }
+        })
 
-            @Override
-            public void onTextChanged(CharSequence charSequence, int i, int i1, int i2) {
-            }
+        binding.editMessage.setOnTouchListener { _, _ ->
 
-            @Override
-            public void afterTextChanged(Editable editable) {
-
-                layout_message_detail_send.setBackgroundResource(R.drawable.btn_send_qpost);
-                edit_message_detail_input.setHint("");
-            }
-        });
-
-        edit_message_detail_input.setOnTouchListener((v, event) -> {
-
-            layout_message_detail_send.setBackgroundResource(R.drawable.btn_send_qpost);
-            edit_message_detail_input.setHint("");
-            return false;
-        });
-    }
-
-    @Override
-    protected void onStop() {
-        super.onStop();
-
-        try {
-
-            customerThread.interrupt();
-        } catch (Exception e) {
-
-            Thread.currentThread().interrupt();
-        }
-    }
-
-    public void showDialog(String title, String msg) {
-
-        AlertDialog.Builder alert_internet_status = new AlertDialog.Builder(this);
-        alert_internet_status.setTitle(title);
-        alert_internet_status.setMessage(msg);
-        alert_internet_status.setPositiveButton(getResources().getString(R.string.button_close),
-                (dialog, which) -> {
-                    dialog.dismiss();
-                    finish();
-                });
-        alert_internet_status.show();
-    }
-
-    public void refreshData() {
-
-        Log.e("krm0219", TAG + "  refreshData");
-
-        try {
-
-            CustomerMessageDetailAsyncTask CustomerMessageDetailAsyncTask = new CustomerMessageDetailAsyncTask(opID, questionNo);
-            CustomerMessageDetailAsyncTask.execute();
-        } catch (Exception e) {
-
-            Toast.makeText(this, getResources().getString(R.string.msg_left_and_come_back), Toast.LENGTH_SHORT).show();
-            Log.e("krm0219", TAG + "  Exception : " + e.toString());
-        }
-    }
-
-
-    private void sendChatMessage() {
-
-        send_title = text_message_detail_title.getText().toString().trim();
-        send_message = edit_message_detail_input.getText().toString().trim();
-
-        if (send_message.equals("")) {
-            Toast.makeText(CustomerMessageListDetailActivity.this, getResources().getString(R.string.msg_enter_message), Toast.LENGTH_SHORT).show();
-            return;
+            binding.layoutSend.setBackgroundResource(R.drawable.btn_send_qpost)
+            binding.editMessage.hint = ""
+            false
         }
 
-        SendMessageAsyncTask sendMessageAsyncTask = new SendMessageAsyncTask(trackingNo, "SG", send_title, send_message, opID, questionNo, "P");
-        sendMessageAsyncTask.execute();
-    }
+        //
+        binding.layoutTopTitle.layoutTopBack.setOnClickListener {
 
-    // NOTIFICATION.   CustomerThread
-    class CustomerThread extends Thread {
-
-        public CustomerThread() {
+            finish()
         }
 
-        @Override
-        public void run() {
-            super.run();
+        binding.layoutSend.setOnClickListener {
 
-            while (!Thread.currentThread().isInterrupted()) {
-
+            if (!NetworkUtil.isNetworkAvailable(this@CustomerMessageListDetailActivity)) {
                 try {
-
-                    Message message = handler.obtainMessage();
-                    message.what = SEND_CUTOMER_START;
-                    handler.sendMessage(message);
-
-                    sleep(60 * 1000);
-                } catch (InterruptedException e) {
-
-                    Log.e("krm0219", TAG + "  CustomerThread Exception : " + e.toString());
-                    Thread.currentThread().interrupt();
-                    e.printStackTrace();
+                    showDialog(resources.getString(R.string.text_warning), resources.getString(R.string.msg_network_connect_error))
+                } catch (ignored: Exception) {
                 }
+            } else {
+                sendChatMessage()
             }
-
-            Log.e("krm0219", TAG + "  CustomerThread while break");
         }
+
+        binding.listDetailMessage.adapter?.let { binding.listDetailMessage.smoothScrollToPosition(it.itemCount) }
     }
 
-    //NOTIFICATION.
-    private class SendMessageAsyncTask extends AsyncTask<Void, Void, MessageSendResult> {
 
-        String tracking_no;
-        String svc_nation_cd;       // 'SG'
-        String title;
-        String contents;
-        String driver_id;
-        String question_seq_no;     // 최초 0
-        String send_place;          // 'P'
+    override fun onResume() {
+        super.onResume()
 
-        ProgressDialog progressDialog = new ProgressDialog(CustomerMessageListDetailActivity.this);
-
-        public SendMessageAsyncTask(String TrackingNo, String NationCode, String Title, String Message, String QdriverID, String QuestionNo, String SendPlace) {
-
-            tracking_no = TrackingNo;
-            svc_nation_cd = NationCode;
-            title = Title;
-            contents = Message;
-            driver_id = QdriverID;
-            question_seq_no = QuestionNo;
-            send_place = SendPlace;
-
-            Log.e("message", TAG + "  SendMessage DATA \n" + tracking_no + " / " + svc_nation_cd + " / " + title + " / " +
-                    contents + " / " + driver_id + " / " + question_seq_no + " / " + send_place);
-        }
-
-        @Override
-        protected void onPreExecute() {
-            super.onPreExecute();
-
-            progressDialog.setProgressStyle(ProgressDialog.STYLE_SPINNER);
-            progressDialog.setMessage(getResources().getString(R.string.text_send_message));
-            progressDialog.show();
-        }
-
-        @Override
-        protected MessageSendResult doInBackground(Void... params) {
-
-            MessageSendResult resultObj;
-
+        if (!NetworkUtil.isNetworkAvailable(this)) {
             try {
-
-                JSONObject job = new JSONObject();
-                job.accumulate("tracking_no", tracking_no);
-                job.accumulate("svc_nation_cd", svc_nation_cd);
-                job.accumulate("title", title);
-                job.accumulate("contents", contents);
-                job.accumulate("driver_id", driver_id);
-                job.accumulate("question_seq_no", question_seq_no);
-                job.accumulate("send_place", send_place);
-                job.accumulate("app_id", DataUtil.appID);
-                job.accumulate("nation_cd", Preferences.INSTANCE.getUserNation());
-
-
-                String methodName = "SendQdriverMessage";
-                String jsonString = Custom_JsonParser.requestServerDataReturnJSON(methodName, job);
-
-                resultObj = gson.fromJson(jsonString, MessageSendResult.class);
-            } catch (Exception e) {
-
-                Log.e("Exception", TAG + "  SendQdriverMessage Json Exception : " + e.toString());
-                resultObj = null;
+                showDialog(resources.getString(R.string.text_warning), resources.getString(R.string.msg_network_connect_error))
+            } catch (ignored: Exception) {
             }
+        } else if (questionNo == "0") {
 
-            return resultObj;
-        }
+            Log.e(TAG, "in LIST")
 
-        @Override
-        protected void onPostExecute(MessageSendResult result) {
-            super.onPostExecute(result);
+            progressBar.visibility = View.VISIBLE
+            RetrofitClient.instanceDynamic().requestGetMessageToQPostOnPickupMenu(trackingNo)
+                    .subscribeOn(Schedulers.io())
+                    .observeOn(AndroidSchedulers.mainThread())
+                    .subscribe({
 
-            DisplayUtil.dismissProgressDialog(progressDialog);
+                        progressBar.visibility = View.GONE
 
-            try {
-                if (result != null) {
-                    if (result.getResultObject().getResultCode().equals("0")) {
+                        if (it.resultObject != null) {
 
-                        layout_message_detail_send.setBackgroundResource(R.color.color_ebebeb);
-                        edit_message_detail_input.setHint(R.string.msg_qpost_edit_text_hint);
-                        edit_message_detail_input.setText("");
+                            val list = Gson().fromJson<ArrayList<MessageQuestionNumberResult>>(it.resultObject, object : TypeToken<ArrayList<MessageQuestionNumberResult>>() {}.type)
 
-                        SimpleDateFormat simpleDateFormat = new SimpleDateFormat("yyyy-MM-dd a HH:mm");
-                        String today = simpleDateFormat.format(Calendar.getInstance().getTime());
+                            questionNo = "0"
 
-                        MessageDetailResult.MessageDetailList item = new MessageDetailResult.MessageDetailList();
-                        item.setTracking_no(tracking_no);
-                        item.setQuestion_seq_no(questionNo);
-                        item.setTitle(send_title);
-                        item.setMessage(send_message);
-                        item.setSender_id(opID);
-                        item.setSend_date(today);
-                        item.setAlign("right");
-
-                        messageDetailList.add(item);
-                        messageDetailAdapter.notifyDataSetChanged();
-                    } else {
-
-                        Toast.makeText(CustomerMessageListDetailActivity.this, getResources().getString(R.string.msg_send_message_error) +
-                                " : " + result.getResultObject().getResultMsg(), Toast.LENGTH_SHORT).show();
-                        Log.e("krm0219", "SendQdriverMessage  ResultCode : " + result.getResultObject().getResultCode());
-                    }
-                } else {
-
-                    Toast.makeText(CustomerMessageListDetailActivity.this, getResources().getString(R.string.msg_send_message_error) +
-                            " \n" + getResources().getString(R.string.msg_please_try_again), Toast.LENGTH_SHORT).show();
-                    Log.e("krm0219", "SendQdriverMessage  result null");
-                }
-            } catch (Exception e) {
-
-                Toast.makeText(CustomerMessageListDetailActivity.this, getResources().getString(R.string.msg_send_message_error) +
-                        " \n" + getResources().getString(R.string.msg_please_try_again), Toast.LENGTH_SHORT).show();
-                Log.e("krm0219", TAG + "  SendQdriverMessage Exception : " + e.toString());
-            }
-        }
-    }
-
-    //NOTIFICATION.
-    private class GetQuestionNumberAsyncTask extends AsyncTask<Void, Void, MessageQuestionNumberResult> {
-
-        String qdriver_id;
-        String tracking_no;
-
-        ProgressDialog progressDialog = new ProgressDialog(CustomerMessageListDetailActivity.this);
-
-        public GetQuestionNumberAsyncTask(String QdriverID, String TrackingNo) {
-
-            qdriver_id = QdriverID;
-            tracking_no = TrackingNo;
-        }
-
-        @Override
-        protected void onPreExecute() {
-            super.onPreExecute();
-
-            progressDialog.setProgressStyle(ProgressDialog.STYLE_SPINNER);
-            progressDialog.setMessage(getResources().getString(R.string.text_please_wait));
-            progressDialog.setCancelable(false);
-            progressDialog.show();
-        }
-
-        @Override
-        protected MessageQuestionNumberResult doInBackground(Void... params) {
-
-            MessageQuestionNumberResult resultObj;
-
-            try {
-
-                JSONObject job = new JSONObject();
-                job.accumulate("driverId", qdriver_id);
-                job.accumulate("trackingNo", tracking_no);
-                job.accumulate("app_id", DataUtil.appID);
-                job.accumulate("nation_cd", Preferences.INSTANCE.getUserNation());
-
-
-                String methodName = "GetMessageToQPostOnPickupMenu";
-                String jsonString = Custom_JsonParser.requestServerDataReturnJSON(methodName, job);
-
-                resultObj = gson.fromJson(jsonString, MessageQuestionNumberResult.class);
-            } catch (Exception e) {
-
-                Log.e("Exception", TAG + "  GetMessageToQPostOnPickupMenu Json Exception : " + e.toString());
-                resultObj = null;
-            }
-
-            return resultObj;
-        }
-
-        @Override
-        protected void onPostExecute(MessageQuestionNumberResult result) {
-            super.onPostExecute(result);
-
-            DisplayUtil.dismissProgressDialog(progressDialog);
-
-            try {
-
-                questionNo = "0";
-
-                if (result != null && result.getQuestionNo() > 0) {
-
-                    questionNo = Integer.toString(result.getQuestionNo());
-                }
-
-                handler = new AsyncHandler();
-                customerThread = new CustomerThread();
-                customerThread.start();
-            } catch (Exception e) {
-
-                Toast.makeText(CustomerMessageListDetailActivity.this, getResources().getString(R.string.text_error) + "!! " + getResources().getString(R.string.msg_please_try_again), Toast.LENGTH_SHORT).show();
-                Log.e("krm0219", TAG + " GetMessageToQPostOnPickupMenu Exception : " + e.toString());
-            }
-        }
-    }
-
-    //NOTIFICATION.        1분  refresh
-    private class CustomerMessageDetailAsyncTask extends AsyncTask<Void, Void, MessageDetailResult> {
-
-        String qdriver_id;
-        String question_seq_no;
-
-        ProgressDialog progressDialog = new ProgressDialog(CustomerMessageListDetailActivity.this);
-
-        public CustomerMessageDetailAsyncTask(String QdriverID, String QuestionNo) {
-
-            qdriver_id = QdriverID;
-            question_seq_no = QuestionNo;
-
-            if (question_seq_no == null) {
-
-                question_seq_no = "0";
-            }
-        }
-
-        @Override
-        protected void onPreExecute() {
-            super.onPreExecute();
-
-            old_resultString = new_resultString;
-
-            if (new_resultString == null) {
-
-                progressDialog.setProgressStyle(ProgressDialog.STYLE_SPINNER);
-                progressDialog.setMessage(getResources().getString(R.string.text_please_wait));
-                progressDialog.setCancelable(false);
-                progressDialog.show();
-            }
-        }
-
-        @Override
-        protected MessageDetailResult doInBackground(Void... params) {
-
-            MessageDetailResult resultObj;
-
-            try {
-
-                JSONObject job = new JSONObject();
-                job.accumulate("qdriver_id", qdriver_id);
-                job.accumulate("question_seq_no", question_seq_no);
-                job.accumulate("app_id", DataUtil.appID);
-                job.accumulate("nation_cd", Preferences.INSTANCE.getUserNation());
-
-
-                String methodName = "GetQdriverMessageDetail";
-                String jsonString = Custom_JsonParser.requestServerDataReturnJSON(methodName, job);
-                new_resultString = jsonString;
-
-                resultObj = gson.fromJson(jsonString, MessageDetailResult.class);
-            } catch (Exception e) {
-
-                Log.e("Exception", TAG + "  GetQdriverMessageDetail Json Exception : " + e.toString());
-                resultObj = null;
-            }
-
-            return resultObj;
-        }
-
-        @Override
-        protected void onPostExecute(MessageDetailResult result) {
-            super.onPostExecute(result);
-
-            DisplayUtil.dismissProgressDialog(progressDialog);
-
-            try {
-                if (old_resultString != null && old_resultString.equalsIgnoreCase(new_resultString)) {
-
-                    Log.e("krm0219", TAG + "  GetQdriverMessageDetail  EQUAL");
-                } else {
-
-                    if (result != null) {
-
-                        messageDetailList = (ArrayList<MessageDetailResult.MessageDetailList>) result.getResultObject();
-                        Log.e("krm0219", TAG + " GetQdriverMessageDetail  LIST Size : " + messageDetailList.size());
-
-                        if (messageDetailList.size() > 0) {
-
-                            for (int i = 0; i < messageDetailList.size(); i++) {        // 초 second 제거
-
-                                String date_string = messageDetailList.get(i).getSend_date();
-                                String[] date_array = date_string.split(":");
-
-                                date_string = date_array[0] + ":" + date_array[1];
-                                messageDetailList.get(i).setSend_date(date_string);
+                            if (list != null && list.isNotEmpty()) {
+                                if (0 < list[0].questionNo)
+                                    questionNo = list[0].questionNo.toString()
                             }
 
-                            messageDetailAdapter = new MessageDetailAdapter(CustomerMessageListDetailActivity.this, messageDetailList, "C");
-                            list_message_detail_message.setAdapter(messageDetailAdapter);
-
-                            text_message_detail_title.setText(messageDetailList.get(0).getTitle());
-                        } else {        // Driver가 처음 message 보낼 때~  (LIST에서 들어옴)
-
-                            text_message_detail_title.setText(getResources().getString(R.string.text_qxpress_driver));
-
-                            messageDetailList = new ArrayList<>();
-                            messageDetailAdapter = new MessageDetailAdapter(CustomerMessageListDetailActivity.this, messageDetailList, "C");
-                            list_message_detail_message.setAdapter(messageDetailAdapter);
+                            handler = AsyncHandler()
+                            customerThread = CustomerThread()
+                            customerThread!!.start()
                         }
-                    }
-                }
-            } catch (Exception e) {
+                    }, {
 
-                Toast.makeText(CustomerMessageListDetailActivity.this, getResources().getString(R.string.text_error) + "!! " + getResources().getString(R.string.msg_please_try_again), Toast.LENGTH_SHORT).show();
-                Log.e("krm0219", TAG + " GetQdriverMessageDetail Exception : " + e.toString());
+                        progressBar.visibility = View.GONE
+                        Toast.makeText(this@CustomerMessageListDetailActivity, resources.getString(R.string.text_error) + "!! " + resources.getString(R.string.msg_please_try_again), Toast.LENGTH_SHORT).show()
+                        Log.e("Exception", "$TAG  GetMessageToQPostOnPickupMenu Exception : $it")
+                    })
+        } else {
+
+            handler = AsyncHandler()
+            customerThread = CustomerThread()
+            customerThread!!.start()
+        }
+    }
+
+
+    inner class AsyncHandler : Handler(Looper.getMainLooper()) {
+        override fun handleMessage(msg: Message) {
+            try {
+                if (!isFinishing) {
+
+                    oldResultString = newResultString
+
+                    if (newResultString.isEmpty())
+                        progressBar.visibility = View.VISIBLE
+
+                    RetrofitClient.instanceDynamic().requestGetQdriverMessageDetail(questionNo)
+                            .subscribeOn(Schedulers.io())
+                            .observeOn(AndroidSchedulers.mainThread())
+                            .subscribe({
+
+                                if (oldResultString != "" && oldResultString.equals(newResultString, ignoreCase = true)) {
+
+                                    Log.e("Message", " GetQdriverMessageDetail    EQUAL")
+                                } else {
+
+                                    if (it.resultObject?.isJsonNull == false && it.resultObject != null) {
+
+                                        newResultString = it.toString()
+                                        messageList = Gson().fromJson(it.resultObject, object : TypeToken<ArrayList<MessageDetailResult>>() {}.type)
+                                        if (0 < messageList.size) {
+
+                                            for (i in messageList.indices) {
+
+                                                var dateString = messageList[i].send_date
+                                                val dateSplitArray = dateString.split(":".toRegex()).toTypedArray()
+                                                dateString = dateSplitArray[0] + ":" + dateSplitArray[1]
+                                                messageList[i].send_date = dateString
+                                            }
+
+                                            binding.textMessageTitle.text = messageList[0].title
+                                            messageDetailAdapter = MessageDetailAdapter(this@CustomerMessageListDetailActivity, messageList, "C")
+                                            binding.listDetailMessage.adapter = messageDetailAdapter
+                                        } else {
+
+                                            binding.textMessageTitle.text = resources.getString(R.string.text_qxpress_driver)
+                                            messageList = ArrayList()
+                                            messageDetailAdapter = MessageDetailAdapter(this@CustomerMessageListDetailActivity, messageList, "C")
+                                            binding.listDetailMessage.adapter = messageDetailAdapter
+                                        }
+                                    } else {
+
+                                        binding.textMessageTitle.text = resources.getString(R.string.text_qxpress_driver)
+                                        messageList = ArrayList()
+                                        messageDetailAdapter = MessageDetailAdapter(this@CustomerMessageListDetailActivity, messageList, "C")
+                                        binding.listDetailMessage.adapter = messageDetailAdapter
+                                    }
+                                }
+
+                                progressBar.visibility = View.GONE
+                            }, {
+
+                                progressBar.visibility = View.GONE
+                                Toast.makeText(this@CustomerMessageListDetailActivity, resources.getString(R.string.text_error) + "!! " + resources.getString(R.string.msg_please_try_again), Toast.LENGTH_SHORT).show()
+                                Log.e("Exception", "$TAG GetQdriverMessageDetail Exception : $it")
+                            })
+                }
+            } catch (e: Exception) {
+                Log.e("krm0219", "$TAG  AsyncHandler Exception : $e")
             }
         }
+    }
+
+
+    // NOTIFICATION.   CustomerThread
+    inner class CustomerThread : Thread() {
+        override fun run() {
+            super.run()
+
+            while (!currentThread().isInterrupted) {
+                try {
+
+                    val message = handler!!.obtainMessage()
+                    message.what = SEND_CUTOMER_START
+                    handler!!.sendMessage(message)
+
+                    sleep((60 * 1000).toLong())
+                } catch (e: InterruptedException) {
+
+                    Log.e("Exception", "$TAG  CustomerThread Exception : $e")
+                    currentThread().interrupt()
+                    e.printStackTrace()
+                }
+            }
+        }
+    }
+
+    override fun onStop() {
+        super.onStop()
+        try {
+            customerThread!!.interrupt()
+        } catch (e: Exception) {
+            Thread.currentThread().interrupt()
+        }
+    }
+
+
+    private fun sendChatMessage() {
+
+        sendTitle = binding.textMessageTitle.text.toString().trim { it <= ' ' }
+        sendMessage = binding.editMessage.text.toString().trim { it <= ' ' }
+
+        if (sendMessage == "") {
+            Toast.makeText(this@CustomerMessageListDetailActivity, resources.getString(R.string.msg_enter_message), Toast.LENGTH_SHORT).show()
+            return
+        }
+
+
+        progressBar.visibility = View.VISIBLE
+        RetrofitClient.instanceDynamic().requestSendQdriverMessage(trackingNo, sendTitle, sendMessage, questionNo)
+                .subscribeOn(Schedulers.io())
+                .observeOn(AndroidSchedulers.mainThread())
+                .subscribe({
+
+                    try {
+                        if (it.resultObject != null) {
+
+                            val result = Gson().fromJson<MessageSendResult>(it.resultObject,
+                                    object : TypeToken<MessageSendResult>() {}.type)
+
+                            if (result != null) {
+                                if (result.resultCode == "0") {
+
+                                    binding.layoutSend.setBackgroundResource(R.color.color_ebebeb)
+                                    binding.editMessage.setHint(R.string.msg_qpost_edit_text_hint)
+                                    binding.editMessage.setText("")
+
+                                    val simpleDateFormat = SimpleDateFormat("yyyy-MM-dd HH:mm")
+                                    val today = simpleDateFormat.format(Calendar.getInstance().time)
+
+                                    val item = MessageDetailResult()
+                                    item.tracking_no = trackingNo
+                                    item.question_seq_no = questionNo
+                                    item.title = sendTitle
+                                    item.message = sendMessage
+                                    item.sender_id = Preferences.userId
+                                    item.send_date = today
+                                    item.align = "right"
+
+                                    messageList.add(item)
+                                    messageDetailAdapter!!.notifyDataSetChanged()
+                                } else {
+                                    Toast.makeText(this@CustomerMessageListDetailActivity, resources.getString(R.string.msg_send_message_error) +
+                                            " : " + result.resultMsg, Toast.LENGTH_SHORT).show()
+                                    Log.e("Message", "SendQdriverMessage  ResultCode : " + result.resultCode)
+                                }
+                            } else {
+
+                                Toast.makeText(this@CustomerMessageListDetailActivity, "${resources.getString(R.string.msg_send_message_error)} ${resources.getString(R.string.msg_please_try_again)}", Toast.LENGTH_SHORT).show()
+                                Log.e("Message", "SendQdriverMessage  result null")
+                            }
+                        }
+                    } catch (e: Exception) {
+
+                        Toast.makeText(this@CustomerMessageListDetailActivity, "${resources.getString(R.string.msg_send_message_error)} ${resources.getString(R.string.msg_please_try_again)}", Toast.LENGTH_SHORT).show()
+                        Log.e("Exception", "$TAG SendQdriverMessage Exception : $e")
+                    }
+
+                    progressBar.visibility = View.GONE
+                }, {
+
+                    progressBar.visibility = View.GONE
+                    Toast.makeText(this@CustomerMessageListDetailActivity, resources.getString(R.string.text_error) + "!! " + resources.getString(R.string.msg_please_try_again), Toast.LENGTH_SHORT).show()
+                    Log.e("Exception", "${AdminMessageListFragment.TAG}  GetQdriverMessageListFromMessenger Exception : $it")
+                })
+    }
+
+
+    private fun showDialog(title: String?, msg: String?) {
+
+        val alertBuilder = AlertDialog.Builder(this)
+        alertBuilder.setTitle(title)
+        alertBuilder.setMessage(msg)
+        alertBuilder.setPositiveButton(resources.getString(R.string.button_close)
+        ) { dialog: DialogInterface, _: Int ->
+            dialog.dismiss()
+            finish()
+        }
+        alertBuilder.show()
+    }
+
+    companion object {
+        const val SEND_CUTOMER_START = 100
     }
 }

@@ -93,7 +93,7 @@ class MessageListActivity : CommonActivity() {
     }
 
     fun setAdminNewImage(count: Int) {
-        Log.e(TAG, " setAdminNewImage : $count")
+        Log.e(TAG, " setAdminNewImage : $count   ")
         if (count != 0) {
 
             binding.tabLayout.getTabAt(1)?.orCreateBadge

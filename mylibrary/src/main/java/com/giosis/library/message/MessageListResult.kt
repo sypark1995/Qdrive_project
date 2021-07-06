@@ -1,167 +1,65 @@
-package com.giosis.library.message;
+package com.giosis.library.message
 
-import com.google.gson.annotations.SerializedName;
+import android.annotation.SuppressLint
+import android.util.Log
+import com.google.gson.annotations.SerializedName
+import java.text.SimpleDateFormat
+import java.util.*
 
-import java.text.SimpleDateFormat;
-import java.util.Date;
-import java.util.List;
-import java.util.Locale;
+class MessageListResult {
+    @SerializedName("question_seq_no")
+    var question_seq_no = 0
 
-public class MessageListResult {
+    @SerializedName("contents")
+    var message: String = ""
 
-    @SerializedName("ResultCode")
-    private int resultCode = -1;
+    @SerializedName("send_dt")
+    var time: String = ""
 
-    @SerializedName("ResultMsg")
-    private String resultMsg = "";
+    @SerializedName("read_yn")
+    var read_yn: String = ""
 
-    @SerializedName("ResultObject")
-    private List<MessageList> resultObject;
+    @SerializedName("tracking_No")
+    var tracking_no: String = ""
 
-    public int getResultCode() {
-        return resultCode;
-    }
+    @SerializedName("total_page")
+    var total_page_size = 0
 
-    public void setResultCode(int resultCode) {
-        this.resultCode = resultCode;
-    }
+    @SerializedName("sender_id")
+    var sender_id: String = ""
 
-    public String getResultMsg() {
-        return resultMsg;
-    }
+    @SuppressLint("SimpleDateFormat")
+    fun getTime(calledFragment: String): String {
 
-    public void setResultMsg(String resultMsg) {
-        this.resultMsg = resultMsg;
-    }
+        var result = time
 
-    public List<MessageList> getResultObject() {
-        return resultObject;
-    }
+        try {
+            var simpleDateFormat: SimpleDateFormat? = null
+            if (calledFragment.equals("C", ignoreCase = true)) {
 
-    public void setResultObject(List<MessageList> resultObject) {
-        this.resultObject = resultObject;
-    }
+                //	String s = "2018-05-25 오후 4:40:14";
+                simpleDateFormat = SimpleDateFormat("yyyy-MM-dd a hh:mm:ss") //, Locale.ENGLISH);
+            } else if (calledFragment.equals("A", ignoreCase = true)) {
+                //	String s = "2018-05-25 4:40:14";
+                simpleDateFormat = SimpleDateFormat("yyyy-MM-dd hh:mm:ss") //, Locale.ENGLISH);
+            }
+            val date = simpleDateFormat!!.parse(time)
+            val today = Date()
+            val fmt = SimpleDateFormat("yyyyMMdd")
+            val isToday = fmt.format(date) == fmt.format(today)
 
-    public static class MessageList {
-
-        @SerializedName("question_seq_no")
-        int question_seq_no;
-
-        @SerializedName("contents")
-        String message;
-
-        @SerializedName("send_dt")
-        String time;
-
-        @SerializedName("read_yn")
-        String read_yn;
-
-        @SerializedName("tracking_No")
-        String tracking_no;
-
-        @SerializedName("total_page")
-        int total_page_size;
-
-        @SerializedName("sender_id")
-        String sender_id;        // admin_id;
-
-
-        public int getQuestion_seq_no() {
-            return question_seq_no;
-        }
-
-        public void setQuestion_seq_no(int question_seq_no) {
-            this.question_seq_no = question_seq_no;
-        }
-
-        public String getMessage() {
-            return message;
-        }
-
-        public void setMessage(String message) {
-            this.message = message;
-        }
-
-        public String getTime(String calledFragment) {
-            String result = parsingTime(time, calledFragment);
-            return result;
-        }
-
-        public void setTime(String time) {
-            this.time = time;
-        }
-
-
-        public String getRead_yn() {
-            return read_yn;
-        }
-
-        public void setRead_yn(String read_yn) {
-            this.read_yn = read_yn;
-        }
-
-
-        public String getTracking_no() {
-            return tracking_no;
-        }
-
-        public void setTracking_no(String tracking_no) {
-            this.tracking_no = tracking_no;
-        }
-
-        public int getTotal_page_size() {
-            return total_page_size;
-        }
-
-        public void setTotal_page_size(int total_page_size) {
-            this.total_page_size = total_page_size;
-        }
-
-        public String getSender_id() {
-            return sender_id;
-        }
-
-        public void setSender_id(String sender_id) {
-            this.sender_id = sender_id;
-        }
-
-
-        private String parsingTime(String s, String calledFragment) {
-            String result = "";
-
-            try {
-                SimpleDateFormat simpleDateFormat = null;
-                if (calledFragment.equalsIgnoreCase("C")) {
-
-                    //	String s = "2018-05-25 오후 4:40:14";
-                    simpleDateFormat = new SimpleDateFormat("yyyy-MM-dd a hh:mm:ss");//, Locale.ENGLISH);
-                } else if (calledFragment.equalsIgnoreCase("A")) {
-                    //	String s = "2018-05-25 4:40:14";
-                    simpleDateFormat = new SimpleDateFormat("yyyy-MM-dd hh:mm:ss");//, Locale.ENGLISH);
-                }
-
-                Date date = simpleDateFormat.parse(s);
-
-                Date today = new Date();
-                SimpleDateFormat fmt = new SimpleDateFormat("yyyyMMdd");
-                boolean isToday = fmt.format(date).equals(fmt.format(today));
-
-                if (isToday) {
-                    SimpleDateFormat dateFormat = new SimpleDateFormat("a hh:mm", Locale.ENGLISH);
-                    String regDataString = dateFormat.format(date);
-                    result = regDataString;
-                } else {
-                    SimpleDateFormat dateFormat = new SimpleDateFormat("MM/dd");
-                    String regDataString = dateFormat.format(date);
-                    result = regDataString;
-                }
-
-            } catch (Exception e) {
-
-                result = s;
+            result = if (isToday) {
+                val dateFormat = SimpleDateFormat("a hh:mm", Locale.ENGLISH)
+                dateFormat.format(date)
+            } else {
+                val dateFormat = SimpleDateFormat("MM/dd")
+                dateFormat.format(date)
             }
 
-            return result;
+        } catch (e: Exception) {
+            Log.e("Exception", "DateParser Exception $e")
         }
+
+        return result
     }
 }

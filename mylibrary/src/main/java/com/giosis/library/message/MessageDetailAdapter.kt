@@ -1,240 +1,175 @@
-package com.giosis.library.message;
+package com.giosis.library.message
 
-import android.content.Context;
-import android.os.Build;
-import android.text.Html;
-import android.util.Log;
-import android.util.TypedValue;
-import android.view.LayoutInflater;
-import android.view.View;
-import android.view.ViewGroup;
-import android.widget.BaseAdapter;
-import android.widget.LinearLayout;
-import android.widget.RelativeLayout;
-import android.widget.TextView;
+import android.annotation.SuppressLint
+import android.content.Context
+import android.os.Build
+import android.text.Html
+import android.util.Log
+import android.util.TypedValue
+import android.view.LayoutInflater
+import android.view.View
+import android.view.ViewGroup
+import androidx.recyclerview.widget.RecyclerView
+import com.giosis.library.databinding.ItemMessageDetailBinding
+import java.text.DateFormat
+import java.text.SimpleDateFormat
+import java.util.*
 
-import com.giosis.library.R;
+class MessageDetailAdapter(var context: Context, var items: ArrayList<MessageDetailResult>?, var calledFragment: String) : RecyclerView.Adapter<MessageDetailAdapter.ViewHolder>() {
 
-import java.text.DateFormat;
-import java.text.SimpleDateFormat;
-import java.util.ArrayList;
-import java.util.Date;
+    override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): ViewHolder {
 
-public class MessageDetailAdapter extends BaseAdapter {
-
-    Context context;
-
-    RelativeLayout layout_message_detail;
-
-    LinearLayout layout_message_detail_receive_message;
-    TextView text_message_detail_receiver_id;
-    TextView text_message_detail_receive_message;
-    TextView text_message_detail_receive_date;
-
-    RelativeLayout layout_message_detail_send_message;
-    TextView text_message_detail_send_date;
-    TextView text_message_detail_send_message;
-
-    ArrayList<MessageDetailResult.MessageDetailList> messageDetailListArrayList;
-    String calledFragment;
-
-
-    public MessageDetailAdapter(Context context, ArrayList<MessageDetailResult.MessageDetailList> item, String called) {
-
-        this.context = context;
-        this.messageDetailListArrayList = item;
-        this.calledFragment = called;
+        val binding = ItemMessageDetailBinding.inflate(LayoutInflater.from(parent.context), parent, false)
+        return ViewHolder(binding)
     }
 
-    @Override
-    public int getCount() {
-        if (messageDetailListArrayList != null && messageDetailListArrayList.size() > 0) {
-            return messageDetailListArrayList.size();
-        }
+    class ViewHolder(val binding: ItemMessageDetailBinding) : RecyclerView.ViewHolder(binding.root)
 
-        return 0;
-    }
+    override fun onBindViewHolder(holder: ViewHolder, position: Int) {
 
-    @Override
-    public Object getItem(int position) {
-        return messageDetailListArrayList.get(position);
-    }
+        val item = items!![position]
 
-    @Override
-    public long getItemId(int position) {
-        return position;
-    }
-
-    @Override
-    public View getView(int position, View convertView, ViewGroup parent) {
-        View view;
-
-        if (convertView == null) {
-
-            LayoutInflater inflater = (LayoutInflater) context.getSystemService(Context.LAYOUT_INFLATER_SERVICE);
-            view = inflater.inflate(R.layout.item_message_detail, null);
-        } else {
-
-            view = convertView;
-        }
-
-        layout_message_detail = view.findViewById(R.id.layout_message_detail);
-
-        layout_message_detail_receive_message = view.findViewById(R.id.layout_message_detail_receive_message);
-        text_message_detail_receiver_id = view.findViewById(R.id.text_message_detail_receiver_id);
-        text_message_detail_receive_message = view.findViewById(R.id.text_message_detail_receive_message);
-        text_message_detail_receive_date = view.findViewById(R.id.text_message_detail_receive_date);
-
-        layout_message_detail_send_message = view.findViewById(R.id.layout_message_detail_send_message);
-        text_message_detail_send_date = view.findViewById(R.id.text_message_detail_send_date);
-        text_message_detail_send_message = view.findViewById(R.id.text_message_detail_send_message);
-
-
-        MessageDetailResult.MessageDetailList item = messageDetailListArrayList.get(position);
-
-
-        if (item.getAlign().equalsIgnoreCase("LEFT")) {
+        if (item.align.equals("LEFT", ignoreCase = true)) {
             /* from customer, admin > to driver */
-            layout_message_detail_receive_message.setVisibility(View.VISIBLE);
-            layout_message_detail_send_message.setVisibility(View.GONE);
 
-            if (item.getSender_id() == null || item.getSender_id().equals("")) {
+            holder.binding.layoutReceiveMessage.visibility = View.VISIBLE
+            holder.binding.layoutSendMessage.visibility = View.GONE
 
-                text_message_detail_receiver_id.setText("null");
+            if (item.sender_id == "") {
+                holder.binding.textReceiverId.text = "null"
             } else {
-
-                text_message_detail_receiver_id.setText(item.getSender_id());
+                holder.binding.textReceiverId.text = item.sender_id
             }
-            text_message_detail_receive_date.setText(item.getSend_date());
+            holder.binding.textReceiveDate.text = item.send_date
+
 
             // Customer(Admin) ID   visible/gone
             if (position == 0) {
 
-                text_message_detail_receiver_id.setVisibility(View.VISIBLE);
+                holder.binding.textReceiverId.visibility = View.VISIBLE
             } else {  // 1 이상일 때, 나의 이전  ALIGN  비교
 
-                String prev_align = messageDetailListArrayList.get(position - 1).getAlign();
-                String this_align = messageDetailListArrayList.get(position).getAlign();
+                val prevAlign = items!![position - 1].align
+                val thisAlign = items!![position].align
 
-                if (!this_align.equals(prev_align)) {   // right > left
+                if (thisAlign != prevAlign) {   // right > left
 
-                    text_message_detail_receiver_id.setVisibility(View.VISIBLE);
+                    holder.binding.textReceiverId.visibility = View.VISIBLE
                 } else {
 
-                    String prev_date_string = messageDetailListArrayList.get(position - 1).getSend_date();
-                    String this_date_string = messageDetailListArrayList.get(position).getSend_date();
-
-                    long diffTime = diffTime(prev_date_string, this_date_string);
-                    Log.e("krm0219", diffTime + " " + prev_date_string + "  " + this_date_string + "  " + messageDetailListArrayList.get(position).getMessage());
+                    val prevDate = items!![position - 1].send_date
+                    val thisDate = items!![position].send_date
+                    val diffTime = diffTime(prevDate, thisDate)
+                    Log.e("Message", diffTime.toString() + " " + prevDate + "  " + thisDate + "  " + items!![position].message)
 
                     if (1 <= diffTime) {
-
-                        text_message_detail_receiver_id.setVisibility(View.VISIBLE);
+                        holder.binding.textReceiverId.visibility = View.VISIBLE
                     } else {
-
-                        text_message_detail_receiver_id.setVisibility(View.GONE);
+                        holder.binding.textReceiverId.visibility = View.GONE
                     }
                 }
             }
 
             if (Build.VERSION.SDK_INT >= 24) {
-
-                text_message_detail_receive_message.setText(Html.fromHtml(item.getMessage(), Html.FROM_HTML_MODE_LEGACY));
+                holder.binding.textReceiveMessage.text = Html.fromHtml(item.message, Html.FROM_HTML_MODE_LEGACY)
             } else {
-
-                text_message_detail_receive_message.setText(Html.fromHtml(item.getMessage()));
+                holder.binding.textReceiveMessage.text = Html.fromHtml(item.message)
             }
-        } else if (item.getAlign().equalsIgnoreCase("RIGHT")) {
+        } else if (item.align.equals("RIGHT", ignoreCase = true)) {
             /* from driver > to customer */
-            layout_message_detail_receive_message.setVisibility(View.GONE);
-            layout_message_detail_send_message.setVisibility(View.VISIBLE);
 
-            text_message_detail_send_date.setText(item.getSend_date());
+            holder.binding.layoutReceiveMessage.visibility = View.GONE
+            holder.binding.layoutSendMessage.visibility = View.VISIBLE
+            holder.binding.textSendDate.text = item.send_date
 
             if (Build.VERSION.SDK_INT >= 24) {
-
-                text_message_detail_send_message.setText(Html.fromHtml(item.getMessage(), Html.FROM_HTML_MODE_LEGACY));
+                holder.binding.textSendMessage.text = Html.fromHtml(item.message, Html.FROM_HTML_MODE_LEGACY)
             } else {
-
-                text_message_detail_send_message.setText(Html.fromHtml(item.getMessage()));
+                holder.binding.textSendMessage.text = Html.fromHtml(item.message)
             }
         }
 
 
         //  연속으로 메세지 보낸거 확인 > layout param 바꾸기 / Date  visible/gone
-        if (position < messageDetailListArrayList.size() - 1) {
+        if (position < items!!.size - 1) {
 
-            String this_align = messageDetailListArrayList.get(position).getAlign();
-            String next_align = messageDetailListArrayList.get(position + 1).getAlign();
+            val thisAlign = items!![position].align
+            val nextAlign = items!![position + 1].align
+            val thisDate = items!![position].send_date
+            val nextDate = items!![position + 1].send_date
+            val diffTime = diffTime(thisDate, nextDate)
 
-            String this_date_string = messageDetailListArrayList.get(position).getSend_date();
-            String next_date_string = messageDetailListArrayList.get(position + 1).getSend_date();
-
-            long diffTime = diffTime(this_date_string, next_date_string);
-
-            if (next_align.equalsIgnoreCase(this_align)) {  // left > left  // right > right
-
+            if (nextAlign.equals(thisAlign, ignoreCase = true)) {  // left > left  // right > right
                 if (1 <= diffTime) {
 
-                    layout_message_detail.setPadding(dpTopx(15), dpTopx(5), dpTopx(15), dpTopx(10));
-                    text_message_detail_receive_date.setVisibility(View.VISIBLE);
-                    text_message_detail_send_date.setVisibility(View.VISIBLE);
+                    holder.binding.layoutMessageDetail.setPadding(dpTopx(15f), dpTopx(5f), dpTopx(15f), dpTopx(10f))
+                    holder.binding.textReceiveDate.visibility = View.VISIBLE
+                    holder.binding.textSendDate.visibility = View.VISIBLE
                 } else {        // 1분 미만으로 동일한 사람이 입력!
 
-                    layout_message_detail.setPadding(dpTopx(15), dpTopx(5), dpTopx(15), dpTopx(5));
-                    text_message_detail_receive_date.setVisibility(View.GONE);
-                    text_message_detail_send_date.setVisibility(View.GONE);
+                    holder.binding.layoutMessageDetail.setPadding(dpTopx(15f), dpTopx(5f), dpTopx(15f), dpTopx(5f))
+                    holder.binding.textReceiveDate.visibility = View.GONE
+                    holder.binding.textSendDate.visibility = View.GONE
                 }
             } else {        // left > right  // right > left
-                layout_message_detail.setPadding(dpTopx(15), dpTopx(5), dpTopx(15), dpTopx(10));
-                text_message_detail_receive_date.setVisibility(View.VISIBLE);
-                text_message_detail_send_date.setVisibility(View.VISIBLE);
+
+                holder.binding.layoutMessageDetail.setPadding(dpTopx(15f), dpTopx(5f), dpTopx(15f), dpTopx(10f))
+                holder.binding.textReceiveDate.visibility = View.VISIBLE
+                holder.binding.textSendDate.visibility = View.VISIBLE
             }
         } else {        // last
 
-            layout_message_detail.setPadding(dpTopx(15), dpTopx(5), dpTopx(15), dpTopx(10));
-            text_message_detail_receive_date.setVisibility(View.VISIBLE);
-            text_message_detail_send_date.setVisibility(View.VISIBLE);
+            holder.binding.layoutMessageDetail.setPadding(dpTopx(15f), dpTopx(5f), dpTopx(15f), dpTopx(10f))
+            holder.binding.textReceiveDate.visibility = View.VISIBLE
+            holder.binding.textSendDate.visibility = View.VISIBLE
+        }
+    }
+
+    override fun getItemCount(): Int {
+
+        if (items != null) {
+
+            if (0 < items!!.size) {
+                return items!!.size
+            }
         }
 
-        return view;
+        return 0
     }
 
-    private int dpTopx(float dp) {
 
-        int pixel = (int) TypedValue.applyDimension(TypedValue.COMPLEX_UNIT_DIP, dp, context.getResources().getDisplayMetrics());
-        return pixel;
+    private fun dpTopx(dp: Float): Int {
+        return TypedValue.applyDimension(TypedValue.COMPLEX_UNIT_DIP, dp, context.resources.displayMetrics).toInt()
     }
 
-    private long diffTime(String old_date_string, String date_string) {
+    @SuppressLint("SimpleDateFormat")
+    private fun diffTime(old_date_string: String, date_string: String): Long {
 
-        long diff_time = 100;
+        var diffTime: Long
 
         try {
+            var dateFormat: DateFormat? = null
 
-            DateFormat dateFormat = null;
-            if (calledFragment.equalsIgnoreCase("C")) {
+            if (calledFragment.equals("C", ignoreCase = true)) {
 
-                dateFormat = new SimpleDateFormat("yyyy-MM-dd a HH:mm");
-            } else if (calledFragment.equalsIgnoreCase("A")) {
+                dateFormat = SimpleDateFormat("yyyy-MM-dd a HH:mm")
+            } else if (calledFragment.equals("A", ignoreCase = true)) {
 
-                dateFormat = new SimpleDateFormat("yyyy-MM-dd HH:mm");
+                dateFormat = SimpleDateFormat("yyyy-MM-dd HH:mm")
             }
 
-            Date old_date = dateFormat.parse(old_date_string);
-            Date date = dateFormat.parse(date_string);
+            val oldDate = dateFormat!!.parse(old_date_string)
+            val date = dateFormat.parse(date_string)
+            val oldDateTime = oldDate.time
+            val dateTime = date.time
 
-            long old_date_time = old_date.getTime();
-            long date_time = date.getTime();
+            diffTime = (dateTime - oldDateTime) / 60000
+        } catch (e: Exception) {
 
-            diff_time = (date_time - old_date_time) / 60000;
-
-        } catch (Exception e) {
-
-            e.printStackTrace();
-            diff_time = 100;
+            e.printStackTrace()
+            diffTime = 100
         }
 
-        return diff_time;
+        return diffTime
     }
 }

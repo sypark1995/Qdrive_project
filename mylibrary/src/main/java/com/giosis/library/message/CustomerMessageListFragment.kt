@@ -1,386 +1,248 @@
-package com.giosis.library.message;
+package com.giosis.library.message
 
-import android.app.AlertDialog;
-import android.app.ProgressDialog;
-import android.os.AsyncTask;
-import android.os.Bundle;
-import android.os.Handler;
-import android.os.Message;
-import android.util.Log;
-import android.view.LayoutInflater;
-import android.view.View;
-import android.view.ViewGroup;
-import android.widget.LinearLayout;
-import android.widget.ListView;
-import android.widget.RelativeLayout;
-import android.widget.TextView;
-import android.widget.Toast;
-
-import androidx.fragment.app.Fragment;
-
-import com.giosis.library.R;
-import com.giosis.library.server.Custom_JsonParser;
-import com.giosis.library.util.DataUtil;
-import com.giosis.library.util.DisplayUtil;
-import com.giosis.library.util.NetworkUtil;
-import com.giosis.library.util.Preferences;
-import com.google.gson.Gson;
-
-import org.json.JSONObject;
-
-import java.net.URLEncoder;
-import java.text.SimpleDateFormat;
-import java.util.ArrayList;
-import java.util.Calendar;
-import java.util.Date;
+import android.annotation.SuppressLint
+import android.app.AlertDialog
+import android.content.DialogInterface
+import android.os.Bundle
+import android.os.Handler
+import android.os.Looper
+import android.os.Message
+import android.util.Log
+import android.view.LayoutInflater
+import android.view.View
+import android.view.ViewGroup
+import android.widget.LinearLayout.VERTICAL
+import android.widget.Toast
+import androidx.fragment.app.Fragment
+import androidx.recyclerview.widget.DividerItemDecoration
+import com.giosis.library.R
+import com.giosis.library.databinding.FragmentMessageListBinding
+import com.giosis.library.server.RetrofitClient
+import com.giosis.library.util.NetworkUtil
+import com.google.gson.Gson
+import com.google.gson.reflect.TypeToken
+import io.reactivex.rxjava3.android.schedulers.AndroidSchedulers
+import io.reactivex.rxjava3.schedulers.Schedulers
+import java.text.SimpleDateFormat
+import java.util.*
 
 
-/**
- * @author krm0219
- **/
-public class CustomerMessageListFragment extends Fragment {
-    private final String TAG = "CustomerMessageListFragment";
+class CustomerMessageListFragment : Fragment() {
 
-    private ListView list_message_list;
-    private TextView text_message_list_empty;
-
-    private RelativeLayout layout_message_list_bottom;
-    private LinearLayout layout_message_list_prev;
-    private LinearLayout layout_message_list_next;
-    private TextView text_message_list_current_page;
-    private TextView text_message_list_total_page;
-
-
-    private String opID;
-
-    private int current_page_no = 1;
-    private int total_page_no = 1;
+    lateinit var binding: FragmentMessageListBinding
 
     // 1 min refresh
-    private AsyncHandler handler;
-    private Thread customerThread;
-    private static final int SEND_CUTOMER_START = 100;
+    lateinit var handler: AsyncHandler
+    lateinit var customerThread: Thread
 
-    private String old_resultString = null;
-    private String new_resultString = null;
-    View.OnClickListener clickListener = new View.OnClickListener() {
-        @Override
-        public void onClick(View view) {
+    private var currentPage = 1
+    private var totalPage = 1
+    private var oldResultString: String = ""
+    private var newResultString: String = ""
 
-            int id = view.getId();
-            if (id == R.id.layout_message_list_prev) {
-                if (!NetworkUtil.isNetworkAvailable(getActivity())) {
 
-                    showDialog(getResources().getString(R.string.text_warning), getResources().getString(R.string.msg_network_connect_error));
+    override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View {
+
+        binding = FragmentMessageListBinding.inflate(inflater, container, false)
+
+
+        binding.layoutPrev.setOnClickListener {
+
+            if (!NetworkUtil.isNetworkAvailable(activity)) {
+                showDialog(resources.getString(R.string.text_warning), resources.getString(R.string.msg_network_connect_error))
+            } else {
+                if (currentPage > 1) {
+
+                    currentPage -= 1
+                    callServer()
                 } else {
-
-                    if (current_page_no > 1) {
-                        current_page_no = current_page_no - 1;
-                        CustomerMessageListAsyncTask customerMessageListAsyncTask = new CustomerMessageListAsyncTask(opID, "", "", Integer.toString(current_page_no), "15");
-                        customerMessageListAsyncTask.execute();
-                    } else {
-
-                        Toast.makeText(getActivity(), getResources().getString(R.string.text_first_page), Toast.LENGTH_SHORT).show();
-                    }
+                    Toast.makeText(activity, resources.getString(R.string.text_first_page), Toast.LENGTH_SHORT).show()
                 }
-            } else if (id == R.id.layout_message_list_next) {
-                if (!NetworkUtil.isNetworkAvailable(getActivity())) {
+            }
+        }
 
-                    showDialog(getResources().getString(R.string.text_warning), getResources().getString(R.string.msg_network_connect_error));
+        binding.layoutNext.setOnClickListener {
+
+            if (!NetworkUtil.isNetworkAvailable(activity)) {
+                showDialog(resources.getString(R.string.text_warning), resources.getString(R.string.msg_network_connect_error))
+            } else {
+                if (totalPage >= currentPage + 1) {
+
+                    currentPage += 1
+                    callServer()
                 } else {
-                    if (!(total_page_no < current_page_no + 1)) {
-                        current_page_no = current_page_no + 1;
-                        CustomerMessageListAsyncTask customerMessageListAsyncTask = new CustomerMessageListAsyncTask(opID, "", "", Integer.toString(current_page_no), "15");
-                        customerMessageListAsyncTask.execute();
-                    } else {
-
-                        Toast.makeText(getActivity(), getResources().getString(R.string.text_last_page), Toast.LENGTH_SHORT).show();
-                    }
+                    Toast.makeText(activity, resources.getString(R.string.text_last_page), Toast.LENGTH_SHORT).show()
                 }
             }
         }
-    };
 
-    @Override
-    public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
-
-        View view = inflater.inflate(R.layout.fragment_message_list, container, false);
-
-        list_message_list = view.findViewById(R.id.list_message_list);
-        text_message_list_empty = view.findViewById(R.id.text_message_list_empty);
-
-        layout_message_list_bottom = view.findViewById(R.id.layout_message_list_bottom);
-        layout_message_list_prev = view.findViewById(R.id.layout_message_list_prev);
-        layout_message_list_next = view.findViewById(R.id.layout_message_list_next);
-        text_message_list_current_page = view.findViewById(R.id.text_message_list_current_page);
-        text_message_list_total_page = view.findViewById(R.id.text_message_list_total_page);
-
-
-        layout_message_list_prev.setOnClickListener(clickListener);
-        layout_message_list_next.setOnClickListener(clickListener);
-
-
-        return view;
+        return binding.root
     }
 
+    override fun onResume() {
+        super.onResume()
 
-    private class AsyncHandler extends Handler {
+        if (!NetworkUtil.isNetworkAvailable(activity)) {
 
-        @Override
-        public void handleMessage(Message msg) {
-            try {
-
-                if (getActivity() != null && !getActivity().isFinishing()) {
-
-                    CustomerMessageListAsyncTask customerMessageListAsyncTask = new CustomerMessageListAsyncTask(opID, "", "", Integer.toString(current_page_no), "15");
-                    customerMessageListAsyncTask.execute();
-                } else {
-
-                    Log.e("krm0219", TAG + "  getActivity().isFinishing()");
-                }
-            } catch (Exception e) {
-
-                Log.e("krm0219", TAG + "  AsyncHandler Exception : " + e.toString());
-            }
-        }
-    }
-
-    class CustomerThread extends Thread {
-
-        public CustomerThread() {
-        }
-
-        @Override
-        public void run() {
-            super.run();
-
-            while (!Thread.currentThread().isInterrupted()) {
-
-                try {
-                    Message message = handler.obtainMessage();
-                    message.what = SEND_CUTOMER_START;
-                    handler.sendMessage(message);
-
-                    sleep(60 * 1000);
-                } catch (Exception e) {
-
-                    Log.e("krm0219", TAG + "  CustomerThread Exception : " + e.toString());
-                    Thread.currentThread().interrupt();
-                    e.printStackTrace();
-                }
-            }
-
-            Log.e("krm0219", TAG + "  CustomerThread while break");
-        }
-    }
-
-    @Override
-    public void onStop() {
-        super.onStop();
-
-        try {
-
-            customerThread.interrupt();
-        } catch (Exception e) {
-
-            Thread.currentThread().interrupt();
-        }
-    }
-
-    @Override
-    public void onResume() {
-        super.onResume();
-
-        if (!NetworkUtil.isNetworkAvailable(getActivity())) {
-
-            try {
-                showDialog(getResources().getString(R.string.text_warning), getResources().getString(R.string.msg_network_connect_error));
-            } catch (Exception ignored) {
-
-            }
+            showDialog(resources.getString(R.string.text_warning), resources.getString(R.string.msg_network_connect_error))
         } else {
 
-            opID = Preferences.INSTANCE.getUserId();
-
-            handler = new AsyncHandler();
-            customerThread = new CustomerThread();
-            customerThread.start();
+            handler = AsyncHandler()
+            customerThread = CustomerThread()
+            customerThread.start()
         }
     }
 
-    public void showDialog(String title, String msg) {
 
-        AlertDialog.Builder alert_internet_status = new AlertDialog.Builder(getActivity());
-        alert_internet_status.setTitle(title);
-        alert_internet_status.setMessage(msg);
-        alert_internet_status.setPositiveButton(getResources().getString(R.string.button_close),
-                (dialog, which) -> {
-                    dialog.dismiss();
-                    getActivity().finish();
-                });
-        alert_internet_status.show();
-    }
-
-    public void refreshData() {
-
-        try {
-
-            CustomerMessageListAsyncTask customerMessageListAsyncTask = new CustomerMessageListAsyncTask(opID, "", "", Integer.toString(current_page_no), "15");
-            customerMessageListAsyncTask.execute();
-        } catch (Exception e) {
-
-            Toast.makeText(getActivity(), getResources().getString(R.string.msg_left_and_come_back), Toast.LENGTH_SHORT).show();
-            Log.e("Exception", TAG + "  Exception : " + e.toString());
-        }
-    }
-
-    //NOTIFICATION.
-    private class CustomerMessageListAsyncTask extends AsyncTask<Void, Void, MessageListResult> {
-
-        String qdriver_id;
-        String search_start_date;
-        String search_end_date;
-        String page_no;
-        String page_size;
-
-        ProgressDialog progressDialog = new ProgressDialog(getActivity());
-
-
-        public CustomerMessageListAsyncTask(String QdriverID, String StartDate, String EndDate, String PageNo, String PageSize) {
-
-            qdriver_id = QdriverID;
-            search_start_date = StartDate;  // ""
-            search_end_date = EndDate;      // ""
-            page_no = PageNo;
-            page_size = PageSize;           // 15
-        }
-
-        @Override
-        protected void onPreExecute() {
-            super.onPreExecute();
-
-            old_resultString = new_resultString;
-
-            if (new_resultString == null) {
-
-                progressDialog.setProgressStyle(ProgressDialog.STYLE_SPINNER);
-                progressDialog.setMessage(getResources().getString(R.string.text_please_wait));
-                progressDialog.setCancelable(false);
-                progressDialog.show();
-            }
-        }
-
-        @Override
-        protected MessageListResult doInBackground(Void... params) {
-
-            Log.i("krm0219", TAG + "  CustomerMessageList PageNumber : " + page_no);
-            MessageListResult resultObj;
-            Gson gson = new Gson();
-
+    inner class AsyncHandler : Handler(Looper.getMainLooper()) {
+        override fun handleMessage(msg: Message) {
             try {
 
-                JSONObject job = new JSONObject();
-                job.accumulate("qdriver_id", qdriver_id);
-                job.accumulate("page_no", page_no);
-                job.accumulate("page_size", page_size);
-                job.accumulate("app_id", DataUtil.appID);
-                job.accumulate("nation_cd", Preferences.INSTANCE.getUserNation());
+                callServer()
+            } catch (e: Exception) {
+                Log.e("Exception", "$TAG  AsyncHandler Exception : $e")
+            }
+        }
+    }
 
-                Calendar cal = Calendar.getInstance();
-                cal.setTime(new Date());
-                cal.add(Calendar.DATE, -14); // 최근 2주
-                Date yDate = cal.getTime();
-                SimpleDateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd");
-                search_start_date = dateFormat.format(yDate) + " 00:00:00";
-                search_end_date = dateFormat.format(new Date()) + " 23:59:59";
+
+    @SuppressLint("SimpleDateFormat")
+    fun callServer() {
+
+        if (activity != null && !requireActivity().isFinishing) {
+
+            oldResultString = newResultString
+
+            if (newResultString.isEmpty())
+                binding.progressBar.visibility = View.VISIBLE
+
+            val cal = Calendar.getInstance()
+            cal.time = Date()
+            cal.add(Calendar.DATE, -14) // 최근 2주
+
+            val yDate = cal.time
+            val dateFormat = SimpleDateFormat("yyyy-MM-dd")
+            val startDate = dateFormat.format(yDate).toString() + " 00:00:00"
+            val endDate = dateFormat.format(Date()).toString() + " 23:59:59"
+
+            RetrofitClient.instanceDynamic().requestGetMessageListFromCustomer(currentPage.toString(), "15", startDate, endDate)//, "Ahleb.sp")
+                    .subscribeOn(Schedulers.io())
+                    .observeOn(AndroidSchedulers.mainThread())
+                    .subscribe({
+
+                        if (oldResultString != "" && oldResultString.equals(newResultString, ignoreCase = true)) {
+
+                            Log.e(TAG, "  GetQdriverMessageList  EQUAL")
+                        } else {
+                            if (it.resultObject != null) {
+
+                                newResultString = it.toString()
+                                val list = Gson().fromJson<ArrayList<MessageListResult>>(it.resultObject,
+                                        object : TypeToken<ArrayList<MessageListResult>>() {}.type)
+
+                                if (0 < list.size) {
+
+                                    binding.textEmpty.visibility = View.GONE
+
+                                    binding.layoutBottom.visibility = View.VISIBLE
+                                    binding.recyclerMessages.visibility = View.VISIBLE
+                                    binding.recyclerMessages.adapter = MessageListAdapter("C", list)
+
+                                    val decoration = DividerItemDecoration(activity, VERTICAL)
+                                    binding.recyclerMessages.addItemDecoration(decoration)
+
+
+                                    totalPage = list[0].total_page_size
+                                    binding.textCurrentPage.text = currentPage.toString()
+                                    binding.textTotalPage.text = totalPage.toString()
+
+                                    var count = 0
+
+                                    for (i in list.indices) {
+                                        if (list[i].read_yn == "N") {
+                                            count++
+                                        }
+                                    }
+                                    (activity as MessageListActivity).setCustomerNewImage(count)
+                                } else {
+
+                                    binding.recyclerMessages.visibility = View.GONE
+                                    binding.layoutBottom.visibility = View.GONE
+                                    binding.textEmpty.visibility = View.VISIBLE
+                                    binding.textEmpty.text = resources.getString(R.string.text_empty)
+                                }
+                            }
+                        }
+
+                        binding.progressBar.visibility = View.GONE
+                    }, {
+
+                        binding.recyclerMessages.visibility = View.GONE
+                        binding.layoutBottom.visibility = View.GONE
+                        binding.textEmpty.visibility = View.VISIBLE
+                        binding.textEmpty.text = resources.getString(R.string.text_error)
+
+                        binding.progressBar.visibility = View.GONE
+                        Log.e("Exception", "$TAG  GetQdriverMessageList Exception : $it")
+                    })
+        }
+    }
+
+
+    internal inner class CustomerThread : Thread() {
+        override fun run() {
+            super.run()
+            while (!currentThread().isInterrupted) {
 
                 try {
 
-                    job.accumulate("search_start_dt", URLEncoder.encode(search_start_date, "UTF-8"));
-                    job.accumulate("search_end_dt", URLEncoder.encode(search_end_date, "UTF-8"));
-                } catch (Exception ignored) {
+                    val message = handler.obtainMessage()
+                    message.what = SEND_CUTOMER_START
+                    handler.sendMessage(message)
 
+                    sleep((60 * 1000).toLong())
+                } catch (e: Exception) {
+
+                    Log.e("Exception", "$TAG  CustomerThread Exception : $e")
+                    currentThread().interrupt()
+                    e.printStackTrace()
                 }
-
-                // TEST
-//                job.accumulate("qdriver_id", "hdsg_jumali");
-//                job.accumulate("search_start_dt", "2019-08-01 00:00:00");
-//                job.accumulate("search_end_dt", "2019-08-14 23:59:59");
-
-                String methodName = "GetQdriverMessageList";
-                String jsonString = Custom_JsonParser.requestServerDataReturnJSON(methodName, job);
-                new_resultString = jsonString;
-
-                resultObj = gson.fromJson(jsonString, MessageListResult.class);
-            } catch (Exception e) {
-
-                Log.e("Exception", TAG + "  GetQdriverMessageList Json Exception : " + e.toString());
-                resultObj = null;
-            }
-
-            return resultObj;
-        }
-
-        @Override
-        protected void onPostExecute(MessageListResult result) {
-            super.onPostExecute(result);
-
-            DisplayUtil.dismissProgressDialog(progressDialog);
-
-            try {
-
-                if (old_resultString != null && old_resultString.equalsIgnoreCase(new_resultString)) {
-
-                    Log.e("krm0219", TAG + "  GetQdriverMessageList  EQUAL");
-                } else {
-
-                    if (result != null) {
-
-                        ArrayList<MessageListResult.MessageList> messageList = (ArrayList<MessageListResult.MessageList>) result.getResultObject();
-
-                        if (messageList.size() > 0) {
-
-                            list_message_list.setVisibility(View.VISIBLE);
-                            text_message_list_empty.setVisibility(View.GONE);
-                            layout_message_list_bottom.setVisibility(View.VISIBLE);
-
-                            MessageListAdapter messageListAdapter = new MessageListAdapter(getActivity(), "C", messageList);
-                            list_message_list.setAdapter(messageListAdapter);
-
-                            total_page_no = messageList.get(0).getTotal_page_size();
-                            text_message_list_current_page.setText(Integer.toString(current_page_no));
-                            text_message_list_total_page.setText(Integer.toString(total_page_no));
-
-                            int count = 0;
-
-                            for (int i = 0; i < messageList.size(); i++) {
-                                if (messageList.get(i).getRead_yn().equals("N")) {
-                                    count++;
-                                }
-                            }
-
-                            ((MessageListActivity) getActivity()).setCustomerNewImage(count);
-                        } else {        // List Size 0 : Empty
-
-                            list_message_list.setVisibility(View.GONE);
-                            text_message_list_empty.setVisibility(View.VISIBLE);
-                            layout_message_list_bottom.setVisibility(View.GONE);
-
-                            text_message_list_empty.setText(getResources().getString(R.string.text_empty));
-                        }
-                    }
-                }
-            } catch (Exception e) {
-
-                list_message_list.setVisibility(View.GONE);
-                text_message_list_empty.setVisibility(View.VISIBLE);
-                layout_message_list_bottom.setVisibility(View.GONE);
-
-                text_message_list_empty.setText(getResources().getString(R.string.text_error));
-
-                Toast.makeText(getActivity(), getResources().getString(R.string.text_error) + "!! " + getResources().getString(R.string.msg_please_try_again), Toast.LENGTH_SHORT).show();
-                Log.e("krm0219", TAG + "  GetQdriverMessageList Exception : " + e.toString());
             }
         }
+    }
+
+    override fun onStop() {
+        super.onStop()
+
+        try {
+            customerThread.interrupt()
+        } catch (e: Exception) {
+            Thread.currentThread().interrupt()
+        }
+    }
+
+
+    private fun showDialog(title: String?, msg: String?) {
+
+        try {
+            val alertBuilder = AlertDialog.Builder(activity)
+            alertBuilder.setTitle(title)
+            alertBuilder.setMessage(msg)
+            alertBuilder.setPositiveButton(resources.getString(R.string.button_close)
+            ) { dialog: DialogInterface, _: Int ->
+                dialog.dismiss()
+                requireActivity().finish()
+            }
+            alertBuilder.show()
+        } catch (ignore: Exception) {
+
+        }
+    }
+
+
+    companion object {
+
+        var TAG = "CustomerMessageListFragment"
+        private const val SEND_CUTOMER_START = 100
     }
 }
