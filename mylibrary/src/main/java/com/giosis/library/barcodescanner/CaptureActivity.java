@@ -149,7 +149,6 @@ public final class CaptureActivity extends CommonActivity implements DecoratedBa
     Drawable editTextDelButtonDrawable;
 
     //
-    Context context;
     String opID;
     String officeCode;
     String deviceID;
@@ -334,7 +333,7 @@ public final class CaptureActivity extends CommonActivity implements DecoratedBa
                     switch (msg.arg1) {
                         case BluetoothChatService.STATE_CONNECTED:
 
-                            text_capture_bluetooth_connect_state.setText(context.getResources().getString(R.string.text_connected));
+                            text_capture_bluetooth_connect_state.setText(getResources().getString(R.string.text_connected));
                             text_capture_bluetooth_device_name.setVisibility(View.VISIBLE);
                             text_capture_bluetooth_device_name.setText("(" + connectedDeviceName + ")");
                             btn_capture_bluetooth_device_find.setVisibility(View.GONE);
@@ -344,21 +343,21 @@ public final class CaptureActivity extends CommonActivity implements DecoratedBa
                             break;
                         case BluetoothChatService.STATE_CONNECTING:
 
-                            text_capture_bluetooth_connect_state.setText(context.getResources().getString(R.string.text_connecting));
+                            text_capture_bluetooth_connect_state.setText(getResources().getString(R.string.text_connecting));
                             text_capture_bluetooth_device_name.setVisibility(View.GONE);
                             btn_capture_bluetooth_device_find.setVisibility(View.GONE);
                             break;
                         case BluetoothChatService.STATE_LISTEN:
                         case BluetoothChatService.STATE_NONE:
 
-                            text_capture_bluetooth_connect_state.setText(context.getResources().getString(R.string.text_disconnected));
+                            text_capture_bluetooth_connect_state.setText(getResources().getString(R.string.text_disconnected));
                             text_capture_bluetooth_device_name.setVisibility(View.GONE);
                             btn_capture_bluetooth_device_find.setVisibility(View.VISIBLE);
 
                             break;
                         case BluetoothChatService.STATE_LOST:
 
-                            text_capture_bluetooth_connect_state.setText(context.getResources().getString(R.string.text_disconnected));
+                            text_capture_bluetooth_connect_state.setText(getResources().getString(R.string.text_disconnected));
                             text_capture_bluetooth_device_name.setVisibility(View.GONE);
                             btn_capture_bluetooth_device_find.setVisibility(View.VISIBLE);
 
@@ -367,7 +366,7 @@ public final class CaptureActivity extends CommonActivity implements DecoratedBa
                             break;
                         case BluetoothChatService.STATE_FAILED:
 
-                            text_capture_bluetooth_connect_state.setText(context.getResources().getString(R.string.text_disconnected));
+                            text_capture_bluetooth_connect_state.setText(getResources().getString(R.string.text_disconnected));
                             text_capture_bluetooth_device_name.setVisibility(View.GONE);
                             btn_capture_bluetooth_device_find.setVisibility(View.VISIBLE);
 
@@ -387,11 +386,11 @@ public final class CaptureActivity extends CommonActivity implements DecoratedBa
                 case MESSAGE_DEVICE_NAME:
                     // save the connected device's name
                     connectedDeviceName = msg.getData().getString(DEVICE_NAME);
-                    Toast.makeText(getApplicationContext(), context.getResources().getString(R.string.text_connected_to) + connectedDeviceName, Toast.LENGTH_SHORT).show();
+                    Toast.makeText(CaptureActivity.this, getResources().getString(R.string.text_connected_to) + connectedDeviceName, Toast.LENGTH_SHORT).show();
                     break;
 
                 case MESSAGE_TOAST:
-                    Toast.makeText(getApplicationContext(), msg.getData().getString(TOAST), Toast.LENGTH_SHORT).show();
+                    Toast.makeText(CaptureActivity.this, msg.getData().getString(TOAST), Toast.LENGTH_SHORT).show();
                     break;
 
                 case MESSAGE_DISPLAY:       // 6
@@ -494,7 +493,6 @@ public final class CaptureActivity extends CommonActivity implements DecoratedBa
 
 
         //------------------
-        context = getApplicationContext();
         inputMethodManager = (InputMethodManager) getSystemService(Context.INPUT_METHOD_SERVICE);
         opID = Preferences.INSTANCE.getUserId();
         officeCode = Preferences.INSTANCE.getOfficeCode();
@@ -644,7 +642,7 @@ public final class CaptureActivity extends CommonActivity implements DecoratedBa
         // If the adapter is null, then Bluetooth is not supported          // Bluetooth 지원하지 않음
         if (mBluetoothAdapter == null && !BuildConfig.DEBUG) {
 
-            Toast.makeText(this, context.getResources().getString(R.string.msg_bluetooth_not_supported), Toast.LENGTH_LONG).show();
+            Toast.makeText(CaptureActivity.this, getResources().getString(R.string.msg_bluetooth_not_supported), Toast.LENGTH_LONG).show();
             finish();
             return;
         }
@@ -681,16 +679,16 @@ public final class CaptureActivity extends CommonActivity implements DecoratedBa
         switch (scanType) {
             case BarcodeType.CONFIRM_MY_DELIVERY_ORDER:
 
-                btn_capture_barcode_confirm.setText(context.getResources().getString(R.string.button_update));      //onUpdateButtonClick
+                btn_capture_barcode_confirm.setText(getResources().getString(R.string.button_update));      //onUpdateButtonClick
                 break;
             case BarcodeType.CHANGE_DELIVERY_DRIVER:
 
-                btn_capture_barcode_confirm.setText(context.getResources().getString(R.string.button_done));         //onUpdateButtonClick
+                btn_capture_barcode_confirm.setText(getResources().getString(R.string.button_done));         //onUpdateButtonClick
                 break;
             case BarcodeType.DELIVERY_DONE: {
 
                 layout_capture_scan_count.setVisibility(View.GONE);
-                btn_capture_barcode_confirm.setText(context.getResources().getString(R.string.button_confirm));         //onConfirmButtonClick
+                btn_capture_barcode_confirm.setText(getResources().getString(R.string.button_confirm));         //onConfirmButtonClick
             }
             break;
             case BarcodeType.PICKUP_CNR:
@@ -699,11 +697,11 @@ public final class CaptureActivity extends CommonActivity implements DecoratedBa
             case BarcodeType.PICKUP_TAKE_BACK:
             case BarcodeType.OUTLET_PICKUP_SCAN:
 
-                btn_capture_barcode_confirm.setText(context.getResources().getString(R.string.button_next));            //onNextButtonClick
+                btn_capture_barcode_confirm.setText(getResources().getString(R.string.button_next));            //onNextButtonClick
                 break;
             case BarcodeType.SELF_COLLECTION:
 
-                btn_capture_barcode_confirm.setText(context.getResources().getString(R.string.button_confirm));         // onCaptureConfirmButtonClick
+                btn_capture_barcode_confirm.setText(getResources().getString(R.string.button_confirm));         // onCaptureConfirmButtonClick
                 break;
         }
     }
@@ -784,7 +782,7 @@ public final class CaptureActivity extends CommonActivity implements DecoratedBa
             // Location
             if (mScanType.equals(BarcodeType.CHANGE_DELIVERY_DRIVER)) {
 
-                gpsTrackerManager = new GPSTrackerManager(context);
+                gpsTrackerManager = new GPSTrackerManager(CaptureActivity.this);
                 gpsEnable = gpsTrackerManager.enableGPSSetting();
 
                 if (gpsEnable && gpsTrackerManager != null) {
@@ -875,7 +873,7 @@ public final class CaptureActivity extends CommonActivity implements DecoratedBa
                 Log.e("krm0219", TAG + "  Scan Count : " + mScanCount);
             } catch (Exception e) {
 
-                Toast.makeText(CaptureActivity.this, context.getResources().getString(R.string.text_data_error), Toast.LENGTH_SHORT).show();
+                Toast.makeText(CaptureActivity.this, getResources().getString(R.string.text_data_error), Toast.LENGTH_SHORT).show();
 
                 scanBarcodeArrayList.clear();
                 scanBarcodeNoListAdapter.notifyDataSetChanged();
@@ -883,8 +881,8 @@ public final class CaptureActivity extends CommonActivity implements DecoratedBa
             }
         } else if (mScanType.equals(BarcodeType.SELF_COLLECTION)) {
 
-            text_top_title.setText(context.getResources().getString(R.string.text_title_scan_barcode));
-            btn_capture_barcode_confirm.setText(context.getResources().getString(R.string.button_next));
+            text_top_title.setText(getResources().getString(R.string.text_title_scan_barcode));
+            btn_capture_barcode_confirm.setText(getResources().getString(R.string.button_next));
 
             scanBarcodeArrayList.clear();
             scanBarcodeNoListAdapter.notifyDataSetChanged();
@@ -959,14 +957,17 @@ public final class CaptureActivity extends CommonActivity implements DecoratedBa
 
     private void AlertShow(String msg) {
 
-        AlertDialog.Builder builder = new AlertDialog.Builder(this);
-        builder.setTitle(context.getResources().getString(R.string.text_warning));
-        builder.setMessage(msg);
-        builder.setPositiveButton(context.getResources().getString(R.string.button_close), (dialog, which) -> {
-            dialog.dismiss();
-            finish();
-        });
-        builder.show();
+        if (!CaptureActivity.this.isFinishing()) {
+
+            AlertDialog.Builder builder = new AlertDialog.Builder(CaptureActivity.this);
+            builder.setTitle(getResources().getString(R.string.text_warning));
+            builder.setMessage(msg);
+            builder.setPositiveButton(getResources().getString(R.string.button_close), (dialog, which) -> {
+                dialog.dismiss();
+                finish();
+            });
+            builder.show();
+        }
     }
 
 
@@ -1102,7 +1103,7 @@ public final class CaptureActivity extends CommonActivity implements DecoratedBa
                     setupChat();
                 } else {
                     // Bluetooth 승인 요청 'NO'
-                    Toast.makeText(this, R.string.msg_bluetooth_enabled, Toast.LENGTH_SHORT).show();
+                    Toast.makeText(CaptureActivity.this, R.string.msg_bluetooth_enabled, Toast.LENGTH_SHORT).show();
                     finish();
                 }
             }
@@ -1231,12 +1232,14 @@ public final class CaptureActivity extends CommonActivity implements DecoratedBa
 
                     scanBarcodeNoListAdapter.notifyDataSetChanged();
 
-                    AlertDialog.Builder alertDialog = new AlertDialog.Builder(this);
-                    alertDialog.setTitle(context.getResources().getString(R.string.text_warning));
-                    alertDialog.setMessage(context.getResources().getString(R.string.msg_no_outlet_parcels));
-                    alertDialog.setPositiveButton(context.getResources().getString(R.string.button_ok),
-                            (dialog, which) -> dialog.dismiss());
-                    alertDialog.show();
+                    if (!CaptureActivity.this.isFinishing()) {
+                        AlertDialog.Builder alertDialog = new AlertDialog.Builder(CaptureActivity.this);
+                        alertDialog.setTitle(getResources().getString(R.string.text_warning));
+                        alertDialog.setMessage(getResources().getString(R.string.msg_no_outlet_parcels));
+                        alertDialog.setPositiveButton(getResources().getString(R.string.button_ok),
+                                (dialog, which) -> dialog.dismiss());
+                        alertDialog.show();
+                    }
                 }
                 break;
             default:
@@ -1266,8 +1269,8 @@ public final class CaptureActivity extends CommonActivity implements DecoratedBa
 
         strBarcodeNo = strBarcodeNo.replaceAll("\\r\\n|\\r|\\n", "");
 
-        if (!NetworkUtil.isNetworkAvailable(context)) {
-            AlertShow(context.getResources().getString(R.string.msg_network_connect_error));
+        if (!NetworkUtil.isNetworkAvailable(CaptureActivity.this)) {
+            AlertShow(getResources().getString(R.string.msg_network_connect_error));
             return;
         }
 
@@ -1275,7 +1278,7 @@ public final class CaptureActivity extends CommonActivity implements DecoratedBa
         if (isDuplicate) {
 
             beepManager.playBeepSoundAndVibrate(BeepManager.BELL_SOUNDS_DUPLE);
-            Toast toast = Toast.makeText(getApplicationContext(), R.string.msg_tracking_number_already_entered, Toast.LENGTH_SHORT);
+            Toast toast = Toast.makeText(CaptureActivity.this, R.string.msg_tracking_number_already_entered, Toast.LENGTH_SHORT);
             toast.setGravity(Gravity.CENTER, 0, 20);
             toast.show();
 
@@ -1305,26 +1308,29 @@ public final class CaptureActivity extends CommonActivity implements DecoratedBa
                             if (it.getResultCode() < 0) {
 
                                 beepManager.playBeepSoundAndVibrate(BeepManager.BELL_SOUNDS_ERROR);
+                                edit_capture_type_number.setText("");
+                                inputMethodManager.hideSoftInputFromWindow(edit_capture_type_number.getWindowToken(), 0);
+                                scannedBarcode.remove(scanNo);
 
-                                AlertDialog.Builder builder = new AlertDialog.Builder(this);
-                                builder.setCancelable(false);
-                                builder.setTitle(context.getResources().getString(R.string.text_scanned_failed));
-                                builder.setMessage(it.getResultMsg());
-                                builder.setPositiveButton(context.getResources().getString(R.string.button_ok), (dialog1, which) -> {
+                                if (!CaptureActivity.this.isFinishing()) {
+                                    AlertDialog.Builder builder = new AlertDialog.Builder(CaptureActivity.this);
+                                    builder.setCancelable(false);
+                                    builder.setTitle(getResources().getString(R.string.text_scanned_failed));
+                                    builder.setMessage(it.getResultMsg());
+                                    builder.setPositiveButton(getResources().getString(R.string.button_ok), (dialog1, which) -> {
 
-                                    edit_capture_type_number.setText("");
-                                    inputMethodManager.hideSoftInputFromWindow(edit_capture_type_number.getWindowToken(), 0);
-                                    scannedBarcode.remove(scanNo);
-                                    dialog1.dismiss();
-                                });
-                                if (!CaptureActivity.this.isFinishing())
+                                        if (dialog1 != null)
+                                            dialog1.dismiss();
+                                    });
+
                                     builder.show();
+                                }
                             } else {
 
                                 beepManager.playBeepSoundAndVibrate(BeepManager.BELL_SOUNDS_SUCCESS);
                                 addScannedBarcode(scanNo, "checkValidation - CONFIRM_MY_DELIVERY_ORDER");
                             }
-                        }, it -> Toast.makeText(context, context.getResources().getString(R.string.msg_error_check_again), Toast.LENGTH_SHORT).show());
+                        }, it -> Toast.makeText(CaptureActivity.this, getResources().getString(R.string.msg_error_check_again), Toast.LENGTH_SHORT).show());
 
 
 //                new ConfirmMyOrderValidationCheckHelper.Builder(this, opID, outletDriverYN, strBarcodeNo)
@@ -1366,32 +1372,34 @@ public final class CaptureActivity extends CommonActivity implements DecoratedBa
 
                             Log.e("Server", "result  " + it.getResultCode());
 
+
                             if (it.getResultCode() < 0) {
 
                                 beepManager.playBeepSoundAndVibrate(BeepManager.BELL_SOUNDS_ERROR);
+                                edit_capture_type_number.setText("");
+                                inputMethodManager.hideSoftInputFromWindow(edit_capture_type_number.getWindowToken(), 0);
+                                scannedBarcode.remove(scanNo);
 
-                                AlertDialog.Builder builder = new AlertDialog.Builder(this);
-                                builder.setCancelable(false);
-                                builder.setTitle(context.getResources().getString(R.string.text_scanned_failed));
-                                builder.setMessage(it.getResultMsg());
-                                builder.setPositiveButton(context.getResources().getString(R.string.button_ok), (dialog1, which) -> {
+                                if (!CaptureActivity.this.isFinishing()) {
+                                    AlertDialog.Builder builder = new AlertDialog.Builder(CaptureActivity.this);
+                                    builder.setCancelable(false);
+                                    builder.setTitle(getResources().getString(R.string.text_scanned_failed));
+                                    builder.setMessage(it.getResultMsg());
+                                    builder.setPositiveButton(getResources().getString(R.string.button_ok), (dialog1, which) -> {
 
-                                    edit_capture_type_number.setText("");
-                                    inputMethodManager.hideSoftInputFromWindow(edit_capture_type_number.getWindowToken(), 0);
-                                    scannedBarcode.remove(scanNo);
-                                    dialog1.dismiss();
-                                });
-                                if (!CaptureActivity.this.isFinishing())
+                                        if (dialog1 != null)
+                                            dialog1.dismiss();
+                                    });
+
                                     builder.show();
+                                }
                             } else {
 
-                                Gson gson = new Gson();
-
                                 beepManager.playBeepSoundAndVibrate(BeepManager.BELL_SOUNDS_SUCCESS);
-                                changeDriverResult = gson.fromJson(it.getResultObject(), ChangeDriverResult.Data.class);
+                                changeDriverResult = new Gson().fromJson(it.getResultObject(), ChangeDriverResult.Data.class);
                                 addScannedBarcode(scanNo, "checkValidation - CHANGE_DELIVERY_DRIVER");
                             }
-                        }, it -> Toast.makeText(context, context.getResources().getString(R.string.msg_error_check_again), Toast.LENGTH_SHORT).show());
+                        }, it -> Toast.makeText(CaptureActivity.this, getResources().getString(R.string.msg_error_check_again), Toast.LENGTH_SHORT).show());
 
 
 //                new ChangeDriverValidationCheckHelper.Builder(this, opID, strBarcodeNo)
@@ -1435,20 +1443,23 @@ public final class CaptureActivity extends CommonActivity implements DecoratedBa
                             if (it.getResultCode() != 0) {
 
                                 beepManager.playBeepSoundAndVibrate(BeepManager.BELL_SOUNDS_ERROR);
+                                edit_capture_type_number.setText("");
+                                inputMethodManager.hideSoftInputFromWindow(edit_capture_type_number.getWindowToken(), 0);
+                                scannedBarcode.remove(scanNo);
 
-                                AlertDialog.Builder builder = new AlertDialog.Builder(this);
-                                builder.setCancelable(false);
-                                builder.setTitle(context.getResources().getString(R.string.text_scanned_failed));
-                                builder.setMessage(it.getResultMsg());
-                                builder.setPositiveButton(context.getResources().getString(R.string.button_ok), (dialog1, which) -> {
+                                if (!CaptureActivity.this.isFinishing()) {
+                                    AlertDialog.Builder builder = new AlertDialog.Builder(CaptureActivity.this);
+                                    builder.setCancelable(false);
+                                    builder.setTitle(getResources().getString(R.string.text_scanned_failed));
+                                    builder.setMessage(it.getResultMsg());
+                                    builder.setPositiveButton(getResources().getString(R.string.button_ok), (dialog1, which) -> {
 
-                                    edit_capture_type_number.setText("");
-                                    inputMethodManager.hideSoftInputFromWindow(edit_capture_type_number.getWindowToken(), 0);
-                                    scannedBarcode.remove(scanNo);
-                                    dialog1.dismiss();
-                                });
-                                if (!CaptureActivity.this.isFinishing())
+                                        if (dialog1 != null)
+                                            dialog1.dismiss();
+                                    });
+
                                     builder.show();
+                                }
                             } else {
 
                                 Gson gson = new Gson();
@@ -1469,7 +1480,7 @@ public final class CaptureActivity extends CommonActivity implements DecoratedBa
                                 pickupCNRRequester = cnRPickupData.getReqName();
                                 addScannedBarcode(scanNo, "checkValidation - PICKUP_CNR");
                             }
-                        }, it -> Toast.makeText(context, context.getResources().getString(R.string.msg_error_check_again), Toast.LENGTH_SHORT).show());
+                        }, it -> Toast.makeText(CaptureActivity.this, getResources().getString(R.string.msg_error_check_again), Toast.LENGTH_SHORT).show());
             }
             break;
             case BarcodeType.PICKUP_SCAN_ALL: {
@@ -1487,26 +1498,27 @@ public final class CaptureActivity extends CommonActivity implements DecoratedBa
                             if (it.getResultCode() < 0) {
 
                                 beepManager.playBeepSoundAndVibrate(BeepManager.BELL_SOUNDS_ERROR);
+                                edit_capture_type_number.setText("");
+                                inputMethodManager.hideSoftInputFromWindow(edit_capture_type_number.getWindowToken(), 0);
+                                scannedBarcode.remove(scanNo);
 
-                                AlertDialog.Builder builder = new AlertDialog.Builder(this);
-                                builder.setCancelable(false);
-                                builder.setTitle(context.getResources().getString(R.string.text_scanned_failed));
-                                builder.setMessage(it.getResultMsg());
-                                builder.setPositiveButton(context.getResources().getString(R.string.button_ok), (dialog1, which) -> {
+                                if (!CaptureActivity.this.isFinishing()) {
+                                    AlertDialog.Builder builder = new AlertDialog.Builder(CaptureActivity.this);
+                                    builder.setCancelable(false);
+                                    builder.setTitle(getResources().getString(R.string.text_scanned_failed));
+                                    builder.setMessage(it.getResultMsg());
+                                    builder.setPositiveButton(getResources().getString(R.string.button_ok), (dialog1, which) -> {
 
-                                    edit_capture_type_number.setText("");
-                                    inputMethodManager.hideSoftInputFromWindow(edit_capture_type_number.getWindowToken(), 0);
-                                    scannedBarcode.remove(scanNo);
-                                    dialog1.dismiss();
-                                });
-                                if (!CaptureActivity.this.isFinishing())
+                                        dialog1.dismiss();
+                                    });
                                     builder.show();
+                                }
                             } else {
 
                                 beepManager.playBeepSoundAndVibrate(BeepManager.BELL_SOUNDS_SUCCESS);
                                 addScannedBarcode(scanNo, "checkValidation - PICKUP_SCAN_ALL");
                             }
-                        }, it -> Toast.makeText(context, context.getResources().getString(R.string.msg_error_check_again), Toast.LENGTH_SHORT).show());
+                        }, it -> Toast.makeText(CaptureActivity.this, getResources().getString(R.string.msg_error_check_again), Toast.LENGTH_SHORT).show());
                 break;
             }
             case BarcodeType.PICKUP_ADD_SCAN: {
@@ -1524,26 +1536,27 @@ public final class CaptureActivity extends CommonActivity implements DecoratedBa
                             if (it.getResultCode() < 0) {
 
                                 beepManager.playBeepSoundAndVibrate(BeepManager.BELL_SOUNDS_ERROR);
+                                edit_capture_type_number.setText("");
+                                inputMethodManager.hideSoftInputFromWindow(edit_capture_type_number.getWindowToken(), 0);
+                                scannedBarcode.remove(scanNo);
 
-                                AlertDialog.Builder builder = new AlertDialog.Builder(this);
-                                builder.setCancelable(false);
-                                builder.setTitle(context.getResources().getString(R.string.text_scanned_failed));
-                                builder.setMessage(it.getResultMsg());
-                                builder.setPositiveButton(context.getResources().getString(R.string.button_ok), (dialog1, which) -> {
+                                if (!CaptureActivity.this.isFinishing()) {
+                                    AlertDialog.Builder builder = new AlertDialog.Builder(CaptureActivity.this);
+                                    builder.setCancelable(false);
+                                    builder.setTitle(getResources().getString(R.string.text_scanned_failed));
+                                    builder.setMessage(it.getResultMsg());
+                                    builder.setPositiveButton(getResources().getString(R.string.button_ok), (dialog1, which) -> {
 
-                                    edit_capture_type_number.setText("");
-                                    inputMethodManager.hideSoftInputFromWindow(edit_capture_type_number.getWindowToken(), 0);
-                                    scannedBarcode.remove(scanNo);
-                                    dialog1.dismiss();
-                                });
-                                if (!CaptureActivity.this.isFinishing())
+                                        dialog1.dismiss();
+                                    });
                                     builder.show();
+                                }
                             } else {
 
                                 beepManager.playBeepSoundAndVibrate(BeepManager.BELL_SOUNDS_SUCCESS);
                                 addScannedBarcode(scanNo, "checkValidation - PICKUP_ADD_SCAN");
                             }
-                        }, it -> Toast.makeText(context, context.getResources().getString(R.string.msg_error_check_again), Toast.LENGTH_SHORT).show());
+                        }, it -> Toast.makeText(CaptureActivity.this, getResources().getString(R.string.msg_error_check_again), Toast.LENGTH_SHORT).show());
 
 
 //                new PickupScanValidationCheckHelper.Builder(this, opID, pickupNo, strBarcodeNo)
@@ -1578,26 +1591,27 @@ public final class CaptureActivity extends CommonActivity implements DecoratedBa
                             if (it.getResultCode() < 0) {
 
                                 beepManager.playBeepSoundAndVibrate(BeepManager.BELL_SOUNDS_ERROR);
+                                edit_capture_type_number.setText("");
+                                inputMethodManager.hideSoftInputFromWindow(edit_capture_type_number.getWindowToken(), 0);
+                                scannedBarcode.remove(scanNo);
 
-                                AlertDialog.Builder builder = new AlertDialog.Builder(this);
-                                builder.setCancelable(false);
-                                builder.setTitle(context.getResources().getString(R.string.text_scanned_failed));
-                                builder.setMessage(it.getResultMsg());
-                                builder.setPositiveButton(context.getResources().getString(R.string.button_ok), (dialog1, which) -> {
+                                if (!CaptureActivity.this.isFinishing()) {
+                                    AlertDialog.Builder builder = new AlertDialog.Builder(CaptureActivity.this);
+                                    builder.setCancelable(false);
+                                    builder.setTitle(getResources().getString(R.string.text_scanned_failed));
+                                    builder.setMessage(it.getResultMsg());
+                                    builder.setPositiveButton(getResources().getString(R.string.button_ok), (dialog1, which) -> {
 
-                                    edit_capture_type_number.setText("");
-                                    inputMethodManager.hideSoftInputFromWindow(edit_capture_type_number.getWindowToken(), 0);
-                                    scannedBarcode.remove(scanNo);
-                                    dialog1.dismiss();
-                                });
-                                if (!CaptureActivity.this.isFinishing())
+                                        dialog1.dismiss();
+                                    });
                                     builder.show();
+                                }
                             } else {
 
                                 beepManager.playBeepSoundAndVibrate(BeepManager.BELL_SOUNDS_SUCCESS);
                                 addScannedBarcode(scanNo, "checkValidation - PICKUP_TAKE_BACK");
                             }
-                        }, it -> Toast.makeText(context, context.getResources().getString(R.string.msg_error_check_again), Toast.LENGTH_SHORT).show());
+                        }, it -> Toast.makeText(CaptureActivity.this, getResources().getString(R.string.msg_error_check_again), Toast.LENGTH_SHORT).show());
 
 
 //                new PickupTakeBackValidationCheckHelper.Builder(this, opID, pickupNo, strBarcodeNo)
@@ -1632,26 +1646,27 @@ public final class CaptureActivity extends CommonActivity implements DecoratedBa
                             if (it.getResultCode() < 0) {
 
                                 beepManager.playBeepSoundAndVibrate(BeepManager.BELL_SOUNDS_ERROR);
+                                edit_capture_type_number.setText("");
+                                inputMethodManager.hideSoftInputFromWindow(edit_capture_type_number.getWindowToken(), 0);
+                                scannedBarcode.remove(scanNo);
 
-                                AlertDialog.Builder builder = new AlertDialog.Builder(this);
-                                builder.setCancelable(false);
-                                builder.setTitle(context.getResources().getString(R.string.text_scanned_failed));
-                                builder.setMessage(it.getResultMsg());
-                                builder.setPositiveButton(context.getResources().getString(R.string.button_ok), (dialog1, which) -> {
+                                if (!CaptureActivity.this.isFinishing()) {
+                                    AlertDialog.Builder builder = new AlertDialog.Builder(CaptureActivity.this);
+                                    builder.setCancelable(false);
+                                    builder.setTitle(getResources().getString(R.string.text_scanned_failed));
+                                    builder.setMessage(it.getResultMsg());
+                                    builder.setPositiveButton(getResources().getString(R.string.button_ok), (dialog1, which) -> {
 
-                                    edit_capture_type_number.setText("");
-                                    inputMethodManager.hideSoftInputFromWindow(edit_capture_type_number.getWindowToken(), 0);
-                                    scannedBarcode.remove(scanNo);
-                                    dialog1.dismiss();
-                                });
-                                if (!CaptureActivity.this.isFinishing())
+                                        dialog1.dismiss();
+                                    });
                                     builder.show();
+                                }
                             } else {
 
                                 beepManager.playBeepSoundAndVibrate(BeepManager.BELL_SOUNDS_SUCCESS);
                                 addScannedBarcode(scanNo, "checkValidation - OUTLET_PICKUP_SCAN");
                             }
-                        }, it -> Toast.makeText(context, context.getResources().getString(R.string.msg_error_check_again), Toast.LENGTH_SHORT).show());
+                        }, it -> Toast.makeText(CaptureActivity.this, getResources().getString(R.string.msg_error_check_again), Toast.LENGTH_SHORT).show());
 
 
 //                new OutletPickupScanValidationCheckHelper.Builder(this, opID, pickupNo, strBarcodeNo, mRoute)
@@ -1676,7 +1691,7 @@ public final class CaptureActivity extends CommonActivity implements DecoratedBa
                 if (!isInvoiceCodeRule(strBarcodeNo)) {
 
                     beepManager.playBeepSoundAndVibrate(BeepManager.BELL_SOUNDS_ERROR);
-                    Toast toast = Toast.makeText(this, context.getResources().getString(R.string.msg_invalid_scan), Toast.LENGTH_SHORT);
+                    Toast toast = Toast.makeText(CaptureActivity.this, getResources().getString(R.string.msg_invalid_scan), Toast.LENGTH_SHORT);
                     toast.setGravity(Gravity.CENTER_HORIZONTAL, 0, 0);
                     toast.show();
                     return;
@@ -1692,7 +1707,7 @@ public final class CaptureActivity extends CommonActivity implements DecoratedBa
 
                     if (tempIsNonQ10QFSOrder != tempValidation) {
                         // alert 띄워줘야 함 type 이 다르다는 - 기존 Self - Collection 과 새로 NQ 가
-                        Toast toast = Toast.makeText(this, context.getResources().getString(R.string.msg_different_order_type), Toast.LENGTH_SHORT);
+                        Toast toast = Toast.makeText(CaptureActivity.this, getResources().getString(R.string.msg_different_order_type), Toast.LENGTH_SHORT);
                         toast.setGravity(Gravity.CENTER_HORIZONTAL, 0, 0);
                         toast.show();
                     } else {
@@ -1797,19 +1812,19 @@ public final class CaptureActivity extends CommonActivity implements DecoratedBa
 
         if (scanBarcodeArrayList == null || scanBarcodeArrayList.size() < 1) {
 
-            Toast toast = Toast.makeText(this, R.string.msg_tracking_number_manually, Toast.LENGTH_SHORT);
+            Toast toast = Toast.makeText(CaptureActivity.this, R.string.msg_tracking_number_manually, Toast.LENGTH_SHORT);
             toast.setGravity(Gravity.CENTER_HORIZONTAL, 0, 0);
             toast.show();
             return;
         }
 
-        if (!NetworkUtil.isNetworkAvailable(context)) {
-            AlertShow(context.getResources().getString(R.string.msg_network_connect_error));
+        if (!NetworkUtil.isNetworkAvailable(CaptureActivity.this)) {
+            AlertShow(getResources().getString(R.string.msg_network_connect_error));
             return;
         }
 
         if (MemoryStatus.getAvailableInternalMemorySize() != MemoryStatus.ERROR && MemoryStatus.getAvailableInternalMemorySize() < MemoryStatus.PRESENT_BYTE) {
-            AlertShow(context.getResources().getString(R.string.msg_disk_size_error));
+            AlertShow(getResources().getString(R.string.msg_disk_size_error));
             return;
         }
 
@@ -1818,6 +1833,7 @@ public final class CaptureActivity extends CommonActivity implements DecoratedBa
 
             DataUtil.logEvent("button_click", TAG, "SetShippingStatDpc3out");
 
+            // FIXME_
             new ConfirmMyOrderHelper.Builder(this, opID, officeCode, deviceID, scanBarcodeArrayList)
                     .setOnDriverAssignEventListener(stdResult -> {
 
@@ -1830,17 +1846,16 @@ public final class CaptureActivity extends CommonActivity implements DecoratedBa
                             msg = stdResult.getResultMsg();
                         } else {
 
-                            msg = context.getResources().getString(R.string.text_fail_update);
+                            msg = getResources().getString(R.string.text_fail_update);
                         }
 
 
-                        // BadTokenException 예방
                         if (!CaptureActivity.this.isFinishing()) {
 
                             AlertDialog.Builder builder = new AlertDialog.Builder(CaptureActivity.this);
-                            builder.setTitle(context.getResources().getString(R.string.text_driver_assign_result));
+                            builder.setTitle(getResources().getString(R.string.text_driver_assign_result));
                             builder.setMessage(msg);
-                            builder.setPositiveButton(context.getResources().getString(R.string.button_ok), (dialog, id) -> dialog.cancel());
+                            builder.setPositiveButton(getResources().getString(R.string.button_ok), (dialog, id) -> dialog.cancel());
                             builder.show();
                         }
                     }).build().execute();
@@ -1855,6 +1870,7 @@ public final class CaptureActivity extends CommonActivity implements DecoratedBa
                 Log.e("Location", TAG + " onUpdateButtonClick GPSTrackerManager : " + latitude + "  " + longitude + "  ");
             }
 
+            // FIXME_
             new ChangeDriverHelper.Builder(this, opID, officeCode, deviceID, changeDriverObjectArrayList, latitude, longitude)
                     .setOnChangeDelDriverEventListener(stdResult -> {
 
@@ -1868,14 +1884,16 @@ public final class CaptureActivity extends CommonActivity implements DecoratedBa
                             msg = stdResult.getResultMsg();
                         } else {
 
-                            msg = context.getResources().getString(R.string.text_fail_update);
+                            msg = getResources().getString(R.string.text_fail_update);
                         }
 
-                        AlertDialog.Builder builder = new AlertDialog.Builder(CaptureActivity.this);
-                        builder.setTitle(context.getResources().getString(R.string.text_driver_assign_result));
-                        builder.setMessage(msg);
-                        builder.setPositiveButton(context.getResources().getString(R.string.button_ok), (dialog, id) -> dialog.cancel());
-                        builder.show();
+                        if (!CaptureActivity.this.isFinishing()) {
+                            AlertDialog.Builder builder = new AlertDialog.Builder(CaptureActivity.this);
+                            builder.setTitle(getResources().getString(R.string.text_driver_assign_result));
+                            builder.setMessage(msg);
+                            builder.setPositiveButton(getResources().getString(R.string.button_ok), (dialog, id) -> dialog.cancel());
+                            builder.show();
+                        }
                     }).build().execute();
         }
     }
@@ -1886,7 +1904,7 @@ public final class CaptureActivity extends CommonActivity implements DecoratedBa
 
         if (scanBarcodeArrayList == null || scanBarcodeArrayList.size() < 1) {
 
-            Toast toast = Toast.makeText(this, R.string.msg_tracking_number_manually, Toast.LENGTH_SHORT);
+            Toast toast = Toast.makeText(CaptureActivity.this, R.string.msg_tracking_number_manually, Toast.LENGTH_SHORT);
             toast.setGravity(Gravity.CENTER_HORIZONTAL, 0, 0);
             toast.show();
             return;
@@ -1927,7 +1945,7 @@ public final class CaptureActivity extends CommonActivity implements DecoratedBa
         // 받는사람이 틀리다면 에러 메세지
         if (diffReceiverName) {
 
-            Toast toast = Toast.makeText(this, R.string.msg_different_recipient_address, Toast.LENGTH_SHORT);
+            Toast toast = Toast.makeText(CaptureActivity.this, R.string.msg_different_recipient_address, Toast.LENGTH_SHORT);
             toast.setGravity(Gravity.CENTER_HORIZONTAL, 0, 0);
             toast.show();
             return;
@@ -1941,7 +1959,7 @@ public final class CaptureActivity extends CommonActivity implements DecoratedBa
             this.startActivityForResult(intent, REQUEST_DELIVERY_DONE);
         } else {
 
-            Toast toast = Toast.makeText(this, R.string.msg_tracking_number_manually, Toast.LENGTH_SHORT);
+            Toast toast = Toast.makeText(CaptureActivity.this, R.string.msg_tracking_number_manually, Toast.LENGTH_SHORT);
             toast.setGravity(Gravity.CENTER_HORIZONTAL, 0, 0);
             toast.show();
         }
@@ -1964,7 +1982,7 @@ public final class CaptureActivity extends CommonActivity implements DecoratedBa
 
             if (!isScanned) {
 
-                Toast toast = Toast.makeText(this, R.string.msg_tracking_number_manually, Toast.LENGTH_SHORT);
+                Toast toast = Toast.makeText(CaptureActivity.this, R.string.msg_tracking_number_manually, Toast.LENGTH_SHORT);
                 toast.setGravity(Gravity.CENTER_HORIZONTAL, 0, 0);
                 toast.show();
                 return;
@@ -1973,7 +1991,7 @@ public final class CaptureActivity extends CommonActivity implements DecoratedBa
 
             if (scanBarcodeArrayList == null || scanBarcodeArrayList.size() < 1) {
 
-                Toast toast = Toast.makeText(this, R.string.msg_tracking_number_manually, Toast.LENGTH_SHORT);
+                Toast toast = Toast.makeText(CaptureActivity.this, R.string.msg_tracking_number_manually, Toast.LENGTH_SHORT);
                 toast.setGravity(Gravity.CENTER_HORIZONTAL, 0, 0);
                 toast.show();
                 return;
@@ -2220,11 +2238,11 @@ public final class CaptureActivity extends CommonActivity implements DecoratedBa
 
         if (updateCount < 1) {
 
-            message += context.getResources().getString(R.string.text_not_assigned);
+            message += getResources().getString(R.string.text_not_assigned);
             result = "FAIL";
         } else {
 
-            message += context.getResources().getString(R.string.text_success);
+            message += getResources().getString(R.string.text_success);
             result = "SUCCESS";
         }
 
@@ -2247,7 +2265,7 @@ public final class CaptureActivity extends CommonActivity implements DecoratedBa
                 vibrator.vibrate(200L);
             }
 
-            Toast toast = Toast.makeText(getApplicationContext(), message, Toast.LENGTH_LONG);
+            Toast toast = Toast.makeText(CaptureActivity.this, message, Toast.LENGTH_LONG);
             toast.setGravity(Gravity.CENTER, 0, 10);
             toast.show();
         }
@@ -2270,7 +2288,7 @@ public final class CaptureActivity extends CommonActivity implements DecoratedBa
 
         if (!isInvoiceCodeRule(scanBarcodeArrayList.get(0).getBarcode())) {
 
-            Toast toast = Toast.makeText(this, context.getResources().getString(R.string.msg_invalid_scan), Toast.LENGTH_SHORT);
+            Toast toast = Toast.makeText(CaptureActivity.this, getResources().getString(R.string.msg_invalid_scan), Toast.LENGTH_SHORT);
             toast.setGravity(Gravity.CENTER_HORIZONTAL, 0, 0);
             toast.show();
             return;
