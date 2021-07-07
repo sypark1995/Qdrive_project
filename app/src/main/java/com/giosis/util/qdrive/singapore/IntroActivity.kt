@@ -2,6 +2,7 @@ package com.giosis.util.qdrive.singapore
 
 import android.app.Activity
 import android.app.AlertDialog
+import android.content.ActivityNotFoundException
 import android.content.DialogInterface
 import android.content.Intent
 import android.net.Uri
@@ -26,7 +27,21 @@ class IntroActivity : Activity() {
                         // 구글 마켓으로 이동
                         val intent1 = Intent(Intent.ACTION_VIEW)
                         intent1.data = Uri.parse("market://details?id=net.giosis.qpost")
-                        startActivity(intent1)
+
+                        try {
+
+                            startActivity(intent1)
+                        } catch (e: ActivityNotFoundException) {
+
+                            // Play Store 없는 핸드폰의 경우
+                            val webIntent = Intent(Intent.ACTION_VIEW)
+                            webIntent.data = Uri.parse("https://play.google.com/store/apps/details?id=net.giosis.qpost")
+
+                            if (webIntent.resolveActivity(packageManager) != null) {
+                                startActivity(webIntent)
+                            }
+                        }
+
                         finish()
                     }.show()
         } else {

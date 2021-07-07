@@ -286,8 +286,6 @@ public class ListInProgressFragment extends Fragment
     public void onResume() {
         super.onResume();
 
-        Log.e("krm0219", "onResume  " + pickupSortCondition + " / " + pickupDriverYn);
-
         // NOTIFICATION.  2020.07
         if ("SG".equals(Preferences.INSTANCE.getUserNation()) && pickupDriverYn.equals("Y")) {
             layout_list_pickup_sort_condition.setVisibility(View.VISIBLE);
@@ -363,19 +361,28 @@ public class ListInProgressFragment extends Fragment
                     .subscribe(it -> {
 
                         Log.e("Server", " requestGetTodayPickupDoneList  result  " + it.getResultCode());
-                        try {
+
                             if (it.getResultCode() == 0) {
 
-                                Gson gson = new Gson();
-                                ArrayList<PickupAssignResult.QSignPickupList> list = gson.fromJson(it.getResultObject(), new TypeToken<ArrayList<PickupAssignResult.QSignPickupList>>() {
-                                }.getType());
+                            Gson gson = new Gson();
+                            ArrayList<PickupAssignResult.QSignPickupList> list = gson.fromJson(it.getResultObject(), new TypeToken<ArrayList<PickupAssignResult.QSignPickupList>>() {
+                            }.getType());
+
+                            if (isAdded()) {
                                 fragmentListener.onTodayDoneCountRefresh(list != null ? list.size() : 0);
                             }
-                        } catch (Exception ignore) {
                         }
+                    }, it -> {
                     });
         } catch (Exception e) {
-            Log.e("Exception", "GetTodayPickupDoneList  Exception : " + e.toString());
+
+            RetrofitClient.INSTANCE.instanceCommonService()
+                    .requestWriteLog("1", "InProgressFragment", "called getTodayPickupDone API", "get TodayDoneCount Error  " + e.toString())
+                    .subscribeOn(Schedulers.io())
+                    .observeOn(AndroidSchedulers.mainThread())
+                    .subscribe(it -> {
+                    }, it -> {
+                    });
         }
     }
 

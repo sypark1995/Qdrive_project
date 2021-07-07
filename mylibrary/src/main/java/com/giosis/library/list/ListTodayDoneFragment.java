@@ -120,7 +120,7 @@ public class ListTodayDoneFragment extends Fragment implements SearchView.OnQuer
         // Search
         SearchManager searchManager = (SearchManager) getActivity().getSystemService(Context.SEARCH_SERVICE);
         searchview_list.setSearchableInfo(searchManager.getSearchableInfo(getActivity().getComponentName()));
-        searchview_list.setQueryHint(requireActivity().getResources().getString(R.string.text_search));
+        searchview_list.setQueryHint(getResources().getString(R.string.text_search));
         searchview_list.setOnQueryTextListener(this);
         searchview_list.setOnCloseListener(this);
 
@@ -157,77 +157,93 @@ public class ListTodayDoneFragment extends Fragment implements SearchView.OnQuer
             Log.e("Exception", "search init  Exception : " + e.toString());
         }
 
+        try {
+            RetrofitClient.INSTANCE.instanceDynamic().requestGetTodayPickupDoneList(Preferences.INSTANCE.getUserId(), "", "",
+                    DataUtil.appID, Preferences.INSTANCE.getUserNation())
+                    .subscribeOn(Schedulers.io())
+                    .observeOn(AndroidSchedulers.mainThread())
+                    .subscribe(it -> {
 
-        RetrofitClient.INSTANCE.instanceDynamic().requestGetTodayPickupDoneList(Preferences.INSTANCE.getUserId(), "", "",
-                DataUtil.appID, Preferences.INSTANCE.getUserNation())
-                .subscribeOn(Schedulers.io())
-                .observeOn(AndroidSchedulers.mainThread())
-                .subscribe(it -> {
+                        Log.e("Server", " TodayDone requestGetTodayPickupDoneList  result  " + it.getResultCode());
 
-                    Log.e("Server", " TodayDone requestGetTodayPickupDoneList  result  " + it.getResultCode());
+                        if (it.getResultCode() == 0) {
 
-                    if (it.getResultCode() == 0) {
+                            Gson gson = new Gson();
+                            ArrayList<PickupAssignResult.QSignPickupList> list = gson.fromJson(it.getResultObject(), new TypeToken<ArrayList<PickupAssignResult.QSignPickupList>>() {
+                            }.getType());
 
-                        Gson gson = new Gson();
-                        ArrayList<PickupAssignResult.QSignPickupList> list = gson.fromJson(it.getResultObject(), new TypeToken<ArrayList<PickupAssignResult.QSignPickupList>>() {
-                        }.getType());
+                            if (isAdded()) {
+                                rowItems = new ArrayList<>();
 
-                        rowItems = new ArrayList<>();
+                                for (PickupAssignResult.QSignPickupList pickupInfo : list) {
 
-                        for (PickupAssignResult.QSignPickupList pickupInfo : list) {
+                                    childItems = new ArrayList<>();
+                                    ChildItem child = new ChildItem();
+                                    child.setHp(pickupInfo.getHpNo());
+                                    child.setTel(pickupInfo.getTelNo());
+                                    child.setStat(pickupInfo.getStat());
+                                    child.setStatMsg(pickupInfo.getDriverMemo());
+                                    child.setStatReason(pickupInfo.getFailReason());
+                                    child.setSecretNoType(pickupInfo.getSecretNoType());
+                                    child.setSecretNo(pickupInfo.getSecretNo());
+                                    childItems.add(child);
 
-                            childItems = new ArrayList<>();
-                            ChildItem child = new ChildItem();
-                            child.setHp(pickupInfo.getHpNo());
-                            child.setTel(pickupInfo.getTelNo());
-                            child.setStat(pickupInfo.getStat());
-                            child.setStatMsg(pickupInfo.getDriverMemo());
-                            child.setStatReason(pickupInfo.getFailReason());
-                            child.setSecretNoType(pickupInfo.getSecretNoType());
-                            child.setSecretNo(pickupInfo.getSecretNo());
-                            childItems.add(child);
+                                    RowItem rowitem = new RowItem(pickupInfo.getContrNo(),
+                                            "D+0",
+                                            pickupInfo.getInvoiceNo(),
+                                            pickupInfo.getReqName(),
+                                            "(" + pickupInfo.getZipCode() + ") " + pickupInfo.getAddress(),
+                                            pickupInfo.getDelMemo(),
+                                            "P",
+                                            pickupInfo.getRoute(),
+                                            "", //cs.getString(cs.getColumnIndex("sender_nm")),
+                                            pickupInfo.getPickupHopeDay(),
+                                            pickupInfo.getQty(),
+                                            "", // cs.getString(cs.getColumnIndex("self_memo")),
+                                            0, // cs.getDouble(cs.getColumnIndex("lat")),
+                                            0, //cs.getDouble(cs.getColumnIndex("lng")),
+                                            pickupInfo.getStat(), //cs.getString(cs.getColumnIndex("stat")),
+                                            pickupInfo.getCustNo(), //cs.getString(cs.getColumnIndex("cust_no")),
+                                            pickupInfo.getPartnerID(),//cs.getString(cs.getColumnIndex("partner_id"))
+                                            "",
+                                            "",
+                                            "", ""
+                                    );
 
-                            RowItem rowitem = new RowItem(pickupInfo.getContrNo(),
-                                    "D+0",
-                                    pickupInfo.getInvoiceNo(),
-                                    pickupInfo.getReqName(),
-                                    "(" + pickupInfo.getZipCode() + ") " + pickupInfo.getAddress(),
-                                    pickupInfo.getDelMemo(),
-                                    "P",
-                                    pickupInfo.getRoute(),
-                                    "", //cs.getString(cs.getColumnIndex("sender_nm")),
-                                    pickupInfo.getPickupHopeDay(),
-                                    pickupInfo.getQty(),
-                                    "", // cs.getString(cs.getColumnIndex("self_memo")),
-                                    0, // cs.getDouble(cs.getColumnIndex("lat")),
-                                    0, //cs.getDouble(cs.getColumnIndex("lng")),
-                                    pickupInfo.getStat(), //cs.getString(cs.getColumnIndex("stat")),
-                                    pickupInfo.getCustNo(), //cs.getString(cs.getColumnIndex("cust_no")),
-                                    pickupInfo.getPartnerID(),//cs.getString(cs.getColumnIndex("partner_id"))
-                                    "",
-                                    "",
-                                    "", ""
-                            );
+                                    rowitem.setItems(childItems);
+                                    rowItems.add(rowitem);
+                                }
 
-                            rowitem.setItems(childItems);
-                            rowItems.add(rowitem);
+                                adapter = new ListTodayDoneAdapter(rowItems, bluetoothListener);
+                                exlist_card_list.setAdapter(adapter);
+                                adapter.setSorting(rowItems);
+
+                                int groupCount = adapter.getGroupCount();
+
+                                for (int i = 0; i < groupCount; i++) {
+                                    exlist_card_list.collapseGroup(i);
+                                }
+
+                                //카운트 전달
+                                mCountCallback.onTodayDoneCountRefresh(groupCount);
+                            }
                         }
+                    }, it -> {
 
-                        adapter = new ListTodayDoneAdapter(rowItems, bluetoothListener);
-                        exlist_card_list.setAdapter(adapter);
-                        adapter.setSorting(rowItems);
-
-                        int groupCount = adapter.getGroupCount();
-
-                        for (int i = 0; i < groupCount; i++) {
-                            exlist_card_list.collapseGroup(i);
+                        if (getActivity() != null && isAdded()) {
+                            Toast.makeText(getActivity(), getString(R.string.msg_error_check_again), Toast.LENGTH_SHORT).show();
                         }
+                    });
+        } catch (Exception e) {
 
-                        //카운트 전달
-                        mCountCallback.onTodayDoneCountRefresh(groupCount);
-
-                    }
-                }, it -> Toast.makeText(getActivity(), getResources().getString(R.string.msg_error_check_again), Toast.LENGTH_SHORT).show());
+            RetrofitClient.INSTANCE.instanceCommonService()
+                    .requestWriteLog("1", "TodayDoneFragment", "called getTodayPickupDone API", "get TodayDoneData Error  " + e.toString())
+                    .subscribeOn(Schedulers.io())
+                    .observeOn(AndroidSchedulers.mainThread())
+                    .subscribe(it -> {
+                    }, it -> {
+                    });
+        }
     }
 
     @Override

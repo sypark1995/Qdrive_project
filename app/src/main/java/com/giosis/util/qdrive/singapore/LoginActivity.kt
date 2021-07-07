@@ -147,6 +147,11 @@ class LoginActivity : CommonActivity() {
                                     if (loginData != null) {
 
                                         if (!loginData.version.isNullOrEmpty()) {
+//                                            //TODO_
+//                                            val compare =  Version("1.10.0") < Version("1.9.0")
+//                                            val compare1 = Version("1.10.9") < Version("1.10.10")
+//                                            Log.e("krm0219", "Compare $compare  $compare1")
+
                                             if (MyApplication.preferences.appVersion < loginData.version!!) {
 
                                                 val msg = java.lang.String.format(resources.getString(R.string.msg_update_version),
@@ -280,6 +285,18 @@ class LoginActivity : CommonActivity() {
         }
     }
 
+    inner class Version(private val value: String) : Comparable<Version> {
+        private val splitted by lazy { value.split("-").first().split(".").map { it.toIntOrNull() ?: 0 } }
+
+        override fun compareTo(other: Version): Int {
+            for (i in 0 until maxOf(splitted.size, other.splitted.size)) {
+                val compare = splitted.getOrElse(i) { 0 }.compareTo(other.splitted.getOrElse(i) { 0 })
+                if (compare != 0)
+                    return compare
+            }
+            return 0
+        }
+    }
 
     @SuppressLint("SetTextI18n")
     override fun onResume() {
