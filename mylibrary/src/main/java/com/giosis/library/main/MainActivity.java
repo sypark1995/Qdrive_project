@@ -741,11 +741,8 @@ public class MainActivity extends AppBaseActivity {
             int status = GoogleApiAvailability.getInstance().isGooglePlayServicesAvailable(this);
             isGooglePlayService = ConnectionResult.SUCCESS == status;
 
-            if (Build.MANUFACTURER.equals("HUAWEI") && Preferences.INSTANCE.getServerURL().contains("staging")) {  // KR 화웨이폰 - google 위치정보 못가져옴
-                isGooglePlayService = false;
-            }
-//            // TEST.
-//            isGooglePlayService = false;
+            // TEST_
+            //isGooglePlayService = false;
 
             if (isGooglePlayService) {  // Fused Provider Service start (Google play 에 클라이언트 객체 얻어 서비스)
 
@@ -847,8 +844,8 @@ public class MainActivity extends AppBaseActivity {
         SimpleDateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
         String regDataString = dateFormat.format(new Date());
 
-        RetrofitClient.INSTANCE.instanceDynamic().requestSetAppUserInfo("killapp", api_level, device_info, device_model, device_product, device_os_version,
-                NetworkUtil.getNetworkType(this), "", regDataString, "QDRIVE", "", "",
+        RetrofitClient.INSTANCE.instanceDynamic().requestSetAppUserInfo("killapp", NetworkUtil.getNetworkType(this), "", regDataString, "QDRIVE",
+                api_level, device_info, device_model, device_product, device_os_version, "", "",
                 "", "", "", "", "", "", opID, opID, opID, DataUtil.appID, Preferences.INSTANCE.getUserNation())
                 .subscribeOn(Schedulers.io())
                 .observeOn(AndroidSchedulers.mainThread())

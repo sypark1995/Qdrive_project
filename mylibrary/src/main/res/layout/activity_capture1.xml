@@ -267,7 +267,8 @@
                 android:paddingEnd="20dp"
                 android:scrollbars="vertical"
                 android:smoothScrollbar="true"
-                android:transcriptMode="alwaysScroll" />
+                android:transcriptMode="alwaysScroll"
+                tools:listitem="@layout/item_capture_scanned" />
         </RelativeLayout>
 
         <LinearLayout

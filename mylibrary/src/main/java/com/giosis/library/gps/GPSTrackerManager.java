@@ -3,7 +3,6 @@ package com.giosis.library.gps;
 import android.content.Context;
 import android.location.LocationManager;
 import android.os.Build;
-import android.util.Log;
 
 import com.giosis.library.util.Preferences;
 import com.google.android.gms.common.ConnectionResult;
@@ -27,7 +26,7 @@ public class GPSTrackerManager {
 
 
     // Google Play Service - Y
-    private FusedProviderOnceListener1 fusedProviderListener1 = null;
+    private FusedProviderOnceListener fusedProviderListener = null;
 
     // Google Play Service - N
     private LocationManagerOnceListener locationMngListener = null;
@@ -73,8 +72,8 @@ public class GPSTrackerManager {
 
     private void createFusedProvider() {
 
-        fusedProviderListener1 = new FusedProviderOnceListener1(context);
-        fusedProviderListener1.startLocationUpdates();
+        fusedProviderListener = new FusedProviderOnceListener(context);
+        fusedProviderListener.startLocationUpdates();
     }
 
 
@@ -89,8 +88,8 @@ public class GPSTrackerManager {
 
     public void stopFusedProviderService() {
 
-        if (fusedProviderListener1 != null)
-            fusedProviderListener1.removeLocationUpdates();
+        if (fusedProviderListener != null)
+            fusedProviderListener.removeLocationUpdates();
 
 
         if (locationManager != null) {
@@ -108,7 +107,7 @@ public class GPSTrackerManager {
 
         if (isGooglePlayService) {
 
-            latitude = fusedProviderListener1.getLatitude();
+            latitude = fusedProviderListener.getLatitude();
         } else {
 
             latitude = locationMngListener.getLatitude();
@@ -124,7 +123,7 @@ public class GPSTrackerManager {
 
         if (isGooglePlayService) {
 
-            longitude = fusedProviderListener1.getLongitude();
+            longitude = fusedProviderListener.getLongitude();
         } else {
 
             longitude = locationMngListener.getLongitude();
@@ -139,7 +138,7 @@ public class GPSTrackerManager {
 
         if (isGooglePlayService) {
 
-            accuracy = fusedProviderListener1.getAccuracy();
+            accuracy = fusedProviderListener.getAccuracy();
         }
 
         return accuracy;

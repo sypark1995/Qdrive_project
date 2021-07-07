@@ -119,37 +119,4 @@ class ModifyUserInfoActivity : BaseActivity<ActivityModifyUserInfoBinding, Modif
             resultDialog.visibility = View.VISIBLE
         })
     }
-
-
-//        @SuppressLint("CommitPrefEdits")
-//        override fun onPostExecute(result: StdResult) {
-//            super.onPostExecute(result)
-//
-//
-//            val resultCode = result.resultCode
-//            val resultMsg = result.resultMsg
-//
-//
-//            val alertBuilder = AlertDialog.Builder(this@ModifyUserInfoActivity)
-//            alertBuilder.setTitle(context.resources.getString(R.string.text_alert))
-//            alertBuilder.setMessage(resultMsg)
-//            alertBuilder.setPositiveButton(context.resources.getString(R.string.button_ok)) { dialogInterface, _ ->
-//
-//                if (resultCode == 0) {   // 성공
-//
-//                    MyApplication.preferences.userName = userName
-//                    MyApplication.preferences.userEmail = userEmail
-//
-//
-//                    dialogInterface.cancel()
-//                    finish()
-//                } else {                // 실패
-//
-//                    dialogInterface.cancel()
-//                }
-//            }
-//
-//            alertBuilder.show()
-//        }
-//    }
 }

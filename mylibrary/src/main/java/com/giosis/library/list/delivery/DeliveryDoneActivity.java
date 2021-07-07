@@ -384,7 +384,7 @@ public class DeliveryDoneActivity extends CommonActivity implements Camera2APIs.
         text_sign_d_receiver.setText(receiverName);
         text_sign_d_sender.setText(senderName);
         DisplayUtil.setPreviewCamera(img_sign_d_preview_bg);
-        Log.e(TAG, TAG + "  Outlet info Route : " + outletInfo.getRoute().substring(0, 2) + " / " + outletInfo.getRoute());
+        //Log.e(TAG, "  Outlet info Route : " + outletInfo.getRoute().substring(0, 2) + " / " + outletInfo.getRoute());
 
         // NOTIFICATION.  Outlet Delivery
         if (outletInfo.getRoute().substring(0, 2).contains("7E") || outletInfo.getRoute().substring(0, 2).contains("FL")) {

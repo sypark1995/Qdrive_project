@@ -4,11 +4,9 @@ import android.annotation.SuppressLint;
 import android.app.ProgressDialog;
 import android.content.ContentValues;
 import android.content.Context;
-import android.database.Cursor;
 import android.os.AsyncTask;
 import android.text.TextUtils;
 import android.util.Log;
-import android.widget.Toast;
 
 import com.giosis.library.R;
 import com.giosis.library.barcodescanner.ChangeDriverResult;
@@ -107,6 +105,7 @@ public class ChangeDriverHelper {
         return insertCount >= 0;
     }
 
+
     private ChangeDriverHelper(Builder builder) {
 
         this.context = builder.context;
@@ -169,6 +168,7 @@ public class ChangeDriverHelper {
         }
     }
 
+
     class ChangeDriverAsyncTask extends AsyncTask<Void, Integer, DriverAssignResult> {
 
         int progress = 0;
@@ -208,6 +208,7 @@ public class ChangeDriverHelper {
                     }
                 }
 
+
                 result = changeDriver(ContrNoStr);
                 publishProgress(1);
             }
@@ -222,6 +223,7 @@ public class ChangeDriverHelper {
             progressDialog.setProgress(progress);
         }
 
+
         @Override
         protected void onPostExecute(DriverAssignResult resultList) {
             super.onPostExecute(resultList);
@@ -230,6 +232,7 @@ public class ChangeDriverHelper {
 
 
             if (resultList != null && resultList.getResultCode() == 0) {
+
 
                 List<DriverAssignResult.QSignDeliveryList> resultObject = resultList.getResultObject();
 
@@ -284,37 +287,15 @@ public class ChangeDriverHelper {
         }
     }
 
-    private void deleteContrNo(String contr_no) {
-
-        DatabaseHelper.getInstance().delete(DatabaseHelper.DB_TABLE_INTEGRATION_LIST, "contr_no='" + contr_no + "' COLLATE NOCASE");
-    }
-
-
-    private int getContrNoCount(String contr_no) {
-
-        String sql = "SELECT count(*) as contrno_cnt FROM " + DatabaseHelper.DB_TABLE_INTEGRATION_LIST + " WHERE contr_no='" + contr_no + "' COLLATE NOCASE";
-        Cursor cursor = DatabaseHelper.getInstance().get(sql);
-
-        int count = 0;
-
-        if (cursor.moveToFirst()) {
-            count = cursor.getInt(cursor.getColumnIndexOrThrow("contrno_cnt"));
-        }
-
-        cursor.close();
-
-        return count;
-    }
-
     // Message 이동
     @SuppressLint("StaticFieldLeak")
-    class ChangeMessageAsyncTask extends AsyncTask<Void, Void, StdResult> {
+    public static class ChangeMessageAsyncTask extends AsyncTask<Void, Void, StdResult> {
 
         String driverId;
         String trackingNo;
 
 
-        ChangeMessageAsyncTask(String DriverID, String TrackingNo) {
+        public ChangeMessageAsyncTask(String DriverID, String TrackingNo) {
 
             driverId = DriverID;
             trackingNo = TrackingNo;
@@ -343,7 +324,7 @@ public class ChangeDriverHelper {
                 result.setResultMsg(jsonObject.getString("ResultMsg"));
             } catch (Exception e) {
 
-                Log.e("Exception", TAG + "  SetQdriverMessageChangeQdriver Exception : " + e.toString());
+                Log.e("Exception", "  SetQdriverMessageChangeQdriver Exception : " + e.toString());
 
                 result.setResultCode(-15);
                 result.setResultMsg("Exception : " + e.toString());
@@ -358,10 +339,7 @@ public class ChangeDriverHelper {
 
             if (result.getResultCode() == 0) {
 
-                Log.e(TAG, "  SetQdriverMessageChangeQdriver Success");
-            } else {
-
-                Toast.makeText(context, context.getResources().getString(R.string.msg_message_change_error), Toast.LENGTH_SHORT).show();
+                Log.e("Server", "  SetQdriverMessageChangeQdriver Success");
             }
         }
     }

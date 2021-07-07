@@ -1,78 +1,40 @@
-package com.giosis.library.barcodescanner;
+package com.giosis.library.barcodescanner
 
-import org.simpleframework.xml.Element;
-import org.simpleframework.xml.Root;
+import com.google.gson.annotations.SerializedName
+import org.simpleframework.xml.Element
+import org.simpleframework.xml.Root
 
 @Root(strict = false, name = "StdCustomResultOfChgDelDriverResult")
-public class ChangeDriverResult {
+class ChangeDriverResult {
 
+    @SerializedName("ResultCode")
     @Element(name = "ResultCode", required = false)
-    private int ResultCode = -1;
+    var resultCode = -1
 
+    @SerializedName("ResultMsg")
     @Element(name = "ResultMsg", required = false)
-    private String ResultMsg = "";
-
-    public int getResultCode() {
-        return ResultCode;
-    }
-
-    public void setResultCode(int resultCode) {
-        this.ResultCode = resultCode;
-    }
-
-    public String getResultMsg() {
-        return ResultMsg;
-    }
-
-    public void setResultMsg(String resultMsg) {
-        this.ResultMsg = resultMsg;
-    }
+    var resultMsg = ""
 
     @Element(required = false, name = "ResultObject")
-    private Data ResultObject;
-
-    public Data getResultObject() {
-        return ResultObject;
-    }
-
-    public void setResultObject(Data resultObj) {
-        this.ResultObject = resultObj;
-    }
+    var resultObject: Data? = null
 
     @Root(strict = false, name = "ResultObject")
-    public static class Data {
+    class Data {
 
+        @SerializedName("contr_no")
         @Element(name = "contr_no", required = false)
-        private String contr_no = "";
+        val contrNo = ""
 
+        @SerializedName("tracking_no")
         @Element(name = "tracking_no", required = false)
-        private String tracking_no = "";
+        val trackingNo = ""
 
+        @SerializedName("del_driver_id")
         @Element(name = "del_driver_id", required = false)
-        private String del_driver_id = "";
+        val currentDriver = ""
 
+        @SerializedName("status")
         @Element(name = "status", required = false)
-        private String status = "";
-
-
-        public String getContrNo() {
-            return contr_no;
-        }
-
-        public String getTrackingNo() {
-            return tracking_no;
-        }
-
-        public String getCurrentDriver() {
-            return del_driver_id;
-        }
-
-        public String getStatus() {
-            return status;
-        }
-
-        public void setStatus(String status) {
-            this.status = status;
-        }
+        var status = ""
     }
 }

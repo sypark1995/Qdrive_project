@@ -16,7 +16,7 @@ import com.google.android.gms.location.LocationResult;
 import com.google.android.gms.location.LocationServices;
 
 
-public class FusedProviderOnceListener1 {
+public class FusedProviderOnceListener {
     private final String TAG = "FusedProviderOnceListener";
 
     private final Context context;
@@ -52,7 +52,7 @@ public class FusedProviderOnceListener1 {
     };
 
 
-    public FusedProviderOnceListener1(Context context) {
+    public FusedProviderOnceListener(Context context) {
 
         count = 0;
         this.context = context;

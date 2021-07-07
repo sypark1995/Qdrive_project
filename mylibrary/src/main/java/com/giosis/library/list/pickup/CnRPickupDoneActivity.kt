@@ -87,11 +87,7 @@ class CnRPickupDoneActivity : CommonActivity() {
                     val parcelLat: Double = cs.getDouble(cs.getColumnIndex("lat"))
                     val parcelLng: Double = cs.getDouble(cs.getColumnIndex("lng"))
                     val zipCode: String = cs.getString(cs.getColumnIndex("zip_code"))
-                    val state: String = if (cs.getString(cs.getColumnIndex("state")) != null) {
-                        cs.getString(cs.getColumnIndex("state"))
-                    } else {
-                        ""
-                    }
+                    val state: String = cs.getString(cs.getColumnIndex("state"))
                     val city: String = cs.getString(cs.getColumnIndex("city"))
                     val street: String = cs.getString(cs.getColumnIndex("street"))
                     Log.e("GPSUpdate", "Parcel $barcode // $parcelLat, $parcelLng // $zipCode - $state - $city - $street")
@@ -147,7 +143,6 @@ class CnRPickupDoneActivity : CommonActivity() {
                 longitude = gpsTrackerManager!!.longitude
                 Log.e("Location", "$tag GPSTrackerManager onResume : $latitude  $longitude  ")
             } else {
-                1
                 DataUtil.enableLocationSettings(this@CnRPickupDoneActivity)
             }
         }

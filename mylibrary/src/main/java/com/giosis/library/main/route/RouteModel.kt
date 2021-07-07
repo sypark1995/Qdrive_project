@@ -56,6 +56,4 @@ data class RouteModel(
                 .replace("]", "")
                 .replace(", ", "\n")
     }
-
-
 }

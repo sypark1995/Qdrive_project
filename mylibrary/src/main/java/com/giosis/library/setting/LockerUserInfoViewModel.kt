@@ -36,8 +36,8 @@ class LockerUserInfoViewModel : BaseViewModel() {
     val expiryDate: MutableLiveData<String>
         get() = _expiryDate
 
-    private val _barcodeImg = MutableLiveData<Bitmap>()
-    val barcodeImg: MutableLiveData<Bitmap>
+    private val _barcodeImg = MutableLiveData<Bitmap?>()
+    val barcodeImg: MutableLiveData<Bitmap?>
         get() = _barcodeImg
 
 
