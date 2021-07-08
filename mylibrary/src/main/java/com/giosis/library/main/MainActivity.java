@@ -653,6 +653,8 @@ public class MainActivity extends AppBaseActivity {
                     }.getType());
 
                     insertRestDays(list);
+                }, er -> {
+                    Toast.makeText(MainActivity.this, "api error "+ er.getMessage(), Toast.LENGTH_SHORT).show();
                 });
 
         RetrofitClient.INSTANCE.instanceDynamic().requestGetRestDays(Calendar.getInstance().get(Calendar.YEAR) + 1, Preferences.INSTANCE.getUserNation(),
@@ -666,6 +668,8 @@ public class MainActivity extends AppBaseActivity {
                     }.getType());
 
                     insertRestDays(list);
+                }, er -> {
+                    Toast.makeText(MainActivity.this, "api error "+ er.getMessage(), Toast.LENGTH_SHORT).show();
                 });
 
 
@@ -1011,26 +1015,34 @@ public class MainActivity extends AppBaseActivity {
                         .subscribeOn(Schedulers.io())
                         .subscribe(it -> {
 
-                            int count = new Gson().fromJson(it.getResultObject(), new TypeToken<Integer>() {
-                            }.getType());
+                            if (it.getResultObject() != null) {
+                                int count = new Gson().fromJson(it.getResultObject(), new TypeToken<Integer>() {
+                                }.getType());
 
-                            RetrofitClient.INSTANCE.instanceDynamic().requestGetNewMessageCountFromQxSystem(Preferences.INSTANCE.getUserId(),
-                                    DataUtil.appID, Preferences.INSTANCE.getUserNation())
-                                    .subscribeOn(Schedulers.io())
-                                    .observeOn(AndroidSchedulers.mainThread())
-                                    .subscribe(it1 -> {
+                                RetrofitClient.INSTANCE.instanceDynamic().requestGetNewMessageCountFromQxSystem(Preferences.INSTANCE.getUserId(),
+                                        DataUtil.appID, Preferences.INSTANCE.getUserNation())
+                                        .subscribeOn(Schedulers.io())
+                                        .observeOn(AndroidSchedulers.mainThread())
+                                        .subscribe(it1 -> {
+                                            if (it1.getResultObject() != null) {
+                                                int adminCount = new Gson().fromJson(it1.getResultObject(), new TypeToken<Integer>() {
+                                                }.getType());
 
-                                        int adminCount = new Gson().fromJson(it1.getResultObject(), new TypeToken<Integer>() {
-                                        }.getType());
+                                                Log.e("Message", "count >>>> " + count + " / " + adminCount);
 
-                                        Log.e("Message", "count >>>> " + count + " / " + adminCount);
+                                                if (0 < count || 0 < adminCount) {
+                                                    setMessageCount(count, adminCount);
+                                                } else {
+                                                    goneMessageCount();
+                                                }
+                                            }
+                                        }, error -> {
+                                            Toast.makeText(MainActivity.this, "api error "+ error.getMessage(), Toast.LENGTH_SHORT).show();
+                                        });
+                            }
 
-                                        if (0 < count || 0 < adminCount) {
-                                            setMessageCount(count, adminCount);
-                                        } else {
-                                            goneMessageCount();
-                                        }
-                                    });
+                        }, er -> {
+                            Toast.makeText(MainActivity.this, "api error "+ er.getMessage(), Toast.LENGTH_SHORT).show();
                         });
             } catch (Exception ignore) {
             }
