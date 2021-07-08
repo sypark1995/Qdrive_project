@@ -1011,26 +1011,29 @@ public class MainActivity extends AppBaseActivity {
                         .subscribeOn(Schedulers.io())
                         .subscribe(it -> {
 
-                            int count = new Gson().fromJson(it.getResultObject(), new TypeToken<Integer>() {
-                            }.getType());
+                            if (it.getResultObject() != null) {
+                                int count = new Gson().fromJson(it.getResultObject(), new TypeToken<Integer>() {
+                                }.getType());
 
-                            RetrofitClient.INSTANCE.instanceDynamic().requestGetNewMessageCountFromQxSystem(Preferences.INSTANCE.getUserId(),
-                                    DataUtil.appID, Preferences.INSTANCE.getUserNation())
-                                    .subscribeOn(Schedulers.io())
-                                    .observeOn(AndroidSchedulers.mainThread())
-                                    .subscribe(it1 -> {
+                                RetrofitClient.INSTANCE.instanceDynamic().requestGetNewMessageCountFromQxSystem(Preferences.INSTANCE.getUserId(),
+                                        DataUtil.appID, Preferences.INSTANCE.getUserNation())
+                                        .subscribeOn(Schedulers.io())
+                                        .observeOn(AndroidSchedulers.mainThread())
+                                        .subscribe(it1 -> {
+                                            if (it1.getResultObject() != null) {
+                                                int adminCount = new Gson().fromJson(it1.getResultObject(), new TypeToken<Integer>() {
+                                                }.getType());
 
-                                        int adminCount = new Gson().fromJson(it1.getResultObject(), new TypeToken<Integer>() {
-                                        }.getType());
+                                                Log.e("Message", "count >>>> " + count + " / " + adminCount);
 
-                                        Log.e("Message", "count >>>> " + count + " / " + adminCount);
-
-                                        if (0 < count || 0 < adminCount) {
-                                            setMessageCount(count, adminCount);
-                                        } else {
-                                            goneMessageCount();
-                                        }
-                                    }, it1 -> Log.e(RetrofitClient.errorTag, TAG + " - " + it1.toString()));
+                                                if (0 < count || 0 < adminCount) {
+                                                    setMessageCount(count, adminCount);
+                                                } else {
+                                                    goneMessageCount();
+                                                }
+                                            }
+                                        }, it1 -> Log.e(RetrofitClient.errorTag, TAG + " - " + it1.toString()));
+                            }
                         }, it -> Log.e(RetrofitClient.errorTag, TAG + " - " + it.toString()));
             } catch (Exception ignore) {
             }
