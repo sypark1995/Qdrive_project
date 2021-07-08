@@ -4,7 +4,6 @@ import android.app.AlertDialog
 import android.os.Bundle
 import android.os.Handler
 import android.os.Looper
-import android.os.Message
 import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
@@ -27,14 +26,22 @@ import java.util.*
  */
 class AdminMessageListFragment : Fragment() {
 
+    var TAG = "AdminMessageListFragment"
     lateinit var binding: FragmentMessageListBinding
 
     // 5 min refresh
-    lateinit var handler: AsyncHandler
-    private lateinit var adminThread: AdminThread
+    val handler = Handler(Looper.getMainLooper())
 
-    var oldResultString: String = ""
-    var newResultString: String = ""
+    private val task = object : Runnable {
+        override fun run() {
+
+            callServer()
+            handler.postDelayed(this, 5 * 60 * 1000)
+        }
+    }
+
+    private var oldResultString: String = ""
+    private var newResultString: String = ""
 
 
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View {
@@ -48,148 +55,108 @@ class AdminMessageListFragment : Fragment() {
         super.onResume()
 
         if (!NetworkUtil.isNetworkAvailable(activity)) {
-            try {
-                showDialog(resources.getString(R.string.text_warning), resources.getString(R.string.msg_network_connect_error))
-            } catch (e: Exception) {
-            }
+
+            showDialog(resources.getString(R.string.text_warning), resources.getString(R.string.msg_network_connect_error))
             return
         } else {
 
-            handler = AsyncHandler()
-            adminThread = AdminThread()
-            adminThread.start()
+            handler.post(task)
         }
     }
 
-    inner class AsyncHandler : Handler(Looper.getMainLooper()) {
-        override fun handleMessage(msg: Message) {
-            try {
 
-                if (activity != null && !activity!!.isFinishing) {
+    fun callServer() {
 
-                    oldResultString = newResultString
+        Log.e(TAG, "callServer ---- GetQdriverMessageListFromMessenger")
 
-                    if (newResultString.isEmpty())
-                        binding.progressBar.visibility = View.VISIBLE
+        if (activity != null && !requireActivity().isFinishing) {
 
-                    RetrofitClient.instanceDynamic().requestGetMessageListFromAdmin()
-                            .subscribeOn(Schedulers.io())
-                            .observeOn(AndroidSchedulers.mainThread())
-                            .subscribe({
+            oldResultString = newResultString
 
-                                if (oldResultString != "" && oldResultString.equals(newResultString, ignoreCase = true)) {
+            if (newResultString.isEmpty())
+                binding.progressBar.visibility = View.VISIBLE
 
-                                    Log.e(TAG, "$TAG  GetQdriverMessageListFromMessenger  EQUAL")
-                                } else {
-                                    if (it.resultObject != null) {
+            RetrofitClient.instanceDynamic().requestGetMessageListFromAdmin()
+                    .subscribeOn(Schedulers.io())
+                    .observeOn(AndroidSchedulers.mainThread())
+                    .subscribe({
 
-                                        newResultString = it.toString()
-                                        val list = Gson().fromJson<ArrayList<MessageListResult>>(it.resultObject,
-                                                object : TypeToken<ArrayList<MessageListResult>>() {}.type)
+                        if (oldResultString != "" && oldResultString.equals(newResultString, ignoreCase = true)) {
 
-                                        if (0 < list.size) {
+                            Log.e(TAG, "$TAG  GetQdriverMessageListFromMessenger  EQUAL")
+                        } else {
+                            if (it.resultObject != null) {
 
-                                            binding.textEmpty.visibility = View.GONE
+                                newResultString = it.toString()
+                                val list = Gson().fromJson<ArrayList<MessageListResult>>(it.resultObject,
+                                        object : TypeToken<ArrayList<MessageListResult>>() {}.type)
 
-                                            binding.recyclerMessages.visibility = View.VISIBLE
-                                            binding.recyclerMessages.adapter = MessageListAdapter("A", list)
+                                if (0 < list.size) {
 
-                                            val decoration = DividerItemDecoration(activity, VERTICAL)
-                                            binding.recyclerMessages.addItemDecoration(decoration)
+                                    binding.textEmpty.visibility = View.GONE
+
+                                    binding.recyclerMessages.visibility = View.VISIBLE
+                                    binding.recyclerMessages.adapter = MessageListAdapter("A", list)
+
+                                    val decoration = DividerItemDecoration(activity, VERTICAL)
+                                    binding.recyclerMessages.addItemDecoration(decoration)
 
 
-                                            var count = 0
+                                    var count = 0
 
-                                            for (i in list.indices) {
-                                                if (list[i].read_yn == "N") {
-                                                    count++
-                                                }
-                                            }
-
-                                            (activity as MessageListActivity).setAdminNewImage(count)
-                                        } else {
-
-                                            binding.recyclerMessages.visibility = View.GONE
-                                            binding.textEmpty.visibility = View.VISIBLE
-                                            binding.textEmpty.text = resources.getString(R.string.text_empty)
+                                    for (i in list.indices) {
+                                        if (list[i].read_yn == "N") {
+                                            count++
                                         }
                                     }
+
+                                    (activity as MessageListActivity).setAdminNewImage(count)
+                                } else {
+
+                                    binding.recyclerMessages.visibility = View.GONE
+                                    binding.textEmpty.visibility = View.VISIBLE
+                                    binding.textEmpty.text = resources.getString(R.string.text_empty)
                                 }
+                            }
+                        }
 
-                                binding.progressBar.visibility = View.GONE
-                            }, {
+                        binding.progressBar.visibility = View.GONE
+                    }, {
 
-                                binding.recyclerMessages.visibility = View.GONE
-                                binding.textEmpty.visibility = View.VISIBLE
-                                binding.textEmpty.text = resources.getString(R.string.text_error)
-                                binding.progressBar.visibility = View.GONE
+                        binding.recyclerMessages.visibility = View.GONE
+                        binding.textEmpty.visibility = View.VISIBLE
+                        binding.textEmpty.text = resources.getString(R.string.text_error)
+                        binding.progressBar.visibility = View.GONE
 
-                                Log.e("Exception", "$TAG  GetQdriverMessageListFromMessenger Exception : $it")
-                            })
-                }
-            } catch (e: Exception) {
-
-                Log.e("Exception", "$TAG  AsyncHandler Exception : $e")
-            }
+                        Log.e("Exception", "$TAG  GetQdriverMessageListFromMessenger Exception : $it")
+                    })
         }
     }
-
-
-    // NOTIFICATION.   AdminThread
-    inner class AdminThread : Thread() {
-        override fun run() {
-            super.run()
-
-            while (!currentThread().isInterrupted) {
-
-                try {
-
-                    val message = handler.obtainMessage()
-                    message.what = SEND_ADMIN_START
-                    handler.sendMessage(message)
-
-                    sleep(5 * 60 * 1000.toLong())
-                } catch (e: InterruptedException) {
-
-                    Log.e("Exception", "$TAG  AdminThread Exception : $e")
-                    currentThread().interrupt()
-                    e.printStackTrace()
-                }
-            }
-        }
-    }
-
 
     override fun onStop() {
         super.onStop()
 
         try {
 
-            adminThread.interrupt()
+            handler.removeCallbacks(task)
         } catch (e: Exception) {
-
-            Thread.currentThread().interrupt()
+            Log.e(TAG, "onStop Exception $e")
         }
     }
 
-    private fun showDialog(title: String?, msg: String?) {
+    private fun showDialog(title: String, msg: String) {
 
-        val alert = AlertDialog.Builder(activity)
-        alert.setTitle(title)
-        alert.setMessage(msg)
-        alert.setPositiveButton(resources.getString(R.string.button_close)
-        ) { dialog, _ ->
+        try {
+            val alert = AlertDialog.Builder(activity)
+            alert.setTitle(title)
+            alert.setMessage(msg)
+            alert.setPositiveButton(resources.getString(R.string.button_close)) { dialog, _ ->
 
-            dialog.dismiss()
-            requireActivity().finish()
+                dialog.dismiss()
+                requireActivity().finish()
+            }
+            alert.show()
+        } catch (ignore: Exception) {
         }
-        alert.show()
-    }
-
-
-    companion object {
-
-        var TAG = "AdminMessageListFragment"
-        const val SEND_ADMIN_START = 200
     }
 }

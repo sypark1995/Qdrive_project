@@ -653,7 +653,7 @@ public class MainActivity extends AppBaseActivity {
                     }.getType());
 
                     insertRestDays(list);
-                });
+                }, it -> Log.e(RetrofitClient.errorTag, TAG + " - " + it.toString()));
 
         RetrofitClient.INSTANCE.instanceDynamic().requestGetRestDays(Calendar.getInstance().get(Calendar.YEAR) + 1, Preferences.INSTANCE.getUserNation(),
                 DataUtil.appID, Preferences.INSTANCE.getUserNation())
@@ -666,7 +666,7 @@ public class MainActivity extends AppBaseActivity {
                     }.getType());
 
                     insertRestDays(list);
-                });
+                }, it -> Log.e(RetrofitClient.errorTag, TAG + " - " + it.toString()));
 
 
         if (gpsOnceEnable && gpsTrackerManager != null) {
@@ -1030,8 +1030,8 @@ public class MainActivity extends AppBaseActivity {
                                         } else {
                                             goneMessageCount();
                                         }
-                                    });
-                        });
+                                    }, it1 -> Log.e(RetrofitClient.errorTag, TAG + " - " + it1.toString()));
+                        }, it -> Log.e(RetrofitClient.errorTag, TAG + " - " + it.toString()));
             } catch (Exception ignore) {
             }
         } else {

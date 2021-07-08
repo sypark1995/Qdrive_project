@@ -36,16 +36,22 @@ class CustomerMessageListDetailActivity : CommonActivity() {
         ProgressDialog(this@CustomerMessageListDetailActivity)
     }
 
-    var messageDetailAdapter: MessageDetailAdapter? = null
-    var handler: AsyncHandler? = null
-    var customerThread: CustomerThread? = null
+    val handler = Handler(Looper.getMainLooper())
+    private val task = object : Runnable {
+        override fun run() {
 
-    var oldResultString: String = ""
-    var newResultString: String = ""
-    var messageList: ArrayList<MessageDetailResult> = ArrayList()
+            callServer()
+            handler.postDelayed(this, 60 * 1000)
+        }
+    }
 
-    var questionNo: String = "0"
-    var trackingNo: String = ""
+    private var oldResultString: String = ""
+    private var newResultString: String = ""
+    private var messageList: ArrayList<MessageDetailResult> = ArrayList()
+    private var messageDetailAdapter: MessageDetailAdapter? = null
+
+    private var questionNo: String = "0"
+    var trackingNo = ""
     private var sendTitle: String = ""
     private var sendMessage: String = ""
 
@@ -88,10 +94,8 @@ class CustomerMessageListDetailActivity : CommonActivity() {
         binding.layoutSend.setOnClickListener {
 
             if (!NetworkUtil.isNetworkAvailable(this@CustomerMessageListDetailActivity)) {
-                try {
-                    showDialog(resources.getString(R.string.text_warning), resources.getString(R.string.msg_network_connect_error))
-                } catch (ignored: Exception) {
-                }
+
+                showDialog(resources.getString(R.string.text_warning), resources.getString(R.string.msg_network_connect_error))
             } else {
                 sendChatMessage()
             }
@@ -104,11 +108,9 @@ class CustomerMessageListDetailActivity : CommonActivity() {
     override fun onResume() {
         super.onResume()
 
-        if (!NetworkUtil.isNetworkAvailable(this)) {
-            try {
-                showDialog(resources.getString(R.string.text_warning), resources.getString(R.string.msg_network_connect_error))
-            } catch (ignored: Exception) {
-            }
+        if (!NetworkUtil.isNetworkAvailable(this@CustomerMessageListDetailActivity)) {
+
+            showDialog(resources.getString(R.string.text_warning), resources.getString(R.string.msg_network_connect_error))
         } else if (questionNo == "0") {
 
             Log.e(TAG, "in LIST")
@@ -132,9 +134,7 @@ class CustomerMessageListDetailActivity : CommonActivity() {
                                     questionNo = list[0].questionNo.toString()
                             }
 
-                            handler = AsyncHandler()
-                            customerThread = CustomerThread()
-                            customerThread!!.start()
+                            handler.post(task)
                         }
                     }, {
 
@@ -144,57 +144,48 @@ class CustomerMessageListDetailActivity : CommonActivity() {
                     })
         } else {
 
-            handler = AsyncHandler()
-            customerThread = CustomerThread()
-            customerThread!!.start()
+            handler.post(task)
         }
     }
 
+    fun callServer() {
 
-    inner class AsyncHandler : Handler(Looper.getMainLooper()) {
-        override fun handleMessage(msg: Message) {
-            try {
-                if (!isFinishing) {
+        try {
+            if (!isFinishing) {
 
-                    oldResultString = newResultString
+                oldResultString = newResultString
 
-                    if (newResultString.isEmpty())
-                        progressBar.visibility = View.VISIBLE
+                if (newResultString.isEmpty())
+                    progressBar.visibility = View.VISIBLE
 
-                    RetrofitClient.instanceDynamic().requestGetQdriverMessageDetail(questionNo)
-                            .subscribeOn(Schedulers.io())
-                            .observeOn(AndroidSchedulers.mainThread())
-                            .subscribe({
+                Log.e(TAG, "callServer ---- GetQdriverMessageDetail")
+                RetrofitClient.instanceDynamic().requestGetQdriverMessageDetail(questionNo)
+                        .subscribeOn(Schedulers.io())
+                        .observeOn(AndroidSchedulers.mainThread())
+                        .subscribe({
 
-                                if (oldResultString != "" && oldResultString.equals(newResultString, ignoreCase = true)) {
+                            if (oldResultString != "" && oldResultString.equals(newResultString, ignoreCase = true)) {
 
-                                    Log.e("Message", " GetQdriverMessageDetail    EQUAL")
-                                } else {
+                                Log.e(TAG, " GetQdriverMessageDetail    EQUAL")
+                            } else {
 
-                                    if (it.resultObject?.isJsonNull == false && it.resultObject != null) {
+                                if (it.resultObject?.isJsonNull == false && it.resultObject != null) {
 
-                                        newResultString = it.toString()
-                                        messageList = Gson().fromJson(it.resultObject, object : TypeToken<ArrayList<MessageDetailResult>>() {}.type)
-                                        if (0 < messageList.size) {
+                                    newResultString = it.toString()
+                                    messageList = Gson().fromJson(it.resultObject, object : TypeToken<ArrayList<MessageDetailResult>>() {}.type)
+                                    if (0 < messageList.size) {
 
-                                            for (i in messageList.indices) {
+                                        for (i in messageList.indices) {
 
-                                                var dateString = messageList[i].send_date
-                                                val dateSplitArray = dateString.split(":".toRegex()).toTypedArray()
-                                                dateString = dateSplitArray[0] + ":" + dateSplitArray[1]
-                                                messageList[i].send_date = dateString
-                                            }
-
-                                            binding.textMessageTitle.text = messageList[0].title
-                                            messageDetailAdapter = MessageDetailAdapter(this@CustomerMessageListDetailActivity, messageList, "C")
-                                            binding.listDetailMessage.adapter = messageDetailAdapter
-                                        } else {
-
-                                            binding.textMessageTitle.text = resources.getString(R.string.text_qxpress_driver)
-                                            messageList = ArrayList()
-                                            messageDetailAdapter = MessageDetailAdapter(this@CustomerMessageListDetailActivity, messageList, "C")
-                                            binding.listDetailMessage.adapter = messageDetailAdapter
+                                            var dateString = messageList[i].send_date
+                                            val dateSplitArray = dateString.split(":".toRegex()).toTypedArray()
+                                            dateString = dateSplitArray[0] + ":" + dateSplitArray[1]
+                                            messageList[i].send_date = dateString
                                         }
+
+                                        binding.textMessageTitle.text = messageList[0].title
+                                        messageDetailAdapter = MessageDetailAdapter(this@CustomerMessageListDetailActivity, messageList, "C")
+                                        binding.listDetailMessage.adapter = messageDetailAdapter
                                     } else {
 
                                         binding.textMessageTitle.text = resources.getString(R.string.text_qxpress_driver)
@@ -202,52 +193,35 @@ class CustomerMessageListDetailActivity : CommonActivity() {
                                         messageDetailAdapter = MessageDetailAdapter(this@CustomerMessageListDetailActivity, messageList, "C")
                                         binding.listDetailMessage.adapter = messageDetailAdapter
                                     }
+                                } else {
+
+                                    binding.textMessageTitle.text = resources.getString(R.string.text_qxpress_driver)
+                                    messageList = ArrayList()
+                                    messageDetailAdapter = MessageDetailAdapter(this@CustomerMessageListDetailActivity, messageList, "C")
+                                    binding.listDetailMessage.adapter = messageDetailAdapter
                                 }
+                            }
 
-                                progressBar.visibility = View.GONE
-                            }, {
+                            progressBar.visibility = View.GONE
+                        }, {
 
-                                progressBar.visibility = View.GONE
-                                Toast.makeText(this@CustomerMessageListDetailActivity, resources.getString(R.string.text_error) + "!! " + resources.getString(R.string.msg_please_try_again), Toast.LENGTH_SHORT).show()
-                                Log.e("Exception", "$TAG GetQdriverMessageDetail Exception : $it")
-                            })
-                }
-            } catch (e: Exception) {
-                Log.e("krm0219", "$TAG  AsyncHandler Exception : $e")
+                            progressBar.visibility = View.GONE
+                            Toast.makeText(this@CustomerMessageListDetailActivity, resources.getString(R.string.text_error) + "!! " + resources.getString(R.string.msg_please_try_again), Toast.LENGTH_SHORT).show()
+                            Log.e("Exception", "$TAG GetQdriverMessageDetail Exception : $it")
+                        })
             }
-        }
-    }
-
-
-    // NOTIFICATION.   CustomerThread
-    inner class CustomerThread : Thread() {
-        override fun run() {
-            super.run()
-
-            while (!currentThread().isInterrupted) {
-                try {
-
-                    val message = handler!!.obtainMessage()
-                    message.what = SEND_CUTOMER_START
-                    handler!!.sendMessage(message)
-
-                    sleep((60 * 1000).toLong())
-                } catch (e: InterruptedException) {
-
-                    Log.e("Exception", "$TAG  CustomerThread Exception : $e")
-                    currentThread().interrupt()
-                    e.printStackTrace()
-                }
-            }
+        } catch (e: Exception) {
+            Log.e("Exception", "$TAG  AsyncHandler Exception : $e")
         }
     }
 
     override fun onStop() {
         super.onStop()
+
         try {
-            customerThread!!.interrupt()
+            handler.removeCallbacks(task)
         } catch (e: Exception) {
-            Thread.currentThread().interrupt()
+            Log.e(TAG, "onStop Exception $e")
         }
     }
 
@@ -318,25 +292,24 @@ class CustomerMessageListDetailActivity : CommonActivity() {
 
                     progressBar.visibility = View.GONE
                     Toast.makeText(this@CustomerMessageListDetailActivity, resources.getString(R.string.text_error) + "!! " + resources.getString(R.string.msg_please_try_again), Toast.LENGTH_SHORT).show()
-                    Log.e("Exception", "${AdminMessageListFragment.TAG}  GetQdriverMessageListFromMessenger Exception : $it")
+                    Log.e("Exception", "$TAG  GetQdriverMessageListFromMessenger Exception : $it")
                 })
     }
 
 
-    private fun showDialog(title: String?, msg: String?) {
+    private fun showDialog(title: String, msg: String) {
 
-        val alertBuilder = AlertDialog.Builder(this)
-        alertBuilder.setTitle(title)
-        alertBuilder.setMessage(msg)
-        alertBuilder.setPositiveButton(resources.getString(R.string.button_close)
-        ) { dialog: DialogInterface, _: Int ->
-            dialog.dismiss()
-            finish()
+        try {
+            val alertBuilder = AlertDialog.Builder(this)
+            alertBuilder.setTitle(title)
+            alertBuilder.setMessage(msg)
+            alertBuilder.setPositiveButton(resources.getString(R.string.button_close)) { dialog: DialogInterface, _ ->
+                dialog.dismiss()
+                finish()
+            }
+            alertBuilder.show()
+        } catch (ignore: Exception) {
+
         }
-        alertBuilder.show()
-    }
-
-    companion object {
-        const val SEND_CUTOMER_START = 100
     }
 }

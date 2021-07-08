@@ -29,7 +29,7 @@ object CallServer {
                     callback.onServerResult(it)
                 }, {
 
-                    Log.e(RetrofitClient.TAG, it.message.toString())
+                    Log.e(RetrofitClient.errorTag, it.toString())
                     callback.onServerError(R.string.msg_please_try_again)
                 })
     }

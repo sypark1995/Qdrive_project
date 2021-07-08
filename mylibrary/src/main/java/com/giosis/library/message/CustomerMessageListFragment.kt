@@ -6,7 +6,6 @@ import android.content.DialogInterface
 import android.os.Bundle
 import android.os.Handler
 import android.os.Looper
-import android.os.Message
 import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
@@ -29,11 +28,19 @@ import java.util.*
 
 class CustomerMessageListFragment : Fragment() {
 
+    var TAG = "CustomerMessageListFragment"
     lateinit var binding: FragmentMessageListBinding
 
     // 1 min refresh
-    lateinit var handler: AsyncHandler
-    lateinit var customerThread: Thread
+    val handler = Handler(Looper.getMainLooper())
+
+    private val task = object : Runnable {
+        override fun run() {
+
+            callServer()
+            handler.postDelayed(this, 60 * 1000)
+        }
+    }
 
     private var currentPage = 1
     private var totalPage = 1
@@ -87,27 +94,13 @@ class CustomerMessageListFragment : Fragment() {
             showDialog(resources.getString(R.string.text_warning), resources.getString(R.string.msg_network_connect_error))
         } else {
 
-            handler = AsyncHandler()
-            customerThread = CustomerThread()
-            customerThread.start()
+            handler.post(task)
         }
     }
-
-
-    inner class AsyncHandler : Handler(Looper.getMainLooper()) {
-        override fun handleMessage(msg: Message) {
-            try {
-
-                callServer()
-            } catch (e: Exception) {
-                Log.e("Exception", "$TAG  AsyncHandler Exception : $e")
-            }
-        }
-    }
-
 
     @SuppressLint("SimpleDateFormat")
     fun callServer() {
+        Log.e(TAG, "callServer ---- GetMessageListFromCustomer")
 
         if (activity != null && !requireActivity().isFinishing) {
 
@@ -125,7 +118,7 @@ class CustomerMessageListFragment : Fragment() {
             val startDate = dateFormat.format(yDate).toString() + " 00:00:00"
             val endDate = dateFormat.format(Date()).toString() + " 23:59:59"
 
-            RetrofitClient.instanceDynamic().requestGetMessageListFromCustomer(currentPage.toString(), "15", startDate, endDate)//, "Ahleb.sp")
+            RetrofitClient.instanceDynamic().requestGetMessageListFromCustomer(currentPage.toString(), "15", startDate, endDate, "Ahleb.sp")
                     .subscribeOn(Schedulers.io())
                     .observeOn(AndroidSchedulers.mainThread())
                     .subscribe({
@@ -189,60 +182,30 @@ class CustomerMessageListFragment : Fragment() {
     }
 
 
-    internal inner class CustomerThread : Thread() {
-        override fun run() {
-            super.run()
-            while (!currentThread().isInterrupted) {
-
-                try {
-
-                    val message = handler.obtainMessage()
-                    message.what = SEND_CUTOMER_START
-                    handler.sendMessage(message)
-
-                    sleep((60 * 1000).toLong())
-                } catch (e: Exception) {
-
-                    Log.e("Exception", "$TAG  CustomerThread Exception : $e")
-                    currentThread().interrupt()
-                    e.printStackTrace()
-                }
-            }
-        }
-    }
-
     override fun onStop() {
         super.onStop()
 
         try {
-            customerThread.interrupt()
+            handler.removeCallbacks(task)
         } catch (e: Exception) {
-            Thread.currentThread().interrupt()
+            Log.e(TAG, "onStop Exception $e")
         }
     }
 
 
-    private fun showDialog(title: String?, msg: String?) {
+    private fun showDialog(title: String, msg: String) {
 
         try {
             val alertBuilder = AlertDialog.Builder(activity)
             alertBuilder.setTitle(title)
             alertBuilder.setMessage(msg)
-            alertBuilder.setPositiveButton(resources.getString(R.string.button_close)
-            ) { dialog: DialogInterface, _: Int ->
+            alertBuilder.setPositiveButton(resources.getString(R.string.button_close)) { dialog: DialogInterface, _ ->
+
                 dialog.dismiss()
                 requireActivity().finish()
             }
             alertBuilder.show()
         } catch (ignore: Exception) {
-
         }
-    }
-
-
-    companion object {
-
-        var TAG = "CustomerMessageListFragment"
-        private const val SEND_CUTOMER_START = 100
     }
 }

@@ -17,6 +17,7 @@ import java.util.concurrent.TimeUnit
 object RetrofitClient {
 
     const val TAG = "Retrofit"
+    const val errorTag = "Retrofit_Error"
 
 
     class AppInterceptor : Interceptor {
@@ -31,11 +32,7 @@ object RetrofitClient {
 
     private fun loggingInterceptor(): HttpLoggingInterceptor {
 
-        val interceptor = HttpLoggingInterceptor(object : HttpLoggingInterceptor.Logger {
-            override fun log(message: String) {
-                Log.i(TAG, message + "")
-            }
-        })
+        val interceptor = HttpLoggingInterceptor { message -> Log.i(TAG, message + "") }
 
         // BASIC
         // HEADERS
@@ -81,7 +78,6 @@ object RetrofitClient {
         instanceDynamic = retrofit.create(RetrofitService::class.java)
         return instanceDynamic
     }
-
 
     fun instanceBarcode(): RetrofitService {
 

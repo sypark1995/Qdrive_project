@@ -183,7 +183,7 @@ public class FusedProviderWorker {
                     } catch (Exception e) {
                         Log.e("Exception", " Fused requestSetGPSLocation  Exception " + e.toString());
                     }
-                }, it -> Toast.makeText(context, context.getResources().getString(com.giosis.library.R.string.msg_error_check_again), Toast.LENGTH_SHORT).show());
+                }, it -> Toast.makeText(context, context.getResources().getString(R.string.msg_error_check_again), Toast.LENGTH_SHORT).show());
     }
 
     @SuppressLint("SimpleDateFormat")

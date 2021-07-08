@@ -34,16 +34,20 @@ class AdminMessageListDetailActivity : CommonActivity() {
         ProgressDialog(this@AdminMessageListDetailActivity)
     }
 
+    val handler = Handler(Looper.getMainLooper())
+    private val task = object : Runnable {
+        override fun run() {
 
-    var messageDetailAdapter: MessageDetailAdapter? = null
-    var handler: AsyncHandler? = null
-    private var adminThread: AdminThread? = null
+            callServer()
+            handler.postDelayed(this, 5 * 60 * 1000)
+        }
+    }
 
-    var senderID: String = ""
-
-    var oldResultString: String = ""
-    var newResultString: String = ""
-    var messageList: ArrayList<MessageDetailResult> = ArrayList()
+    private var senderID: String = ""
+    private var oldResultString: String = ""
+    private var newResultString: String = ""
+    private var messageList: ArrayList<MessageDetailResult> = ArrayList()
+    private var messageDetailAdapter: MessageDetailAdapter? = null
 
     @SuppressLint("ClickableViewAccessibility")
     public override fun onCreate(savedInstanceState: Bundle?) {
@@ -81,10 +85,8 @@ class AdminMessageListDetailActivity : CommonActivity() {
         binding.layoutSend.setOnClickListener {
 
             if (!NetworkUtil.isNetworkAvailable(this@AdminMessageListDetailActivity)) {
-                try {
-                    showDialog(resources.getString(R.string.text_warning), resources.getString(R.string.msg_network_connect_error))
-                } catch (e: Exception) {
-                }
+
+                showDialog(resources.getString(R.string.text_warning), resources.getString(R.string.msg_network_connect_error))
             } else {
                 sendChatMessage()
             }
@@ -98,110 +100,79 @@ class AdminMessageListDetailActivity : CommonActivity() {
         super.onResume()
 
         if (!NetworkUtil.isNetworkAvailable(this@AdminMessageListDetailActivity)) {
-            try {
-                showDialog(resources.getString(R.string.text_warning), resources.getString(R.string.msg_network_connect_error))
-            } catch (e: Exception) {
-            }
+
+            showDialog(resources.getString(R.string.text_warning), resources.getString(R.string.msg_network_connect_error))
             return
         } else {
 
-            handler = AsyncHandler()
-            adminThread = AdminThread()
-            adminThread!!.start()
+            handler.post(task)
         }
     }
 
+    fun callServer() {
 
-    inner class AsyncHandler : Handler(Looper.getMainLooper()) {
-        override fun handleMessage(msg: Message) {
-            try {
-                if (!isFinishing) {
+        try {
+            if (!isFinishing) {
 
-                    oldResultString = newResultString
+                oldResultString = newResultString
 
-                    if (newResultString.isEmpty())
-                        progressBar.visibility = View.VISIBLE
+                if (newResultString.isEmpty())
+                    progressBar.visibility = View.VISIBLE
 
-                    RetrofitClient.instanceDynamic().requestGetMessageDetailFromAdmin(senderID)
-                            .subscribeOn(Schedulers.io())
-                            .observeOn(AndroidSchedulers.mainThread())
-                            .subscribe({
+                Log.e(tag, "callServer ---- GetQdriverMessageDetailFromMessenger")
+                RetrofitClient.instanceDynamic().requestGetMessageDetailFromAdmin(senderID)
+                        .subscribeOn(Schedulers.io())
+                        .observeOn(AndroidSchedulers.mainThread())
+                        .subscribe({
 
-                                if (oldResultString != "" && oldResultString.equals(newResultString, ignoreCase = true)) {
+                            if (oldResultString != "" && oldResultString.equals(newResultString, ignoreCase = true)) {
 
-                                    Log.e("Message", " GetQdriverMessageDetailFromMessenger    EQUAL")
-                                } else {
+                                Log.e("Message", " GetQdriverMessageDetailFromMessenger    EQUAL")
+                            } else {
 
-                                    if (it.resultObject != null) {
+                                if (it.resultObject != null) {
 
-                                        newResultString = it.toString()
-                                        messageList = Gson().fromJson(it.resultObject, object : TypeToken<ArrayList<MessageDetailResult>>() {}.type)
+                                    newResultString = it.toString()
+                                    messageList = Gson().fromJson(it.resultObject, object : TypeToken<ArrayList<MessageDetailResult>>() {}.type)
 
-                                        if (0 < messageList.size) {
+                                    if (0 < messageList.size) {
 
-                                            for (i in messageList.indices) {
+                                        for (i in messageList.indices) {
 
-                                                var dateString = messageList[i].send_date
-                                                val dateSplitArray = dateString.split(":".toRegex()).toTypedArray()
-                                                dateString = dateSplitArray[0] + ":" + dateSplitArray[1]
-                                                messageList[i].send_date = dateString
-                                            }
-
-                                            messageDetailAdapter = MessageDetailAdapter(this@AdminMessageListDetailActivity, messageList, "A")
-                                            binding.listDetailMessage.adapter = messageDetailAdapter
-                                            binding.listDetailMessage.smoothScrollToPosition(messageList.size - 1)
-                                        } else {
-
-                                            Toast.makeText(this@AdminMessageListDetailActivity, resources.getString(R.string.text_empty), Toast.LENGTH_SHORT).show()
+                                            var dateString = messageList[i].send_date
+                                            val dateSplitArray = dateString.split(":".toRegex()).toTypedArray()
+                                            dateString = dateSplitArray[0] + ":" + dateSplitArray[1]
+                                            messageList[i].send_date = dateString
                                         }
+
+                                        messageDetailAdapter = MessageDetailAdapter(this@AdminMessageListDetailActivity, messageList, "A")
+                                        binding.listDetailMessage.adapter = messageDetailAdapter
+                                        binding.listDetailMessage.smoothScrollToPosition(messageList.size - 1)
+                                    } else {
+
+                                        Toast.makeText(this@AdminMessageListDetailActivity, resources.getString(R.string.text_empty), Toast.LENGTH_SHORT).show()
                                     }
                                 }
+                            }
 
-                                progressBar.visibility = View.GONE
-                            }, {
+                            progressBar.visibility = View.GONE
+                        }, {
 
-                                Toast.makeText(this@AdminMessageListDetailActivity, resources.getString(R.string.text_error) + "!! " + resources.getString(R.string.msg_please_try_again), Toast.LENGTH_SHORT).show()
-                                Log.e("Exception", "${AdminMessageListFragment.TAG}  GetQdriverMessageListFromMessenger Exception : $it")
-                            })
-                }
-            } catch (e: Exception) {
-                Log.e("Exception", "$tag  AsyncHandler Exception : $e")
+                            Toast.makeText(this@AdminMessageListDetailActivity, resources.getString(R.string.text_error) + "!! " + resources.getString(R.string.msg_please_try_again), Toast.LENGTH_SHORT).show()
+                            Log.e("Exception", "$tag  GetQdriverMessageListFromMessenger Exception : $it")
+                        })
             }
+        } catch (e: Exception) {
+            Log.e("Exception", "$tag  AsyncHandler Exception : $e")
         }
     }
-
-
-    // NOTIFICATION.  AdminThread
-    inner class AdminThread : Thread() {
-        override fun run() {
-            super.run()
-
-            while (!currentThread().isInterrupted) {
-
-                try {
-
-                    val message = handler!!.obtainMessage()
-                    message.what = SEND_ADMIN_START
-                    handler!!.sendMessage(message)
-
-                    sleep(5 * 60 * 1000.toLong())
-                } catch (e: InterruptedException) {
-
-                    Log.e("Exception", "$tag  AdminThread Exception : $e")
-                    currentThread().interrupt()
-                    e.printStackTrace()
-                }
-            }
-        }
-    }
-
 
     override fun onStop() {
         super.onStop()
         try {
-            adminThread!!.interrupt()
+            handler.removeCallbacks(task)
         } catch (e: Exception) {
-            Thread.currentThread().interrupt()
+            Log.e(tag, "onStop Exception $e")
         }
     }
 
@@ -262,25 +233,22 @@ class AdminMessageListDetailActivity : CommonActivity() {
                 }, {
 
                     Toast.makeText(this@AdminMessageListDetailActivity, resources.getString(R.string.text_error) + "!! " + resources.getString(R.string.msg_please_try_again), Toast.LENGTH_SHORT).show()
-                    Log.e("Exception", "${AdminMessageListFragment.TAG}  GetQdriverMessageListFromMessenger Exception : $it")
+                    Log.e("Exception", "$tag  GetQdriverMessageListFromMessenger Exception : $it")
                 })
     }
 
     private fun showDialog(title: String?, msg: String?) {
 
-        val alert = AlertDialog.Builder(this@AdminMessageListDetailActivity)
-        alert.setTitle(title)
-        alert.setMessage(msg)
-        alert.setPositiveButton(resources.getString(R.string.button_close)
-        ) { dialog, _ ->
-            dialog.dismiss()
-            finish()
+        try {
+            val alert = AlertDialog.Builder(this@AdminMessageListDetailActivity)
+            alert.setTitle(title)
+            alert.setMessage(msg)
+            alert.setPositiveButton(resources.getString(R.string.button_close)) { dialog, _ ->
+                dialog.dismiss()
+                finish()
+            }
+            alert.show()
+        } catch (ignore: Exception) {
         }
-        alert.show()
-    }
-
-
-    companion object {
-        const val SEND_ADMIN_START = 200
     }
 }

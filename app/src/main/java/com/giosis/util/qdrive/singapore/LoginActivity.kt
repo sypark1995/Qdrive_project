@@ -261,11 +261,11 @@ class LoginActivity : CommonActivity() {
                                     binding.editLoginPassword.setText("")
                                 }
                             }, {
-                                Log.e(RetrofitClient.TAG, it.message.toString())
+
+                                Log.e(RetrofitClient.errorTag, it.toString())
                                 progressBar.visibility = View.GONE
                                 showDialog(it.message.toString())
                             })
-
                 }
             }
         }

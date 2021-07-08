@@ -267,6 +267,7 @@ class LoginActivity : CommonActivity() {
                                 }
                             }, {
 
+                                Log.e(RetrofitClient.errorTag, it.toString())
                                 progressBar.visibility = View.GONE
                                 showDialog(it.toString())
                             })

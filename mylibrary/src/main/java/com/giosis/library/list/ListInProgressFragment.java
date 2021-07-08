@@ -362,7 +362,7 @@ public class ListInProgressFragment extends Fragment
 
                         Log.e("Server", " requestGetTodayPickupDoneList  result  " + it.getResultCode());
 
-                            if (it.getResultCode() == 0) {
+                        if (it.getResultCode() == 0) {
 
                             Gson gson = new Gson();
                             ArrayList<PickupAssignResult.QSignPickupList> list = gson.fromJson(it.getResultObject(), new TypeToken<ArrayList<PickupAssignResult.QSignPickupList>>() {
@@ -372,8 +372,7 @@ public class ListInProgressFragment extends Fragment
                                 fragmentListener.onTodayDoneCountRefresh(list != null ? list.size() : 0);
                             }
                         }
-                    }, it -> {
-                    });
+                    }, it -> Log.e(RetrofitClient.errorTag, TAG + " - " + it.toString()));
         } catch (Exception e) {
 
             RetrofitClient.INSTANCE.instanceCommonService()
