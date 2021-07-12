@@ -35,8 +35,6 @@ class PickupDoneActivity : CommonActivity() {
 
     var gpsTrackerManager: GPSTrackerManager? = null
     var gpsEnable = false
-    var latitude = 0.0
-    var longitude = 0.0
 
     private var locationModel = LocationModel()
 
@@ -130,14 +128,15 @@ class PickupDoneActivity : CommonActivity() {
         if (isPermissionTrue) {
 
             gpsTrackerManager = GPSTrackerManager(this@PickupDoneActivity)
-            gpsEnable = gpsTrackerManager!!.enableGPSSetting()
+            gpsTrackerManager?.let {
+
+                gpsEnable = it.enableGPSSetting()
+            }
 
             if (gpsEnable && gpsTrackerManager != null) {
 
                 gpsTrackerManager!!.GPSTrackerStart()
-                latitude = gpsTrackerManager!!.latitude
-                longitude = gpsTrackerManager!!.longitude
-                Log.e("Location", "$tag GPSTrackerManager onResume : $latitude  $longitude  ")
+                Log.e("Location", "$tag GPSTrackerManager onResume : ${gpsTrackerManager!!.latitude}  ${gpsTrackerManager!!.longitude}  ")
             } else {
 
                 DataUtil.enableLocationSettings(this@PickupDoneActivity)
@@ -170,7 +169,7 @@ class PickupDoneActivity : CommonActivity() {
      * 실시간 Upload 처리
      * add by jmkang 2014-07-15
      */
-    fun saveServerUploadSign() {
+    private fun saveServerUploadSign() {
         try {
 
             if (!NetworkUtil.isNetworkAvailable(this@PickupDoneActivity)) {
@@ -179,13 +178,14 @@ class PickupDoneActivity : CommonActivity() {
                 return
             }
 
-            if (gpsTrackerManager != null) {
-                latitude = gpsTrackerManager!!.latitude
-                longitude = gpsTrackerManager!!.longitude
-
-                locationModel.setDriverLocation(latitude, longitude)
-                Log.e("Location", "$tag saveServerUploadSign  GPSTrackerManager : $latitude  $longitude  - ${locationModel.driverLat}, ${locationModel.driverLng}")
+            var latitude = 0.0
+            var longitude = 0.0
+            gpsTrackerManager?.let {
+                latitude = it.latitude
+                longitude = it.longitude
             }
+            locationModel.setDriverLocation(latitude, longitude)
+            Log.e("Location", "$tag saveServerUploadSign  GPSTrackerManager : $latitude  $longitude  - ${locationModel.driverLat}, ${locationModel.driverLng}")
 
 
             val realQty = binding.textTotalQty.text.toString()

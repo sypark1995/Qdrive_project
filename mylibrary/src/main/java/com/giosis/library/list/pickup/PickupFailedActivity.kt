@@ -43,6 +43,7 @@ class PickupFailedActivity : CommonActivity(), Camera2APIs.Camera2Interface, Tex
 
     // Location
     private var gpsTrackerManager: GPSTrackerManager? = null
+    var gpsEnable = false
 
     // Camera & Gallery
     private val camera2 = Camera2APIs(this@PickupFailedActivity)
@@ -305,11 +306,15 @@ class PickupFailedActivity : CommonActivity(), Camera2APIs.Camera2Interface, Tex
 
             // Location
             gpsTrackerManager = GPSTrackerManager(this@PickupFailedActivity)
-            val gpsEnable = gpsTrackerManager?.enableGPSSetting()
+            gpsTrackerManager?.let {
 
-            if (gpsEnable == true) {
-                gpsTrackerManager?.GPSTrackerStart()
-                Log.e(tag, " onResume  Location  :  ${gpsTrackerManager?.latitude} / ${gpsTrackerManager?.longitude}")
+                gpsEnable = it.enableGPSSetting()
+            }
+
+            if (gpsEnable && gpsTrackerManager != null) {
+
+                gpsTrackerManager!!.GPSTrackerStart()
+                Log.e(tag, " onResume  Location  :  ${gpsTrackerManager!!.latitude} / ${gpsTrackerManager!!.longitude}")
             } else {
 
                 DataUtil.enableLocationSettings(this@PickupFailedActivity)
@@ -333,7 +338,7 @@ class PickupFailedActivity : CommonActivity(), Camera2APIs.Camera2Interface, Tex
     }
 
     override fun onCameraDeviceOpened(cameraDevice: CameraDevice, cameraSize: Size, rotation: Int, it: String) {
-        Log.e("krm0219", "onCameraDeviceOpened  $it")
+        Log.e("Camera", "onCameraDeviceOpened  $it")
 
         binding.texturePreview.rotation = rotation.toFloat()
 
@@ -411,7 +416,6 @@ class PickupFailedActivity : CommonActivity(), Camera2APIs.Camera2Interface, Tex
                 return
             }
 
-
             var latitude = 0.0
             var longitude = 0.0
             gpsTrackerManager?.let {
@@ -423,7 +427,6 @@ class PickupFailedActivity : CommonActivity(), Camera2APIs.Camera2Interface, Tex
 
             val code: FailedCodeResult.FailedCode = arrayList!![binding.spinnerFailedReason.selectedItemPosition]
             val failedCode: String = code.failedCode
-            Log.e("krm0219", "Fail Reason Code  >  $failedCode  ${code.failedString}")
 
             var driverMemo = ""
             if (code.failedString.toUpperCase().contains(resources.getString(R.string.text_other).toUpperCase())) {
@@ -435,7 +438,6 @@ class PickupFailedActivity : CommonActivity(), Camera2APIs.Camera2Interface, Tex
                     return
                 }
             }
-            Log.e("krm0219", "Memo  >  $driverMemo")
 
 
             val retryDay = binding.textRetryDate.text.toString()
@@ -457,7 +459,7 @@ class PickupFailedActivity : CommonActivity(), Camera2APIs.Camera2Interface, Tex
                 return
             }
 
-            DataUtil.logEvent("button_click", tag, DataUtil.requestSetUploadPickupData)
+            DataUtil.logEvent("button_click", tag, "SetPickupUploadData")
 
             PickupFailedUploadHelper.Builder(this@PickupFailedActivity, Preferences.userId, Preferences.officeCode, Preferences.deviceUUID,
                     rcvType, pickupNo, failedCode, retryDay, driverMemo, binding.imgVisitLog,

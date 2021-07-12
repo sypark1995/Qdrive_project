@@ -48,6 +48,7 @@ class LoginActivity : CommonActivity() {
     private val gpsTrackerManager: GPSTrackerManager? by lazy {
         GPSTrackerManager(this@LoginActivity)
     }
+    var gpsEnable = false
 
     // Permission
     var isPermissionTrue = false
@@ -314,9 +315,12 @@ class LoginActivity : CommonActivity() {
 
         if (isPermissionTrue) {
 
-            val gpsEnable = gpsTrackerManager?.enableGPSSetting()
+            gpsTrackerManager?.let {
 
-            if (gpsEnable == true && gpsTrackerManager != null) {
+                gpsEnable = it.enableGPSSetting()
+            }
+
+            if (gpsEnable && gpsTrackerManager != null) {
 
                 gpsTrackerManager!!.GPSTrackerStart()
             } else {
@@ -380,10 +384,7 @@ class LoginActivity : CommonActivity() {
     override fun onDestroy() {
         super.onDestroy()
 
-        if (gpsTrackerManager != null) {
-
-            gpsTrackerManager!!.stopFusedProviderService()
-        }
+        gpsTrackerManager?.stopFusedProviderService()
     }
 
     private fun goGooglePlay(msg: String?) {

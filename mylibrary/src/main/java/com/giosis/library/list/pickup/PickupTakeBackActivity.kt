@@ -21,6 +21,7 @@ class PickupTakeBackActivity : CommonActivity() {
 
     // Location
     private var gpsTrackerManager: GPSTrackerManager? = null
+    var gpsEnable = false
 
     // Permission
     var isPermissionTrue = false
@@ -89,12 +90,15 @@ class PickupTakeBackActivity : CommonActivity() {
 
             // Location
             gpsTrackerManager = GPSTrackerManager(this@PickupTakeBackActivity)
-            val gpsEnable = gpsTrackerManager?.enableGPSSetting()
+            gpsTrackerManager?.let {
 
-            if (gpsEnable == true) {
+                gpsEnable = it.enableGPSSetting()
+            }
 
-                gpsTrackerManager?.GPSTrackerStart()
-                Log.e(tag, " onResume  Location  :  ${gpsTrackerManager?.latitude} / ${gpsTrackerManager?.longitude}")
+            if (gpsEnable && gpsTrackerManager != null) {
+
+                gpsTrackerManager!!.GPSTrackerStart()
+                Log.e(tag, " onResume  Location  :  ${gpsTrackerManager!!.latitude} / ${gpsTrackerManager!!.longitude}")
             } else {
 
                 DataUtil.enableLocationSettings(this@PickupTakeBackActivity)

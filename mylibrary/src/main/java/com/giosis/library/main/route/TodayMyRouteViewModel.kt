@@ -21,13 +21,10 @@ import java.util.*
 import kotlin.collections.ArrayList
 
 
-// ViewModel에서 Context가 필요한 경우 AndroidViewModel 클래스를 상속받아
-// Application 객체를 넘길 것을 권장 !!
-// Context를 갖고 있으면 메모리 누수의 원인이 된다
 class TodayMyRouteViewModel(application: Application) : AndroidViewModel(application) {
 
     // Location
-    private val gpsTrackerManager = GPSTrackerManager(application)
+    private val gpsTrackerManager : GPSTrackerManager? = GPSTrackerManager(application)
     fun getGpsManager() = gpsTrackerManager
 
     private val _permissionCheck = MutableLiveData<Boolean>()
@@ -249,8 +246,13 @@ class TodayMyRouteViewModel(application: Application) : AndroidViewModel(applica
 
         _progress.value = View.VISIBLE
 
-        var lat = gpsTrackerManager.latitude.toString()
-        var lng = gpsTrackerManager.longitude.toString()
+        var lat = "0.0"
+        var lng = "0.0"
+
+        gpsTrackerManager?.let {
+            lat = it.latitude.toString()
+            lng = it.longitude.toString()
+        }
         Log.e("route", "Lat_Lng   $lat / $lng")
 
         if (BuildConfig.DEBUG) {

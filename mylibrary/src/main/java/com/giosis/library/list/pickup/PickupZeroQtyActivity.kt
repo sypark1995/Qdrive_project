@@ -13,8 +13,6 @@ import com.giosis.library.databinding.ActivityPickupStartToScanBinding
 import com.giosis.library.gps.GPSTrackerManager
 import com.giosis.library.util.*
 import com.giosis.library.util.dialog.ProgressDialog
-import kotlinx.coroutines.launch
-import kotlinx.coroutines.withContext
 
 class PickupZeroQtyActivity : CommonActivity() {
 
@@ -32,6 +30,7 @@ class PickupZeroQtyActivity : CommonActivity() {
 
     // Location
     private var gpsTrackerManager: GPSTrackerManager? = null
+    var gpsEnable = false
 
     // Permission
     var isPermissionTrue = false
@@ -115,12 +114,14 @@ class PickupZeroQtyActivity : CommonActivity() {
 
             // Location
             gpsTrackerManager = GPSTrackerManager(this@PickupZeroQtyActivity)
-            val gpsEnable = gpsTrackerManager?.enableGPSSetting()
+            gpsTrackerManager?.let {
+                gpsEnable = it.enableGPSSetting()
+            }
 
-            if (gpsEnable == true) {
+            if (gpsEnable && gpsTrackerManager != null) {
 
-                gpsTrackerManager?.GPSTrackerStart()
-                Log.e(tag, " onResume  Location  :  ${gpsTrackerManager?.latitude} / ${gpsTrackerManager?.longitude}")
+                gpsTrackerManager!!.GPSTrackerStart()
+                Log.e(tag, " onResume  Location  :  ${gpsTrackerManager!!.latitude} / ${gpsTrackerManager!!.longitude}")
             } else {
 
                 DataUtil.enableLocationSettings(this@PickupZeroQtyActivity)
@@ -195,7 +196,7 @@ class PickupZeroQtyActivity : CommonActivity() {
             }
 
 
-            DataUtil.logEvent("button_click", tag, DataUtil.requestSetUploadPickupData)
+            DataUtil.logEvent("button_click", tag, "SetPickupUploadData")
 
 
             // TODO_ ImageUpload 테스트

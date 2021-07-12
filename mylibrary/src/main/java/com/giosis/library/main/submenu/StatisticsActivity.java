@@ -507,77 +507,84 @@ public class StatisticsActivity extends CommonActivity {
 
                     if (result != null) {
 
-                        if (searchType.contains("D_Summary")) {
+                        if (result.getResultCode() != 0) {
 
-                            dTotalCount = 0;
-                            deliveredCount = 0;
+                            list_statistics_result.setVisibility(View.GONE);
+                            text_statistics_orders_not.setVisibility(View.VISIBLE);
+                        } else {
 
-                            if (result.getSummaryDataArrayList().size() == 0) {
+                            if (searchType.contains("D_Summary")) {
 
-                                list_statistics_result.setVisibility(View.GONE);
-                                text_statistics_orders_not.setVisibility(View.VISIBLE);
-                            } else {
+                                dTotalCount = 0;
+                                deliveredCount = 0;
 
-                                list_statistics_result.setVisibility(View.VISIBLE);
-                                text_statistics_orders_not.setVisibility(View.GONE);
+                                if (result.getSummaryDataArrayList().size() == 0) {
 
-                                for (int i = 0; i < result.getSummaryDataArrayList().size(); i++) {
+                                    list_statistics_result.setVisibility(View.GONE);
+                                    text_statistics_orders_not.setVisibility(View.VISIBLE);
+                                } else {
 
-                                    dTotalCount += result.getSummaryDataArrayList().get(i).getTotalCount();
-                                    deliveredCount += result.getSummaryDataArrayList().get(i).getDeliveredCount();
+                                    list_statistics_result.setVisibility(View.VISIBLE);
+                                    text_statistics_orders_not.setVisibility(View.GONE);
+
+                                    for (int i = 0; i < result.getSummaryDataArrayList().size(); i++) {
+
+                                        dTotalCount += result.getSummaryDataArrayList().get(i).getTotalCount();
+                                        deliveredCount += result.getSummaryDataArrayList().get(i).getDeliveredCount();
+                                    }
+
+                                    setDeliveryResult(result);
                                 }
+                            } else if (searchType.contains("D_Detail")) {
+                                if (result.getDetailDataArrayList().size() == 0) {
 
-                                setDeliveryResult(result);
-                            }
-                        } else if (searchType.contains("D_Detail")) {
-                            if (result.getDetailDataArrayList().size() == 0) {
+                                    list_statistics_result.setVisibility(View.GONE);
+                                    text_statistics_orders_not.setVisibility(View.VISIBLE);
+                                } else {
 
-                                list_statistics_result.setVisibility(View.GONE);
-                                text_statistics_orders_not.setVisibility(View.VISIBLE);
-                            } else {
+                                    list_statistics_result.setVisibility(View.VISIBLE);
+                                    text_statistics_orders_not.setVisibility(View.GONE);
 
-                                list_statistics_result.setVisibility(View.VISIBLE);
-                                text_statistics_orders_not.setVisibility(View.GONE);
-
-                                setDeliveryResult(result);
-                            }
-                        } else if (searchType.contains("P_Summary")) {
-
-                            pTotalCount = 0;
-                            doneCount = 0;
-                            failedCount = 0;
-                            confirmedCount = 0;
-
-                            if (result.getSummaryDataArrayList().size() == 0) {
-
-                                list_statistics_result.setVisibility(View.GONE);
-                                text_statistics_orders_not.setVisibility(View.VISIBLE);
-                            } else {
-
-                                list_statistics_result.setVisibility(View.VISIBLE);
-                                text_statistics_orders_not.setVisibility(View.GONE);
-
-                                for (int i = 0; i < result.getSummaryDataArrayList().size(); i++) {
-
-                                    pTotalCount += result.getSummaryDataArrayList().get(i).getTotalCount();
-                                    doneCount += result.getSummaryDataArrayList().get(i).getDoneCount();
-                                    failedCount += result.getSummaryDataArrayList().get(i).getFailedCount();
-                                    confirmedCount += result.getSummaryDataArrayList().get(i).getConfirmedCount();
+                                    setDeliveryResult(result);
                                 }
+                            } else if (searchType.contains("P_Summary")) {
 
-                                setPickupResult(result);
-                            }
-                        } else if (searchType.contains("P_Detail")) {
-                            if (result.getDetailDataArrayList().size() == 0) {
+                                pTotalCount = 0;
+                                doneCount = 0;
+                                failedCount = 0;
+                                confirmedCount = 0;
 
-                                list_statistics_result.setVisibility(View.GONE);
-                                text_statistics_orders_not.setVisibility(View.VISIBLE);
-                            } else {
+                                if (result.getSummaryDataArrayList().size() == 0) {
 
-                                list_statistics_result.setVisibility(View.VISIBLE);
-                                text_statistics_orders_not.setVisibility(View.GONE);
+                                    list_statistics_result.setVisibility(View.GONE);
+                                    text_statistics_orders_not.setVisibility(View.VISIBLE);
+                                } else {
 
-                                setPickupResult(result);
+                                    list_statistics_result.setVisibility(View.VISIBLE);
+                                    text_statistics_orders_not.setVisibility(View.GONE);
+
+                                    for (int i = 0; i < result.getSummaryDataArrayList().size(); i++) {
+
+                                        pTotalCount += result.getSummaryDataArrayList().get(i).getTotalCount();
+                                        doneCount += result.getSummaryDataArrayList().get(i).getDoneCount();
+                                        failedCount += result.getSummaryDataArrayList().get(i).getFailedCount();
+                                        confirmedCount += result.getSummaryDataArrayList().get(i).getConfirmedCount();
+                                    }
+
+                                    setPickupResult(result);
+                                }
+                            } else if (searchType.contains("P_Detail")) {
+                                if (result.getDetailDataArrayList().size() == 0) {
+
+                                    list_statistics_result.setVisibility(View.GONE);
+                                    text_statistics_orders_not.setVisibility(View.VISIBLE);
+                                } else {
+
+                                    list_statistics_result.setVisibility(View.VISIBLE);
+                                    text_statistics_orders_not.setVisibility(View.GONE);
+
+                                    setPickupResult(result);
+                                }
                             }
                         }
                     }

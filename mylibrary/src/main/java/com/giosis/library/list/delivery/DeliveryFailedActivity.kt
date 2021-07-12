@@ -46,6 +46,7 @@ class DeliveryFailedActivity : CommonActivity(), Camera2APIs.Camera2Interface, S
 
     // Location
     var gpsTrackerManager: GPSTrackerManager? = null
+    var gpsEnable = false
 
     // Camera & Gallery
     private val camera2 = Camera2APIs(this@DeliveryFailedActivity)
@@ -202,7 +203,10 @@ class DeliveryFailedActivity : CommonActivity(), Camera2APIs.Camera2Interface, S
 
             // Location
             gpsTrackerManager = GPSTrackerManager(this@DeliveryFailedActivity)
-            val gpsEnable = gpsTrackerManager!!.enableGPSSetting()
+            gpsTrackerManager?.let {
+
+                gpsEnable = it.enableGPSSetting()
+            }
 
             if (gpsEnable && gpsTrackerManager != null) {
 
@@ -304,8 +308,8 @@ class DeliveryFailedActivity : CommonActivity(), Camera2APIs.Camera2Interface, S
 
             var latitude = 0.0
             var longitude = 0.0
-            gpsTrackerManager.let {
-                latitude = it!!.latitude
+            gpsTrackerManager?.let {
+                latitude = it.latitude
                 longitude = it.longitude
             }
             Log.e(tag, "  Location $latitude / $longitude")
@@ -338,7 +342,7 @@ class DeliveryFailedActivity : CommonActivity(), Camera2APIs.Camera2Interface, S
             }
 
 
-            DataUtil.logEvent("button_click", tag, DataUtil.requestSetUploadDeliveryData)
+            DataUtil.logEvent("button_click", tag, "SetDeliveryUploadData")
             DeliveryFailedUploadHelper.Builder(this@DeliveryFailedActivity, userId, officeCode, deviceId,
                     trackingNo, binding.imgVisitLog, failedCode, driverMemo, "RC",
                     MemoryStatus.getAvailableInternalMemorySize(), latitude, longitude)
@@ -370,6 +374,7 @@ class DeliveryFailedActivity : CommonActivity(), Camera2APIs.Camera2Interface, S
 
     override fun onDestroy() {
         super.onDestroy()
+
         DataUtil.stopGPSManager(gpsTrackerManager)
     }
 

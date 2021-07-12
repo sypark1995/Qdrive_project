@@ -124,7 +124,7 @@ public class MainActivity extends AppBaseActivity {
     boolean isGooglePlayService = false;
 
     GPSTrackerManager gpsTrackerManager;
-    boolean gpsOnceEnable = false;
+    boolean gpsEnable = false;
     double latitude = 0;
     double longitude = 0;
 
@@ -166,7 +166,7 @@ public class MainActivity extends AppBaseActivity {
                 startActivity(intent);
             } else if (id == R.id.btn_home_change_delivery_driver) {
 
-                if (gpsOnceEnable && gpsTrackerManager != null) {
+                if (gpsEnable && gpsTrackerManager != null) {
 
                     Intent intent = new Intent(MainActivity.this, CaptureActivity.class);
                     intent.putExtra("title", getResources().getString(R.string.button_change_delivery_driver));
@@ -209,8 +209,8 @@ public class MainActivity extends AppBaseActivity {
 
 
         LayoutInflater inflater = (LayoutInflater) getSystemService(Context.LAYOUT_INFLATER_SERVICE);
-        View contentView = inflater.inflate(R.layout.activity_main_home, container, false);
-        drawerLayout.addView(contentView, 0);
+        View contentView = inflater.inflate(R.layout.activity_main_home, getBinding().container, false);
+        getBinding().drawerLayout.addView(contentView, 0);
         setTopTitle(getResources().getString(R.string.navi_home));
 
 
@@ -263,7 +263,7 @@ public class MainActivity extends AppBaseActivity {
         btn_home_confirm_my_delivery_order = findViewById(R.id.btn_home_confirm_my_delivery_order);
         btn_home_assign_pickup_driver = findViewById(R.id.btn_home_assign_pickup_driver);
         btn_home_change_delivery_driver = findViewById(R.id.btn_home_change_delivery_driver);
-        btn_home_outlet_order_status = findViewById(R.id.btn_home_outlet_order_status);    // 19.01 krm0219
+        btn_home_outlet_order_status = findViewById(R.id.btn_home_outlet_order_status);
         btn_home_create_pickup_order = findViewById(R.id.btn_home_create_pickup_order);
         btn_home_today_my_route = findViewById(R.id.btn_home_today_my_route);
 
@@ -379,9 +379,9 @@ public class MainActivity extends AppBaseActivity {
         if (isPermissionTrue) {
 
             gpsTrackerManager = new GPSTrackerManager(this);
-            gpsOnceEnable = gpsTrackerManager.enableGPSSetting();
+            gpsEnable = gpsTrackerManager.enableGPSSetting();
 
-            if (gpsOnceEnable && gpsTrackerManager != null) {
+            if (gpsEnable && gpsTrackerManager != null) {
 
                 gpsTrackerManager.GPSTrackerStart();
             } else {
@@ -588,7 +588,7 @@ public class MainActivity extends AppBaseActivity {
             } while (cs.moveToNext());
         }
 
-        if (gpsOnceEnable && gpsTrackerManager != null) {
+        if (gpsEnable && gpsTrackerManager != null) {
 
             latitude = gpsTrackerManager.getLatitude();
             longitude = gpsTrackerManager.getLongitude();
@@ -597,7 +597,7 @@ public class MainActivity extends AppBaseActivity {
 
         if (songjanglist.size() > 0) {
 
-            DataUtil.logEvent("button_click", TAG, DataUtil.requestSetUploadDeliveryData + "/" + DataUtil.requestSetUploadPickupData);
+            DataUtil.logEvent("button_click", TAG, "SetDeliveryUploadData / SetPickupUploadData");
 
             new DeviceDataUploadHelper.Builder(this, opID, officeCode, deviceID,
                     songjanglist, "QH", latitude, longitude).
@@ -669,7 +669,7 @@ public class MainActivity extends AppBaseActivity {
                 }, it -> Log.e(RetrofitClient.errorTag, TAG + " - " + it.toString()));
 
 
-        if (gpsOnceEnable && gpsTrackerManager != null) {
+        if (gpsEnable && gpsTrackerManager != null) {
 
             latitude = gpsTrackerManager.getLatitude();
             longitude = gpsTrackerManager.getLongitude();
@@ -873,7 +873,7 @@ public class MainActivity extends AppBaseActivity {
         double accuracy = 0;
         try {
 
-            if (gpsOnceEnable && gpsTrackerManager != null) {
+            if (gpsEnable && gpsTrackerManager != null) {
 
                 latitude = gpsTrackerManager.getLatitude();
                 longitude = gpsTrackerManager.getLongitude();

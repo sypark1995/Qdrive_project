@@ -28,9 +28,10 @@ class TodayMyRouteActivity : AppCompatActivity() {
     val PERMISSION_REQUEST_CODE = 1000
     val PERMISSIONS = arrayOf(PermissionChecker.ACCESS_FINE_LOCATION, PermissionChecker.ACCESS_COARSE_LOCATION)
 
-    private val gpsTrackerManager: GPSTrackerManager by lazy {
+    private val gpsTrackerManager: GPSTrackerManager? by lazy {
         GPSTrackerManager(this@TodayMyRouteActivity)
     }
+    var gpsEnable = false
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -89,10 +90,12 @@ class TodayMyRouteActivity : AppCompatActivity() {
 
             if (it) {
 
-                val gpsEnable = viewModel.getGpsManager().enableGPSSetting()
+                viewModel.getGpsManager()?.let { gpsManager ->
+                    gpsEnable = gpsManager.enableGPSSetting()
+                }
 
-                if (gpsEnable) {
-                    viewModel.getGpsManager().GPSTrackerStart()
+                if (gpsEnable && viewModel.getGpsManager() != null) {
+                    viewModel.getGpsManager()!!.GPSTrackerStart()
                 } else {
                     DataUtil.enableLocationSettings(this@TodayMyRouteActivity)
                 }

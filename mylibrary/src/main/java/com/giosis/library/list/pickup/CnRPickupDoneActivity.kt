@@ -36,8 +36,6 @@ class CnRPickupDoneActivity : CommonActivity() {
 
     var gpsTrackerManager: GPSTrackerManager? = null
     var gpsEnable = false
-    var latitude = 0.0
-    var longitude = 0.0
 
     private var locationModel = LocationModel()
 
@@ -68,7 +66,6 @@ class CnRPickupDoneActivity : CommonActivity() {
         var pickupBarcodeData: BarcodeData
 
         mWaybillList = mStrWaybillNo.split(",".toRegex()).toTypedArray()
-        Log.e("krm0219", "Size : ${mWaybillList.size}")
 
         for (s in mWaybillList) {
 
@@ -134,14 +131,15 @@ class CnRPickupDoneActivity : CommonActivity() {
         if (isPermissionTrue) {
 
             gpsTrackerManager = GPSTrackerManager(this@CnRPickupDoneActivity)
-            gpsEnable = gpsTrackerManager!!.enableGPSSetting()
+            gpsTrackerManager?.let {
+
+                gpsEnable = it.enableGPSSetting()
+            }
 
             if (gpsEnable && gpsTrackerManager != null) {
 
                 gpsTrackerManager!!.GPSTrackerStart()
-                latitude = gpsTrackerManager!!.latitude
-                longitude = gpsTrackerManager!!.longitude
-                Log.e("Location", "$tag GPSTrackerManager onResume : $latitude  $longitude  ")
+                Log.e("Location", "$tag GPSTrackerManager onResume : ${gpsTrackerManager!!.latitude}  ${gpsTrackerManager!!.longitude}  ")
             } else {
                 DataUtil.enableLocationSettings(this@CnRPickupDoneActivity)
             }
@@ -199,13 +197,14 @@ class CnRPickupDoneActivity : CommonActivity() {
                 return
             }
 
-            if (gpsTrackerManager != null) {
-                latitude = gpsTrackerManager!!.latitude
-                longitude = gpsTrackerManager!!.longitude
-
-                locationModel.setDriverLocation(latitude, longitude)
-                Log.e("Location", "$tag saveServerUploadSign  GPSTrackerManager : $latitude  $longitude  - ${locationModel.driverLat}, ${locationModel.driverLng}")
+            var latitude = 0.0
+            var longitude = 0.0
+            gpsTrackerManager?.let {
+                latitude = it.latitude
+                longitude = it.longitude
             }
+            locationModel.setDriverLocation(latitude, longitude)
+            Log.e("Location", "$tag saveServerUploadSign  GPSTrackerManager : $latitude  $longitude  - ${locationModel.driverLat}, ${locationModel.driverLng}")
 
 
             if (!sign_view_sign_p_applicant_signature!!.isTouch) {
@@ -225,7 +224,7 @@ class CnRPickupDoneActivity : CommonActivity() {
             }
 
 
-            DataUtil.logEvent("button_click", tag, DataUtil.requestSetUploadPickupData)
+            DataUtil.logEvent("button_click", tag, "SetPickupUploadData")
 
             CnRPickupUploadHelper.Builder(this@CnRPickupDoneActivity, Preferences.userId, Preferences.officeCode, Preferences.deviceUUID,
                     pickupNoList, sign_view_sign_p_applicant_signature, sign_view_sign_p_collector_signature,
@@ -242,7 +241,7 @@ class CnRPickupDoneActivity : CommonActivity() {
                     }).build().execute()
         } catch (e: Exception) {
 
-            Log.e("krm0219", "$tag  Exception : $e")
+            Log.e("Exception", "$tag  Exception : $e")
             Toast.makeText(this@CnRPickupDoneActivity, resources.getString(R.string.text_error) + " - " + e.toString(), Toast.LENGTH_SHORT).show()
         }
     }
