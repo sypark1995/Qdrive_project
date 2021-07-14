@@ -175,7 +175,7 @@ public class QuickReturnedActivity extends CommonActivity {
 
             if (gpsEnable && gpsTrackerManager != null) {
 
-                gpsTrackerManager.GPSTrackerStart();
+                gpsTrackerManager.gpsTrackerStart();
 
                 latitude = gpsTrackerManager.getLatitude();
                 longitude = gpsTrackerManager.getLongitude();
@@ -277,7 +277,7 @@ public class QuickReturnedActivity extends CommonActivity {
                     }).build().execute();
         } catch (Exception e) {
 
-            Log.e("krm0219", TAG + "  Exception : " + e.toString());
+            Log.e("Exception", TAG + "  Exception : " + e.toString());
             Toast.makeText(this, getResources().getString(R.string.text_error) + " - " + e.toString(), Toast.LENGTH_SHORT).show();
         }
     }

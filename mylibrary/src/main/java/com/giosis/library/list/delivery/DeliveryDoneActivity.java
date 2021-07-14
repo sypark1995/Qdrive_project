@@ -633,7 +633,7 @@ public class DeliveryDoneActivity extends CommonActivity implements Camera2APIs.
 
             if (gpsEnable && gpsTrackerManager != null) {
 
-                gpsTrackerManager.GPSTrackerStart();
+                gpsTrackerManager.gpsTrackerStart();
                 latitude = gpsTrackerManager.getLatitude();
                 longitude = gpsTrackerManager.getLongitude();
             } else {
@@ -760,7 +760,7 @@ public class DeliveryDoneActivity extends CommonActivity implements Camera2APIs.
             }
 
 
-            DataUtil.logEvent("button_click", TAG, DataUtil.requestSetUploadDeliveryData);
+            DataUtil.logEvent("button_click", TAG, "SetDeliveryUploadData");
             new DeliveryDoneUploadHelper.Builder(this, opID, officeCode, deviceID,
                     barcodeList, mReceiveType, driverMemo,
                     sign_view_sign_d_signature, hasSignImage, img_sign_d_visit_log, hasVisitImage,
@@ -1036,7 +1036,6 @@ public class DeliveryDoneActivity extends CommonActivity implements Camera2APIs.
             Log.e(TAG, TAG + "  getQRCodeData  " + outlet_type + " / " + tracking_no);
 
             QRCodeResult resultObj;
-            Gson gson = new Gson();
 
             try {
 
@@ -1050,7 +1049,7 @@ public class DeliveryDoneActivity extends CommonActivity implements Camera2APIs.
                 String methodName = "QRCodeForQStationDelivery";
                 String jsonString = Custom_JsonParser.requestServerDataReturnJSON(methodName, job);
 
-                resultObj = gson.fromJson(jsonString, QRCodeResult.class);
+                resultObj = new Gson().fromJson(jsonString, QRCodeResult.class);
             } catch (Exception e) {
 
                 Log.e("Exception", "  QRCodeForQStationDelivery Json Exception : " + e.toString());

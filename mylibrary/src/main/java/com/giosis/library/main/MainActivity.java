@@ -146,7 +146,6 @@ public class MainActivity extends AppBaseActivity {
             if (id == R.id.layout_home_list_count) {
 
                 Intent intent = new Intent(MainActivity.this, ListActivity.class);
-                intent.putExtra("position", 0);
                 startActivity(intent);
             } else if (id == R.id.layout_home_download) {
 
@@ -383,7 +382,7 @@ public class MainActivity extends AppBaseActivity {
 
             if (gpsEnable && gpsTrackerManager != null) {
 
-                gpsTrackerManager.GPSTrackerStart();
+                gpsTrackerManager.gpsTrackerStart();
             } else {
 
                 DataUtil.enableLocationSettings(MainActivity.this);
@@ -648,8 +647,7 @@ public class MainActivity extends AppBaseActivity {
                 .observeOn(AndroidSchedulers.mainThread())
                 .subscribe(it -> {
 
-                    Gson gson = new Gson();
-                    ArrayList<RestDaysResult> list = gson.fromJson(it.getResultObject(), new TypeToken<ArrayList<RestDaysResult>>() {
+                    ArrayList<RestDaysResult> list = new Gson().fromJson(it.getResultObject(), new TypeToken<ArrayList<RestDaysResult>>() {
                     }.getType());
 
                     insertRestDays(list);
@@ -661,8 +659,7 @@ public class MainActivity extends AppBaseActivity {
                 .observeOn(AndroidSchedulers.mainThread())
                 .subscribe(it -> {
 
-                    Gson gson = new Gson();
-                    ArrayList<RestDaysResult> list = gson.fromJson(it.getResultObject(), new TypeToken<ArrayList<RestDaysResult>>() {
+                    ArrayList<RestDaysResult> list = new Gson().fromJson(it.getResultObject(), new TypeToken<ArrayList<RestDaysResult>>() {
                     }.getType());
 
                     insertRestDays(list);
@@ -717,16 +714,17 @@ public class MainActivity extends AppBaseActivity {
     public void insertRestDays(ArrayList<RestDaysResult> list) {
 
         long insert = 0;
-        for (RestDaysResult data : list) {
+        if (list != null) {
+            for (RestDaysResult data : list) {
 
-            ContentValues contentValues = new ContentValues();
-            contentValues.put("title", data.getTitle());
-            contentValues.put("rest_dt", data.getRest_dt());
+                ContentValues contentValues = new ContentValues();
+                contentValues.put("title", data.getTitle());
+                contentValues.put("rest_dt", data.getRest_dt());
 
-            insert = DatabaseHelper.getInstance().insert(DatabaseHelper.DB_TABLE_REST_DAYS, contentValues);
+                insert = DatabaseHelper.getInstance().insert(DatabaseHelper.DB_TABLE_REST_DAYS, contentValues);
+            }
         }
-
-        Log.e("DB", "Rest Day   DB Insert: " + insert);
+        Log.e("DB", "insertRestDays  DB Insert: " + insert);
     }
 
 
@@ -742,7 +740,7 @@ public class MainActivity extends AppBaseActivity {
             isGooglePlayService = ConnectionResult.SUCCESS == status;
 
             // TEST_
-            //isGooglePlayService = false;
+            // isGooglePlayService = false;
 
             if (isGooglePlayService) {  // Fused Provider Service start (Google play 에 클라이언트 객체 얻어 서비스)
 

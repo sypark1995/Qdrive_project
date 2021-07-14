@@ -39,9 +39,6 @@ class DeliveryFailedActivity : CommonActivity(), Camera2APIs.Camera2Interface, S
         ActivityDeliveryVisitLogBinding.inflate(layoutInflater)
     }
 
-    private val userId = Preferences.userId
-    private val officeCode = Preferences.officeCode
-    private val deviceId = Preferences.deviceUUID
     lateinit var trackingNo: String
 
     // Location
@@ -52,7 +49,6 @@ class DeliveryFailedActivity : CommonActivity(), Camera2APIs.Camera2Interface, S
     private val camera2 = Camera2APIs(this@DeliveryFailedActivity)
     private var cameraId: String? = null
     var isClickedPhoto = false
-    private val RESULT_LOAD_IMAGE = 2000
 
     // Permission
     var isPermissionTrue = false
@@ -210,7 +206,7 @@ class DeliveryFailedActivity : CommonActivity(), Camera2APIs.Camera2Interface, S
 
             if (gpsEnable && gpsTrackerManager != null) {
 
-                gpsTrackerManager!!.GPSTrackerStart()
+                gpsTrackerManager!!.gpsTrackerStart()
             } else {
 
                 DataUtil.enableLocationSettings(this@DeliveryFailedActivity)
@@ -343,7 +339,7 @@ class DeliveryFailedActivity : CommonActivity(), Camera2APIs.Camera2Interface, S
 
 
             DataUtil.logEvent("button_click", tag, "SetDeliveryUploadData")
-            DeliveryFailedUploadHelper.Builder(this@DeliveryFailedActivity, userId, officeCode, deviceId,
+            DeliveryFailedUploadHelper.Builder(this@DeliveryFailedActivity, Preferences.userId, Preferences.officeCode, Preferences.deviceUUID,
                     trackingNo, binding.imgVisitLog, failedCode, driverMemo, "RC",
                     MemoryStatus.getAvailableInternalMemorySize(), latitude, longitude)
                     .setOnServerEventListener(object : OnServerEventListener {

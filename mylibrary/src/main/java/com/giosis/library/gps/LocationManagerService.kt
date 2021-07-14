@@ -1,105 +1,89 @@
-package com.giosis.library.gps;
+package com.giosis.library.gps
 
+import android.app.NotificationChannel
+import android.app.NotificationManager
+import android.app.PendingIntent
+import android.app.Service
+import android.content.Intent
+import android.location.LocationManager
+import android.os.Build
+import android.os.IBinder
+import android.util.Log
+import androidx.core.app.NotificationCompat
+import com.giosis.library.R
+import com.giosis.library.main.MainActivity
+import com.giosis.library.util.Preferences
 
-import android.app.Notification;
-import android.app.NotificationChannel;
-import android.app.NotificationManager;
-import android.app.PendingIntent;
-import android.app.Service;
-import android.content.Intent;
-import android.location.LocationManager;
-import android.os.Build;
-import android.os.IBinder;
-import android.util.Log;
+class LocationManagerService : Service() {
+    var TAG = "LocationManagerService"
 
-import androidx.core.app.NotificationCompat;
+    private var mLocationManager1: LocationManager? = null
+    private var mLocationManager2: LocationManager? = null
 
-import com.giosis.library.R;
-import com.giosis.library.main.MainActivity;
-import com.giosis.library.util.Preferences;
+    private var timeListener: LocationManagerWorker? = null
+    private var distanceListener: LocationManagerWorker? = null
 
-public class LocationManagerService extends Service {
-    String TAG = "LocationManagerService";
-
-    LocationManager mLocationManager1 = null;
-    LocationManager mLocationManager2 = null;
-
-    LocationManagerListener locationMngTimeListener = null;
-    LocationManagerListener locationMngDistanceListener = null;
-
-
-    @Override
-    public IBinder onBind(Intent intent) {
-        return null;
+    override fun onBind(intent: Intent): IBinder? {
+        return null
     }
 
-    @Override
-    public int onStartCommand(Intent intent, int flags, int startId) {
+    override fun onStartCommand(intent: Intent, flags: Int, startId: Int): Int {
 
-        Log.e("Location", TAG + " Library   onStartCommand");
-        startLocationService();
-
+        Log.e("Location", "$TAG    onStartCommand")
+        startLocationService()
 
         // eylee
         if (Build.VERSION_CODES.O <= Build.VERSION.SDK_INT) {
 
-            String Channel_ID = "GPS_Location_Manager";
-
-            NotificationChannel serviceChannel = new NotificationChannel(
-                    Channel_ID,
+            val channelId = "GPS_Location_Manager"
+            val serviceChannel = NotificationChannel(
+                    channelId,
                     "Service Channel",
                     NotificationManager.IMPORTANCE_LOW
-            );
-            serviceChannel.setShowBadge(false);
-            serviceChannel.setVibrationPattern(new long[]{0});         // 진동 없애기
-            serviceChannel.enableVibration(true);                       // 진동 없애기
+            )
 
-            NotificationManager notificationManager = getSystemService(NotificationManager.class);
-            notificationManager.createNotificationChannel(serviceChannel);
+            serviceChannel.setShowBadge(false)
+            serviceChannel.vibrationPattern = longArrayOf(0) // 진동 없애기
+            serviceChannel.enableVibration(true) // 진동 없애기
 
+            val notificationManager = getSystemService(NotificationManager::class.java)
+            notificationManager.createNotificationChannel(serviceChannel)
 
-            Intent notificationIntent = new Intent(this, MainActivity.class);
-            PendingIntent pendingIntent = PendingIntent.getActivity(this, 0, notificationIntent, 0);
+            val notificationIntent = Intent(this, MainActivity::class.java)
+            val pendingIntent = PendingIntent.getActivity(this, 0, notificationIntent, 0)
+            var resourceId = resources.getIdentifier("qdrive_icon", "drawable", packageName)
 
-
-            int resourceId = getResources().getIdentifier("qdrive_icon", "drawable", getPackageName());
-            if (!Preferences.INSTANCE.getUserNation().equalsIgnoreCase("SG")) {
-
-                resourceId = getResources().getIdentifier("icon_qdrive_my", "drawable", getPackageName());
+            if (!Preferences.userNation.equals("SG", ignoreCase = true)) {
+                resourceId = resources.getIdentifier("icon_qdrive_my", "drawable", packageName)
             }
 
-            NotificationCompat.Builder builder = new NotificationCompat.Builder(this, Channel_ID)
-                    .setContentTitle(getResources().getString(R.string.text_gps_location_service))
+            val builder = NotificationCompat.Builder(this, channelId)
+                    .setContentTitle(resources.getString(R.string.text_gps_location_service))
                     .setSmallIcon(resourceId)
-                    .setContentIntent(pendingIntent);
-
-            Notification notification = builder.build();
-            startForeground(1, notification);
+                    .setContentIntent(pendingIntent)
+            val notification = builder.build()
+            startForeground(1, notification)
         }
-
-        return super.onStartCommand(intent, flags, startId);
+        return super.onStartCommand(intent, flags, startId)
     }
 
+    private fun startLocationService() {
 
-    private void startLocationService() {
+        timeListener = LocationManagerWorker(this, "time_location")
+        distanceListener = LocationManagerWorker(this, "distance_location")
 
-        locationMngTimeListener = new LocationManagerListener(this, "time_location");
-        locationMngDistanceListener = new LocationManagerListener(this, "distance_location");
+        mLocationManager1 = timeListener!!.locationManager
+        mLocationManager2 = distanceListener!!.locationManager
 
-        mLocationManager1 = locationMngTimeListener.getLocationManager();
-        mLocationManager2 = locationMngDistanceListener.getLocationManager();
-
-        locationMngTimeListener.getLastLocation();
-        locationMngDistanceListener.getLastLocation();
+        timeListener!!.lastLocation
+        distanceListener!!.lastLocation
     }
 
-    @Override
-    public void onDestroy() {
-        super.onDestroy();
+    override fun onDestroy() {
+        super.onDestroy()
 
-        Log.e("Location", TAG + "   onDestroy");
-
-        mLocationManager1.removeUpdates(locationMngTimeListener);
-        mLocationManager2.removeUpdates(locationMngDistanceListener);
+        Log.e("Location", "$TAG   onDestroy")
+        mLocationManager1!!.removeUpdates(timeListener!!)
+        mLocationManager2!!.removeUpdates(distanceListener!!)
     }
 }

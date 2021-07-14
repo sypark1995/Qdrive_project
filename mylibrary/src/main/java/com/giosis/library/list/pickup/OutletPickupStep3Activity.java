@@ -236,7 +236,7 @@ public class OutletPickupStep3Activity extends CommonActivity {
 
             if (gpsEnable && gpsTrackerManager != null) {
 
-                gpsTrackerManager.GPSTrackerStart();
+                gpsTrackerManager.gpsTrackerStart();
 
                 latitude = gpsTrackerManager.getLatitude();
                 longitude = gpsTrackerManager.getLongitude();

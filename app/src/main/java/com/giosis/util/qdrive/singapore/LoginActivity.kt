@@ -148,6 +148,7 @@ class LoginActivity : CommonActivity() {
                                     if (loginData != null) {
 
                                         if (!loginData.version.isNullOrEmpty()) {
+
 //                                            //TODO_
 //                                            val compare =  Version("1.10.0") < Version("1.9.0")
 //                                            val compare1 = Version("1.10.9") < Version("1.10.10")
@@ -322,7 +323,7 @@ class LoginActivity : CommonActivity() {
 
             if (gpsEnable && gpsTrackerManager != null) {
 
-                gpsTrackerManager!!.GPSTrackerStart()
+                gpsTrackerManager!!.gpsTrackerStart()
             } else {
 
                 if (!this@LoginActivity.isFinishing) {

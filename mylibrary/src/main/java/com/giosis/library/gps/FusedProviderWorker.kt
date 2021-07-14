@@ -1,228 +1,190 @@
-package com.giosis.library.gps;
+package com.giosis.library.gps
 
-import android.Manifest;
-import android.annotation.SuppressLint;
-import android.app.AlertDialog;
-import android.content.Context;
-import android.content.pm.PackageManager;
-import android.location.Location;
-import android.os.Build;
-import android.util.Log;
-import android.widget.Toast;
+import android.Manifest
+import android.annotation.SuppressLint
+import android.app.AlertDialog
+import android.content.Context
+import android.content.DialogInterface
+import android.content.pm.PackageManager
+import android.location.Location
+import android.os.Looper
+import android.util.Log
+import android.widget.Toast
+import androidx.core.app.ActivityCompat
+import com.giosis.library.R
+import com.giosis.library.server.RetrofitClient
+import com.giosis.library.util.NetworkUtil
+import com.giosis.library.util.Preferences
+import com.google.android.gms.location.*
+import io.reactivex.rxjava3.android.schedulers.AndroidSchedulers
+import io.reactivex.rxjava3.schedulers.Schedulers
+import java.text.SimpleDateFormat
+import java.util.*
 
-import androidx.core.app.ActivityCompat;
+class FusedProviderWorker(private val context: Context, private val reference: String) {
+    private val TAG = "FusedProviderWorker"
 
-import com.giosis.library.R;
-import com.giosis.library.server.RetrofitClient;
-import com.giosis.library.util.DataUtil;
-import com.giosis.library.util.NetworkUtil;
-import com.giosis.library.util.Preferences;
-import com.google.android.gms.location.FusedLocationProviderClient;
-import com.google.android.gms.location.LocationCallback;
-import com.google.android.gms.location.LocationRequest;
-import com.google.android.gms.location.LocationResult;
-import com.google.android.gms.location.LocationServices;
+    private val fusedLocationProviderClient: FusedLocationProviderClient = LocationServices.getFusedLocationProviderClient(context)
 
-import java.text.SimpleDateFormat;
-import java.util.Date;
+    private var MIN_TIME_BW_UPDATES: Long = 0
+    private var MIN_FAST_INTERVAL_UPDATES: Long = 0
+    private var MIN_DISTANCE_CHANGE_FOR_UPDATES: Long = 0
 
-import io.reactivex.rxjava3.android.schedulers.AndroidSchedulers;
-import io.reactivex.rxjava3.schedulers.Schedulers;
-
-public class FusedProviderWorker {
-    private final String TAG = "FusedProviderWorker";
-
-    private final Context context;
-
-    private final FusedLocationProviderClient fusedLocationProviderClient;
-    private final String reference;
-
-    private long MIN_TIME_BW_UPDATES;
-    private long MIN_FAST_INTERVAL_UPDATES;
-    private long MIN_DISTANCE_CHANGE_FOR_UPDATES;
-
-    private final String api_level;
-    private final String device_info;
-    private final String device_model;
-    private final String device_product;
-    private final String device_os_version;
-    private int count = 0;
-
-    private double latitude = 0;
-    private double longitude = 0;
-    private double accuracy = 0;
+    private var count = 0
+    private var latitude = 0.0
+    private var longitude = 0.0
+    private var accuracy = 0.0
 
 
-    public FusedProviderWorker(Context context, String reference) {
+    init {
 
-        this.context = context;
-        this.reference = reference;
-
-        fusedLocationProviderClient = LocationServices.getFusedLocationProviderClient(context);
-
-        if (reference.equals("time_fused")) {
+        if (reference == "time_fused") {
 
 //             // TEST_ GPS Time
 //            MIN_TIME_BW_UPDATES = 1000 * 60;
 //            MIN_FAST_INTERVAL_UPDATES = 1000 * 60;
 
-            MIN_TIME_BW_UPDATES = 1000 * 60 * 5;
-            MIN_FAST_INTERVAL_UPDATES = 1000 * 60 * 5;
-            MIN_DISTANCE_CHANGE_FOR_UPDATES = 0;
-        } else if (reference.equals("distance_fused")) {
+            MIN_TIME_BW_UPDATES = (1000 * 60 * 5).toLong()
+            MIN_FAST_INTERVAL_UPDATES = (1000 * 60 * 5).toLong()
+            MIN_DISTANCE_CHANGE_FOR_UPDATES = 0
+        } else if (reference == "distance_fused") {
 
-            MIN_TIME_BW_UPDATES = 1000 * 60;
-            MIN_FAST_INTERVAL_UPDATES = 1000 * 60;
-            MIN_DISTANCE_CHANGE_FOR_UPDATES = 500;
+            MIN_TIME_BW_UPDATES = (1000 * 60).toLong()
+            MIN_FAST_INTERVAL_UPDATES = (1000 * 60).toLong()
+            MIN_DISTANCE_CHANGE_FOR_UPDATES = 500
         }
-
-        api_level = Integer.toString(Build.VERSION.SDK_INT);   // API Level
-        device_info = Build.DEVICE;           // Device
-        device_model = Build.MODEL;            // Model
-        device_product = Build.PRODUCT;          // Product
-        device_os_version = System.getProperty("os.version"); // OS version
     }
 
-
-    public void startLocationUpdates() {
+    fun startLocationUpdates() {
 
         if (ActivityCompat.checkSelfPermission(context, Manifest.permission.ACCESS_FINE_LOCATION) != PackageManager.PERMISSION_GRANTED
                 && ActivityCompat.checkSelfPermission(context, Manifest.permission.ACCESS_COARSE_LOCATION) != PackageManager.PERMISSION_GRANTED) {
-
-            return;
+            return
         }
 
-        fusedLocationProviderClient.getLastLocation().addOnSuccessListener(location -> {
-
+        fusedLocationProviderClient.lastLocation.addOnSuccessListener { location: Location? ->
             if (location != null) {
 
-                latitude = location.getLatitude();
-                longitude = location.getLongitude();
-                accuracy = location.getAccuracy();
-
-                Log.e("Location", TAG + " startLocationUpdates  getLastLocation : " + location.getLatitude() + "  /  " + location.getLongitude());
+                latitude = location.latitude
+                longitude = location.longitude
+                accuracy = location.accuracy.toDouble()
+                Log.e("Location", TAG + " startLocationUpdates  getLastLocation : " + location.latitude + "  /  " + location.longitude)
             }
-        });
+        }
 
-        LocationRequest locationRequest = new LocationRequest();
-        locationRequest.setPriority(LocationRequest.PRIORITY_BALANCED_POWER_ACCURACY);
-        locationRequest.setInterval(MIN_TIME_BW_UPDATES);
-        locationRequest.setFastestInterval(MIN_FAST_INTERVAL_UPDATES);
-        locationRequest.setSmallestDisplacement(MIN_DISTANCE_CHANGE_FOR_UPDATES);
+        val locationRequest = LocationRequest.create().apply {
+            interval = MIN_TIME_BW_UPDATES
+            fastestInterval = MIN_FAST_INTERVAL_UPDATES
+            priority = LocationRequest.PRIORITY_BALANCED_POWER_ACCURACY
+            smallestDisplacement = MIN_DISTANCE_CHANGE_FOR_UPDATES.toFloat()
+        }
 
-
-        fusedLocationProviderClient.requestLocationUpdates(locationRequest, locationCallback, null);
+        fusedLocationProviderClient.requestLocationUpdates(locationRequest, locationCallback, Looper.getMainLooper())
     }
 
-    private final LocationCallback locationCallback = new LocationCallback() {
-        @Override
-        public void onLocationResult(LocationResult locationResult) {
+    private val locationCallback: LocationCallback = object : LocationCallback() {
+        override fun onLocationResult(locationResult: LocationResult) {
 
-            if (locationResult == null) {
-                return;
-            }
-
-            for (Location location : locationResult.getLocations()) {
-
+            for (location in locationResult.locations) {
                 if (location != null) {
 
-                    latitude = location.getLatitude();
-                    longitude = location.getLongitude();
-                    accuracy = location.getAccuracy();
-                    String provider = location.getProvider();
+                    latitude = location.latitude
+                    longitude = location.longitude
+                    accuracy = location.accuracy.toDouble()
+                    val provider = location.provider
 
                     if (count < 5) {
-                        Log.e("Location", TAG + "  LocationCallback : " + latitude + " /  " + longitude + " / " + provider + " - " + count);
-                        count++;
+                        Log.e("Location", "$TAG  LocationCallback : $latitude /  $longitude / $provider - $count")
+                        count++
                     }
 
-                    uploadGPSData(latitude, longitude, accuracy, provider);
+                    uploadGPSData(latitude, longitude, accuracy, provider)
                 } else {
 
-                    uploadGPSFailedLogData();
+                    uploadGPSFailedLogData()
                 }
             }
         }
-    };
+    }
 
-    private void uploadGPSData(double latitude, double longitude, double accuracy, String provider) {
+    private fun uploadGPSData(latitude: Double, longitude: Double, accuracy: Double, provider: String) {
 
-        String channel = "QDRIVE";
-
-        if (!Preferences.INSTANCE.getUserNation().equalsIgnoreCase("SG")) {
-            channel = "QDRIVE_V2";
+        var channel = "QDRIVE"
+        if (!Preferences.userNation.equals("SG", ignoreCase = true)) {
+            channel = "QDRIVE_V2"
         }
 
-        RetrofitClient.INSTANCE.instanceDynamic().requestSetGPSLocation(channel, latitude, longitude, accuracy, reference, provider,
-                NetworkUtil.getNetworkType(context), Preferences.INSTANCE.getUserId(), Preferences.INSTANCE.getUserId(),
-                Preferences.INSTANCE.getDeviceUUID(), Preferences.INSTANCE.getUserId(), DataUtil.appID, Preferences.INSTANCE.getUserNation())
+        RetrofitClient.instanceDynamic().requestSetGPSLocation(channel, latitude, longitude, accuracy, reference, provider, NetworkUtil.getNetworkType(context))
                 .subscribeOn(Schedulers.io())
                 .observeOn(AndroidSchedulers.mainThread())
-                .subscribe(it -> {
+                .subscribe({
 
                     try {
-                        Log.e("Server", "Fused requestSetGPSLocation  result  " + it.getResultCode());
 
-                        if (it.getResultCode() == -16) {
+                        Log.e("Server", "Fused requestSetGPSLocation  result  " + it.resultCode)
 
-                            AlertDialog.Builder builder = new AlertDialog.Builder(context);
-                            builder.setCancelable(false);
-                            builder.setTitle(context.getResources().getString(R.string.text_upload_result));
-                            builder.setMessage(context.getResources().getString(R.string.msg_network_connect_error_saved));
-                            builder.setPositiveButton(context.getResources().getString(R.string.button_ok), (dialog1, which) -> dialog1.dismiss());
-                            builder.show();
-                        } else if (it.getResultCode() < 0) {
+                        if (it.resultCode == -16) {
 
-                            AlertDialog.Builder builder = new AlertDialog.Builder(context);
-                            builder.setCancelable(false);
-                            builder.setTitle(context.getResources().getString(R.string.text_fail));
-                            builder.setMessage(context.getResources().getString(R.string.msg_network_connect_error_saved));
-                            builder.setPositiveButton(context.getResources().getString(R.string.button_ok), (dialog1, which) -> dialog1.dismiss());
-                            builder.show();
+                            val builder = AlertDialog.Builder(context)
+                            builder.setCancelable(false)
+                            builder.setTitle(context.resources.getString(R.string.text_upload_result))
+                            builder.setMessage(context.resources.getString(R.string.msg_network_connect_error_saved))
+                            builder.setPositiveButton(context.resources.getString(R.string.button_ok)) { dialog1: DialogInterface, _ -> dialog1.dismiss() }
+                            builder.show()
+                        } else if (it.resultCode < 0) {
+
+                            val builder = AlertDialog.Builder(context)
+                            builder.setCancelable(false)
+                            builder.setTitle(context.resources.getString(R.string.text_fail))
+                            builder.setMessage(context.resources.getString(R.string.msg_network_connect_error_saved))
+                            builder.setPositiveButton(context.resources.getString(R.string.button_ok)) { dialog1: DialogInterface, _ -> dialog1.dismiss() }
+                            builder.show()
                         }
-                    } catch (Exception e) {
-                        Log.e("Exception", " Fused requestSetGPSLocation  Exception " + e.toString());
+                    } catch (e: Exception) {
+                        Log.e("Exception", " Fused requestSetGPSLocation  Exception $e")
                     }
-                }, it -> Toast.makeText(context, context.getResources().getString(R.string.msg_error_check_again), Toast.LENGTH_SHORT).show());
+                }) { Toast.makeText(context, context.resources.getString(R.string.msg_error_check_again), Toast.LENGTH_SHORT).show() }
     }
 
     @SuppressLint("SimpleDateFormat")
-    private void uploadGPSFailedLogData() {
+    private fun uploadGPSFailedLogData() {
 
-        String opId = Preferences.INSTANCE.getUserId();
+        var channel = "QDRIVE"
+        if (!Preferences.userNation.equals("SG", ignoreCase = true)) {
+            channel = "QDRIVE_V2"
+        }
 
-        SimpleDateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
-        String regDataString = dateFormat.format(new Date());
+        val dateFormat = SimpleDateFormat("yyyy-MM-dd HH:mm:ss")
+        val regDataString = dateFormat.format(Date())
 
-        RetrofitClient.INSTANCE.instanceDynamic().requestSetAppUserInfo("", api_level, device_info, device_model, device_product, device_os_version,
-                NetworkUtil.getNetworkType(context), "FusedProvider Location is null", regDataString, "QDRIVE", "", "",
-                "", "", "", "", "", "", opId, opId, opId, DataUtil.appID, Preferences.INSTANCE.getUserNation())
+        RetrofitClient.instanceDynamic().requestSetAppUserInfo("", NetworkUtil.getNetworkType(context), "FusedProvider Location is null", regDataString, channel)
                 .subscribeOn(Schedulers.io())
                 .observeOn(AndroidSchedulers.mainThread())
-                .subscribe(it -> {
+                .subscribe({
 
                     try {
 
-                        Log.e("Server", " requestSetAppUserInfo  result  " + it.getResultCode());
+                        Log.e("Server", " requestSetAppUserInfo  result  " + it.resultCode)
 
-                        if (it.getResultCode() < 0) {
+                        if (it.resultCode < 0) {
 
-                            AlertDialog.Builder builder = new AlertDialog.Builder(context);
-                            builder.setCancelable(false);
-                            builder.setTitle(context.getResources().getString(R.string.text_upload_result));
-                            builder.setMessage(it.getResultMsg());
-                            builder.setPositiveButton(context.getResources().getString(R.string.button_ok), (dialog1, which) -> dialog1.dismiss());
-                            builder.show();
+                            val builder = AlertDialog.Builder(context)
+                            builder.setCancelable(false)
+                            builder.setTitle(context.resources.getString(R.string.text_upload_result))
+                            builder.setMessage(it.resultMsg)
+                            builder.setPositiveButton(context.resources.getString(R.string.button_ok)) { dialog1: DialogInterface, _ -> dialog1.dismiss() }
+                            builder.show()
                         }
-                    } catch (Exception e) {
-                        Log.e("Exception", "  requestSetAppUserInfo  Exception " + e.toString());
+                    } catch (e: Exception) {
+
+                        Log.e("Exception", "  requestSetAppUserInfo  Exception $e")
                     }
-                }, it -> Toast.makeText(context, context.getResources().getString(R.string.msg_error_check_again), Toast.LENGTH_SHORT).show());
+                }) { Toast.makeText(context, context.resources.getString(R.string.msg_error_check_again), Toast.LENGTH_SHORT).show() }
     }
 
-    public void removeLocationUpdates() {
+    fun removeLocationUpdates() {
 
-        Log.e("Location", TAG + "  removeLocationUpdates");
-        fusedLocationProviderClient.removeLocationUpdates(locationCallback);
+        Log.e("Location", "$TAG  removeLocationUpdates")
+        fusedLocationProviderClient.removeLocationUpdates(locationCallback)
     }
 }

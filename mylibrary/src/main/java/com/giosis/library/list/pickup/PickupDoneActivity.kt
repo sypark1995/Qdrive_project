@@ -135,7 +135,7 @@ class PickupDoneActivity : CommonActivity() {
 
             if (gpsEnable && gpsTrackerManager != null) {
 
-                gpsTrackerManager!!.GPSTrackerStart()
+                gpsTrackerManager!!.gpsTrackerStart()
                 Log.e("Location", "$tag GPSTrackerManager onResume : ${gpsTrackerManager!!.latitude}  ${gpsTrackerManager!!.longitude}  ")
             } else {
 

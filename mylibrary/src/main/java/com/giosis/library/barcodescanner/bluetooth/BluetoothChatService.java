@@ -397,7 +397,7 @@ public class BluetoothChatService {
                 mmSocket.connect();
             } catch (IOException e) {
 
-                Log.e("krm0219", "Exception : " + e.toString());
+                Log.e("Exception", TAG + "  Exception : " + e.toString());
                 connectionFailed();
                 // Close the socket
                 try {

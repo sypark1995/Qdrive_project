@@ -285,7 +285,6 @@ public class ListUploadFailedFragment extends Fragment
         }
 
         try {
-            Log.e("krm0219", "Upload Failed List Position : " + DataUtil.uploadFailedListPosition);
 
             if (groupCount <= DataUtil.uploadFailedListPosition) {
                 DataUtil.uploadFailedListPosition = 0;
@@ -297,7 +296,7 @@ public class ListUploadFailedFragment extends Fragment
                 exlist_card_list.expandGroup(DataUtil.uploadFailedListPosition);
             }
 
-        } catch (Exception e) {
+        } catch (Exception ignore) {
 
         }
 
@@ -310,7 +309,7 @@ public class ListUploadFailedFragment extends Fragment
             gpsEnable = gpsTrackerManager.enableGPSSetting();
 
             if (gpsEnable && gpsTrackerManager != null) {
-                gpsTrackerManager.GPSTrackerStart();
+                gpsTrackerManager.gpsTrackerStart();
                 adapter.setGpsTrackerManager(gpsTrackerManager);
             } else {
                 DataUtil.enableLocationSettings(requireActivity());

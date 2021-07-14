@@ -279,7 +279,7 @@ public class DeliveryFailedUploadHelper {
                 job.accumulate("nation_cd", Preferences.INSTANCE.getUserNation());
 
 
-                String jsonString = Custom_JsonParser.requestServerDataReturnJSON(DataUtil.requestSetUploadDeliveryData, job);
+                String jsonString = Custom_JsonParser.requestServerDataReturnJSON("SetDeliveryUploadData", job);
                 // {"ResultCode":0,"ResultMsg":"SUCCESS"}
                 // {"ResultCode":-11,"ResultMsg":"Upload Failed."}
 

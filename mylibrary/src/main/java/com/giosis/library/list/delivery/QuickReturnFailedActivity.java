@@ -206,7 +206,7 @@ public class QuickReturnFailedActivity extends CommonActivity implements Camera2
             gpsEnable = gpsTrackerManager.enableGPSSetting();
 
             if (gpsEnable && gpsTrackerManager != null) {
-                gpsTrackerManager.GPSTrackerStart();
+                gpsTrackerManager.gpsTrackerStart();
 
                 latitude = gpsTrackerManager.getLatitude();
                 longitude = gpsTrackerManager.getLongitude();
@@ -346,7 +346,7 @@ public class QuickReturnFailedActivity extends CommonActivity implements Camera2
                     }).build().execute();
         } catch (Exception e) {
 
-            Log.e("krm0219", TAG + "  Exception : " + e.toString());
+            Log.e("Exception", TAG + "  Exception : " + e.toString());
             Toast.makeText(this, getResources().getString(R.string.text_error) + " - " + e.toString(), Toast.LENGTH_SHORT).show();
         }
     }
@@ -402,7 +402,7 @@ public class QuickReturnFailedActivity extends CommonActivity implements Camera2
         CameraManager cameraManager = camera2.getCameraManager(this);
         cameraId = camera2.getCameraCharacteristics(cameraManager);
 
-        Log.e("krm0219", TAG + "  openCamera " + cameraId);
+        Log.e("Camera", TAG + "  openCamera " + cameraId);
 
         if (cameraId != null) {
             camera2.setCameraDevice(cameraManager, cameraId);
@@ -417,7 +417,7 @@ public class QuickReturnFailedActivity extends CommonActivity implements Camera2
 
     @Override
     public void onCameraDeviceOpened(CameraDevice cameraDevice, Size cameraSize, int rotation, String it) {
-        Log.e("krm0219", "onCameraDeviceOpened  " + it);
+        Log.e("Camera", "onCameraDeviceOpened  " + it);
         texture_sign_d_r_f_preview.setRotation(rotation);
 
         SurfaceTexture texture = texture_sign_d_r_f_preview.getSurfaceTexture();

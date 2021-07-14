@@ -1,111 +1,98 @@
-package com.giosis.library.gps;
+package com.giosis.library.gps
 
-import android.annotation.SuppressLint;
-import android.app.Notification;
-import android.app.NotificationChannel;
-import android.app.NotificationManager;
-import android.app.PendingIntent;
-import android.app.Service;
-import android.content.Context;
-import android.content.Intent;
-import android.os.Build;
-import android.os.IBinder;
-import android.util.Log;
-
-import androidx.core.app.NotificationCompat;
-
-import com.giosis.library.R;
-import com.giosis.library.main.MainActivity;
-import com.giosis.library.util.Preferences;
+import android.annotation.SuppressLint
+import android.app.NotificationChannel
+import android.app.NotificationManager
+import android.app.PendingIntent
+import android.app.Service
+import android.content.Context
+import android.content.Intent
+import android.os.Build
+import android.os.IBinder
+import android.util.Log
+import androidx.core.app.NotificationCompat
+import com.giosis.library.R
+import com.giosis.library.main.MainActivity
+import com.giosis.library.util.Preferences
 
 // Main 에서 호출 / 5분 또는 500m 거리 이동 시 마다 호출
-public class FusedProviderService extends Service {
-    String TAG = "FusedProviderService";
+class FusedProviderService : Service() {
+    var TAG = "FusedProviderService"
 
-    Context context;
+    var context: Context? = null
+    private var fusedProviderTimeWorker: FusedProviderWorker? = null
+    private var fusedProviderDistanceWorker: FusedProviderWorker? = null
 
-    FusedProviderWorker fusedProviderTimeWorker;
-    FusedProviderWorker fusedProviderDistanceWorker;
-
-    @Override
-    public IBinder onBind(Intent intent) {
-        return null;
+    override fun onBind(intent: Intent): IBinder? {
+        return null
     }
 
+    override fun onStartCommand(intent: Intent, flags: Int, startId: Int): Int {
+        Log.e("Location", "$TAG   onStartCommand")
 
-    @Override
-    public int onStartCommand(Intent intent, int flags, int startId) {
-        Log.e("Location", TAG + " Library   onStartCommand");
-
-        context = getApplicationContext();
-
-        createFusedProvider();
+        context = applicationContext
+        createFusedProvider()
 
 
         // eylee
         if (Build.VERSION_CODES.O <= Build.VERSION.SDK_INT) {
-            String Channel_ID = "GPS_Fused_Provider";
 
-            NotificationChannel serviceChannel = new NotificationChannel(
-                    Channel_ID,
+            val channelId = "GPS_Fused_Provider"
+
+            val serviceChannel = NotificationChannel(
+                    channelId,
                     "Service Channel",
                     NotificationManager.IMPORTANCE_LOW
-            );
-            serviceChannel.setShowBadge(false);
-            serviceChannel.setVibrationPattern(new long[]{0});         // 진동 없애기
-            serviceChannel.enableVibration(true);                       // 진동 없애기
+            )
 
-            NotificationManager notificationManager = getSystemService(NotificationManager.class);
-            notificationManager.createNotificationChannel(serviceChannel);
+            serviceChannel.setShowBadge(false)
+            serviceChannel.vibrationPattern = longArrayOf(0) // 진동 없애기
+            serviceChannel.enableVibration(true) // 진동 없애기
 
 
-            Intent notificationIntent = new Intent(this, MainActivity.class);
-            PendingIntent pendingIntent = PendingIntent.getActivity(this, 0, notificationIntent, 0);
+            val notificationManager = getSystemService(NotificationManager::class.java)
+            notificationManager.createNotificationChannel(serviceChannel)
 
+            val notificationIntent = Intent(this, MainActivity::class.java)
+            val pendingIntent = PendingIntent.getActivity(this, 0, notificationIntent, 0)
+            var resourceId = resources.getIdentifier("qdrive_icon", "drawable", packageName)
 
-            int resourceId = getResources().getIdentifier("qdrive_icon", "drawable", getPackageName());
-            if (!Preferences.INSTANCE.getUserNation().equalsIgnoreCase("SG")) {
-
-                resourceId = getResources().getIdentifier("icon_qdrive_my", "drawable", getPackageName());
+            if (!Preferences.userNation.equals("SG", ignoreCase = true)) {
+                resourceId = resources.getIdentifier("icon_qdrive_my", "drawable", packageName)
             }
 
-
-            NotificationCompat.Builder builder = new NotificationCompat.Builder(this, Channel_ID)
-                    .setContentTitle(getResources().getString(R.string.text_gps_service))
+            val builder = NotificationCompat.Builder(this, channelId)
+                    .setContentTitle(resources.getString(R.string.text_gps_service))
                     .setSmallIcon(resourceId)
-                    .setContentIntent(pendingIntent);
-
-            Notification notification = builder.build();
-            startForeground(1, notification);
+                    .setContentIntent(pendingIntent)
+            val notification = builder.build()
+            startForeground(1, notification)
         }
 
-        return super.onStartCommand(intent, flags, startId);
+        return super.onStartCommand(intent, flags, startId)
     }
 
     @SuppressLint("RestrictedApi")
-    public void createFusedProvider() {
+    fun createFusedProvider() {
 
-        fusedProviderTimeWorker = new FusedProviderWorker(context, "time_fused");
-        fusedProviderDistanceWorker = new FusedProviderWorker(context, "distance_fused");
+        fusedProviderTimeWorker = FusedProviderWorker(context!!, "time_fused")
+        fusedProviderDistanceWorker = FusedProviderWorker(context!!, "distance_fused")
 
-        fusedProviderTimeWorker.startLocationUpdates();
-        fusedProviderDistanceWorker.startLocationUpdates();
+        fusedProviderTimeWorker!!.startLocationUpdates()
+        fusedProviderDistanceWorker!!.startLocationUpdates()
     }
 
-
-    @Override
-    public void onDestroy() {
-        super.onDestroy();
-
-        Log.e("Location", TAG + "   onDestroy");
+    override fun onDestroy() {
+        super.onDestroy()
+        Log.e("Location", "$TAG   onDestroy")
 
         try {
 
-            fusedProviderTimeWorker.removeLocationUpdates();
-            fusedProviderDistanceWorker.removeLocationUpdates();
-        } catch (Exception e) {
+            fusedProviderTimeWorker!!.removeLocationUpdates()
+            fusedProviderDistanceWorker!!.removeLocationUpdates()
+        } catch (e: Exception) {
 
-            Log.e("Exception", TAG + "  onDestroy Exception : " + e.toString());
+            Log.e("Exception", "$TAG  onDestroy Exception : $e")
         }
     }
 }

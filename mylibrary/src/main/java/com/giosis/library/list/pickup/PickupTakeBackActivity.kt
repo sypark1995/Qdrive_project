@@ -97,7 +97,7 @@ class PickupTakeBackActivity : CommonActivity() {
 
             if (gpsEnable && gpsTrackerManager != null) {
 
-                gpsTrackerManager!!.GPSTrackerStart()
+                gpsTrackerManager!!.gpsTrackerStart()
                 Log.e(tag, " onResume  Location  :  ${gpsTrackerManager!!.latitude} / ${gpsTrackerManager!!.longitude}")
             } else {
 

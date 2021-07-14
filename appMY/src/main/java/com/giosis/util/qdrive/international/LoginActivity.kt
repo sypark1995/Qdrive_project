@@ -311,7 +311,7 @@ class LoginActivity : CommonActivity() {
 
             if (gpsEnable == true) {
 
-                gpsTrackerManager?.GPSTrackerStart()
+                gpsTrackerManager?.gpsTrackerStart()
                 Log.e(tag, " onResume  Location  :  ${gpsTrackerManager?.latitude} / ${gpsTrackerManager?.longitude}")
             } else {
 

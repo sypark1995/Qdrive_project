@@ -271,7 +271,7 @@ public class OutletTrackingNoAdapter extends BaseAdapter {
                 return myBitmap;
             } catch (Exception e) {
 
-                Log.e("krm0219", TAG + "   QRCode to Bitmap Exception : " + e.toString());
+                Log.e("Exception", TAG + "   QRCode to Bitmap Exception : " + e.toString());
                 e.printStackTrace();
                 return null;
             }

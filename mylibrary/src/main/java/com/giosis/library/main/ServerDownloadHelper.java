@@ -1,5 +1,6 @@
 package com.giosis.library.main;
 
+import android.app.Activity;
 import android.app.AlertDialog;
 import android.app.ProgressDialog;
 import android.content.ContentValues;
@@ -301,8 +302,13 @@ public class ServerDownloadHelper {
         AlertDialog dialog = new AlertDialog.Builder(context)
                 .setTitle(context.getResources().getString(R.string.text_download_result))
                 .setCancelable(true).setPositiveButton(context.getResources().getString(R.string.button_ok), (dialog1, which) -> {
-                    if (dialog1 != null)
-                        dialog1.dismiss();
+
+                    if (dialog1 != null) {
+                        if (!((Activity) context).isFinishing()) {
+
+                            dialog1.dismiss();
+                        }
+                    }
                     if (eventListener != null) {
                         eventListener.onDownloadResult();
                     }

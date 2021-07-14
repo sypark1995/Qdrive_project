@@ -313,7 +313,7 @@ class PickupFailedActivity : CommonActivity(), Camera2APIs.Camera2Interface, Tex
 
             if (gpsEnable && gpsTrackerManager != null) {
 
-                gpsTrackerManager!!.GPSTrackerStart()
+                gpsTrackerManager!!.gpsTrackerStart()
                 Log.e(tag, " onResume  Location  :  ${gpsTrackerManager!!.latitude} / ${gpsTrackerManager!!.longitude}")
             } else {
 

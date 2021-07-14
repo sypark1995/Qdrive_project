@@ -95,7 +95,7 @@ class TodayMyRouteActivity : AppCompatActivity() {
                 }
 
                 if (gpsEnable && viewModel.getGpsManager() != null) {
-                    viewModel.getGpsManager()!!.GPSTrackerStart()
+                    viewModel.getGpsManager()!!.gpsTrackerStart()
                 } else {
                     DataUtil.enableLocationSettings(this@TodayMyRouteActivity)
                 }
