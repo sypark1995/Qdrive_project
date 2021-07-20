@@ -340,7 +340,7 @@ public class DeviceDataUploadHelper {
                     job.accumulate("app_id", DataUtil.appID);
                     job.accumulate("nation_cd", Preferences.INSTANCE.getUserNation());
 
-                    methodName = DataUtil.requestSetUploadDeliveryData;
+                    methodName = "SetDeliveryUploadData";
                 } else if (uploadData.getType().equals("P")) {
 
                     String bitmapString = "";

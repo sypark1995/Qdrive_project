@@ -379,7 +379,7 @@ public class SelfCollectionDoneActivity extends CommonActivity {
                     }).build().execute();
         } catch (Exception e) {
 
-            Log.e("krm0219", TAG + "  Exception : " + e.toString());
+            Log.e("Exception", TAG + "  Exception : " + e.toString());
             Toast.makeText(SelfCollectionDoneActivity.this, getResources().getString(R.string.text_error) + " - " + e.toString(), Toast.LENGTH_SHORT).show();
         }
     }

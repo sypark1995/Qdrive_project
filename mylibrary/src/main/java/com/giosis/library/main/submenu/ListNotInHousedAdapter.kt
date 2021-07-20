@@ -87,7 +87,7 @@ class ListNotInHousedAdapter(var result: ArrayList<NotInHousedResult>) : BaseExp
             text_not_in_parcels_item_desired_date.text = pickupDate
         } catch (e: ParseException) {
 
-            Log.e("krm0219", "$TAG Exception : $e")
+            Log.e("Exception", "$TAG Exception : $e")
             text_not_in_parcels_item_desired_date.text = text_not_in_parcels_item_desired_date.resources.getString(R.string.text_error)
             e.printStackTrace()
         }
@@ -131,7 +131,6 @@ class ListNotInHousedAdapter(var result: ArrayList<NotInHousedResult>) : BaseExp
 
         val subitem = result[group_position].subLists!![child_position]
         val sub_size = result[group_position].subLists!!.size
-        Log.e("krm0219", result[group_position].subLists!!.size.toString() + "  " + child_position)
 
         if (sub_size - 1 == child_position) {
 

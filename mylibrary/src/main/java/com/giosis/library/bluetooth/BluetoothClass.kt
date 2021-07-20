@@ -324,10 +324,10 @@ class BluetoothClass(val mActivity: Activity) : BluetoothListener {
         // 위에 if 문은 아마 그냥 통과 될 것 왜냐면 커넥션을 자동으로 하고 바로 프린터 버튼 누른 것처럼 trigger 보완 소스 넣고 있음
         //  handler 에서 메시지 받으면 다시 버튼 클릭을 interface 함수로 getTodayPickupDone호출 하고 있음 - onStartGprinter
         if (printerConnManagerList[0].currentPrinterCommand == PrinterConnManager.PrinterCommand.TSC) {
-            val opId = Preferences.userId
+
             Log.e("print", TAG + "  printLabel Command : " + printerConnManagerList[0].currentPrinterCommand + " / " + address + " / " + tracking_no)
 
-            CnRPickupInfoGetHelper.Builder(mActivity, opId, tracking_no)
+            CnRPickupInfoGetHelper.Builder(mActivity, Preferences.userId, tracking_no)
                     .setOnCnRPrintDataEventListener { stdResult: PrintDataResult? ->
                         try {
                             if (stdResult != null) {
@@ -357,7 +357,7 @@ class BluetoothClass(val mActivity: Activity) : BluetoothListener {
 //                        if (it.resultCode == 0) {
 //
 //                            val resultObj = Gson().fromJson(it.resultObject, ResultObject::class.java)
-//                            Log.e("krm0219", "result " + resultObj.invoiceNo + " / " + resultObj.deliveryCouse)
+//                            Log.e(TAG, "result " + resultObj.invoiceNo + " / " + resultObj.deliveryCouse)
 //                            // TEST_ 확인 후 sendLabel 호출하기 !!
 //                        } else {
 //                            Toast.makeText(mActivity, it.resultMsg, Toast.LENGTH_SHORT).show()

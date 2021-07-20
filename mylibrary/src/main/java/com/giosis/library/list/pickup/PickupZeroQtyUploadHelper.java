@@ -286,7 +286,7 @@ public class PickupZeroQtyUploadHelper {
                 String bitmapString = DataUtil.bitmapToString(context, captureView, ImageUpload.QXPOP, "qdriver/sign", pickupNo);
                 String bitmapString2 = DataUtil.bitmapToString(context, captureView2, ImageUpload.QXPOP, "qdriver/sign", pickupNo);
 
-                Log.e("krm0219", " image  " + bitmapString + " / " + bitmapString2);
+                Log.e("Bitmap", " image  " + bitmapString + " / " + bitmapString2);
                 if (bitmapString.equals("") || bitmapString2.equals("")) {
                     result.setResultCode(-100);
                     result.setResultMsg(context.getResources().getString(R.string.msg_upload_fail_image));

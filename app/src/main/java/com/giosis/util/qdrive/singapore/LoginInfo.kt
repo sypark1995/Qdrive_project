@@ -1,10 +1,9 @@
 package com.giosis.util.qdrive.singapore
 
-import com.giosis.library.server.JsonModel
 import com.google.gson.annotations.SerializedName
 import java.io.Serializable
 
-class LoginInfo : JsonModel(), Serializable {
+class LoginInfo : Serializable {
 
     @SerializedName("OpNo")
     var opNo: String? = null

@@ -15,10 +15,7 @@ public class NetworkUtil {
             @SuppressLint("MissingPermission") NetworkInfo networkInfo = connectivityManager.getActiveNetworkInfo();
 
             /// if no network is available networkInfo will be null
-            if (networkInfo != null && networkInfo.isConnected()) {
-
-                return true;
-            }
+            return networkInfo != null && networkInfo.isConnected();
         }
 
         return false;
@@ -28,8 +25,8 @@ public class NetworkUtil {
     public static String getNetworkType(Context context) {
         String networkType = "";
 
-        ConnectivityManager conectivityManager = (ConnectivityManager) context.getSystemService(Context.CONNECTIVITY_SERVICE);
-        @SuppressLint("MissingPermission") final NetworkInfo activeNetwork = conectivityManager.getActiveNetworkInfo();
+        ConnectivityManager connectivityManager = (ConnectivityManager) context.getSystemService(Context.CONNECTIVITY_SERVICE);
+        @SuppressLint("MissingPermission") final NetworkInfo activeNetwork = connectivityManager.getActiveNetworkInfo();
 
         if (activeNetwork != null) {
             switch (activeNetwork.getType()) {

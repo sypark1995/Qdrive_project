@@ -77,8 +77,6 @@ public class OutletPickupStep1Activity extends CommonActivity {
 
 
     //
-    Gson gson = new Gson();
-
     String mTitle;
     String mPickupNo;
     String mApplicant;
@@ -348,7 +346,7 @@ public class OutletPickupStep1Activity extends CommonActivity {
                 String methodName = "GetCollectionPickupNoList";
                 String jsonString = Custom_JsonParser.requestServerDataReturnJSON(methodName, job);
 
-                result = gson.fromJson(jsonString, OutletPickupDoneResult.class);
+                result = new Gson().fromJson(jsonString, OutletPickupDoneResult.class);
 
 
                 if (result != null && outlet_type.equals("7E")) {

@@ -364,8 +364,7 @@ public class ListInProgressFragment extends Fragment
 
                         if (it.getResultCode() == 0) {
 
-                            Gson gson = new Gson();
-                            ArrayList<PickupAssignResult.QSignPickupList> list = gson.fromJson(it.getResultObject(), new TypeToken<ArrayList<PickupAssignResult.QSignPickupList>>() {
+                            ArrayList<PickupAssignResult.QSignPickupList> list = new Gson().fromJson(it.getResultObject(), new TypeToken<ArrayList<PickupAssignResult.QSignPickupList>>() {
                             }.getType());
 
                             if (isAdded()) {

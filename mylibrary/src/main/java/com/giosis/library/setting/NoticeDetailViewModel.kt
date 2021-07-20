@@ -20,7 +20,6 @@ class NoticeDetailViewModel : BaseViewModel() {
         get() = _seqNo
         set(value) {
 
-            Log.e("krm0219", "set   $value")
             _seqNo.value = value.toString()
         }
 
@@ -44,7 +43,6 @@ class NoticeDetailViewModel : BaseViewModel() {
     fun callServer() {
 
         val noticeNo = _seqNo.value.toString()
-        Log.e("krm0219", "callServer DATA > $noticeNo")
 
         progressVisible.value = true
 
@@ -61,8 +59,8 @@ class NoticeDetailViewModel : BaseViewModel() {
                                 it.resultObject.toString(), object : TypeToken<List<NoticeResult.NoticeItem>>() {}.type
                         )
 
-                        Log.e("krm0219", it.resultObject.toString())
-                        Log.e("krm0219", "${result[0].title}  /  ${result[0].date}")
+                        Log.e("Server", it.resultObject.toString())
+                        Log.e("Server", "${result[0].title}  /  ${result[0].date}")
 
                         _content.value = result[0].title
                         _date.value = result[0].date
@@ -102,18 +100,13 @@ class NoticeDetailViewModel : BaseViewModel() {
 
     fun onClickPrev() {
 
-        Log.e("krm0219", "Click Prev  ${_prevNo.value.toString()}")
         _seqNo.value = _prevNo.value
         callServer()
     }
 
-
     fun onClickNext() {
 
-        Log.e("krm0219", "Click Next  ${_nextNo.value.toString()}")
         _seqNo.value = _nextNo.value
         callServer()
     }
-
-
 }

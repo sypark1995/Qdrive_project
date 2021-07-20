@@ -98,7 +98,6 @@ public class SelfCollectionShippingInfoHelper {
         // 배송정보 습득 (받는사람, 보내는셀러)
         private ShippingInfoResult requestShippingInfo(String assignNo) {
 
-            Gson gson = new Gson();
             ShippingInfoResult resultObj;
 
             try {
@@ -113,7 +112,7 @@ public class SelfCollectionShippingInfoHelper {
                 String methodName = "GetContrInfo";
                 String jsonString = Custom_JsonParser.requestServerDataReturnJSON(methodName, job);
 
-                resultObj = gson.fromJson(jsonString, ShippingInfoResult.class);
+                resultObj = new Gson().fromJson(jsonString, ShippingInfoResult.class);
             } catch (Exception e) {
 
                 Log.e("Exception", TAG + "  GetContrInfo Json Exception : " + e.toString());

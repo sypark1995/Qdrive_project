@@ -506,7 +506,7 @@ public class ListUploadFailedAdapter extends BaseExpandableListAdapter {
 
             if (songjanglist.size() > 0) {
 
-                DataUtil.logEvent("button_click", TAG, DataUtil.requestSetUploadDeliveryData + "/" + DataUtil.requestSetUploadPickupData);
+                DataUtil.logEvent("button_click", TAG, "SetDeliveryUploadData / SetPickupUploadData");
 
                 new DeviceDataUploadHelper.Builder(v.getContext(),
                         Preferences.INSTANCE.getUserId(), Preferences.INSTANCE.getOfficeCode(), Preferences.INSTANCE.getDeviceUUID(),

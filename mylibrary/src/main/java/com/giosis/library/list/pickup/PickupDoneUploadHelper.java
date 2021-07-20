@@ -374,13 +374,9 @@ public class PickupDoneUploadHelper {
                     String[] scannedList = scanned_str.split(",");
                     for (String s : scannedList) {
 
-                        Log.e("krm0219", "Scanned List > " + s);
-
                         Cursor cursor = DatabaseHelper.getInstance().get("SELECT rcv_nm, sender_nm FROM " + DatabaseHelper.DB_TABLE_INTEGRATION_LIST + " WHERE invoice_no='" + s + "' COLLATE NOCASE");
 
                         if (cursor != null && cursor.moveToFirst()) {
-
-                            Log.e("krm0219", "Exist Data");
 
                             ContentValues contentVal3 = new ContentValues();
                             contentVal3.put("stat", "P3");

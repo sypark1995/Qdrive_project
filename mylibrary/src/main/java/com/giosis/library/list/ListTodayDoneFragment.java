@@ -24,8 +24,6 @@ import com.giosis.library.bluetooth.BluetoothListener;
 import com.giosis.library.main.PickupAssignResult;
 import com.giosis.library.server.RetrofitClient;
 import com.giosis.library.util.DataUtil;
-import com.giosis.library.util.PermissionActivity;
-import com.giosis.library.util.PermissionChecker;
 import com.giosis.library.util.Preferences;
 import com.google.gson.Gson;
 import com.google.gson.reflect.TypeToken;
@@ -36,12 +34,7 @@ import io.reactivex.rxjava3.android.schedulers.AndroidSchedulers;
 import io.reactivex.rxjava3.schedulers.Schedulers;
 
 public class ListTodayDoneFragment extends Fragment implements SearchView.OnQueryTextListener, SearchView.OnCloseListener {
-
-    String TAG = "List_TodayDoneFragment";
-
-    private PermissionChecker checker;
-    private static final int PERMISSION_REQUEST_CODE = 1000;
-    private static final String[] PERMISSIONS = new String[]{PermissionChecker.ACCESS_FINE_LOCATION, PermissionChecker.ACCESS_COARSE_LOCATION};
+    String TAG = "ListTodayDoneFragment";
 
     private SearchView searchview_list;
     private EditText edit_list_searchview;
@@ -85,20 +78,6 @@ public class ListTodayDoneFragment extends Fragment implements SearchView.OnQuer
             throw new ClassCastException(activity.toString() + " must implement OnCountListener");
         }
     }
-
-
-    @Override
-    public void onCreate(Bundle savedInstanceState) {
-        super.onCreate(savedInstanceState);
-
-        checker = new PermissionChecker(getActivity());
-
-        if (checker.lacksPermissions(PERMISSIONS)) {
-            PermissionActivity.startActivityForResult(getActivity(), PERMISSION_REQUEST_CODE, PERMISSIONS);
-            getActivity().overridePendingTransition(0, 0);
-        }
-    }
-
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
@@ -168,8 +147,7 @@ public class ListTodayDoneFragment extends Fragment implements SearchView.OnQuer
 
                         if (it.getResultCode() == 0) {
 
-                            Gson gson = new Gson();
-                            ArrayList<PickupAssignResult.QSignPickupList> list = gson.fromJson(it.getResultObject(), new TypeToken<ArrayList<PickupAssignResult.QSignPickupList>>() {
+                            ArrayList<PickupAssignResult.QSignPickupList> list = new Gson().fromJson(it.getResultObject(), new TypeToken<ArrayList<PickupAssignResult.QSignPickupList>>() {
                             }.getType());
 
                             if (isAdded()) {
@@ -231,6 +209,8 @@ public class ListTodayDoneFragment extends Fragment implements SearchView.OnQuer
                     }, it -> {
 
                         if (getActivity() != null && isAdded()) {
+
+                            Log.e(RetrofitClient.errorTag, TAG + " - " + it.toString());
                             Toast.makeText(getActivity(), getString(R.string.msg_error_check_again), Toast.LENGTH_SHORT).show();
                         }
                     });
@@ -256,11 +236,6 @@ public class ListTodayDoneFragment extends Fragment implements SearchView.OnQuer
 
             onResume();
 
-        } else if (requestCode == PERMISSION_REQUEST_CODE) {   // permission
-
-            if (resultCode == PermissionActivity.PERMISSIONS_GRANTED) {
-                Log.e("Permission", TAG + "   onActivityResult  PERMISSIONS_GRANTED");
-            }
         }
     }
 

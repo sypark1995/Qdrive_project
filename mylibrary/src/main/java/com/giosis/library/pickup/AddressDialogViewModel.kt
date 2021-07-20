@@ -59,7 +59,6 @@ class AddressDialogViewModel : ListViewModel<AddressResult.AddressResultObject.A
                             _errorMsg.value = R.string.msg_no_results
                         } else {
 
-                            //    Log.e("krm0219", "Server  ${result.size}  ${result[0].zipCode}  ${result[0].frontAddress}")
                             setItemList(result)
                             notifyChange()
                         }

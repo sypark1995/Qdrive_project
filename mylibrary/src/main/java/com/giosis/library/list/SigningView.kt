@@ -38,7 +38,6 @@ class SigningView : View {
     }
 
     private fun init() {
-        Log.e("krm0219", "SingingView init")
 
         mPaint = Paint()
         mPaint!!.isAntiAlias = true

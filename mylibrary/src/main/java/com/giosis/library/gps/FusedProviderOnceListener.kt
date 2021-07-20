@@ -22,10 +22,14 @@ class FusedProviderOnceListener(private val context: Context) {
     var longitude = 0.0
     var accuracy = 0.0
 
+
     private val locationCallback: LocationCallback = object : LocationCallback() {
-        override fun onLocationResult(locationResult: LocationResult) {
+        override fun onLocationResult(locationResult: LocationResult?) {
+
+            locationResult ?: return
 
             for (location in locationResult.locations) {
+
                 if (location != null) {
                     latitude = location.latitude
                     longitude = location.longitude
@@ -57,10 +61,12 @@ class FusedProviderOnceListener(private val context: Context) {
             }
         }
 
-        val locationRequest = LocationRequest.create()
-        locationRequest.priority = LocationRequest.PRIORITY_BALANCED_POWER_ACCURACY
-        locationRequest.interval = 0
-        locationRequest.fastestInterval = 0
+
+        val locationRequest = LocationRequest.create().apply {
+            interval = 0
+            fastestInterval = 0
+            priority = LocationRequest.PRIORITY_BALANCED_POWER_ACCURACY
+        }
         fusedLocationProviderClient.requestLocationUpdates(locationRequest, locationCallback, Looper.getMainLooper())
     }
 

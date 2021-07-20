@@ -436,7 +436,6 @@ public class OutletOrderStatusAdapter extends BaseExpandableListAdapter {
             } else if (type.equals("P")) {
 
                 Intent intent = new Intent(context, OutletPickupStep1Activity.class);
-
                 intent.putExtra("title", "Qsuttle : Pickup Done");
                 intent.putExtra("pickup_no", tracking_no);
                 intent.putExtra("applicant", name);

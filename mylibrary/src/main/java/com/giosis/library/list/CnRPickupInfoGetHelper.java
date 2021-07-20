@@ -84,7 +84,6 @@ public class CnRPickupInfoGetHelper {
 
         private PrintDataResult requestDriverAssign(String tracking_no) {
 
-            Gson gson = new Gson();
             PrintDataResult resultObj;
 
             if (!NetworkUtil.isNetworkAvailable(context)) {
@@ -106,7 +105,7 @@ public class CnRPickupInfoGetHelper {
 
                 String methodName = "GetCnRPrintData";
                 String jsonString = Custom_JsonParser.requestServerDataReturnJSON(methodName, job);
-                resultObj = gson.fromJson(jsonString, PrintDataResult.class);
+                resultObj = new Gson().fromJson(jsonString, PrintDataResult.class);
             } catch (Exception e) {
 
                 Log.e("Exception", TAG + "  GetCnRPrintData Json Exception : " + e.toString());

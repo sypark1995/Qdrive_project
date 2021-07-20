@@ -47,7 +47,7 @@ class GetRestDaysAsyncTask(private val nation: String, private val year: Int) : 
                 insert = databaseHelper.insert(DatabaseHelper.DB_TABLE_REST_DAYS, contentValues).toInt()
             }
 
-            Log.e("krm0219", "Rest Day   DB Insert: $insert")
+            Log.e("DB", "Rest Day   DB Insert: $insert")
 
         } catch (e: Exception) {
 

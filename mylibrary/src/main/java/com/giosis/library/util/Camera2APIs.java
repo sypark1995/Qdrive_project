@@ -253,7 +253,14 @@ public class Camera2APIs {
                 buffer.get(bytes);
 
                 BitmapFactory.Options options = new BitmapFactory.Options();
-                options.inSampleSize = 1;
+                options.inJustDecodeBounds = true;
+                BitmapFactory.decodeByteArray(bytes, 0, bytes.length, options);
+
+                // Calculate inSampleSize
+                options.inSampleSize = calculateInSampleSize(options, 1000, 1000);
+
+                // Decode bitmap with inSampleSize set
+                options.inJustDecodeBounds = false;
                 options.inDither = false;
                 options.inTempStorage = new byte[32 * 1024];
                 options.inPreferredConfig = Bitmap.Config.RGB_565;
@@ -269,6 +276,30 @@ public class Camera2APIs {
             }
         }
     };
+
+    public static int calculateInSampleSize(BitmapFactory.Options options, int reqWidth, int reqHeight) {
+
+        // Raw height and width of image
+        final int height = options.outHeight;
+        final int width = options.outWidth;
+        int inSampleSize = 1;
+
+        if (height > reqHeight || width > reqWidth) {
+
+            final int halfHeight = height / 2;
+            final int halfWidth = width / 2;
+
+            // Calculate the largest inSampleSize value that is a power of 2 and keeps both
+            // height and width larger than the requested height and width.
+            while ((halfHeight / inSampleSize) >= reqHeight
+                    && (halfWidth / inSampleSize) >= reqWidth) {
+                inSampleSize *= 2;
+            }
+        }
+
+        Log.e("Image", "calculateInSampleSize " + inSampleSize);
+        return inSampleSize;
+    }
 
     // NOTIFICATION.  Image Capture
     public void takePhoto(TextureView textureView, ImageView imageView) {

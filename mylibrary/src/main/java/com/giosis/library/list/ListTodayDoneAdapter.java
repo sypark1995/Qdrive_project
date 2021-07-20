@@ -55,11 +55,14 @@ public class ListTodayDoneAdapter extends BaseExpandableListAdapter {
         }
 
         LinearLayout layout_list_item_card_view = convertView.findViewById(R.id.layout_list_item_card_view);                // background change
+        ImageView img_list_item_up_icon = convertView.findViewById(R.id.img_list_item_up_icon);
 
         if (isExpanded) {
             layout_list_item_card_view.setBackgroundResource(R.drawable.bg_top_round_10_ffffff);
+            img_list_item_up_icon.setVisibility(View.VISIBLE);
         } else {
             layout_list_item_card_view.setBackgroundResource(R.drawable.bg_round_10_ffffff_shadow);
+            img_list_item_up_icon.setVisibility(View.GONE);
         }
 
         if (groupPosition == 0) {
@@ -235,7 +238,7 @@ public class ListTodayDoneAdapter extends BaseExpandableListAdapter {
             layout_list_item_child_done_pickup.setVisibility(View.VISIBLE);
             btn_list_item_child_done_print_label.setVisibility(View.GONE);
 
-            Log.e("krm0219", "Scanned Qty :  " + scanned_qty);
+            Log.e(TAG, "Scanned Qty :  " + scanned_qty);
             if (scanned_qty.equals("0")) {
                 btn_list_item_child_done_take_back.setVisibility(View.GONE);
             } else {

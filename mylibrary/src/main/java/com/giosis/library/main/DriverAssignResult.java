@@ -129,7 +129,6 @@ public class DriverAssignResult {
         @SerializedName("currency")
         private String currency = "";
 
-        // krm0219
         @Element(name = "order_type_etc", required = false)
         @SerializedName("order_type_etc")
         private String order_type_etc = "";
