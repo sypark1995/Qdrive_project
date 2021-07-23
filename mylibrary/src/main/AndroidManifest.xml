@@ -150,7 +150,6 @@
             android:configChanges="orientation|keyboardHidden"
             android:screenOrientation="portrait"
             android:windowSoftInputMode="stateAlwaysHidden|adjustPan" />
-
         <activity
             android:name=".list.pickup.OutletPickupStep3Activity"
             android:configChanges="orientation|keyboardHidden"
@@ -236,9 +235,17 @@
             android:configChanges="orientation|keyboardHidden"
             android:screenOrientation="portrait"
             android:windowSoftInputMode="adjustNothing" />
-
         <activity
             android:name=".barcodescanner.bluetooth.DeviceListActivity"
+            android:theme="@android:style/Theme.Dialog" />
+
+        <activity
+            android:name=".barcodescanner.CaptureActivity1"
+            android:configChanges="orientation|keyboardHidden"
+            android:screenOrientation="portrait"
+            android:windowSoftInputMode="adjustNothing" />
+        <activity
+            android:name=".barcodescanner.DeviceListActivity1"
             android:theme="@android:style/Theme.Dialog" />
 
 

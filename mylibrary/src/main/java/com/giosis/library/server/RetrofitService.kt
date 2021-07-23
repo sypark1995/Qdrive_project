@@ -186,11 +186,48 @@ interface RetrofitService {
             @Field("nation_cd") nation_cd: String = Preferences.userNation
     ): Single<APIModel>
 
+    @POST("SetShippingStatDpc3out")
+    @FormUrlEncoded
+    fun requestSetShippingStatDpc3out(
+            @Field("assignList") assignList: String,
+            @Field("del_driver_id") del_driver_id: String = Preferences.userId,
+            @Field("office_code") office_code: String = Preferences.officeCode,
+            @Field("device_id") device_id: String = Preferences.deviceUUID,
+            @Field("stat_chg_gubun") stat_chg_gubun: String = "D",
+            @Field("app_id") app_id: String = DataUtil.appID,
+            @Field("nation_cd") nation_cd: String = Preferences.userNation
+    ): Single<APIModel>
+
     @POST("GetChangeDriverValidationCheck")
     @FormUrlEncoded
     fun requestValidationCheckChangeDriver(
             @Field("scanData") scanData: String,
             @Field("driverId") driverId: String = Preferences.userId,
+            @Field("app_id") app_id: String = DataUtil.appID,
+            @Field("nation_cd") nation_cd: String = Preferences.userNation
+    ): Single<APIModel>
+
+    @POST("SetChangeDeliveryDriver")
+    @FormUrlEncoded
+    fun requestSetChangeDeliveryDriver(
+            @Field("assignList") assignList: String,
+            @Field("network_type") network_type: String,
+            @Field("lat") lat: String,
+            @Field("lon") lon: String,
+            @Field("del_driver_id") del_driver_id: String = Preferences.userId,
+            @Field("office_code") office_code: String = Preferences.officeCode,
+            @Field("device_id") device_id: String = Preferences.deviceUUID,
+            @Field("app_id") app_id: String = DataUtil.appID,
+            @Field("nation_cd") nation_cd: String = Preferences.userNation
+    ): Single<APIModel>
+
+
+    @POST("SetQdriverMessageChangeQdriver")
+    @FormUrlEncoded
+    fun requestSetQdriverMessageChangeQdriver(
+            @Field("tracking_no") tracking_no: String,
+            @Field("svc_nation_cd") svc_nation_cd: String = "SG",
+            @Field("qdriver_id") qdriver_id: String = Preferences.userId,
             @Field("app_id") app_id: String = DataUtil.appID,
             @Field("nation_cd") nation_cd: String = Preferences.userNation
     ): Single<APIModel>

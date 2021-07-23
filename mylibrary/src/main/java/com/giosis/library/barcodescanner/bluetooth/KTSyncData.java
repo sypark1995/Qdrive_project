@@ -71,15 +71,19 @@ public class KTSyncData {
     public static int Minlength = 2;
     public static int WedgeMode = 1;
     //
-    public static boolean AttachType = false;
-    public static boolean AttachTimestamp = false;
-    public static boolean AttachSerialNumber = false;
+
+
     public static boolean AutoConnect = false;
-    public static int DataDelimiter = 0;
-    public static int RecordDelimiter = 0;
+    public static boolean AttachTimestamp = false;
+    public static boolean AttachType = false;
+    public static boolean AttachSerialNumber = false;
     public static boolean AttachLocation = false;
     public static boolean SyncNonCompliant = true;
     public static boolean AttachQuantity = false;
+    public static int DataDelimiter = 0;
+    public static int RecordDelimiter = 0;
+
+
     public static boolean EraseMemory = false;
     public static boolean bIsGPSSupported = false;
     public static String[] BarcodeTypeName = new String[]

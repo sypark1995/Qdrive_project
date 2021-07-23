@@ -27,7 +27,7 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import com.giosis.library.R;
-import com.giosis.library.barcodescanner.CaptureActivity;
+import com.giosis.library.barcodescanner.CaptureActivity1;
 import com.giosis.library.bluetooth.BluetoothListener;
 import com.giosis.library.list.delivery.DeliveryDoneActivity;
 import com.giosis.library.list.delivery.DeliveryFailedActivity;
@@ -846,7 +846,7 @@ public class ListInProgressAdapter extends BaseExpandableListAdapter {
 
         btn_list_item_child_pickup_scan.setOnClickListener(v -> {
 
-            Intent intent = new Intent(v.getContext(), CaptureActivity.class);
+            Intent intent = new Intent(v.getContext(), CaptureActivity1.class);
             intent.putExtra("title", v.getContext().getResources().getString(R.string.text_start_to_scan));
             intent.putExtra("type", BarcodeType.PICKUP_SCAN_ALL);
             intent.putExtra("pickup_no", tracking_no);
@@ -877,7 +877,7 @@ public class ListInProgressAdapter extends BaseExpandableListAdapter {
 
         });
 
-        // NOTIFICATION.  krm0219  Outlet Pickup Done
+        // NOTIFICATION.  Outlet Pickup Done
         btn_list_item_child_outlet_pickup_scan.setOnClickListener(view -> {
 
             Intent intent = new Intent(view.getContext(), OutletPickupStep1Activity.class);
@@ -887,7 +887,6 @@ public class ListInProgressAdapter extends BaseExpandableListAdapter {
             intent.putExtra("qty", qty);
             intent.putExtra("route", route);
             view.getContext().startActivity(intent);
-
         });
 
 

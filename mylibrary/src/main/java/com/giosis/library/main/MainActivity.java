@@ -33,7 +33,7 @@ import androidx.core.graphics.drawable.RoundedBitmapDrawableFactory;
 
 import com.giosis.library.R;
 import com.giosis.library.UploadData;
-import com.giosis.library.barcodescanner.CaptureActivity;
+import com.giosis.library.barcodescanner.CaptureActivity1;
 import com.giosis.library.gps.FusedProviderService;
 import com.giosis.library.gps.GPSTrackerManager;
 import com.giosis.library.gps.LocationManagerService;
@@ -155,7 +155,7 @@ public class MainActivity extends AppBaseActivity {
                 Upload();
             } else if (id == R.id.btn_home_confirm_my_delivery_order) {
 
-                Intent intent = new Intent(MainActivity.this, CaptureActivity.class);
+                Intent intent = new Intent(MainActivity.this, CaptureActivity1.class);
                 intent.putExtra("title", getResources().getString(R.string.text_title_driver_assign));
                 intent.putExtra("type", BarcodeType.CONFIRM_MY_DELIVERY_ORDER);
                 startActivity(intent);
@@ -167,7 +167,7 @@ public class MainActivity extends AppBaseActivity {
 
                 if (gpsEnable && gpsTrackerManager != null) {
 
-                    Intent intent = new Intent(MainActivity.this, CaptureActivity.class);
+                    Intent intent = new Intent(MainActivity.this, CaptureActivity1.class);
                     intent.putExtra("title", getResources().getString(R.string.button_change_delivery_driver));
                     intent.putExtra("type", BarcodeType.CHANGE_DELIVERY_DRIVER);
                     startActivity(intent);

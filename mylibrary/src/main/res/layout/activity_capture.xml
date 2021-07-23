@@ -7,7 +7,9 @@
     android:background="@color/color_f0f0f0"
     android:orientation="vertical">
 
-    <include layout="@layout/top_title" />
+    <include
+        android:id="@+id/layout_top_title"
+        layout="@layout/top_title" />
 
     <LinearLayout
         android:layout_width="match_parent"
@@ -16,57 +18,56 @@
         android:weightSum="3">
 
         <LinearLayout
-            android:id="@+id/layout_capture_camera"
+            android:id="@+id/layout_camera"
             android:layout_width="0dp"
             android:layout_height="match_parent"
             android:layout_weight="1"
-            android:background="@drawable/bg_tab_bottom_ff0000"
+            android:background="@drawable/selector_capture_tab_bottom"
             android:gravity="center"
             android:orientation="vertical">
 
             <TextView
-                android:id="@+id/text_capture_camera"
+                android:id="@+id/text_camera"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:text="@string/text_camera"
-                android:textColor="@color/color_ff0000"
-                android:textSize="@dimen/text_size_28px"
-                android:textStyle="bold" />
-        </LinearLayout>
-
-        <LinearLayout
-            android:id="@+id/layout_capture_scanner"
-            android:layout_width="0dp"
-            android:layout_height="match_parent"
-            android:layout_weight="1"
-            android:background="@drawable/bg_ffffff"
-            android:gravity="center"
-            android:orientation="vertical">
-
-            <TextView
-                android:id="@+id/text_capture_scanner"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:text="@string/text_scanner"
-                android:textColor="@color/color_303030"
+                android:textColor="@drawable/selector_capture_tab_text"
                 android:textSize="@dimen/text_size_28px" />
         </LinearLayout>
 
         <LinearLayout
-            android:id="@+id/layout_capture_bluetooth"
+            android:id="@+id/layout_scanner"
             android:layout_width="0dp"
             android:layout_height="match_parent"
             android:layout_weight="1"
-            android:background="@drawable/bg_ffffff"
+            android:background="@drawable/selector_capture_tab_bottom"
             android:gravity="center"
             android:orientation="vertical">
 
             <TextView
-                android:id="@+id/text_capture_bluetooth"
+                android:id="@+id/text_scanner"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="@string/text_scanner"
+                android:textColor="@drawable/selector_capture_tab_text"
+                android:textSize="@dimen/text_size_28px" />
+        </LinearLayout>
+
+        <LinearLayout
+            android:id="@+id/layout_bluetooth"
+            android:layout_width="0dp"
+            android:layout_height="match_parent"
+            android:layout_weight="1"
+            android:background="@drawable/selector_capture_tab_bottom"
+            android:gravity="center"
+            android:orientation="vertical">
+
+            <TextView
+                android:id="@+id/text_bluetooth"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:text="@string/text_bluetooth"
-                android:textColor="@color/color_303030"
+                android:textColor="@drawable/selector_capture_tab_text"
                 android:textSize="@dimen/text_size_28px" />
         </LinearLayout>
     </LinearLayout>
@@ -88,7 +89,7 @@
             android:layout_height="200dp">
 
             <ToggleButton
-                android:id="@+id/toggle_btn_capture_camera_flash"
+                android:id="@+id/toggle_camera_flash"
                 android:layout_width="50dp"
                 android:layout_height="30dp"
                 android:background="@drawable/btn_flash_toggle_background_selector"
@@ -96,7 +97,7 @@
                 android:textOn="" />
 
             <LinearLayout
-                android:id="@+id/layout_capture_scanner_mode"
+                android:id="@+id/layout_scanner_mode"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_centerInParent="true"
@@ -114,7 +115,7 @@
             </LinearLayout>
 
             <LinearLayout
-                android:id="@+id/layout_capture_bluetooth_mode"
+                android:id="@+id/layout_bluetooth_mode"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_centerInParent="true"
@@ -131,7 +132,7 @@
                     android:textSize="@dimen/text_size_32px" />
 
                 <TextView
-                    android:id="@+id/text_capture_bluetooth_connect_state"
+                    android:id="@+id/text_bluetooth_connect_state"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:layout_marginTop="10dp"
@@ -140,7 +141,7 @@
                     android:textSize="@dimen/text_size_32px" />
 
                 <TextView
-                    android:id="@+id/text_capture_bluetooth_device_name"
+                    android:id="@+id/text_bluetooth_device_name"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:layout_marginTop="10dp"
@@ -150,7 +151,7 @@
                     tools:text="[KDC 3000 : 000000]" />
 
                 <Button
-                    android:id="@+id/btn_capture_bluetooth_device_find"
+                    android:id="@+id/btn_bluetooth_device_find"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:layout_marginTop="10dp"
@@ -176,11 +177,11 @@
             android:paddingBottom="10dp">
 
             <EditText
-                android:id="@+id/edit_capture_type_number"
+                android:id="@+id/edit_tracking_number"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_centerVertical="true"
-                android:layout_toStartOf="@id/btn_capture_type_number_add"
+                android:layout_toStartOf="@id/btn_add"
                 android:background="@drawable/bg_round_10_ffffff"
                 android:hint="@string/text_please_type_number"
                 android:lines="1"
@@ -191,7 +192,7 @@
                 android:textSize="@dimen/text_size_30px" />
 
             <Button
-                android:id="@+id/btn_capture_type_number_add"
+                android:id="@+id/btn_add"
                 android:layout_width="55dp"
                 android:layout_height="35dp"
                 android:layout_alignParentEnd="true"
@@ -219,7 +220,7 @@
         </FrameLayout>
 
         <RelativeLayout
-            android:id="@+id/layout_capture_scan_count"
+            android:id="@+id/layout_scanned_count"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_below="@id/line"
@@ -231,13 +232,13 @@
             <TextView
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:layout_toStartOf="@id/text_capture_scan_count"
+                android:layout_toStartOf="@id/text_scanned_count"
                 android:text="@string/text_scanned"
                 android:textColor="@color/color_8f8f8f"
                 android:textSize="@dimen/text_size_32px" />
 
             <TextView
-                android:id="@+id/text_capture_scan_count"
+                android:id="@+id/text_scanned_count"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_alignParentEnd="true"
@@ -249,11 +250,11 @@
         </RelativeLayout>
 
         <RelativeLayout
-            android:id="@+id/layout_scan_list"
+            android:id="@+id/layout_scanned_list"
             android:layout_width="match_parent"
             android:layout_height="match_parent"
-            android:layout_above="@id/layout_capture_buttons"
-            android:layout_below="@id/layout_capture_scan_count"
+            android:layout_above="@id/layout_buttons"
+            android:layout_below="@id/layout_scanned_count"
             android:background="@color/color_f0f0f0">
 
             <androidx.recyclerview.widget.RecyclerView
@@ -273,7 +274,7 @@
         </RelativeLayout>
 
         <LinearLayout
-            android:id="@+id/layout_capture_buttons"
+            android:id="@+id/layout_buttons"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_alignParentBottom="true"
@@ -284,7 +285,7 @@
             android:paddingBottom="25dp">
 
             <Button
-                android:id="@+id/btn_capture_barcode_reset"
+                android:id="@+id/btn_reset"
                 android:layout_width="131dp"
                 android:layout_height="40dp"
                 android:background="@drawable/border_round_30_4fb648"
@@ -294,7 +295,7 @@
                 android:textSize="@dimen/text_size_36px" />
 
             <Button
-                android:id="@+id/btn_capture_barcode_confirm"
+                android:id="@+id/btn_confirm"
                 android:layout_width="131dp"
                 android:layout_height="40dp"
                 android:layout_marginStart="20dp"

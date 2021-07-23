@@ -12,8 +12,6 @@ import android.content.Context;
 import android.os.Handler;
 import android.util.Log;
 
-import com.giosis.library.barcodescanner.CaptureActivity;
-
 
 public class KScan {
 
@@ -34,6 +32,11 @@ public class KScan {
     private int sleep_timeout;
     private AES mAES = null;
     private int returnTarget = 0;
+
+    public static final int MESSAGE_SETTING = 255;
+    public static final int MESSAGE_DISPLAY = 256;
+    public static final int MESSAGE_SEND = 257;
+    public static final int MESSAGE_EXIT = 0;
 
 
     public KScan(Context context, Handler handler) {
@@ -59,8 +62,8 @@ public class KScan {
 
         if (returnTarget == 0) return;
 
-        if (returnTarget == CaptureActivity.MESSAGE_SETTING)
-            mHandler.obtainMessage(CaptureActivity.MESSAGE_SETTING, -1, -1, -1).sendToTarget();
+        if (returnTarget == MESSAGE_SETTING)
+            mHandler.obtainMessage(MESSAGE_SETTING, -1, -1, -1).sendToTarget();
         else
             mSettingHandler.obtainMessage(returnTarget, -1, -1, -1).sendToTarget();
 
@@ -78,8 +81,7 @@ public class KScan {
                     KTSyncData.writePtr = 0;
                 } else {
                     if (ch == 0x0a) {
-                        mHandler.obtainMessage(CaptureActivity.MESSAGE_DISPLAY, KTSyncData.writePtr, -1, KTSyncData.RxBuffer)
-                                .sendToTarget();
+                        mHandler.obtainMessage(MESSAGE_DISPLAY, KTSyncData.writePtr, -1, KTSyncData.RxBuffer).sendToTarget();
                         KTSyncData.writePtr = 0;
                     } else
                         KTSyncData.writePtr = 0;
@@ -245,10 +247,9 @@ public class KScan {
 
     private void GetSerialNumber(boolean attach) {
         if (attach) {
-            //if ( KTSyncData.AttachSerialNumber == 2  )   GetDataDelimiter();
             for (int i = 0; i < 10; i++)
                 KTSyncData.BarcodeBuffer[bbuffer_offset++] = KTSyncData.SerialNumber[i];
-            if (KTSyncData.AttachSerialNumber == true) GetDataDelimiter();
+            if (KTSyncData.AttachSerialNumber) GetDataDelimiter();
         }
     }
 
@@ -373,8 +374,7 @@ public class KScan {
             altitudestring[cnt] = 0;
 
             tmp = new String(altitudestring);
-            gps = String.format("%f,%f,%.1f", latitudedecimal, longitudedecimal,
-                    Float.valueOf(tmp.trim()).floatValue());
+            gps = String.format("%f,%f,%.1f", latitudedecimal, longitudedecimal, Float.valueOf(tmp.trim()).floatValue());
         } else
             gps = String.format("%f,%f", latitudedecimal, longitudedecimal);
 
@@ -386,8 +386,7 @@ public class KScan {
 
 
     public void SendBarcodeData() {
-        mHandler.obtainMessage(CaptureActivity.MESSAGE_DISPLAY, bbuffer_offset, -1, KTSyncData.BarcodeBuffer)
-                .sendToTarget();
+        mHandler.obtainMessage(MESSAGE_DISPLAY, bbuffer_offset, -1, KTSyncData.BarcodeBuffer).sendToTarget();
     }
 
     public void GetQuantity() {
@@ -410,7 +409,7 @@ public class KScan {
 
         if (ch == (byte) 0xFE) bbuffer_offset = mAES.DecryptData(bbuffer_offset);
 
-        GetBarcodeTimeStamp(KTSyncData.AttachTimestamp == true);
+        GetBarcodeTimeStamp(KTSyncData.AttachTimestamp);
 
         GetRecordDelimiter();
 
@@ -445,10 +444,10 @@ public class KScan {
 
         DetermineBarcodeType();
 
-        GetSerialNumber(KTSyncData.AttachSerialNumber == true);
-        GetBarcodeTypeString(KTSyncData.AttachType == true);
+        GetSerialNumber(KTSyncData.AttachSerialNumber);
+        GetBarcodeTypeString(KTSyncData.AttachType);
         GetBarcodeData();
-        GetBarcodeTimeStamp(KTSyncData.AttachTimestamp == true);
+        GetBarcodeTimeStamp(KTSyncData.AttachTimestamp);
 
         if (KTSyncData.AttachQuantity) GetQuantity();
 
@@ -544,8 +543,7 @@ public class KScan {
         Sleep(100);
         SetWedgeMode(1);
         Sleep(100);
-        if (KTSyncData.AutoConnect) AutoPowerOff(false);
-        else AutoPowerOff(true);
+        AutoPowerOff(!KTSyncData.AutoConnect);
     }
 
 
@@ -577,7 +575,7 @@ public class KScan {
                                     if (KTSyncData.bForceTerminate) {
                                         Sleep(1000);
                                         KTSyncData.bForceTerminate = false;
-                                        mHandler.obtainMessage(CaptureActivity.MESSAGE_EXIT, -1, -1, -1).sendToTarget();
+                                        mHandler.obtainMessage(MESSAGE_EXIT, -1, -1, -1).sendToTarget();
                                     }
                                 } else {
                                     Log.d(TAG, "Command = 10-2");
@@ -1008,9 +1006,7 @@ public class KScan {
         public void writeData(String command, int offset, int length) {
             byte[] buffer = command.getBytes();
 
-            mHandler.obtainMessage(CaptureActivity.MESSAGE_SEND, length, -1, buffer)
-                    .sendToTarget();
-
+            mHandler.obtainMessage(MESSAGE_SEND, length, -1, buffer).sendToTarget();
         }
 
         public void SendCommand(String cmd) {

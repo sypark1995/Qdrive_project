@@ -8,17 +8,17 @@
     android:paddingBottom="7dp">
 
     <LinearLayout
-        android:id="@+id/layout_caption_list_item"
+        android:id="@+id/layout_item"
         android:layout_width="match_parent"
         android:layout_height="35dp"
-        android:layout_toStartOf="@id/btn_capture_list_item_state"
+        android:layout_toStartOf="@id/btn_state"
         android:background="@drawable/bg_round_10_cccccc"
         android:orientation="horizontal"
         android:paddingStart="10dp"
         android:paddingEnd="10dp">
 
         <ImageView
-            android:id="@+id/img_capture_list_item_barcode"
+            android:id="@+id/img_barcode"
             android:layout_width="24dp"
             android:layout_height="19dp"
             android:layout_gravity="center_vertical"
@@ -26,7 +26,7 @@
             android:background="@drawable/qdrive_btn_icon_barcode" />
 
         <TextView
-            android:id="@+id/text_capture_list_item_barcode"
+            android:id="@+id/text_barcode"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_gravity="center_vertical"
@@ -41,7 +41,7 @@
     </LinearLayout>
 
     <Button
-        android:id="@+id/btn_capture_list_item_state"
+        android:id="@+id/btn_state"
         android:layout_width="23dp"
         android:layout_height="23dp"
         android:layout_alignParentEnd="true"

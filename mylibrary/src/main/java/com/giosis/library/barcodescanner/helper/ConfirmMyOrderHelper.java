@@ -29,6 +29,7 @@ import java.util.Date;
 import java.util.List;
 import java.util.TimeZone;
 
+@Deprecated
 public class ConfirmMyOrderHelper {
     String TAG = "ConfirmMyOrderHelper";
 
@@ -224,7 +225,6 @@ public class ConfirmMyOrderHelper {
 
         private DriverAssignResult requestDriverAssign(String assignNo) {
 
-            Gson gson = new Gson();
             DriverAssignResult resultObj;
 
             try {
@@ -240,7 +240,7 @@ public class ConfirmMyOrderHelper {
 
                 String methodName = "SetShippingStatDpc3out";
                 String jsonString = Custom_JsonParser.requestServerDataReturnJSON(methodName, job);
-                resultObj = gson.fromJson(jsonString, DriverAssignResult.class);
+                resultObj = new Gson().fromJson(jsonString, DriverAssignResult.class);
             } catch (Exception e) {
 
                 Log.e("Exception", TAG + "  SetChangeDeliveryDriver Json Exception : " + e.toString());

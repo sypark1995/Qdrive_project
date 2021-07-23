@@ -1,5 +1,6 @@
 package com.giosis.library.util;
 
+import android.annotation.SuppressLint;
 import android.app.AlertDialog;
 import android.content.ClipData;
 import android.content.ClipboardManager;
@@ -56,13 +57,7 @@ public class DataUtil {
     public static String XROUTE_SERVER_REAL = "http://xrouter.qxpress.net/api/";
 
     public static String qrcode_url = "https://dp.image-gmkt.com/qr.bar?scale=7&version=4&code=";
-    public static String barcode_url = "http://image.qxpress.net/code128/code128.php?no=";
     public static String locker_pin_url = "https://www.lockeralliance.net/pin";
-    public static String smart_route_url = "http://xrouter.qxpress.asia/api";
-
-
-    public static String requestSetUploadDeliveryData = "SetDeliveryUploadData";
-    public static String requestSetUploadPickupData = "SetPickupUploadData";
 
 
     // Main Service
@@ -270,7 +265,7 @@ public class DataUtil {
 
             try {
                 Thread.sleep(2000);
-            } catch (Exception e) {
+            } catch (Exception ignore) {
 
             }
 
@@ -303,9 +298,8 @@ public class DataUtil {
 
                 if (value.getResultCode() == 10) {
 
-                    Gson gson = new Gson();
-                    String json = gson.toJson(value);
-                    Log.e("krm0219", "P  getFailedCode  " + json);
+                    String json = new Gson().toJson(value);
+                    Log.e("Server", "P  getFailedCode  " + json);
                     Preferences.INSTANCE.setPFailedCode(json);
                 }
             }
@@ -325,9 +319,8 @@ public class DataUtil {
 
                 if (value.getResultCode() == 10) {
 
-                    Gson gson = new Gson();
-                    String json = gson.toJson(value);
-                    Log.e("krm0219", "D  getFailedCode  " + json);
+                    String json = new Gson().toJson(value);
+                    Log.e("Server", "D  getFailedCode  " + json);
                     Preferences.INSTANCE.setDFailedCode(json);
                 }
             }
@@ -354,8 +347,7 @@ public class DataUtil {
             return null;
         } else {
 
-            Gson gson = new Gson();
-            FailedCodeResult result = gson.fromJson(json, FailedCodeResult.class);
+            FailedCodeResult result = new Gson().fromJson(json, FailedCodeResult.class);
             arrayList = new ArrayList<>(result.getResultObject());
         }
 
@@ -384,9 +376,9 @@ public class DataUtil {
         DatabaseHelper.getInstance().delete(DatabaseHelper.DB_TABLE_INTEGRATION_LIST, "contr_no='" + contr_no + "' COLLATE NOCASE");
     }
 
-    private void insertDriverAssignInfo(DriverAssignResult.QSignDeliveryList assignInfo) {
+    @SuppressLint("SimpleDateFormat")
+    public static boolean insertDriverAssignInfo(DriverAssignResult.QSignDeliveryList assignInfo) {
 
-        String opId = Preferences.INSTANCE.getUserId();
         SimpleDateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
         dateFormat.setTimeZone(TimeZone.getTimeZone("GMT"));
         String regDataString = dateFormat.format(new Date());
@@ -415,7 +407,7 @@ public class DataUtil {
         contentVal.put("delivery_dt", assignInfo.getDeliveryFirstDate());
         contentVal.put("type", BarcodeType.TYPE_DELIVERY);
         contentVal.put("route", assignInfo.getRoute());
-        contentVal.put("reg_id", opId);
+        contentVal.put("reg_id", Preferences.INSTANCE.getUserId());
         contentVal.put("reg_dt", regDataString);
         contentVal.put("punchOut_stat", "N");
         contentVal.put("driver_memo", assignInfo.getDriverMemo());
@@ -439,6 +431,7 @@ public class DataUtil {
         contentVal.put("city", assignInfo.getCity());
         contentVal.put("street", assignInfo.getStreet());
 
-        DatabaseHelper.getInstance().insert(DatabaseHelper.DB_TABLE_INTEGRATION_LIST, contentVal);
+        long insertCount = DatabaseHelper.getInstance().insert(DatabaseHelper.DB_TABLE_INTEGRATION_LIST, contentVal);
+        return insertCount >= 0;
     }
 }

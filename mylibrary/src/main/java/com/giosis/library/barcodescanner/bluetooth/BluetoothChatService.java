@@ -26,8 +26,6 @@ import android.os.Handler;
 import android.os.Message;
 import android.util.Log;
 
-import com.giosis.library.barcodescanner.CaptureActivity;
-
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.OutputStream;
@@ -65,6 +63,14 @@ public class BluetoothChatService {
     private ConnectedThread mConnectedThread;
     private int mState;
 
+    public static final int MESSAGE_STATE_CHANGE = 101;
+    public static final int MESSAGE_READ = 102;
+    public static final int MESSAGE_DEVICE_NAME = 103;
+    public static final int MESSAGE_TOAST = 104;
+
+    public static final String DEVICE_NAME = "device_name";
+    public static final String TOAST = "toast";
+
     /**
      * Constructor. Prepares a new BluetoothChat session.
      *
@@ -94,7 +100,7 @@ public class BluetoothChatService {
         mState = state;
 
         // Give the new state to the Handler so the UI Activity can update
-        mHandler.obtainMessage(CaptureActivity.MESSAGE_STATE_CHANGE, state, -1).sendToTarget();
+        mHandler.obtainMessage(MESSAGE_STATE_CHANGE, state, -1).sendToTarget();
     }
 
     /**
@@ -185,9 +191,9 @@ public class BluetoothChatService {
         mConnectedThread.start();
 
         // Send the name of the connected device back to the UI Activity
-        Message msg = mHandler.obtainMessage(CaptureActivity.MESSAGE_DEVICE_NAME);
+        Message msg = mHandler.obtainMessage(MESSAGE_DEVICE_NAME);
         Bundle bundle = new Bundle();
-        bundle.putString(CaptureActivity.DEVICE_NAME, device.getName());
+        bundle.putString(DEVICE_NAME, device.getName());
         msg.setData(bundle);
         mHandler.sendMessage(msg);
 
@@ -240,9 +246,9 @@ public class BluetoothChatService {
         setState(STATE_FAILED);
 
         // Send a failure message back to the Activity
-        Message msg = mHandler.obtainMessage(CaptureActivity.MESSAGE_TOAST);
+        Message msg = mHandler.obtainMessage(MESSAGE_TOAST);
         Bundle bundle = new Bundle();
-        bundle.putString(CaptureActivity.TOAST, "Unable to connect device");
+        bundle.putString(TOAST, "Unable to connect device");
         msg.setData(bundle);
         mHandler.sendMessage(msg);
     }
@@ -258,9 +264,9 @@ public class BluetoothChatService {
         bChatStopped = false;
 
         // Send a failure message back to the Activity
-        Message msg = mHandler.obtainMessage(CaptureActivity.MESSAGE_TOAST);
+        Message msg = mHandler.obtainMessage(MESSAGE_TOAST);
         Bundle bundle = new Bundle();
-        bundle.putString(CaptureActivity.TOAST, "Device connection was lost");
+        bundle.putString(TOAST, "Device connection was lost");
         msg.setData(bundle);
         mHandler.sendMessage(msg);
     }
@@ -468,8 +474,7 @@ public class BluetoothChatService {
                     bytes = mmInStream.read(buffer);
 
                     // Send the obtained bytes to the UI Activity
-                    mHandler.obtainMessage(CaptureActivity.MESSAGE_READ, bytes, -1, buffer)
-                            .sendToTarget();
+                    mHandler.obtainMessage(MESSAGE_READ, bytes, -1, buffer).sendToTarget();
                 } catch (IOException e) {
                     Log.e(TAG, "disconnected", e);
                     connectionLost();

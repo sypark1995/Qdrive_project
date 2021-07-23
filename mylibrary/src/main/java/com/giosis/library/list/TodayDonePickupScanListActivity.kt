@@ -6,7 +6,7 @@ import android.view.View
 import androidx.activity.result.ActivityResultLauncher
 import androidx.activity.result.contract.ActivityResultContracts
 import com.giosis.library.R
-import com.giosis.library.barcodescanner.CaptureActivity
+import com.giosis.library.barcodescanner.CaptureActivity1
 import com.giosis.library.databinding.ActivityPickupScanListBinding
 import com.giosis.library.server.RetrofitClient
 import com.giosis.library.server.data.PickupPackingListResult
@@ -103,10 +103,9 @@ class TodayDonePickupScanListActivity : CommonActivity() {
         binding.listScannedList.adapter = todayDonePickupScanListAdapter
     }
 
-    // packing list 추가
     private fun clickedAddScan() {
 
-        val intent = Intent(this@TodayDonePickupScanListActivity, CaptureActivity::class.java)
+        val intent = Intent(this@TodayDonePickupScanListActivity, CaptureActivity1::class.java)
         intent.putExtra("title", "ADD Scan List")
         intent.putExtra("type", BarcodeType.PICKUP_ADD_SCAN)
         intent.putExtra("pickup_no", pickupNo)
@@ -116,18 +115,19 @@ class TodayDonePickupScanListActivity : CommonActivity() {
 
     private fun clickedTakeBack() {
 
-        val intent = Intent(this@TodayDonePickupScanListActivity, CaptureActivity::class.java)
+        val intent = Intent(this@TodayDonePickupScanListActivity, CaptureActivity1::class.java)
         intent.putExtra("title", "Take Back List")
         intent.putExtra("type", BarcodeType.PICKUP_TAKE_BACK)
         intent.putExtra("pickup_no", pickupNo)
         intent.putExtra("applicant", applicant)
-        intent.putExtra("scanned_qty", scannedQty)
+        intent.putExtra("qty", scannedQty)
         resultLauncher.launch(intent)
     }
 
     private val resultLauncher: ActivityResultLauncher<Intent> = registerForActivityResult(
             ActivityResultContracts.StartActivityForResult()
     ) {
+
         setResult(RESULT_OK)
         finish()
     }
