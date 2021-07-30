@@ -28,7 +28,7 @@ import com.giosis.library.BuildConfig
 import com.giosis.library.R
 import com.giosis.library.util.Preferences
 
-class BeepManager(private val activity: Activity) {
+class BeepManager(private val activity: Activity, private val sound: Int) {
     var TAG = "BeepManager"
 
     private var mediaPlayer: MediaPlayer? = null
@@ -49,14 +49,16 @@ class BeepManager(private val activity: Activity) {
             // too loud,
             // so we now play on the music stream.
             activity.volumeControlStream = AudioManager.STREAM_MUSIC
+            mediaPlayer = buildMediaPlayer()
         }
     }
 
+    private fun buildMediaPlayer(): MediaPlayer? {
 
-    fun playBeepSoundAndVibrate(sound: Int) {
+        var player: MediaPlayer? = MediaPlayer()
+        //Log.e(TAG, "Sound $sound")
 
         var file: AssetFileDescriptor? = null
-
         when (sound) {
             1 -> {
                 file = activity.resources.openRawResourceFd(R.raw.bell)
@@ -69,18 +71,23 @@ class BeepManager(private val activity: Activity) {
             }
         }
 
-        mediaPlayer = MediaPlayer()
-
         try {
 
-            mediaPlayer!!.setDataSource(file!!.fileDescriptor, file.startOffset, file.length)
-
+            player!!.setDataSource(file!!.fileDescriptor, file.startOffset, file.length)
             file.close()
-            mediaPlayer!!.setVolume(BEEP_VOLUME, BEEP_VOLUME)
-            mediaPlayer!!.prepare()
+            player.setVolume(BEEP_VOLUME, BEEP_VOLUME)
+            player.prepare()
         } catch (e: Exception) {
+            Log.e(TAG, "Beep Sound Source Exception : ${e.message}")
             e.printStackTrace()
+            player = null
         }
+
+        return player
+    }
+
+
+    fun playBeepSoundAndVibrate() {
 
         if (mediaPlayer != null) {
             // 바코드 인식 소리 높임, 90% 보다 작을 때 90%로
@@ -104,16 +111,17 @@ class BeepManager(private val activity: Activity) {
                 // TEST_  테스트하기
                 if (BuildConfig.DEBUG) {
                     Log.e(TAG, "TEST    Sound Start  $sound")
+                    audio.setStreamVolume(AudioManager.STREAM_MUSIC, 2, 0)
+                    mediaPlayer!!.start()
                 } else {
                     mediaPlayer!!.start()
                 }
             } catch (e: Exception) {
-                Log.e(TAG, "Beep Sound Start Exception : $e")
+                Log.e(TAG, "Beep Sound Start Exception : ${e.message}")
             }
         }
 
         val vibrator = activity.getSystemService(Context.VIBRATOR_SERVICE) as Vibrator
-        Log.e(TAG, "playBeepSoundAndVibrate  VibrationString $vibrate / $sound")
 
         if (vibrate) {
 

@@ -31,7 +31,7 @@ import com.giosis.library.gps.GPSTrackerManager
 import com.giosis.library.list.BarcodeData
 import com.giosis.library.list.delivery.DeliveryDoneActivity
 import com.giosis.library.list.pickup.*
-import com.giosis.library.main.DriverAssignResult.QSignDeliveryList
+import com.giosis.library.main.DriverAssignResult
 import com.giosis.library.main.submenu.SelfCollectionDoneActivity
 import com.giosis.library.server.RetrofitClient
 import com.giosis.library.server.data.CnRPickupResult
@@ -121,8 +121,15 @@ class CaptureActivity1 : CommonActivity(), TorchListener, OnTouchListener, TextW
         getSystemService(INPUT_METHOD_SERVICE) as InputMethodManager
     }
     private val beepManager: BeepManager by lazy {
-        BeepManager(this)
+        BeepManager(this, BeepManager.BELL_SOUNDS_SUCCESS)
     }
+    private val beepManagerError: BeepManager by lazy {
+        BeepManager(this, BeepManager.BELL_SOUNDS_ERROR)
+    }
+    private val beepManagerDuple: BeepManager by lazy {
+        BeepManager(this, BeepManager.BELL_SOUNDS_DUPLE)
+    }
+
     var gpsTrackerManager: GPSTrackerManager? = null
     var gpsEnable = false
     var isPermissionTrue = false
@@ -378,7 +385,11 @@ class CaptureActivity1 : CommonActivity(), TorchListener, OnTouchListener, TextW
         } catch (e: Exception) {
             Log.e("Exception", "$TAG  requestFocus Exception : $e")
         }
+        progressBar.setCancelable(false)
+
         beepManager.updatePrefs()
+        beepManagerError.updatePrefs()
+        beepManagerDuple.updatePrefs()
 
         // Bluetooth
         if (KTSyncData.bIsRunning) return
@@ -652,7 +663,7 @@ class CaptureActivity1 : CommonActivity(), TorchListener, OnTouchListener, TextW
 
         if (isDuplicate) {
 
-            beepManager.playBeepSoundAndVibrate(BeepManager.BELL_SOUNDS_DUPLE)
+            beepManagerDuple.playBeepSoundAndVibrate()
             val toast = Toast.makeText(this@CaptureActivity1, R.string.msg_tracking_number_already_entered, Toast.LENGTH_SHORT)
             toast.setGravity(Gravity.CENTER, 0, 20)
             toast.show()
@@ -679,14 +690,14 @@ class CaptureActivity1 : CommonActivity(), TorchListener, OnTouchListener, TextW
                             Log.e("Server", "requestValidationCheckDpc3Out  result  " + it.resultCode)
                             if (it.resultCode < 0) {
 
-                                beepManager.playBeepSoundAndVibrate(BeepManager.BELL_SOUNDS_ERROR)
+                                beepManagerError.playBeepSoundAndVibrate()
                                 binding.editTrackingNumber.setText("")
                                 inputMethodManager.hideSoftInputFromWindow(binding.editTrackingNumber.windowToken, 0)
                                 scannedBarcode.remove(strBarcodeNo)
                                 resultDialog(resources.getString(R.string.text_scanned_failed), it.resultMsg)
                             } else {
 
-                                beepManager.playBeepSoundAndVibrate(BeepManager.BELL_SOUNDS_SUCCESS)
+                                beepManager.playBeepSoundAndVibrate()
                                 addScannedBarcode(strBarcodeNo, "checkValidation - CONFIRM_MY_DELIVERY_ORDER")
                             }
                         }) { Toast.makeText(this@CaptureActivity1, resources.getString(R.string.msg_error_check_again), Toast.LENGTH_SHORT).show() }
@@ -702,14 +713,14 @@ class CaptureActivity1 : CommonActivity(), TorchListener, OnTouchListener, TextW
                             Log.e("Server", "requestValidationCheckChangeDriver  result  " + it.resultCode)
                             if (it.resultCode < 0) {
 
-                                beepManager.playBeepSoundAndVibrate(BeepManager.BELL_SOUNDS_ERROR)
+                                beepManagerError.playBeepSoundAndVibrate()
                                 binding.editTrackingNumber.setText("")
                                 inputMethodManager.hideSoftInputFromWindow(binding.editTrackingNumber.windowToken, 0)
                                 scannedBarcode.remove(strBarcodeNo)
                                 resultDialog(resources.getString(R.string.text_scanned_failed), it.resultMsg)
                             } else {
 
-                                beepManager.playBeepSoundAndVibrate(BeepManager.BELL_SOUNDS_SUCCESS)
+                                beepManager.playBeepSoundAndVibrate()
                                 changeDriverResult = Gson().fromJson(it.resultObject, ChangeDriverResult.Data::class.java)
                                 addScannedBarcode(strBarcodeNo, "checkValidation - CHANGE_DELIVERY_DRIVER")
                             }
@@ -726,7 +737,7 @@ class CaptureActivity1 : CommonActivity(), TorchListener, OnTouchListener, TextW
                             Log.e("Server", "requestValidationCheckCnR  result  " + it.resultCode)
                             if (it.resultCode != 0) {
 
-                                beepManager.playBeepSoundAndVibrate(BeepManager.BELL_SOUNDS_ERROR)
+                                beepManagerError.playBeepSoundAndVibrate()
                                 binding.editTrackingNumber.setText("")
                                 inputMethodManager.hideSoftInputFromWindow(binding.editTrackingNumber.windowToken, 0)
                                 scannedBarcode.remove(strBarcodeNo)
@@ -743,7 +754,7 @@ class CaptureActivity1 : CommonActivity(), TorchListener, OnTouchListener, TextW
                                     insertCnRData(cnRPickupData)
                                 }
 
-                                beepManager.playBeepSoundAndVibrate(BeepManager.BELL_SOUNDS_SUCCESS)
+                                beepManager.playBeepSoundAndVibrate()
                                 pickupCNRRequester = cnRPickupData.reqName
                                 addScannedBarcode(strBarcodeNo, "checkValidation - PICKUP_CNR")
                             }
@@ -760,14 +771,14 @@ class CaptureActivity1 : CommonActivity(), TorchListener, OnTouchListener, TextW
                             Log.e("Server", "requestValidationCheckPickup  result  " + it.resultCode)
                             if (it.resultCode < 0) {
 
-                                beepManager.playBeepSoundAndVibrate(BeepManager.BELL_SOUNDS_ERROR)
+                                beepManagerError.playBeepSoundAndVibrate()
                                 binding.editTrackingNumber.setText("")
                                 inputMethodManager.hideSoftInputFromWindow(binding.editTrackingNumber.windowToken, 0)
                                 scannedBarcode.remove(strBarcodeNo)
                                 resultDialog(resources.getString(R.string.text_scanned_failed), it.resultMsg)
                             } else {
 
-                                beepManager.playBeepSoundAndVibrate(BeepManager.BELL_SOUNDS_SUCCESS)
+                                beepManager.playBeepSoundAndVibrate()
                                 addScannedBarcode(strBarcodeNo, "checkValidation - PICKUP_SCAN_ALL")
                             }
                         }) { Toast.makeText(this@CaptureActivity1, resources.getString(R.string.msg_error_check_again), Toast.LENGTH_SHORT).show() }
@@ -783,14 +794,14 @@ class CaptureActivity1 : CommonActivity(), TorchListener, OnTouchListener, TextW
                             Log.e("Server", "requestValidationCheckPickup  result  " + it.resultCode)
                             if (it.resultCode < 0) {
 
-                                beepManager.playBeepSoundAndVibrate(BeepManager.BELL_SOUNDS_ERROR)
+                                beepManagerError.playBeepSoundAndVibrate()
                                 binding.editTrackingNumber.setText("")
                                 inputMethodManager.hideSoftInputFromWindow(binding.editTrackingNumber.windowToken, 0)
                                 scannedBarcode.remove(strBarcodeNo)
                                 resultDialog(resources.getString(R.string.text_scanned_failed), it.resultMsg)
                             } else {
 
-                                beepManager.playBeepSoundAndVibrate(BeepManager.BELL_SOUNDS_SUCCESS)
+                                beepManager.playBeepSoundAndVibrate()
                                 addScannedBarcode(strBarcodeNo, "checkValidation - PICKUP_ADD_SCAN")
                             }
                         }) { Toast.makeText(this@CaptureActivity1, resources.getString(R.string.msg_error_check_again), Toast.LENGTH_SHORT).show() }
@@ -806,14 +817,14 @@ class CaptureActivity1 : CommonActivity(), TorchListener, OnTouchListener, TextW
                             Log.e("Server", "requestValidationCheckTakeBack  result  " + it.resultCode)
                             if (it.resultCode < 0) {
 
-                                beepManager.playBeepSoundAndVibrate(BeepManager.BELL_SOUNDS_ERROR)
+                                beepManagerError.playBeepSoundAndVibrate()
                                 binding.editTrackingNumber.setText("")
                                 inputMethodManager.hideSoftInputFromWindow(binding.editTrackingNumber.windowToken, 0)
                                 scannedBarcode.remove(strBarcodeNo)
                                 resultDialog(resources.getString(R.string.text_scanned_failed), it.resultMsg)
                             } else {
 
-                                beepManager.playBeepSoundAndVibrate(BeepManager.BELL_SOUNDS_SUCCESS)
+                                beepManager.playBeepSoundAndVibrate()
                                 addScannedBarcode(strBarcodeNo, "checkValidation - PICKUP_TAKE_BACK")
                             }
                         }) { Toast.makeText(this@CaptureActivity1, resources.getString(R.string.msg_error_check_again), Toast.LENGTH_SHORT).show() }
@@ -829,14 +840,14 @@ class CaptureActivity1 : CommonActivity(), TorchListener, OnTouchListener, TextW
                             Log.e("Server", "requestValidationCheckPickup  result  " + it.resultCode)
                             if (it.resultCode < 0) {
 
-                                beepManager.playBeepSoundAndVibrate(BeepManager.BELL_SOUNDS_ERROR)
+                                beepManagerError.playBeepSoundAndVibrate()
                                 binding.editTrackingNumber.setText("")
                                 inputMethodManager.hideSoftInputFromWindow(binding.editTrackingNumber.windowToken, 0)
                                 scannedBarcode.remove(strBarcodeNo)
                                 resultDialog(resources.getString(R.string.text_scanned_failed), it.resultMsg)
                             } else {
 
-                                beepManager.playBeepSoundAndVibrate(BeepManager.BELL_SOUNDS_SUCCESS)
+                                beepManager.playBeepSoundAndVibrate()
                                 addScannedBarcode(strBarcodeNo, "checkValidation - OUTLET_PICKUP_SCAN")
                             }
                         }) { Toast.makeText(this@CaptureActivity1, resources.getString(R.string.msg_error_check_again), Toast.LENGTH_SHORT).show() }
@@ -846,14 +857,14 @@ class CaptureActivity1 : CommonActivity(), TorchListener, OnTouchListener, TextW
                 // 2016-09-20 eylee
                 if (!isInvoiceCodeRule(strBarcodeNo)) {
 
-                    beepManager.playBeepSoundAndVibrate(BeepManager.BELL_SOUNDS_ERROR)
+                    beepManagerError.playBeepSoundAndVibrate()
                     val toast = Toast.makeText(this@CaptureActivity1, resources.getString(R.string.msg_invalid_scan), Toast.LENGTH_SHORT)
                     toast.setGravity(Gravity.CENTER_HORIZONTAL, 0, 0)
                     toast.show()
                     return
                 }
 
-                beepManager.playBeepSoundAndVibrate(BeepManager.BELL_SOUNDS_SUCCESS)
+                beepManager.playBeepSoundAndVibrate()
 
                 //2016-09-12 eylee nq 끼리만 self collector 가능하게 수정하기
                 if (scanBarcodeArrayList!!.isNotEmpty()) {
@@ -876,7 +887,7 @@ class CaptureActivity1 : CommonActivity(), TorchListener, OnTouchListener, TextW
             }
             else -> {
 
-                beepManager.playBeepSoundAndVibrate(BeepManager.BELL_SOUNDS_SUCCESS)
+                beepManager.playBeepSoundAndVibrate()
                 addScannedBarcode(strBarcodeNo, "checkValidation - Default")
             }
         }
@@ -1035,10 +1046,10 @@ class CaptureActivity1 : CommonActivity(), TorchListener, OnTouchListener, TextW
         return data.reqName
     }
 
-
     // 하단 버튼 클릭 이벤트
     // NOTIFICATION.  Confirm my delivery order / Change Delivery Driver
     fun onUpdateButtonClick() {
+
         if (scanBarcodeArrayList == null || scanBarcodeArrayList!!.size < 1) {
             val toast = Toast.makeText(this@CaptureActivity1, R.string.msg_tracking_number_manually, Toast.LENGTH_SHORT)
             toast.setGravity(Gravity.CENTER_HORIZONTAL, 0, 0)
@@ -1079,7 +1090,7 @@ class CaptureActivity1 : CommonActivity(), TorchListener, OnTouchListener, TextW
 
                             onResetButtonClick()
 
-                            val list: ArrayList<QSignDeliveryList> = Gson().fromJson(it.resultObject, object : TypeToken<ArrayList<QSignDeliveryList>>() {}.type)
+                            val list: ArrayList<DriverAssignResult.QSignDeliveryList> = Gson().fromJson(it.resultObject, object : TypeToken<ArrayList<DriverAssignResult.QSignDeliveryList>>() {}.type)
                             for (item in list) {
                                 if (!TextUtils.isEmpty(item.partnerRefNo.trim())) {
                                     DataUtil.insertDriverAssignInfo(item)
@@ -1147,7 +1158,7 @@ class CaptureActivity1 : CommonActivity(), TorchListener, OnTouchListener, TextW
 
                             onResetButtonClick()
 
-                            val list: ArrayList<QSignDeliveryList> = Gson().fromJson(it.resultObject, object : TypeToken<ArrayList<QSignDeliveryList>>() {}.type)
+                            val list: ArrayList<DriverAssignResult.QSignDeliveryList> = Gson().fromJson(it.resultObject, object : TypeToken<ArrayList<DriverAssignResult.QSignDeliveryList>>() {}.type)
                             for (item in list) {
                                 if (!TextUtils.isEmpty(item.partnerRefNo.trim())) {
 
@@ -1179,7 +1190,6 @@ class CaptureActivity1 : CommonActivity(), TorchListener, OnTouchListener, TextW
                         resultDialog(resources.getString(R.string.text_driver_assign_result), resources.getString(R.string.text_fail_update))
                     }
 
-            // FIXME_
 //            ChangeDriverHelper.Builder(this, Preferences.userId, Preferences.officeCode, Preferences.deviceUUID, changeDriverObjectArrayList, latitude, longitude)
 //                    .setOnChangeDelDriverEventListener { stdResult: DriverAssignResult? ->
 //                        val msg: String = if (stdResult != null) {
@@ -1437,10 +1447,14 @@ class CaptureActivity1 : CommonActivity(), TorchListener, OnTouchListener, TextW
 
     public override fun onDestroy() {
         super.onDestroy()
+
         cameraManager.onDestroy()
         onResetButtonClick()
         DataUtil.stopGPSManager(gpsTrackerManager)
+
         beepManager.destroy()
+        beepManagerError.destroy()
+        beepManagerDuple.destroy()
 
         // Stop the Bluetooth chat services
         if (KTSyncData.mChatService != null) KTSyncData.mChatService.stop()

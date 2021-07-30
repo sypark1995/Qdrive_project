@@ -183,6 +183,8 @@ public final class CaptureActivity extends CommonActivity implements DecoratedBa
 
     InputMethodManager inputMethodManager;
     private BeepManager beepManager;
+    private BeepManager beepManagerError;
+    private BeepManager beepManagerDuple;
 
     private BluetoothAdapter mBluetoothAdapter = null;
     private ArrayList<ChangeDriverResult.Data> changeDriverObjectArrayList = new ArrayList<>();
@@ -569,7 +571,10 @@ public final class CaptureActivity extends CommonActivity implements DecoratedBa
         }
 
 
-        beepManager = new BeepManager(this);
+        beepManager = new BeepManager(this, BeepManager.BELL_SOUNDS_SUCCESS);
+        beepManagerError = new BeepManager(this, BeepManager.BELL_SOUNDS_ERROR);
+        beepManagerDuple = new BeepManager(this, BeepManager.BELL_SOUNDS_DUPLE);
+
         //
         barcode_scanner.setTorchListener(this);
         cameraManager = new CaptureManager(this, barcode_scanner);
@@ -751,8 +756,9 @@ public final class CaptureActivity extends CommonActivity implements DecoratedBa
             Log.e("Exception", TAG + "  requestFocus Exception : " + e.toString());
         }
 
-
         beepManager.updatePrefs();
+        beepManagerError.updatePrefs();
+        beepManagerDuple.updatePrefs();
 
         // Bluetooth
         if (KTSyncData.bIsRunning)
@@ -1277,7 +1283,7 @@ public final class CaptureActivity extends CommonActivity implements DecoratedBa
 
         if (isDuplicate) {
 
-            beepManager.playBeepSoundAndVibrate(BeepManager.BELL_SOUNDS_DUPLE);
+            beepManagerDuple.playBeepSoundAndVibrate();
             Toast toast = Toast.makeText(CaptureActivity.this, R.string.msg_tracking_number_already_entered, Toast.LENGTH_SHORT);
             toast.setGravity(Gravity.CENTER, 0, 20);
             toast.show();
@@ -1307,7 +1313,7 @@ public final class CaptureActivity extends CommonActivity implements DecoratedBa
 
                             if (it.getResultCode() < 0) {
 
-                                beepManager.playBeepSoundAndVibrate(BeepManager.BELL_SOUNDS_ERROR);
+                                beepManagerError.playBeepSoundAndVibrate();
                                 edit_capture_type_number.setText("");
                                 inputMethodManager.hideSoftInputFromWindow(edit_capture_type_number.getWindowToken(), 0);
                                 scannedBarcode.remove(scanNo);
@@ -1327,7 +1333,7 @@ public final class CaptureActivity extends CommonActivity implements DecoratedBa
                                 }
                             } else {
 
-                                beepManager.playBeepSoundAndVibrate(BeepManager.BELL_SOUNDS_SUCCESS);
+                                beepManager.playBeepSoundAndVibrate();
                                 addScannedBarcode(scanNo, "checkValidation - CONFIRM_MY_DELIVERY_ORDER");
                             }
                         }, it -> Toast.makeText(CaptureActivity.this, getResources().getString(R.string.msg_error_check_again), Toast.LENGTH_SHORT).show());
@@ -1348,7 +1354,7 @@ public final class CaptureActivity extends CommonActivity implements DecoratedBa
 
                             if (it.getResultCode() < 0) {
 
-                                beepManager.playBeepSoundAndVibrate(BeepManager.BELL_SOUNDS_ERROR);
+                                beepManagerError.playBeepSoundAndVibrate();
                                 edit_capture_type_number.setText("");
                                 inputMethodManager.hideSoftInputFromWindow(edit_capture_type_number.getWindowToken(), 0);
                                 scannedBarcode.remove(scanNo);
@@ -1368,7 +1374,7 @@ public final class CaptureActivity extends CommonActivity implements DecoratedBa
                                 }
                             } else {
 
-                                beepManager.playBeepSoundAndVibrate(BeepManager.BELL_SOUNDS_SUCCESS);
+                                beepManager.playBeepSoundAndVibrate();
                                 changeDriverResult = new Gson().fromJson(it.getResultObject(), ChangeDriverResult.Data.class);
                                 addScannedBarcode(scanNo, "checkValidation - CHANGE_DELIVERY_DRIVER");
                             }
@@ -1396,7 +1402,7 @@ public final class CaptureActivity extends CommonActivity implements DecoratedBa
 
                             if (it.getResultCode() != 0) {
 
-                                beepManager.playBeepSoundAndVibrate(BeepManager.BELL_SOUNDS_ERROR);
+                                beepManagerError.playBeepSoundAndVibrate();
                                 edit_capture_type_number.setText("");
                                 inputMethodManager.hideSoftInputFromWindow(edit_capture_type_number.getWindowToken(), 0);
                                 scannedBarcode.remove(scanNo);
@@ -1429,7 +1435,7 @@ public final class CaptureActivity extends CommonActivity implements DecoratedBa
                                     insertCnRData(cnRPickupData);
                                 }
 
-                                beepManager.playBeepSoundAndVibrate(BeepManager.BELL_SOUNDS_SUCCESS);
+                                beepManager.playBeepSoundAndVibrate();
                                 pickupCNRRequester = cnRPickupData.getReqName();
                                 addScannedBarcode(scanNo, "checkValidation - PICKUP_CNR");
                             }
@@ -1450,7 +1456,7 @@ public final class CaptureActivity extends CommonActivity implements DecoratedBa
 
                             if (it.getResultCode() < 0) {
 
-                                beepManager.playBeepSoundAndVibrate(BeepManager.BELL_SOUNDS_ERROR);
+                                beepManagerError.playBeepSoundAndVibrate();
                                 edit_capture_type_number.setText("");
                                 inputMethodManager.hideSoftInputFromWindow(edit_capture_type_number.getWindowToken(), 0);
                                 scannedBarcode.remove(scanNo);
@@ -1468,7 +1474,7 @@ public final class CaptureActivity extends CommonActivity implements DecoratedBa
                                 }
                             } else {
 
-                                beepManager.playBeepSoundAndVibrate(BeepManager.BELL_SOUNDS_SUCCESS);
+                                beepManager.playBeepSoundAndVibrate();
                                 addScannedBarcode(scanNo, "checkValidation - PICKUP_SCAN_ALL");
                             }
                         }, it -> Toast.makeText(CaptureActivity.this, getResources().getString(R.string.msg_error_check_again), Toast.LENGTH_SHORT).show());
@@ -1488,7 +1494,7 @@ public final class CaptureActivity extends CommonActivity implements DecoratedBa
 
                             if (it.getResultCode() < 0) {
 
-                                beepManager.playBeepSoundAndVibrate(BeepManager.BELL_SOUNDS_ERROR);
+                                beepManagerError.playBeepSoundAndVibrate();
                                 edit_capture_type_number.setText("");
                                 inputMethodManager.hideSoftInputFromWindow(edit_capture_type_number.getWindowToken(), 0);
                                 scannedBarcode.remove(scanNo);
@@ -1506,7 +1512,7 @@ public final class CaptureActivity extends CommonActivity implements DecoratedBa
                                 }
                             } else {
 
-                                beepManager.playBeepSoundAndVibrate(BeepManager.BELL_SOUNDS_SUCCESS);
+                                beepManager.playBeepSoundAndVibrate();
                                 addScannedBarcode(scanNo, "checkValidation - PICKUP_ADD_SCAN");
                             }
                         }, it -> Toast.makeText(CaptureActivity.this, getResources().getString(R.string.msg_error_check_again), Toast.LENGTH_SHORT).show());
@@ -1526,7 +1532,7 @@ public final class CaptureActivity extends CommonActivity implements DecoratedBa
 
                             if (it.getResultCode() < 0) {
 
-                                beepManager.playBeepSoundAndVibrate(BeepManager.BELL_SOUNDS_ERROR);
+                                beepManagerError.playBeepSoundAndVibrate();
                                 edit_capture_type_number.setText("");
                                 inputMethodManager.hideSoftInputFromWindow(edit_capture_type_number.getWindowToken(), 0);
                                 scannedBarcode.remove(scanNo);
@@ -1544,7 +1550,7 @@ public final class CaptureActivity extends CommonActivity implements DecoratedBa
                                 }
                             } else {
 
-                                beepManager.playBeepSoundAndVibrate(BeepManager.BELL_SOUNDS_SUCCESS);
+                                beepManager.playBeepSoundAndVibrate();
                                 addScannedBarcode(scanNo, "checkValidation - PICKUP_TAKE_BACK");
                             }
                         }, it -> Toast.makeText(CaptureActivity.this, getResources().getString(R.string.msg_error_check_again), Toast.LENGTH_SHORT).show());
@@ -1564,7 +1570,7 @@ public final class CaptureActivity extends CommonActivity implements DecoratedBa
 
                             if (it.getResultCode() < 0) {
 
-                                beepManager.playBeepSoundAndVibrate(BeepManager.BELL_SOUNDS_ERROR);
+                                beepManagerError.playBeepSoundAndVibrate();
                                 edit_capture_type_number.setText("");
                                 inputMethodManager.hideSoftInputFromWindow(edit_capture_type_number.getWindowToken(), 0);
                                 scannedBarcode.remove(scanNo);
@@ -1582,7 +1588,7 @@ public final class CaptureActivity extends CommonActivity implements DecoratedBa
                                 }
                             } else {
 
-                                beepManager.playBeepSoundAndVibrate(BeepManager.BELL_SOUNDS_SUCCESS);
+                                beepManager.playBeepSoundAndVibrate();
                                 addScannedBarcode(scanNo, "checkValidation - OUTLET_PICKUP_SCAN");
                             }
                         }, it -> Toast.makeText(CaptureActivity.this, getResources().getString(R.string.msg_error_check_again), Toast.LENGTH_SHORT).show());
@@ -1592,12 +1598,12 @@ public final class CaptureActivity extends CommonActivity implements DecoratedBa
 //
 //                            if (result.getResultCode() < 0) {
 //
-                //  beepManager.playBeepSoundAndVibrate(BeepManager.BELL_SOUNDS_ERROR);
+                //  beepManagerError.playBeepSoundAndVibrate();
 //                                deletePrevious(scanNo);
 //                                edit_capture_type_number.setText("");
 //                            } else {
 //
-                //  beepManager.playBeepSoundAndVibrate(BeepManager.BELL_SOUNDS_SUCCESS);
+                //  beepManager.playBeepSoundAndVibrate();
 //                                addScannedBarcode(scanNo, "checkValidation - OUTLET_PICKUP_SCAN");
 //                            }
 //                        }).build().execute();
@@ -1608,14 +1614,14 @@ public final class CaptureActivity extends CommonActivity implements DecoratedBa
 
                 if (!isInvoiceCodeRule(strBarcodeNo)) {
 
-                    beepManager.playBeepSoundAndVibrate(BeepManager.BELL_SOUNDS_ERROR);
+                    beepManagerError.playBeepSoundAndVibrate();
                     Toast toast = Toast.makeText(CaptureActivity.this, getResources().getString(R.string.msg_invalid_scan), Toast.LENGTH_SHORT);
                     toast.setGravity(Gravity.CENTER_HORIZONTAL, 0, 0);
                     toast.show();
                     return;
                 }
 
-                beepManager.playBeepSoundAndVibrate(BeepManager.BELL_SOUNDS_SUCCESS);
+                beepManager.playBeepSoundAndVibrate();
 
                 //2016-09-12 eylee nq 끼리만 self collector 가능하게 수정하기
                 if (!scanBarcodeArrayList.isEmpty()) {
@@ -1640,7 +1646,7 @@ public final class CaptureActivity extends CommonActivity implements DecoratedBa
             }
             default: {
 
-                beepManager.playBeepSoundAndVibrate(BeepManager.BELL_SOUNDS_SUCCESS);
+                beepManager.playBeepSoundAndVibrate();
                 addScannedBarcode(strBarcodeNo, "checkValidation - Default");
             }
         }
@@ -1751,7 +1757,6 @@ public final class CaptureActivity extends CommonActivity implements DecoratedBa
 
             DataUtil.logEvent("button_click", TAG, "SetShippingStatDpc3out");
 
-            // FIXME_
             new ConfirmMyOrderHelper.Builder(this, opID, officeCode, deviceID, scanBarcodeArrayList)
                     .setOnDriverAssignEventListener(stdResult -> {
 
@@ -1788,7 +1793,6 @@ public final class CaptureActivity extends CommonActivity implements DecoratedBa
                 Log.e("Location", TAG + " onUpdateButtonClick GPSTrackerManager : " + latitude + "  " + longitude + "  ");
             }
 
-            // FIXME_
             new ChangeDriverHelper.Builder(this, opID, officeCode, deviceID, changeDriverObjectArrayList, latitude, longitude)
                     .setOnChangeDelDriverEventListener(stdResult -> {
 
@@ -2165,6 +2169,12 @@ public final class CaptureActivity extends CommonActivity implements DecoratedBa
 
         if (beepManager != null) {
             beepManager.destroy();
+        }
+        if (beepManagerError != null) {
+            beepManagerError.destroy();
+        }
+        if (beepManagerDuple != null) {
+            beepManagerDuple.destroy();
         }
     }
 
