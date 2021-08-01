@@ -1,36 +1,49 @@
 package com.giosis.library.list.pickup
 
+import android.annotation.SuppressLint
 import android.app.AlertDialog
+import android.content.ContentValues
 import android.content.Intent
 import android.os.Bundle
 import android.text.Editable
 import android.text.TextWatcher
 import android.util.Log
+import android.view.View
 import android.widget.Toast
 import com.giosis.library.MemoryStatus
 import com.giosis.library.R
+import com.giosis.library.barcodescanner.StdResult
 import com.giosis.library.databinding.ActivityPickupStartToScanBinding
 import com.giosis.library.gps.GPSTrackerManager
+import com.giosis.library.server.ImageUpload
+import com.giosis.library.server.RetrofitClient
 import com.giosis.library.util.*
 import com.giosis.library.util.dialog.ProgressDialog
+import kotlinx.coroutines.*
+import java.text.SimpleDateFormat
+import java.util.*
+
 
 class PickupZeroQtyActivity : CommonActivity() {
-
     val tag = "PickupZeroQtyActivity"
 
     private val binding by lazy {
         ActivityPickupStartToScanBinding.inflate(layoutInflater)
     }
-
     val progressBar by lazy {
         ProgressDialog(this@PickupZeroQtyActivity)
     }
 
-    lateinit var pickupNo: String
+    val pickupNo by lazy {
+        intent.getStringExtra("pickupNo")
+    }
+    var driverMemo = ""
 
     // Location
     private var gpsTrackerManager: GPSTrackerManager? = null
     var gpsEnable = false
+    var latitude = 0.0
+    var longitude = 0.0
 
     // Permission
     var isPermissionTrue = false
@@ -42,8 +55,6 @@ class PickupZeroQtyActivity : CommonActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(binding.root)
-
-        pickupNo = intent.getStringExtra("pickupNo").toString()
 
         binding.layoutTopTitle.textTopTitle.text = resources.getString(R.string.text_zero_qty)
         binding.textPickupNo.text = pickupNo
@@ -71,22 +82,18 @@ class PickupZeroQtyActivity : CommonActivity() {
 
 
         binding.layoutTopTitle.layoutTopBack.setOnClickListener {
-
             cancelUpload()
         }
 
         binding.layoutApplicantEraser.setOnClickListener {
-
             binding.signApplicantSignature.clearText()
         }
 
         binding.layoutCollectorEraser.setOnClickListener {
-
             binding.signCollectorSignature.clearText()
         }
 
         binding.btnSave.setOnClickListener {
-
             serverUpload()
         }
 
@@ -109,7 +116,6 @@ class PickupZeroQtyActivity : CommonActivity() {
     override fun onResume() {
         super.onResume()
 
-
         if (isPermissionTrue) {
 
             // Location
@@ -126,29 +132,13 @@ class PickupZeroQtyActivity : CommonActivity() {
 
                 DataUtil.enableLocationSettings(this@PickupZeroQtyActivity)
             }
+
+            progressBar.setCancelable(false)
         }
     }
 
 
-    private fun cancelUpload() {
-
-        val alertBuilder = AlertDialog.Builder(this@PickupZeroQtyActivity)
-        alertBuilder.setMessage(resources.getString(R.string.msg_delivered_sign_cancel))
-
-        alertBuilder.setPositiveButton(resources.getString(R.string.button_ok)) { _, _ ->
-
-            finish()
-        }
-
-        alertBuilder.setNegativeButton(resources.getString(R.string.button_cancel)) { dialogInterface, _ ->
-
-            dialogInterface.dismiss()
-        }
-
-        alertBuilder.show()
-    }
-
-
+    @SuppressLint("SimpleDateFormat")
     private fun serverUpload() {
 
         try {
@@ -159,8 +149,6 @@ class PickupZeroQtyActivity : CommonActivity() {
                 return
             }
 
-            var latitude = 0.0
-            var longitude = 0.0
             gpsTrackerManager?.let {
 
                 latitude = it.latitude
@@ -174,14 +162,13 @@ class PickupZeroQtyActivity : CommonActivity() {
                 Toast.makeText(this@PickupZeroQtyActivity, resources.getString(R.string.msg_signature_require), Toast.LENGTH_SHORT).show()
                 return
             }
-
             if (!binding.signCollectorSignature.isTouch) {
 
                 Toast.makeText(this@PickupZeroQtyActivity, resources.getString(R.string.msg_collector_signature_require), Toast.LENGTH_SHORT).show()
                 return
             }
 
-            val driverMemo = binding.editMemo.text.toString()
+            driverMemo = binding.editMemo.text.toString()
             if (driverMemo.isEmpty()) {
 
                 Toast.makeText(this@PickupZeroQtyActivity, resources.getString(R.string.msg_must_enter_memo1), Toast.LENGTH_SHORT).show()
@@ -198,37 +185,53 @@ class PickupZeroQtyActivity : CommonActivity() {
 
             DataUtil.logEvent("button_click", tag, "SetPickupUploadData")
 
+            progressBar.visibility = View.VISIBLE
+            CoroutineScope(QDataUtil.mainDispatcher).launch {
+                // doInBackground
+                val result = requestPickupUpload(pickupNo!!)
 
-            // TODO_ ImageUpload 테스트
-//            progressBar.visibility = View.VISIBLE
-//            lifecycleScope.launch(Dispatchers.IO) {
-//
-//                binding.signApplicantSignature.buildDrawingCache()
-//                binding.signCollectorSignature.buildDrawingCache()
-//                val captureView: Bitmap =  binding.signApplicantSignature.drawingCache
-//                val captureView2: Bitmap =  binding.signCollectorSignature.drawingCache
-//                val bitmapString = DataUtil.bitmapToString(this@PickupZeroQtyActivity, captureView, ImageUpload.QXPOP, "qdriver/sign", pickupNo)
-//                val bitmapString2 = DataUtil.bitmapToString(this@PickupZeroQtyActivity, captureView2, ImageUpload.QXPOP, "qdriver/sign", pickupNo)
-//
-//                withContext(Dispatchers.Main) {
-//
-//                    progressBar.visibility = View.GONE
-//                }
-//            }
+                // onPostExecute
+                progressBar.visibility = View.GONE
 
-            PickupZeroQtyUploadHelper.Builder(this@PickupZeroQtyActivity, Preferences.userId, Preferences.officeCode, Preferences.deviceUUID,
-                    pickupNo, binding.signApplicantSignature,  binding.signCollectorSignature, driverMemo,
-                    MemoryStatus.getAvailableInternalMemorySize(), latitude, longitude)
-                    .setOnServerEventListener(object : OnServerEventListener {
-                        override fun onPostResult() {
+                if (result.resultCode < 0) {
 
-                            DataUtil.inProgressListPosition = 0
-                            finish()
+                    val failReason = when (result.resultCode) {
+                        -14 -> {
+                            resources.getString(R.string.msg_upload_fail_14)
                         }
-
-                        override fun onPostFailList() {
+                        -15 -> {
+                            resources.getString(R.string.msg_upload_fail_15)
                         }
-                    }).build().execute()
+                        -16 -> {
+                            resources.getString(R.string.msg_upload_fail_16)
+                        }
+                        else -> {
+                            result.resultMsg
+                        }
+                    }
+
+                    val msg = String.format(resources.getString(R.string.text_upload_fail_count), 0, 1, failReason)
+                    resultDialog(msg)
+                } else {
+
+                    val msg = String.format(resources.getString(R.string.text_upload_success_count), 1)
+                    resultDialog(msg)
+                }
+            }
+
+//            PickupZeroQtyUploadHelper.Builder(this@PickupZeroQtyActivity, Preferences.userId, Preferences.officeCode, Preferences.deviceUUID,
+//                    pickupNo, binding.signApplicantSignature, binding.signCollectorSignature, driverMemo,
+//                    MemoryStatus.getAvailableInternalMemorySize(), latitude, longitude)
+//                    .setOnServerEventListener(object : OnServerEventListener {
+//                        override fun onPostResult() {
+//
+//                            DataUtil.inProgressListPosition = 0
+//                            finish()
+//                        }
+//
+//                        override fun onPostFailList() {
+//                        }
+//                    }).build().execute()
         } catch (e: Exception) {
 
             Log.e("Exception", "$tag   serverUpload  Exception : $e")
@@ -236,10 +239,98 @@ class PickupZeroQtyActivity : CommonActivity() {
         }
     }
 
+    @SuppressLint("SimpleDateFormat")
+    private suspend fun requestPickupUpload(pickupNo: String): StdResult =
+            withContext(QDataUtil.ioDispatcher) {
+                val stdResult = StdResult()
+
+                DataUtil.captureSign("/QdrivePickup", pickupNo, binding.signApplicantSignature)
+                DataUtil.captureSign("/QdriveCollector", pickupNo, binding.signCollectorSignature)
+
+                val dateFormat = SimpleDateFormat("yyyy-MM-dd HH:mm:ss")
+                val contentVal = ContentValues()
+                contentVal.put("stat", "P3")
+                contentVal.put("real_qty", "0")
+                contentVal.put("rcv_type", "ZQ")
+                contentVal.put("chg_dt", dateFormat.format(Date()))
+                contentVal.put("driver_memo", driverMemo)
+                contentVal.put("fail_reason", "")
+                contentVal.put("retry_dt", "")
+                DatabaseHelper.getInstance().update(DatabaseHelper.DB_TABLE_INTEGRATION_LIST, contentVal,
+                        "invoice_no=? COLLATE NOCASE and reg_id = ?", arrayOf(pickupNo, Preferences.userId))
+
+                val bitmapString1 = QDataUtil.getBitmapString(this@PickupZeroQtyActivity, binding.signApplicantSignature,
+                        ImageUpload.QXPOP, "qdriver/sign", pickupNo)
+                val bitmapString2 = QDataUtil.getBitmapString(this@PickupZeroQtyActivity, binding.signCollectorSignature,
+                        ImageUpload.QXPOP, "qdriver/sign", pickupNo)
+                Log.e("Image", "  $bitmapString1 / $bitmapString2")
+
+                if (bitmapString1 == "" || bitmapString2 == "") {
+
+                    stdResult.resultCode = -100
+                    stdResult.resultMsg = resources.getString(R.string.msg_upload_fail_image)
+                    return@withContext stdResult
+                }
+
+
+                try {
+
+                    val model = RetrofitClient.instanceDynamic().requestSetPickupUploadData("ZQ", "P3", NetworkUtil.getNetworkType(this@PickupZeroQtyActivity),
+                            pickupNo, bitmapString1, bitmapString2, driverMemo, latitude, longitude, "0", "", "")
+                    Log.e("Server", "requestSetPickupUploadData $pickupNo  result  ${model.resultCode}/${model.resultMsg}")
+
+                    stdResult.resultCode = model.resultCode
+                    stdResult.resultMsg = model.resultMsg
+
+                    if (model.resultCode == 0) {
+
+                        val contentVal2 = ContentValues()
+                        contentVal2.put("punchOut_stat", "S")
+                        DatabaseHelper.getInstance().update(DatabaseHelper.DB_TABLE_INTEGRATION_LIST, contentVal2,
+                                "invoice_no=? COLLATE NOCASE and reg_id = ?", arrayOf(pickupNo, Preferences.userId))
+                    }
+                } catch (e: Exception) {
+
+                    stdResult.resultCode = -15
+                    stdResult.resultMsg = e.message
+                }
+
+                return@withContext stdResult
+            }
+
+    private fun resultDialog(msg: String) {
+
+        if (!this@PickupZeroQtyActivity.isFinishing) {
+
+            val builder = AlertDialog.Builder(this@PickupZeroQtyActivity)
+            builder.setCancelable(false)
+            builder.setTitle(resources.getString(R.string.text_upload_result))
+            builder.setMessage(msg)
+            builder.setPositiveButton(resources.getString(R.string.button_ok)) { dialog, _ ->
+
+                dialog.dismiss()
+
+                DataUtil.inProgressListPosition = 0
+                finish()
+            }
+            builder.show()
+        }
+    }
 
     override fun onBackPressed() {
 
         cancelUpload()
+    }
+
+    private fun cancelUpload() {
+
+        if (!this@PickupZeroQtyActivity.isFinishing) {
+            AlertDialog.Builder(this@PickupZeroQtyActivity)
+                    .setMessage(R.string.msg_delivered_sign_cancel)
+                    .setPositiveButton(R.string.button_ok) { _, _ -> finish() }
+                    .setNegativeButton(R.string.button_cancel) { dialog, _ -> dialog.dismiss() }
+                    .show()
+        }
     }
 
 
@@ -247,7 +338,6 @@ class PickupZeroQtyActivity : CommonActivity() {
         super.onDestroy()
         DataUtil.stopGPSManager(gpsTrackerManager)
     }
-
 
     override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
         super.onActivityResult(requestCode, resultCode, data)

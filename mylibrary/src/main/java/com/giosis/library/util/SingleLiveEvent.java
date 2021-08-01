@@ -1,11 +1,12 @@
 package com.giosis.library.util;
 
+import android.util.Log;
+
 import androidx.annotation.MainThread;
 import androidx.annotation.Nullable;
 import androidx.lifecycle.LifecycleOwner;
 import androidx.lifecycle.MutableLiveData;
 import androidx.lifecycle.Observer;
-import android.util.Log;
 
 import java.util.concurrent.atomic.AtomicBoolean;
 
@@ -28,7 +29,7 @@ public class SingleLiveEvent<T> extends MutableLiveData<T> {
     /**
      * View가 활성화 상태가 되거나,
      * setValue로 값이 바뀌었을 때 호출되는 함수
-    */
+     */
     @MainThread
     public void observe(LifecycleOwner owner, final Observer<? super T> observer) {
 

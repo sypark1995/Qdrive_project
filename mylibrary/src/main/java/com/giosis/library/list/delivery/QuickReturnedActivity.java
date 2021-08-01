@@ -87,20 +87,20 @@ public class QuickReturnedActivity extends CommonActivity {
         layout_top_back = findViewById(R.id.layout_top_back);
         text_top_title = findViewById(R.id.text_top_title);
 
-        text_sign_d_r_tracking_no = findViewById(R.id.text_sign_d_r_tracking_no);
-        text_sign_d_r_receiver = findViewById(R.id.text_sign_d_r_receiver);
-        img_sign_d_r_receiver_self = findViewById(R.id.img_sign_d_r_receiver_self);
-        text_sign_d_r_receiver_self = findViewById(R.id.text_sign_d_r_receiver_self);
-        img_sign_d_r_receiver_substitute = findViewById(R.id.img_sign_d_r_receiver_substitute);
-        text_sign_d_r_receiver_substitute = findViewById(R.id.text_sign_d_r_receiver_substitute);
-        img_sign_d_r_receiver_other = findViewById(R.id.img_sign_d_r_receiver_other);
-        text_sign_d_r_receiver_other = findViewById(R.id.text_sign_d_r_receiver_other);
-        text_sign_d_r_sender = findViewById(R.id.text_sign_d_r_sender);
+        text_sign_d_r_tracking_no = findViewById(R.id.text_tracking_no);
+        text_sign_d_r_receiver = findViewById(R.id.text_receiver);
+        img_sign_d_r_receiver_self = findViewById(R.id.img_receiver_self);
+        text_sign_d_r_receiver_self = findViewById(R.id.text_receiver_self);
+        img_sign_d_r_receiver_substitute = findViewById(R.id.img_receiver_substitute);
+        text_sign_d_r_receiver_substitute = findViewById(R.id.text_receiver_substitute);
+        img_sign_d_r_receiver_other = findViewById(R.id.img_receiver_other);
+        text_sign_d_r_receiver_other = findViewById(R.id.text_receiver_other);
+        text_sign_d_r_sender = findViewById(R.id.text_sender);
 
-        layout_sign_d_r_sign_eraser = findViewById(R.id.layout_sign_d_r_sign_eraser);
-        sign_view_sign_d_r_signature = findViewById(R.id.sign_view_sign_d_r_signature);
-        edit_sign_d_r_memo = findViewById(R.id.edit_sign_d_r_memo);
-        btn_sign_d_r_save = findViewById(R.id.btn_sign_d_r_save);
+        layout_sign_d_r_sign_eraser = findViewById(R.id.layout_sign_eraser);
+        sign_view_sign_d_r_signature = findViewById(R.id.sign_signature);
+        edit_sign_d_r_memo = findViewById(R.id.edit_memo);
+        btn_sign_d_r_save = findViewById(R.id.btn_save);
 
 
         layout_top_back.setOnClickListener(clickListener);
@@ -324,27 +324,27 @@ public class QuickReturnedActivity extends CommonActivity {
             int id = view.getId();
             if (id == R.id.layout_top_back) {
                 cancelSigning();
-            } else if (id == R.id.img_sign_d_r_receiver_self || id == R.id.text_sign_d_r_receiver_self) {
+            } else if (id == R.id.img_receiver_self || id == R.id.text_receiver_self) {
                 img_sign_d_r_receiver_self.setBackgroundResource(R.drawable.qdrive_btn_icon_check_on);
                 img_sign_d_r_receiver_substitute.setBackgroundResource(R.drawable.qdrive_btn_icon_check_off);
                 img_sign_d_r_receiver_other.setBackgroundResource(R.drawable.qdrive_btn_icon_check_off);
 
                 mReceiveType = "RC";
-            } else if (id == R.id.img_sign_d_r_receiver_substitute || id == R.id.text_sign_d_r_receiver_substitute) {
+            } else if (id == R.id.img_receiver_substitute || id == R.id.text_receiver_substitute) {
                 img_sign_d_r_receiver_self.setBackgroundResource(R.drawable.qdrive_btn_icon_check_off);
                 img_sign_d_r_receiver_substitute.setBackgroundResource(R.drawable.qdrive_btn_icon_check_on);
                 img_sign_d_r_receiver_other.setBackgroundResource(R.drawable.qdrive_btn_icon_check_off);
 
                 mReceiveType = "AG";
-            } else if (id == R.id.img_sign_d_r_receiver_other || id == R.id.text_sign_d_r_receiver_other) {
+            } else if (id == R.id.img_receiver_other || id == R.id.text_receiver_other) {
                 img_sign_d_r_receiver_self.setBackgroundResource(R.drawable.qdrive_btn_icon_check_off);
                 img_sign_d_r_receiver_substitute.setBackgroundResource(R.drawable.qdrive_btn_icon_check_off);
                 img_sign_d_r_receiver_other.setBackgroundResource(R.drawable.qdrive_btn_icon_check_on);
 
                 mReceiveType = "ET";
-            } else if (id == R.id.layout_sign_d_r_sign_eraser) {
+            } else if (id == R.id.layout_sign_eraser) {
                 sign_view_sign_d_r_signature.clearText();
-            } else if (id == R.id.btn_sign_d_r_save) {
+            } else if (id == R.id.btn_save) {
                 saveServerUploadSign();
             }
         }

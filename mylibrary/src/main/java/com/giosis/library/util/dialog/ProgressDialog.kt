@@ -47,6 +47,11 @@ class ProgressDialog @JvmOverloads constructor(
         }
     }
 
+    fun setCancelable(boolean: Boolean) {
+
+        dialog.setCancelable(boolean)
+    }
+
     override fun onMeasure(widthMeasureSpec: Int, heightMeasureSpec: Int) {
         setMeasuredDimension(0, 0)
     }

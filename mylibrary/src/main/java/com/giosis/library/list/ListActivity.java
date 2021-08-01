@@ -15,10 +15,9 @@ import android.widget.Toast;
 
 import androidx.annotation.NonNull;
 import androidx.fragment.app.Fragment;
-import androidx.fragment.app.FragmentManager;
-import androidx.fragment.app.FragmentStatePagerAdapter;
-import androidx.viewpager.widget.ViewPager;
-import androidx.viewpager.widget.ViewPager.OnPageChangeListener;
+import androidx.fragment.app.FragmentActivity;
+import androidx.viewpager2.adapter.FragmentStateAdapter;
+import androidx.viewpager2.widget.ViewPager2;
 
 import com.giosis.library.R;
 import com.giosis.library.bluetooth.BluetoothClass;
@@ -29,10 +28,8 @@ import com.giosis.library.util.ListFragmentFactoryImpl;
 import com.giosis.library.util.Preferences;
 
 /**
- * @editor krm0219
  * In progress  // Not Upload  //  Today Done
  */
-
 public class ListActivity extends CommonActivity implements OnClickListener,
         ListInProgressFragment.OnInProgressFragmentListener, ListUploadFailedFragment.OnFailedCountListener,
         ListTodayDoneFragment.OnTodayDoneCountListener {
@@ -51,8 +48,9 @@ public class ListActivity extends CommonActivity implements OnClickListener,
     LinearLayout layout_list_today_done;
     TextView text_list_today_done_count;
 
-    ViewPager viewpager_list;
-    PagerAdapter pagerAdapter;
+    ViewPager2 viewpager2_list;
+    PagerAdapter2 pagerAdapter2;
+
 
     BluetoothClass bluetoothClass;
 
@@ -105,20 +103,17 @@ public class ListActivity extends CommonActivity implements OnClickListener,
         layout_list_upload_failed.setOnClickListener(this);
         layout_list_today_done.setOnClickListener(this);
 
-        viewpager_list = findViewById(R.id.viewpager_list);
-        pagerAdapter = new PagerAdapter(getSupportFragmentManager());
-        viewpager_list.setAdapter(pagerAdapter);
+        viewpager2_list = findViewById(R.id.viewpager2_list);
+        pagerAdapter2 = new PagerAdapter2(this);
+        viewpager2_list.setAdapter(pagerAdapter2);
+
 
         bluetoothClass = new BluetoothClass(this);
 
-        int position = getIntent().getIntExtra("position", 0);
-        viewpager_list.setCurrentItem(position);  //첫 페이지 설정 (홈에서 카운트 클릭으로 넘어옴)
-
-
-        viewpager_list.addOnPageChangeListener(new OnPageChangeListener() {
-
+        viewpager2_list.registerOnPageChangeCallback(new ViewPager2.OnPageChangeCallback() {
             @Override
             public void onPageSelected(int position) {
+                super.onPageSelected(position);
 
                 layout_list_in_progress.setSelected(false);
                 layout_list_upload_failed.setSelected(false);
@@ -141,24 +136,7 @@ public class ListActivity extends CommonActivity implements OnClickListener,
                         break;
                 }
             }
-
-            @Override
-            public void onPageScrolled(int arg0, float arg1, int arg2) {
-            }
-
-            @Override
-            public void onPageScrollStateChanged(int arg0) {
-            }
         });
-
-        if (position == 1) {
-            layout_list_upload_failed.setSelected(true);
-        } else if (position == 2) {
-            layout_list_today_done.setSelected(true);
-        } else {
-            layout_list_in_progress.setSelected(true);
-        }
-
     }
 
     @Override
@@ -178,7 +156,7 @@ public class ListActivity extends CommonActivity implements OnClickListener,
                 }
                 intent.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP | Intent.FLAG_ACTIVITY_SINGLE_TOP);
                 startActivity(intent);
-            } catch (Exception e) {
+            } catch (Exception ignore) {
 
             }
 
@@ -198,13 +176,13 @@ public class ListActivity extends CommonActivity implements OnClickListener,
 
         int id = v.getId();
         if (id == R.id.layout_list_in_progress) {
-            viewpager_list.setCurrentItem(FRAGMENT_PAGE1);
+            viewpager2_list.setCurrentItem(FRAGMENT_PAGE1);
 
         } else if (id == R.id.layout_list_upload_failed) {
-            viewpager_list.setCurrentItem(FRAGMENT_PAGE2);
+            viewpager2_list.setCurrentItem(FRAGMENT_PAGE2);
 
         } else if (id == R.id.layout_list_today_done) {
-            viewpager_list.setCurrentItem(FRAGMENT_PAGE3);
+            viewpager2_list.setCurrentItem(FRAGMENT_PAGE3);
 
         } else if (id == R.id.layout_top_back) {
 
@@ -219,17 +197,15 @@ public class ListActivity extends CommonActivity implements OnClickListener,
     }
 
 
-    // FragmentPageAdapter : Fragment로써 각각의 페이지를 어떻게 보여줄지 정의한다.
-    private class PagerAdapter extends FragmentStatePagerAdapter {
+    public class PagerAdapter2 extends FragmentStateAdapter {
 
-        PagerAdapter(FragmentManager fm) {
-            super(fm);
+        public PagerAdapter2(@NonNull FragmentActivity fragmentActivity) {
+            super(fragmentActivity);
         }
 
-        // 특정 위치에 있는 Fragment 반환해준다.
+        @NonNull
         @Override
-        public Fragment getItem(int position) {
-
+        public Fragment createFragment(int position) {
             switch (position) {
                 case 0: {
                     return new ListInProgressFragment(bluetoothClass);
@@ -246,17 +222,10 @@ public class ListActivity extends CommonActivity implements OnClickListener,
         }
 
         @Override
-        public int getItemPosition(@NonNull Object object) {
-            return POSITION_NONE;
-        }
-
-        @Override
-        public int getCount() {
+        public int getItemCount() {
             return 3;
         }
-
     }
-
 
     @Override
     public void onActivityResult(int requestCode, int resultCode, Intent data) {

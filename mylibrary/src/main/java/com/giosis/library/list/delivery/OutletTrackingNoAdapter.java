@@ -34,9 +34,7 @@ import javax.net.ssl.SSLContext;
 import javax.net.ssl.TrustManager;
 import javax.net.ssl.X509TrustManager;
 
-/**
- * @author krm0219
- **/
+
 public class OutletTrackingNoAdapter extends BaseAdapter {
     String TAG = "OutletTrackingNoAdapter";
 

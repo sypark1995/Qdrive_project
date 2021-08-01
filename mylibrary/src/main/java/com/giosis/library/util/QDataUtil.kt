@@ -8,7 +8,11 @@ import android.provider.Settings
 import android.telephony.TelephonyManager
 import android.text.TextUtils
 import android.util.Log
+import android.view.View
 import androidx.core.app.ActivityCompat
+import kotlinx.coroutines.CoroutineDispatcher
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.withContext
 import java.net.NetworkInterface
 import java.util.*
 
@@ -216,5 +220,17 @@ class QDataUtil {
             }
             return returnData
         }
+
+         val defaultDispatcher: CoroutineDispatcher = Dispatchers.Default
+         val ioDispatcher: CoroutineDispatcher = Dispatchers.IO
+         val mainDispatcher: CoroutineDispatcher = Dispatchers.Main
+
+        suspend fun getBitmapString(context: Context, view: View, basePath: String, path: String, trackingNo: String): String =
+                withContext(defaultDispatcher) {
+
+                    view.buildDrawingCache()
+                    val viewBitmap = view.drawingCache
+                    return@withContext DataUtil.bitmapToString(context, viewBitmap, basePath, path, trackingNo)
+                }
     }
 }

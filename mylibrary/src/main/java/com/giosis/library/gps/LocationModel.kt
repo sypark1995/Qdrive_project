@@ -35,6 +35,7 @@ class LocationModel {
         driverLat = lat
         driverLng = lng
 
+        // TEST 용도
         if (Preferences.userNation != "SG" && Preferences.serverURL.contains("staging") && Preferences.gpsMode == "TEST") {
 
             val gpsValue = Preferences.gpsTestValue.split(",")
@@ -43,7 +44,6 @@ class LocationModel {
             driverLng = parcelLng + gpsValue[1].toDouble()
             Log.e("GPSUpdate", " GPS TEST Mode  >>")
         }
-
         Log.e("GPSUpdate", "GPS : $parcelLat, $parcelLng  >> $driverLat, $driverLng")
 
         differenceLat = abs(parcelLat - driverLat)

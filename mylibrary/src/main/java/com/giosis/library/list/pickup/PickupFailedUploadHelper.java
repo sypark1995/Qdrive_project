@@ -30,6 +30,7 @@ import java.util.Date;
  * @editor krm0219
  * 일반 픽업, CNR 픽업 실패
  */
+@Deprecated
 public class PickupFailedUploadHelper {
     String TAG = "PickupVisitLogUploadHelper";
 

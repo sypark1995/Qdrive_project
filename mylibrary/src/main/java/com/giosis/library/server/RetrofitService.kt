@@ -1,6 +1,7 @@
 package com.giosis.library.server
 
 import android.os.Build
+import com.giosis.library.MemoryStatus
 import com.giosis.library.server.data.FailedCodeResult
 import com.giosis.library.server.data.ImageResult
 import com.giosis.library.util.DataUtil
@@ -515,4 +516,30 @@ interface RetrofitService {
             @Field("app_id") app_id: String = DataUtil.appID,
             @Field("nation_cd") nation_cd: String = Preferences.userNation
     ): Single<APIModel>
+
+
+    @POST("SetPickupUploadData")
+    @FormUrlEncoded
+    suspend fun requestSetPickupUploadData(
+            @Field("rcv_type") rcv_type: String,        // ZQ, RC,
+            @Field("stat") stat: String,
+            @Field("network_type") network_type: String,
+            @Field("no_songjang") no_songjang: String,
+            @Field("fileData") fileData: String,
+            @Field("fileData2") fileData2: String,
+            @Field("remark") remark: String,            // Drive Memo
+            @Field("lat") lat: Double,
+            @Field("lon") lon: Double,
+            @Field("real_qty") real_qty: String,
+            @Field("fail_reason") fail_reason: String,
+            @Field("retry_day") retry_day: String,
+            @Field("chg_id") chg_id: String = Preferences.userId,
+            @Field("deliv_msg") deliv_msg: String = "(by Qdrive RealTime-Upload)",
+            @Field("opId") opId: String = Preferences.userId,
+            @Field("officeCd") officeCd: String = Preferences.officeCode,
+            @Field("device_id") device_id: String = Preferences.deviceUUID,
+            @Field("disk_size") disk_size: Long = MemoryStatus.getAvailableInternalMemorySize(),
+            @Field("app_id") app_id: String = DataUtil.appID,
+            @Field("nation_cd") nation_cd: String = Preferences.userNation
+    ): APIModel
 }

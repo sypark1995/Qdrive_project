@@ -99,16 +99,18 @@ public class DisplayUtil {
 
     public static void AlertDialog(final Activity activity, String msg) {
 
-        AlertDialog.Builder alert_internet_status = new AlertDialog.Builder(activity);
-        alert_internet_status.setTitle(activity.getResources().getString(R.string.text_warning));
-        alert_internet_status.setMessage(msg);
-        alert_internet_status.setPositiveButton(activity.getResources().getString(R.string.button_close),
-                (dialog, which) -> {
+        if (!activity.isFinishing()) {
+            AlertDialog.Builder builder = new AlertDialog.Builder(activity);
+            builder.setTitle(activity.getResources().getString(R.string.text_warning));
+            builder.setMessage(msg);
+            builder.setPositiveButton(activity.getResources().getString(R.string.button_close),
+                    (dialog, which) -> {
 
-                    dialog.dismiss();
-                    activity.finish();
-                });
-        alert_internet_status.show();
+                        dialog.dismiss();
+                        activity.finish();
+                    });
+            builder.show();
+        }
     }
 
 

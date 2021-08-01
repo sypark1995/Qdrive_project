@@ -145,5 +145,4 @@ object RetrofitClient {
         instanceDynamic = retrofit.create(RetrofitService::class.java)
         return instanceDynamic
     }
-
 }

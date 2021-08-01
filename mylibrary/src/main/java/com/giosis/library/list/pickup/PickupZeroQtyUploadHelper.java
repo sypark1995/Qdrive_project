@@ -4,8 +4,6 @@ import android.app.AlertDialog;
 import android.app.ProgressDialog;
 import android.content.ContentValues;
 import android.content.Context;
-import android.content.DialogInterface;
-import android.content.DialogInterface.OnClickListener;
 import android.graphics.Bitmap;
 import android.os.AsyncTask;
 import android.util.Log;
@@ -29,6 +27,7 @@ import java.util.Date;
 
 
 // Pickup - Zero Qty
+@Deprecated
 public class PickupZeroQtyUploadHelper {
     String TAG = "PickupZeroQtyUploadHelper";
 
@@ -138,16 +137,13 @@ public class PickupZeroQtyUploadHelper {
 
         AlertDialog dialog = new AlertDialog.Builder(context)
                 .setTitle(context.getResources().getString(R.string.text_upload_result))
-                .setCancelable(false).setPositiveButton(context.getResources().getString(R.string.button_ok), new OnClickListener() {
+                .setCancelable(false)
+                .setPositiveButton(context.getResources().getString(R.string.button_ok), (dialog1, which) -> {
+                    if (dialog1 != null)
+                        dialog1.dismiss();
 
-                    @Override
-                    public void onClick(DialogInterface dialog, int which) {
-                        if (dialog != null)
-                            dialog.dismiss();
-
-                        if (eventListener != null) {
-                            eventListener.onPostResult();
-                        }
+                    if (eventListener != null) {
+                        eventListener.onPostResult();
                     }
                 })
                 .create();
