@@ -8,7 +8,8 @@
     android:fitsSystemWindows="false"
     tools:openDrawer="start">
 
-    <include layout="@layout/app_bar_main" />
+    <include layout="@layout/app_bar_main"
+        android:id="@+id/appBar"/>
 
     <RelativeLayout
         android:layout_width="match_parent"
@@ -97,6 +98,7 @@
         android:layout_gravity="start"
         android:background="@color/color_f6f6f6"
         android:divider="@null"
+        android:scrollbars="none"
         android:dividerHeight="0dp"
         android:groupIndicator="@null"
         android:headerDividersEnabled="false"

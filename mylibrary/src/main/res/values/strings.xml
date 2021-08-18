@@ -59,6 +59,8 @@
     <string name="text_exception">Exception : %1$s</string>
     <string name="text_upload_success_count">Upload Success : %1$d</string>
     <string name="text_upload_fail_count">Upload Success : %1$d\nUpload Failed : %2$d\nFail Reason : %3$s</string>
+    <string name="text_upload_fail_count1">Upload Failed : %1$d\nFail Reason : %2$s</string>
+    <string name="text_upload_fail_count2">Upload Failed Reason : %1$s</string>
     <string name="text_upload_fail_count3">Upload Success : %1$d\nUpload Failed : %2$d</string>
     <string name="text_location_setting">Location setting</string>
     <string name="text_search_address" translatable="false">Search Address</string>
@@ -151,7 +153,6 @@
     <string name="text_error">Error</string>
     <string name="text_please_wait">Please wait…</string>
     <string name="text_set_transfer">Set Transfer…</string>
-    <string name="text_upload_fail_count1">Upload Failed : %1$d\nFail Reason : %2$s</string>
     <string name="text_date">Date</string>
     <string name="text_job_id">Job ID</string>
     <string name="text_vendor_code">Vendor Code</string>
@@ -499,7 +500,6 @@
     <string name="text_outlet_status_1">Need to be scanned Today</string>
     <string name="text_outlet_status_2">Need to go to Outlets (Scanned already)</string>
     <string name="text_outlet_status_3">Today Done List</string>
-    <string name="text_upload_fail_count2">Upload Failed Reason : %1$s</string>
 
     <string name="button_add_scan_list">Add Scan List</string>
     <string name="button_save_continue">Save &amp; Continue</string>
