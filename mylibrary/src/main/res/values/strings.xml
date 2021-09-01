@@ -225,6 +225,7 @@
     <string name="text_shipping_no">Shipping No.</string>
     <string name="text_desired_date1">Desired Date</string>
     <string name="text_qty1">Qty</string>
+    <string name="text_economy" translatable="false">Economy</string>
 
     <!-- Message -->
     <string name="msg_live10_installed">To use Qdrive, Qoo10 Live app should be installed on your phone.</string>

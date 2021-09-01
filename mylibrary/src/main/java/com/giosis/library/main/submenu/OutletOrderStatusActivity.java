@@ -112,7 +112,7 @@ public class OutletOrderStatusActivity extends CommonActivity implements SearchV
         deliveryCount = 0;
         retrieveCount = 0;
 
-        Log.e("krm0219", TAG + "  Selected Outlet Code : " + selectedOutletCode + " /  Selected Outlet Name : " + selectedOutletName);
+        Log.e(TAG, "  Selected Outlet Code : " + selectedOutletCode + " /  Selected Outlet Name : " + selectedOutletName);
 
         if (conditionArrayList == null) {
 
@@ -221,7 +221,6 @@ public class OutletOrderStatusActivity extends CommonActivity implements SearchV
 
 
         for (int i = 0; i < totalArrayList.size(); i++) {
-            //    Log.e("krm0219", "total > " + totalArrayList.get(i).getShipping());
 
             if (totalArrayList.get(i).getType().equals("D")) {
 
@@ -439,7 +438,7 @@ public class OutletOrderStatusActivity extends CommonActivity implements SearchV
 
                 selectedOutletCondition = parent.getItemAtPosition(position).toString();
                 text_outlet_status_condition.setText(selectedOutletCondition);
-                Log.e("krm0219", TAG + "  Selected Outlet Condition : " + selectedOutletCondition + " / " +
+                Log.e(TAG, "  Selected Outlet Condition : " + selectedOutletCondition + " / " +
                         spinner_outlet_status_outlet_code.getSelectedItemPosition() + " / " + spinner_outlet_status_outlet_name.getSelectedItemPosition());
 
                 deliveryCount = 0;
@@ -483,7 +482,7 @@ public class OutletOrderStatusActivity extends CommonActivity implements SearchV
                 text_outlet_status_outlet_code.setText(selectedOutletCode);
 
                 selectedOutletCode = selectedOutletCode.replace("LA", "FL");
-                Log.e("krm0219", "onItemSelected  code : " + selectedOutletCode + " / " + firstOutletCode);
+                Log.e(TAG, "onItemSelected  code : " + selectedOutletCode + " / " + firstOutletCode);
 
                 if (!firstOutletCode) {
 
@@ -520,7 +519,7 @@ public class OutletOrderStatusActivity extends CommonActivity implements SearchV
 
                 selectedOutletName = parent.getItemAtPosition(position).toString();
                 text_outlet_status_outlet_name.setText(selectedOutletName);
-                Log.e("krm0219", "onItemSelected  name : " + selectedOutletName + " / " + firstOutletName);
+                Log.e(TAG, "onItemSelected  name : " + selectedOutletName + " / " + firstOutletName);
 
                 if (!firstOutletName) {
 
@@ -637,9 +636,6 @@ public class OutletOrderStatusActivity extends CommonActivity implements SearchV
 
                             conditionArrayList = resultList;
                             setOutletArrayList("ALL", "ALL");
-                        } else {
-
-                            Log.e("krm0219", "Error  !!!!!!!!!!!");
                         }
                     }).build().execute();
         } else if (condition.equals(getResources().getString(R.string.text_outlet_status_3))) {
@@ -651,9 +647,6 @@ public class OutletOrderStatusActivity extends CommonActivity implements SearchV
 
                             conditionArrayList = resultList;
                             setOutletArrayList("ALL", "ALL");
-                        } else {
-
-                            Log.e("krm0219", "Error  !!!!!!!!!!!");
                         }
                     }).build().execute();
         }
@@ -664,7 +657,7 @@ public class OutletOrderStatusActivity extends CommonActivity implements SearchV
         super.onResume();
 
         if (conditionArrayList != null) {
-            Log.e("krm0219", "Condition Size : " + conditionArrayList.size());
+            Log.e(TAG, "Condition Size : " + conditionArrayList.size());
         }
 
         deliveryCount = 0;
@@ -733,7 +726,6 @@ public class OutletOrderStatusActivity extends CommonActivity implements SearchV
     protected void onActivityResult(int requestCode, int resultCode, @Nullable Intent data) {
         super.onActivityResult(requestCode, resultCode, data);
 
-        Log.e("krm0219", TAG + "  onActivityResult > " + requestCode + " / " + resultCode);
         if (requestCode == 1) {
             if (resultCode == RESULT_OK) {
 

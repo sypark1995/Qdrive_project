@@ -614,7 +614,6 @@ public class ListUploadFailedAdapter extends BaseExpandableListAdapter {
                 }
             }
             if (newList.size() > 0) {
-                //RowItem nRowItem = new RowItem(continent.getName(), newList);
                 rowItem.addAll(newList);
             }
         }

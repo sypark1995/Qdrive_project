@@ -15,7 +15,7 @@ class DatabaseHelper private constructor(private val mContext: Context) : SQLite
         private var mInstance: DatabaseHelper? = null
         private var sqLiteDatabase: SQLiteDatabase? = null
 
-        private const val DB_VERSION = 3
+        private const val DB_VERSION = 4
         private const val DB_NAME = "QdriveDB.db"
 
         const val DB_TABLE_INTEGRATION_LIST = "INTEGRATION_LIST"
@@ -29,7 +29,7 @@ class DatabaseHelper private constructor(private val mContext: Context) : SQLite
                 "real_qty, retry_dt, driver_memo, fail_reason, desired_time, " +
                 "rcv_type, punchOut_stat, partner_id, cust_no, secret_no_type, secret_no, lat, lng, " +
                 "secure_delivery_yn, parcel_amount, currency, order_type_etc, " +
-                "high_amount_yn, state, city, street)"
+                "high_amount_yn, state, city, street, order_type)"
 
         private const val CREATE_TABLE_REST_DAYS = "CREATE TABLE IF NOT EXISTS " +
                 DB_TABLE_REST_DAYS + "(rest_dt, title)"

@@ -153,6 +153,10 @@ public class DriverAssignResult {
         @SerializedName("receive_street")
         private String street = "";
 
+        @Element(name = "order_type", required = false)
+        @SerializedName("order_type")
+        private String order_type = "";
+
 
         public String getContrNo() {
             return contr_no;
@@ -257,6 +261,10 @@ public class DriverAssignResult {
 
         public String getStreet() {
             return street;
+        }
+
+        public String getOrder_type() {
+            return order_type;
         }
     }
 }

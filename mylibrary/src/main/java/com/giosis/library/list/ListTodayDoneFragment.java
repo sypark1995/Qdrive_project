@@ -216,13 +216,6 @@ public class ListTodayDoneFragment extends Fragment implements SearchView.OnQuer
                     });
         } catch (Exception e) {
 
-            RetrofitClient.INSTANCE.instanceCommonService()
-                    .requestWriteLog("1", "TodayDoneFragment", "called getTodayPickupDone API", "get TodayDoneData Error  " + e.toString())
-                    .subscribeOn(Schedulers.io())
-                    .observeOn(AndroidSchedulers.mainThread())
-                    .subscribe(it -> {
-                    }, it -> {
-                    });
         }
     }
 

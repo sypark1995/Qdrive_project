@@ -46,6 +46,7 @@ import com.giosis.library.util.Preferences;
 import java.util.ArrayList;
 
 public class ListInProgressAdapter extends BaseExpandableListAdapter {
+    private String TAG = "ListInProgressAdapter";
 
     private OnMoveUpListener onMoveUpListener;
 
@@ -147,6 +148,7 @@ public class ListInProgressAdapter extends BaseExpandableListAdapter {
         ImageView img_list_item_station_icon = convertView.findViewById(R.id.img_list_item_station_icon);
         TextView text_list_item_tracking_no = convertView.findViewById(R.id.text_list_item_tracking_no);
         TextView text_list_item_pickup_state = convertView.findViewById(R.id.text_list_item_pickup_state);
+        TextView text_list_item_economy = convertView.findViewById(R.id.text_list_item_economy);
         TextView text_list_item_high_amount = convertView.findViewById(R.id.text_list_item_high_amount);
         ImageView img_list_item_up_icon = convertView.findViewById(R.id.img_list_item_up_icon);
 
@@ -187,7 +189,7 @@ public class ListInProgressAdapter extends BaseExpandableListAdapter {
 
 
         final RowItem row_pos = rowItem.get(groupPosition);
-        Log.i("krm0219", "  Route : " + row_pos.getRoute() + " / Stat : " + row_pos.getStat() + " / Number : " + row_pos.getShipping());
+        //   Log.i(TAG, "  Route : " + row_pos.getRoute() + " / Stat : " + row_pos.getStat() + " / Number : " + row_pos.getShipping());
 
         text_list_item_d_day.setText(row_pos.getDelay());
         if (row_pos.getDelay().equals("D+0") || row_pos.getDelay().equals("D+1")) {
@@ -232,6 +234,7 @@ public class ListInProgressAdapter extends BaseExpandableListAdapter {
 
             text_list_item_tracking_no.setTextColor(parent.getContext().getResources().getColor(R.color.color_363BE7));
             img_list_item_secure_delivery.setVisibility(View.GONE);
+            text_list_item_economy.setVisibility(View.GONE);
             text_list_item_high_amount.setVisibility(View.GONE);
 
             if (row_pos.getStat().equals("RE")) {
@@ -292,11 +295,16 @@ public class ListInProgressAdapter extends BaseExpandableListAdapter {
 
             // 2021.04  High amount
             if (row_pos.getHigh_amount_yn().equals("Y")) {
-
                 text_list_item_high_amount.setVisibility(View.VISIBLE);
             } else {
-
                 text_list_item_high_amount.setVisibility(View.GONE);
+            }
+
+            // 2021.09 Economy
+            if (row_pos.getOrderType().equals("ECO")) {
+                text_list_item_economy.setVisibility(View.VISIBLE);
+            } else {
+                text_list_item_economy.setVisibility(View.GONE);
             }
 
 
@@ -478,7 +486,6 @@ public class ListInProgressAdapter extends BaseExpandableListAdapter {
         final String requester = rowItem.get(groupPosition).getName();
         final String route = rowItem.get(groupPosition).getRoute();
         final String qty = rowItem.get(groupPosition).getQty();
-        final String highAmountYn = rowItem.get(groupPosition).getHigh_amount_yn();
 
 
         if (child.getSecretNoType().equals("T")) {    // Qtalk 안심번호 타입 T - Qnumber 사용
@@ -533,7 +540,7 @@ public class ListInProgressAdapter extends BaseExpandableListAdapter {
 
         try {
             String orderType = rowItem.get(groupPosition).getOrder_type_etc();
-            Log.e("krm0219", "Order Type ETC : " + rowItem.get(groupPosition).getOrder_type_etc());
+            //    Log.e(TAG, "Order Type ETC : " + rowItem.get(groupPosition).getOrder_type_etc());
 
             if (orderType != null && orderType.equalsIgnoreCase("DPC")) {
                 img_list_item_child_qpost.setVisibility(View.VISIBLE);
@@ -542,7 +549,7 @@ public class ListInProgressAdapter extends BaseExpandableListAdapter {
             }
 
         } catch (Exception e) {
-            Log.e("krm0219", "Order Type ETC Exception : " + e.toString());
+            Log.e(TAG, "Order Type ETC Exception : " + e.toString());
             img_list_item_child_qpost.setVisibility(View.GONE);
         }
 
@@ -727,13 +734,8 @@ public class ListInProgressAdapter extends BaseExpandableListAdapter {
 
                 ArrayList<RowItem> tripDataArrayList = group_item.getTripSubDataArrayList();
 
-                /*for (int i = 0; i < tripDataArrayList.size(); i++) {
-                    Log.e("trip", "DATA :: " + tripDataArrayList.get(i).getShipping() + tripDataArrayList.get(i).getAddress());
-                }*/
-
                 PickupTripDetailDialog dialog = new PickupTripDetailDialog(v.getContext(), tripDataArrayList, bluetoothListener);
                 dialog.show();
-                //    dialog.setCanceledOnTouchOutside(false);
                 Window window = dialog.getWindow();
                 window.setBackgroundDrawable(new ColorDrawable(Color.TRANSPARENT));
                 window.setLayout(LinearLayout.LayoutParams.MATCH_PARENT, LinearLayout.LayoutParams.WRAP_CONTENT);
@@ -979,14 +981,13 @@ public class ListInProgressAdapter extends BaseExpandableListAdapter {
                     }
                 }
                 if (0 < newList.size()) {
-                    //RowItem nRowItem = new RowItem(continent.getName(), newList);
                     rowItem.addAll(newList);
                 }
             }
             notifyDataSetChanged();
 
         } catch (Exception e) {
-            Log.e("krm0219", "filterData  Exception  " + e.toString());
+            Log.e(TAG, "filterData  Exception  " + e.toString());
         }
     }
 

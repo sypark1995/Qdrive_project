@@ -293,6 +293,7 @@ public class OutletStatusDownloadHelper {
                     "", data.getSecureDeliveryYN(), data.getParcelAmount(), data.getCurrency(), data.getHigh_amount_yn());
 
             rowItem.setOrder_type_etc(data.getOrder_type_etc());
+            rowItem.setOrderType(data.getOrder_type());
             rowItem.setOutlet_company(data.getRoute());
             rowItem.setZip_code(data.getZipCode());
 
@@ -449,6 +450,8 @@ public class OutletStatusDownloadHelper {
 
         // 2021.04  High Value
         contentVal.put("high_amount_yn", data.getHigh_amount_yn());
+        // 2021.09 Economy
+        contentVal.put("order_type", data.getOrder_type());
 
         contentVal.put("state", data.getState());
         contentVal.put("city", data.getCity());

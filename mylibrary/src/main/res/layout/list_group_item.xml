@@ -78,13 +78,14 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_centerVertical="true"
-                android:layout_marginStart="7dp"
+                android:layout_marginStart="8dp"
                 android:layout_toStartOf="@id/text_list_item_pickup_state"
                 android:layout_toEndOf="@id/img_list_item_station_icon"
                 android:textColor="@color/color_32bd87"
                 android:textSize="@dimen/text_size_32px"
                 android:textStyle="bold"
-                tools:text="LA Interops Sandbox Locker 1 @ City Hall MRT" />
+                tools:text="SGSG123456" />
+            <!--LA Interops Sandbox Locker 1 @ City Hall MRT-->
 
             <TextView
                 android:id="@+id/text_list_item_pickup_state"
@@ -92,12 +93,27 @@
                 android:layout_height="wrap_content"
                 android:layout_alignWithParentIfMissing="true"
                 android:layout_centerVertical="true"
-                android:layout_marginStart="7dp"
-                android:layout_toStartOf="@id/text_list_item_high_amount"
+                android:layout_marginStart="8dp"
+                android:layout_toStartOf="@id/text_list_item_economy"
                 android:gravity="center"
                 android:textColor="@color/color_ff7611"
                 android:visibility="gone"
-                tools:text="Pickup Reassigned" />
+                tools:text="Failed" />
+
+            <TextView
+                android:id="@+id/text_list_item_economy"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_alignWithParentIfMissing="true"
+                android:layout_centerVertical="true"
+                android:layout_marginStart="8dp"
+                android:layout_toStartOf="@id/text_list_item_high_amount"
+                android:gravity="center"
+                android:text="@string/text_economy"
+                android:textColor="@color/black"
+                android:textSize="14sp"
+                android:textStyle="bold"
+                android:visibility="gone" />
 
             <TextView
                 android:id="@+id/text_list_item_high_amount"
@@ -106,7 +122,6 @@
                 android:layout_alignWithParentIfMissing="true"
                 android:layout_centerVertical="true"
                 android:layout_marginStart="8dp"
-                android:layout_marginEnd="8dp"
                 android:layout_toStartOf="@id/img_list_item_up_icon"
                 android:gravity="center"
                 android:text="H"
@@ -119,11 +134,12 @@
                 android:id="@+id/img_list_item_up_icon"
                 android:layout_width="10dp"
                 android:layout_height="6dp"
+                android:layout_alignWithParentIfMissing="true"
                 android:layout_alignParentEnd="true"
                 android:layout_centerVertical="true"
                 android:layout_marginStart="8dp"
                 android:background="@drawable/icon_arrow_up_orange"
-                android:visibility="visible" />
+                android:visibility="gone" />
         </RelativeLayout>
 
         <RelativeLayout

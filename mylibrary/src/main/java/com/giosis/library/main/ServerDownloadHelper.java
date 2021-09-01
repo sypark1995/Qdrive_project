@@ -184,6 +184,9 @@ public class ServerDownloadHelper {
 
         // 2021.04  High Value
         contentVal.put("high_amount_yn", data.getHigh_amount_yn());
+        // 2021.09 Economy
+        contentVal.put("order_type", data.getOrder_type());
+
 
         contentVal.put("state", data.getState());
         contentVal.put("city", data.getCity());
@@ -233,6 +236,8 @@ public class ServerDownloadHelper {
 
         // 2021.04  High Value
         contentVal.put("high_amount_yn", data.getHigh_amount_yn());
+        // 2021.09 Economy
+        contentVal.put("order_type", data.getOrder_type());
 
         contentVal.put("state", "");
         contentVal.put("city", "");
@@ -463,7 +468,8 @@ public class ServerDownloadHelper {
             } catch (Exception e) {
 
                 Log.e("Exception", "ServerDownloadHelper Exception : " + e.toString());
-                return (long) 0;
+                resultMsg = e.toString();
+                return (long) -1;
             }
         }
 

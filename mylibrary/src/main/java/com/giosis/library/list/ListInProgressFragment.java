@@ -52,8 +52,7 @@ import io.reactivex.rxjava3.schedulers.Schedulers;
 
 public class ListInProgressFragment extends Fragment
         implements SearchView.OnQueryTextListener, SearchView.OnCloseListener, ListInProgressAdapter.OnMoveUpListener {
-
-    String TAG = "List_InProgressFragment";
+    String TAG = "ListInProgressFragment";
 
     private static final int PERMISSION_REQUEST_CODE = 1000;
     private static final String[] PERMISSIONS = new String[]{PermissionChecker.ACCESS_FINE_LOCATION,
@@ -255,8 +254,6 @@ public class ListInProgressFragment extends Fragment
 
                     Preferences.INSTANCE.setSortIndex(position);
                     selectedSort = orderbyQuery[position];
-
-                    Log.e("krm0219", TAG + "  spinner position : " + position + " / " + selectedSort);
                     onResume();
                 }
             }
@@ -303,10 +300,8 @@ public class ListInProgressFragment extends Fragment
             Log.e("Exception", "search init  Exception : " + e.toString());
         }
 
-
         // 일반 정렬
         getNormalList();
-
     }
 
 
@@ -320,7 +315,9 @@ public class ListInProgressFragment extends Fragment
             Collections.sort(tripArrayList, new CompareRowItem(selectedSort));
             rowItems = tripArrayList;
         } else {
+            Log.e(TAG, "getSortList  " + selectedSort);
             rowItems = getSortList(selectedSort);
+            Log.e(TAG, "getSortList  Finish");
         }
 
         adapter = new ListInProgressAdapter(rowItems, bluetoothListener);
@@ -360,7 +357,7 @@ public class ListInProgressFragment extends Fragment
                     .observeOn(AndroidSchedulers.mainThread())
                     .subscribe(it -> {
 
-                        Log.e("Server", " requestGetTodayPickupDoneList  result  " + it.getResultCode());
+                        //     Log.i("Server", " requestGetTodayPickupDoneList  result  " + it.getResultCode());
 
                         if (it.getResultCode() == 0) {
 
@@ -373,14 +370,7 @@ public class ListInProgressFragment extends Fragment
                         }
                     }, it -> Log.e(RetrofitClient.errorTag, TAG + " - " + it.toString()));
         } catch (Exception e) {
-
-            RetrofitClient.INSTANCE.instanceCommonService()
-                    .requestWriteLog("1", "InProgressFragment", "called getTodayPickupDone API", "get TodayDoneCount Error  " + e.toString())
-                    .subscribeOn(Schedulers.io())
-                    .observeOn(AndroidSchedulers.mainThread())
-                    .subscribe(it -> {
-                    }, it -> {
-                    });
+            Log.e("Exception", "getTodayPickupDone API Exception : " + e.toString());
         }
     }
 
@@ -392,7 +382,7 @@ public class ListInProgressFragment extends Fragment
         if (requestCode == PERMISSION_REQUEST_CODE) {   // permission
             if (resultCode == PermissionActivity.PERMISSIONS_GRANTED) {
 
-                Log.e("krm0219", TAG + "   onActivityResult  PERMISSIONS_GRANTED");
+                Log.e(TAG, "   onActivityResult  PERMISSIONS_GRANTED");
             }
         }
     }
@@ -429,7 +419,6 @@ public class ListInProgressFragment extends Fragment
 
     @Override
     public boolean onQueryTextChange(String query) {
-        Log.e("krm0219", "onQueryTextChange  " + query);
         if (adapter != null) {
             adapter.filterData(query);
         }
@@ -440,7 +429,6 @@ public class ListInProgressFragment extends Fragment
     private ArrayList<RowItem> getSortList(String orderby) {
 
         ArrayList<RowItem> resultArrayList = new ArrayList<>();
-
         Cursor cs = DatabaseHelper.getInstance().get("SELECT * FROM "
                 + DatabaseHelper.DB_TABLE_INTEGRATION_LIST + " WHERE punchOut_stat = 'N' and chg_dt is null and reg_id='" + Preferences.INSTANCE.getUserId() + "' order by " + orderby);
 
@@ -513,18 +501,14 @@ public class ListInProgressFragment extends Fragment
 
                     if (cs.getString(cs.getColumnIndex("invoice_no")).equals(cs.getString(cs.getColumnIndex("partner_ref_no")))) {
                         rowitem.setRef_pickup_no("");
-
                     } else {
-
-                        Log.e("krm0219", "Ref. Pickup > " + cs.getString(cs.getColumnIndex("invoice_no"))
-                                + " / " + cs.getString(cs.getColumnIndex("partner_ref_no")));
-
                         rowitem.setRef_pickup_no(cs.getString(cs.getColumnIndex("partner_ref_no")));
                     }
                 }
 
                 if (deliveryType.equals("D")) {
                     rowitem.setOrder_type_etc(cs.getString(cs.getColumnIndex("order_type_etc")));
+                    rowitem.setOrderType(cs.getString(cs.getColumnIndex("order_type")));
                 }
 
                 if (routeType.equals("RPC")) {
@@ -635,12 +619,6 @@ public class ListInProgressFragment extends Fragment
         ArrayList<RowItem> tempArrayList = getSortList(orderbyQuery[0]);
         Collections.sort(tempArrayList, new TripMultiComparator());
 
-        /*// 1차 정렬   우편번호, 핸드폰번호, Tracking No
-        for (int i = 0; i < tempArrayList.size(); i++) {
-            RowItem item = tempArrayList.get(i);
-            Log.e("trip", i + " : " + item.getShipping() + " / " + item.getZip_code() + " / " + item.getItems().get(0).getHp());
-        }*/
-
         int tripNo = 1;
         int count = 0;
         // Trip 묶음 번호
@@ -673,12 +651,6 @@ public class ListInProgressFragment extends Fragment
 
             count++;
         }
-
-        /*// Trip 그룹번호 정렬
-        for (int i = 0; i < tempArrayList.size(); i++) {
-            RowItem item = tempArrayList.get(i);
-            Log.e("trip", item.getTripNo() + " / " + item.getShipping() + " / " + item.getZip_code() + " / " + item.getItems().get(0).getHp());
-        }*/
 
         count = 0;
         int tripCount = 0;
@@ -752,12 +724,6 @@ public class ListInProgressFragment extends Fragment
 
             count++;
         }
-
-        /*// Trip 대표번호 리스트
-        for (int i = 0; i < tripArrayList.size(); i++) {
-            RowItem item = tripArrayList.get(i);
-            Log.e("trip", i + " : " + item.getTripNo() + " / " + item.getShipping() + " / " + item.getZip_code() + " / " + item.getItems().get(0).getHp());
-        }*/
     }
 
     private long diffOfDate(String begin) throws Exception {

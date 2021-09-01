@@ -78,8 +78,8 @@ class FusedProviderService : Service() {
         fusedProviderTimeWorker = FusedProviderWorker(context!!, "time_fused")
         fusedProviderDistanceWorker = FusedProviderWorker(context!!, "distance_fused")
 
-        fusedProviderTimeWorker!!.startLocationUpdates()
-        fusedProviderDistanceWorker!!.startLocationUpdates()
+        fusedProviderTimeWorker?.startLocationUpdates()
+        fusedProviderDistanceWorker?.startLocationUpdates()
     }
 
     override fun onDestroy() {
@@ -88,8 +88,8 @@ class FusedProviderService : Service() {
 
         try {
 
-            fusedProviderTimeWorker!!.removeLocationUpdates()
-            fusedProviderDistanceWorker!!.removeLocationUpdates()
+            fusedProviderTimeWorker?.removeLocationUpdates()
+            fusedProviderDistanceWorker?.removeLocationUpdates()
         } catch (e: Exception) {
 
             Log.e("Exception", "$TAG  onDestroy Exception : $e")

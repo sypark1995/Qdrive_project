@@ -29,6 +29,8 @@ class RowItem(var contrNo: String,
 
     //
     var order_type_etc: String? = null
+    var orderType: String? = null
+
     var outlet_qty = 0
     var outlet_company: String? = null
     var outlet_store_code: String? = null

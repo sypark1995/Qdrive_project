@@ -212,11 +212,9 @@ public class MainActivity extends AppBaseActivity {
         getBinding().drawerLayout.addView(contentView, 0);
         setTopTitle(getResources().getString(R.string.navi_home));
 
-
         // TEST_ Outlet
 //        Preferences.INSTANCE.setOutletDriver("Y");
 //        Preferences.INSTANCE.setUserId("Johari_ISM_Shuttle");      // 7Eleven.Ajib
-
 
         dbHelper = DatabaseHelper.getInstance();
         opID = Preferences.INSTANCE.getUserId();
@@ -647,10 +645,13 @@ public class MainActivity extends AppBaseActivity {
                 .observeOn(AndroidSchedulers.mainThread())
                 .subscribe(it -> {
 
-                    ArrayList<RestDaysResult> list = new Gson().fromJson(it.getResultObject(), new TypeToken<ArrayList<RestDaysResult>>() {
-                    }.getType());
+                    if (it.getResultCode() == 0 && it.getResultObject() != null) {
 
-                    insertRestDays(list);
+                        ArrayList<RestDaysResult> list = new Gson().fromJson(it.getResultObject(), new TypeToken<ArrayList<RestDaysResult>>() {
+                        }.getType());
+
+                        insertRestDays(list);
+                    }
                 }, it -> Log.e(RetrofitClient.errorTag, TAG + " - " + it.toString()));
 
         RetrofitClient.INSTANCE.instanceDynamic().requestGetRestDays(Calendar.getInstance().get(Calendar.YEAR) + 1, Preferences.INSTANCE.getUserNation(),
@@ -659,10 +660,12 @@ public class MainActivity extends AppBaseActivity {
                 .observeOn(AndroidSchedulers.mainThread())
                 .subscribe(it -> {
 
-                    ArrayList<RestDaysResult> list = new Gson().fromJson(it.getResultObject(), new TypeToken<ArrayList<RestDaysResult>>() {
-                    }.getType());
+                    if (it.getResultCode() == 0 && it.getResultObject() != null) {
+                        ArrayList<RestDaysResult> list = new Gson().fromJson(it.getResultObject(), new TypeToken<ArrayList<RestDaysResult>>() {
+                        }.getType());
 
-                    insertRestDays(list);
+                        insertRestDays(list);
+                    }
                 }, it -> Log.e(RetrofitClient.errorTag, TAG + " - " + it.toString()));
 
 
@@ -682,7 +685,6 @@ public class MainActivity extends AppBaseActivity {
                     .setCancelable(false).setPositiveButton(getResources().getString(R.string.button_ok),
                     (dialog, which) -> {
                     }).show();
-
 
             return;
         }
@@ -905,7 +907,6 @@ public class MainActivity extends AppBaseActivity {
 //        });
 
         FirebaseMessaging.getInstance().getToken().addOnCompleteListener(task -> {
-
             if (task.isSuccessful()) {
 
                 // Get new FCM registration token

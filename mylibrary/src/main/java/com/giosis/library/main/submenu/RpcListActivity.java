@@ -352,6 +352,7 @@ public class RpcListActivity extends CommonActivity implements SearchView.OnQuer
 
                 if (deliveryType.equals("D")) {
                     rowitem.setOrder_type_etc(cs.getString(cs.getColumnIndex("order_type_etc")));
+                    rowitem.setOrderType(cs.getString(cs.getColumnIndex("order_type")));
                 }
 
                 if (routeType.equals("RPC")) {

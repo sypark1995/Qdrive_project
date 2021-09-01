@@ -426,6 +426,8 @@ public class DataUtil {
 
         // 2021.04  High Value
         contentVal.put("high_amount_yn", assignInfo.getHigh_amount_yn());
+        // 2021.09 Economy
+        contentVal.put("order_type", assignInfo.getOrder_type());
 
         contentVal.put("state", assignInfo.getState());
         contentVal.put("city", assignInfo.getCity());
