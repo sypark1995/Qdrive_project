@@ -33,9 +33,9 @@ import org.json.JSONObject;
 import java.util.HashMap;
 import java.util.regex.Pattern;
 
-public class SMSVerificationActivity extends CommonActivity {
+@Deprecated
+public class SMSVerificationActivity1 extends CommonActivity {
     private static final String TAG = "SMSVerificationActivity";
-
 
     boolean isPermissionTrue = false;
     private static final int PERMISSION_REQUEST_CODE = 1000;
@@ -73,10 +73,10 @@ public class SMSVerificationActivity extends CommonActivity {
         if (id == R.id.layout_top_back) {
 
             finish();
-        } else if (id == R.id.btn_verify_request) {
+        } else if (id == R.id.btn_request) {
 
             requestAuthNoClick();
-        } else if (id == R.id.btn_verify_submit) {
+        } else if (id == R.id.btn_submit) {
 
             submitAuthNoClick();
         }
@@ -91,13 +91,13 @@ public class SMSVerificationActivity extends CommonActivity {
         layout_top_back = findViewById(R.id.layout_top_back);
         text_top_title = findViewById(R.id.text_top_title);
 
-        edit_verify_phone_number = findViewById(R.id.edit_verify_phone_number);
-        btn_verify_request = findViewById(R.id.btn_verify_request);
+        edit_verify_phone_number = findViewById(R.id.edit_phone_number);
+        btn_verify_request = findViewById(R.id.btn_request);
 
-        edit_verify_4_digit = findViewById(R.id.edit_verify_4_digit);
-        edit_verify_name = findViewById(R.id.edit_verify_name);
-        edit_verify_email = findViewById(R.id.edit_verify_email);
-        btn_verify_submit = findViewById(R.id.btn_verify_submit);
+        edit_verify_4_digit = findViewById(R.id.edit_4_digit);
+        edit_verify_name = findViewById(R.id.edit_name);
+        edit_verify_email = findViewById(R.id.edit_email);
+        btn_verify_submit = findViewById(R.id.btn_submit);
 
 
         layout_top_back.setOnClickListener(clickListener);
@@ -581,7 +581,7 @@ public class SMSVerificationActivity extends CommonActivity {
 
             if (!resultCode.equals("0")) {
 
-                AlertDialog.Builder builder = new AlertDialog.Builder(SMSVerificationActivity.this);
+                AlertDialog.Builder builder = new AlertDialog.Builder(SMSVerificationActivity1.this);
                 builder.setTitle(getResources().getString(R.string.text_alert));
                 builder.setMessage(getResources().getString(R.string.msg_sms_request_failed) + " " + resultMsg);
                 builder.setPositiveButton(getResources().getString(R.string.button_ok), (dialog, which) -> dialog.cancel());
@@ -615,19 +615,19 @@ public class SMSVerificationActivity extends CommonActivity {
 
             if (!resultCode.equals("0")) {
 
-                AlertDialog.Builder builder = new AlertDialog.Builder(SMSVerificationActivity.this);
+                AlertDialog.Builder builder = new AlertDialog.Builder(SMSVerificationActivity1.this);
                 builder.setTitle(getResources().getString(R.string.text_alert));
                 builder.setMessage(getResources().getString(R.string.msg_sms_verification_failed) + " " + resultMsg
                         + "\n" + getResources().getString(R.string.msg_verification_not_use));
                 builder.setPositiveButton(getResources().getString(R.string.button_ok), (dialog, which) -> dialog.cancel());
 
-                if (!SMSVerificationActivity.this.isFinishing()) {
+                if (!SMSVerificationActivity1.this.isFinishing()) {
                     AlertDialog alertDialog = builder.create();
                     alertDialog.show();
                 }
             } else {
 
-                AlertDialog.Builder builder = new AlertDialog.Builder(SMSVerificationActivity.this);
+                AlertDialog.Builder builder = new AlertDialog.Builder(SMSVerificationActivity1.this);
                 builder.setTitle(getResources().getString(R.string.text_success));
                 builder.setMessage(getResources().getString(R.string.msg_sms_verification_success));
 
@@ -637,7 +637,7 @@ public class SMSVerificationActivity extends CommonActivity {
 
                     Preferences.INSTANCE.setUserName(name);
 
-                    Intent intent = new Intent(SMSVerificationActivity.this, MainActivity.class);
+                    Intent intent = new Intent(SMSVerificationActivity1.this, MainActivity.class);
                     intent.addFlags(Intent.FLAG_ACTIVITY_NO_ANIMATION);
                     startActivity(intent);
 
@@ -645,7 +645,7 @@ public class SMSVerificationActivity extends CommonActivity {
                     finish();
                 });
 
-                if (!SMSVerificationActivity.this.isFinishing()) {
+                if (!SMSVerificationActivity1.this.isFinishing()) {
                     AlertDialog alertDialog = builder.create();
                     alertDialog.show();
                 }
