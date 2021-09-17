@@ -35,6 +35,9 @@ class DatabaseHelper private constructor(private val mContext: Context) : SQLite
                 DB_TABLE_REST_DAYS + "(rest_dt, title)"
 
 
+        const val ORDER_TYPE = "order_type"
+
+
         @Volatile
         private var instance: DatabaseHelper? = null
 
@@ -50,7 +53,6 @@ class DatabaseHelper private constructor(private val mContext: Context) : SQLite
         // kjyoo 추후 컨텍스트 없을경우 처리 어떻게 해야 할지
         @JvmStatic
         fun getInstance(): DatabaseHelper = instance!!
-
     }
 
 
@@ -64,12 +66,17 @@ class DatabaseHelper private constructor(private val mContext: Context) : SQLite
 
     // 버전이 업데이트 되었을 때 DB 재생성
     override fun onUpgrade(db: SQLiteDatabase, oldVersion: Int, newVersion: Int) {
-        Log.e(TAG, "onUpgrade  $oldVersion > $newVersion")
+        Log.e(TAG, "onUpgrade  $oldVersion < $newVersion")
 
-        // 필요없는 db column 정리 후 첫 업그레이드
-        db.execSQL("DROP TABLE IF EXISTS $DB_TABLE_INTEGRATION_LIST")
-        db.execSQL("DROP TABLE IF EXISTS $DB_TABLE_REST_DAYS")
-        onCreate(db)
+//        if (oldVersion < 4) {
+//
+//            db.execSQL("ALTER TABLE $DB_TABLE_INTEGRATION_LIST ADD COLUMN $ORDER_TYPE")
+//        }
+
+            // 필요없는 db column 정리 후 첫 업그레이드
+            db.execSQL("DROP TABLE IF EXISTS $DB_TABLE_INTEGRATION_LIST")
+            db.execSQL("DROP TABLE IF EXISTS $DB_TABLE_REST_DAYS")
+            onCreate(db)
     }
 
     val dbPath: String

@@ -411,7 +411,9 @@ class PickupFailedActivity : CommonActivity(), Camera2APIs.Camera2Interface, Tex
                 val result = requestPickupUpload(pickupNo!!)
 
                 // onPostExecute
-                progressBar.visibility = View.GONE
+                if (!isFinishing) {
+                    progressBar.visibility = View.GONE
+                }
 
                 if (result.resultCode < 0) {
 
@@ -438,19 +440,6 @@ class PickupFailedActivity : CommonActivity(), Camera2APIs.Camera2Interface, Tex
                     resultDialog(msg)
                 }
             }
-
-//            PickupFailedUploadHelper.Builder(this@PickupFailedActivity, Preferences.userId, Preferences.officeCode, Preferences.deviceUUID,
-//                    rcvType, pickupNo, failedCode, retryDay, driverMemo, binding.imgVisitLog,
-//                    MemoryStatus.getAvailableInternalMemorySize(), latitude, longitude)
-//                    .setOnServerEventListener(object : OnServerEventListener {
-//                        override fun onPostResult() {
-//
-//                            DataUtil.inProgressListPosition = 0
-//                            finish()
-//                        }
-//
-//                        override fun onPostFailList() {}
-//                    }).build().execute()
         } catch (e: Exception) {
 
             Log.e("Exception", "$tag   serverUpload  Exception : $e")

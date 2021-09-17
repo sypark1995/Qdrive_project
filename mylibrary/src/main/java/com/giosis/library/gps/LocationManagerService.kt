@@ -23,13 +23,13 @@ class LocationManagerService : Service() {
     private var timeListener: LocationManagerWorker? = null
     private var distanceListener: LocationManagerWorker? = null
 
-    override fun onBind(intent: Intent): IBinder? {
+    override fun onBind(intent: Intent?): IBinder? {
         return null
     }
 
-    override fun onStartCommand(intent: Intent, flags: Int, startId: Int): Int {
-
-        Log.e("Location", "$TAG    onStartCommand")
+    override fun onStartCommand(intent: Intent?, flags: Int, startId: Int): Int {
+        Log.e("Location", "$TAG   onStartCommand   $intent")
+        
         startLocationService()
 
         // eylee

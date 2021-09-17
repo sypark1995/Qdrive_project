@@ -59,7 +59,6 @@ import com.giosis.library.list.pickup.OutletPickupStep3Activity;
 import com.giosis.library.list.pickup.PickupAddScanActivity;
 import com.giosis.library.list.pickup.PickupDoneActivity;
 import com.giosis.library.list.pickup.PickupTakeBackActivity;
-import com.giosis.library.main.DriverAssignResult;
 import com.giosis.library.main.submenu.SelfCollectionDoneActivity;
 import com.giosis.library.server.RetrofitClient;
 import com.giosis.library.server.data.CnRPickupResult;
@@ -67,7 +66,6 @@ import com.giosis.library.util.BarcodeType;
 import com.giosis.library.util.CommonActivity;
 import com.giosis.library.util.DataUtil;
 import com.giosis.library.util.DatabaseHelper;
-import com.giosis.library.util.GeoCodeUtil;
 import com.giosis.library.util.NetworkUtil;
 import com.giosis.library.util.PermissionActivity;
 import com.giosis.library.util.PermissionChecker;
@@ -165,7 +163,7 @@ public final class CaptureActivity extends CommonActivity implements DecoratedBa
 
 
     int mScanCount = 0;
-    String outletDriverYN;              //krm0219  outlet
+    String outletDriverYN;              //  outlet
     ScannedBarcodeAdapter adapter;
     CaptureManager cameraManager;
     ArrayList<String> scannedBarcode = new ArrayList<>();
@@ -1818,66 +1816,6 @@ public final class CaptureActivity extends CommonActivity implements DecoratedBa
                         }
                     }).build().execute();
         }
-    }
-
-    private boolean insertDriverAssignInfo(DriverAssignResult.QSignDeliveryList assignInfo) {
-
-        String opId = Preferences.INSTANCE.getUserId();
-        SimpleDateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
-        dateFormat.setTimeZone(TimeZone.getTimeZone("GMT"));
-        String regDataString = dateFormat.format(new Date());
-
-        // eylee 2015.08.26 add non q10 - contr_no 로 sqlite 체크 후 있다면 삭제하는 로직 add start
-        String contr_no = assignInfo.getContrNo();
-        int cnt = DataUtil.getContrNoCount(contr_no);
-        Log.e("TAG", "insertDriverAssignInfo  check count : " + cnt);
-        if (0 < cnt) {
-            DataUtil.deleteContrNo(contr_no);
-        }
-
-        // eylee 2015.08.26 add end
-        //성공 시 통합리스트 테이블 저장
-        ContentValues contentVal = new ContentValues();
-        contentVal.put("contr_no", assignInfo.getContrNo());
-        contentVal.put("partner_ref_no", assignInfo.getPartnerRefNo());
-        contentVal.put("invoice_no", assignInfo.getInvoiceNo());
-        contentVal.put("stat", assignInfo.getStat());
-        contentVal.put("rcv_nm", assignInfo.getRcvName());
-        contentVal.put("sender_nm", assignInfo.getSenderName());
-        contentVal.put("tel_no", assignInfo.getTelNo());
-        contentVal.put("hp_no", assignInfo.getHpNo());
-        contentVal.put("zip_code", assignInfo.getZipCode());
-        contentVal.put("address", assignInfo.getAddress());
-        contentVal.put("rcv_request", assignInfo.getDelMemo());
-        contentVal.put("delivery_dt", assignInfo.getDeliveryFirstDate());
-        contentVal.put("type", BarcodeType.TYPE_DELIVERY);
-        contentVal.put("route", assignInfo.getRoute());
-        contentVal.put("reg_id", opId);
-        contentVal.put("reg_dt", regDataString);
-        contentVal.put("punchOut_stat", "N");
-        contentVal.put("driver_memo", assignInfo.getDriverMemo());
-        contentVal.put("fail_reason", assignInfo.getFailReason());
-        contentVal.put("secret_no_type", assignInfo.getSecretNoType());
-        contentVal.put("secret_no", assignInfo.getSecretNo());
-        contentVal.put("secure_delivery_yn", assignInfo.getSecureDeliveryYN());
-        contentVal.put("parcel_amount", assignInfo.getParcelAmount());
-        contentVal.put("currency", assignInfo.getCurrency());
-        contentVal.put("order_type_etc", assignInfo.getOrder_type_etc());
-
-        // 2020.06 위, 경도 저장
-        String[] latLng = GeoCodeUtil.getLatLng(assignInfo.getLat_lng());
-        contentVal.put("lat", latLng[0]);
-        contentVal.put("lng", latLng[1]);
-
-        // 2021.04  High Value
-        contentVal.put("high_amount_yn", assignInfo.getHigh_amount_yn());
-
-        contentVal.put("state", assignInfo.getState());
-        contentVal.put("city", assignInfo.getCity());
-        contentVal.put("street", assignInfo.getStreet());
-
-        long insertCount = DatabaseHelper.getInstance().insert(DatabaseHelper.DB_TABLE_INTEGRATION_LIST, contentVal);
-        return insertCount >= 0;
     }
 
     // NOTIFICATION.  Scan - Delivery Done

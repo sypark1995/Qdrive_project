@@ -1085,7 +1085,10 @@ class CaptureActivity1 : CommonActivity(), TorchListener, OnTouchListener, TextW
                     .observeOn(AndroidSchedulers.mainThread())
                     .subscribe({
 
-                        progressBar.visibility = View.GONE
+                        if (!isFinishing) {
+                            progressBar.visibility = View.GONE
+                        }
+
                         if (it != null && it.resultCode == 0) {
 
                             onResetButtonClick()
@@ -1103,7 +1106,9 @@ class CaptureActivity1 : CommonActivity(), TorchListener, OnTouchListener, TextW
                         }
                     }) {
 
-                        progressBar.visibility = View.GONE
+                        if (!isFinishing) {
+                            progressBar.visibility = View.GONE
+                        }
                         resultDialog(resources.getString(R.string.text_driver_assign_result), resources.getString(R.string.text_fail_update))
                     }
 
@@ -1153,7 +1158,10 @@ class CaptureActivity1 : CommonActivity(), TorchListener, OnTouchListener, TextW
                     .observeOn(AndroidSchedulers.mainThread())
                     .subscribe({
 
-                        progressBar.visibility = View.GONE
+                        if (!isFinishing) {
+                            progressBar.visibility = View.GONE
+                        }
+
                         if (it != null && it.resultCode == 0) {
 
                             onResetButtonClick()
@@ -1186,7 +1194,9 @@ class CaptureActivity1 : CommonActivity(), TorchListener, OnTouchListener, TextW
                         }
                     }) {
 
-                        progressBar.visibility = View.GONE
+                        if (!isFinishing) {
+                            progressBar.visibility = View.GONE
+                        }
                         resultDialog(resources.getString(R.string.text_driver_assign_result), resources.getString(R.string.text_fail_update))
                     }
 

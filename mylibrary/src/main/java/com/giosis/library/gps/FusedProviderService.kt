@@ -23,12 +23,12 @@ class FusedProviderService : Service() {
     private var fusedProviderTimeWorker: FusedProviderWorker? = null
     private var fusedProviderDistanceWorker: FusedProviderWorker? = null
 
-    override fun onBind(intent: Intent): IBinder? {
+    override fun onBind(intent: Intent?): IBinder? {
         return null
     }
 
-    override fun onStartCommand(intent: Intent, flags: Int, startId: Int): Int {
-        Log.e("Location", "$TAG   onStartCommand")
+    override fun onStartCommand(intent: Intent?, flags: Int, startId: Int): Int {
+        Log.e("Location", "$TAG   onStartCommand   $intent")
 
         context = applicationContext
         createFusedProvider()

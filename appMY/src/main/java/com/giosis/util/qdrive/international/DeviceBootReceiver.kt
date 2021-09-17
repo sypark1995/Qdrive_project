@@ -8,9 +8,9 @@ import android.util.Log
 
 class DeviceBootReceiver : BroadcastReceiver() {
 
-    override fun onReceive(context: Context, intent: Intent) {
+    override fun onReceive(context: Context?, intent: Intent?) {
 
-        if (intent.action == "android.intent.action.BOOT_COMPLETED") {
+        if (intent?.action == "android.intent.action.BOOT_COMPLETED") {
 
             Log.e("Alarm", "DeviceBootReceiver    BOOT_COMPLETED")
 

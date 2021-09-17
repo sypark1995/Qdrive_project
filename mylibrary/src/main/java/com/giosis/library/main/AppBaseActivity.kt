@@ -175,7 +175,7 @@ open class AppBaseActivity : CommonActivity() {
 
                 binding.drawerLayout.closeDrawers()
                 // TEST_
-                //Intent intent = new Intent(AppBaseActivity.this, SMSVerificationActivity.class);
+                //  val intent =  Intent(this, SMSVerificationActivity::class.java)
                 val intent = Intent(this@AppBaseActivity, SettingActivity::class.java)
                 startActivity(intent)
                 if (!titleString.contains(getString(R.string.navi_home))) {

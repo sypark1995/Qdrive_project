@@ -155,7 +155,9 @@ class AdminMessageListDetailActivity : CommonActivity() {
                                 }
                             }
 
-                            progressBar.visibility = View.GONE
+                            if (!isFinishing) {
+                                progressBar.visibility = View.GONE
+                            }
                         }, {
 
                             Toast.makeText(this@AdminMessageListDetailActivity, resources.getString(R.string.text_error) + "!! " + resources.getString(R.string.msg_please_try_again), Toast.LENGTH_SHORT).show()
@@ -229,7 +231,9 @@ class AdminMessageListDetailActivity : CommonActivity() {
                         Log.e("Exception", "$tag SendQdriveToMessengerMessage Exception : $e")
                     }
 
-                    progressBar.visibility = View.GONE
+                    if (!isFinishing) {
+                        progressBar.visibility = View.GONE
+                    }
                 }, {
 
                     Toast.makeText(this@AdminMessageListDetailActivity, resources.getString(R.string.text_error) + "!! " + resources.getString(R.string.msg_please_try_again), Toast.LENGTH_SHORT).show()

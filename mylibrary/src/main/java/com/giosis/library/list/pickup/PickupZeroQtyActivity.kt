@@ -191,7 +191,9 @@ class PickupZeroQtyActivity : CommonActivity() {
                 val result = requestPickupUpload(pickupNo!!)
 
                 // onPostExecute
-                progressBar.visibility = View.GONE
+                if (!isFinishing) {
+                    progressBar.visibility = View.GONE
+                }
 
                 if (result.resultCode < 0) {
 
@@ -218,22 +220,8 @@ class PickupZeroQtyActivity : CommonActivity() {
                     resultDialog(msg)
                 }
             }
-
-//            PickupZeroQtyUploadHelper.Builder(this@PickupZeroQtyActivity, Preferences.userId, Preferences.officeCode, Preferences.deviceUUID,
-//                    pickupNo, binding.signApplicantSignature, binding.signCollectorSignature, driverMemo,
-//                    MemoryStatus.getAvailableInternalMemorySize(), latitude, longitude)
-//                    .setOnServerEventListener(object : OnServerEventListener {
-//                        override fun onPostResult() {
-//
-//                            DataUtil.inProgressListPosition = 0
-//                            finish()
-//                        }
-//
-//                        override fun onPostFailList() {
-//                        }
-//                    }).build().execute()
         } catch (e: Exception) {
-
+          
             Log.e("Exception", "$tag   serverUpload  Exception : $e")
             Toast.makeText(this@PickupZeroQtyActivity, resources.getString(R.string.text_error) + " - " + e.toString(), Toast.LENGTH_SHORT).show()
         }

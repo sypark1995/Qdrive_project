@@ -82,7 +82,7 @@ class DeviceListActivity1 : Activity() {
 
             var deviceCount = 0
             for (device in pairedDevices) {
-                Log.e("krm0219", "device name : " + device.name)
+                Log.e(TAG, "Device name : " + device.name)
 
                 if (device.name != null && device.name.contains(BLUETOOTH_SCANNER)) {
                     mPairedDevicesArrayAdapter!!.add("${device.name}\n${device.address}")
@@ -139,7 +139,7 @@ class DeviceListActivity1 : Activity() {
                 val device = intent.getParcelableExtra<BluetoothDevice>(BluetoothDevice.EXTRA_DEVICE)
                 // If it's already paired, skip it, because it's been listed already
                 if (device!!.bondState != BluetoothDevice.BOND_BONDED) {
-                    Log.e("krm0219", "mReceiver  device name : " + device.name)
+                    Log.e(TAG, "Receiver  device name : " + device.name)
 
                     if (device.name != null && device.name.contains(BLUETOOTH_SCANNER)) {
                         mNewDevicesArrayAdapter!!.add(" ${device.name}\n${device.address}")

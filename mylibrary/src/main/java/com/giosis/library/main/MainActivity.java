@@ -742,7 +742,12 @@ public class MainActivity extends AppBaseActivity {
             isGooglePlayService = ConnectionResult.SUCCESS == status;
 
             // TEST_
-            // isGooglePlayService = false;
+            if (Build.MANUFACTURER.equals("HUAWEI") && Preferences.INSTANCE.getServerURL().contains("staging")) {
+                // KR 화웨이폰 - google 위치정보 못가져옴
+                isGooglePlayService = false;
+            }
+            // isGooglePlayService = true
+            // isGooglePlayService = false
 
             if (isGooglePlayService) {  // Fused Provider Service start (Google play 에 클라이언트 객체 얻어 서비스)
 

@@ -2,6 +2,8 @@ package com.giosis.library.gps
 
 import android.content.Context
 import android.location.LocationManager
+import android.os.Build
+import com.giosis.library.util.Preferences
 import com.google.android.gms.common.ConnectionResult
 import com.google.android.gms.common.GoogleApiAvailability
 
@@ -42,6 +44,10 @@ class GPSTrackerManager(private val context: Context) {
         isGooglePlayService = ConnectionResult.SUCCESS == status
 
         // TEST_
+        if (Build.MANUFACTURER.equals("HUAWEI") && Preferences.serverURL.contains("staging")) {
+            // KR 화웨이폰 - google 위치정보 못가져옴
+            isGooglePlayService = false
+        }
         // isGooglePlayService = true
         // isGooglePlayService = false
 

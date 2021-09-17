@@ -1,5 +1,6 @@
 package com.giosis.library.util;
 
+import android.annotation.SuppressLint;
 import android.app.Activity;
 import android.content.DialogInterface;
 import android.content.Intent;
@@ -93,6 +94,7 @@ public class PermissionActivity extends CommonActivity {
     }
 
     // requestPermissions()의 result
+    @SuppressLint("MissingSuperCall")
     @Override
     public void onRequestPermissionsResult(int requestCode, @NonNull String[] permissions, @NonNull int[] grantResults) {
 
@@ -109,7 +111,7 @@ public class PermissionActivity extends CommonActivity {
             for (int i = 0; i < lacks_permission.length; i++) {
                 if (!ActivityCompat.shouldShowRequestPermissionRationale(this, lacks_permission[i])) {
                     // Don't ask again check!
-                    Log.e("permission", "krm0219  Permission  " + lacks_permission[i]);
+                    Log.e("permission", "  Permission  " + lacks_permission[i]);
                     check_dont_again = true;
                 }
             }

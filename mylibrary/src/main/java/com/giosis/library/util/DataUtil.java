@@ -278,8 +278,7 @@ public class DataUtil {
     public static void stopGPSManager(GPSTrackerManager gpsTrackerManager) {
 
         if (gpsTrackerManager != null) {
-
-            Log.e("Location", "Stop GPS");
+            //Log.e("Location", "Stop GPS");
             gpsTrackerManager.stopFusedProviderService();
         }
     }

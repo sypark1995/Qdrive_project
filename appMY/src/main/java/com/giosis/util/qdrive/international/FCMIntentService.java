@@ -39,7 +39,7 @@ public class FCMIntentService extends FirebaseMessagingService {
     @Override
     public void onNewToken(String token) {
         super.onNewToken(token);
-        Log.e("FCM", TAG + "  new Token : " + token);
+        Log.e(TAG, "  new Token : " + token);
     }
 
 
@@ -77,8 +77,7 @@ public class FCMIntentService extends FirebaseMessagingService {
     public void onMessageReceived(RemoteMessage remoteMessage) {
 
         context = this;
-
-        Log.e("FCM", "onMessageReceived " + remoteMessage.getData().size());
+        Log.e(TAG, "onMessageReceived " + remoteMessage.getData().size());
 
         /*
           앱이 Background 일 때, onMessageReceived 메소드를 타지 않아서 notification 관리를 할 수 없는 현상이 발생!
@@ -123,7 +122,7 @@ public class FCMIntentService extends FirebaseMessagingService {
             myApp.setBadgeCnt(badgeCnt);
             setBadge(context, badgeCnt);
 
-            Log.e("krm0219", "FCM Push : " + topClassname + " / " + action_key + " / " + action_value);
+            Log.e(TAG, "FCM Push : " + topClassname + " / " + action_key + " / " + action_value);
 
             if (title.equals("")) {
                 title = "QSign SG";
@@ -139,7 +138,7 @@ public class FCMIntentService extends FirebaseMessagingService {
                     dbHelper.delete(DatabaseHelper.DB_TABLE_INTEGRATION_LIST, "invoice_no='" + action_value + "' COLLATE NOCASE");
                 } catch (Exception e) {
 
-                    Log.e("krm0219", "PX  DB Delete Error");
+                    Log.e("Exception", TAG + "  PX  DB Delete Error");
                 }
             } else if (action_key.equals("7ETB")) {
                 // 7E TakeBack : 48시간 초과 후, Pickup Driver가 수거하러 가기 전 고객이 물건을 찾아 갔을 때...
@@ -150,7 +149,7 @@ public class FCMIntentService extends FirebaseMessagingService {
                     dbHelper.delete(DatabaseHelper.DB_TABLE_INTEGRATION_LIST, "invoice_no='" + action_value + "' COLLATE NOCASE");
                 } catch (Exception e) {
 
-                    Log.e("krm0219", "7ETB  DB Delete Error");
+                    Log.e("Exception", TAG + "  7ETB  DB Delete Error");
                 }
             } else if (action_key.equals("FLTB")) {
                 // FL TakeBack : 48시간 초과 후, Pickup Driver가 수거하러 가기 전 고객이 물건을 찾아 갔을 때...
@@ -161,7 +160,7 @@ public class FCMIntentService extends FirebaseMessagingService {
                     dbHelper.delete(DatabaseHelper.DB_TABLE_INTEGRATION_LIST, "invoice_no='" + action_value + "' COLLATE NOCASE");
                 } catch (Exception e) {
 
-                    Log.e("krm0219", "FLTB  DB Delete Error");
+                    Log.e("Exception", TAG + "   FLTB  DB Delete Error");
                 }
             } else if (action_key.equals("LAE")) {
                 // Locker Alliance Expired - User key(12자리) 값 클립보드에 복사
@@ -194,7 +193,7 @@ public class FCMIntentService extends FirebaseMessagingService {
                     try {
                         pie.send(); //호출
                     } catch (CanceledException e) {
-                        Log.e("getmessage", "getmessage:" + message);
+                        Log.e("Exception", TAG + "   getMessage:" + message);
                     }
                 }
             }
@@ -207,7 +206,7 @@ public class FCMIntentService extends FirebaseMessagingService {
 
         Random generator = new Random();
         int idNum = generator.nextInt(100) + 1;
-        Log.e("FCM", "sendNotification DATA > " + title + " / " + message + " / " + idNum + " / " + topClassname);
+        Log.e(TAG, "sendNotification DATA > " + title + " / " + message + " / " + idNum + " / " + topClassname);
 
         if (topClassname.contains("international.LoginActivity")) {
 

@@ -121,7 +121,9 @@ class CustomerMessageListDetailActivity : CommonActivity() {
                     .observeOn(AndroidSchedulers.mainThread())
                     .subscribe({
 
-                        progressBar.visibility = View.GONE
+                        if (!isFinishing) {
+                            progressBar.visibility = View.GONE
+                        }
 
                         if (it.resultObject != null) {
 
@@ -138,7 +140,10 @@ class CustomerMessageListDetailActivity : CommonActivity() {
                         }
                     }, {
 
-                        progressBar.visibility = View.GONE
+                        if (!isFinishing) {
+                            progressBar.visibility = View.GONE
+                        }
+
                         Toast.makeText(this@CustomerMessageListDetailActivity, resources.getString(R.string.text_error) + "!! " + resources.getString(R.string.msg_please_try_again), Toast.LENGTH_SHORT).show()
                         Log.e("Exception", "$TAG  GetMessageToQPostOnPickupMenu Exception : $it")
                     })
@@ -202,10 +207,15 @@ class CustomerMessageListDetailActivity : CommonActivity() {
                                 }
                             }
 
-                            progressBar.visibility = View.GONE
+                            if (!isFinishing) {
+                                progressBar.visibility = View.GONE
+                            }
                         }, {
 
-                            progressBar.visibility = View.GONE
+                            if (!isFinishing) {
+                                progressBar.visibility = View.GONE
+                            }
+
                             Toast.makeText(this@CustomerMessageListDetailActivity, resources.getString(R.string.text_error) + "!! " + resources.getString(R.string.msg_please_try_again), Toast.LENGTH_SHORT).show()
                             Log.e("Exception", "$TAG GetQdriverMessageDetail Exception : $it")
                         })
@@ -287,10 +297,15 @@ class CustomerMessageListDetailActivity : CommonActivity() {
                         Log.e("Exception", "$TAG SendQdriverMessage Exception : $e")
                     }
 
-                    progressBar.visibility = View.GONE
+                    if (!isFinishing) {
+                        progressBar.visibility = View.GONE
+                    }
                 }, {
 
-                    progressBar.visibility = View.GONE
+                    if (!isFinishing) {
+                        progressBar.visibility = View.GONE
+                    }
+
                     Toast.makeText(this@CustomerMessageListDetailActivity, resources.getString(R.string.text_error) + "!! " + resources.getString(R.string.msg_please_try_again), Toast.LENGTH_SHORT).show()
                     Log.e("Exception", "$TAG  GetQdriverMessageListFromMessenger Exception : $it")
                 })
