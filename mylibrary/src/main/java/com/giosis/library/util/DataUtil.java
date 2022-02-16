@@ -51,7 +51,7 @@ public class DataUtil {
     public static String SERVER_REAL = "https://qxapi.qxpress.net";
 
     public static String API_ADDRESS = "/GMKT.INC.GLPS.MobileApiService/GlobalMobileService.qapi/";
-    public static String API_ADDRESS_QX_APP_COMMON = "/GMKT.INC.GLPS.MobileApiService/QxAppCommonService.qapi/";
+    public static String API_ADDRESS_QX_APP_GLOBAL_MOBILE_SERVICE = "/GMKT.INC.GLPS.MobileApiService/GlobalMobileService.qapi/";
 
     public static String XROUTE_SERVER_STAGING = "http://211.115.100.24/api/";
     public static String XROUTE_SERVER_REAL = "http://xrouter.qxpress.net/api/";
@@ -175,7 +175,7 @@ public class DataUtil {
 
             } catch (IOException ioException) {
 
-                RetrofitClient.INSTANCE.instanceCommonService()
+                RetrofitClient.INSTANCE.instanceMobileService()
                         .requestWriteLog("1", "IMAGEUPLOAD", "image upload error", "image file ioException " + ioException.getLocalizedMessage())
                         .subscribeOn(Schedulers.io())
                         .observeOn(AndroidSchedulers.mainThread())
@@ -228,7 +228,7 @@ public class DataUtil {
             } else {
 
                 Log.e("ImageUpload", "tempFile is NULL why?");
-                RetrofitClient.INSTANCE.instanceCommonService()
+                RetrofitClient.INSTANCE.instanceMobileService()
                         .requestWriteLog("1", "IMAGEUPLOAD", "image upload error", " tempFile is NULL why? ")
                         .subscribeOn(Schedulers.io())
                         .observeOn(AndroidSchedulers.mainThread())
@@ -243,7 +243,7 @@ public class DataUtil {
         } catch (Exception e) {
             Log.e("ImageUpload", e.getLocalizedMessage());
 
-            RetrofitClient.INSTANCE.instanceCommonService()
+            RetrofitClient.INSTANCE.instanceMobileService()
                     .requestWriteLog("1", "IMAGEUPLOAD", "image upload error", " Exception " + e.getLocalizedMessage())
                     .subscribeOn(Schedulers.io())
                     .observeOn(AndroidSchedulers.mainThread())
