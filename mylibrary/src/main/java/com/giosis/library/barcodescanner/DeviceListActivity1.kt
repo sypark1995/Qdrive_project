@@ -17,14 +17,22 @@ import android.widget.TextView
 import com.giosis.library.R
 import com.giosis.library.databinding.DialogDeviceList1Binding
 
+// TODO_kjyoo 이건 왜 Activity를 상속받 ??
 class DeviceListActivity1 : Activity() {
+
+    companion object {
+        private const val TAG = "DeviceListActivity"
+
+        // Return Intent extra
+        var EXTRA_DEVICE_ADDRESS = "device_address"
+        var BLUETOOTH_SCANNER = "KDC"
+    }
 
     private val binding by lazy {
         DialogDeviceList1Binding.inflate(layoutInflater)
     }
 
     private val mBtAdapter by lazy {
-
         BluetoothAdapter.getDefaultAdapter()
     }
 
@@ -193,11 +201,4 @@ class DeviceListActivity1 : Activity() {
         unregisterReceiver(mReceiver)
     }
 
-    companion object {
-        private const val TAG = "DeviceListActivity"
-
-        // Return Intent extra
-        var EXTRA_DEVICE_ADDRESS = "device_address"
-        var BLUETOOTH_SCANNER = "KDC"
-    }
 }
