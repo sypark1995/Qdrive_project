@@ -83,7 +83,6 @@
             android:name=".message.MessageListActivity"
             android:screenOrientation="portrait" />
 
-
         <activity
             android:name=".message.CustomerMessageListDetailActivity"
             android:screenOrientation="portrait" />
@@ -150,6 +149,7 @@
             android:configChanges="orientation|keyboardHidden"
             android:screenOrientation="portrait"
             android:windowSoftInputMode="stateAlwaysHidden|adjustPan" />
+
         <activity
             android:name=".list.pickup.OutletPickupStep3Activity"
             android:configChanges="orientation|keyboardHidden"
@@ -208,7 +208,6 @@
             android:screenOrientation="portrait"
             android:windowSoftInputMode="adjustNothing" />
 
-
         <activity
             android:name=".list.ListActivity"
             android:configChanges="orientation|keyboardHidden"
@@ -229,12 +228,12 @@
             </intent-filter>
         </activity>
 
-
         <activity
             android:name=".barcodescanner.CaptureActivity"
             android:configChanges="orientation|keyboardHidden"
             android:screenOrientation="portrait"
             android:windowSoftInputMode="adjustNothing" />
+
         <activity
             android:name=".barcodescanner.bluetooth.DeviceListActivity"
             android:theme="@android:style/Theme.Dialog" />
@@ -244,6 +243,7 @@
             android:configChanges="orientation|keyboardHidden"
             android:screenOrientation="portrait"
             android:windowSoftInputMode="adjustNothing" />
+
         <activity
             android:name=".barcodescanner.DeviceListActivity1"
             android:theme="@android:style/Theme.Dialog" />
