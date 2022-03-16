@@ -31,10 +31,6 @@ import com.giosis.library.util.PermissionActivity;
 import com.giosis.library.util.PermissionChecker;
 import com.giosis.library.util.Preferences;
 
-/**
- * @author krm0219
- * LIST > In-Progress > Outlet Pickup (Step 3)
- */
 // TODO_TEST    UI는 확인했음 // Done(OutletPickupDoneHelper) 테스트 필요
 public class OutletPickupStep3Activity extends CommonActivity {
     private static final String[] PERMISSIONS = new String[]{PermissionChecker.READ_EXTERNAL_STORAGE, PermissionChecker.WRITE_EXTERNAL_STORAGE,
@@ -53,8 +49,6 @@ public class OutletPickupStep3Activity extends CommonActivity {
     SigningView sign_view_sign_p_outlet_signature;
     EditText edit_sign_p_outlet_memo;
 
-
-    //
     Button btn_sign_p_outlet_save;
     String mTitle;
     String mPickupNo;
@@ -279,13 +273,11 @@ public class OutletPickupStep3Activity extends CommonActivity {
         try {
 
             if (!NetworkUtil.isNetworkAvailable(this)) {
-
                 AlertShow(getResources().getString(R.string.msg_network_connect_error));
                 return;
             }
 
             if (gpsTrackerManager != null) {
-
                 latitude = gpsTrackerManager.getLatitude();
                 longitude = gpsTrackerManager.getLongitude();
 
