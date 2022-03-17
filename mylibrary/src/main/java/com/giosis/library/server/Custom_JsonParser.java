@@ -13,8 +13,9 @@ import java.io.OutputStream;
 import java.net.HttpURLConnection;
 import java.net.URL;
 
+// todo_kjyoo 레트로핏으로 변경 필요....
 public class Custom_JsonParser {
-    static String TAG = "Custom_JsonParser";
+
 
     public static String requestServerDataReturnJSON(String method, JSONObject object) {
 
