@@ -53,8 +53,10 @@ class LoginActivity : CommonActivity() {
     // Permission
     var isPermissionTrue = false
     val PERMISSION_REQUEST_CODE = 1000
-    val PERMISSIONS = arrayOf(PermissionChecker.ACCESS_FINE_LOCATION, PermissionChecker.ACCESS_COARSE_LOCATION,
-            PermissionChecker.READ_EXTERNAL_STORAGE, PermissionChecker.WRITE_EXTERNAL_STORAGE)
+    val PERMISSIONS = arrayOf(
+        PermissionChecker.ACCESS_FINE_LOCATION, PermissionChecker.ACCESS_COARSE_LOCATION,
+        PermissionChecker.READ_EXTERNAL_STORAGE, PermissionChecker.WRITE_EXTERNAL_STORAGE
+    )
 
 
     @SuppressLint("SetTextI18n")
@@ -77,13 +79,19 @@ class LoginActivity : CommonActivity() {
             }
         }
 
-        progressBar.layoutParams = LinearLayout.LayoutParams(ViewGroup.LayoutParams.WRAP_CONTENT, ViewGroup.LayoutParams.WRAP_CONTENT)
+        progressBar.layoutParams = LinearLayout.LayoutParams(
+            ViewGroup.LayoutParams.WRAP_CONTENT,
+            ViewGroup.LayoutParams.WRAP_CONTENT
+        )
         binding.layoutLogin.addView(progressBar)
         progressBar.visibility = View.GONE
 
         binding.editLoginId.setText(MyApplication.preferences.userId)
         binding.editLoginPassword.setText(MyApplication.preferences.userPw)
-        Log.e(tag, "  init Data  -   ${MyApplication.preferences.userNation}  ${MyApplication.preferences.userId}  ${MyApplication.preferences.userPw}")
+        Log.e(
+            tag,
+            "  init Data  -   ${MyApplication.preferences.userNation}  ${MyApplication.preferences.userId}  ${MyApplication.preferences.userPw}"
+        )
         appVersion = getVersion()
 
         // Login
@@ -133,141 +141,154 @@ class LoginActivity : CommonActivity() {
                     progressBar.visibility = View.VISIBLE
 
                     RetrofitClient.instanceDynamic().requestServerLogin(
-                            userID, userPW, "QDRIVE", "", deviceUUID, "",
-                            latitude.toString(), longitude.toString(), DataUtil.appID, "SG")
-                            .subscribeOn(Schedulers.io())
-                            .observeOn(AndroidSchedulers.mainThread())
-                            .subscribe({
+                        userID, userPW, "QDRIVE", "", deviceUUID, "",
+                        latitude.toString(), longitude.toString(), DataUtil.appID, "SG"
+                    ).subscribeOn(Schedulers.io())
+                        .observeOn(AndroidSchedulers.mainThread())
+                        .subscribe({
 
-                                progressBar.visibility = View.GONE
+                            progressBar.visibility = View.GONE
 
-                                if (it.resultObject != null && it.resultCode == 0) {
-                                    val loginData = Gson().fromJson(it.resultObject, LoginInfo::class.java)
-                                    Log.e(RetrofitClient.TAG, "response : ${it.resultObject}")
+                            if (it.resultObject != null && it.resultCode == 0) {
+                                val loginData =
+                                    Gson().fromJson(it.resultObject, LoginInfo::class.java)
 
-                                    if (loginData != null) {
+                                if (loginData != null) {
 
-                                        if (!loginData.version.isNullOrEmpty()) {
+                                    if (!loginData.version.isNullOrEmpty()) {
 
-//                                            //TODO_
-//                                            val compare =  Version("1.10.0") < Version("1.9.0")
-//                                            val compare1 = Version("1.10.9") < Version("1.10.10")
-//                                            Log.e("krm0219", "Compare $compare  $compare1")
+                                        if (MyApplication.preferences.appVersion < loginData.version!!) {
 
-                                            if (MyApplication.preferences.appVersion < loginData.version!!) {
+                                            val msg = java.lang.String.format(
+                                                resources.getString(R.string.msg_update_version),
+                                                loginData.version!!,
+                                                MyApplication.preferences.appVersion
+                                            )
+                                            goGooglePlay(msg)
 
-                                                val msg = java.lang.String.format(resources.getString(R.string.msg_update_version),
-                                                        loginData.version!!, MyApplication.preferences.appVersion)
-                                                goGooglePlay(msg)
+                                        } else {
+
+                                            MyApplication.preferences.userId = loginData.opId!!
+                                            MyApplication.preferences.userPw = userPW
+                                            MyApplication.preferences.deviceUUID = deviceUUID
+
+                                            if (!loginData.version.isNullOrEmpty()) {
+                                                MyApplication.preferences.appVersion =
+                                                    loginData.version!!
+                                            }
+
+                                            if (!loginData.opNm.isNullOrEmpty()) {
+                                                MyApplication.preferences.userName =
+                                                    loginData.opNm!!
                                             } else {
+                                                MyApplication.preferences.userName = ""
+                                            }
 
-                                                MyApplication.preferences.userId = loginData.opId!!
-                                                MyApplication.preferences.userPw = userPW
-                                                MyApplication.preferences.deviceUUID = deviceUUID
+                                            if (!loginData.epEmail.isNullOrEmpty()) {
+                                                MyApplication.preferences.userEmail =
+                                                    loginData.epEmail!!
+                                            } else {
+                                                MyApplication.preferences.userEmail = ""
+                                            }
 
-                                                if (!loginData.version.isNullOrEmpty()) {
-                                                    MyApplication.preferences.appVersion = loginData.version!!
+                                            if (!loginData.officeCode.isNullOrEmpty()) {
+                                                MyApplication.preferences.officeCode =
+                                                    loginData.officeCode!!
+                                            } else {
+                                                MyApplication.preferences.officeCode = ""
+                                            }
+
+                                            if (!loginData.officeName.isNullOrEmpty()) {
+                                                MyApplication.preferences.officeName =
+                                                    loginData.officeName!!
+                                            } else {
+                                                MyApplication.preferences.officeName = ""
+                                            }
+
+                                            if (!loginData.pickupDriverYN.isNullOrEmpty()) {
+                                                MyApplication.preferences.pickupDriver =
+                                                    loginData.pickupDriverYN!!
+                                            } else {
+                                                MyApplication.preferences.pickupDriver = "N"
+                                            }
+
+                                            if (!loginData.shuttle_driver_yn.isNullOrEmpty()) {
+                                                MyApplication.preferences.outletDriver =
+                                                    loginData.shuttle_driver_yn!!
+                                            } else {
+                                                MyApplication.preferences.outletDriver = ""
+                                            }
+
+                                            if (!loginData.locker_driver_status.isNullOrEmpty()) {
+                                                MyApplication.preferences.lockerStatus =
+                                                    loginData.locker_driver_status!!
+                                            } else {
+                                                MyApplication.preferences.lockerStatus = ""
+                                            }
+
+                                            if (!loginData.defaultYn.isNullOrEmpty()) {
+                                                MyApplication.preferences.default =
+                                                    loginData.defaultYn!!
+                                            } else {
+                                                MyApplication.preferences.default = ""
+                                            }
+
+                                            if (!loginData.authNo.isNullOrEmpty()) {
+                                                MyApplication.preferences.authNo =
+                                                    loginData.authNo!!
+                                            } else {
+                                                MyApplication.preferences.authNo = ""
+                                            }
+
+                                            if (loginData.smsYn == "Y" && loginData.deviceYn == "Y") {
+
+                                                FirebaseCrashlytics.getInstance().setCustomKey(
+                                                    "ID",
+                                                    MyApplication.preferences.userId
+                                                )
+
+                                                val intent = Intent(
+                                                    this@LoginActivity,
+                                                    MainActivity::class.java
+                                                )
+                                                startActivity(intent)
+                                                finish()
+
+                                            } else {
+                                                if (loginData.deviceYn == "N") {
+                                                    showDialog(resources.getString(R.string.msg_go_sms_verification))
                                                 }
 
-                                                if (!loginData.opNm.isNullOrEmpty()) {
-                                                    MyApplication.preferences.userName = loginData.opNm!!
-                                                } else {
-                                                    MyApplication.preferences.userName = ""
-                                                }
-
-                                                if (!loginData.epEmail.isNullOrEmpty()) {
-                                                    MyApplication.preferences.userEmail = loginData.epEmail!!
-                                                } else {
-                                                    MyApplication.preferences.userEmail = ""
-                                                }
-
-                                                if (!loginData.officeCode.isNullOrEmpty()) {
-                                                    MyApplication.preferences.officeCode = loginData.officeCode!!
-                                                } else {
-                                                    MyApplication.preferences.officeCode = ""
-                                                }
-
-                                                if (!loginData.officeName.isNullOrEmpty()) {
-                                                    MyApplication.preferences.officeName = loginData.officeName!!
-                                                } else {
-                                                    MyApplication.preferences.officeName = ""
-                                                }
-
-                                                if (!loginData.pickupDriverYN.isNullOrEmpty()) {
-                                                    MyApplication.preferences.pickupDriver = loginData.pickupDriverYN!!
-                                                } else {
-                                                    MyApplication.preferences.pickupDriver = "N"
-                                                }
-
-                                                if (!loginData.shuttle_driver_yn.isNullOrEmpty()) {
-                                                    MyApplication.preferences.outletDriver = loginData.shuttle_driver_yn!!
-                                                } else {
-                                                    MyApplication.preferences.outletDriver = ""
-                                                }
-
-                                                if (!loginData.locker_driver_status.isNullOrEmpty()) {
-                                                    MyApplication.preferences.lockerStatus = loginData.locker_driver_status!!
-                                                } else {
-                                                    MyApplication.preferences.lockerStatus = ""
-                                                }
-
-                                                if (!loginData.defaultYn.isNullOrEmpty()) {
-                                                    MyApplication.preferences.default = loginData.defaultYn!!
-                                                } else {
-                                                    MyApplication.preferences.default = ""
-                                                }
-
-                                                if (!loginData.authNo.isNullOrEmpty()) {
-                                                    MyApplication.preferences.authNo = loginData.authNo!!
-                                                } else {
-                                                    MyApplication.preferences.authNo = ""
-                                                }
-
-                                                if (loginData.smsYn == "Y" && loginData.deviceYn == "Y") {
-
-                                                    FirebaseCrashlytics.getInstance().setCustomKey("ID", MyApplication.preferences.userId)
-
-                                                    val intent = Intent(this@LoginActivity, MainActivity::class.java)
-                                                    startActivity(intent)
-                                                    finish()
-
-                                                } else {
-                                                    if (loginData.deviceYn == "N") {
-                                                        showDialog(resources.getString(R.string.msg_go_sms_verification))
-                                                    }
-
-                                                    val intent = Intent(this@LoginActivity, SMSVerificationActivity::class.java)
-                                                    startActivity(intent)
-                                                    finish()
-                                                }
-
+                                                val intent = Intent(
+                                                    this@LoginActivity,
+                                                    SMSVerificationActivity::class.java
+                                                )
+                                                startActivity(intent)
+                                                finish()
                                             }
                                         }
                                     }
-                                } else {
-                                    when {
-                                        it.resultCode == -10 -> {
-
-                                            showDialog(resources.getString(R.string.msg_account_deactivated))
-                                        }
-                                        it.resultMsg != "" -> {
-
-                                            showDialog(it.resultMsg)
-                                        }
-                                        else -> {
-
-                                            showDialog(resources.getString(R.string.msg_not_valid_info))
-                                        }
-                                    }
-
-                                    binding.editLoginPassword.setText("")
                                 }
-                            }, {
+                            } else {
+                                when {
+                                    it.resultCode == -10 -> {
+                                        showDialog(resources.getString(R.string.msg_account_deactivated))
+                                    }
+                                    it.resultMsg != "" -> {
+                                        showDialog(it.resultMsg)
+                                    }
+                                    else -> {
+                                        showDialog(resources.getString(R.string.msg_not_valid_info))
+                                    }
+                                }
 
-                                Log.e(RetrofitClient.errorTag, it.toString())
-                                progressBar.visibility = View.GONE
-                                showDialog(it.message.toString())
-                            })
+                                binding.editLoginPassword.setText("")
+                            }
+                        }, {
+                            Log.e(RetrofitClient.errorTag, it.toString())
+                            progressBar.visibility = View.GONE
+                            showDialog(it.message.toString())
+                        })
                 }
             }
         }
@@ -277,26 +298,11 @@ class LoginActivity : CommonActivity() {
         val checker = PermissionChecker(this)
 
         if (checker.lacksPermissions(*PERMISSIONS)) {
-
             isPermissionTrue = false
             PermissionActivity.startActivityForResult(this, PERMISSION_REQUEST_CODE, *PERMISSIONS)
             overridePendingTransition(0, 0)
         } else {
-
             isPermissionTrue = true
-        }
-    }
-
-    inner class Version(private val value: String) : Comparable<Version> {
-        private val splitted by lazy { value.split("-").first().split(".").map { it.toIntOrNull() ?: 0 } }
-
-        override fun compareTo(other: Version): Int {
-            for (i in 0 until maxOf(splitted.size, other.splitted.size)) {
-                val compare = splitted.getOrElse(i) { 0 }.compareTo(other.splitted.getOrElse(i) { 0 })
-                if (compare != 0)
-                    return compare
-            }
-            return 0
         }
     }
 
@@ -311,31 +317,29 @@ class LoginActivity : CommonActivity() {
             info = "staging / "
         }
 
-        binding.textLoginVersion.text = "$info${resources.getString(R.string.text_app_version)} - $appVersion"
-
+        binding.textLoginVersion.text =
+            "$info${resources.getString(R.string.text_app_version)} - $appVersion"
 
         if (isPermissionTrue) {
 
             gpsTrackerManager?.let {
-
                 gpsEnable = it.enableGPSSetting()
             }
 
             if (gpsEnable && gpsTrackerManager != null) {
-
                 gpsTrackerManager!!.gpsTrackerStart()
-            } else {
 
+            } else {
                 if (!this@LoginActivity.isFinishing) {
                     AlertDialog.Builder(this@LoginActivity)
-                            .setCancelable(false)
-                            .setTitle(resources.getString(R.string.text_location_setting))
-                            .setMessage(resources.getString(R.string.msg_location_off))
-                            .setPositiveButton(resources.getString(R.string.button_ok)) { _, _ ->
-                                val intent = Intent(Settings.ACTION_LOCATION_SOURCE_SETTINGS)
-                                intent.addCategory(Intent.CATEGORY_DEFAULT)
-                                startActivity(intent)
-                            }.show()
+                        .setCancelable(false)
+                        .setTitle(resources.getString(R.string.text_location_setting))
+                        .setMessage(resources.getString(R.string.msg_location_off))
+                        .setPositiveButton(resources.getString(R.string.button_ok)) { _, _ ->
+                            val intent = Intent(Settings.ACTION_LOCATION_SOURCE_SETTINGS)
+                            intent.addCategory(Intent.CATEGORY_DEFAULT)
+                            startActivity(intent)
+                        }.show()
                 }
             }
         }
@@ -349,7 +353,8 @@ class LoginActivity : CommonActivity() {
 
     private fun getVersion(): String {
         return try {
-            val packageInfo = applicationContext.packageManager.getPackageInfo(applicationContext.packageName, 0)
+            val packageInfo =
+                applicationContext.packageManager.getPackageInfo(applicationContext.packageName, 0)
             packageInfo.versionName
         } catch (e: Exception) {
             ""
@@ -364,7 +369,8 @@ class LoginActivity : CommonActivity() {
             val alertBuilder = AlertDialog.Builder(this@LoginActivity)
             alertBuilder.setTitle(resources.getString(R.string.text_alert))
             alertBuilder.setMessage(msg)
-            alertBuilder.setPositiveButton(resources.getString(R.string.button_ok)
+            alertBuilder.setPositiveButton(
+                resources.getString(R.string.button_ok)
             ) { dialog, _ -> dialog.dismiss() }
 
             val alertDialog = alertBuilder.create()
@@ -393,7 +399,8 @@ class LoginActivity : CommonActivity() {
         val alertBuilder = android.app.AlertDialog.Builder(this)
         alertBuilder.setTitle(resources.getString(R.string.text_alert))
         alertBuilder.setMessage(msg)
-        alertBuilder.setPositiveButton(resources.getString(R.string.button_ok)
+        alertBuilder.setPositiveButton(
+            resources.getString(R.string.button_ok)
         ) { dialog, _ ->
             val uri: Uri = Uri.parse("market://details?id=com.giosis.util.qdrive.singapore")
             val itt = Intent(Intent.ACTION_VIEW, uri)
