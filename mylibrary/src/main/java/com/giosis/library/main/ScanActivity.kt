@@ -11,9 +11,7 @@ import com.giosis.library.util.CommonActivity
 import com.giosis.library.util.Preferences
 import com.giosis.library.util.Preferences.outletDriver
 
-/**
- * @author krm0219
- */
+
 class ScanActivity : CommonActivity() {
     var TAG = "ScanActivity"
 
@@ -28,7 +26,6 @@ class ScanActivity : CommonActivity() {
         super.onCreate(savedInstanceState)
         setContentView(binding.root)
 
-
         binding.layoutTopTitle.textTopTitle.setText(R.string.text_title_delivery_scan)
 
         officeName = Preferences.officeName
@@ -38,7 +35,6 @@ class ScanActivity : CommonActivity() {
         } catch (e: Exception) {
             "N"
         }
-
 
         val msg: String
         if (outletDriverYN == "Y") {
