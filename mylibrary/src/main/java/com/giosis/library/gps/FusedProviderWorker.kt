@@ -39,11 +39,9 @@ class FusedProviderWorker(private val context: Context, private val reference: S
     init {
 
         if (reference == "time_fused") {
-
 //             // TEST_ GPS Time
 //            MIN_TIME_BW_UPDATES = 1000 * 60;
 //            MIN_FAST_INTERVAL_UPDATES = 1000 * 60;
-
             MIN_TIME_BW_UPDATES = (1000 * 60 * 5).toLong()
             MIN_FAST_INTERVAL_UPDATES = (1000 * 60 * 5).toLong()
             MIN_DISTANCE_CHANGE_FOR_UPDATES = 0
