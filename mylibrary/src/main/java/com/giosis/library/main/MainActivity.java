@@ -1,5 +1,6 @@
 package com.giosis.library.main;
 
+
 import android.annotation.SuppressLint;
 import android.app.AlertDialog;
 import android.content.ContentValues;
@@ -14,7 +15,6 @@ import android.graphics.Canvas;
 import android.graphics.Color;
 import android.graphics.Paint;
 import android.location.LocationManager;
-import android.os.AsyncTask;
 import android.os.Build;
 import android.os.Bundle;
 import android.util.Log;
@@ -102,11 +102,6 @@ public class MainActivity extends AppBaseActivity {
     Button btn_home_create_pickup_order;
     Button btn_home_assign_pickup_driver;
     Button btn_home_today_my_route;
-
-
-    String fcmToken;
-    AsyncTask<?, ?, ?> saveFCMTokenTask;
-    String myResult;
 
     DatabaseHelper dbHelper;
     private String uploadFailedCount = "0";
@@ -627,6 +622,8 @@ public class MainActivity extends AppBaseActivity {
 
             Toast.makeText(MainActivity.this, getString(R.string.msg_network_connect_error), Toast.LENGTH_SHORT).show();
             return;
+        } else {
+//            MainDownload.INSTANCE.download(MainActivity.this);
         }
 
         // 2020.12  Failed Code 가져오기
@@ -844,9 +841,11 @@ public class MainActivity extends AppBaseActivity {
         SimpleDateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
         String regDataString = dateFormat.format(new Date());
 
-        RetrofitClient.INSTANCE.instanceDynamic().requestSetAppUserInfo("killapp", NetworkUtil.getNetworkType(this), "", regDataString, "QDRIVE",
-                api_level, device_info, device_model, device_product, device_os_version, "", "",
-                "", "", "", "", "", "", opID, opID, opID, DataUtil.appID, Preferences.INSTANCE.getUserNation())
+        RetrofitClient.INSTANCE.instanceDynamic().requestSetAppUserInfo(
+                "killapp", NetworkUtil.getNetworkType(this), "", regDataString,
+                "QDRIVE", api_level, device_info, device_model, device_product, device_os_version,
+                "", "", "", "", "", "", "", "",
+                opID, opID, opID, DataUtil.appID, Preferences.INSTANCE.getUserNation())
                 .subscribeOn(Schedulers.io())
                 .observeOn(AndroidSchedulers.mainThread())
                 .subscribe(it -> {
@@ -896,99 +895,28 @@ public class MainActivity extends AppBaseActivity {
 
     @Override
     public void onBackPressed() {
+        //
     }
 
     public void saveServerFCMToken() {
 
-//        FirebaseInstanceId.getInstance().getInstanceId().addOnSuccessListener(instanceIdResult -> {
-//
-//            fcmToken = instanceIdResult.getToken();
-//            sendAPIkey();
-//        });
-
         FirebaseMessaging.getInstance().getToken().addOnCompleteListener(task -> {
             if (task.isSuccessful()) {
-
                 // Get new FCM registration token
-                fcmToken = task.getResult();
-                sendAPIkey();
+                String fcmToken = task.getResult();
+
+                RetrofitClient.INSTANCE.instanceDynamic().requestSetFCMToken(
+                        fcmToken, Preferences.INSTANCE.getUserId(), "01",
+                        Preferences.INSTANCE.getDeviceUUID(), DataUtil.appID, Preferences.INSTANCE.getUserNation()
+                ).subscribeOn(Schedulers.io())
+                        .observeOn(AndroidSchedulers.mainThread())
+                        .subscribe(it -> {
+
+                        }, it -> {
+
+                        });
             }
         });
-    }
-
-    private void sendAPIkey() {
-
-        String op_id = Preferences.INSTANCE.getUserId();
-        String device_id = Preferences.INSTANCE.getDeviceUUID();
-        Log.i("FCM", TAG + "  Device ID : " + device_id + "  Device Token : " + fcmToken);
-
-        if (!op_id.equals("") && !device_id.equals("") && !fcmToken.equals("")) {
-
-            saveFCMTokenTask = new saveFCMTokenTask().execute(fcmToken, op_id, device_id);
-        }
-    }
-
-
-    @SuppressLint("StaticFieldLeak")
-    private class saveFCMTokenTask extends AsyncTask<String, Void, Void> {
-
-        @Override
-        protected Void doInBackground(String... params) {
-            HttpPostData(params[0], params[1], params[2]);
-            return null;
-        }
-
-        protected void onPostExecute(Void result) {
-
-        }
-    }
-
-    public void HttpPostData(String token, String op_id, String device_id) {
-
-        try {
-
-            String apiURL = Preferences.INSTANCE.getServerURL() + DataUtil.API_ADDRESS;
-            URL url = new URL(apiURL + "/SetGCMUserKeyRegister");
-
-            HttpURLConnection http = (HttpURLConnection) url.openConnection();
-            http.setDefaultUseCaches(false);
-            http.setDoInput(true);
-            http.setDoOutput(true);
-            http.setRequestMethod("POST");
-
-            http.setRequestProperty("content-type", "application/x-www-form-urlencoded");
-            StringBuilder buffer = new StringBuilder();
-            buffer.append("user_key").append("=").append(token).append("&");
-            buffer.append("op_id").append("=").append(op_id).append("&");
-            buffer.append("app_cd").append("=").append("01").append("&");               // 01.Qdrive / 02.QxQuick
-            buffer.append("device_id").append("=").append(device_id).append("&");
-            buffer.append("app_id").append("=").append(DataUtil.appID).append("&");
-            buffer.append("nation_cd").append("=").append(Preferences.INSTANCE.getUserNation());
-            Log.i("FCM", "URL : " + url.toString());
-            Log.i("FCM", "SetGCMUserKeyRegister Data : " + buffer.toString());
-
-            OutputStreamWriter outStream = new OutputStreamWriter(http.getOutputStream(), "UTF-8");
-            PrintWriter writer = new PrintWriter(outStream);
-            writer.write(buffer.toString());
-            writer.flush();
-
-            InputStreamReader tmp = new InputStreamReader(http.getInputStream(), "UTF-8");
-            BufferedReader reader = new BufferedReader(tmp);
-            StringBuilder builder = new StringBuilder();
-
-            String str;
-
-            while ((str = reader.readLine()) != null) {
-                builder.append(str).append("\n");
-            }
-
-            myResult = builder.toString();
-            // {"ResultCode":0,"ResultMsg":"Success"}
-            Log.e("Server", "SetGCMUserKeyRegister  Result : " + myResult);
-        } catch (Exception e) {
-
-            Log.e("Exception", TAG + "  HttpPostData Exception : " + e.toString());
-        }
     }
 
     public void initMessageCount() {
