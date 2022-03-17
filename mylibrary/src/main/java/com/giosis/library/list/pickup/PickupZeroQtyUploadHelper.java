@@ -26,7 +26,7 @@ import java.text.SimpleDateFormat;
 import java.util.Date;
 
 
-// Pickup - Zero Qty
+// TODO_kjyoo 추후 삭제 Pickup - Zero Qty
 @Deprecated
 public class PickupZeroQtyUploadHelper {
     String TAG = "PickupZeroQtyUploadHelper";
