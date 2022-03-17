@@ -15,9 +15,7 @@ import io.reactivex.rxjava3.android.schedulers.AndroidSchedulers
 import io.reactivex.rxjava3.schedulers.Schedulers
 import java.util.*
 
-/**
- * @author krm0219  2018.07.26
- */
+
 class ListNotInHousedActivity : CommonActivity() {
     var tag = "ListNotInHousedActivity"
 

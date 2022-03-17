@@ -15,10 +15,7 @@ import java.text.ParseException
 import java.text.SimpleDateFormat
 import java.util.*
 
-/**
- * @author krm0219
- * NavigationBar > LIST > Not-IN Parcels
- */
+
 class ListNotInHousedAdapter(var result: ArrayList<NotInHousedResult>) : BaseExpandableListAdapter() {
     var TAG = "ListNotInHousedAdapter"
 

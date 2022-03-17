@@ -25,10 +25,7 @@ import java.text.SimpleDateFormat;
 import java.util.Calendar;
 import java.util.Locale;
 
-/**
- * @author krm0219
- * Statistics
- */
+
 public class StatisticsActivity extends CommonActivity {
     String TAG = "StatisticsActivity";
 
