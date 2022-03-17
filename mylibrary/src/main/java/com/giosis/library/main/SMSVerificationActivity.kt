@@ -30,7 +30,6 @@ class SMSVerificationActivity : CommonActivity() {
         ActivitySmsVerificationBinding.inflate(layoutInflater)
     }
 
-
     private var phoneNo = ""
     private var authCode = ""
     var name = ""
@@ -42,7 +41,6 @@ class SMSVerificationActivity : CommonActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(binding.root)
-
 
         binding.layoutTopTitle.textTopTitle.setText(R.string.text_title_sms_verification)
 
