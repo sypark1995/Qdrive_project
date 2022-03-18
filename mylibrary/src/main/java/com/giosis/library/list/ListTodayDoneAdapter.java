@@ -24,12 +24,7 @@ import com.giosis.library.util.NetworkUtil;
 
 import java.util.ArrayList;
 
-/***********************
- * @author jtpark_eurasia
- *
- *  Child View 를 갖는 Adapter
- *  List 클릭 시 확장 
- */
+
 public class ListTodayDoneAdapter extends BaseExpandableListAdapter {
     String TAG = "CustomTodayDoneExpandableAdapter";
 
