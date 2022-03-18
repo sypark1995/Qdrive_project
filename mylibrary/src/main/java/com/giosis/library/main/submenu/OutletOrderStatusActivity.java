@@ -32,10 +32,7 @@ import java.util.Arrays;
 import java.util.Collections;
 import java.util.Comparator;
 
-/**
- * @author krm0219
- * HOME > Outlet Order Status
- */
+
 public class OutletOrderStatusActivity extends CommonActivity implements SearchView.OnQueryTextListener, SearchView.OnCloseListener {
     String TAG = "OutletOrderStatusActivity";
 
