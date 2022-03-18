@@ -55,6 +55,7 @@ class PickupFailedActivity : CommonActivity(), Camera2APIs.Camera2Interface,
     val pickupNo by lazy {
         intent.getStringExtra("pickupNo")
     }
+
     private var rcvType = ""       // VL, RC
     private var arrayList: ArrayList<FailedCodeResult.FailedCode>? = null
     private var failedCodeArrayList: ArrayList<String>? = null
