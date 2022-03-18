@@ -24,8 +24,6 @@ import com.giosis.library.setting.SettingActivity
 import com.giosis.library.util.BarcodeType
 import com.giosis.library.util.CommonActivity
 import com.giosis.library.util.Preferences
-import com.giosis.library.util.Preferences.outletDriver
-import com.giosis.library.util.Preferences.userNation
 import java.util.*
 
 open class AppBaseActivity : CommonActivity() {
@@ -63,42 +61,47 @@ open class AppBaseActivity : CommonActivity() {
         supportActionBar!!.setDisplayShowTitleEnabled(false)
 
         binding.drawerLayout.setScrimColor(Color.parseColor("#4D000000"))
-        val toggle = ActionBarDrawerToggle(this, binding.drawerLayout, binding.appBar.toolbar, R.string.button_open, R.string.button_close)
+        val toggle = ActionBarDrawerToggle(
+            this,
+            binding.drawerLayout,
+            binding.appBar.toolbar,
+            R.string.button_open,
+            R.string.button_close
+        )
         binding.drawerLayout.addDrawerListener(toggle)
         toggle.syncState()
 
         binding.navList.addHeaderView(headerBinding.root)
         binding.navList.setAdapter(adapter)
 
-
         //
         binding.layoutBottomBarHome.setOnClickListener {
 
             if (!titleString.contains(getString(R.string.navi_home))) {
-                val intent = Intent(this@AppBaseActivity, MainActivity::class.java)
+                val intent = Intent(it.context, MainActivity::class.java)
                 startActivity(intent)
                 finish()
             }
         }
 
         binding.layoutBottomBarScan.setOnClickListener {
-            val intent = Intent(this@AppBaseActivity, ScanActivity::class.java)
+            val intent = Intent(it.context, ScanActivity::class.java)
             startActivity(intent)
         }
 
         binding.layoutBottomBarList.setOnClickListener {
-            val intent = Intent(this@AppBaseActivity, ListActivity::class.java)
+            val intent = Intent(it.context, ListActivity::class.java)
             startActivity(intent)
         }
 
         binding.layoutBottomBarSetting.setOnClickListener {
-            val intent = Intent(this@AppBaseActivity, SettingActivity::class.java)
+            val intent = Intent(it.context, SettingActivity::class.java)
             startActivity(intent)
         }
 
         headerBinding.btnMessage.setOnClickListener {
 
-            val intent = Intent(this@AppBaseActivity, MessageListActivity::class.java)
+            val intent = Intent(it.context, MessageListActivity::class.java)
             intent.putExtra("customer_count", customerMessageCount)
             intent.putExtra("admin_count", adminMessageCount)
             startActivity(intent)
@@ -106,7 +109,7 @@ open class AppBaseActivity : CommonActivity() {
         }
 
 
-        if (userNation.equals("SG", ignoreCase = true)) {
+        if (Preferences.userNation == "SG") {
             headerBinding.layoutMessage.visibility = View.VISIBLE
         } else {
             headerBinding.layoutMessage.visibility = View.GONE
@@ -115,39 +118,87 @@ open class AppBaseActivity : CommonActivity() {
         // sub divider 칼라 없앰
         binding.navList.setChildDivider(resources.getDrawable(R.color.transparent))
 
-        val outletDriverYN: String = try {
-            outletDriver
-        } catch (e: Exception) {
-            "N"
-        }
-
         val arrayList: ArrayList<String>
         val arrayList1: ArrayList<String>
-        if (outletDriverYN == "Y") {
-            arrayList = ArrayList(listOf(getString(R.string.text_start_delivery_for_outlet), getString(R.string.navi_sub_delivery_done),
-                    getString(R.string.navi_sub_pickup), getString(R.string.navi_sub_self)))
-            arrayList1 = ArrayList(listOf(getString(R.string.navi_sub_in_progress), getString(R.string.navi_sub_upload_fail), getString(R.string.navi_sub_today_done),
-                    getString(R.string.navi_sub_not_in_housed), getString(R.string.text_outlet_order_status)))
+        if (Preferences.outletDriver == "Y") {
+            arrayList = ArrayList(
+                listOf(
+                    getString(R.string.text_start_delivery_for_outlet),
+                    getString(R.string.navi_sub_delivery_done),
+                    getString(R.string.navi_sub_pickup),
+                    getString(R.string.navi_sub_self)
+                )
+            )
+            arrayList1 = ArrayList(
+                listOf(
+                    getString(R.string.navi_sub_in_progress),
+                    getString(R.string.navi_sub_upload_fail),
+                    getString(R.string.navi_sub_today_done),
+                    getString(R.string.navi_sub_not_in_housed),
+                    getString(R.string.text_outlet_order_status)
+                )
+            )
         } else {
-            arrayList = ArrayList(listOf(getString(R.string.navi_sub_confirm_delivery), getString(R.string.navi_sub_delivery_done),
-                    getString(R.string.navi_sub_pickup), getString(R.string.navi_sub_self)))
-            arrayList1 = ArrayList(listOf(getString(R.string.navi_sub_in_progress), getString(R.string.navi_sub_upload_fail), getString(R.string.navi_sub_today_done),
-                    getString(R.string.navi_sub_not_in_housed)))
+            arrayList = ArrayList(
+                listOf(
+                    getString(R.string.navi_sub_confirm_delivery),
+                    getString(R.string.navi_sub_delivery_done),
+                    getString(R.string.navi_sub_pickup),
+                    getString(R.string.navi_sub_self)
+                )
+            )
+            arrayList1 = ArrayList(
+                listOf(
+                    getString(R.string.navi_sub_in_progress),
+                    getString(R.string.navi_sub_upload_fail),
+                    getString(R.string.navi_sub_today_done),
+                    getString(R.string.navi_sub_not_in_housed)
+                )
+            )
         }
 
-        adapter.addItem(ContextCompat.getDrawable(this, R.drawable.side_icon_home_selector), getString(R.string.navi_home), null, -1)
-        adapter.addItem(ContextCompat.getDrawable(this, R.drawable.side_icon_scan_selector), getString(R.string.navi_scan), arrayList, -1)
-        adapter.addItem(ContextCompat.getDrawable(this, R.drawable.side_icon_list_selector), getString(R.string.navi_list), arrayList1, -1)
-        adapter.addItem(ContextCompat.getDrawable(this, R.drawable.side_icon_statistics_selector), getString(R.string.navi_statistics), null, -1)
-        adapter.addItem(ContextCompat.getDrawable(this, R.drawable.side_icon_settings_selector), getString(R.string.navi_setting), null, -1)
+        adapter.addItem(
+            ContextCompat.getDrawable(this, R.drawable.side_icon_home_selector),
+            getString(R.string.navi_home),
+            null,
+            -1
+        )
+        adapter.addItem(
+            ContextCompat.getDrawable(this, R.drawable.side_icon_scan_selector),
+            getString(R.string.navi_scan),
+            arrayList,
+            -1
+        )
+        adapter.addItem(
+            ContextCompat.getDrawable(this, R.drawable.side_icon_list_selector),
+            getString(R.string.navi_list),
+            arrayList1,
+            -1
+        )
+        adapter.addItem(
+            ContextCompat.getDrawable(this, R.drawable.side_icon_statistics_selector),
+            getString(R.string.navi_statistics),
+            null,
+            -1
+        )
+        adapter.addItem(
+            ContextCompat.getDrawable(this, R.drawable.side_icon_settings_selector),
+            getString(R.string.navi_setting),
+            null,
+            -1
+        )
 
-        if (userNation.equals("SG", ignoreCase = true) && Preferences.pickupDriver == "Y") {
-            adapter.addItem(ContextCompat.getDrawable(this, R.drawable.icon_pickup_order), getString(R.string.text_create_pickup_order), null, 4)
+        if (Preferences.userNation == "SG" && Preferences.pickupDriver == "Y") {
+            adapter.addItem(
+                ContextCompat.getDrawable(this, R.drawable.icon_pickup_order),
+                getString(R.string.text_create_pickup_order),
+                null,
+                4
+            )
         }
 
         // NOTIFICATION. 추후 반영
 //        else if (!Preferences.INSTANCE.getUserNation().equalsIgnoreCase("SG")) {   // MY / ID
-//
 //             adapter.addItem(ContextCompat.getDrawable(this, R.drawable.side_icon_route_selector), getString(R.string.text_today_my_route), null, 4);
 //        }
 
@@ -218,7 +269,10 @@ open class AppBaseActivity : CommonActivity() {
                     0 -> {
                         // Confirm my delivery order  / Start Delivery for Outlet
                         val intent = Intent(this@AppBaseActivity, CaptureActivity1::class.java)
-                        intent.putExtra("title", resources.getString(R.string.text_title_driver_assign))
+                        intent.putExtra(
+                            "title",
+                            resources.getString(R.string.text_title_driver_assign)
+                        )
                         intent.putExtra("type", BarcodeType.CONFIRM_MY_DELIVERY_ORDER)
                         startActivity(intent)
                     }
@@ -232,7 +286,10 @@ open class AppBaseActivity : CommonActivity() {
                     2 -> {
                         // Pickup C&R Parcels
                         val intent = Intent(this@AppBaseActivity, CaptureActivity1::class.java)
-                        intent.putExtra("title", resources.getString(R.string.text_title_scan_pickup_cnr))
+                        intent.putExtra(
+                            "title",
+                            resources.getString(R.string.text_title_scan_pickup_cnr)
+                        )
                         intent.putExtra("type", BarcodeType.PICKUP_CNR)
                         startActivity(intent)
                     }
@@ -252,12 +309,14 @@ open class AppBaseActivity : CommonActivity() {
                     }
                     3 -> {
                         // Not In-housed
-                        val intent = Intent(this@AppBaseActivity, ListNotInHousedActivity::class.java)
+                        val intent =
+                            Intent(this@AppBaseActivity, ListNotInHousedActivity::class.java)
                         startActivity(intent)
                     }
                     4 -> {
                         // Outlet - Outlet Order Status
-                        val intent = Intent(this@AppBaseActivity, OutletOrderStatusActivity::class.java)
+                        val intent =
+                            Intent(this@AppBaseActivity, OutletOrderStatusActivity::class.java)
                         startActivity(intent)
                     }
                 }
