@@ -46,9 +46,11 @@ import javax.net.ssl.TrustManager;
 import javax.net.ssl.X509TrustManager;
 
 /**
- * @author krm0219
  * LIST > In-Progress > Outlet Pickup Done (Step 1)
  */
+
+
+// TODO_kjyoo
 public class OutletPickupStep1Activity extends CommonActivity {
     String TAG = "OutletPickupStep1Activity";
 
@@ -123,6 +125,7 @@ public class OutletPickupStep1Activity extends CommonActivity {
 
                     if (0 < result.getResultObject().getTrackingNoList().size()) {
 
+                        // TODO_kjyoo  CaptureActivity.class 사용하는지 확인 필요...
                         Intent intent = new Intent(OutletPickupStep1Activity.this, CaptureActivity.class);
                         intent.putExtra("title", mTitle);
                         intent.putExtra("type", BarcodeType.OUTLET_PICKUP_SCAN);
