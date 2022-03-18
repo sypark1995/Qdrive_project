@@ -30,6 +30,8 @@ import java.util.Date;
 import java.util.List;
 import java.util.TimeZone;
 
+// TODO_kjyoo captureActivity 삭제 해야 // 사용하지 않음..
+
 @Deprecated
 public class ChangeDriverHelper {
     String TAG = "ChangeDriverHelper";
