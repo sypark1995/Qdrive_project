@@ -1,5 +1,6 @@
 package com.giosis.library.main
 
+
 import android.content.Intent
 import android.os.Bundle
 import android.view.View
@@ -9,7 +10,6 @@ import com.giosis.library.databinding.ActivityScanBinding
 import com.giosis.library.util.BarcodeType
 import com.giosis.library.util.CommonActivity
 import com.giosis.library.util.Preferences
-import com.giosis.library.util.Preferences.outletDriver
 
 
 class ScanActivity : CommonActivity() {
@@ -19,49 +19,40 @@ class ScanActivity : CommonActivity() {
         ActivityScanBinding.inflate(layoutInflater)
     }
 
-    var officeName: String = ""
-    private var outletDriverYN = "N"
-
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(binding.root)
 
         binding.layoutTopTitle.textTopTitle.setText(R.string.text_title_delivery_scan)
 
-        officeName = Preferences.officeName
-
-        outletDriverYN = try {
-            outletDriver
-        } catch (e: Exception) {
-            "N"
-        }
-
         val msg: String
-        if (outletDriverYN == "Y") {
-
-            msg = String.format(resources.getString(R.string.msg_delivery_scan2), resources.getString(R.string.text_start_delivery_for_outlet))
+        if (Preferences.outletDriver == "Y") {
+            msg = String.format(
+                resources.getString(R.string.msg_delivery_scan2),
+                resources.getString(R.string.text_start_delivery_for_outlet)
+            )
             binding.textConfirmMyDeliveryOrder.setText(R.string.text_start_delivery_for_outlet)
         } else {
-
-            msg = String.format(resources.getString(R.string.msg_delivery_scan2), resources.getString(R.string.button_confirm_my_delivery_order))
+            msg = String.format(
+                resources.getString(R.string.msg_delivery_scan2),
+                resources.getString(R.string.button_confirm_my_delivery_order)
+            )
             binding.textConfirmMyDeliveryOrder.setText(R.string.button_confirm_my_delivery_order)
         }
+
         binding.textDeliveryScanMsg.text = msg
 
-
-        if (officeName.contains("Qxpress SG")) {
+        if (Preferences.officeName.contains("Qxpress SG")) {
             binding.layoutSelfCollectionShown.visibility = View.VISIBLE
         } else {
             binding.layoutSelfCollectionShown.visibility = View.GONE
         }
-
 
         binding.layoutTopTitle.layoutTopBack.setOnClickListener {
             finish()
         }
 
         binding.layoutConfirmMyDeliveryOrder.setOnClickListener {
-
             val intent = Intent(this@ScanActivity, CaptureActivity1::class.java)
             intent.putExtra("title", resources.getString(R.string.text_title_driver_assign))
             intent.putExtra("type", BarcodeType.CONFIRM_MY_DELIVERY_ORDER)
