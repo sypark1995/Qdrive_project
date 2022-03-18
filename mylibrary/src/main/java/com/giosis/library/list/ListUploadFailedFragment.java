@@ -37,11 +37,9 @@ import java.util.ArrayList;
 import java.util.Arrays;
 
 /**
- * @author jtpark_qxpress
  * In-Progress Tab Fragment
- * <p></p>
- * @editor krm0219
  */
+
 public class ListUploadFailedFragment extends Fragment
         implements OnQueryTextListener, OnCloseListener, ListUploadFailedAdapter.AdapterInterface {
 
