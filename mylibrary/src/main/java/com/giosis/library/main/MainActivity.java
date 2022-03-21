@@ -3,19 +3,15 @@ package com.giosis.library.main;
 
 import android.annotation.SuppressLint;
 import android.app.AlertDialog;
-import android.content.ContentValues;
 import android.content.Context;
 import android.content.Intent;
 import android.content.pm.PackageManager;
 import android.content.pm.ResolveInfo;
 import android.database.Cursor;
-import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
-import android.graphics.Canvas;
-import android.graphics.Color;
-import android.graphics.Paint;
+import android.graphics.drawable.ShapeDrawable;
+import android.graphics.drawable.shapes.OvalShape;
 import android.location.LocationManager;
-import android.os.Build;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.LayoutInflater;
@@ -28,8 +24,6 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import androidx.core.content.ContextCompat;
-import androidx.core.graphics.drawable.RoundedBitmapDrawable;
-import androidx.core.graphics.drawable.RoundedBitmapDrawableFactory;
 
 import com.giosis.library.R;
 import com.giosis.library.UploadData;
@@ -43,7 +37,6 @@ import com.giosis.library.main.submenu.OutletOrderStatusActivity;
 import com.giosis.library.main.submenu.RpcListActivity;
 import com.giosis.library.pickup.CreatePickupOrderActivity;
 import com.giosis.library.server.RetrofitClient;
-import com.giosis.library.server.data.RestDaysResult;
 import com.giosis.library.setting.bluetooth.BluetoothDeviceData;
 import com.giosis.library.util.BarcodeType;
 import com.giosis.library.util.DataUtil;
@@ -62,12 +55,6 @@ import com.google.firebase.messaging.FirebaseMessaging;
 import com.google.gson.Gson;
 import com.google.gson.reflect.TypeToken;
 
-import java.io.BufferedReader;
-import java.io.InputStreamReader;
-import java.io.OutputStreamWriter;
-import java.io.PrintWriter;
-import java.net.HttpURLConnection;
-import java.net.URL;
 import java.net.URLEncoder;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
@@ -104,26 +91,16 @@ public class MainActivity extends AppBaseActivity {
     Button btn_home_today_my_route;
 
     DatabaseHelper dbHelper;
-    private String uploadFailedCount = "0";
+    String uploadFailedCount = "0";
     String opID = "";
-    String opName = "";
-    String opDefault = "";
-    String officeCode = "";
-    String officeName = "";
-    String deviceID = "";
-    String pickup_driver_yn = "";
 
     Intent fusedProviderService = null;
     Intent locationManagerService = null;
-
-    boolean isGooglePlayService = false;
 
     GPSTrackerManager gpsTrackerManager;
     boolean gpsEnable = false;
     double latitude = 0;
     double longitude = 0;
-
-    static Boolean isHomeBtnClick = false;
 
     //
     boolean isPermissionTrue = false;
@@ -190,7 +167,7 @@ public class MainActivity extends AppBaseActivity {
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
 
-        Log.e(TAG, "User Agent : " + QDataUtil.Companion.getCustomUserAgent(MainActivity.this));
+        QDataUtil.INSTANCE.setCustomUserAgent(MainActivity.this);
         DatabaseHelper.getInstance().getDbPath();
 
         getWindow().addFlags(WindowManager.LayoutParams.FLAG_KEEP_SCREEN_ON
@@ -200,7 +177,6 @@ public class MainActivity extends AppBaseActivity {
 
         // FCM token
         saveServerFCMToken();
-
 
         LayoutInflater inflater = (LayoutInflater) getSystemService(Context.LAYOUT_INFLATER_SERVICE);
         View contentView = inflater.inflate(R.layout.activity_main_home, getBinding().container, false);
@@ -213,31 +189,12 @@ public class MainActivity extends AppBaseActivity {
 
         dbHelper = DatabaseHelper.getInstance();
         opID = Preferences.INSTANCE.getUserId();
-        officeCode = Preferences.INSTANCE.getOfficeCode();
-        officeName = Preferences.INSTANCE.getOfficeName();
-        opDefault = Preferences.INSTANCE.getDefault();
-        deviceID = Preferences.INSTANCE.getDeviceUUID();
-        pickup_driver_yn = Preferences.INSTANCE.getPickupDriver();
-
-
-        // Outlet
-        String outletDriverYN;
-        try {
-
-            outletDriverYN = Preferences.INSTANCE.getOutletDriver();
-        } catch (Exception e) {
-
-            outletDriverYN = "N";
-        }
 
         // 7ETB, FLTB push 받고 온 경우 확인
         String outletPush = getIntent().getStringExtra("outletPush");
-
         if (outletPush == null) {
             outletPush = "N";
         }
-        Log.e(TAG, "  Outlet Driver : " + outletDriverYN + "  outletPush  : " + outletPush + "  Pickup Driver : " + pickup_driver_yn);
-
 
         text_home_driver_name = findViewById(R.id.text_home_driver_name);
         text_home_driver_office = findViewById(R.id.text_home_driver_office);
@@ -259,27 +216,22 @@ public class MainActivity extends AppBaseActivity {
         btn_home_create_pickup_order = findViewById(R.id.btn_home_create_pickup_order);
         btn_home_today_my_route = findViewById(R.id.btn_home_today_my_route);
 
-
-        getLocalCount();
         if (DownloadCheck()) {
-
             Download();
         } else if (outletPush.equals("Y")) {
-
             Download();
         }
-
 
         layout_home_list_count.setOnClickListener(clickListener);
         layout_home_download.setOnClickListener(clickListener);
         layout_home_upload.setOnClickListener(clickListener);
 
-        Bitmap mBitmap = BitmapFactory.decodeResource(getResources(), R.drawable.qdrive_img_default);
-        img_home_driver_profile.setImageBitmap(mBitmap);
-        RoundedBitmapDrawable roundedImageDrawable = createRoundedBitmapImageDrawableWithBorder(mBitmap);
-        img_home_driver_profile.setImageDrawable(roundedImageDrawable);
+        img_home_driver_profile.setImageBitmap(BitmapFactory.decodeResource(getResources(), R.drawable.qdrive_img_default));
+        img_home_driver_profile.setBackground(new ShapeDrawable(new OvalShape()));
+        img_home_driver_profile.setClipToOutline(true);
 
-        if ("Y".equals(pickup_driver_yn) && Preferences.INSTANCE.getUserNation().equalsIgnoreCase("SG")) {
+        if (Preferences.INSTANCE.getPickupDriver().equals("Y") &&
+                Preferences.INSTANCE.getUserNation().equals("SG")) {
             btn_home_create_pickup_order.setVisibility(View.VISIBLE);
         } else {
             btn_home_create_pickup_order.setVisibility(View.GONE);
@@ -287,21 +239,20 @@ public class MainActivity extends AppBaseActivity {
 
         // NOTIFICATION.  추후 반영  MY/ID Route
 //        if (!Preferences.INSTANCE.getUserNation().equalsIgnoreCase("SG")) {
-//
 //            btn_home_today_my_route.setVisibility(View.VISIBLE);
 //        } else {
-//
 //            btn_home_today_my_route.setVisibility(View.GONE);
 //        }
 
-        if (outletDriverYN.equals("Y")) {
-
+        // Outlet
+        if (Preferences.INSTANCE.getOutletDriver().equals("Y")) {
             btn_home_confirm_my_delivery_order.setText(getResources().getString(R.string.text_start_delivery_for_outlet));
             btn_home_outlet_order_status.setVisibility(View.VISIBLE);
 
             LinearLayout.LayoutParams lp = new LinearLayout.LayoutParams(LinearLayout.LayoutParams.MATCH_PARENT, LinearLayout.LayoutParams.WRAP_CONTENT);
             lp.setMargins(0, DisplayUtil.dpTopx(this, 15), 0, 0);
             btn_home_change_delivery_driver.setLayoutParams(lp);
+
         } else {
 
             btn_home_confirm_my_delivery_order.setText(getResources().getString(R.string.button_confirm_my_delivery_order));
@@ -359,12 +310,9 @@ public class MainActivity extends AppBaseActivity {
     protected void onResume() {
         super.onResume();
 
-        opID = Preferences.INSTANCE.getUserId();
-        opName = Preferences.INSTANCE.getUserName();
-
-        setNaviHeader(opName, officeName);
-        text_home_driver_name.setText(opName);
-        text_home_driver_office.setText(officeName);
+        setNaviHeader(Preferences.INSTANCE.getUserName(), Preferences.INSTANCE.getOfficeName());
+        text_home_driver_name.setText(Preferences.INSTANCE.getUserName());
+        text_home_driver_office.setText(Preferences.INSTANCE.getOfficeName());
 
         DataUtil.mFirebaseAnalytics = FirebaseAnalytics.getInstance(this);
 
@@ -387,9 +335,10 @@ public class MainActivity extends AppBaseActivity {
         // TODO_TEST  badge
 //        MyApplication myApp = (MyApplication) getApplicationContext();
 //        myApp.setBadgeCnt(0);
+
         setBadge(getApplicationContext(), 0);
 
-        if (opID.equals("")) {
+        if (Preferences.INSTANCE.getUserId().equals("")) {
 
             Toast.makeText(MainActivity.this, getResources().getString(R.string.msg_qdrive_auto_logout), Toast.LENGTH_SHORT).show();
 
@@ -413,7 +362,7 @@ public class MainActivity extends AppBaseActivity {
             }
         }
 
-        getLocalCount();
+        MainActivityServer.INSTANCE.getLocalCount(MainActivity.this);
     }
 
     public static void setBadge(Context context, int count) {
@@ -421,6 +370,7 @@ public class MainActivity extends AppBaseActivity {
         if (launcherClassName == null) {
             return;
         }
+
         Intent intent = new Intent("android.intent.action.BADGE_COUNT_UPDATE");
         intent.putExtra("badge_count", count);
         intent.putExtra("badge_count_package_name", context.getPackageName());
@@ -445,52 +395,6 @@ public class MainActivity extends AppBaseActivity {
         return null;
     }
 
-
-    public void getLocalCount() {
-        try {
-
-            String selectQuery = " select   ifnull(sum(case when chg_dt is null then 1 else 0 end), 0) as InprogressCnt " //In-Progress
-                    + " , ifnull(sum(case when punchOut_stat = 'S' and strftime('%Y-%m-%d', chg_dt) = date('now') then 1 else 0 end) ,0) as TodayUploadedCnt " // Uploaded Today
-                    + " , ifnull(sum(case when punchOut_stat <> 'S' and chg_dt is not null  then 1 else 0 end), 0) as UploadFailedCnt " //Upload Failed
-                    + " , ifnull(sum(case when punchOut_stat <> 'S' and chg_dt is null and type = 'D' then 1 else 0 end), 0) as InprogressDeliveryCnt " //Delivery
-                    + " , ifnull(sum(case when punchOut_stat <> 'S' and chg_dt is null and type = 'P' and route <> 'RPC' then 1 else 0 end), 0) as InprogressPickupCnt "  //Pickup
-                    + " , ifnull(sum(case when punchOut_stat <> 'S' and chg_dt is null and route = 'RPC' then 1 else 0 end), 0) as InprogressRpcCnt " //RPC
-                    + " , datetime(max(reg_dt), 'localtime') as PI_Time "
-                    + " from " + DatabaseHelper.DB_TABLE_INTEGRATION_LIST
-                    + " where reg_id= '" + opID + "'";
-
-            Cursor cs = dbHelper.get(selectQuery);
-
-            if (cs.moveToFirst()) {
-
-                int total = Integer.parseInt(cs.getString(cs.getColumnIndex("InprogressCnt")))
-                        + Integer.parseInt(cs.getString(cs.getColumnIndex("TodayUploadedCnt")))
-                        + Integer.parseInt(cs.getString(cs.getColumnIndex("UploadFailedCnt")));
-
-                text_home_total_qty.setText(String.valueOf(total));
-
-                uploadFailedCount = cs.getString(cs.getColumnIndex("UploadFailedCnt"));
-                String rpcCnt = cs.getString(cs.getColumnIndex("InprogressRpcCnt"));
-                text_home_in_progress_count.setText(cs.getString(cs.getColumnIndex("InprogressCnt")));
-                text_home_delivery_count.setText(cs.getString(cs.getColumnIndex("InprogressDeliveryCnt")));
-                text_home_pickup_count.setText(cs.getString(cs.getColumnIndex("InprogressPickupCnt")));
-                text_home_rpc_count.setText(cs.getString(cs.getColumnIndex("InprogressRpcCnt")));
-
-                //파트너 Office Header - RPC Change Driver 버튼 설정
-                if (opDefault.equals("Y")) {
-
-                    if (!rpcCnt.equals("0")) {
-                        btn_home_assign_pickup_driver.setVisibility(View.VISIBLE);
-                    } else {
-                        btn_home_assign_pickup_driver.setVisibility(View.GONE);
-                    }
-                }
-            }
-        } catch (Exception e) {
-
-            Log.e("Exception", TAG + " - getLocalCount() Exception : " + e.toString());
-        }
-    }
 
     @Override
     protected void onActivityResult(int requestCode, int resultCode, Intent intent) {
@@ -544,10 +448,11 @@ public class MainActivity extends AppBaseActivity {
     private void Upload() {
 
         if (!NetworkUtil.isNetworkAvailable(MainActivity.this)) {
-
             Toast.makeText(MainActivity.this, getString(R.string.msg_network_connect_error), Toast.LENGTH_SHORT).show();
             return;
         }
+
+        // TODO_kjyoo MainActivityServer.INSTANCE.upload() 로 변경중....
 
         ArrayList<UploadData> songjanglist = new ArrayList<>();
         // 업로드 대상건 로컬 DB 조회
@@ -581,7 +486,6 @@ public class MainActivity extends AppBaseActivity {
         }
 
         if (gpsEnable && gpsTrackerManager != null) {
-
             latitude = gpsTrackerManager.getLatitude();
             longitude = gpsTrackerManager.getLongitude();
             Log.e("Location", TAG + " - Upload() > " + latitude + ", " + longitude);
@@ -591,20 +495,21 @@ public class MainActivity extends AppBaseActivity {
 
             DataUtil.logEvent("button_click", TAG, "SetDeliveryUploadData / SetPickupUploadData");
 
-            new DeviceDataUploadHelper.Builder(this, opID, officeCode, deviceID,
+            new DeviceDataUploadHelper.Builder(this, opID, Preferences.INSTANCE.getOfficeCode(), Preferences.INSTANCE.getDeviceUUID(),
                     songjanglist, "QH", latitude, longitude).
                     setOnServerEventListener(new OnServerEventListener() {
 
                         @Override
                         public void onPostResult() {
-                            getLocalCount();
+                            MainActivityServer.INSTANCE.getLocalCount(MainActivity.this);
                         }
 
                         @Override
                         public void onPostFailList() {
-                            getLocalCount();
+                            MainActivityServer.INSTANCE.getLocalCount(MainActivity.this);
                         }
                     }).build().execute();
+
         } else {
 
             new AlertDialog.Builder(this)
@@ -619,124 +524,35 @@ public class MainActivity extends AppBaseActivity {
     private void Download() {
 
         if (!NetworkUtil.isNetworkAvailable(MainActivity.this)) {
-
             Toast.makeText(MainActivity.this, getString(R.string.msg_network_connect_error), Toast.LENGTH_SHORT).show();
             return;
         } else {
-//            MainDownload.INSTANCE.download(MainActivity.this);
+
+            MainActivityServer.INSTANCE.download(MainActivity.this);
         }
 
-        // 2020.12  Failed Code 가져오기
-        DataUtil.requestServerPickupFailedCode();
-        DataUtil.requestServerDeliveryFailedCode();
-
-        //  2020.02 휴무일 가져오기
-        int delete = DatabaseHelper.getInstance().delete(DatabaseHelper.DB_TABLE_REST_DAYS, "");
-        Log.e(TAG, "DELETE  DB_TABLE_REST_DAYS  Count : " + delete);
-//        new GetRestDaysAsyncTask(Preferences.INSTANCE.getUserNation(), Calendar.getInstance().get(Calendar.YEAR)).execute();
-//        new GetRestDaysAsyncTask(Preferences.INSTANCE.getUserNation(), Calendar.getInstance().get(Calendar.YEAR) + 1).execute();
-
-        RetrofitClient.INSTANCE.instanceDynamic().requestGetRestDays(Calendar.getInstance().get(Calendar.YEAR), Preferences.INSTANCE.getUserNation(),
-                DataUtil.appID, Preferences.INSTANCE.getUserNation())
-                .subscribeOn(Schedulers.io())
-                .observeOn(AndroidSchedulers.mainThread())
-                .subscribe(it -> {
-
-                    if (it.getResultCode() == 0 && it.getResultObject() != null) {
-
-                        ArrayList<RestDaysResult> list = new Gson().fromJson(it.getResultObject(), new TypeToken<ArrayList<RestDaysResult>>() {
-                        }.getType());
-
-                        insertRestDays(list);
-                    }
-                }, it -> Log.e(RetrofitClient.errorTag, TAG + " - " + it.toString()));
-
-        RetrofitClient.INSTANCE.instanceDynamic().requestGetRestDays(Calendar.getInstance().get(Calendar.YEAR) + 1, Preferences.INSTANCE.getUserNation(),
-                DataUtil.appID, Preferences.INSTANCE.getUserNation())
-                .subscribeOn(Schedulers.io())
-                .observeOn(AndroidSchedulers.mainThread())
-                .subscribe(it -> {
-
-                    if (it.getResultCode() == 0 && it.getResultObject() != null) {
-                        ArrayList<RestDaysResult> list = new Gson().fromJson(it.getResultObject(), new TypeToken<ArrayList<RestDaysResult>>() {
-                        }.getType());
-
-                        insertRestDays(list);
-                    }
-                }, it -> Log.e(RetrofitClient.errorTag, TAG + " - " + it.toString()));
-
-
-        if (gpsEnable && gpsTrackerManager != null) {
-
-            latitude = gpsTrackerManager.getLatitude();
-            longitude = gpsTrackerManager.getLongitude();
-        }
-        Log.e("Location", TAG + " - Download() > " + latitude + ", " + longitude);
-
-        //
         if (0 < Integer.parseInt(uploadFailedCount)) {
-
             new AlertDialog.Builder(this)
                     .setMessage(getResources().getString(R.string.msg_download_not_supported))
                     .setTitle(getResources().getString(R.string.text_alert))
                     .setCancelable(false).setPositiveButton(getResources().getString(R.string.button_ok),
                     (dialog, which) -> {
                     }).show();
-
-            return;
         }
 
-        try {
-
-            dbHelper.delete(DatabaseHelper.DB_TABLE_INTEGRATION_LIST, "");
-        } catch (Exception e) {
-
-            dbHelper = DatabaseHelper.getInstance();
-            dbHelper.delete(DatabaseHelper.DB_TABLE_INTEGRATION_LIST, "");
-            Log.e("Exception", TAG + "  DB Delete Exception : " + e.toString());
-
-            try {
-
-                Bundle params = new Bundle();
-                params.putString("Activity", TAG);
-                params.putString("message", "" + " DB.delete > " + e.toString());
-                DataUtil.mFirebaseAnalytics.logEvent("error_exception", params);
-            } catch (Exception ignored) {
-
-            }
-        }
-
-        new ServerDownloadHelper.Builder(this, opID, officeCode, deviceID)
-                .setOnServerDownloadEventListener(this::getLocalCount).build().execute();
-    }
-
-    public void insertRestDays(ArrayList<RestDaysResult> list) {
-
-        long insert = 0;
-        if (list != null) {
-            for (RestDaysResult data : list) {
-
-                ContentValues contentValues = new ContentValues();
-                contentValues.put("title", data.getTitle());
-                contentValues.put("rest_dt", data.getRest_dt());
-
-                insert = DatabaseHelper.getInstance().insert(DatabaseHelper.DB_TABLE_REST_DAYS, contentValues);
-            }
-        }
-        Log.e("DB", "insertRestDays  DB Insert: " + insert);
     }
 
 
     public void GPSTrackerServiceStart() {
 
-        if (pickup_driver_yn != null && pickup_driver_yn.equals("Y")) {
+        if (Preferences.INSTANCE.getPickupDriver().equals("Y")) {
 
             // gps 켜는 alert 창  -> 객체 하나에만 호출해도 GPS 설정창 문제 없음(기기는 하나)
             LocationManager locationManager = (LocationManager) getSystemService(Context.LOCATION_SERVICE);
             enableGPSSetting(locationManager);
 
             int status = GoogleApiAvailability.getInstance().isGooglePlayServicesAvailable(this);
-            isGooglePlayService = ConnectionResult.SUCCESS == status;
+            Boolean isGooglePlayService = (ConnectionResult.SUCCESS == status);
 
             // TEST_
             // isGooglePlayService = false;
@@ -783,10 +599,8 @@ public class MainActivity extends AppBaseActivity {
         super.onDestroy();
         Log.e(TAG, " ** onDestroy()");
 
-        if (!isHomeBtnClick) {  // home btn 누른게 아닐 때 작동해야 할 destroy method
-            isHomeBtnClick = false;
-            setDestroyUserInfo();
-        }
+        MainActivityServer.INSTANCE.setDestroyUserInfo(this);
+//        setDestroyUserInfo();
 
         //Bluetooth Setting 화면 connection 없애기
         BluetoothDeviceData.connectedPrinterAddress = null;
@@ -804,16 +618,6 @@ public class MainActivity extends AppBaseActivity {
         }
 
         dbHelper.close();
-
-        if (!isHomeBtnClick) {  // home btn 누른게 아닐 때 작동해야 할 destroy method
-            // Home 으로 가서 app 종료 할 때 구분해서 alert 창 안 띄우게 함
-            isHomeBtnClick = false;
-            //   Toast.makeText(this.getApplicationContext(), mContext.getResources().getString(R.string.msg_qdrive_app_exited), Toast.LENGTH_SHORT).show();
-        } else {
-            isHomeBtnClick = false;
-        }
-
-        isHomeBtnClick = false;
     }
 
     public void enableGPSSetting(LocationManager locationManager) {
@@ -828,69 +632,68 @@ public class MainActivity extends AppBaseActivity {
         }
     }
 
-    @SuppressLint("SimpleDateFormat")
-    public void setDestroyUserInfo() {
 
-        String api_level = Integer.toString(Build.VERSION.SDK_INT);     // API Level
-        String device_info = Build.DEVICE;                   // Device
-        String device_model = Build.MODEL;                   // Model
-        String device_product = Build.PRODUCT;               // Product
-        String device_os_version = System.getProperty("os.version");    // OS version
-        Log.e(TAG, " DATA " + api_level + " / " + device_info + " / " + device_model + " / " + device_product + " / " + device_os_version);
-
-        SimpleDateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
-        String regDataString = dateFormat.format(new Date());
-
-        RetrofitClient.INSTANCE.instanceDynamic().requestSetAppUserInfo(
-                "killapp", NetworkUtil.getNetworkType(this), "", regDataString,
-                "QDRIVE", api_level, device_info, device_model, device_product, device_os_version,
-                "", "", "", "", "", "", "", "",
-                opID, opID, opID, DataUtil.appID, Preferences.INSTANCE.getUserNation())
-                .subscribeOn(Schedulers.io())
-                .observeOn(AndroidSchedulers.mainThread())
-                .subscribe(it -> {
-
-                    try {
-
-                        Log.e("Server", " requestSetAppUserInfo  result  " + it.getResultCode());
-
-                        if (it.getResultCode() < 0) {
-
-                            AlertDialog.Builder builder = new AlertDialog.Builder(this);
-                            builder.setCancelable(false);
-                            builder.setTitle(getResources().getString(R.string.text_upload_result));
-                            builder.setMessage(it.getResultMsg());
-                            builder.setPositiveButton(getResources().getString(R.string.button_ok), (dialog1, which) -> dialog1.dismiss());
-                            builder.show();
-                        }
-                    } catch (Exception e) {
-                        Log.e("Exception", "  requestSetAppUserInfo  Exception " + e.toString());
-                    }
-                }, it -> Toast.makeText(this, getResources().getString(R.string.msg_error_check_again), Toast.LENGTH_SHORT).show());
-
-
-        double accuracy = 0;
-        try {
-
-            if (gpsEnable && gpsTrackerManager != null) {
-
-                latitude = gpsTrackerManager.getLatitude();
-                longitude = gpsTrackerManager.getLongitude();
-                accuracy = gpsTrackerManager.getAccuracy();
-
-                Log.e("Location", TAG + " - setDestroyUserInfo() > " + latitude + ", " + longitude);
-            }
-        } catch (Exception e) {
-
-            latitude = 0;
-            longitude = 0;
-        }
-
-
-        new DriverPerformanceLogUploadHelper.Builder(this, opID, latitude, longitude, accuracy)
-                .setOnDriverPerformanceLogUploadEventListener(() -> {
-                }).build().execute();
-    }
+// todo_kjyoo 추후 삭제.
+//    public void setDestroyUserInfo() {
+//
+//        String api_level = Integer.toString(Build.VERSION.SDK_INT);     // API Level
+//        String device_info = Build.DEVICE;                   // Device
+//        String device_model = Build.MODEL;                   // Model
+//        String device_product = Build.PRODUCT;               // Product
+//        String device_os_version = System.getProperty("os.version");    // OS version
+//        Log.e(TAG, " DATA " + api_level + " / " + device_info + " / " + device_model + " / " + device_product + " / " + device_os_version);
+//
+//        SimpleDateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
+//        String regDataString = dateFormat.format(new Date());
+//
+//        RetrofitClient.INSTANCE.instanceDynamic().requestSetAppUserInfo(
+//                "killapp", NetworkUtil.getNetworkType(this), "", regDataString,
+//                "QDRIVE", api_level, device_info, device_model, device_product, device_os_version,
+//                "", "", "", "", "", "", "", "",
+//                opID, opID, opID, DataUtil.appID, Preferences.INSTANCE.getUserNation())
+//                .subscribeOn(Schedulers.io())
+//                .observeOn(AndroidSchedulers.mainThread())
+//                .subscribe(it -> {
+//
+//                    try {
+//
+//                        Log.e("Server", " requestSetAppUserInfo  result  " + it.getResultCode());
+//
+//                        if (it.getResultCode() < 0) {
+//
+//                            AlertDialog.Builder builder = new AlertDialog.Builder(this);
+//                            builder.setCancelable(false);
+//                            builder.setTitle(getResources().getString(R.string.text_upload_result));
+//                            builder.setMessage(it.getResultMsg());
+//                            builder.setPositiveButton(getResources().getString(R.string.button_ok), (dialog1, which) -> dialog1.dismiss());
+//                            builder.show();
+//                        }
+//                    } catch (Exception e) {
+//                        Log.e("Exception", "  requestSetAppUserInfo  Exception " + e.toString());
+//                    }
+//                }, it -> Toast.makeText(this, getResources().getString(R.string.msg_error_check_again), Toast.LENGTH_SHORT).show());
+//
+//
+//        double accuracy = 0;
+//        try {
+//
+//            if (gpsEnable && gpsTrackerManager != null) {
+//                latitude = gpsTrackerManager.getLatitude();
+//                longitude = gpsTrackerManager.getLongitude();
+//                accuracy = gpsTrackerManager.getAccuracy();
+//
+//                Log.e("Location", TAG + " - setDestroyUserInfo() > " + latitude + ", " + longitude);
+//            }
+//        } catch (Exception e) {
+//            latitude = 0;
+//            longitude = 0;
+//        }
+//
+//
+//        new DriverPerformanceLogUploadHelper.Builder(this, opID, latitude, longitude, accuracy)
+//                .setOnDriverPerformanceLogUploadEventListener(() -> {
+//                }).build().execute();
+//    }
 
 
     @Override
@@ -970,32 +773,4 @@ public class MainActivity extends AppBaseActivity {
         }
     }
 
-    private RoundedBitmapDrawable createRoundedBitmapImageDrawableWithBorder(Bitmap bitmap) {
-        int bitmapWidthImage = bitmap.getWidth();
-        int bitmapHeightImage = bitmap.getHeight();
-        int borderWidthHalfImage = 4;
-
-        int bitmapRadiusImage = Math.min(bitmapWidthImage, bitmapHeightImage) / 2;
-        int bitmapSquareWidthImage = Math.min(bitmapWidthImage, bitmapHeightImage);
-        int newBitmapSquareWidthImage = bitmapSquareWidthImage + borderWidthHalfImage;
-
-        Bitmap roundedImageBitmap = Bitmap.createBitmap(newBitmapSquareWidthImage, newBitmapSquareWidthImage, Bitmap.Config.ARGB_8888);
-        Canvas mcanvas = new Canvas(roundedImageBitmap);
-        mcanvas.drawColor(Color.RED);
-        int i = borderWidthHalfImage + bitmapSquareWidthImage - bitmapWidthImage;
-        int j = borderWidthHalfImage + bitmapSquareWidthImage - bitmapHeightImage;
-
-        mcanvas.drawBitmap(bitmap, i, j, null);
-
-        Paint borderImagePaint = new Paint();
-        borderImagePaint.setStyle(Paint.Style.STROKE);
-        borderImagePaint.setStrokeWidth(borderWidthHalfImage * 2);
-        borderImagePaint.setColor(Color.GRAY);
-        mcanvas.drawCircle(mcanvas.getWidth() / 2, mcanvas.getWidth() / 2, newBitmapSquareWidthImage / 2, borderImagePaint);
-
-        RoundedBitmapDrawable roundedImageBitmapDrawable = RoundedBitmapDrawableFactory.create(getResources(), roundedImageBitmap);
-        roundedImageBitmapDrawable.setCornerRadius(bitmapRadiusImage);
-        roundedImageBitmapDrawable.setAntiAlias(true);
-        return roundedImageBitmapDrawable;
-    }
 }

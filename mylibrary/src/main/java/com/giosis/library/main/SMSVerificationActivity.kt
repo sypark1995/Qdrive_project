@@ -11,18 +11,23 @@ import android.telephony.TelephonyManager
 import android.text.Editable
 import android.text.TextWatcher
 import android.util.Log
-import android.widget.Toast
 import androidx.core.app.ActivityCompat
+import androidx.lifecycle.lifecycleScope
 import com.giosis.library.R
 import com.giosis.library.databinding.ActivitySmsVerificationBinding
 import com.giosis.library.server.RetrofitClient
 import com.giosis.library.util.*
-import io.reactivex.rxjava3.android.schedulers.AndroidSchedulers
-import io.reactivex.rxjava3.schedulers.Schedulers
+import kotlinx.coroutines.launch
 import java.util.*
 import java.util.regex.Pattern
 
 class SMSVerificationActivity : CommonActivity() {
+
+    companion object {
+        private const val TAG = "SMSVerificationActivity"
+        private const val PERMISSION_REQUEST_CODE = 1000
+        private val PERMISSIONS = arrayOf(PermissionChecker.READ_PHONE_STATE)
+    }
 
     var isPermissionTrue = false
 
@@ -31,12 +36,8 @@ class SMSVerificationActivity : CommonActivity() {
     }
 
     private var phoneNo = ""
-    private var authCode = ""
     var name = ""
     var email = ""
-
-    private var focusItem = ""
-    private var mPhoneNumber: String? = null
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -117,16 +118,14 @@ class SMSVerificationActivity : CommonActivity() {
     override fun onResume() {
         super.onResume()
 
-        mPhoneNumber = ""
         if (isPermissionTrue) {
-            mPhoneNumber = try {
+            val mPhoneNumber = try {
                 myPhoneNumber
             } catch (e: Exception) {
                 ""
             }
+            binding.editPhoneNumber.setText(mPhoneNumber)
         }
-
-        binding.editPhoneNumber.setText(mPhoneNumber)
     }
 
     private val myPhoneNumber: String
@@ -140,6 +139,7 @@ class SMSVerificationActivity : CommonActivity() {
             ) {
                 return tempPhoneNo
             }
+
             val mTelephonyMgr = getSystemService(TELEPHONY_SERVICE) as TelephonyManager
             if (mTelephonyMgr.line1Number != "") {
                 tempPhoneNo = mTelephonyMgr.line1Number
@@ -156,7 +156,6 @@ class SMSVerificationActivity : CommonActivity() {
             }
         }
     }
-
 
     // SG, MY, ID 구분
     private fun requestAuthNoClick() {
@@ -329,35 +328,30 @@ class SMSVerificationActivity : CommonActivity() {
 
                 dialog.cancel()
 
-                RetrofitClient.instanceDynamic().requestGetAuthCodeRequest(phoneNo)
-                    .subscribeOn(Schedulers.io())
-                    .observeOn(AndroidSchedulers.mainThread())
-                    .subscribe({
+                lifecycleScope.launch {
+                    try {
+                        val result =
+                            RetrofitClient.instanceDynamic().requestGetAuthCodeRequest(phoneNo)
 
-                        if (it.resultCode != 0) {
+                        if (result.resultCode != 0) {
 
                             val alertBuilder = AlertDialog.Builder(this@SMSVerificationActivity)
                             alertBuilder.setTitle(resources.getString(R.string.text_alert))
-                            alertBuilder.setMessage(resources.getString(R.string.msg_sms_request_failed) + " " + it.resultMsg)
+                            alertBuilder.setMessage(resources.getString(R.string.msg_sms_request_failed) + " " + result.resultMsg)
                             alertBuilder.setPositiveButton(resources.getString(R.string.button_ok)) { dialog: DialogInterface, _: Int -> dialog.cancel() }
-                            try {
-                                alertBuilder.show()
-                            } catch (ignored: Exception) {
-                            }
-                        } else {
+                            alertBuilder.show()
 
+                        } else {
                             binding.edit4Digit.requestFocus()
                         }
-                    }, {
 
-                        Toast.makeText(
-                            this,
-                            "AuthCodeRequest Exception : ${it.message}",
-                            Toast.LENGTH_SHORT
-                        ).show()
-                    })
+                    } catch (e: java.lang.Exception) {
+
+                    }
+                }
             }
             builder.setNeutralButton(resources.getString(R.string.button_cancel)) { dialog: DialogInterface, _: Int -> dialog.cancel() }
+
         } else {
 
             builder.setPositiveButton(resources.getString(R.string.button_ok)) { dialog: DialogInterface, _: Int -> dialog.cancel() }
@@ -367,57 +361,60 @@ class SMSVerificationActivity : CommonActivity() {
         alertDialog.show()
     }
 
-
     private fun submitAuthNoClick() {
 
-        authCode = binding.edit4Digit.text.toString()
+        val authCode = binding.edit4Digit.text.toString()
         name = binding.editName.text.toString()
         email = binding.editEmail.text.toString()
 
         val builder = AlertDialog.Builder(this)
         builder.setTitle(resources.getString(R.string.text_invalidation_alert))
 
-        if (authCode.length == 4) {
+        if (name == "") {
+            builder.setMessage(resources.getString(R.string.msg_please_enter_name))
+            builder.setPositiveButton(resources.getString(R.string.button_ok)) { dialog: DialogInterface, _: Int ->
+                binding.editName.requestFocus()
+                dialog.cancel()
+            }
+            val alertDialog = builder.create()
+            alertDialog.show()
 
-            var isValidate = true
-            if (name == "") {
-                isValidate = false
-                focusItem = "name"
-                builder.setMessage(resources.getString(R.string.msg_please_enter_name))
+        } else {
+
+            if (authCode.length != 4) {
+
+                builder.setMessage(resources.getString(R.string.msg_please_enter_right_number))
                 builder.setPositiveButton(resources.getString(R.string.button_ok)) { dialog: DialogInterface, _: Int ->
-                    if (focusItem == "name") {
-                        binding.editName.requestFocus()
-                    }
+                    binding.edit4Digit.requestFocus()
                     dialog.cancel()
                 }
+
                 val alertDialog = builder.create()
                 alertDialog.show()
-            }
 
-            if (isValidate) {
+            } else {
 
-                RetrofitClient.instanceDynamic()
-                    .requestSetAuthCodeCheck(phoneNo, authCode, name, email)
-                    .subscribeOn(Schedulers.io())
-                    .observeOn(AndroidSchedulers.mainThread())
-                    .subscribe({
+                lifecycleScope.launch {
+                    try {
 
-                        if (it.resultCode != 0) {
+                        val result = RetrofitClient.instanceDynamic()
+                            .requestSetAuthCodeCheck(phoneNo, authCode, name, email)
+
+                        if (result.resultCode != 0) {
 
                             val alertBuilder = AlertDialog.Builder(this@SMSVerificationActivity)
                             alertBuilder.setTitle(resources.getString(R.string.text_alert))
                             alertBuilder.setMessage(
-                                "${resources.getString(R.string.msg_sms_verification_failed)} ${it.resultMsg}\n${
-                                    resources.getString(
-                                        R.string.msg_verification_not_use
-                                    )
-                                }"
+                                "${resources.getString(R.string.msg_sms_verification_failed)} ${result.resultMsg}" +
+                                        "\n${resources.getString(R.string.msg_verification_not_use)}"
                             )
                             alertBuilder.setPositiveButton(resources.getString(R.string.button_ok)) { dialog: DialogInterface, _: Int -> dialog.cancel() }
+
                             if (!this@SMSVerificationActivity.isFinishing) {
                                 val alertDialog = alertBuilder.create()
                                 alertDialog.show()
                             }
+
                         } else {
 
                             val alertBuilder = AlertDialog.Builder(this@SMSVerificationActivity)
@@ -445,31 +442,12 @@ class SMSVerificationActivity : CommonActivity() {
                                 alertDialog.show()
                             }
                         }
-                    }, {
 
-                        Toast.makeText(
-                            this,
-                            "SetAuthCodeCheck Exception : ${it.message}",
-                            Toast.LENGTH_SHORT
-                        ).show()
-                    })
+                    } catch (e: java.lang.Exception) {
+
+                    }
+                }
             }
-        } else {
-
-            builder.setMessage(resources.getString(R.string.msg_please_enter_right_number))
-            builder.setPositiveButton(resources.getString(R.string.button_ok)) { dialog: DialogInterface, _: Int ->
-                binding.edit4Digit.requestFocus()
-                dialog.cancel()
-            }
-
-            val alertDialog = builder.create()
-            alertDialog.show()
         }
-    }
-
-    companion object {
-        private const val TAG = "SMSVerificationActivity"
-        private const val PERMISSION_REQUEST_CODE = 1000
-        private val PERMISSIONS = arrayOf(PermissionChecker.READ_PHONE_STATE)
     }
 }

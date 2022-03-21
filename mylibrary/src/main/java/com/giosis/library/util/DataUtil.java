@@ -19,14 +19,11 @@ import android.view.View;
 import com.giosis.library.R;
 import com.giosis.library.gps.GPSTrackerManager;
 import com.giosis.library.main.DriverAssignResult;
-import com.giosis.library.server.CallServer;
 import com.giosis.library.server.ImageUpload;
 import com.giosis.library.server.RetrofitClient;
 import com.giosis.library.server.data.FailedCodeResult;
 import com.google.firebase.analytics.FirebaseAnalytics;
 import com.google.gson.Gson;
-
-import org.jetbrains.annotations.NotNull;
 
 import java.io.ByteArrayOutputStream;
 import java.io.File;
@@ -283,50 +280,6 @@ public class DataUtil {
             gpsTrackerManager.stopFusedProviderService();
         }
     }
-
-
-    // NOTIFICATION. 202012  Failed Reason
-    public static void requestServerPickupFailedCode() {
-        CallServer.INSTANCE.getFailedCode(CallServer.PFC, "", new CallServer.GetFailedCodeCallback() {
-
-            @Override
-            public void onServerError(int value) {
-            }
-
-            @Override
-            public void onServerResult(@NotNull FailedCodeResult value) {
-
-                if (value.getResultCode() == 10) {
-
-                    String json = new Gson().toJson(value);
-                    Log.e("Server", "P  getFailedCode  " + json);
-                    Preferences.INSTANCE.setPFailedCode(json);
-                }
-            }
-        });
-    }
-
-    public static void requestServerDeliveryFailedCode() {
-
-        CallServer.INSTANCE.getFailedCode(CallServer.DFC, "", new CallServer.GetFailedCodeCallback() {
-
-            @Override
-            public void onServerError(int value) {
-            }
-
-            @Override
-            public void onServerResult(@NotNull FailedCodeResult value) {
-
-                if (value.getResultCode() == 10) {
-
-                    String json = new Gson().toJson(value);
-                    Log.e("Server", "D  getFailedCode  " + json);
-                    Preferences.INSTANCE.setDFailedCode(json);
-                }
-            }
-        });
-    }
-
 
     public static ArrayList<FailedCodeResult.FailedCode> getFailCode(String type) {
 

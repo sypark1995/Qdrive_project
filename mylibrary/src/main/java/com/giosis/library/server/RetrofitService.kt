@@ -149,10 +149,10 @@ interface RetrofitService {
 
     @POST("GetCommonCodeData")
     @FormUrlEncoded
-    fun requestGetFailedCode(
+    suspend fun requestGetFailedCode(
         @Field("cd_type") cd_type: String,
-        @Field("nation_cd") nation_cd: String
-    ): Single<FailedCodeResult>
+        @Field("nation_cd") nation_cd: String = ""
+    ): FailedCodeResult
 
 
     @POST("WriteLog")
@@ -311,6 +311,54 @@ interface RetrofitService {
     ): Single<APIModel>
 
 
+    @POST("setQuickAppUserInfo")
+    @FormUrlEncoded
+    suspend fun requestSetAppUserInfo2(
+        @Field("type") type: String,
+        @Field("network_type") network_type: String,
+        @Field("fused_provider_stat") fused_provider_stat: String,
+        @Field("logout_dt") logout_dt: String,
+        @Field("channel") channel: String = "QDRIVE",
+        @Field("api_level") api_level: String = Build.VERSION.SDK_INT.toString(),
+        @Field("device_info") device_info: String = Build.DEVICE,
+        @Field("device_model") device_model: String = Build.MODEL,
+        @Field("device_product") device_product: String = Build.PRODUCT,
+        @Field("device_os_version") device_os_version: String = System.getProperty("os.version"),
+        @Field("vehicle_code") vehicle_code: String = "",
+        @Field("device_id") device_id: String = "",
+        @Field("location_mng_stat") location_mng_stat: String = "",
+        @Field("desc1") desc1: String = "",
+        @Field("desc2") desc2: String = "",
+        @Field("desc3") desc3: String = "",
+        @Field("desc4") desc4: String = "",
+        @Field("desc5") desc5: String = "",
+        @Field("op_id") op_id: String = Preferences.userId,
+        @Field("reg_id") reg_id: String = Preferences.userId,
+        @Field("chg_id") chg_id: String = Preferences.userId,
+        @Field("app_id") app_id: String = DataUtil.appID,
+        @Field("nation_cd") nation_cd: String = Preferences.userNation
+    ): APIModel
+
+    @POST("setDriverPerformanceLog")
+    @FormUrlEncoded
+    suspend fun requestSetDriverPerformanceLog(
+        @Field("channel") channel: String,
+        @Field("latitude") latitude: String,
+        @Field("longitude") longitude: String,
+        @Field("accuracy") accuracy: String,
+        @Field("action") action: String = "killapp",
+        @Field("pickup_no") pickup_no: String = "",
+        @Field("seller_id") seller_id: String = "",
+        @Field("zipcode") zipcode: String = "",
+        @Field("memo") memo: String = "",
+        @Field("op_id") op_id: String = Preferences.userId,
+        @Field("reg_id") reg_id: String = Preferences.userId,
+        @Field("referece") referece: String = "",
+        @Field("app_id") app_id: String = DataUtil.appID,
+        @Field("nation_cd") nation_cd: String = Preferences.userNation
+    ): APIModel
+
+
     @POST("getTodayPickupDone")
     @FormUrlEncoded
     fun requestGetTodayPickupDoneList(
@@ -384,13 +432,85 @@ interface RetrofitService {
 
     @POST("GetRestDays")
     @FormUrlEncoded
-    fun requestGetRestDays(
+    suspend fun requestGetRestDays(
         @Field("year") year: Int,
         @Field("svc_nation_cd") svc_nation_cd: String = Preferences.userNation,
         @Field("app_id") app_id: String = DataUtil.appID,
         @Field("nation_cd") nation_cd: String = Preferences.userNation
+    ): APIModel
+
+
+    @POST("SetGCMUserKeyRegister")
+    @FormUrlEncoded
+    fun requestSetFCMToken(
+        @Field("user_key") user_key: String,
+        @Field("op_id") op_id: String,
+        @Field("app_cd") app_cd: String,
+        @Field("device_id") device_id: String,
+        @Field("app_id") app_id: String,
+        @Field("nation_cd") nation_cd: String,
     ): Single<APIModel>
 
+
+    @POST("GetPickupList")
+    @FormUrlEncoded
+    suspend fun requestGetPickupList(
+        @Field("network_type") network_type: String,
+        @Field("opId") opId: String = Preferences.userId,
+        @Field("officeCd") officeCode: String = Preferences.officeCode,
+        @Field("device_id") device_id: String = Preferences.userId,
+        @Field("app_id") app_id: String = DataUtil.appID,
+        @Field("nation_cd") nation_cd: String = Preferences.userNation,
+    ): APIModel
+
+    @POST("GetDeliveryList")
+    @FormUrlEncoded
+    suspend fun requestGetDeliveryList(
+        @Field("network_type") network_type: String,
+        @Field("opId") opId: String = Preferences.userId,
+        @Field("officeCd") officeCode: String = Preferences.officeCode,
+        @Field("device_id") device_id: String = Preferences.userId,
+        @Field("app_id") app_id: String = DataUtil.appID,
+        @Field("nation_cd") nation_cd: String = Preferences.userNation,
+    ): APIModel
+
+
+    @POST("GetDeliveryList_Outlet")
+    @FormUrlEncoded
+    suspend fun requestGetDeliveryOutlet(
+        @Field("network_type") network_type: String,
+        @Field("opId") opId: String = Preferences.userId,
+        @Field("officeCd") officeCode: String = Preferences.officeCode,
+        @Field("device_id") device_id: String = Preferences.userId,
+        @Field("app_id") app_id: String = DataUtil.appID,
+        @Field("nation_cd") nation_cd: String = Preferences.userNation,
+    ): APIModel
+
+
+    @POST("SetPickupUploadData")
+    @FormUrlEncoded
+    suspend fun requestSetPickupUploadData2(
+        @Field("rcv_type") rcv_type: String,
+        @Field("stat") stat: String,
+        @Field("no_songjang") no_songjang: String,
+        @Field("fileData") fileData: String,
+        @Field("fileData2") fileData2: String,
+        @Field("remark") remark: String,
+        @Field("lat") lat: String,
+        @Field("lon") lon: String,
+        @Field("real_qty") real_qty: String,
+        @Field("fail_reason") fail_reason: String,
+        @Field("retry_day") retry_day: String,
+        @Field("network_type") network_type: String,
+        @Field("opId") opId: String = Preferences.userId,
+        @Field("chg_id") chg_id: String = Preferences.userId,
+        @Field("deliv_msg") deliv_msg: String = "(by Qdrive RealTime-Upload)", // 내부관리자용 메세지
+        @Field("officeCd") officeCode: String = Preferences.officeCode,
+        @Field("device_id") device_id: String = Preferences.userId,
+        @Field("disk_size") disk_size: String = "999999",
+        @Field("app_id") app_id: String = DataUtil.appID,
+        @Field("nation_cd") nation_cd: String = Preferences.userNation,
+    ): APIModel
 
     // CnR Print Data
     @POST("GetCnRPrintData")
@@ -402,21 +522,22 @@ interface RetrofitService {
         @Field("nation_cd") nation_cd: String = Preferences.userNation
     ): Single<APIModel>
 
+
     // SMS AuthCode Request
     @POST("GetAuthCodeRequest")
     @FormUrlEncoded
-    fun requestGetAuthCodeRequest(
+    suspend fun requestGetAuthCodeRequest(
         @Field("mobile") mobile: String,
         @Field("deviceID") deviceID: String = Preferences.deviceUUID,
         @Field("op_id") op_id: String = Preferences.userId,
         @Field("app_id") app_id: String = DataUtil.appID,
         @Field("nation_cd") nation_cd: String = Preferences.userNation
-    ): Single<APIModel>
+    ): APIModel
 
     // SMS AuthCode Submit
     @POST("SetAuthCodeCheck")
     @FormUrlEncoded
-    fun requestSetAuthCodeCheck(
+    suspend fun requestSetAuthCodeCheck(
         @Field("mobile") mobile: String,
         @Field("authCode") authCode: String,
         @Field("name") name: String,
@@ -425,7 +546,7 @@ interface RetrofitService {
         @Field("op_id") op_id: String = Preferences.userId,
         @Field("app_id") app_id: String = DataUtil.appID,
         @Field("nation_cd") nation_cd: String = Preferences.userNation
-    ): Single<APIModel>
+    ): APIModel
 
     // Message Count
     @POST("GetNewMessageCount")

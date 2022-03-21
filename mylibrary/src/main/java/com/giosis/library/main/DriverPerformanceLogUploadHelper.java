@@ -14,6 +14,9 @@ import com.giosis.library.util.Preferences;
 
 import org.json.JSONObject;
 
+// TODO_kjyoo MainActivityServer 로 이동완료. 추후 삭제...
+
+@Deprecated
 public class DriverPerformanceLogUploadHelper {
     String TAG = "DriverPerformanceLogUploadHelper";
 
