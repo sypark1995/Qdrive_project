@@ -1,5 +1,6 @@
 package com.giosis.library.message
 
+
 import android.os.Bundle
 import android.util.Log
 import android.view.WindowManager
@@ -11,9 +12,7 @@ import com.giosis.library.databinding.ActivityMessageListBinding
 import com.giosis.library.util.CommonActivity
 import com.google.android.material.tabs.TabLayoutMediator
 
-/**
- * @author krm0219
- */
+
 class MessageListActivity : CommonActivity() {
 
     private val binding by lazy {
@@ -28,7 +27,6 @@ class MessageListActivity : CommonActivity() {
 
         binding.layoutTopTitle.textTopTitle.setText(R.string.text_title_message)
         binding.layoutTopTitle.layoutTopBack.setOnClickListener {
-
             finish()
         }
 
@@ -36,14 +34,16 @@ class MessageListActivity : CommonActivity() {
         val customerMessageCount = intent.getIntExtra("customer_count", 0)
         val adminMessageCount = intent.getIntExtra("admin_count", 0)
 
-
         val pagerAdapter = PagerFragmentStateAdapter(this)
         pagerAdapter.addFragment(CustomerMessageListFragment())
         pagerAdapter.addFragment(AdminMessageListFragment())
         binding.pager2.adapter = pagerAdapter
         binding.pager2.currentItem = viewPagerPosition
 
-        val tabElement = listOf(resources.getString(R.string.text_customer), resources.getString(R.string.text_administrator))
+        val tabElement = listOf(
+            resources.getString(R.string.text_customer),
+            resources.getString(R.string.text_administrator)
+        )
         TabLayoutMediator(binding.tabLayout, binding.pager2) { tab, position ->
             tab.text = tabElement[position]
         }.attach()
@@ -55,7 +55,8 @@ class MessageListActivity : CommonActivity() {
     }
 
 
-    private inner class PagerFragmentStateAdapter(activity: FragmentActivity) : FragmentStateAdapter(activity) {
+    private inner class PagerFragmentStateAdapter(activity: FragmentActivity) :
+        FragmentStateAdapter(activity) {
 
         var fragments: ArrayList<Fragment> = ArrayList()
 

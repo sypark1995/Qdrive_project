@@ -26,7 +26,9 @@ import java.text.SimpleDateFormat;
 import java.util.Date;
 import java.util.TimeZone;
 
+// TODO_kjyoo MainActivityServer 로 이동완료. 추후 삭제...
 
+@Deprecated
 public class ServerDownloadHelper {
     String TAG = "ServerDownloadHelper";
 
@@ -425,6 +427,7 @@ public class ServerDownloadHelper {
                         if (resultCode < 0)
                             resultMsg += OutletDeliveryServerList.getResultMsg();
                     }
+
                     if (OutletDeliveryServerList != null && OutletDeliveryServerList.getResultObject() != null) {
                         maxCount += OutletDeliveryServerList.getResultObject().size();
                     }

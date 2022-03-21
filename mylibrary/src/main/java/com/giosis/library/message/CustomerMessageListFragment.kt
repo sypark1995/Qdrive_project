@@ -1,5 +1,6 @@
 package com.giosis.library.message
 
+
 import android.annotation.SuppressLint
 import android.app.AlertDialog
 import android.content.DialogInterface
@@ -26,6 +27,7 @@ import java.text.SimpleDateFormat
 import java.util.*
 
 
+// todo_kjyoo 1분에 한번씩 돌면서 먼짓하는지?? 
 class CustomerMessageListFragment : Fragment() {
 
     var TAG = "CustomerMessageListFragment"
@@ -36,7 +38,6 @@ class CustomerMessageListFragment : Fragment() {
 
     private val task = object : Runnable {
         override fun run() {
-
             callServer()
             handler.postDelayed(this, 60 * 1000)
         }
@@ -48,22 +49,32 @@ class CustomerMessageListFragment : Fragment() {
     private var newResultString: String = ""
 
 
-    override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View {
+    override fun onCreateView(
+        inflater: LayoutInflater,
+        container: ViewGroup?,
+        savedInstanceState: Bundle?
+    ): View {
 
         binding = FragmentMessageListBinding.inflate(inflater, container, false)
-
 
         binding.layoutPrev.setOnClickListener {
 
             if (!NetworkUtil.isNetworkAvailable(activity)) {
-                showDialog(resources.getString(R.string.text_warning), resources.getString(R.string.msg_network_connect_error))
+                showDialog(
+                    resources.getString(R.string.text_warning),
+                    resources.getString(R.string.msg_network_connect_error)
+                )
             } else {
                 if (currentPage > 1) {
 
                     currentPage -= 1
                     callServer()
                 } else {
-                    Toast.makeText(activity, resources.getString(R.string.text_first_page), Toast.LENGTH_SHORT).show()
+                    Toast.makeText(
+                        activity,
+                        resources.getString(R.string.text_first_page),
+                        Toast.LENGTH_SHORT
+                    ).show()
                 }
             }
         }
@@ -71,14 +82,21 @@ class CustomerMessageListFragment : Fragment() {
         binding.layoutNext.setOnClickListener {
 
             if (!NetworkUtil.isNetworkAvailable(activity)) {
-                showDialog(resources.getString(R.string.text_warning), resources.getString(R.string.msg_network_connect_error))
+                showDialog(
+                    resources.getString(R.string.text_warning),
+                    resources.getString(R.string.msg_network_connect_error)
+                )
             } else {
                 if (totalPage >= currentPage + 1) {
 
                     currentPage += 1
                     callServer()
                 } else {
-                    Toast.makeText(activity, resources.getString(R.string.text_last_page), Toast.LENGTH_SHORT).show()
+                    Toast.makeText(
+                        activity,
+                        resources.getString(R.string.text_last_page),
+                        Toast.LENGTH_SHORT
+                    ).show()
                 }
             }
         }
@@ -91,7 +109,10 @@ class CustomerMessageListFragment : Fragment() {
 
         if (!NetworkUtil.isNetworkAvailable(activity)) {
 
-            showDialog(resources.getString(R.string.text_warning), resources.getString(R.string.msg_network_connect_error))
+            showDialog(
+                resources.getString(R.string.text_warning),
+                resources.getString(R.string.msg_network_connect_error)
+            )
         } else {
 
             handler.post(task)
@@ -118,66 +139,75 @@ class CustomerMessageListFragment : Fragment() {
             val startDate = dateFormat.format(yDate).toString() + " 00:00:00"
             val endDate = dateFormat.format(Date()).toString() + " 23:59:59"
 
-            RetrofitClient.instanceDynamic().requestGetMessageListFromCustomer(currentPage.toString(), "15", startDate, endDate, "Ahleb.sp")
-                    .subscribeOn(Schedulers.io())
-                    .observeOn(AndroidSchedulers.mainThread())
-                    .subscribe({
+            RetrofitClient.instanceDynamic().requestGetMessageListFromCustomer(
+                currentPage.toString(),
+                "15",
+                startDate,
+                endDate,
+            ).subscribeOn(Schedulers.io())
+                .observeOn(AndroidSchedulers.mainThread())
+                .subscribe({
 
-                        if (oldResultString != "" && oldResultString.equals(newResultString, ignoreCase = true)) {
+                    if (oldResultString != ""
+                        && oldResultString.equals(newResultString, ignoreCase = true)
+                    ) {
 
-                            Log.e(TAG, "  GetQdriverMessageList  EQUAL")
-                        } else {
-                            if (it.resultObject != null) {
+                        Log.e(TAG, "  GetQdriverMessageList  EQUAL")
+                    } else {
+                        if (it.resultObject != null) {
 
-                                newResultString = it.toString()
-                                val list = Gson().fromJson<ArrayList<MessageListResult>>(it.resultObject,
-                                        object : TypeToken<ArrayList<MessageListResult>>() {}.type)
+                            newResultString = it.toString()
+                            val list =
+                                Gson().fromJson<ArrayList<MessageListResult>>(
+                                    it.resultObject,
+                                    object : TypeToken<ArrayList<MessageListResult>>() {}.type
+                                )
 
-                                if (0 < list.size) {
+                            if (0 < list.size) {
 
-                                    binding.textEmpty.visibility = View.GONE
+                                binding.textEmpty.visibility = View.GONE
 
-                                    binding.layoutBottom.visibility = View.VISIBLE
-                                    binding.recyclerMessages.visibility = View.VISIBLE
-                                    binding.recyclerMessages.adapter = MessageListAdapter("C", list)
+                                binding.layoutBottom.visibility = View.VISIBLE
+                                binding.recyclerMessages.visibility = View.VISIBLE
+                                binding.recyclerMessages.adapter = MessageListAdapter("C", list)
 
-                                    val decoration = DividerItemDecoration(activity, VERTICAL)
-                                    binding.recyclerMessages.addItemDecoration(decoration)
+                                val decoration = DividerItemDecoration(activity, VERTICAL)
+                                binding.recyclerMessages.addItemDecoration(decoration)
 
 
-                                    totalPage = list[0].total_page_size
-                                    binding.textCurrentPage.text = currentPage.toString()
-                                    binding.textTotalPage.text = totalPage.toString()
+                                totalPage = list[0].total_page_size
+                                binding.textCurrentPage.text = currentPage.toString()
+                                binding.textTotalPage.text = totalPage.toString()
 
-                                    var count = 0
+                                var count = 0
 
-                                    for (i in list.indices) {
-                                        if (list[i].read_yn == "N") {
-                                            count++
-                                        }
+                                for (i in list.indices) {
+                                    if (list[i].read_yn == "N") {
+                                        count++
                                     }
-                                    (activity as MessageListActivity).setCustomerNewImage(count)
-                                } else {
-
-                                    binding.recyclerMessages.visibility = View.GONE
-                                    binding.layoutBottom.visibility = View.GONE
-                                    binding.textEmpty.visibility = View.VISIBLE
-                                    binding.textEmpty.text = resources.getString(R.string.text_empty)
                                 }
+                                (activity as MessageListActivity).setCustomerNewImage(count)
+                            } else {
+
+                                binding.recyclerMessages.visibility = View.GONE
+                                binding.layoutBottom.visibility = View.GONE
+                                binding.textEmpty.visibility = View.VISIBLE
+                                binding.textEmpty.text = resources.getString(R.string.text_empty)
                             }
                         }
+                    }
 
-                        binding.progressBar.visibility = View.GONE
-                    }, {
+                    binding.progressBar.visibility = View.GONE
+                }, {
 
-                        binding.recyclerMessages.visibility = View.GONE
-                        binding.layoutBottom.visibility = View.GONE
-                        binding.textEmpty.visibility = View.VISIBLE
-                        binding.textEmpty.text = resources.getString(R.string.text_error)
+                    binding.recyclerMessages.visibility = View.GONE
+                    binding.layoutBottom.visibility = View.GONE
+                    binding.textEmpty.visibility = View.VISIBLE
+                    binding.textEmpty.text = resources.getString(R.string.text_error)
 
-                        binding.progressBar.visibility = View.GONE
-                        Log.e("Exception", "$TAG  GetQdriverMessageList Exception : $it")
-                    })
+                    binding.progressBar.visibility = View.GONE
+                    Log.e("Exception", "$TAG  GetQdriverMessageList Exception : $it")
+                })
         }
     }
 
