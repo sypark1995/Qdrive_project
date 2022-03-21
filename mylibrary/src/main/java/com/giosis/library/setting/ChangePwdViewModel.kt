@@ -45,19 +45,18 @@ class ChangePwdViewModel : BaseViewModel() {
 
     fun onClickConfirm() {
         val text = DialogUiConfig(
-                title = R.string.text_title_change_password,
-                message = R.string.msg_want_change_password
+            title = R.string.text_title_change_password,
+            message = R.string.msg_want_change_password
         )
 
         val listener = DialogViewModel(
-                positiveClick = {
-
-                    alertOkClick()
-                    _checkAlert.value = null
-                },
-                negativeClick = {
-                    _checkAlert.value = null
-                }
+            positiveClick = {
+                alertOkClick()
+                _checkAlert.value = null
+            },
+            negativeClick = {
+                _checkAlert.value = null
+            }
         )
 
         _checkAlert.value = Pair(text, listener)
@@ -80,30 +79,35 @@ class ChangePwdViewModel : BaseViewModel() {
             progressVisible.value = true
 
             RetrofitClient.instanceDynamic().requestChangePwd(
-                    id, oldPassword, newPassword, appID, nationCode)
-                    .subscribeOn(Schedulers.io())
-                    .observeOn(AndroidSchedulers.mainThread())
-                    .subscribe({
+                id, oldPassword, newPassword, appID, nationCode
+            )
+                .subscribeOn(Schedulers.io())
+                .observeOn(AndroidSchedulers.mainThread())
+                .subscribe({
 
-                        progressVisible.value = false
-                        Log.e(RetrofitClient.TAG, "${it.resultCode} / ${it.resultMsg}")
+                    progressVisible.value = false
+                    Log.e(RetrofitClient.TAG, "${it.resultCode} / ${it.resultMsg}")
 
-                        if (it.resultCode == 0) {
-                            Preferences.userPw = newPassword
-                        }
+                    if (it.resultCode == 0) {
+                        Preferences.userPw = newPassword
+                    }
 
-                        _resultAlert.value = it
+                    _resultAlert.value = it
 
-                    }, {
+                }, {
 
-                        progressVisible.value = false
-                        _errorAlert.value = R.string.msg_network_connect_error
-                    })
+                    progressVisible.value = false
+                    _errorAlert.value = R.string.msg_network_connect_error
+                })
         }
     }
 
 
-    private fun isValidPassword(oldPassword: String, newPassword: String, confirmPassword: String): Boolean {
+    private fun isValidPassword(
+        oldPassword: String,
+        newPassword: String,
+        confirmPassword: String
+    ): Boolean {
         var isValid = false
 
         if (oldPassword.isNotEmpty()) {      // 현재 패스워드 입력
