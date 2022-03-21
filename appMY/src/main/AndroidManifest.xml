@@ -79,7 +79,6 @@
             </intent-filter>
         </service>
 
-
         <receiver
             android:name="com.giosis.util.qdrive.international.DeviceBootReceiver"
             android:enabled="false">
@@ -100,6 +99,7 @@
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>
+
         <activity
             android:name="com.giosis.util.qdrive.international.IntroActivity"
             android:configChanges="orientation|keyboardHidden"
@@ -117,8 +117,10 @@
         <meta-data
             android:name="com.google.android.maps.v2.API_KEY"
             android:value="AIzaSyA1NWLPCM1Ng4go6Al3CxR36_C9Us0BTk0" />
+
         <meta-data
             android:name="com.google.android.gms.version"
             android:value="@integer/google_play_services_version" />
+
     </application>
 </manifest>

@@ -248,7 +248,6 @@
             android:name=".barcodescanner.DeviceListActivity1"
             android:theme="@android:style/Theme.Dialog" />
 
-
         <service android:name=".gps.FusedProviderService" />
         <service android:name=".gps.LocationManagerService" />
 
