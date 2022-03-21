@@ -52,13 +52,13 @@ class SettingViewModel : BaseViewModel() {
         _visibleChangeLanguage.value = Preferences.userNation != "SG"
         _visibleSetLocker.value = false
 
-        val outletDriverYN = Preferences.outletDriver
-        val lockerStatus = Preferences.lockerStatus
+        if (Preferences.outletDriver == "Y") {
+            val lockerStatus = Preferences.lockerStatus
 
-        if (outletDriverYN == "Y") {
             if (lockerStatus.contains("no pin")
-                    || lockerStatus.contains("active")
-                    || lockerStatus.contains("expired")) {
+                || lockerStatus.contains("active")
+                || lockerStatus.contains("expired")
+            ) {
                 _visibleSetLocker.value = true
             }
         }
@@ -76,16 +76,12 @@ class SettingViewModel : BaseViewModel() {
         }
     }
 
-
-    fun initData(){
-
+    fun initData() {
         _name.value = Preferences.userName
         _id.value = Preferences.userId
         _email.value = Preferences.userEmail
         _officeName.value = Preferences.officeName
-
     }
-
 
     fun changePassword() {
         startActivity(ChangePwdActivity::class.java)
