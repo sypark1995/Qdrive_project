@@ -1,5 +1,6 @@
 package com.giosis.util.qdrive.singapore;
 
+
 import android.app.AlarmManager;
 import android.app.PendingIntent;
 import android.content.ComponentName;
@@ -18,14 +19,8 @@ import com.google.firebase.crashlytics.FirebaseCrashlytics;
 
 import java.util.Calendar;
 
-/*********
- *
- * @author jtpark_eurasia
- * 전역 변수 관리
- * @editor krm0219
- */
+
 public class MyApplication extends MultiDexApplication {
-    String TAG = "MyApplication";
 
     public static MySharedPreferences preferences;
     private static Context context;
@@ -46,10 +41,8 @@ public class MyApplication extends MultiDexApplication {
         Preferences.INSTANCE.setAppInfo("SG");
         Preferences.INSTANCE.setUserNation("SG");
 
-
         context = getApplicationContext();
         badgeCnt = 0;
-
 
         String[] array = MyApplication.preferences.getAutoLogoutTime().split(":");
         setAutoLogout(Integer.parseInt(array[0]), Integer.parseInt(array[1]), false);
