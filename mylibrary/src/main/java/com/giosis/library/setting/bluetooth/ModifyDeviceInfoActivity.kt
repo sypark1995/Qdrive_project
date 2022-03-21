@@ -10,7 +10,6 @@ import kotlinx.android.synthetic.main.top_title.*
 
 class ModifyDeviceInfoActivity : CommonActivity() {
 
-    var opId: String? = null
     var device: BluetoothDevice? = null
 
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -49,7 +48,11 @@ class ModifyDeviceInfoActivity : CommonActivity() {
     private fun modifyConfirmClick() {
         val rename = edit_setting_printer_device_rename.text.toString().trim { it <= ' ' }
         if (rename == "") {
-            Toast.makeText(this, resources.getString(R.string.text_device_name_info), Toast.LENGTH_SHORT).show()
+            Toast.makeText(
+                this,
+                resources.getString(R.string.text_device_name_info),
+                Toast.LENGTH_SHORT
+            ).show()
             return
         }
 
