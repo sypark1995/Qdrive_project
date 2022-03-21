@@ -2,12 +2,7 @@ package com.giosis.library.setting.bluetooth;
 
 import java.util.UUID;
 
-/**
- * @author eylee 2018-04-03
- * 공통 변수 관리하는 클래스
- * <p></p>
- * @editor krm0219
- */
+
 public class BluetoothDeviceData {
 
     // paired & unpaired
@@ -17,8 +12,8 @@ public class BluetoothDeviceData {
     // rename
     static final int REQUEST_RENAME_PAIR_DEVICE = 10005;
 
-        // Printer Setting 에서 [Connected Device] 주소
-    public static String  connectedPrinterAddress = null;
+    // Printer Setting 에서 [Connected Device] 주소
+    public static String connectedPrinterAddress = null;
 
     // connect
     static final UUID MY_UUID_INSECURE = UUID.fromString("00001101-0000-1000-8000-00805F9B34FB");
