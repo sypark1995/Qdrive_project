@@ -1,5 +1,6 @@
 package com.giosis.library.message
 
+
 import android.app.AlertDialog
 import android.os.Bundle
 import android.os.Handler
@@ -21,9 +22,8 @@ import io.reactivex.rxjava3.android.schedulers.AndroidSchedulers
 import io.reactivex.rxjava3.schedulers.Schedulers
 import java.util.*
 
-/**
- * @author krm0219
- */
+
+// todo_kjyoo 1분에 한번씩 돌면서 먼짓하는지??
 class AdminMessageListFragment : Fragment() {
 
     var TAG = "AdminMessageListFragment"
@@ -44,7 +44,11 @@ class AdminMessageListFragment : Fragment() {
     private var newResultString: String = ""
 
 
-    override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View {
+    override fun onCreateView(
+        inflater: LayoutInflater,
+        container: ViewGroup?,
+        savedInstanceState: Bundle?
+    ): View {
 
         binding = FragmentMessageListBinding.inflate(inflater, container, false)
         binding.layoutBottom.visibility = View.GONE
@@ -55,11 +59,12 @@ class AdminMessageListFragment : Fragment() {
         super.onResume()
 
         if (!NetworkUtil.isNetworkAvailable(activity)) {
-
-            showDialog(resources.getString(R.string.text_warning), resources.getString(R.string.msg_network_connect_error))
+            showDialog(
+                resources.getString(R.string.text_warning),
+                resources.getString(R.string.msg_network_connect_error)
+            )
             return
         } else {
-
             handler.post(task)
         }
     }
@@ -77,59 +82,64 @@ class AdminMessageListFragment : Fragment() {
                 binding.progressBar.visibility = View.VISIBLE
 
             RetrofitClient.instanceDynamic().requestGetMessageListFromAdmin()
-                    .subscribeOn(Schedulers.io())
-                    .observeOn(AndroidSchedulers.mainThread())
-                    .subscribe({
+                .subscribeOn(Schedulers.io())
+                .observeOn(AndroidSchedulers.mainThread())
+                .subscribe({
 
-                        if (oldResultString != "" && oldResultString.equals(newResultString, ignoreCase = true)) {
+                    if (oldResultString != ""
+                        && oldResultString.equals(newResultString, ignoreCase = true)
+                    ) {
 
-                            Log.e(TAG, "$TAG  GetQdriverMessageListFromMessenger  EQUAL")
-                        } else {
-                            if (it.resultObject != null) {
+                        Log.e(TAG, "$TAG  GetQdriverMessageListFromMessenger  EQUAL")
+                    } else {
+                        if (it.resultObject != null) {
 
-                                newResultString = it.toString()
-                                val list = Gson().fromJson<ArrayList<MessageListResult>>(it.resultObject,
-                                        object : TypeToken<ArrayList<MessageListResult>>() {}.type)
+                            newResultString = it.toString()
+                            val list =
+                                Gson().fromJson<ArrayList<MessageListResult>>(
+                                    it.resultObject,
+                                    object : TypeToken<ArrayList<MessageListResult>>() {}.type
+                                )
 
-                                if (0 < list.size) {
+                            if (0 < list.size) {
 
-                                    binding.textEmpty.visibility = View.GONE
+                                binding.textEmpty.visibility = View.GONE
 
-                                    binding.recyclerMessages.visibility = View.VISIBLE
-                                    binding.recyclerMessages.adapter = MessageListAdapter("A", list)
+                                binding.recyclerMessages.visibility = View.VISIBLE
+                                binding.recyclerMessages.adapter = MessageListAdapter("A", list)
 
-                                    val decoration = DividerItemDecoration(activity, VERTICAL)
-                                    binding.recyclerMessages.addItemDecoration(decoration)
+                                val decoration = DividerItemDecoration(activity, VERTICAL)
+                                binding.recyclerMessages.addItemDecoration(decoration)
 
 
-                                    var count = 0
+                                var count = 0
 
-                                    for (i in list.indices) {
-                                        if (list[i].read_yn == "N") {
-                                            count++
-                                        }
+                                for (i in list.indices) {
+                                    if (list[i].read_yn == "N") {
+                                        count++
                                     }
-
-                                    (activity as MessageListActivity).setAdminNewImage(count)
-                                } else {
-
-                                    binding.recyclerMessages.visibility = View.GONE
-                                    binding.textEmpty.visibility = View.VISIBLE
-                                    binding.textEmpty.text = resources.getString(R.string.text_empty)
                                 }
+
+                                (activity as MessageListActivity).setAdminNewImage(count)
+                            } else {
+
+                                binding.recyclerMessages.visibility = View.GONE
+                                binding.textEmpty.visibility = View.VISIBLE
+                                binding.textEmpty.text = resources.getString(R.string.text_empty)
                             }
                         }
+                    }
 
-                        binding.progressBar.visibility = View.GONE
-                    }, {
+                    binding.progressBar.visibility = View.GONE
+                }, {
 
-                        binding.recyclerMessages.visibility = View.GONE
-                        binding.textEmpty.visibility = View.VISIBLE
-                        binding.textEmpty.text = resources.getString(R.string.text_error)
-                        binding.progressBar.visibility = View.GONE
+                    binding.recyclerMessages.visibility = View.GONE
+                    binding.textEmpty.visibility = View.VISIBLE
+                    binding.textEmpty.text = resources.getString(R.string.text_error)
+                    binding.progressBar.visibility = View.GONE
 
-                        Log.e("Exception", "$TAG  GetQdriverMessageListFromMessenger Exception : $it")
-                    })
+                    Log.e("Exception", "$TAG  GetQdriverMessageListFromMessenger Exception : $it")
+                })
         }
     }
 

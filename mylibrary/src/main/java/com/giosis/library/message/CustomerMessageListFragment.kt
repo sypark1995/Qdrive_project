@@ -27,7 +27,7 @@ import java.text.SimpleDateFormat
 import java.util.*
 
 
-// todo_kjyoo 1분에 한번씩 돌면서 먼짓하는지?? 
+// todo_kjyoo 1분에 한번씩 돌면서 먼짓하는지??
 class CustomerMessageListFragment : Fragment() {
 
     var TAG = "CustomerMessageListFragment"
