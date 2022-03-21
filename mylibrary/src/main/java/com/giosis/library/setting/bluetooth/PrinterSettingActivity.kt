@@ -25,15 +25,9 @@ import kotlinx.android.synthetic.main.top_title.*
 import java.util.*
 
 /**
- * @editor krm0219
- *
- *
  * 1. 프린터 페어링 (Available Devices > Paired Devices => 여러개 가능)
  * 2. 프린터 연결 (Paired Devices > Connected Device => 1개 가능)
- *
- *
  */
-
 class PrinterSettingActivity : CommonActivity() {
     private val TAG = "PrinterSettingActivity"
 
