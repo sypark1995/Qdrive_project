@@ -471,7 +471,7 @@ class PickupFailedActivity : CommonActivity(), Camera2APIs.Camera2Interface,
                 return
             }
 
-            if (MemoryStatus.getAvailableInternalMemorySize() != MemoryStatus.ERROR.toLong() && MemoryStatus.getAvailableInternalMemorySize() < MemoryStatus.PRESENT_BYTE) {
+            if (MemoryStatus.availableInternalMemorySize != MemoryStatus.ERROR.toLong() && MemoryStatus.availableInternalMemorySize < MemoryStatus.PRESENT_BYTE) {
                 DisplayUtil.AlertDialog(
                     this@PickupFailedActivity,
                     resources.getString(R.string.msg_disk_size_error)

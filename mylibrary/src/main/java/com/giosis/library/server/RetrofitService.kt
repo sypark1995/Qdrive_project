@@ -659,7 +659,7 @@ interface RetrofitService {
         @Field("opId") opId: String = Preferences.userId,
         @Field("officeCd") officeCd: String = Preferences.officeCode,
         @Field("device_id") device_id: String = Preferences.deviceUUID,
-        @Field("disk_size") disk_size: Long = MemoryStatus.getAvailableInternalMemorySize(),
+        @Field("disk_size") disk_size: Long = MemoryStatus.availableInternalMemorySize,
         @Field("app_id") app_id: String = DataUtil.appID,
         @Field("nation_cd") nation_cd: String = Preferences.userNation
     ): APIModel

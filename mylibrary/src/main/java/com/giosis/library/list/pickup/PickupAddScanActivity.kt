@@ -165,7 +165,7 @@ class PickupAddScanActivity : CommonActivity() {
                 return
             }
 
-            if (MemoryStatus.getAvailableInternalMemorySize() != MemoryStatus.ERROR.toLong() && MemoryStatus.getAvailableInternalMemorySize() < MemoryStatus.PRESENT_BYTE) {
+            if (MemoryStatus.availableInternalMemorySize != MemoryStatus.ERROR.toLong() && MemoryStatus.availableInternalMemorySize < MemoryStatus.PRESENT_BYTE) {
 
                 DisplayUtil.AlertDialog(this@PickupAddScanActivity, resources.getString(R.string.msg_disk_size_error))
                 return
@@ -176,7 +176,7 @@ class PickupAddScanActivity : CommonActivity() {
 
             PickupAddScanUploadHelper.Builder(this@PickupAddScanActivity, Preferences.userId, Preferences.officeCode, Preferences.deviceUUID,
                     pickupNo, scannedList, scannedQty, sign_view_sign_p_applicant_signature, sign_view_sign_p_collector_signature,
-                    MemoryStatus.getAvailableInternalMemorySize(), latitude, longitude)
+                    MemoryStatus.availableInternalMemorySize, latitude, longitude)
                     .setOnServerEventListener(object : OnServerEventListener {
                         override fun onPostResult() {
 

@@ -207,7 +207,7 @@ class PickupDoneActivity : CommonActivity() {
                 return
             }
 
-            if (MemoryStatus.getAvailableInternalMemorySize() != MemoryStatus.ERROR.toLong() && MemoryStatus.getAvailableInternalMemorySize() < MemoryStatus.PRESENT_BYTE) {
+            if (MemoryStatus.availableInternalMemorySize != MemoryStatus.ERROR.toLong() && MemoryStatus.availableInternalMemorySize < MemoryStatus.PRESENT_BYTE) {
 
                 DisplayUtil.AlertDialog(this@PickupDoneActivity, resources.getString(R.string.msg_disk_size_error))
                 return
@@ -218,7 +218,7 @@ class PickupDoneActivity : CommonActivity() {
 
             PickupDoneUploadHelper.Builder(this@PickupDoneActivity, Preferences.userId, Preferences.officeCode, Preferences.deviceUUID,
                     pickupNo, mStrWaybillNo, realQty, binding.signApplicantSignature, binding.signCollectorSignature, driverMemo,
-                    MemoryStatus.getAvailableInternalMemorySize(), locationModel)
+                    MemoryStatus.availableInternalMemorySize, locationModel)
                     .setOnServerEventListener(object : OnServerEventListener {
                         override fun onPostResult() {
 

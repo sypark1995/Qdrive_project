@@ -1060,7 +1060,7 @@ class CaptureActivity1 : CommonActivity(), TorchListener, OnTouchListener, TextW
             warningDialog(resources.getString(R.string.msg_network_connect_error))
             return
         }
-        if (MemoryStatus.getAvailableInternalMemorySize() != MemoryStatus.ERROR.toLong() && MemoryStatus.getAvailableInternalMemorySize() < MemoryStatus.PRESENT_BYTE) {
+        if (MemoryStatus.availableInternalMemorySize != MemoryStatus.ERROR.toLong() && MemoryStatus.availableInternalMemorySize < MemoryStatus.PRESENT_BYTE) {
             warningDialog(resources.getString(R.string.msg_disk_size_error))
             return
         }

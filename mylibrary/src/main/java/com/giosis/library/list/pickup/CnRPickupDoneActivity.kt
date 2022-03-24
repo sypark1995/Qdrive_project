@@ -238,8 +238,8 @@ class CnRPickupDoneActivity : CommonActivity() {
                 return
             }
 
-            if (MemoryStatus.getAvailableInternalMemorySize() != MemoryStatus.ERROR.toLong()
-                && MemoryStatus.getAvailableInternalMemorySize() < MemoryStatus.PRESENT_BYTE
+            if (MemoryStatus.availableInternalMemorySize != MemoryStatus.ERROR.toLong()
+                && MemoryStatus.availableInternalMemorySize < MemoryStatus.PRESENT_BYTE
             ) {
 
                 DisplayUtil.AlertDialog(
@@ -259,7 +259,7 @@ class CnRPickupDoneActivity : CommonActivity() {
                 pickupNoList,
                 sign_view_sign_p_applicant_signature,
                 sign_view_sign_p_collector_signature,
-                MemoryStatus.getAvailableInternalMemorySize(),
+                MemoryStatus.availableInternalMemorySize,
                 locationModel
             ).setOnServerEventListener(object : OnServerEventListener {
                 override fun onPostResult() {

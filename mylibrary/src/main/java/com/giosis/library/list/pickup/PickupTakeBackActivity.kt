@@ -159,7 +159,7 @@ class PickupTakeBackActivity : CommonActivity() {
                 return
             }
 
-            if (MemoryStatus.getAvailableInternalMemorySize() != MemoryStatus.ERROR.toLong() && MemoryStatus.getAvailableInternalMemorySize() < MemoryStatus.PRESENT_BYTE) {
+            if (MemoryStatus.availableInternalMemorySize != MemoryStatus.ERROR.toLong() && MemoryStatus.availableInternalMemorySize < MemoryStatus.PRESENT_BYTE) {
 
                 DisplayUtil.AlertDialog(this@PickupTakeBackActivity, resources.getString(R.string.msg_disk_size_error))
                 return
@@ -170,7 +170,7 @@ class PickupTakeBackActivity : CommonActivity() {
 
             PickupTakeBackUploadHelper.Builder(this@PickupTakeBackActivity, Preferences.userId, Preferences.officeCode, Preferences.deviceUUID,
                     pickupNo, scannedList, sign_view_sign_p_tb_applicant_signature, sign_view_sign_p_tb_collector_signature,
-                    MemoryStatus.getAvailableInternalMemorySize(), latitude, longitude, finalQty)
+                    MemoryStatus.availableInternalMemorySize, latitude, longitude, finalQty)
                     .setOnServerEventListener(object : OnServerEventListener {
                         override fun onPostResult() {
 

@@ -332,7 +332,7 @@ class DeliveryFailedActivity : CommonActivity(), Camera2APIs.Camera2Interface, S
                 return
             }
 
-            if (MemoryStatus.getAvailableInternalMemorySize() != MemoryStatus.ERROR.toLong() && MemoryStatus.getAvailableInternalMemorySize() < MemoryStatus.PRESENT_BYTE) {
+            if (MemoryStatus.availableInternalMemorySize != MemoryStatus.ERROR.toLong() && MemoryStatus.availableInternalMemorySize < MemoryStatus.PRESENT_BYTE) {
                 DisplayUtil.AlertDialog(this@DeliveryFailedActivity, resources.getString(R.string.msg_disk_size_error))
                 return
             }
@@ -341,7 +341,7 @@ class DeliveryFailedActivity : CommonActivity(), Camera2APIs.Camera2Interface, S
             DataUtil.logEvent("button_click", tag, "SetDeliveryUploadData")
             DeliveryFailedUploadHelper.Builder(this@DeliveryFailedActivity, Preferences.userId, Preferences.officeCode, Preferences.deviceUUID,
                     trackingNo, binding.imgVisitLog, failedCode, driverMemo, "RC",
-                    MemoryStatus.getAvailableInternalMemorySize(), latitude, longitude)
+                    MemoryStatus.availableInternalMemorySize, latitude, longitude)
                     .setOnServerEventListener(object : OnServerEventListener {
                         override fun onPostResult() {
                             DataUtil.inProgressListPosition = 0
