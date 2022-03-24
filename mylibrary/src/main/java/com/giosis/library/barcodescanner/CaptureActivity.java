@@ -89,9 +89,10 @@ import java.util.regex.Pattern;
 import io.reactivex.rxjava3.android.schedulers.AndroidSchedulers;
 import io.reactivex.rxjava3.schedulers.Schedulers;
 
-// TODO_ Outlet 확인 후 옮기기
+// TODO_kjyoo Outlet 확인 후 옮기기
 public final class CaptureActivity extends CommonActivity implements DecoratedBarcodeView.TorchListener, OnTouchListener,
         TextWatcher, OnKeyListener {
+
     private static final String TAG = "CaptureActivity";
     private static final String bluetoothTAG = "Capture_Bluetooth";
 

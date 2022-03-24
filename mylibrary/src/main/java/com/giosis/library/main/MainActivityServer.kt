@@ -213,7 +213,7 @@ object MainActivityServer {
             if (result.resultCode == 10) {
                 val json = Gson().toJson(result)
                 Log.i(TAG, "D  getFailedCode  $json")
-                Preferences.dFailedCode = json;
+                Preferences.dFailedCode = json
             }
         } catch (e: Exception) {
 
