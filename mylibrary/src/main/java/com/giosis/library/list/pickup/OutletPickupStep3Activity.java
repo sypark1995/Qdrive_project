@@ -31,7 +31,7 @@ import com.giosis.library.util.PermissionActivity;
 import com.giosis.library.util.PermissionChecker;
 import com.giosis.library.util.Preferences;
 
-// TODO_TEST    UI는 확인했음 // Done(OutletPickupDoneHelper) 테스트 필요
+// TODO_kjyoo TEST    UI는 확인했음 // Done(OutletPickupDoneHelper) 테스트 필요
 public class OutletPickupStep3Activity extends CommonActivity {
     private static final String[] PERMISSIONS = new String[]{PermissionChecker.READ_EXTERNAL_STORAGE, PermissionChecker.WRITE_EXTERNAL_STORAGE,
             PermissionChecker.ACCESS_FINE_LOCATION, PermissionChecker.ACCESS_COARSE_LOCATION};

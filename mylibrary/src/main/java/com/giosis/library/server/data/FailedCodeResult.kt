@@ -16,7 +16,6 @@ class FailedCodeResult : Serializable {
     var resultObject: ArrayList<FailedCode>? = null
 
     class FailedCode {
-
         @SerializedName("cd_nm")
         var failedString = ""
 

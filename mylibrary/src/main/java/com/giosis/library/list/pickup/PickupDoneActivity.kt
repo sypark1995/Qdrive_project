@@ -16,10 +16,7 @@ import com.giosis.library.gps.LocationModel
 import com.giosis.library.util.*
 
 /**
- * @author eylee
- * @date 2016-09-28
  * Pickup done -> Bundle type scan all 로 기능개선
- * @editor krm0219
  * LIST > In-Progress > 'Start To Scan'
  */
 class PickupDoneActivity : CommonActivity() {
@@ -37,7 +34,6 @@ class PickupDoneActivity : CommonActivity() {
     var gpsEnable = false
 
     private var locationModel = LocationModel()
-
 
     var isPermissionTrue = false
 
@@ -105,7 +101,6 @@ class PickupDoneActivity : CommonActivity() {
         }
 
         binding.btnSave.setOnClickListener {
-
             saveServerUploadSign()
         }
 
@@ -165,15 +160,10 @@ class PickupDoneActivity : CommonActivity() {
                 .setNegativeButton(R.string.button_cancel) { dialog: DialogInterface, _: Int -> dialog.dismiss() }.show()
     }
 
-    /*
-     * 실시간 Upload 처리
-     * add by jmkang 2014-07-15
-     */
     private fun saveServerUploadSign() {
         try {
 
             if (!NetworkUtil.isNetworkAvailable(this@PickupDoneActivity)) {
-
                 DisplayUtil.AlertDialog(this@PickupDoneActivity, resources.getString(R.string.msg_network_connect_error))
                 return
             }
@@ -186,7 +176,6 @@ class PickupDoneActivity : CommonActivity() {
             }
             locationModel.setDriverLocation(latitude, longitude)
             Log.e("Location", "$tag saveServerUploadSign  GPSTrackerManager : $latitude  $longitude  - ${locationModel.driverLat}, ${locationModel.driverLng}")
-
 
             val realQty = binding.textTotalQty.text.toString()
 
@@ -208,11 +197,9 @@ class PickupDoneActivity : CommonActivity() {
             }
 
             if (MemoryStatus.availableInternalMemorySize != MemoryStatus.ERROR.toLong() && MemoryStatus.availableInternalMemorySize < MemoryStatus.PRESENT_BYTE) {
-
                 DisplayUtil.AlertDialog(this@PickupDoneActivity, resources.getString(R.string.msg_disk_size_error))
                 return
             }
-
 
             DataUtil.logEvent("button_click", tag, "SetPickupUploadData_ScanAll")
 

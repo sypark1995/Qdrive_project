@@ -13,9 +13,6 @@ import android.widget.TextView;
 import com.giosis.library.R;
 
 
-/**
- * @author krm0219
- **/
 public class OutletPickupDoneTrackingNoAdapter extends BaseAdapter {
     String TAG = "OutletPickupDoneTrackingNoAdapter";
 
@@ -23,18 +20,14 @@ public class OutletPickupDoneTrackingNoAdapter extends BaseAdapter {
     OutletPickupDoneResult result;
     String route;
 
-
     public OutletPickupDoneTrackingNoAdapter(Context context, OutletPickupDoneResult result, String route) {
-
         this.context = context;
         this.result = result;
         this.route = route;
     }
 
-
     @Override
     public int getCount() {
-
         if (result != null) {
             return result.getResultObject().getTrackingNoList().size();
         }
@@ -63,7 +56,6 @@ public class OutletPickupDoneTrackingNoAdapter extends BaseAdapter {
         } else {
             view = convertView;
         }
-
 
         LinearLayout layout_outlet_pickup_done_tracking_no_item = view.findViewById(R.id.layout_outlet_pickup_done_tracking_no_item);
         ImageView img_outlet_pickup_done_tracking_no_item = view.findViewById(R.id.img_outlet_pickup_done_tracking_no_item);

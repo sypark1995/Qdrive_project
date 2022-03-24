@@ -43,7 +43,7 @@ import com.giosis.library.util.PermissionChecker;
 import com.giosis.library.util.Preferences;
 
 
-// TODO_TEST
+// TODO_kjyoo _TEST
 public class QuickReturnFailedActivity extends CommonActivity implements Camera2APIs.Camera2Interface, TextureView.SurfaceTextureListener {
     String TAG = "QuickReturnFailedActivity";
 

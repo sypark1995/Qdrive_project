@@ -35,9 +35,7 @@ import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Date;
 
-/**
- * Delivery Done
- */
+
 public class DeliveryDoneUploadHelper {
     String TAG = "DeliveryDoneUploadHelper";
 

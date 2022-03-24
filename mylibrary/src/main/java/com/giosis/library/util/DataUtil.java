@@ -287,19 +287,14 @@ public class DataUtil {
         String json = "";
 
         if (type.equals("D")) {
-
             json = Preferences.INSTANCE.getDFailedCode();
         } else if (type.equals("P")) {
-
             json = Preferences.INSTANCE.getPFailedCode();
         }
 
-
         if (json.equals("")) {
-
             return null;
         } else {
-
             FailedCodeResult result = new Gson().fromJson(json, FailedCodeResult.class);
             arrayList = new ArrayList<>(result.getResultObject());
         }

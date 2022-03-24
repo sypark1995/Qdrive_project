@@ -1,6 +1,5 @@
 package com.giosis.library.list.pickup
 
-import android.annotation.SuppressLint
 import android.app.AlertDialog
 import android.app.DatePickerDialog
 import android.content.ContentValues
@@ -58,7 +57,6 @@ class PickupFailedActivity : CommonActivity(), Camera2APIs.Camera2Interface,
 
     private var rcvType = ""       // VL, RC
     private var arrayList: ArrayList<FailedCodeResult.FailedCode>? = null
-    private var failedCodeArrayList: ArrayList<String>? = null
     var driverMemo = ""
     private var failedCode = ""
     private var retryDay = ""
@@ -94,19 +92,17 @@ class PickupFailedActivity : CommonActivity(), Camera2APIs.Camera2Interface,
         window.addFlags(WindowManager.LayoutParams.FLAG_TURN_SCREEN_ON)     // 화면 ON
         setContentView(binding.root)
 
-
         val pickupType = intent.getStringExtra("type")  // P, CNR
 
         binding.layoutTopTitle.textTopTitle.text = resources.getString(R.string.text_visit_log)
         binding.textPickupNo.text = pickupNo
         binding.textApplicant.text = intent.getStringExtra("applicant")
         binding.textRequestedQty.text = intent.getStringExtra("reqQty")
-        if (pickupType == BarcodeType.TYPE_PICKUP) {
 
+        if (pickupType == BarcodeType.TYPE_PICKUP) {
             binding.textApplicantTitle.text = resources.getString(R.string.text_applicant)
             rcvType = "VL"
         } else if (pickupType == BarcodeType.TYPE_CNR) {
-
             binding.textApplicantTitle.text = resources.getString(R.string.text_requestor)
             rcvType = "RC"
         }
@@ -197,7 +193,6 @@ class PickupFailedActivity : CommonActivity(), Camera2APIs.Camera2Interface,
             datePickupDialog.datePicker.maxDate = maxCalendar.timeInMillis
         }
 
-
         // 2020.12  Pickup Failed Code
         setFailedCode()
 
@@ -284,7 +279,6 @@ class PickupFailedActivity : CommonActivity(), Camera2APIs.Camera2Interface,
             serverUpload()
         }
 
-
         // permission
         val checker = PermissionChecker(this@PickupFailedActivity)
 
@@ -310,29 +304,20 @@ class PickupFailedActivity : CommonActivity(), Camera2APIs.Camera2Interface,
         if (isPermissionTrue) {
 
             if (binding.texturePreview.isAvailable) {
-
                 openCamera()
             } else {
-
                 binding.texturePreview.surfaceTextureListener = this@PickupFailedActivity
             }
 
             // Location
             gpsTrackerManager = GPSTrackerManager(this@PickupFailedActivity)
             gpsTrackerManager?.let {
-
                 gpsEnable = it.enableGPSSetting()
             }
 
             if (gpsEnable && gpsTrackerManager != null) {
-
                 gpsTrackerManager!!.gpsTrackerStart()
-                Log.e(
-                    tag,
-                    " onResume  Location  :  ${gpsTrackerManager!!.latitude} / ${gpsTrackerManager!!.longitude}"
-                )
             } else {
-
                 DataUtil.enableLocationSettings(this@PickupFailedActivity)
             }
 
@@ -377,7 +362,6 @@ class PickupFailedActivity : CommonActivity(), Camera2APIs.Camera2Interface,
     }
 
     override fun onCaptureCompleted() {
-
         isClickedPhoto = false
     }
 
@@ -396,14 +380,12 @@ class PickupFailedActivity : CommonActivity(), Camera2APIs.Camera2Interface,
     }
 
     private fun closeCamera() {
-
         camera2.closeCamera()
     }
 
     // Gallery
     private val getGalleryImage =
         registerForActivityResult(ActivityResultContracts.GetContent()) { uri: Uri? ->
-
             try {
                 val selectedImage = MediaStore.Images.Media.getBitmap(contentResolver, uri)
                 val resizeImage = camera2.getResizeBitmap(selectedImage)
@@ -418,7 +400,6 @@ class PickupFailedActivity : CommonActivity(), Camera2APIs.Camera2Interface,
     private fun serverUpload() {
 
         try {
-
             if (!NetworkUtil.isNetworkAvailable(this@PickupFailedActivity)) {
                 DisplayUtil.AlertDialog(
                     this@PickupFailedActivity,
@@ -433,8 +414,7 @@ class PickupFailedActivity : CommonActivity(), Camera2APIs.Camera2Interface,
             }
             Log.i(tag, "  Location $latitude / $longitude")
 
-            val code: FailedCodeResult.FailedCode =
-                arrayList!![binding.spinnerFailedReason.selectedItemPosition]
+            val code = arrayList!![binding.spinnerFailedReason.selectedItemPosition]
             failedCode = code.failedCode
 
             if (code.failedString.toUpperCase(Locale.ROOT)
@@ -532,7 +512,6 @@ class PickupFailedActivity : CommonActivity(), Camera2APIs.Camera2Interface,
     }
 
 
-    @SuppressLint("SimpleDateFormat")
     private suspend fun requestPickupUpload(pickupNo: String): StdResult =
         withContext(Dispatchers.IO) {
             val stdResult = StdResult()
@@ -623,7 +602,6 @@ class PickupFailedActivity : CommonActivity(), Camera2APIs.Camera2Interface,
     }
 
     override fun onBackPressed() {
-
         cancelUpload()
     }
 
@@ -654,7 +632,6 @@ class PickupFailedActivity : CommonActivity(), Camera2APIs.Camera2Interface,
 
         if (requestCode == PERMISSION_REQUEST_CODE) {
             if (resultCode == PermissionActivity.PERMISSIONS_GRANTED) {
-
                 isPermissionTrue = true
             }
         }
@@ -665,26 +642,27 @@ class PickupFailedActivity : CommonActivity(), Camera2APIs.Camera2Interface,
         arrayList = DataUtil.getFailCode("P")
 
         if (arrayList == null) {
-
             DisplayUtil.AlertDialog(
                 this@PickupFailedActivity,
                 resources.getString(R.string.msg_failed_code_error)
             )
+
         } else {
 
-            failedCodeArrayList = ArrayList()
+            val failedCodeArrayList = ArrayList<String>()
 
             for (i in arrayList!!.indices) {
                 val failedCode: FailedCodeResult.FailedCode = arrayList!![i]
-                failedCodeArrayList!!.add(failedCode.failedString)
+                failedCodeArrayList.add(failedCode.failedString)
             }
 
             binding.spinnerFailedReason.prompt = resources.getString(R.string.text_failed_reason)
             val failedCodeArrayAdapter = ArrayAdapter(
                 this@PickupFailedActivity,
                 android.R.layout.simple_spinner_item,
-                failedCodeArrayList!!
+                failedCodeArrayList
             )
+
             failedCodeArrayAdapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item)
             binding.spinnerFailedReason.adapter = failedCodeArrayAdapter
         }
@@ -697,23 +675,20 @@ class PickupFailedActivity : CommonActivity(), Camera2APIs.Camera2Interface,
         var dayDate = day.toString()
 
         if (monthDate.length == 1) {
-
             monthDate = "0$month"
         }
 
         if (dayDate.length == 1) {
-
             dayDate = "0$day"
         }
 
         val restDate = "$yearDate-$monthDate-$dayDate"
         var restDayTitle = ""
 
-
         val cs =
             DatabaseHelper.getInstance()["SELECT title FROM ${DatabaseHelper.DB_TABLE_REST_DAYS} WHERE rest_dt='$restDate'"]
-        if (cs.moveToFirst()) {
 
+        if (cs.moveToFirst()) {
             restDayTitle = cs.getString(cs.getColumnIndex("title"))
         }
 

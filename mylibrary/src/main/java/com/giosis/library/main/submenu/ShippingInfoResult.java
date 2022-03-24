@@ -2,6 +2,7 @@ package com.giosis.library.main.submenu;
 
 import com.google.gson.annotations.SerializedName;
 
+// TODO_kjyoo
 public class ShippingInfoResult {
 
     @SerializedName("ResultCode")

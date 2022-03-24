@@ -28,22 +28,22 @@ class PickupAddScanActivity : CommonActivity() {
     // Permission
     var isPermissionTrue = false
     val PERMISSION_REQUEST_CODE = 1000
-    val PERMISSIONS = arrayOf(PermissionChecker.ACCESS_FINE_LOCATION, PermissionChecker.ACCESS_COARSE_LOCATION,
-            PermissionChecker.READ_EXTERNAL_STORAGE, PermissionChecker.WRITE_EXTERNAL_STORAGE)
-
+    val PERMISSIONS = arrayOf(
+        PermissionChecker.ACCESS_FINE_LOCATION, PermissionChecker.ACCESS_COARSE_LOCATION,
+        PermissionChecker.READ_EXTERNAL_STORAGE, PermissionChecker.WRITE_EXTERNAL_STORAGE
+    )
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_pickup_done)
-
 
         pickupNo = intent.getStringExtra("pickupNo").toString()
         scannedList = intent.getStringExtra("scannedList").toString()
         scannedQty = intent.getStringExtra("scannedQty").toString()
 
         val scannedItems = scannedList.split(",")
-        val qtyFormat = String.format(resources.getString(R.string.text_total_qty_count), scannedItems.size)
-
+        val qtyFormat =
+            String.format(resources.getString(R.string.text_total_qty_count), scannedItems.size)
 
         text_top_title.text = resources.getString(R.string.text_title_add_pickup)
         text_sign_p_tracking_no.text = qtyFormat
@@ -51,24 +51,19 @@ class PickupAddScanActivity : CommonActivity() {
         text_sign_p_requester.text = intent.getStringExtra("applicant")
         text_sign_p_request_qty.text = scannedQty
 
-
         layout_top_back.setOnClickListener {
-
             cancelUpload()
         }
 
         layout_sign_p_applicant_eraser.setOnClickListener {
-
             sign_view_sign_p_applicant_signature.clearText()
         }
 
         layout_sign_p_collector_eraser.setOnClickListener {
-
             sign_view_sign_p_collector_signature.clearText()
         }
 
         btn_sign_p_save.setOnClickListener {
-
             serverUpload()
         }
 
@@ -79,7 +74,11 @@ class PickupAddScanActivity : CommonActivity() {
         if (checker.lacksPermissions(*PERMISSIONS)) {
 
             isPermissionTrue = false
-            PermissionActivity.startActivityForResult(this@PickupAddScanActivity, PERMISSION_REQUEST_CODE, *PERMISSIONS)
+            PermissionActivity.startActivityForResult(
+                this@PickupAddScanActivity,
+                PERMISSION_REQUEST_CODE,
+                *PERMISSIONS
+            )
             overridePendingTransition(0, 0)
         } else {
 
@@ -104,7 +103,10 @@ class PickupAddScanActivity : CommonActivity() {
             if (gpsEnable && gpsTrackerManager != null) {
 
                 gpsTrackerManager!!.gpsTrackerStart()
-                Log.e(tag, " onResume  Location  :  ${gpsTrackerManager!!.latitude} / ${gpsTrackerManager!!.longitude}")
+                Log.e(
+                    tag,
+                    " onResume  Location  :  ${gpsTrackerManager!!.latitude} / ${gpsTrackerManager!!.longitude}"
+                )
             } else {
 
                 DataUtil.enableLocationSettings(this@PickupAddScanActivity)
@@ -139,59 +141,84 @@ class PickupAddScanActivity : CommonActivity() {
 
             var latitude = 0.0
             var longitude = 0.0
-            gpsTrackerManager?.let {
 
+            gpsTrackerManager?.let {
                 latitude = it.latitude
                 longitude = it.longitude
             }
             Log.e(tag, "  Location $latitude / $longitude")
 
-
             if (!NetworkUtil.isNetworkAvailable(this@PickupAddScanActivity)) {
-
-                DisplayUtil.AlertDialog(this@PickupAddScanActivity, resources.getString(R.string.msg_network_connect_error))
+                DisplayUtil.AlertDialog(
+                    this@PickupAddScanActivity,
+                    resources.getString(R.string.msg_network_connect_error)
+                )
                 return
             }
 
             if (!sign_view_sign_p_applicant_signature.isTouch) {
-
-                Toast.makeText(this@PickupAddScanActivity, resources.getString(R.string.msg_signature_require), Toast.LENGTH_SHORT).show()
+                Toast.makeText(
+                    this@PickupAddScanActivity,
+                    resources.getString(R.string.msg_signature_require),
+                    Toast.LENGTH_SHORT
+                ).show()
                 return
             }
 
             if (!sign_view_sign_p_collector_signature.isTouch) {
-
-                Toast.makeText(this@PickupAddScanActivity, resources.getString(R.string.msg_collector_signature_require), Toast.LENGTH_SHORT).show()
+                Toast.makeText(
+                    this@PickupAddScanActivity,
+                    resources.getString(R.string.msg_collector_signature_require),
+                    Toast.LENGTH_SHORT
+                ).show()
                 return
             }
 
-            if (MemoryStatus.availableInternalMemorySize != MemoryStatus.ERROR.toLong() && MemoryStatus.availableInternalMemorySize < MemoryStatus.PRESENT_BYTE) {
-
-                DisplayUtil.AlertDialog(this@PickupAddScanActivity, resources.getString(R.string.msg_disk_size_error))
+            if (MemoryStatus.availableInternalMemorySize != MemoryStatus.ERROR.toLong()
+                && MemoryStatus.availableInternalMemorySize < MemoryStatus.PRESENT_BYTE
+            ) {
+                DisplayUtil.AlertDialog(
+                    this@PickupAddScanActivity,
+                    resources.getString(R.string.msg_disk_size_error)
+                )
                 return
             }
-
 
             DataUtil.logEvent("button_click", tag, "SetPickupUploadData_AddScan")
 
-            PickupAddScanUploadHelper.Builder(this@PickupAddScanActivity, Preferences.userId, Preferences.officeCode, Preferences.deviceUUID,
-                    pickupNo, scannedList, scannedQty, sign_view_sign_p_applicant_signature, sign_view_sign_p_collector_signature,
-                    MemoryStatus.availableInternalMemorySize, latitude, longitude)
-                    .setOnServerEventListener(object : OnServerEventListener {
-                        override fun onPostResult() {
+            PickupAddScanUploadHelper.Builder(
+                this@PickupAddScanActivity,
+                Preferences.userId,
+                Preferences.officeCode,
+                Preferences.deviceUUID,
+                pickupNo,
+                scannedList,
+                scannedQty,
+                sign_view_sign_p_applicant_signature,
+                sign_view_sign_p_collector_signature,
+                MemoryStatus.availableInternalMemorySize,
+                latitude,
+                longitude
+            ).setOnServerEventListener(object : OnServerEventListener {
+                override fun onPostResult() {
 
-                            DataUtil.inProgressListPosition = 0
-                            setResult(Activity.RESULT_OK)
-                            finish()
-                        }
+                    DataUtil.inProgressListPosition = 0
+                    setResult(Activity.RESULT_OK)
+                    finish()
+                }
 
-                        override fun onPostFailList() {
-                        }
-                    }).build().execute()
+                override fun onPostFailList() {
+                }
+            }).build().execute()
+
         } catch (e: Exception) {
 
             Log.e("Exception", "$tag   serverUpload  Exception : $e")
-            Toast.makeText(this@PickupAddScanActivity, resources.getString(R.string.text_error) + " - " + e.toString(), Toast.LENGTH_SHORT).show()
+            Toast.makeText(
+                this@PickupAddScanActivity,
+                resources.getString(R.string.text_error) + " - " + e.toString(),
+                Toast.LENGTH_SHORT
+            ).show()
         }
     }
 

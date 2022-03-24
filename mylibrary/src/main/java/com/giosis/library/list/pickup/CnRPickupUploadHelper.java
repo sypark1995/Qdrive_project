@@ -102,9 +102,6 @@ public class CnRPickupUploadHelper {
                     } catch (Exception e) {
                         Log.e("Exception", TAG + "getResultAlertDialog Exception : " + e.toString());
                     }
-//                    if (eventListener != null) {
-//                        eventListener.onPostResult();
-//                    }
 
                     Log.e("GpsUpdate", "Count : " + count);
                     if (!Preferences.INSTANCE.getUserNation().equalsIgnoreCase("SG") && count == 1) {   // MY,ID

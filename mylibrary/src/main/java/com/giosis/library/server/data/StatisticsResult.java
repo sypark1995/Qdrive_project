@@ -2,7 +2,6 @@ package com.giosis.library.server.data;
 
 import java.util.ArrayList;
 
-
 public class StatisticsResult {
 
     private int resultCode = -1;
@@ -44,7 +43,7 @@ public class StatisticsResult {
         this.detailDataArrayList = detailDataArrayList;
     }
 
-
+    // TODO_kjyoo 먼놈의스태틱 클래스이냐
     public static class SummaryData {
 
         int totalCount = 0;
@@ -123,7 +122,7 @@ public class StatisticsResult {
         }
     }
 
-
+    // TODO_kjyoo 먼놈의스태틱 클래스이냐
     public static class DetailData {
 
         String stat;

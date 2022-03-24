@@ -1,5 +1,6 @@
 package com.giosis.library.list.delivery;
 
+
 import android.app.Activity;
 import android.app.AlertDialog;
 import android.app.ProgressDialog;
@@ -61,8 +62,6 @@ import java.util.ArrayList;
 
 
 /***************
- * @author jtpark
- * @editor krm0219
  * LIST, In Progress > 'Delivered'  // SCAN > Delivery Done
  * 2020.06 사진 추가
  */

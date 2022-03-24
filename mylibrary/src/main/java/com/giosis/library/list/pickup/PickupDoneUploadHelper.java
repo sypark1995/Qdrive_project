@@ -301,7 +301,6 @@ public class PickupDoneUploadHelper {
                 return result;
             }
 
-
 //              // TEST_Upload Failed 시 주석 풀고 실행
 //            if (true) {
 //
@@ -309,7 +308,6 @@ public class PickupDoneUploadHelper {
 //                result.setResultMsg(context.getResources().getString(R.string.msg_upload_fail_15));
 //                return result;
 //            }
-
 
             try {
 

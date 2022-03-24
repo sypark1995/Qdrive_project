@@ -20,9 +20,7 @@ import kotlinx.android.synthetic.main.activity_pickup_done.*
 import kotlinx.android.synthetic.main.top_title.*
 import java.util.*
 
-
 /**
- * @editor krm0219
  * SCAN > CNR DONE
  */
 
@@ -52,7 +50,6 @@ class CnRPickupDoneActivity : CommonActivity() {
     public override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_pickup_done)
-
 
         layout_top_back.setOnClickListener {
             cancelSigning()
@@ -138,8 +135,6 @@ class CnRPickupDoneActivity : CommonActivity() {
         text_sign_p_requester.text = strReqQty
         text_sign_p_request_qty.text = strSenderName
 
-
-        //
         val checker = PermissionChecker(this@CnRPickupDoneActivity)
 
         // 권한 여부 체크 (없으면 true, 있으면 false)
@@ -192,10 +187,6 @@ class CnRPickupDoneActivity : CommonActivity() {
     }
 
 
-    /*
-     * 실시간 Upload 처리
-     * add by jmkang 2014-07-15
-     */
     private fun saveServerUploadSign() {
         try {
             if (!NetworkUtil.isNetworkAvailable(this@CnRPickupDoneActivity)) {
@@ -215,10 +206,7 @@ class CnRPickupDoneActivity : CommonActivity() {
             }
 
             locationModel.setDriverLocation(latitude, longitude)
-            Log.e(
-                "Location",
-                "$tag saveServerUploadSign  GPSTrackerManager : $latitude  $longitude  - ${locationModel.driverLat}, ${locationModel.driverLng}"
-            )
+
 
             if (!sign_view_sign_p_applicant_signature!!.isTouch) {
                 Toast.makeText(
@@ -289,17 +277,14 @@ class CnRPickupDoneActivity : CommonActivity() {
     }
 
     private fun cancelSigning() {
-
         AlertDialog.Builder(this@CnRPickupDoneActivity)
             .setMessage(R.string.msg_delivered_sign_cancel)
             .setPositiveButton(R.string.button_ok) { _: DialogInterface?, _: Int ->
-
                 setResult(Activity.RESULT_CANCELED)
                 finish()
             }
             .setNegativeButton(R.string.button_cancel) { dialog: DialogInterface, _: Int -> dialog.dismiss() }
             .show()
     }
-
 
 }
