@@ -1,25 +1,29 @@
-package com.giosis.library.util;
+package com.giosis.library.util
 
-public class BarcodeType {
+object BarcodeType {
+    const val TYPE_DELIVERY = "D"
+    const val TYPE_PICKUP = "P"
+    const val TYPE_CNR = "CnR"
 
-    public static final String TYPE_DELIVERY = "D";
-    public static final String TYPE_PICKUP = "P";
-    public static final String TYPE_CNR = "CnR";
-    public static final String PICKUP_ZERO_QTY = "PZQ";
-    public static final String DELIVERY_FAILED = "DX";
-    public static final String PICKUP_FAILED = "PF";
+    const val PICKUP_ZERO_QTY = "PZQ"
+    const val CONFIRM_MY_DELIVERY_ORDER = "MDA" // Main & SCAN > Confirm my delivery order
+    const val CHANGE_DELIVERY_DRIVER = "CDR" // Main > Change Delivery Driver
 
 
-    public static final String CONFIRM_MY_DELIVERY_ORDER = "MDA";       // Main & SCAN > Confirm my delivery order
-    public static final String CHANGE_DELIVERY_DRIVER = "CDR";          // Main > Change Delivery Driver
-    public static final String DELIVERY_DONE = "D4";                    // SCAN > Delivery Done
+    const val DELIVERY_START = "D3"
+    const val DELIVERY_DONE = "D4" // SCAN > Delivery Done
+    const val DELIVERY_FAIL = "DX"
+    const val PICKUP_FAIL = "PF"
+    const val PICKUP_CANCEL = "PX"
+    const val PICKUP_DONE = "P3"
+    const val PICKUP_CONFIRM = "P2"
+    const val RETURN_FAIL = "RF"
 
-    public static final String PICKUP_CNR = "CNR";                      // SCAN > Pickup C&R Parcels
-    public static final String PICKUP_SCAN_ALL = "PSA";                 // LIST > Start to Scan
-    public static final String PICKUP_ADD_SCAN = "PAS";                 // LIST > Today Done > Add Scan
-    public static final String PICKUP_TAKE_BACK = "PTB";                // LIST > Today Done > Take Back
-    public static final String OUTLET_PICKUP_SCAN = "OPS";              // LIST > Outlet Pickup Scan
 
-    public static final String SELF_COLLECTION = "SEC";                 // SCAN > Self-Collection
-
+    const val PICKUP_CNR = "CNR" // SCAN > Pickup C&R Parcels
+    const val PICKUP_SCAN_ALL = "PSA" // LIST > Start to Scan
+    const val PICKUP_ADD_SCAN = "PAS" // LIST > Today Done > Add Scan
+    const val PICKUP_TAKE_BACK = "PTB" // LIST > Today Done > Take Back
+    const val OUTLET_PICKUP_SCAN = "OPS" // LIST > Outlet Pickup Scan
+    const val SELF_COLLECTION = "SEC" // SCAN > Self-Collection
 }

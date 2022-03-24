@@ -10,6 +10,7 @@ import androidx.lifecycle.MutableLiveData
 import com.giosis.library.BuildConfig
 import com.giosis.library.gps.GPSTrackerManager
 import com.giosis.library.server.RetrofitClient
+import com.giosis.library.util.BarcodeType
 import com.giosis.library.util.Event
 import com.giosis.library.util.Preferences
 import com.google.gson.Gson
@@ -24,7 +25,7 @@ import kotlin.collections.ArrayList
 class TodayMyRouteViewModel(application: Application) : AndroidViewModel(application) {
 
     // Location
-    private val gpsTrackerManager : GPSTrackerManager? = GPSTrackerManager(application)
+    private val gpsTrackerManager: GPSTrackerManager? = GPSTrackerManager(application)
     fun getGpsManager() = gpsTrackerManager
 
     private val _permissionCheck = MutableLiveData<Boolean>()
@@ -128,114 +129,114 @@ class TodayMyRouteViewModel(application: Application) : AndroidViewModel(applica
 
             _routeType.value = "P"
             RetrofitClient.instanceDynamic().requestGetMyPickupRoute()
-                    .subscribeOn(Schedulers.io())
-                    .observeOn(AndroidSchedulers.mainThread())
-                    .subscribe({
+                .subscribeOn(Schedulers.io())
+                .observeOn(AndroidSchedulers.mainThread())
+                .subscribe({
 
-                        if (it.resultCode == 0) {
+                    if (it.resultCode == 0) {
 
-                            val result = Gson().fromJson<List<TrackingModel>>(
-                                    it.resultObject, object : TypeToken<List<TrackingModel>>() {}.type
-                            )
+                        val result = Gson().fromJson<List<TrackingModel>>(
+                            it.resultObject, object : TypeToken<List<TrackingModel>>() {}.type
+                        )
 
 
-                            val list = ArrayList<String>()
-                            var assignedCount = 0
-                            var confirmedCount = 0
-                            var doneCount = 0
-                            var failedCount = 0
+                        val list = ArrayList<String>()
+                        var assignedCount = 0
+                        var confirmedCount = 0
+                        var doneCount = 0
+                        var failedCount = 0
 
-                            for (data in result) {
+                        for (data in result) {
 
-                                when (data.stat) {
-                                    "P3" -> {
-                                        doneCount++
-                                    }
-                                    "PF" -> {
-                                        failedCount++
-                                    }
-                                    "P2" -> {
-                                        confirmedCount++
-                                        list.add(data.trackingNo)
-                                    }
-                                    else -> {
-                                        assignedCount++
-                                        list.add(data.trackingNo)
-                                    }
+                            when (data.stat) {
+                                BarcodeType.PICKUP_DONE -> {
+                                    doneCount++
+                                }
+                                BarcodeType.PICKUP_FAIL -> {
+                                    failedCount++
+                                }
+                                BarcodeType.PICKUP_CONFIRM -> {
+                                    confirmedCount++
+                                    list.add(data.trackingNo)
+                                }
+                                else -> {
+                                    assignedCount++
+                                    list.add(data.trackingNo)
                                 }
                             }
-
-                            Log.e("route", "Count $confirmedCount / $doneCount / $failedCount")
-                            _PACount.postValue(assignedCount.toString())
-                            _P2Count.postValue(confirmedCount.toString())
-                            _P3Count.postValue(doneCount.toString())
-                            _PFCount.postValue(failedCount.toString())
-                            _trackingList.postValue(list)
-                        } else {
-
-                            showToast.value = Event(it.resultMsg)
                         }
 
-                        _progress.value = View.GONE
-                    }, {
+                        Log.e("route", "Count $confirmedCount / $doneCount / $failedCount")
+                        _PACount.postValue(assignedCount.toString())
+                        _P2Count.postValue(confirmedCount.toString())
+                        _P3Count.postValue(doneCount.toString())
+                        _PFCount.postValue(failedCount.toString())
+                        _trackingList.postValue(list)
+                    } else {
 
-                        _progress.value = View.GONE
-                        _resultVisible.value = View.GONE
-                        showToast.value = Event(it.message)
-                    })
+                        showToast.value = Event(it.resultMsg)
+                    }
+
+                    _progress.value = View.GONE
+                }, {
+
+                    _progress.value = View.GONE
+                    _resultVisible.value = View.GONE
+                    showToast.value = Event(it.message)
+                })
         } else {
 
             _routeType.value = "D"
             RetrofitClient.instanceDynamic().requestGetMyDeliveryRoute()
-                    .subscribeOn(Schedulers.io())
-                    .observeOn(AndroidSchedulers.mainThread())
-                    .subscribe({
+                .subscribeOn(Schedulers.io())
+                .observeOn(AndroidSchedulers.mainThread())
+                .subscribe({
 
-                        if (it.resultCode == 0) {
+                    if (it.resultCode == 0) {
 
-                            val result = Gson().fromJson<List<TrackingModel>>(
-                                    it.resultObject, object : TypeToken<List<TrackingModel>>() {}.type
-                            )
+                        val result = Gson().fromJson<List<TrackingModel>>(
+                            it.resultObject, object : TypeToken<List<TrackingModel>>() {}.type
+                        )
 
 
-                            val list = ArrayList<String>()
-                            var progressCount = 0
-                            var doneCount = 0
-                            var failedCount = 0
+                        val list = ArrayList<String>()
+                        var progressCount = 0
+                        var doneCount = 0
+                        var failedCount = 0
 
-                            for (data in result) {
+                        for (data in result) {
 
-                                when (data.stat) {
-                                    "D4" -> {
-                                        doneCount++
-                                    }
-                                    "DX" -> {
-                                        failedCount++
-                                    }
-                                    else -> {
-                                        progressCount++
-                                        list.add(data.trackingNo)
-                                    }
+                            when (data.stat) {
+                                BarcodeType.DELIVERY_DONE -> {
+                                    doneCount++
+                                }
+                                BarcodeType.DELIVERY_FAIL -> {
+                                    failedCount++
+                                }
+                                else -> {
+                                    progressCount++
+                                    list.add(data.trackingNo)
                                 }
                             }
-
-                            Log.e("route", "Count $progressCount / $doneCount / $failedCount")
-                            _D3Count.postValue(progressCount.toString())
-                            _D4Count.postValue(doneCount.toString())
-                            _DFCount.postValue(failedCount.toString())
-                            _trackingList.postValue(list)
-                        } else {
-
-                            showToast.value = Event(it.resultMsg)
                         }
 
-                        _progress.value = View.GONE
-                    }, {
+                        Log.e("route", "Count $progressCount / $doneCount / $failedCount")
+                        _D3Count.postValue(progressCount.toString())
+                        _D4Count.postValue(doneCount.toString())
+                        _DFCount.postValue(failedCount.toString())
+                        _trackingList.postValue(list)
+                    } else {
 
-                        _progress.value = View.GONE
-                        _resultVisible.value = View.GONE
-                        showToast.value = Event(it.message)
-                    })
+                        showToast.value = Event(it.resultMsg)
+                    }
+
+                    _progress.value = View.GONE
+                }, {
+
+                    _progress.value = View.GONE
+                    _resultVisible.value = View.GONE
+                    showToast.value = Event(it.message)
+                })
         }
     }
 
@@ -261,73 +262,76 @@ class TodayMyRouteViewModel(application: Application) : AndroidViewModel(applica
         }
 
         val list = _trackingList.value.toString()
-                .replace("[", "")
-                .replace("]", "")
+            .replace("[", "")
+            .replace("]", "")
         Log.e("route", "$lat - $lng / (${_trackingList.value?.size})$list / ${_routeType.value}")
 
         RetrofitClient.instanceXRoute().requestGetTripList(lat, lng, list, _routeType.value!!)
-                .subscribeOn(Schedulers.io())
-                .observeOn(AndroidSchedulers.mainThread())
-                .subscribe({
+            .subscribeOn(Schedulers.io())
+            .observeOn(AndroidSchedulers.mainThread())
+            .subscribe({
 
-                    if (it.errCode == "0000") {      // 성공
+                if (it.errCode == "0000") {      // 성공
 
-                        // TODO_route
-                        Log.e("route", " requestGetTripList result ${it.errCode} / ${it.data} ")
+                    // TODO_route
+                    Log.e("route", " requestGetTripList result ${it.errCode} / ${it.data} ")
 
-                        if (it.data != null) {
+                    if (it.data != null) {
 
-                            val routeData = Gson().fromJson(it.data, RouteData::class.java)
+                        val routeData = Gson().fromJson(it.data, RouteData::class.java)
 
-                            val calendar = Calendar.getInstance()
-                            for ((index, route) in routeData.routeList.withIndex()) {
+                        val calendar = Calendar.getInstance()
+                        for ((index, route) in routeData.routeList.withIndex()) {
 
-                                val timeMin: Int = (route.next_trip_duration.toDouble() / 60).toInt()
+                            val timeMin: Int = (route.next_trip_duration.toDouble() / 60).toInt()
 
-                                if (0 == index) {
-                                    calendar.time = Date()
-                                } else {
-                                    calendar.time = SimpleDateFormat("yyyy-MM-dd HH:mm").parse(routeData.routeList[index - 1].nextTripDate)!!
-                                }
-                                calendar.add(Calendar.MINUTE, timeMin)
+                            if (0 == index) {
+                                calendar.time = Date()
+                            } else {
+                                calendar.time =
+                                    SimpleDateFormat("yyyy-MM-dd HH:mm").parse(routeData.routeList[index - 1].nextTripDate)!!
+                            }
+                            calendar.add(Calendar.MINUTE, timeMin)
 
-                                if (index == routeData.routeList.size - 1) {
+                            if (index == routeData.routeList.size - 1) {
 
-                                    route.nextTripDate = ""
-                                    route.nextTripTime = ""
-                                } else {
+                                route.nextTripDate = ""
+                                route.nextTripTime = ""
+                            } else {
 
-                                    route.nextTripDate = SimpleDateFormat("yyyy-MM-dd HH:mm").format(calendar.time)
-                                    route.nextTripTime = SimpleDateFormat("HH:mm").format(calendar.time)
-                                }
-
-                                if (index == 0) {
-                                    route.estimatedTime = SimpleDateFormat("HH:mm").format(Calendar.getInstance().time)
-                                } else {
-                                    route.estimatedTime = routeData.routeList[index - 1].nextTripTime
-                                }
+                                route.nextTripDate =
+                                    SimpleDateFormat("yyyy-MM-dd HH:mm").format(calendar.time)
+                                route.nextTripTime = SimpleDateFormat("HH:mm").format(calendar.time)
                             }
 
-                            _routeData.postValue(routeData)
-                            _resultVisible.value = View.VISIBLE
-                        } else {
-
-                            showToast.value = Event(it.desc)
-                            _resultVisible.value = View.GONE
+                            if (index == 0) {
+                                route.estimatedTime =
+                                    SimpleDateFormat("HH:mm").format(Calendar.getInstance().time)
+                            } else {
+                                route.estimatedTime = routeData.routeList[index - 1].nextTripTime
+                            }
                         }
-                    } else {    // 실패
+
+                        _routeData.postValue(routeData)
+                        _resultVisible.value = View.VISIBLE
+                    } else {
 
                         showToast.value = Event(it.desc)
                         _resultVisible.value = View.GONE
                     }
+                } else {    // 실패
 
-                    _progress.value = View.GONE
-                }, {
-
-                    _progress.value = View.GONE
+                    showToast.value = Event(it.desc)
                     _resultVisible.value = View.GONE
-                    showToast.value = Event(it.message)
-                })
+                }
+
+                _progress.value = View.GONE
+            }, {
+
+                _progress.value = View.GONE
+                _resultVisible.value = View.GONE
+                showToast.value = Event(it.message)
+            })
     }
 
     fun onClickItem() {

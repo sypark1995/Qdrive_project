@@ -300,7 +300,7 @@ public class DeviceDataUploadHelper {
                             result.setResultMsg("");
                             return result;
                         }
-                    } else if (uploadData.getStat().equals(BarcodeType.DELIVERY_FAILED)) {
+                    } else if (uploadData.getStat().equals(BarcodeType.DELIVERY_FAIL)) {
 
                         String dirPath = Environment.getExternalStorageDirectory().toString() + "/QdriveFailed";
                         String filePath = dirPath + "/" + uploadData.getNoSongjang() + ".png";
@@ -346,7 +346,7 @@ public class DeviceDataUploadHelper {
                     String bitmapString = "";
                     String bitmapString2 = "";
 
-                    if (!uploadData.getStat().equals(BarcodeType.PICKUP_FAILED)) {
+                    if (!uploadData.getStat().equals(BarcodeType.PICKUP_FAIL)) {
 
                         String dirPath = Environment.getExternalStorageDirectory().toString() + "/QdrivePickup";
                         String dirPath2 = Environment.getExternalStorageDirectory().toString() + "/QdriveCollector";
@@ -384,7 +384,7 @@ public class DeviceDataUploadHelper {
                             result.setResultMsg("");
                             return result;
                         }
-                    } else if (uploadData.getStat().equals(BarcodeType.PICKUP_FAILED)) {
+                    } else if (uploadData.getStat().equals(BarcodeType.PICKUP_FAIL)) {
 
                         String dirPath = Environment.getExternalStorageDirectory().toString() + "/QdrivePickup";
                         String filePath = dirPath + "/" + uploadData.getNoSongjang() + ".png";

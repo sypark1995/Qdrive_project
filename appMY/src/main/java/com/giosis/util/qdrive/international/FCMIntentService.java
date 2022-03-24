@@ -1,5 +1,6 @@
 package com.giosis.util.qdrive.international;
 
+
 import android.app.ActivityManager;
 import android.app.NotificationChannel;
 import android.app.NotificationManager;
@@ -20,6 +21,7 @@ import androidx.core.app.NotificationCompat;
 
 import com.giosis.library.main.MainActivity;
 import com.giosis.library.message.MessageListActivity;
+import com.giosis.library.util.BarcodeType;
 import com.giosis.library.util.DatabaseHelper;
 import com.giosis.util.qdrive.util.DataUtil;
 import com.google.firebase.messaging.FirebaseMessagingService;
@@ -131,7 +133,7 @@ public class FCMIntentService extends FirebaseMessagingService {
 
             sendNotification(context, topClassname, title, message, action_key, action_value); // 안드로이드폰에 Noti기능
 
-            if (action_key.equals("PX")) {
+            if (action_key.equals(BarcodeType.PICKUP_CANCEL)) {
 
                 try {
                     dbHelper = DatabaseHelper.getInstance();
@@ -139,7 +141,6 @@ public class FCMIntentService extends FirebaseMessagingService {
                     dbHelper.delete(DatabaseHelper.DB_TABLE_INTEGRATION_LIST, "invoice_no='" + action_value + "' COLLATE NOCASE");
                 } catch (Exception e) {
 
-                    Log.e("krm0219", "PX  DB Delete Error");
                 }
             } else if (action_key.equals("7ETB")) {
                 // 7E TakeBack : 48시간 초과 후, Pickup Driver가 수거하러 가기 전 고객이 물건을 찾아 갔을 때...
@@ -150,7 +151,6 @@ public class FCMIntentService extends FirebaseMessagingService {
                     dbHelper.delete(DatabaseHelper.DB_TABLE_INTEGRATION_LIST, "invoice_no='" + action_value + "' COLLATE NOCASE");
                 } catch (Exception e) {
 
-                    Log.e("krm0219", "7ETB  DB Delete Error");
                 }
             } else if (action_key.equals("FLTB")) {
                 // FL TakeBack : 48시간 초과 후, Pickup Driver가 수거하러 가기 전 고객이 물건을 찾아 갔을 때...
@@ -161,7 +161,6 @@ public class FCMIntentService extends FirebaseMessagingService {
                     dbHelper.delete(DatabaseHelper.DB_TABLE_INTEGRATION_LIST, "invoice_no='" + action_value + "' COLLATE NOCASE");
                 } catch (Exception e) {
 
-                    Log.e("krm0219", "FLTB  DB Delete Error");
                 }
             } else if (action_key.equals("LAE")) {
                 // Locker Alliance Expired - User key(12자리) 값 클립보드에 복사
@@ -194,7 +193,7 @@ public class FCMIntentService extends FirebaseMessagingService {
                     try {
                         pie.send(); //호출
                     } catch (CanceledException e) {
-                        Log.e("getmessage", "getmessage:" + message);
+
                     }
                 }
             }

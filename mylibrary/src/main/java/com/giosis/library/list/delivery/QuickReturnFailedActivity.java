@@ -288,11 +288,7 @@ public class QuickReturnFailedActivity extends CommonActivity implements Camera2
                 }).show();
     }
 
-    /*
-     * 실시간 Upload 처리
-     * 2016-10-04 eylee added
-     * visit log 페이지에서 저장 버튼 눌렀을 때
-     */
+
     public void saveServerUploadSign() {
 
         try {

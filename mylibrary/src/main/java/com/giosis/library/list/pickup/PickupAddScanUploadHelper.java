@@ -12,6 +12,7 @@ import com.giosis.library.barcodescanner.StdResult;
 import com.giosis.library.list.SigningView;
 import com.giosis.library.server.Custom_JsonParser;
 import com.giosis.library.server.ImageUpload;
+import com.giosis.library.util.BarcodeType;
 import com.giosis.library.util.DataUtil;
 import com.giosis.library.util.DisplayUtil;
 import com.giosis.library.util.NetworkUtil;
@@ -264,7 +265,7 @@ public class PickupAddScanUploadHelper {
 
                 JSONObject job = new JSONObject();
                 job.accumulate("rcv_type", "RC");
-                job.accumulate("stat", "P3");
+                job.accumulate("stat", BarcodeType.PICKUP_DONE);
                 job.accumulate("chg_id", opID);
                 job.accumulate("deliv_msg", "(by Qdrive RealTime-Upload)");
                 job.accumulate("opId", opID);

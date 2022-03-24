@@ -15,6 +15,7 @@ import com.giosis.library.R;
 import com.giosis.library.barcodescanner.StdResult;
 import com.giosis.library.server.Custom_JsonParser;
 import com.giosis.library.server.ImageUpload;
+import com.giosis.library.util.BarcodeType;
 import com.giosis.library.util.DataUtil;
 import com.giosis.library.util.DatabaseHelper;
 import com.giosis.library.util.DisplayUtil;
@@ -254,7 +255,7 @@ public class QuickReturnFailedUploadHelper {
                 JSONObject job = new JSONObject();
 
                 job.accumulate("rcv_type", "RC");
-                job.accumulate("stat", "RF");
+                job.accumulate("stat", BarcodeType.RETURN_FAIL);
                 job.accumulate("chg_id", opID);
                 job.accumulate("deliv_msg", "(by Qdrive RealTime-Upload)"); // 내부관리자용 메세지
                 job.accumulate("opId", opID);
@@ -311,17 +312,15 @@ public class QuickReturnFailedUploadHelper {
         return this;
     }
 
-    // SQLite UPDATE
     private void updateReceiverSign(String invoiceNo, String driverMemo) {
 
-        //        String opId = SharedPreferencesHelper.getSigninOpID(context);
         String opId = Preferences.INSTANCE.getUserId();
 
         SimpleDateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
         Date date = new Date();
 
         ContentValues contentVal = new ContentValues();
-        contentVal.put("stat", "RF");
+        contentVal.put("stat", BarcodeType.RETURN_FAIL);
         contentVal.put("chg_dt", dateFormat.format(date));
         contentVal.put("real_qty", "0");
         contentVal.put("driver_memo", driverMemo);

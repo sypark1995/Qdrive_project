@@ -29,6 +29,7 @@ import com.giosis.library.UploadData;
 import com.giosis.library.gps.GPSTrackerManager;
 import com.giosis.library.main.DeviceDataUploadHelper;
 import com.giosis.library.server.data.FailedCodeResult;
+import com.giosis.library.util.BarcodeType;
 import com.giosis.library.util.DataUtil;
 import com.giosis.library.util.DatabaseHelper;
 import com.giosis.library.util.OnServerEventListener;
@@ -48,11 +49,6 @@ public class ListUploadFailedAdapter extends BaseExpandableListAdapter {
     private ArrayList<RowItemNotUpload> rowItem;
     private ArrayList<RowItemNotUpload> originalRowItem;
 
-    private final String DELIVERY_DONE = "D4";
-    private final String DELIVERY_FAIL = "DX";
-    private final String PICKUP_FAIL = "PF";
-    private final String PICKUP_CANCEL = "PX";
-    private final String PICKUP_DONE = "P3";
 
     ListUploadFailedAdapter(ArrayList<RowItemNotUpload> rowItem, AdapterInterface listener) {
 
@@ -125,19 +121,19 @@ public class ListUploadFailedAdapter extends BaseExpandableListAdapter {
         String status = "";
 
         switch (row_pos.getStat()) {
-            case DELIVERY_FAIL:
+            case BarcodeType.DELIVERY_FAIL:
                 status = text_list_item_upload_failed_state.getContext().getResources().getString(R.string.text_d_failed);
                 break;
-            case DELIVERY_DONE:
+            case BarcodeType.DELIVERY_DONE:
                 status = text_list_item_upload_failed_state.getContext().getResources().getString(R.string.text_delivered);
                 break;
-            case PICKUP_FAIL:
+            case BarcodeType.PICKUP_FAIL:
                 status = text_list_item_upload_failed_state.getContext().getResources().getString(R.string.text_p_failed);
                 break;
-            case PICKUP_CANCEL:
+            case BarcodeType.PICKUP_CANCEL:
                 status = text_list_item_upload_failed_state.getContext().getResources().getString(R.string.text_p_cancelled);
                 break;
-            case PICKUP_DONE:
+            case BarcodeType.PICKUP_DONE:
                 status = text_list_item_upload_failed_state.getContext().getResources().getString(R.string.text_p_done);
                 break;
         }
@@ -276,7 +272,7 @@ public class ListUploadFailedAdapter extends BaseExpandableListAdapter {
             layout_list_item_child_failed_reason.setVisibility(View.VISIBLE);
 
             switch (child.getStat()) {
-                case DELIVERY_FAIL: {
+                case BarcodeType.DELIVERY_FAIL: {
 
                     ArrayList<FailedCodeResult.FailedCode> arrayList = DataUtil.getFailCode("D");
 
@@ -296,7 +292,7 @@ public class ListUploadFailedAdapter extends BaseExpandableListAdapter {
                 }
                 break;
 
-                case PICKUP_FAIL: {
+                case BarcodeType.PICKUP_FAIL: {
 
                     ArrayList<FailedCodeResult.FailedCode> arrayList = DataUtil.getFailCode("P");
 
@@ -323,7 +319,7 @@ public class ListUploadFailedAdapter extends BaseExpandableListAdapter {
         }
 
         // 메모
-        if (!child.getStat().equals(PICKUP_DONE)) {
+        if (!child.getStat().equals(BarcodeType.PICKUP_DONE)) {
 
             if (0 < child.getStatMsg().length()) {
 
@@ -345,7 +341,7 @@ public class ListUploadFailedAdapter extends BaseExpandableListAdapter {
 
         Bitmap myBitmap;
         switch (child.getStat()) {
-            case DELIVERY_DONE: {        // Delivery   sign 1개
+            case BarcodeType.DELIVERY_DONE: {        // Delivery   sign 1개
 
                 String dirPath = Environment.getExternalStorageDirectory().toString() + deliverySign;
                 String filePath = dirPath + "/" + tracking_no + ".png";
@@ -377,8 +373,8 @@ public class ListUploadFailedAdapter extends BaseExpandableListAdapter {
                 }
                 break;
             }
-            case PICKUP_DONE:
-            case PICKUP_CANCEL: {
+            case BarcodeType.PICKUP_DONE:
+            case BarcodeType.PICKUP_CANCEL: {
 
                 String dirPath = Environment.getExternalStorageDirectory().toString() + "/" + pickupSign;
                 String dirPath2 = Environment.getExternalStorageDirectory().toString() + "/" + pickupDriverSign;

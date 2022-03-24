@@ -316,7 +316,7 @@ public class OutletStatusDownloadHelper {
             }
 
             /*  R3, R4의 경우 */
-            if (data.getStat().equals("DX")) {
+            if (data.getStat().equals(BarcodeType.DELIVERY_FAIL)) {
 
                 rowItem.setType("P");
             }

@@ -17,6 +17,7 @@ import com.giosis.library.barcodescanner.StdResult;
 import com.giosis.library.list.SigningView;
 import com.giosis.library.server.Custom_JsonParser;
 import com.giosis.library.server.ImageUpload;
+import com.giosis.library.util.BarcodeType;
 import com.giosis.library.util.DataUtil;
 import com.giosis.library.util.DatabaseHelper;
 import com.giosis.library.util.DisplayUtil;
@@ -261,7 +262,7 @@ public class PickupTakeBackUploadHelper {
             String changeDataString = dateFormat.format(date);
 
             ContentValues contentVal = new ContentValues();
-            contentVal.put("stat", "P3");
+            contentVal.put("stat", BarcodeType.PICKUP_DONE);
             contentVal.put("real_qty", realQty);
             contentVal.put("chg_dt", changeDataString);
             contentVal.put("fail_reason", "");

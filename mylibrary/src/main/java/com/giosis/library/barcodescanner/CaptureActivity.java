@@ -810,9 +810,12 @@ public final class CaptureActivity extends CommonActivity implements DecoratedBa
 
 
         // Scanned List
-        if (mScanType.equals(BarcodeType.CONFIRM_MY_DELIVERY_ORDER) || mScanType.equals(BarcodeType.CHANGE_DELIVERY_DRIVER)
-                || mScanType.equals(BarcodeType.PICKUP_CNR) || mScanType.equals(BarcodeType.PICKUP_SCAN_ALL)
-                || mScanType.equals(BarcodeType.PICKUP_ADD_SCAN) || mScanType.equals(BarcodeType.PICKUP_TAKE_BACK)
+        if (mScanType.equals(BarcodeType.CONFIRM_MY_DELIVERY_ORDER)
+                || mScanType.equals(BarcodeType.CHANGE_DELIVERY_DRIVER)
+                || mScanType.equals(BarcodeType.PICKUP_CNR)
+                || mScanType.equals(BarcodeType.PICKUP_SCAN_ALL)
+                || mScanType.equals(BarcodeType.PICKUP_ADD_SCAN)
+                || mScanType.equals(BarcodeType.PICKUP_TAKE_BACK)
                 || mScanType.equals(BarcodeType.OUTLET_PICKUP_SCAN)) {
 
             try {
@@ -820,9 +823,12 @@ public final class CaptureActivity extends CommonActivity implements DecoratedBa
                 scanBarcodeArrayList.clear();
                 adapter.notifyDataSetChanged();
 
-                if (mScanType.equals(BarcodeType.CONFIRM_MY_DELIVERY_ORDER) || mScanType.equals(BarcodeType.CHANGE_DELIVERY_DRIVER)
-                        || mScanType.equals(BarcodeType.PICKUP_CNR) || mScanType.equals(BarcodeType.PICKUP_SCAN_ALL)
-                        || mScanType.equals(BarcodeType.PICKUP_ADD_SCAN) || mScanType.equals(BarcodeType.PICKUP_TAKE_BACK)) {
+                if (mScanType.equals(BarcodeType.CONFIRM_MY_DELIVERY_ORDER)
+                        || mScanType.equals(BarcodeType.CHANGE_DELIVERY_DRIVER)
+                        || mScanType.equals(BarcodeType.PICKUP_CNR)
+                        || mScanType.equals(BarcodeType.PICKUP_SCAN_ALL)
+                        || mScanType.equals(BarcodeType.PICKUP_ADD_SCAN)
+                        || mScanType.equals(BarcodeType.PICKUP_TAKE_BACK)) {
 
                     if (barcodeList != null && 0 < barcodeList.size()) {
                         for (int i = 0; i < barcodeList.size(); i++) {

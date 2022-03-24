@@ -284,7 +284,7 @@ public class ListInProgressAdapter extends BaseExpandableListAdapter {
                 img_list_item_secure_delivery.setVisibility(View.GONE);
             }
 
-            if (row_pos.getStat().equals("DX")) {
+            if (row_pos.getStat().equals(BarcodeType.DELIVERY_FAIL)) {
 
                 text_list_item_pickup_state.setVisibility(View.VISIBLE);
                 text_list_item_pickup_state.setText(parent.getContext().getResources().getString(R.string.text_failed));
@@ -559,7 +559,7 @@ public class ListInProgressAdapter extends BaseExpandableListAdapter {
             String reasonCode = child.getStatReason();
             String reasonText = "";
 
-            if (child.getStat().equals("DX")) {
+            if (child.getStat().equals(BarcodeType.DELIVERY_FAIL)) {
 
                 ArrayList<FailedCodeResult.FailedCode> arrayList = DataUtil.getFailCode("D");
 

@@ -16,6 +16,7 @@ import com.giosis.library.list.SigningView;
 import com.giosis.library.list.delivery.OnOutletDataUploadEventListener;
 import com.giosis.library.server.Custom_JsonParser;
 import com.giosis.library.server.ImageUpload;
+import com.giosis.library.util.BarcodeType;
 import com.giosis.library.util.DataUtil;
 import com.giosis.library.util.DatabaseHelper;
 import com.giosis.library.util.DisplayUtil;
@@ -256,7 +257,7 @@ public class OutletPickupDoneHelper {
             String changeDataString = dateFormat.format(date);
 
             ContentValues contentVal = new ContentValues();
-            contentVal.put("stat", "P3");
+            contentVal.put("stat", BarcodeType.PICKUP_DONE);
             contentVal.put("real_qty", scannedQty);
             contentVal.put("fail_reason", "");
             contentVal.put("driver_memo", driverMemo);
@@ -300,7 +301,7 @@ public class OutletPickupDoneHelper {
 
                 JSONObject job = new JSONObject();
                 job.accumulate("rcv_type", "SC");
-                job.accumulate("stat", "P3");
+                job.accumulate("stat", BarcodeType.PICKUP_DONE);
                 job.accumulate("chg_id", opID);
                 job.accumulate("fileData", bitmapString);
                 job.accumulate("fileData2", bitmapString);

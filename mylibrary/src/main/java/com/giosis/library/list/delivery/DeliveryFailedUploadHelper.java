@@ -13,6 +13,7 @@ import com.giosis.library.R;
 import com.giosis.library.barcodescanner.StdResult;
 import com.giosis.library.server.Custom_JsonParser;
 import com.giosis.library.server.ImageUpload;
+import com.giosis.library.util.BarcodeType;
 import com.giosis.library.util.DataUtil;
 import com.giosis.library.util.DatabaseHelper;
 import com.giosis.library.util.DisplayUtil;
@@ -217,7 +218,7 @@ public class DeliveryFailedUploadHelper {
             Date date = new Date();
 
             ContentValues contentVal = new ContentValues();
-            contentVal.put("stat", "DX");
+            contentVal.put("stat", BarcodeType.DELIVERY_FAIL);
             contentVal.put("chg_dt", dateFormat.format(date));
             contentVal.put("fail_reason", failedCode);
             contentVal.put("driver_memo", driverMemo);
@@ -259,7 +260,7 @@ public class DeliveryFailedUploadHelper {
 
                 JSONObject job = new JSONObject();
                 job.accumulate("rcv_type", receiveType);
-                job.accumulate("stat", "DX");
+                job.accumulate("stat", BarcodeType.DELIVERY_FAIL);
                 job.accumulate("chg_id", opID);
                 job.accumulate("deliv_msg", "(by Qdrive RealTime-Upload)");
                 job.accumulate("opId", opID);
@@ -328,7 +329,7 @@ public class DeliveryFailedUploadHelper {
         Date date = new Date();
 
         ContentValues contentVal = new ContentValues();
-        contentVal.put("stat", "DX");
+        contentVal.put("stat", BarcodeType.DELIVERY_FAIL);
         contentVal.put("chg_dt", dateFormat.format(date));
         contentVal.put("real_qty", "0");        // 업로드시 값 Parse 시 에러나서 0 넘김
         contentVal.put("fail_reason", failedCode);

@@ -1,5 +1,6 @@
 package com.giosis.library.list.delivery;
 
+
 import android.app.AlertDialog;
 import android.app.ProgressDialog;
 import android.content.ContentValues;
@@ -22,6 +23,7 @@ import com.giosis.library.list.BarcodeData;
 import com.giosis.library.list.SigningView;
 import com.giosis.library.server.Custom_JsonParser;
 import com.giosis.library.server.ImageUpload;
+import com.giosis.library.util.BarcodeType;
 import com.giosis.library.util.DataUtil;
 import com.giosis.library.util.DatabaseHelper;
 import com.giosis.library.util.DisplayUtil;
@@ -344,7 +346,7 @@ public class DeliveryDoneUploadHelper {
             Date date = new Date();
 
             ContentValues contentVal = new ContentValues();
-            contentVal.put("stat", "D4");
+            contentVal.put("stat", BarcodeType.DELIVERY_DONE);
             contentVal.put("rcv_type", receiveType);
             contentVal.put("driver_memo", driverMemo);
             contentVal.put("chg_dt", dateFormat.format(date));
@@ -375,7 +377,7 @@ public class DeliveryDoneUploadHelper {
 
                 JSONObject job = new JSONObject();
                 job.accumulate("rcv_type", receiveType);
-                job.accumulate("stat", "D4");
+                job.accumulate("stat", BarcodeType.DELIVERY_DONE);
                 job.accumulate("chg_id", opID);
                 job.accumulate("deliv_msg", "(by Qdrive RealTime-Upload)");
                 job.accumulate("opId", opID);
