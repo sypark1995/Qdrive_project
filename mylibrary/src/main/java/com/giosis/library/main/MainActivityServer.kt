@@ -326,7 +326,7 @@ object MainActivityServer {
     }
 
     private fun insertDeviceDeliveryData(data: QSignDeliveryList): Long {
-        val dateFormat = SimpleDateFormat("yyyy-MM-dd")
+        val dateFormat = SimpleDateFormat("yyyy-MM-dd HH:mm:ss")
         dateFormat.timeZone = TimeZone.getTimeZone("GMT")
         val regDataString = dateFormat.format(Date())
 

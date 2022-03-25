@@ -539,7 +539,6 @@ public class MainActivity extends AppBaseActivity {
                     (dialog, which) -> {
                     }).show();
         }
-
     }
 
 
@@ -631,69 +630,6 @@ public class MainActivity extends AppBaseActivity {
             }
         }
     }
-
-
-// todo_kjyoo 추후 삭제.
-//    public void setDestroyUserInfo() {
-//
-//        String api_level = Integer.toString(Build.VERSION.SDK_INT);     // API Level
-//        String device_info = Build.DEVICE;                   // Device
-//        String device_model = Build.MODEL;                   // Model
-//        String device_product = Build.PRODUCT;               // Product
-//        String device_os_version = System.getProperty("os.version");    // OS version
-//        Log.e(TAG, " DATA " + api_level + " / " + device_info + " / " + device_model + " / " + device_product + " / " + device_os_version);
-//
-//        SimpleDateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
-//        String regDataString = dateFormat.format(new Date());
-//
-//        RetrofitClient.INSTANCE.instanceDynamic().requestSetAppUserInfo(
-//                "killapp", NetworkUtil.getNetworkType(this), "", regDataString,
-//                "QDRIVE", api_level, device_info, device_model, device_product, device_os_version,
-//                "", "", "", "", "", "", "", "",
-//                opID, opID, opID, DataUtil.appID, Preferences.INSTANCE.getUserNation())
-//                .subscribeOn(Schedulers.io())
-//                .observeOn(AndroidSchedulers.mainThread())
-//                .subscribe(it -> {
-//
-//                    try {
-//
-//                        Log.e("Server", " requestSetAppUserInfo  result  " + it.getResultCode());
-//
-//                        if (it.getResultCode() < 0) {
-//
-//                            AlertDialog.Builder builder = new AlertDialog.Builder(this);
-//                            builder.setCancelable(false);
-//                            builder.setTitle(getResources().getString(R.string.text_upload_result));
-//                            builder.setMessage(it.getResultMsg());
-//                            builder.setPositiveButton(getResources().getString(R.string.button_ok), (dialog1, which) -> dialog1.dismiss());
-//                            builder.show();
-//                        }
-//                    } catch (Exception e) {
-//                        Log.e("Exception", "  requestSetAppUserInfo  Exception " + e.toString());
-//                    }
-//                }, it -> Toast.makeText(this, getResources().getString(R.string.msg_error_check_again), Toast.LENGTH_SHORT).show());
-//
-//
-//        double accuracy = 0;
-//        try {
-//
-//            if (gpsEnable && gpsTrackerManager != null) {
-//                latitude = gpsTrackerManager.getLatitude();
-//                longitude = gpsTrackerManager.getLongitude();
-//                accuracy = gpsTrackerManager.getAccuracy();
-//
-//                Log.e("Location", TAG + " - setDestroyUserInfo() > " + latitude + ", " + longitude);
-//            }
-//        } catch (Exception e) {
-//            latitude = 0;
-//            longitude = 0;
-//        }
-//
-//
-//        new DriverPerformanceLogUploadHelper.Builder(this, opID, latitude, longitude, accuracy)
-//                .setOnDriverPerformanceLogUploadEventListener(() -> {
-//                }).build().execute();
-//    }
 
 
     @Override
