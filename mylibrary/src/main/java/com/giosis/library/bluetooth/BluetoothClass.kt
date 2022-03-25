@@ -348,7 +348,7 @@ class BluetoothClass(val mActivity: Activity) : BluetoothListener {
                         }
                     }.build().execute()
 
-            // TODO_ 프린트로 테스트 해보기
+            // TODO_kjyoo 프린트로 테스트 해보기
 //            RetrofitClient.instanceDynamic().requestGetCnRPrintData(tracking_no)
 //                    .subscribeOn(Schedulers.io())
 //                    .observeOn(AndroidSchedulers.mainThread())
