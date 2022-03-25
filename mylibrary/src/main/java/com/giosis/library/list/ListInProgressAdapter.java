@@ -559,7 +559,7 @@ public class ListInProgressAdapter extends BaseExpandableListAdapter {
                 layout_list_item_child_failed.setVisibility(View.VISIBLE);
                 text_list_item_child_failed_reason.setText(reasonText);
 
-            } else if (child.getStat().equals("PF")) {
+            } else if (child.getStat().equals(BarcodeType.PICKUP_FAIL)) {
 
                 ArrayList<FailedCodeResult.FailedCode> arrayList = DataUtil.getFailCode("P");
 
@@ -586,8 +586,9 @@ public class ListInProgressAdapter extends BaseExpandableListAdapter {
             layout_list_item_child_failed.setVisibility(View.GONE);
         }
 
+
         //
-        if (rowItem.get(groupPosition).getType().equals("D")) {
+        if (rowItem.get(groupPosition).getType().equals(BarcodeType.TYPE_DELIVERY)) {
 
             text_list_item_child_parcel_amount_title.setText(parent.getContext().getResources().getString(R.string.text_parcel_amount));
 
@@ -656,6 +657,7 @@ public class ListInProgressAdapter extends BaseExpandableListAdapter {
             }
 
             layout_list_item_child_buttons2.setVisibility(View.GONE);
+
         } else {            // Pickup
 
             text_list_item_child_parcel_amount_title.setText(parent.getContext().getResources().getString(R.string.text_name));
@@ -677,7 +679,8 @@ public class ListInProgressAdapter extends BaseExpandableListAdapter {
                 layout_list_item_child_cnr_buttons.setVisibility(View.VISIBLE);
                 layout_list_item_child_outlet_pickup.setVisibility(View.GONE);
 
-            } else if (rowItem.get(groupPosition).getOutlet_company().equals("7E") || rowItem.get(groupPosition).getOutlet_company().equals("FL")) {       // 7E, FL
+            } else if (rowItem.get(groupPosition).getOutlet_company().equals("7E")
+                    || rowItem.get(groupPosition).getOutlet_company().equals("FL")) {       // 7E, FL
 
                 layout_list_item_child_pickup_buttons.setVisibility(View.GONE);
                 layout_list_item_child_cnr_buttons.setVisibility(View.GONE);
