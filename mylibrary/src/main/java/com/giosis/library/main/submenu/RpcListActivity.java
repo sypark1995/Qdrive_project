@@ -270,11 +270,7 @@ public class RpcListActivity extends CommonActivity implements SearchView.OnQuer
 
         ArrayList<RowItem> resultArrayList = new ArrayList<>();
 
-
         Cursor cs = DatabaseHelper.getInstance().get("SELECT * FROM " + DatabaseHelper.DB_TABLE_INTEGRATION_LIST + " WHERE punchOut_stat = 'N' and chg_dt is null and route='RPC' and reg_id='" + opID + "' order by " + orderby);
-        // TEST.
-        // Cursor cs = DatabaseHelper.getInstance().get("SELECT * FROM " + DatabaseHelper.DB_TABLE_INTEGRATION_LIST + " WHERE punchOut_stat = 'N' and chg_dt is null and route='QSM' and reg_id='" + opID + "' order by " + orderby);
-
 
         if (cs.moveToFirst()) {
             do {
@@ -383,14 +379,15 @@ public class RpcListActivity extends CommonActivity implements SearchView.OnQuer
                             }
                         }
                     }
-                    if (!isRegisteredRoute) {
 
+                    if (!isRegisteredRoute) {
                         resultArrayList.add(rowitem);
                     }
-                } else {
 
+                } else {
                     resultArrayList.add(rowitem);
                 }
+
             } while (cs.moveToNext());
         }
 
