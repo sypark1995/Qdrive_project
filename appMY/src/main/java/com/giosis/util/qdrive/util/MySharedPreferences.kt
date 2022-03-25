@@ -7,7 +7,8 @@ import java.util.*
 class MySharedPreferences(context: Context) {
 
     private val PREFS_FILENAME = "com.giosis.util.qdrive_preferences"
-    private val prefs: SharedPreferences = context.getSharedPreferences(PREFS_FILENAME, Context.MODE_PRIVATE)
+    private val prefs: SharedPreferences =
+        context.getSharedPreferences(PREFS_FILENAME, Context.MODE_PRIVATE)
 
     private val PREF_KEY_USER_ID = "userId"
     private val PREF_KEY_USER_PW = "userPw"
@@ -128,21 +129,8 @@ class MySharedPreferences(context: Context) {
         get() = prefs.getBoolean(PREF_KEY_DEVELOPER_MODE, false)
         set(value) = prefs.edit().putBoolean(PREF_KEY_DEVELOPER_MODE, value).apply()
 
-
     var localeLanguage: String
         get() = prefs.getString(PREF_KEY_LOCALE, Locale.getDefault().language).toString()
         set(value) = prefs.edit().putString(PREF_KEY_LOCALE, value).apply()
 
-
-    // 202012. Failed Code
-    private val PREF_KEY_DELIVERY_FAILED_CODE = "dFailedCode"
-    private val PREF_KEY_PICKUP_FAILED_CODE = "pFailedCode"
-
-    var dFailedCode: String
-        get() = prefs.getString(PREF_KEY_DELIVERY_FAILED_CODE, "").toString()
-        set(value) = prefs.edit().putString(PREF_KEY_DELIVERY_FAILED_CODE, value).apply()
-
-    var pFailedCode: String
-        get() = prefs.getString(PREF_KEY_PICKUP_FAILED_CODE, "").toString()
-        set(value) = prefs.edit().putString(PREF_KEY_PICKUP_FAILED_CODE, value).apply()
 }

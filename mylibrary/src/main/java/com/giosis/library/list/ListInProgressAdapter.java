@@ -230,23 +230,22 @@ public class ListInProgressAdapter extends BaseExpandableListAdapter {
         text_list_item_receipt_name.setText(row_pos.getName());
 
         //픽업
-        if (row_pos.getType().equals("P")) {
+        if (row_pos.getType().equals(BarcodeType.TYPE_PICKUP)) {
 
             text_list_item_tracking_no.setTextColor(parent.getContext().getResources().getColor(R.color.color_363BE7));
             img_list_item_secure_delivery.setVisibility(View.GONE);
             text_list_item_economy.setVisibility(View.GONE);
             text_list_item_high_amount.setVisibility(View.GONE);
 
-            if (row_pos.getStat().equals("RE")) {
-
+            if (row_pos.getStat().equals(BarcodeType.PICKUP_REASSIGN)) {
                 text_list_item_pickup_state.setVisibility(View.VISIBLE);
                 text_list_item_pickup_state.setText(parent.getContext().getResources().getString(R.string.text_pickup_reassigned));
-            } else if (row_pos.getStat().equals("PF")) {
 
+            } else if (row_pos.getStat().equals(BarcodeType.PICKUP_FAIL)) {
                 text_list_item_pickup_state.setVisibility(View.VISIBLE);
                 text_list_item_pickup_state.setText(parent.getContext().getResources().getString(R.string.text_pickup_failed));
-            } else {
 
+            } else {
                 text_list_item_pickup_state.setVisibility(View.GONE);
             }
 
@@ -254,10 +253,8 @@ public class ListInProgressAdapter extends BaseExpandableListAdapter {
 
                 // 2019.04
                 if (row_pos.getOutlet_company().equals("7E")) {
-
                     text_list_item_tracking_no.setText(row_pos.getOutlet_company().replace("FL", "LA") + " " + row_pos.getOutlet_store_name() + " (" + row_pos.getOutlet_store_code() + ")");
                 } else {
-
                     text_list_item_tracking_no.setText(row_pos.getOutlet_company().replace("FL", "LA") + " " + row_pos.getOutlet_store_name());
                 }
             }
@@ -269,27 +266,24 @@ public class ListInProgressAdapter extends BaseExpandableListAdapter {
             text_list_item_qty.setText(row_pos.getQty());
 
             if (row_pos.getRoute().equalsIgnoreCase("RPC")) {
-
                 text_list_item_desired_date.setText(row_pos.getDesiredDate() + " / " + row_pos.getDesired_time());
             }
+
         } else {       //배송
 
             text_list_item_tracking_no.setTextColor(parent.getContext().getResources().getColor(R.color.color_32bd87));
 
             if (row_pos.getSecure_delivery_yn() != null && row_pos.getSecure_delivery_yn().equals("Y")) {
-
                 img_list_item_secure_delivery.setVisibility(View.VISIBLE);
             } else {
-
                 img_list_item_secure_delivery.setVisibility(View.GONE);
             }
 
             if (row_pos.getStat().equals(BarcodeType.DELIVERY_FAIL)) {
-
                 text_list_item_pickup_state.setVisibility(View.VISIBLE);
                 text_list_item_pickup_state.setText(parent.getContext().getResources().getString(R.string.text_failed));
-            } else {
 
+            } else {
                 text_list_item_pickup_state.setVisibility(View.GONE);
             }
 
@@ -307,7 +301,6 @@ public class ListInProgressAdapter extends BaseExpandableListAdapter {
                 text_list_item_economy.setVisibility(View.GONE);
             }
 
-
             layout_list_item_delivery_info.setVisibility(View.VISIBLE);
             layout_list_item_pickup_info.setVisibility(View.GONE);
 
@@ -319,35 +312,30 @@ public class ListInProgressAdapter extends BaseExpandableListAdapter {
 
                 // 2019.04
                 if (row_pos.getOutlet_company().equals("7E")) {
-
                     text_list_item_tracking_no.setText(row_pos.getOutlet_company().replace("FL", "LA") + " " + row_pos.getOutlet_store_name() + " (" + row_pos.getOutlet_store_code() + ")");
                 } else {
-
                     text_list_item_tracking_no.setText(row_pos.getOutlet_company().replace("FL", "LA") + " " + row_pos.getOutlet_store_name());
                 }
                 layout_list_item_delivery_info.setVisibility(View.GONE);
-            } else {
 
+            } else {
                 layout_list_item_delivery_outlet_info.setVisibility(View.GONE);
             }
         }
 
         //요청
         if (row_pos.getRequest() == null || row_pos.getRequest().length() == 0) {
-
             layout_list_item_request.setVisibility(View.GONE);
         } else {
-
             layout_list_item_request.setVisibility(View.VISIBLE);
             text_list_item_request.setText(row_pos.getRequest());
         }
 
         //드라이버 셀프 메모
         if (row_pos.getSelfMemo() == null || row_pos.getSelfMemo().length() == 0) {
-
             layout_list_item_driver_memo.setVisibility(View.GONE);
-        } else {
 
+        } else {
             layout_list_item_driver_memo.setVisibility(View.VISIBLE);
             text_list_item_driver_memo.setText(row_pos.getSelfMemo());
         }
@@ -355,11 +343,10 @@ public class ListInProgressAdapter extends BaseExpandableListAdapter {
 
         //  2019.04 Outlet
         if (row_pos.getOutlet_company().equals("7E") || row_pos.getOutlet_company().equals("FL")) {
-            if (row_pos.getType().equals("P")) {
 
+            if (row_pos.getType().equals(BarcodeType.TYPE_PICKUP)) {
                 text_list_item_pickup_state.setText(parent.getContext().getResources().getString(R.string.text_retrieve));
-            } else if (row_pos.getType().equals("D")) {
-
+            } else if (row_pos.getType().equals(BarcodeType.TYPE_DELIVERY)) {
                 text_list_item_pickup_state.setText(parent.getContext().getResources().getString(R.string.text_delivery));
             }
 
@@ -427,7 +414,6 @@ public class ListInProgressAdapter extends BaseExpandableListAdapter {
     @Override
     public View getChildView(int groupPosition, int childPosition, boolean isLastChild, View convertView, ViewGroup parent) {
         if (convertView == null) {
-
             LayoutInflater layoutInflater = (LayoutInflater) parent.getContext().getSystemService(Activity.LAYOUT_INFLATER_SERVICE);
             convertView = layoutInflater.inflate(R.layout.item_list_child, null);
         }
@@ -474,9 +460,6 @@ public class ListInProgressAdapter extends BaseExpandableListAdapter {
         LinearLayout layout_list_item_child_buttons2 = convertView.findViewById(R.id.layout_list_item_child_buttons2);
         Button btn_list_item_child_detail_button = convertView.findViewById(R.id.btn_list_item_child_detail_button);
 
-
-        String authNo = Preferences.INSTANCE.getAuthNo();
-
         final RowItem group_item = rowItem.get(groupPosition);
         final ChildItem child = (ChildItem) getChild(groupPosition, childPosition);
 
@@ -486,7 +469,6 @@ public class ListInProgressAdapter extends BaseExpandableListAdapter {
         final String requester = rowItem.get(groupPosition).getName();
         final String route = rowItem.get(groupPosition).getRoute();
         final String qty = rowItem.get(groupPosition).getQty();
-
 
         if (child.getSecretNoType().equals("T")) {    // Qtalk 안심번호 타입 T - Qnumber 사용
             layout_list_item_child_telephone.setVisibility(View.GONE);
@@ -528,15 +510,14 @@ public class ListInProgressAdapter extends BaseExpandableListAdapter {
                 layout_list_item_child_mobile.setVisibility(View.GONE);
             }
 
-            img_list_item_child_live10.setVisibility(View.GONE);
         }
 
-        if (authNo.contains("137")) {
+
+        if (Preferences.INSTANCE.getAuthNo().contains("137")) {
             img_list_item_child_live10.setVisibility(View.VISIBLE);
         } else {
             img_list_item_child_live10.setVisibility(View.GONE);
         }
-
 
         try {
             String orderType = rowItem.get(groupPosition).getOrder_type_etc();
@@ -654,7 +635,8 @@ public class ListInProgressAdapter extends BaseExpandableListAdapter {
             layout_list_item_child_cnr_buttons.setVisibility(View.GONE);
             layout_list_item_child_outlet_pickup.setVisibility(View.GONE);
 
-            if (rowItem.get(groupPosition).getOutlet_company().equals("7E") || rowItem.get(groupPosition).getOutlet_company().equals("FL")) {
+            if (rowItem.get(groupPosition).getOutlet_company().equals("7E")
+                    || rowItem.get(groupPosition).getOutlet_company().equals("FL")) {
 
                 layout_list_item_child_parcel_amount.setVisibility(View.GONE);
                 // k. 2018.10.24   VisitLog 시 화물이 DPC3-Out 처리됨... 7E 화물은 DPC2-Out 까지만 처리되야 함..

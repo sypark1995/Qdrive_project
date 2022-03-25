@@ -103,7 +103,6 @@ object Preferences {
         get() = preferences.getString(PREF_KEY_SCAN_VIBRATION, "OFF").toString()
         set(value) = preferences.edit().putString(PREF_KEY_SCAN_VIBRATION, value).apply()
 
-
     var default: String
         get() = preferences.getString(PREF_KEY_DEFAULT_YN, "").toString()
         set(value) = preferences.edit().putString(PREF_KEY_DEFAULT_YN, value).apply()
