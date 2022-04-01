@@ -122,8 +122,7 @@ public class OutletStatusDownloadHelper {
 
                 OutletDeliveryServerList = getOutletDeliveryServerData();
                 PickupServerList = getPickupServerData();
-            }
-            if (outletStatusPosition == 3) {
+            } else if (outletStatusPosition == 3) {
 
                 OutletDeliveryServerList = getOutletRealTimeData("done_all");
             }
