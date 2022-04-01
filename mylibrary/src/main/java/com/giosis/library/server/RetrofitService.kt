@@ -486,32 +486,6 @@ interface RetrofitService {
         @Field("nation_cd") nation_cd: String = Preferences.userNation,
     ): APIModel
 
-
-    @POST("SetPickupUploadData")
-    @FormUrlEncoded
-    suspend fun requestSetPickupUploadData2(
-        @Field("rcv_type") rcv_type: String,
-        @Field("stat") stat: String,
-        @Field("no_songjang") no_songjang: String,
-        @Field("fileData") fileData: String,
-        @Field("fileData2") fileData2: String,
-        @Field("remark") remark: String,
-        @Field("lat") lat: String,
-        @Field("lon") lon: String,
-        @Field("real_qty") real_qty: String,
-        @Field("fail_reason") fail_reason: String,
-        @Field("retry_day") retry_day: String,
-        @Field("network_type") network_type: String,
-        @Field("opId") opId: String = Preferences.userId,
-        @Field("chg_id") chg_id: String = Preferences.userId,
-        @Field("deliv_msg") deliv_msg: String = "(by Qdrive RealTime-Upload)", // 내부관리자용 메세지
-        @Field("officeCd") officeCode: String = Preferences.officeCode,
-        @Field("device_id") device_id: String = Preferences.userId,
-        @Field("disk_size") disk_size: String = "999999",
-        @Field("app_id") app_id: String = DataUtil.appID,
-        @Field("nation_cd") nation_cd: String = Preferences.userNation,
-    ): APIModel
-
     // CnR Print Data
     @POST("GetCnRPrintData")
     @FormUrlEncoded
@@ -664,3 +638,4 @@ interface RetrofitService {
         @Field("nation_cd") nation_cd: String = Preferences.userNation
     ): APIModel
 }
+

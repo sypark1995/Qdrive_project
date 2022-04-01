@@ -7,15 +7,12 @@ import android.content.ContentValues
 import android.content.Context
 import android.content.DialogInterface
 import android.database.Cursor
-import android.graphics.BitmapFactory
 import android.os.Bundle
-import android.os.Environment
 import android.util.Log
 import android.view.View
 import androidx.lifecycle.lifecycleScope
 import com.giosis.library.R
 import com.giosis.library.UploadData
-import com.giosis.library.server.ImageUpload
 import com.giosis.library.server.RetrofitClient
 import com.giosis.library.server.data.QSignDeliveryList
 import com.giosis.library.server.data.QSignPickupList
@@ -27,7 +24,7 @@ import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
-import java.io.File
+import retrofit2.http.Field
 import java.text.SimpleDateFormat
 import java.util.*
 
@@ -631,19 +628,19 @@ object MainActivityServer {
 //
 //                        }
 
-                        val result = RetrofitClient.instanceDynamic().requestSetPickupUploadData2(
+                        val result = RetrofitClient.instanceDynamic().requestSetPickupUploadData(
                             item.receiveType,
                             item.stat,
+                            NetworkUtil.getNetworkType(context),
                             item.noSongjang,
                             fileData,
                             fileData2,
                             item.driverMemo,
-                            latitude.toString(),
-                            longitude.toString(),
+                            latitude,
+                            longitude,
                             item.realQty,
                             item.failReason,
                             item.retryDay,
-                            NetworkUtil.getNetworkType(context)
                         )
 
                         if (result.resultCode == 0) {
@@ -661,8 +658,6 @@ object MainActivityServer {
                     }
                 }
             }
-
-
         }
     }
 
