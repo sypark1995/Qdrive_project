@@ -38,11 +38,9 @@ class AddressDialogActivity : BaseActivity<ActivityAddressDialogBinding, Address
         super.onCreate(savedInstanceState)
 
         btn_search_address_close.setOnClickListener {
-
             setResult(Activity.RESULT_CANCELED)
             finish()
         }
-
 
         recycler_search_address.adapter = adapter
 
@@ -56,14 +54,11 @@ class AddressDialogActivity : BaseActivity<ActivityAddressDialogBinding, Address
             true
         }
 
-
         getViewModel().errorMsg.observe(this) {
 
             if (it is String) {
-
                 Toast.makeText(this, it, Toast.LENGTH_SHORT).show()
             } else if (it is Int) {
-
                 Toast.makeText(this, resources.getString(it), Toast.LENGTH_SHORT).show()
             }
         }

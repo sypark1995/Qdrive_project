@@ -26,13 +26,9 @@ class AddressDialogViewModel : ListViewModel<AddressResult.AddressResultObject.A
 
 
     fun clickSearch() {
-
         if (_searchText.value.isNullOrEmpty()) {
-
             toastString.postValue(R.string.msg_please_input_data)
         } else {
-
-            Log.e("TAG", "api 호출 " + _searchText.value)
             callServer(_searchText.value.toString().trim())
         }
     }
@@ -43,43 +39,43 @@ class AddressDialogViewModel : ListViewModel<AddressResult.AddressResultObject.A
         progressVisible.value = true
 
         RetrofitClient.instanceDynamic().requestGetAddressInfo(data)
-                .subscribeOn(Schedulers.io())
-                .observeOn(AndroidSchedulers.mainThread())
-                .subscribe({
+            .subscribeOn(Schedulers.io())
+            .observeOn(AndroidSchedulers.mainThread())
+            .subscribe({
 
-                    try {
+                try {
+                    val result1 = Gson().fromJson(
+                        it.resultObject.toString(),
+                        AddressResult.AddressResultObject::class.java
+                    )
 
-                        val result1 = Gson().fromJson(it.resultObject.toString(), AddressResult.AddressResultObject::class.java)
-                        val result = result1.resultRows!!
+                    val result = result1.resultRows!!
 
-                        if (result.size == 0) {
-
-                            clearList()
-                            notifyChange()
-                            _errorMsg.value = R.string.msg_no_results
-                        } else {
-
-                            setItemList(result)
-                            notifyChange()
-                        }
-                    } catch (e: Exception) {
-
-                        Log.e("Exception", "requestGetAddressInfo  $e")
-                        _errorMsg.value = e.toString()
+                    if (result.size == 0) {
+                        clearList()
+                        _errorMsg.value = R.string.msg_no_results
+                    } else {
+                        setItemList(result)
                     }
 
-                    progressVisible.value = false
-                }, {
+                    notifyChange()
 
-                    Log.e("Exception", it.message.toString())
-                    progressVisible.value = false
-                    _errorMsg.value = R.string.msg_network_connect_error
-                })
+                } catch (e: Exception) {
+                    Log.e("Exception", "requestGetAddressInfo  $e")
+                    _errorMsg.value = e.toString()
+                }
+
+                progressVisible.value = false
+            }, {
+
+                Log.e("Exception", it.message.toString())
+                progressVisible.value = false
+                _errorMsg.value = R.string.msg_network_connect_error
+            })
     }
 
 
     fun clickItem(pos: Int) {
-
         val bundle = Bundle()
         bundle.putString("zipCode", getItem(pos).zipCode)
         bundle.putString("frontAddress", getItem(pos).frontAddress)

@@ -11,8 +11,10 @@ import com.giosis.library.ListViewModel
 import com.giosis.library.R
 import com.giosis.library.server.data.AddressResult
 
-class AddressAdapter(private val viewModel: AddressDialogViewModel)
-    : BaseRecyclerAdapter<AddressAdapter.ViewHolder, AddressResult.AddressResultObject.AddressItem>(null) {
+class AddressAdapter(private val viewModel: AddressDialogViewModel) :
+    BaseRecyclerAdapter<AddressAdapter.ViewHolder, AddressResult.AddressResultObject.AddressItem>(
+        null
+    ) {
 
     override fun getListModel(): ListViewModel<AddressResult.AddressResultObject.AddressItem> {
         return viewModel
@@ -21,7 +23,13 @@ class AddressAdapter(private val viewModel: AddressDialogViewModel)
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): AddressAdapter.ViewHolder {
 
         val layoutInflater = LayoutInflater.from(parent.context)
-        val binding = DataBindingUtil.inflate<ViewDataBinding>(layoutInflater, R.layout.item_search_address, parent, false)
+        val binding = DataBindingUtil.inflate<ViewDataBinding>(
+            layoutInflater,
+            R.layout.item_search_address,
+            parent,
+            false
+        )
+
         return ViewHolder(binding)
     }
 
@@ -31,7 +39,8 @@ class AddressAdapter(private val viewModel: AddressDialogViewModel)
     }
 
 
-    inner class ViewHolder(private val binding: ViewDataBinding) : RecyclerView.ViewHolder(binding.root) {
+    inner class ViewHolder(private val binding: ViewDataBinding) :
+        RecyclerView.ViewHolder(binding.root) {
 
         fun bind(viewModel: AddressDialogViewModel, position: Int) {
 
