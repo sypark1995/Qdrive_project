@@ -19,26 +19,20 @@ class NoticeDetailViewModel : BaseViewModel() {
     var seqNo: MutableLiveData<String>
         get() = _seqNo
         set(value) {
-
             _seqNo.value = value.toString()
         }
-
 
     private val _errorAlert = SingleLiveEvent<Int>()
     val errorAlert: LiveData<Int>
         get() = _errorAlert
 
-
     private val _resultAlert = SingleLiveEvent<Any>()
     val resultAlert: LiveData<Any>
         get() = _resultAlert
 
-
     fun setSeqNo(value: String) {
-
         _seqNo.value = value
     }
-
 
     fun callServer() {
 
@@ -47,36 +41,35 @@ class NoticeDetailViewModel : BaseViewModel() {
         progressVisible.value = true
 
         RetrofitClient.instanceDynamic().requestGetNoticeData(noticeNo)
-                .subscribeOn(Schedulers.io())
-                .observeOn(AndroidSchedulers.mainThread())
-                .subscribe({
+            .subscribeOn(Schedulers.io())
+            .observeOn(AndroidSchedulers.mainThread())
+            .subscribe({
 
-                    progressVisible.value = false
+                progressVisible.value = false
 
-                    try {
+                try {
+                    val result = Gson().fromJson<List<NoticeResult.NoticeItem>>(
+                        it.resultObject.toString(),
+                        object : TypeToken<List<NoticeResult.NoticeItem>>() {}.type
+                    )
 
-                        val result = Gson().fromJson<List<NoticeResult.NoticeItem>>(
-                                it.resultObject.toString(), object : TypeToken<List<NoticeResult.NoticeItem>>() {}.type
-                        )
+                    Log.e("Server", it.resultObject.toString())
+                    Log.e("Server", "${result[0].title}  /  ${result[0].date}")
 
-                        Log.e("Server", it.resultObject.toString())
-                        Log.e("Server", "${result[0].title}  /  ${result[0].date}")
+                    _content.value = result[0].title
+                    _date.value = result[0].date
+                    _prevNo.value = result[0].prevNo
+                    _nextNo.value = result[0].nextNo
 
-                        _content.value = result[0].title
-                        _date.value = result[0].date
-                        _prevNo.value = result[0].prevNo
-                        _nextNo.value = result[0].nextNo
+                    _resultAlert.value = result
+                } catch (e: Exception) {
+                    _resultAlert.value = e.toString()
+                }
+            }, {
 
-                        _resultAlert.value = result
-                    } catch (e: Exception) {
-
-                        _resultAlert.value = e.toString()
-                    }
-                }, {
-
-                    progressVisible.value = false
-                    _resultAlert.value = R.string.msg_network_connect_error
-                })
+                progressVisible.value = false
+                _resultAlert.value = R.string.msg_network_connect_error
+            })
     }
 
 

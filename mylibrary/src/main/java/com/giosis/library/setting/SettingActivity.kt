@@ -61,7 +61,11 @@ class SettingActivity : BaseActivity<ActivitySettingBinding, SettingViewModel>()
                 } else {
                     // false > true
                     Preferences.developerMode = true
-                    Toast.makeText(this@SettingActivity, resources.getString(R.string.text_developer_mode), Toast.LENGTH_SHORT).show()
+                    Toast.makeText(
+                        this@SettingActivity,
+                        resources.getString(R.string.text_developer_mode),
+                        Toast.LENGTH_SHORT
+                    ).show()
                 }
                 showDeveloperModeClickCount = 0
                 initDeveloperMode()
@@ -76,31 +80,30 @@ class SettingActivity : BaseActivity<ActivitySettingBinding, SettingViewModel>()
 
             if (it) {
                 val text = DialogUiConfig(
-                        title = R.string.button_confirm,
-                        message = R.string.msg_want_to_delete_data
+                    title = R.string.button_confirm,
+                    message = R.string.msg_want_to_delete_data
                 )
 
                 val listener = DialogViewModel(
-                        positiveClick = {
+                    positiveClick = {
 
-                            deleteAlert.visibility = View.GONE
+                        deleteAlert.visibility = View.GONE
 
-                            DatabaseHelper.getInstance().delete(DatabaseHelper.DB_TABLE_INTEGRATION_LIST, "")
+                        DatabaseHelper.getInstance()
+                            .delete(DatabaseHelper.DB_TABLE_INTEGRATION_LIST, "")
 
-                            val builder = AlertDialog.Builder(this)
-                            builder.setTitle(resources.getString(R.string.text_alert))
-                            builder.setMessage(resources.getString(R.string.msg_deleted_data))
-                            builder.setPositiveButton(resources.getString(R.string.button_ok)) { dialogInterface, _ ->
-
-                                dialogInterface.cancel()
-                            }
-
-                            builder.show()
-
-                        },
-                        negativeClick = {
-                            deleteAlert.visibility = View.GONE
+                        val builder = AlertDialog.Builder(this)
+                        builder.setTitle(resources.getString(R.string.text_alert))
+                        builder.setMessage(resources.getString(R.string.msg_deleted_data))
+                        builder.setPositiveButton(resources.getString(R.string.button_ok)) { dialogInterface, _ ->
+                            dialogInterface.cancel()
                         }
+                        builder.show()
+
+                    },
+                    negativeClick = {
+                        deleteAlert.visibility = View.GONE
+                    }
                 )
                 deleteAlert.bindingData = Pair(text, listener)
                 deleteAlert.visibility = View.VISIBLE
@@ -136,14 +139,20 @@ class SettingActivity : BaseActivity<ActivitySettingBinding, SettingViewModel>()
         alertBuilder.setPositiveButton(resources.getString(R.string.button_ok)) { _, _ ->
 
             if (Preferences.userNation == "SG") {
-
-                val intent = Intent(this@SettingActivity, Class.forName("com.giosis.util.qdrive.singapore.LoginActivity"))
+                val intent = Intent(
+                    this@SettingActivity,
+                    Class.forName("com.giosis.util.qdrive.singapore.LoginActivity")
+                )
                 intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP or Intent.FLAG_ACTIVITY_SINGLE_TOP)
                 startActivity(intent)
                 finish()
+
             } else {
 
-                val intent = Intent(this@SettingActivity, Class.forName("com.giosis.util.qdrive.international.LoginActivity"))
+                val intent = Intent(
+                    this@SettingActivity,
+                    Class.forName("com.giosis.util.qdrive.international.LoginActivity")
+                )
                 intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP or Intent.FLAG_ACTIVITY_SINGLE_TOP)
                 startActivity(intent)
                 finish()
@@ -151,7 +160,6 @@ class SettingActivity : BaseActivity<ActivitySettingBinding, SettingViewModel>()
         }
 
         alertBuilder.setNegativeButton(resources.getString(R.string.button_cancel)) { dialogInterface, _ ->
-
             dialogInterface.cancel()
         }
 

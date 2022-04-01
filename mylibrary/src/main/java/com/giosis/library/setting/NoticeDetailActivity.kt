@@ -36,52 +36,39 @@ class NoticeDetailActivity : BaseActivity<ActivityNoticeDetailBinding, NoticeDet
             finish()
         }
 
-
         val noticeNo = intent.getStringExtra("notice_no").toString()
         getViewModel().setSeqNo(noticeNo)
 
         getViewModel().seqNo.observe(this, Observer {
-
             getViewModel().callServer()
         })
 
 
         getViewModel().content.observe(this, Observer {
-
             text_notice_detail_content.text = it
         })
 
         getViewModel().date.observe(this, Observer {
-
             text_notice_detail_date.text = it
         })
 
         getViewModel().prevNo.observe(this, Observer {
-
             if (it.isEmpty()) {
-
                 layout_notice_detail_prev.visibility = View.GONE
             } else {
-
                 layout_notice_detail_prev.visibility = View.VISIBLE
             }
         })
 
         getViewModel().nextNo.observe(this, Observer {
-
             if (it.isEmpty()) {
-
                 layout_notice_detail_next.visibility = View.GONE
             } else {
-
                 layout_notice_detail_next.visibility = View.VISIBLE
             }
         })
 
-
-
         getViewModel().errorAlert.observe(this, Observer {
-
             layout_notice_detail_reload.visibility = View.VISIBLE
             layout_notice_detail.visibility = View.GONE
         })
@@ -89,11 +76,10 @@ class NoticeDetailActivity : BaseActivity<ActivityNoticeDetailBinding, NoticeDet
         getViewModel().resultAlert.observe(this, Observer {
 
             if (it is String || it is Int) {
-
                 layout_notice_detail_reload.visibility = View.VISIBLE
                 layout_notice_detail.visibility = View.GONE
-            } else {
 
+            } else {
                 layout_notice_detail_reload.visibility = View.GONE
                 layout_notice_detail.visibility = View.VISIBLE
             }

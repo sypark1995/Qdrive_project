@@ -17,10 +17,10 @@ import kotlinx.android.synthetic.main.activity_modify_user_info.*
 import kotlinx.android.synthetic.main.top_title.*
 
 
-class ModifyUserInfoActivity : BaseActivity<ActivityModifyUserInfoBinding, ModifyUserInfoViewModel>() {
+class ModifyUserInfoActivity :
+    BaseActivity<ActivityModifyUserInfoBinding, ModifyUserInfoViewModel>() {
 
     val tag = "ModifyUserInfoActivity"
-
 
     override fun getLayoutId(): Int {
         return R.layout.activity_modify_user_info
@@ -34,7 +34,6 @@ class ModifyUserInfoActivity : BaseActivity<ActivityModifyUserInfoBinding, Modif
         return ViewModelProvider(this).get(ModifyUserInfoViewModel::class.java)
     }
 
-
     private val dialog by lazy { CustomDialog(this) }
     private val errDialog by lazy { CustomDialog(this) }
     private val resultDialog by lazy { CustomDialog(this) }
@@ -42,52 +41,47 @@ class ModifyUserInfoActivity : BaseActivity<ActivityModifyUserInfoBinding, Modif
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
 
-
         text_top_title.text = resources.getString(R.string.text_title_my_info)
 
         layout_top_back.setOnClickListener {
             finish()
         }
 
-
         getViewModel().checkAlert.observe(this, Observer {
-
             if (it != null) {
-
                 DisplayUtil.hideKeyboard(this)
 
                 dialog.bindingData = it
                 dialog.visibility = View.VISIBLE
-            } else {
 
+            } else {
                 dialog.visibility = View.GONE
             }
         })
-
 
         getViewModel().errorAlert.observe(this, Observer {
 
             DisplayUtil.hideKeyboard(this)
 
             val text = DialogUiConfig(
-                    title = R.string.text_invalidation,
-                    message = it,
-                    cancelVisible = false
+                title = R.string.text_invalidation,
+                message = it,
+                cancelVisible = false
             )
 
             val listener = DialogViewModel(
-                    positiveClick = {
-                        when (it) {
-                            R.string.msg_full_name_info -> {
-                                edit_setting_change_name.requestFocus()
-                            }
-                            R.string.msg_email_format_error -> {
-                                edit_setting_change_email.requestFocus()
-                            }
+                positiveClick = {
+                    when (it) {
+                        R.string.msg_full_name_info -> {
+                            edit_setting_change_name.requestFocus()
                         }
-
-                        errDialog.visibility = View.GONE
+                        R.string.msg_email_format_error -> {
+                            edit_setting_change_email.requestFocus()
+                        }
                     }
+
+                    errDialog.visibility = View.GONE
+                }
             )
 
             errDialog.bindingData = Pair(text, listener)
@@ -98,21 +92,21 @@ class ModifyUserInfoActivity : BaseActivity<ActivityModifyUserInfoBinding, Modif
         getViewModel().resultAlert.observe(this, Observer {
 
             val text = DialogUiConfig(
-                    title = R.string.text_alert,
-                    messageString = (it as APIModel).resultMsg.toString(),
-                    cancelVisible = false
+                title = R.string.text_alert,
+                messageString = (it as APIModel).resultMsg.toString(),
+                cancelVisible = false
             )
 
             val listener = DialogViewModel(
-                    positiveClick = {
+                positiveClick = {
 
-                        resultDialog.visibility = View.GONE
+                    resultDialog.visibility = View.GONE
 
-                        if (it.resultCode == 0) {
+                    if (it.resultCode == 0) {
 
-                            finish()
-                        }
+                        finish()
                     }
+                }
             )
 
             resultDialog.bindingData = Pair(text, listener)

@@ -20,36 +20,36 @@ class NoticeViewModel : ListViewModel<NoticeResult.NoticeItem>() {
     val errorMsg: LiveData<Any>
         get() = _errorMsg
 
-
     fun callServer() {
 
         progressVisible.value = true
 
         RetrofitClient.instanceDynamic().requestGetNoticeData("0", "List", 1, 30)
-                .subscribeOn(Schedulers.io())
-                .observeOn(AndroidSchedulers.mainThread())
-                .subscribe({
+            .subscribeOn(Schedulers.io())
+            .observeOn(AndroidSchedulers.mainThread())
+            .subscribe({
 
-                    try {
-                        val result = Gson().fromJson<ArrayList<NoticeResult.NoticeItem>>(
-                                it.resultObject.toString(), object : TypeToken<ArrayList<NoticeResult.NoticeItem>>() {}.type
-                        )
+                try {
+                    val result = Gson().fromJson<ArrayList<NoticeResult.NoticeItem>>(
+                        it.resultObject.toString(),
+                        object : TypeToken<ArrayList<NoticeResult.NoticeItem>>() {}.type
+                    )
 
-                        setItemList(result)
-                        notifyChange()
+                    setItemList(result)
+                    notifyChange()
 
-                    } catch (e: Exception) {
+                } catch (e: Exception) {
 
-                        Log.e("Exception", "requestGetNoticeData  $e")
-                        _errorMsg.value = e.toString()
-                    }
+                    Log.e("Exception", "requestGetNoticeData  $e")
+                    _errorMsg.value = e.toString()
+                }
 
-                    progressVisible.value = false
-                }, {
+                progressVisible.value = false
+            }, {
 
-                    progressVisible.value = false
-                    _errorMsg.value = R.string.msg_network_connect_error
-                })
+                progressVisible.value = false
+                _errorMsg.value = R.string.msg_network_connect_error
+            })
     }
 
     fun clickItem(pos: Int) {

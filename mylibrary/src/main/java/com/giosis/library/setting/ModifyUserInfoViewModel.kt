@@ -30,7 +30,6 @@ class ModifyUserInfoViewModel : BaseViewModel() {
     val email: MutableLiveData<String>
         get() = _email
 
-
     private val _checkAlert = MutableLiveData<Pair<DialogUiConfig, DialogViewModel>>()
     val checkAlert: LiveData<Pair<DialogUiConfig, DialogViewModel>>
         get() = _checkAlert
@@ -43,32 +42,27 @@ class ModifyUserInfoViewModel : BaseViewModel() {
     val resultAlert: LiveData<Any>
         get() = _resultAlert
 
-
     init {
-
         _driverId.value = Preferences.userId
         _name.value = Preferences.userName
         _email.value = Preferences.userEmail
     }
 
-
     fun onClickConfirm() {
 
         val text = DialogUiConfig(
-                title = R.string.text_modify_my_info,
-                message = R.string.msg_want_change_info
+            title = R.string.text_modify_my_info,
+            message = R.string.msg_want_change_info
         )
 
         val listener = DialogViewModel(
-                positiveClick = {
-
-                    modifyUserInfo()
-                    _checkAlert.value = null
-                },
-                negativeClick = {
-
-                    _checkAlert.value = null
-                }
+            positiveClick = {
+                modifyUserInfo()
+                _checkAlert.value = null
+            },
+            negativeClick = {
+                _checkAlert.value = null
+            }
         )
 
         _checkAlert.value = Pair(text, listener)
@@ -87,25 +81,25 @@ class ModifyUserInfoViewModel : BaseViewModel() {
             progressVisible.value = true
 
             RetrofitClient.instanceDynamic().requestChangeMyInfo(name, email)
-                    .subscribeOn(Schedulers.io())
-                    .observeOn(AndroidSchedulers.mainThread())
-                    .subscribe({
+                .subscribeOn(Schedulers.io())
+                .observeOn(AndroidSchedulers.mainThread())
+                .subscribe({
 
-                        progressVisible.value = false
-                        Log.e(RetrofitClient.TAG, "${it.resultCode} / ${it.resultMsg}")
+                    progressVisible.value = false
+                    Log.e(RetrofitClient.TAG, "${it.resultCode} / ${it.resultMsg}")
 
-                        if (it.resultCode == 0) {
+                    if (it.resultCode == 0) {
 
-                            Preferences.userName = name
-                            Preferences.userEmail = email
-                        }
+                        Preferences.userName = name
+                        Preferences.userEmail = email
+                    }
 
-                        _resultAlert.value = it
-                    }, {
+                    _resultAlert.value = it
+                }, {
 
-                        progressVisible.value = false
-                        _errorAlert.value = R.string.msg_network_connect_error
-                    })
+                    progressVisible.value = false
+                    _errorAlert.value = R.string.msg_network_connect_error
+                })
         }
     }
 
@@ -117,7 +111,8 @@ class ModifyUserInfoViewModel : BaseViewModel() {
         if (name.trim().length >= 6) {
             if (email.isNotEmpty()) {
 
-                val emailPattern = "^[_A-Za-z0-9-\\+]+(\\.[_A-Za-z0-9-]+)*@" + "[A-Za-z0-9-]+(\\.[A-Za-z0-9]+)*(\\.[A-Za-z]{2,})$"
+                val emailPattern =
+                    "^[_A-Za-z0-9-\\+]+(\\.[_A-Za-z0-9-]+)*@" + "[A-Za-z0-9-]+(\\.[A-Za-z0-9]+)*(\\.[A-Za-z]{2,})$"
                 val pattern: Pattern = Pattern.compile(emailPattern)
                 val matcher: Matcher = pattern.matcher(email)
                 val isEmail: Boolean = matcher.matches()

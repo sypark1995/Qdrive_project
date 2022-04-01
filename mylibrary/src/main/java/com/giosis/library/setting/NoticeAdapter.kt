@@ -9,7 +9,8 @@ import androidx.recyclerview.widget.RecyclerView
 import com.giosis.library.*
 import com.giosis.library.server.data.NoticeResult
 
-class NoticeAdapter(private val viewModel: NoticeViewModel) : BaseRecyclerAdapter<NoticeAdapter.ViewHolder, NoticeResult.NoticeItem>(null) {
+class NoticeAdapter(private val viewModel: NoticeViewModel) :
+    BaseRecyclerAdapter<NoticeAdapter.ViewHolder, NoticeResult.NoticeItem>(null) {
 
     override fun getListModel(): ListViewModel<NoticeResult.NoticeItem> {
         return viewModel
@@ -18,7 +19,12 @@ class NoticeAdapter(private val viewModel: NoticeViewModel) : BaseRecyclerAdapte
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): NoticeAdapter.ViewHolder {
 
         val layoutInflater = LayoutInflater.from(parent.context)
-        val binding = DataBindingUtil.inflate<ViewDataBinding>(layoutInflater, R.layout.item_notice, parent, false)
+        val binding = DataBindingUtil.inflate<ViewDataBinding>(
+            layoutInflater,
+            R.layout.item_notice,
+            parent,
+            false
+        )
         return ViewHolder(binding)
     }
 
@@ -27,7 +33,8 @@ class NoticeAdapter(private val viewModel: NoticeViewModel) : BaseRecyclerAdapte
         holder.bind(viewModel, position)
     }
 
-    inner class ViewHolder(private val binding: ViewDataBinding) : RecyclerView.ViewHolder(binding.root) {
+    inner class ViewHolder(private val binding: ViewDataBinding) :
+        RecyclerView.ViewHolder(binding.root) {
 
         fun bind(viewModel: NoticeViewModel, position: Int) {
             binding.setVariable(BR.viewModel, viewModel)
@@ -37,7 +44,6 @@ class NoticeAdapter(private val viewModel: NoticeViewModel) : BaseRecyclerAdapte
             binding.executePendingBindings()
         }
     }
-
 
 
 }

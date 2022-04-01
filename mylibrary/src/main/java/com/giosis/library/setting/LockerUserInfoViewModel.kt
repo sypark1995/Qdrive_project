@@ -40,7 +40,6 @@ class LockerUserInfoViewModel : BaseViewModel() {
     val barcodeImg: MutableLiveData<Bitmap?>
         get() = _barcodeImg
 
-
     private val _errorAlert = SingleLiveEvent<Int>()
     val errorAlert: LiveData<Int>
         get() = _errorAlert
@@ -56,54 +55,56 @@ class LockerUserInfoViewModel : BaseViewModel() {
         val id = Preferences.userId
 
         RetrofitClient.instanceDynamic().requestGetLockerUserInfo(id)
-                .subscribeOn(Schedulers.io())
-                .observeOn(AndroidSchedulers.mainThread())
-                .subscribe({
+            .subscribeOn(Schedulers.io())
+            .observeOn(AndroidSchedulers.mainThread())
+            .subscribe({
 
-                    if (it != null && it.resultCode == 0) {
+                if (it != null && it.resultCode == 0) {
 
-                        progressVisible.value = false
+                    progressVisible.value = false
+
+                    try {
+                        val result = Gson().fromJson(
+                            it.resultObject.toString(),
+                            LockerUserInfoResult.LockerResultObject::class.java
+                        )
+
+                        _userKey.value = result.resultRows!![0].user_key.toString()
+                        _status.value = result.resultRows!![0].user_status.toString()
+                        _mobile.value = result.resultRows!![0].user_mobile.toString()
+
+                        val date = result.resultRows!![0].user_expiry_date.toString()
 
                         try {
 
-                            val result = Gson().fromJson(it.resultObject.toString(), LockerUserInfoResult.LockerResultObject::class.java)
+                            val oldFormat = SimpleDateFormat("yyyy-MM-dd a hh:mm:ss", Locale.KOREA)
+                            val newFormat = SimpleDateFormat("yyyy-MM-dd HH:mm:ss", Locale.ENGLISH)
+                            val oldDate = oldFormat.parse(date)
 
-                            _userKey.value = result.resultRows!![0].user_key.toString()
-                            _status.value = result.resultRows!![0].user_status.toString()
-                            _mobile.value = result.resultRows!![0].user_mobile.toString()
-
-                            val date = result.resultRows!![0].user_expiry_date.toString()
-
-                            try {
-
-                                val oldFormat = SimpleDateFormat("yyyy-MM-dd a hh:mm:ss", Locale.KOREA)
-                                val newFormat = SimpleDateFormat("yyyy-MM-dd HH:mm:ss", Locale.ENGLISH)
-                                val oldDate = oldFormat.parse(date)
-
-                                _expiryDate.value = newFormat.format(oldDate).toString()
-                            } catch (e: Exception) {
-
-                                _expiryDate.value = date
-                            }
-
-                            callBarcodeServer()
+                            _expiryDate.value = newFormat.format(oldDate).toString()
                         } catch (e: Exception) {
 
-                            Log.e("Exception", "requestGetLockerUserInfo  $e")
-
-                            progressVisible.value = false
-                            _errorAlert.value = R.string.msg_download_locker_info_error
+                            _expiryDate.value = date
                         }
-                    } else {
+
+                        callBarcodeServer()
+                    } catch (e: Exception) {
+
+                        Log.e("Exception", "requestGetLockerUserInfo  $e")
 
                         progressVisible.value = false
                         _errorAlert.value = R.string.msg_download_locker_info_error
                     }
-                }, {
+                } else {
 
                     progressVisible.value = false
-                    _errorAlert.value = R.string.msg_network_connect_error
-                })
+                    _errorAlert.value = R.string.msg_download_locker_info_error
+                }
+            }, {
+
+                progressVisible.value = false
+                _errorAlert.value = R.string.msg_network_connect_error
+            })
     }
 
 
@@ -115,27 +116,27 @@ class LockerUserInfoViewModel : BaseViewModel() {
 
 
         RetrofitClient.instanceBarcode().requestGetBarcode(key)
-                .subscribeOn(Schedulers.io())
-                .observeOn(AndroidSchedulers.mainThread())
-                .subscribe({
+            .subscribeOn(Schedulers.io())
+            .observeOn(AndroidSchedulers.mainThread())
+            .subscribe({
 
-                    progressVisible.value = false
+                progressVisible.value = false
 
-                    try {
+                try {
 
-                        bitmap = BitmapFactory.decodeStream(it.byteStream())
-                        _barcodeImg.value = bitmap
-                    } catch (e: Exception) {
+                    bitmap = BitmapFactory.decodeStream(it.byteStream())
+                    _barcodeImg.value = bitmap
+                } catch (e: Exception) {
 
-                        Log.e("Exception", "requestGetBarcode  $e")
-                        _barcodeImg.value = null
-                    }
-                }, {
-
-                    progressVisible.value = false
-                    Log.e("Exception", "requestGetBarcode  Error")
+                    Log.e("Exception", "requestGetBarcode  $e")
                     _barcodeImg.value = null
-                })
+                }
+            }, {
+
+                progressVisible.value = false
+                Log.e("Exception", "requestGetBarcode  Error")
+                _barcodeImg.value = null
+            })
     }
 }
 

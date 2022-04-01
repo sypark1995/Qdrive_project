@@ -32,7 +32,6 @@ class ScanSettingActivity : BaseActivity<ActivityScanSettingBinding, ScanSetting
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
 
-
         text_top_title.text = resources.getString(R.string.text_title_scan_setting)
 
         layout_top_back.setOnClickListener {
@@ -45,35 +44,35 @@ class ScanSettingActivity : BaseActivity<ActivityScanSettingBinding, ScanSetting
             Preferences.scanVibration = it
 
             if (it == "OFF") {
-
                 btn_scan_setting_vibration_on.setTextColor(
-                        ContextCompat.getColor(
-                                this,
-                                R.color.color_4fb648
-                        )
+                    ContextCompat.getColor(
+                        this,
+                        R.color.color_4fb648
+                    )
                 )
                 btn_scan_setting_vibration_off.setTextColor(
-                        ContextCompat.getColor(
-                                this,
-                                R.color.white
-                        )
+                    ContextCompat.getColor(
+                        this,
+                        R.color.white
+                    )
                 )
 
                 btn_scan_setting_vibration_on.isSelected = false
                 btn_scan_setting_vibration_off.isSelected = true
+
             } else {
 
                 btn_scan_setting_vibration_on.setTextColor(
-                        ContextCompat.getColor(
-                                this,
-                                R.color.white
-                        )
+                    ContextCompat.getColor(
+                        this,
+                        R.color.white
+                    )
                 )
                 btn_scan_setting_vibration_off.setTextColor(
-                        ContextCompat.getColor(
-                                this,
-                                R.color.color_4fb648
-                        )
+                    ContextCompat.getColor(
+                        this,
+                        R.color.color_4fb648
+                    )
                 )
 
                 btn_scan_setting_vibration_on.isSelected = true
