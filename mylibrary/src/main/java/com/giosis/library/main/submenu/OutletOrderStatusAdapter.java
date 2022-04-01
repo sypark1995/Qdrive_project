@@ -35,6 +35,7 @@ import com.giosis.library.list.delivery.DeliveryDoneActivity;
 import com.giosis.library.list.pickup.OutletPickupStep1Activity;
 import com.giosis.library.message.CustomerMessageListDetailActivity;
 import com.giosis.library.server.Custom_JsonParser;
+import com.giosis.library.util.BarcodeType;
 import com.giosis.library.util.DataUtil;
 import com.giosis.library.util.DatabaseHelper;
 import com.giosis.library.util.NetworkUtil;
@@ -49,7 +50,6 @@ public class OutletOrderStatusAdapter extends BaseExpandableListAdapter {
     String TAG = "OutletOrderStatusAdapter";
 
     Context context;
-    DatabaseHelper dbHelper = DatabaseHelper.getInstance();
 
     private ArrayList<RowItem> rowItem;
     private ArrayList<RowItem> originalrowItem;
@@ -80,7 +80,6 @@ public class OutletOrderStatusAdapter extends BaseExpandableListAdapter {
         final int position = groupPosition;
 
         if (convertView == null) {
-
             LayoutInflater mInflater = (LayoutInflater) context.getSystemService(Activity.LAYOUT_INFLATER_SERVICE);
             convertView = mInflater.inflate(R.layout.item_outlet_order_status, null);
         }
@@ -99,47 +98,37 @@ public class OutletOrderStatusAdapter extends BaseExpandableListAdapter {
 
         TextView text_list_item_name = convertView.findViewById(R.id.text_list_item_name);
 
-
         if (isExpanded) {
-
             layout_list_item_card_view.setBackgroundResource(R.drawable.bg_top_round_10_ffffff);
             img_list_item_up_icon.setVisibility(View.VISIBLE);
         } else {
-
             layout_list_item_card_view.setBackgroundResource(R.drawable.bg_round_10_ffffff_shadow);
             img_list_item_up_icon.setVisibility(View.GONE);
         }
 
         if (groupPosition == 0) {
-
             LinearLayout.LayoutParams lp = new LinearLayout.LayoutParams(LinearLayout.LayoutParams.MATCH_PARENT, LinearLayout.LayoutParams.WRAP_CONTENT);
             lp.setMargins(0, 0, 0, 0);
             layout_list_item_card_view.setLayoutParams(lp);
         } else {
-
             LinearLayout.LayoutParams lp = new LinearLayout.LayoutParams(LinearLayout.LayoutParams.MATCH_PARENT, LinearLayout.LayoutParams.WRAP_CONTENT);
             lp.setMargins(0, 20, 0, 0);
             layout_list_item_card_view.setLayoutParams(lp);
         }
 
-
         final RowItem row_pos = rowItem.get(groupPosition);
 
         text_list_item_d_day.setText(row_pos.getDelay());
         if (row_pos.getDelay().equals("D+0") || row_pos.getDelay().equals("D+1")) {
-
             text_list_item_d_day.setTextColor(context.getResources().getColor(R.color.color_303030));
         } else {
-
             text_list_item_d_day.setTextColor(context.getResources().getColor(R.color.color_ff0000));
         }
 
         //
         if (row_pos.getRoute().contains("7E")) {
-
             img_list_item_station_icon.setBackgroundResource(R.drawable.qdrive_btn_icon_seven);
         } else if (row_pos.getRoute().contains("FL")) {
-
             img_list_item_station_icon.setBackgroundResource(R.drawable.qdrive_btn_icon_locker);
         }
 
@@ -150,25 +139,21 @@ public class OutletOrderStatusAdapter extends BaseExpandableListAdapter {
 
 
         if (row_pos.getOutlet_store_name() == null || row_pos.getOutlet_store_name().length() == 0) {
-
             text_list_item_store_name.setVisibility(View.GONE);
-        } else {
 
+        } else {
             text_list_item_store_name.setVisibility(View.VISIBLE);
             text_list_item_store_name.setText(row_pos.getOutlet_store_name());
         }
 
-
-        if (row_pos.getType().equals("P")) {
-
+        if (row_pos.getType().equals(BarcodeType.TYPE_PICKUP)) {
             text_list_item_tracking_no.setTextColor(context.getResources().getColor(R.color.color_363BE7));
             text_list_item_outlet_order_type.setText(R.string.text_retrieve);
-        } else {
 
+        } else {
             text_list_item_tracking_no.setTextColor(context.getResources().getColor(R.color.color_32bd87));
             text_list_item_outlet_order_type.setText(R.string.text_delivery);
         }
-
 
         //우측 메뉴 아이콘 클릭 이벤트  Quick Menu
         layout_list_item_menu_icon.setOnClickListener(v -> {
@@ -182,7 +167,8 @@ public class OutletOrderStatusAdapter extends BaseExpandableListAdapter {
                 int itemId = item.getItemId();
                 if (itemId == R.id.menu_one) {
 
-                    Cursor cs = dbHelper.get("SELECT address FROM " + DatabaseHelper.DB_TABLE_INTEGRATION_LIST + " WHERE invoice_no='" + layout_list_item_menu_icon.getTag().toString() + "' LIMIT 1");
+                    Cursor cs = DatabaseHelper.getInstance().get("SELECT address FROM " + DatabaseHelper.DB_TABLE_INTEGRATION_LIST + " WHERE invoice_no='" + layout_list_item_menu_icon.getTag().toString() + "' LIMIT 1");
+
                     if (cs != null) {
                         cs.moveToFirst();
 
@@ -191,8 +177,8 @@ public class OutletOrderStatusAdapter extends BaseExpandableListAdapter {
                         Uri uri = Uri.parse("http://maps.google.co.in/maps?q=" + addr);
                         Intent it = new Intent(Intent.ACTION_VIEW, uri);
                         context.startActivity(it);
-
                     }
+
                 } else if (itemId == R.id.menu_up) {
 
                     if (position > 0) {
@@ -202,6 +188,7 @@ public class OutletOrderStatusAdapter extends BaseExpandableListAdapter {
                         originalrowItem.addAll(rowItem);
                         notifyDataSetChanged();
                     }
+
                 } else if (itemId == R.id.menu_down) {
 
                     if (position < rowItem.size() - 1) {
@@ -224,9 +211,8 @@ public class OutletOrderStatusAdapter extends BaseExpandableListAdapter {
     public View getChildView(int groupPosition, int childPosition, boolean isLastChild, View convertView, ViewGroup parent) {
 
         if (convertView == null) {
-
-            LayoutInflater infalInflater = (LayoutInflater) context.getSystemService(context.LAYOUT_INFLATER_SERVICE);
-            convertView = infalInflater.inflate(R.layout.item_outlet_order_status_child, null);
+            LayoutInflater inflater = (LayoutInflater) context.getSystemService(context.LAYOUT_INFLATER_SERVICE);
+            convertView = inflater.inflate(R.layout.item_outlet_order_status_child, null);
         }
 
         LinearLayout layout_list_item_child_telephone = convertView.findViewById(R.id.layout_list_item_child_telephone);
@@ -255,12 +241,11 @@ public class OutletOrderStatusAdapter extends BaseExpandableListAdapter {
 
 
         if (child.getSecretNoType().equals("T")) {   // Qtalk 안심번호 타입 T - Qnumber 사용
-
             layout_list_item_child_telephone.setVisibility(View.GONE);
             layout_list_item_child_mobile.setVisibility(View.GONE);
             //img_list_item_child_live10.setVisibility(View.VISIBLE);
-        } else if (child.getSecretNoType().equals("P")) { // Phone 안심번호 - 핸드폰만 활성화
 
+        } else if (child.getSecretNoType().equals("P")) { // Phone 안심번호 - 핸드폰만 활성화
             layout_list_item_child_telephone.setVisibility(View.GONE);
             layout_list_item_child_mobile.setVisibility(View.VISIBLE);
             img_list_item_child_live10.setVisibility(View.GONE);
@@ -268,6 +253,7 @@ public class OutletOrderStatusAdapter extends BaseExpandableListAdapter {
             SpannableString content = new SpannableString(child.getHp());
             content.setSpan(new UnderlineSpan(), 0, content.length(), 0);
             text_list_item_child_mobile_number.setText(content);
+
         } else {          //안심번호 사용안함
 
             if (child.getTel() != null && child.getTel().length() > 5) {
@@ -295,43 +281,19 @@ public class OutletOrderStatusAdapter extends BaseExpandableListAdapter {
             img_list_item_child_live10.setVisibility(View.GONE);
         }
 
-        /*if (authNo.contains("137")) {
-            img_list_item_child_live10.setVisibility(View.VISIBLE);
-        } else {
-            img_list_item_child_live10.setVisibility(View.GONE);
-        }*/
-
-        try {
-
-            String orderType = rowItem.get(groupPosition).getOrder_type_etc();
-           /* if (orderType != null && orderType.equalsIgnoreCase("DPC")) {
-
-                img_list_item_child_qpost.setVisibility(View.VISIBLE);
-            } else {
-
-                img_list_item_child_qpost.setVisibility(View.GONE);
-            }*/
-            img_list_item_child_qpost.setVisibility(View.GONE);
-        } catch (Exception e) {
-
-            img_list_item_child_qpost.setVisibility(View.GONE);
-        }
 
         // 2019.04
         if (outletCondition.equals(context.getResources().getString(R.string.text_outlet_status_2))) {
-
             layout_list_item_child_buttons.setVisibility(View.VISIBLE);
         } else {
-
             layout_list_item_child_buttons.setVisibility(View.GONE);
         }
 
         //
-        if (rowItem.get(groupPosition).getType().equals("D")) {
-
+        if (rowItem.get(groupPosition).getType().equals(BarcodeType.TYPE_DELIVERY)) {
             btn_list_item_child.setText(R.string.button_delivered);
-        } else {            // Pickup
 
+        } else {            // Pickup
             btn_list_item_child.setText(R.string.button_pickup_done);
         }
 
@@ -353,14 +315,12 @@ public class OutletOrderStatusAdapter extends BaseExpandableListAdapter {
         img_list_item_child_sms.setOnClickListener(v -> {
 
             try {
-
                 String smsBody = "Dear " + name + ", Your parcels has been started to delivery by Qxpress. Thank you.";
                 Uri smsUri = Uri.parse("sms:" + child.getHp());
                 Intent intent = new Intent(Intent.ACTION_SENDTO, smsUri);
                 intent.putExtra("sms_body", smsBody);
                 context.startActivity(intent);
             } catch (Exception e) {
-
                 Toast.makeText(context, "SMS Send Error..", Toast.LENGTH_SHORT).show();
             }
         });
@@ -404,12 +364,10 @@ public class OutletOrderStatusAdapter extends BaseExpandableListAdapter {
 
                 String value = input.getText().toString();
 
-                DatabaseHelper dbHelper = DatabaseHelper.getInstance();
-
                 ContentValues contentVal = new ContentValues();
                 contentVal.put("self_memo", value);
 
-                dbHelper.update(DatabaseHelper.DB_TABLE_INTEGRATION_LIST, contentVal,
+                DatabaseHelper.getInstance().update(DatabaseHelper.DB_TABLE_INTEGRATION_LIST, contentVal,
                         "invoice_no= ? COLLATE NOCASE ", new String[]{tracking_no});
 
                 group_item.setSelfMemo(value);
@@ -427,14 +385,14 @@ public class OutletOrderStatusAdapter extends BaseExpandableListAdapter {
 
         btn_list_item_child.setOnClickListener(v -> {
 
-            if (type.equals("D")) {
+            if (type.equals(BarcodeType.TYPE_DELIVERY)) {
 
                 Intent intent = new Intent(v.getContext(), DeliveryDoneActivity.class);
                 intent.putExtra("parcel", rowItem.get(groupPosition));
                 intent.putExtra("route", route);
                 ((Activity) v.getContext()).startActivityForResult(intent, 1);
-            } else if (type.equals("P")) {
 
+            } else if (type.equals(BarcodeType.TYPE_PICKUP)) {
                 Intent intent = new Intent(context, OutletPickupStep1Activity.class);
                 intent.putExtra("title", "Qsuttle : Pickup Done");
                 intent.putExtra("pickup_no", tracking_no);

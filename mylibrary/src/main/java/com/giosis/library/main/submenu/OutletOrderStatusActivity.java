@@ -67,7 +67,6 @@ public class OutletOrderStatusActivity extends CommonActivity implements SearchV
     String opID;
     String officeCode;
     String deviceID;
-    DatabaseHelper databaseHelper;
 
 
     String selectedType = "ALL";
@@ -84,8 +83,6 @@ public class OutletOrderStatusActivity extends CommonActivity implements SearchV
     boolean firstOutletName = true;
     ArrayList outletNameArrayList;
     ArrayAdapter outletNameArrayAdapter;
-
-    ArrayList sortArrayList;
 
 
     OutletOrderStatusAdapter outletOrderStatusAdapter;
@@ -131,6 +128,7 @@ public class OutletOrderStatusActivity extends CommonActivity implements SearchV
         if (outlet_code.equals("ALL") && outlet_name.equals("ALL")) {
 
             totalArrayList = conditionArrayList;
+
         } else if (!outlet_code.equals("ALL") && outlet_name.equals("ALL")) {
             // 7E or FL
 
@@ -143,6 +141,7 @@ public class OutletOrderStatusActivity extends CommonActivity implements SearchV
                     totalArrayList.add(conditionArrayList.get(i));
                 }
             }
+
         } else if (outlet_code.equals("ALL") && !outlet_name.equals("ALL")) {
 
             for (int i = 0; i < conditionArrayList.size(); i++) {
@@ -153,6 +152,7 @@ public class OutletOrderStatusActivity extends CommonActivity implements SearchV
                     totalArrayList.add(conditionArrayList.get(i));
                 }
             }
+
         } else if (!outlet_code.equals("ALL") && !outlet_name.equals("ALL")) {
 
             for (int i = 0; i < conditionArrayList.size(); i++) {
@@ -220,11 +220,10 @@ public class OutletOrderStatusActivity extends CommonActivity implements SearchV
         for (int i = 0; i < totalArrayList.size(); i++) {
 
             if (totalArrayList.get(i).getType().equals("D")) {
-
                 deliveryArrayList.add(totalArrayList.get(i));
                 deliveryCount += 1;
-            } else if (totalArrayList.get(i).getType().equals("P")) {
 
+            } else if (totalArrayList.get(i).getType().equals("P")) {
                 retrieveArrayList.add(totalArrayList.get(i));
                 retrieveCount += 1;
             }
@@ -235,13 +234,12 @@ public class OutletOrderStatusActivity extends CommonActivity implements SearchV
         text_outlet_status_retrieve_count.setText(Integer.toString(retrieveCount));
 
         if (selectedType.equals("D")) {
-
             outletOrderStatusAdapter = new OutletOrderStatusAdapter(OutletOrderStatusActivity.this, deliveryArrayList, selectedOutletCondition);
+
         } else if (selectedType.equals("P")) {
-
             outletOrderStatusAdapter = new OutletOrderStatusAdapter(OutletOrderStatusActivity.this, retrieveArrayList, selectedOutletCondition);
-        } else {
 
+        } else {
             outletOrderStatusAdapter = new OutletOrderStatusAdapter(OutletOrderStatusActivity.this, totalArrayList, selectedOutletCondition);
         }
 
@@ -407,13 +405,10 @@ public class OutletOrderStatusActivity extends CommonActivity implements SearchV
         layout_outlet_status_outlet_code.setOnClickListener(clickListener);
         layout_outlet_status_outlet_name.setOnClickListener(clickListener);
 
-
         //
         opID = Preferences.INSTANCE.getUserId();
         officeCode = Preferences.INSTANCE.getOfficeCode();
         deviceID = Preferences.INSTANCE.getDeviceUUID();
-        databaseHelper = DatabaseHelper.getInstance();
-
 
         //
         text_top_title.setText(getResources().getString(R.string.text_outlet_order_status));
@@ -567,7 +562,7 @@ public class OutletOrderStatusActivity extends CommonActivity implements SearchV
             }
         });
 
-        sortArrayList = new ArrayList<>(Arrays.asList(
+        ArrayList sortArrayList = new ArrayList<>(Arrays.asList(
                 "Postal Code : Low to High",
                 "Postal Code : High to Low",
                 "Tracking No : Low to High",
@@ -622,9 +617,10 @@ public class OutletOrderStatusActivity extends CommonActivity implements SearchV
                             setOutletArrayList("ALL", "ALL");
                         }
                     }).build().execute();
+
         } else if (condition.equals(getResources().getString(R.string.text_outlet_status_2))) {
 
-            databaseHelper.delete(DatabaseHelper.DB_TABLE_INTEGRATION_LIST, "");
+            DatabaseHelper.getInstance().delete(DatabaseHelper.DB_TABLE_INTEGRATION_LIST, "");
 
             new OutletStatusDownloadHelper.Builder(this, opID, officeCode, deviceID, 2).setOnOutletStatusDownloadListener(
                     resultList -> {
@@ -635,6 +631,7 @@ public class OutletOrderStatusActivity extends CommonActivity implements SearchV
                             setOutletArrayList("ALL", "ALL");
                         }
                     }).build().execute();
+
         } else if (condition.equals(getResources().getString(R.string.text_outlet_status_3))) {
 
             new OutletStatusDownloadHelper.Builder(this, opID, officeCode, deviceID, 3).setOnOutletStatusDownloadListener(
