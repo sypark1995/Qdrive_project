@@ -6,9 +6,6 @@ import com.google.gson.Gson;
 import com.google.gson.JsonElement;
 
 
-/**
- * Created by inyion on 15. 12. 11.
- */
 public class JsonModel {
 
     public <T> T fromJson(String jsonStr, Class<T> c) {
@@ -51,7 +48,7 @@ public class JsonModel {
 
     public <T> T getObject(Object obj, Class<T> c) {
         try {
-            if(obj != null) {
+            if (obj != null) {
                 return c.cast(obj);
             } else {
                 return null;
@@ -67,7 +64,7 @@ public class JsonModel {
     public String checkColumn(Cursor cursor, String columnName) {
         String data = null;
         int columnIdx = cursor.getColumnIndex(columnName);
-        if(columnIdx != -1) {
+        if (columnIdx != -1) {
             data = cursor.getString(columnIdx);
         }
 
@@ -77,7 +74,7 @@ public class JsonModel {
     public int checkColumnIntValue(Cursor cursor, String columnName) {
         int data = 0;
         int columnIdx = cursor.getColumnIndex(columnName);
-        if(columnIdx != -1) {
+        if (columnIdx != -1) {
             data = cursor.getInt(columnIdx);
         }
 
