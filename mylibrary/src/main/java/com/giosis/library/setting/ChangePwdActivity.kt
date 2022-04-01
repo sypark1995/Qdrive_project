@@ -47,13 +47,11 @@ class ChangePwdActivity : BaseActivity<ActivityChangePwdBinding, ChangePwdViewMo
 
         mViewModel.checkAlert.observe(this, Observer {
             if (it != null) {
-
                 DisplayUtil.hideKeyboard(this)
 
                 dialog.bindingData = it
                 dialog.visibility = View.VISIBLE
             } else {
-
                 dialog.visibility = View.GONE
             }
         })
@@ -64,30 +62,30 @@ class ChangePwdActivity : BaseActivity<ActivityChangePwdBinding, ChangePwdViewMo
             DisplayUtil.hideKeyboard(this)
 
             val text = DialogUiConfig(
-                    title = R.string.text_invalidation,
-                    message = it,
-                    cancelVisible = false
+                title = R.string.text_invalidation,
+                message = it,
+                cancelVisible = false
             )
 
             val listener = DialogViewModel(
-                    positiveClick = {
-                        when (it) {
-                            R.string.msg_same_password_error -> {
-                                edit_setting_change_confirm_password.requestFocus()
-                            }
-                            R.string.msg_password_symbols_error -> {
-                                edit_setting_change_new_password.requestFocus()
-                            }
-                            R.string.msg_empty_password_error -> {
-                                edit_setting_change_old_password.requestFocus()
-                            }
-                            R.string.msg_password_length_error -> {
-                                edit_setting_change_new_password.requestFocus()
-                            }
+                positiveClick = {
+                    when (it) {
+                        R.string.msg_same_password_error -> {
+                            edit_setting_change_confirm_password.requestFocus()
                         }
-
-                        errDialog.visibility = View.GONE
+                        R.string.msg_password_symbols_error -> {
+                            edit_setting_change_new_password.requestFocus()
+                        }
+                        R.string.msg_empty_password_error -> {
+                            edit_setting_change_old_password.requestFocus()
+                        }
+                        R.string.msg_password_length_error -> {
+                            edit_setting_change_new_password.requestFocus()
+                        }
                     }
+
+                    errDialog.visibility = View.GONE
+                }
             )
 
             errDialog.bindingData = Pair(text, listener)
@@ -98,20 +96,19 @@ class ChangePwdActivity : BaseActivity<ActivityChangePwdBinding, ChangePwdViewMo
         getViewModel().resultAlert.observe(this, Observer {
 
             val text = DialogUiConfig(
-                    title = R.string.text_alert,
-                    messageString = (it as APIModel).resultMsg.toString(),
-                    cancelVisible = false
+                title = R.string.text_alert,
+                messageString = (it as APIModel).resultMsg.toString(),
+                cancelVisible = false
             )
 
             val listener = DialogViewModel(
-                    positiveClick = {
+                positiveClick = {
+                    resultDialog.visibility = View.GONE
 
-                        resultDialog.visibility = View.GONE
-
-                        if (it.resultCode == 0) {
-                            finish()
-                        }
+                    if (it.resultCode == 0) {
+                        finish()
                     }
+                }
             )
 
             resultDialog.bindingData = Pair(text, listener)

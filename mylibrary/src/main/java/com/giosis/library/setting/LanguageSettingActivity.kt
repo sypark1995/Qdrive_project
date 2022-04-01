@@ -22,18 +22,23 @@ class LanguageSettingActivity : CommonActivity() {
     val tag = "LanguageSettingActivity"
 
     private val languageList by lazy {
-        listOf(resources.getString(R.string.text_language_en),
-                resources.getString(R.string.text_language_ms),
-                resources.getString(R.string.text_language_id))
+        listOf(
+            resources.getString(R.string.text_language_en),
+            resources.getString(R.string.text_language_ms),
+            resources.getString(R.string.text_language_id)
+        )
     }
 
-    private val languageCode = listOf(Preferences.LANGUAGE_ENGLISH, Preferences.LANGUAGE_MALAY, Preferences.LANGUAGE_INDONESIA)
+    private val languageCode = listOf(
+        Preferences.LANGUAGE_ENGLISH,
+        Preferences.LANGUAGE_MALAY,
+        Preferences.LANGUAGE_INDONESIA
+    )
 
     @SuppressLint("LongLogTag")
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_language_setting1)
-
 
         text_top_title.text = resources.getString(R.string.text_title_language_setting)
 
@@ -60,7 +65,8 @@ class LanguageSettingActivity : CommonActivity() {
 
             alertBuilder.setPositiveButton(resources.getString(R.string.button_ok)) { _, _ ->
 
-                LocaleManager.getInstance(this@LanguageSettingActivity).setNewLocale(this@LanguageSettingActivity, code)
+                LocaleManager.getInstance(this@LanguageSettingActivity)
+                    .setNewLocale(this@LanguageSettingActivity, code)
                 //   finish()
 
 //                val packageManager: PackageManager = packageManager
@@ -68,7 +74,6 @@ class LanguageSettingActivity : CommonActivity() {
 //                val componentName = intent!!.component
 //                val mainIntent: Intent = makeRestartActivityTask(componentName)
 //                startActivity(mainIntent)
-
 
                 val intent = Intent(this@LanguageSettingActivity, MainActivity::class.java)
                 intent.flags = Intent.FLAG_ACTIVITY_CLEAR_TASK or Intent.FLAG_ACTIVITY_NEW_TASK

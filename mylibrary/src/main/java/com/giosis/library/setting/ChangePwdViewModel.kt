@@ -29,7 +29,6 @@ class ChangePwdViewModel : BaseViewModel() {
     val confirmPwd: MutableLiveData<String>
         get() = _confirmPwd
 
-
     private val _checkAlert = MutableLiveData<Pair<DialogUiConfig, DialogViewModel>>()
     val checkAlert: LiveData<Pair<DialogUiConfig, DialogViewModel>>
         get() = _checkAlert
@@ -41,7 +40,6 @@ class ChangePwdViewModel : BaseViewModel() {
     private val _resultAlert = SingleLiveEvent<Any>()
     val resultAlert: LiveData<Any>
         get() = _resultAlert
-
 
     fun onClickConfirm() {
         val text = DialogUiConfig(
@@ -80,8 +78,7 @@ class ChangePwdViewModel : BaseViewModel() {
 
             RetrofitClient.instanceDynamic().requestChangePwd(
                 id, oldPassword, newPassword, appID, nationCode
-            )
-                .subscribeOn(Schedulers.io())
+            ).subscribeOn(Schedulers.io())
                 .observeOn(AndroidSchedulers.mainThread())
                 .subscribe({
 

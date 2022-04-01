@@ -34,42 +34,32 @@ class DeveloperModeActivity : BaseActivity<ActivityDeveloperModeBinding, Develop
         text_top_title.text = resources.getString(R.string.text_developer_mode)
 
         layout_top_back.setOnClickListener {
-
             finish()
         }
 
-
         rg_developer_server_url.setOnCheckedChangeListener { _, checkedId ->
-
             when (checkedId) {
                 R.id.rb_developer_server_url_test -> {
-
                     getViewModel().changeServer(DataUtil.SERVER_TEST)
                 }
                 R.id.rb_developer_server_url_staging -> {
-
                     getViewModel().changeServer(DataUtil.SERVER_STAGING)
                 }
                 R.id.rb_developer_server_url_real -> {
-
                     getViewModel().changeServer(DataUtil.SERVER_REAL)
                 }
                 R.id.rb_developer_server_url_local -> {
-
                     getViewModel().changeServer(DataUtil.SERVER_LOCAL)
                 }
             }
         }
 
         rg_developer_xroute_url.setOnCheckedChangeListener { _, checkedId ->
-
             when (checkedId) {
                 R.id.rb_developer_xroute_url_real -> {
-
                     getViewModel().changeXRouteServer(DataUtil.XROUTE_SERVER_REAL)
                 }
                 R.id.rb_developer_xroute_url_staging -> {
-
                     getViewModel().changeXRouteServer(DataUtil.XROUTE_SERVER_STAGING)
                 }
             }
@@ -78,11 +68,9 @@ class DeveloperModeActivity : BaseActivity<ActivityDeveloperModeBinding, Develop
         rg_developer_gps.setOnCheckedChangeListener { _, checkedId ->
             when (checkedId) {
                 R.id.rb_developer_gps_real -> {
-
                     getViewModel().changeGPS("REAL")
                 }
                 R.id.rb_developer_gps_test -> {
-
                     getViewModel().changeGPS("TEST")
                 }
             }
@@ -112,7 +100,6 @@ class DeveloperModeActivity : BaseActivity<ActivityDeveloperModeBinding, Develop
 //        timePickerDialog.window?.setBackgroundDrawableResource(android.R.color.transparent)
 //
 //        btn_developer_logout_time.setOnClickListener {
-//
 //            timePickerDialog.show()
 //        }
 }
