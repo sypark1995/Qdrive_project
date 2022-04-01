@@ -24,7 +24,8 @@ class OrderTypeAdapter(val list: List<String>) : BaseAdapter() {
 
     override fun getView(position: Int, convertView: View?, parent: ViewGroup?): View {
         val view = convertView
-                ?: LayoutInflater.from(parent!!.context).inflate(R.layout.order_item_layout, parent, false)
+            ?: LayoutInflater.from(parent!!.context)
+                .inflate(R.layout.order_item_layout, parent, false)
 
         val text: String = list[position]
         (view!!.findViewById(R.id.spinnerText) as TextView).text = text

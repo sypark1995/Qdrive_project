@@ -60,11 +60,9 @@ class CreatePickupOrderViewModel : BaseViewModel() {
     val confirmAlert: LiveData<Pair<DialogUiConfig, DialogViewModel>>
         get() = _confirmAlert
 
-
     fun setVisiblePickupLayout() {
         _visiblePickupLayout.value = !((_visiblePickupLayout.value)!!)
     }
-
 
     fun idSearchClick() {
         if (_orderType.value == 0) {
@@ -74,61 +72,16 @@ class CreatePickupOrderViewModel : BaseViewModel() {
             } else {
                 progressVisible.value = true
 
-                RetrofitClient.instanceDynamic().requestGetCustomSellerInfo("SellerID", _sellerId.value!!).subscribeOn(Schedulers.io())
-                        .subscribeOn(Schedulers.io())
-                        .observeOn(AndroidSchedulers.mainThread())
-                        .subscribe({
-                            try {
-                                if (it.resultCode == 0) {
-                                    val info: CustomSellerInfo = Gson().fromJson(it.resultObject, CustomSellerInfo::class.java)
-
-                                    if (!info.resultRows.isNullOrEmpty()) {
-                                        custNo = info.resultRows!![0].cust_no
-                                        _zipCode.value = info.resultRows!![0].zip_code
-                                        _addressFront.value = info.resultRows!![0].addr_front
-                                        _addressLast.value = info.resultRows!![0].addr_last
-
-                                        if (info.resultRows!![0].hp_no.contains("-")) {
-                                            val phoneSplit = info.resultRows!![0].hp_no.split("-")
-                                            _phoneNo.value = phoneSplit[1] + "-" + phoneSplit[2]
-                                        } else {
-                                            _phoneNo.value = info.resultRows!![0].hp_no
-                                        }
-                                    }
-                                } else {
-                                    toastString.value = it.resultMsg
-                                }
-                            } catch (e: Exception) {
-                                e.stackTrace
-                            }
-
-                            progressVisible.value = false
-
-                        }, {
-                            progressVisible.value = false
-                        })
-            }
-        }
-    }
-
-    fun pickupSearchClick() {
-        // sample pickup No
-        // C3548661SGSG
-        // C3507265SGSG
-        // C3507262SGSG
-        if (_pickupNo.value.isNullOrEmpty()) {
-            toastString.postValue(R.string.enter_pickup_no)
-        } else {
-
-            progressVisible.value = true
-
-            RetrofitClient.instanceDynamic().requestGetCustomSellerInfo("PickupNo", _pickupNo.value!!).subscribeOn(Schedulers.io())
+                RetrofitClient.instanceDynamic()
+                    .requestGetCustomSellerInfo("SellerID", _sellerId.value!!)
+                    .subscribeOn(Schedulers.io())
                     .subscribeOn(Schedulers.io())
                     .observeOn(AndroidSchedulers.mainThread())
                     .subscribe({
                         try {
                             if (it.resultCode == 0) {
-                                val info: CustomSellerInfo = Gson().fromJson(it.resultObject, CustomSellerInfo::class.java)
+                                val info: CustomSellerInfo =
+                                    Gson().fromJson(it.resultObject, CustomSellerInfo::class.java)
 
                                 if (!info.resultRows.isNullOrEmpty()) {
                                     custNo = info.resultRows!![0].cust_no
@@ -146,8 +99,6 @@ class CreatePickupOrderViewModel : BaseViewModel() {
                             } else {
                                 toastString.value = it.resultMsg
                             }
-
-
                         } catch (e: Exception) {
                             e.stackTrace
                         }
@@ -157,11 +108,68 @@ class CreatePickupOrderViewModel : BaseViewModel() {
                     }, {
                         progressVisible.value = false
                     })
+            }
+        }
+    }
+
+    fun pickupSearchClick() {
+        // sample pickup No
+        // C3548661SGSG
+        // C3507265SGSG
+        // C3507262SGSG
+        if (_pickupNo.value.isNullOrEmpty()) {
+            toastString.postValue(R.string.enter_pickup_no)
+        } else {
+
+            progressVisible.value = true
+
+            RetrofitClient.instanceDynamic()
+                .requestGetCustomSellerInfo("PickupNo", _pickupNo.value!!)
+                .subscribeOn(Schedulers.io())
+                .subscribeOn(Schedulers.io())
+                .observeOn(AndroidSchedulers.mainThread())
+                .subscribe({
+                    try {
+                        if (it.resultCode == 0) {
+                            val info: CustomSellerInfo =
+                                Gson().fromJson(it.resultObject, CustomSellerInfo::class.java)
+
+                            if (!info.resultRows.isNullOrEmpty()) {
+                                custNo = info.resultRows!![0].cust_no
+                                _zipCode.value = info.resultRows!![0].zip_code
+                                _addressFront.value = info.resultRows!![0].addr_front
+                                _addressLast.value = info.resultRows!![0].addr_last
+
+                                if (info.resultRows!![0].hp_no.contains("-")) {
+                                    val phoneSplit = info.resultRows!![0].hp_no.split("-")
+                                    _phoneNo.value = phoneSplit[1] + "-" + phoneSplit[2]
+                                } else {
+                                    _phoneNo.value = info.resultRows!![0].hp_no
+                                }
+                            }
+                        } else {
+                            toastString.value = it.resultMsg
+                        }
+
+
+                    } catch (e: Exception) {
+                        e.stackTrace
+                    }
+
+                    progressVisible.value = false
+
+                }, {
+                    progressVisible.value = false
+                })
         }
     }
 
     fun addressLayout() {
-        startActivity(AddressDialogActivity::class.java, null, ActivityRequestCode.ADDRESS_REQUEST.ordinal)
+        startActivity(
+            AddressDialogActivity::class.java,
+            null,
+            ActivityRequestCode.ADDRESS_REQUEST.ordinal
+        )
     }
 
     private var custNo = ""
@@ -179,18 +187,18 @@ class CreatePickupOrderViewModel : BaseViewModel() {
                 } else {
 
                     val text = DialogUiConfig(
-                            title = R.string.text_alert,
-                            message = R.string.regist_pickup_order
+                        title = R.string.text_alert,
+                        message = R.string.regist_pickup_order
                     )
 
                     val listener = DialogViewModel(
-                            positiveClick = {
-                                callServerSelfPickupOrder()
-                                _checkAlert.value = null
-                            },
-                            negativeClick = {
-                                _checkAlert.value = null
-                            }
+                        positiveClick = {
+                            callServerSelfPickupOrder()
+                            _checkAlert.value = null
+                        },
+                        negativeClick = {
+                            _checkAlert.value = null
+                        }
                     )
 
                     _checkAlert.value = Pair(text, listener)
@@ -215,41 +223,41 @@ class CreatePickupOrderViewModel : BaseViewModel() {
         progressVisible.value = true
 
         RetrofitClient.instanceDynamic().requestSetSelfPickupOrder(
-                custNo = custNo,
-                zipcode = _zipCode.value!!,
-                addr1 = _addressFront.value!!,
-                addr2 = _addressLast.value!!,
-                mobileNo = "+65-" + _phoneNo.value,
-                requestMemo = _remarks.value!!,
-                type = type
+            custNo = custNo,
+            zipcode = _zipCode.value!!,
+            addr1 = _addressFront.value!!,
+            addr2 = _addressLast.value!!,
+            mobileNo = "+65-" + _phoneNo.value,
+            requestMemo = _remarks.value!!,
+            type = type
         ).subscribeOn(Schedulers.io())
-                .observeOn(AndroidSchedulers.mainThread())
-                .subscribe({
-                    if (it.resultCode == 0) {
-                        val text = DialogUiConfig(
-                                title = R.string.text_alert,
-                                message = R.string.confirm_pickup_order,
-                                cancelVisible = false
-                        )
+            .observeOn(AndroidSchedulers.mainThread())
+            .subscribe({
+                if (it.resultCode == 0) {
+                    val text = DialogUiConfig(
+                        title = R.string.text_alert,
+                        message = R.string.confirm_pickup_order,
+                        cancelVisible = false
+                    )
 
-                        val listener = DialogViewModel(
-                                positiveClick = {
-                                    _confirmAlert.value = null
-                                    finish()
-                                },
-                                negativeClick = {
-                                    _confirmAlert.value = null
-                                }
-                        )
+                    val listener = DialogViewModel(
+                        positiveClick = {
+                            _confirmAlert.value = null
+                            finish()
+                        },
+                        negativeClick = {
+                            _confirmAlert.value = null
+                        }
+                    )
 
-                        _confirmAlert.value = Pair(text, listener)
-                    }
+                    _confirmAlert.value = Pair(text, listener)
+                }
 
-                    progressVisible.value = false
+                progressVisible.value = false
 
-                }, {
+            }, {
 
-                    progressVisible.value = false
-                })
+                progressVisible.value = false
+            })
     }
 }

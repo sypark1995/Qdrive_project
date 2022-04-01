@@ -21,7 +21,8 @@ import kotlinx.android.synthetic.main.activity_create_pickup_order.*
 import kotlinx.android.synthetic.main.top_title.*
 
 
-class CreatePickupOrderActivity : BaseActivity<ActivityCreatePickupOrderBinding, CreatePickupOrderViewModel>() {
+class CreatePickupOrderActivity :
+    BaseActivity<ActivityCreatePickupOrderBinding, CreatePickupOrderViewModel>() {
     val tag = "CreatePickupOrder"
 
     override fun getLayoutId(): Int {
@@ -36,9 +37,14 @@ class CreatePickupOrderActivity : BaseActivity<ActivityCreatePickupOrderBinding,
         return ViewModelProvider(this).get(CreatePickupOrderViewModel::class.java)
     }
 
-    private val dialog by lazy { CustomDialog(this@CreatePickupOrderActivity, R.layout.custom_dialog) }
-    private val confirmDialog by lazy { CustomDialog(this@CreatePickupOrderActivity) }
+    private val dialog by lazy {
+        CustomDialog(
+            this@CreatePickupOrderActivity,
+            R.layout.custom_dialog
+        )
+    }
 
+    private val confirmDialog by lazy { CustomDialog(this@CreatePickupOrderActivity) }
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -49,7 +55,10 @@ class CreatePickupOrderActivity : BaseActivity<ActivityCreatePickupOrderBinding,
             finish()
         }
 
-        val orderList = listOf(resources.getString(R.string.pickup_order_seller), resources.getString(R.string.pickup_order_general))
+        val orderList = listOf(
+            resources.getString(R.string.pickup_order_seller),
+            resources.getString(R.string.pickup_order_general)
+        )
 
         val adapter = OrderTypeAdapter(orderList)
         select_spinner.adapter = adapter
@@ -58,20 +67,28 @@ class CreatePickupOrderActivity : BaseActivity<ActivityCreatePickupOrderBinding,
             override fun onNothingSelected(parent: AdapterView<*>?) {
             }
 
-            override fun onItemSelected(parent: AdapterView<*>?, view: View?, position: Int, id: Long) {
+            override fun onItemSelected(
+                parent: AdapterView<*>?,
+                view: View?,
+                position: Int,
+                id: Long
+            ) {
                 if (position == 0) {
 
                     edit_seller_id.setText("")
                     edit_seller_id.isEnabled = true
                     edit_seller_id.background = resources.getDrawable(R.drawable.border_e6e6e6)
-                    layout_seller_id_search.background = resources.getDrawable(R.drawable.back_round_3_border_4fb648)
+                    layout_seller_id_search.background =
+                        resources.getDrawable(R.drawable.back_round_3_border_4fb648)
 
                 } else {
 
                     edit_seller_id.setText(Preferences.userId)
                     edit_seller_id.isEnabled = false
-                    edit_seller_id.background = resources.getDrawable(R.drawable.back_1_e1e1e1_desable)
-                    layout_seller_id_search.background = resources.getDrawable(R.drawable.back_round_3_border_4fb648_disable)
+                    edit_seller_id.background =
+                        resources.getDrawable(R.drawable.back_1_e1e1e1_desable)
+                    layout_seller_id_search.background =
+                        resources.getDrawable(R.drawable.back_round_3_border_4fb648_disable)
                 }
 
                 mViewModel.orderType.value = position
@@ -88,10 +105,14 @@ class CreatePickupOrderActivity : BaseActivity<ActivityCreatePickupOrderBinding,
         val str = getString(R.string.search_pickup_no).replace("%s", pickupNo)
         val index = str.indexOf(pickupNo)
         val sp = SpannableString(str)
-        sp.setSpan(UnderlineSpan(), index, index + pickupNo.length, Spannable.SPAN_EXCLUSIVE_EXCLUSIVE)
+        sp.setSpan(
+            UnderlineSpan(),
+            index,
+            index + pickupNo.length,
+            Spannable.SPAN_EXCLUSIVE_EXCLUSIVE
+        )
 
         text_pickup_no.text = sp
-
 
         mViewModel.visiblePickupLayout.observe(this) {
             if (it) {
