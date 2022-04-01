@@ -1,11 +1,7 @@
 package com.giosis.library.bluetooth;
 
 /**
- * @author eylee 2018-04-03
  * 공통 변수 관리하는 클래스
- *
- * <p></p>
- * @editor krm0219
  */
 public class GPrinterData {
 

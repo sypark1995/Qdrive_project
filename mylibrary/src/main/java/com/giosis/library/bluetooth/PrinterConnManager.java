@@ -15,10 +15,9 @@ import com.gprinter.io.PortManager;
 import java.util.Vector;
 
 /**
- * @author eylee 2018-03-26
- * <p>
  * receiver 에서 이 클래를 ArrayList 에 담아두고 사용
  */
+
 public class PrinterConnManager {
     private String TAG = "PrinterConnManager";
 
