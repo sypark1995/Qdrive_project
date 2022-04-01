@@ -63,7 +63,7 @@ class SettingViewModel : BaseViewModel() {
             }
         }
 
-        if (Preferences.userId.equals("karam.kim", ignoreCase = true)) {
+        if (Preferences.userId == "karam.kim") {
             _visibleSetLocker.value = true
         }
 
