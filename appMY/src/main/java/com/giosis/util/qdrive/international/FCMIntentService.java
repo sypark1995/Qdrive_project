@@ -125,8 +125,6 @@ public class FCMIntentService extends FirebaseMessagingService {
             myApp.setBadgeCnt(badgeCnt);
             setBadge(context, badgeCnt);
 
-            Log.e("krm0219", "FCM Push : " + topClassname + " / " + action_key + " / " + action_value);
-
             if (title.equals("")) {
                 title = "QSign SG";
             }

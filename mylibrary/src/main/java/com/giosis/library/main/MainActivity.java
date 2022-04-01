@@ -191,9 +191,9 @@ public class MainActivity extends AppBaseActivity {
         opID = Preferences.INSTANCE.getUserId();
 
         // 7ETB, FLTB push 받고 온 경우 확인
-        String outletPush = getIntent().getStringExtra("outletPush");
-        if (outletPush == null) {
-            outletPush = "N";
+        String downloadApi = getIntent().getStringExtra("DOWNLOAD");
+        if (downloadApi == null) {
+            downloadApi = "N";
         }
 
         text_home_driver_name = findViewById(R.id.text_home_driver_name);
@@ -216,9 +216,7 @@ public class MainActivity extends AppBaseActivity {
         btn_home_create_pickup_order = findViewById(R.id.btn_home_create_pickup_order);
         btn_home_today_my_route = findViewById(R.id.btn_home_today_my_route);
 
-        if (DownloadCheck()) {
-            Download();
-        } else if (outletPush.equals("Y")) {
+        if (DownloadCheck() || downloadApi.equals("Y")) {
             Download();
         }
 
