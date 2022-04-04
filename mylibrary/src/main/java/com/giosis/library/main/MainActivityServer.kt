@@ -50,15 +50,6 @@ object MainActivityServer {
         }
 
         context.lifecycleScope.launch(Dispatchers.IO) {
-            //  2020.02 휴무일 가져오기
-            val delete = DatabaseHelper.getInstance().delete(DatabaseHelper.DB_TABLE_REST_DAYS, "")
-            Log.i(TAG, "DELETE  DB_TABLE_REST_DAYS  Count : $delete")
-
-            getRestDay(Calendar.getInstance()[Calendar.YEAR])
-            getRestDay(Calendar.getInstance()[Calendar.YEAR] + 1)
-        }
-
-        context.lifecycleScope.launch(Dispatchers.IO) {
 
             try {
                 DatabaseHelper.getInstance().delete(DatabaseHelper.DB_TABLE_INTEGRATION_LIST, "")
@@ -230,39 +221,6 @@ object MainActivityServer {
         } catch (e: Exception) {
 
         }
-    }
-
-    private suspend fun getRestDay(year: Int) {
-        try {
-            val response2 = RetrofitClient.instanceDynamic().requestGetRestDays(year)
-
-            if (response2.resultCode == 0 && response2.resultObject != null) {
-                val list = Gson().fromJson<ArrayList<RestDaysResult>>(
-                    response2.resultObject,
-                    object : TypeToken<ArrayList<RestDaysResult?>?>() {}.type
-                )
-
-                insertRestDays(list)
-            }
-        } catch (e: java.lang.Exception) {
-
-        }
-    }
-
-    private fun insertRestDays(list: ArrayList<RestDaysResult>?) {
-        var insert: Long = 0
-        if (list != null) {
-            for (data in list) {
-                val contentValues = ContentValues().apply {
-                    put("title", data.title)
-                    put("rest_dt", data.rest_dt)
-                }
-
-                insert = DatabaseHelper.getInstance()
-                    .insert(DatabaseHelper.DB_TABLE_REST_DAYS, contentValues)
-            }
-        }
-        Log.i(TAG, "insertRestDays  DB Insert: $insert")
     }
 
     private fun insertDevicePickupData(data: QSignPickupList): Long {

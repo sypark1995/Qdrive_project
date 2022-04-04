@@ -21,18 +21,21 @@ import android.view.WindowManager
 import android.widget.*
 import android.widget.AdapterView.OnItemSelectedListener
 import androidx.activity.result.contract.ActivityResultContracts
+import androidx.lifecycle.lifecycleScope
 import com.giosis.library.MemoryStatus
 import com.giosis.library.R
 import com.giosis.library.barcodescanner.StdResult
+import com.giosis.library.data.FailedCodeData
+import com.giosis.library.data.RestDaysResult
 import com.giosis.library.database.DatabaseHelper
 import com.giosis.library.databinding.ActivityPickupVisitLogBinding
 import com.giosis.library.gps.GPSTrackerManager
 import com.giosis.library.server.ImageUpload
 import com.giosis.library.server.RetrofitClient
-import com.giosis.library.data.FailedCodeData
 import com.giosis.library.util.*
 import com.giosis.library.util.dialog.ProgressDialog
-import kotlinx.coroutines.CoroutineScope
+import com.google.gson.Gson
+import com.google.gson.reflect.TypeToken
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
@@ -43,11 +46,12 @@ import java.util.*
 class PickupFailedActivity : CommonActivity(), Camera2APIs.Camera2Interface,
     TextureView.SurfaceTextureListener {
 
-    val tag = "PickupFailedActivity"
+    val TAG = "PickupFailedActivity"
 
     private val binding by lazy {
         ActivityPickupVisitLogBinding.inflate(layoutInflater)
     }
+
     val progressBar by lazy {
         ProgressDialog(this@PickupFailedActivity)
     }
@@ -115,14 +119,28 @@ class PickupFailedActivity : CommonActivity(), Camera2APIs.Camera2Interface,
         val dateListener =
             DatePickerDialog.OnDateSetListener { _: DatePicker, year: Int, monthOfYear: Int, dayOfMonth: Int ->
 
-                Log.i(tag, "DATE : $year / ${monthOfYear + 1} / $dayOfMonth")
+                if (restDayList.isEmpty()) {
+                    DisplayUtil.AlertDialog(
+                        this@PickupFailedActivity,
+                        resources.getString(R.string.msg_network_connect_error)
+                    )
+                    return@OnDateSetListener
+                }
+
+                Log.i(TAG, "DATE : $year / ${monthOfYear + 1} / $dayOfMonth")
+
                 calendar.set(Calendar.YEAR, year)
                 calendar.set(Calendar.MONTH, monthOfYear)
                 calendar.set(Calendar.DAY_OF_MONTH, dayOfMonth)
 
-                val restDay = getRestDay(year, monthOfYear + 1, dayOfMonth)
+                val dtFormat = SimpleDateFormat("yyyy-MM-dd")
+                val date = calendar.time
 
-                if (Preferences.userNation.contentEquals("SG")) {
+                val formatData = dtFormat.format(date)
+
+                val restDay = getCheckRestDay(formatData)
+
+                if (Preferences.userNation == "SG") {
                     when {
                         restDay.isNotEmpty() -> {
                             Toast.makeText(
@@ -138,6 +156,7 @@ class PickupFailedActivity : CommonActivity(), Camera2APIs.Camera2Interface,
                             binding.textRetryDate.text = simpleDateFormat.format(calendar.time)
                         }
                     }
+
                 } else {
 
                     when {
@@ -294,6 +313,11 @@ class PickupFailedActivity : CommonActivity(), Camera2APIs.Camera2Interface,
         } else {
 
             isPermissionTrue = true
+        }
+
+        lifecycleScope.launch {
+            getRestDay(Calendar.getInstance()[Calendar.YEAR])
+            getRestDay(Calendar.getInstance()[Calendar.YEAR] + 1)
         }
     }
 
@@ -458,10 +482,10 @@ class PickupFailedActivity : CommonActivity(), Camera2APIs.Camera2Interface,
                 return
             }
 
-            DataUtil.logEvent("button_click", tag, "SetPickupUploadData")
+            DataUtil.logEvent("button_click", TAG, "SetPickupUploadData")
 
             progressBar.visibility = View.VISIBLE
-            CoroutineScope(Dispatchers.Main).launch {
+            lifecycleScope.launch {
                 // doInBackground
                 val result = requestPickupUpload(pickupNo!!)
 
@@ -501,7 +525,7 @@ class PickupFailedActivity : CommonActivity(), Camera2APIs.Camera2Interface,
 
         } catch (e: Exception) {
 
-            Log.e("Exception", "$tag   serverUpload  Exception : $e")
+            Log.e("Exception", "$TAG   serverUpload  Exception : $e")
             Toast.makeText(
                 this@PickupFailedActivity,
                 resources.getString(R.string.text_error) + " - " + e.toString(),
@@ -667,30 +691,34 @@ class PickupFailedActivity : CommonActivity(), Camera2APIs.Camera2Interface,
         }
     }
 
-    private fun getRestDay(year: Int, month: Int, day: Int): String {
+    private fun getCheckRestDay(restDate: String): String {
 
-        val yearDate = year.toString()
-        var monthDate = month.toString()
-        var dayDate = day.toString()
-
-        if (monthDate.length == 1) {
-            monthDate = "0$month"
+        for (restDay in restDayList) {
+            if (restDay.rest_dt == restDate) {
+                return restDay.title
+            }
         }
 
-        if (dayDate.length == 1) {
-            dayDate = "0$day"
-        }
-
-        val restDate = "$yearDate-$monthDate-$dayDate"
-        var restDayTitle = ""
-
-        val cs =
-            DatabaseHelper.getInstance()["SELECT title FROM ${DatabaseHelper.DB_TABLE_REST_DAYS} WHERE rest_dt='$restDate'"]
-
-        if (cs.moveToFirst()) {
-            restDayTitle = cs.getString(cs.getColumnIndex("title"))
-        }
-
-        return restDayTitle
+        return ""
     }
+
+    val restDayList = ArrayList<RestDaysResult>()
+
+    private suspend fun getRestDay(year: Int) {
+        try {
+            val response2 = RetrofitClient.instanceDynamic().requestGetRestDays(year)
+
+            if (response2.resultCode == 0 && response2.resultObject != null) {
+                val list = Gson().fromJson<ArrayList<RestDaysResult>>(
+                    response2.resultObject,
+                    object : TypeToken<ArrayList<RestDaysResult?>?>() {}.type
+                )
+
+                restDayList.addAll(list)
+            }
+        } catch (e: java.lang.Exception) {
+
+        }
+    }
+
 }
