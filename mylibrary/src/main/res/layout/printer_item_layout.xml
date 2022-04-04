@@ -16,12 +16,12 @@
             android:layout_centerVertical="true"
             android:layout_marginStart="5dp"
             android:layout_marginEnd="10dp"
-            android:layout_toStartOf="@id/btn_printer_other_item_connect"
+            android:layout_toStartOf="@id/connect_btn"
             android:gravity="center_vertical"
             android:orientation="vertical">
 
             <TextView
-                android:id="@+id/text_printer_other_item_device_name"
+                android:id="@+id/device_name_text"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:ellipsize="end"
@@ -32,7 +32,7 @@
                 tools:text="PPPrinter" />
 
             <TextView
-                android:id="@+id/text_printer_other_item_device_address"
+                android:id="@+id/device_address_text"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_marginTop="5dp"
@@ -46,7 +46,7 @@
         </LinearLayout>
 
         <Button
-            android:id="@+id/btn_printer_other_item_connect"
+            android:id="@+id/connect_btn"
             android:layout_width="wrap_content"
             android:layout_height="30dp"
             android:layout_alignParentEnd="true"
