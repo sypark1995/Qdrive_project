@@ -85,7 +85,6 @@ public class OutletPickupStep1Activity extends CommonActivity {
     String mQty;
     String mRoute;
 
-    OutletInfo outletInfo;
     String jobID;
     String vendorCode;
     boolean showQRCode = false;
@@ -191,7 +190,7 @@ public class OutletPickupStep1Activity extends CommonActivity {
         mApplicant = getIntent().getStringExtra("applicant");
         mQty = getIntent().getStringExtra("qty");
 
-        outletInfo = getOutletInfo(mPickupNo);
+        OutletInfo outletInfo = getOutletInfo(mPickupNo);
 
        /* // TEST
         outletInfo.route = "7E";
