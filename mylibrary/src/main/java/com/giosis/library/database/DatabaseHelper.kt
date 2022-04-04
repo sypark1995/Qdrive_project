@@ -7,7 +7,8 @@ import android.database.sqlite.SQLiteDatabase
 import android.database.sqlite.SQLiteOpenHelper
 import android.util.Log
 
-class DatabaseHelper private constructor(private val mContext: Context) : SQLiteOpenHelper(mContext, DB_NAME, null, DB_VERSION) {
+class DatabaseHelper private constructor(private val mContext: Context) :
+    SQLiteOpenHelper(mContext, DB_NAME, null, DB_VERSION) {
 
     companion object {
         private const val TAG = "DatabaseHelper"
@@ -15,7 +16,7 @@ class DatabaseHelper private constructor(private val mContext: Context) : SQLite
         private var mInstance: DatabaseHelper? = null
         private var sqLiteDatabase: SQLiteDatabase? = null
 
-        private const val DB_VERSION = 4
+        private const val DB_VERSION = 5
         private const val DB_NAME = "QdriveDB.db"
 
         const val DB_TABLE_INTEGRATION_LIST = "INTEGRATION_LIST"
@@ -75,8 +76,8 @@ class DatabaseHelper private constructor(private val mContext: Context) : SQLite
                 "street, " +
                 "order_type)"
 
-        private const val CREATE_TABLE_REST_DAYS = "CREATE TABLE IF NOT EXISTS " +
-                DB_TABLE_REST_DAYS + "(rest_dt, title)"
+//        private const val CREATE_TABLE_REST_DAYS = "CREATE TABLE IF NOT EXISTS " +
+//                DB_TABLE_REST_DAYS + "(rest_dt, title)"
 
 
         @Volatile
@@ -84,12 +85,12 @@ class DatabaseHelper private constructor(private val mContext: Context) : SQLite
 
         @JvmStatic
         fun getInstance(context: Context): DatabaseHelper =
-                instance ?: synchronized(this) {
-                    instance ?: DatabaseHelper(context).also {
-                        instance = it
-                        sqLiteDatabase = it.writableDatabase
-                    }
+            instance ?: synchronized(this) {
+                instance ?: DatabaseHelper(context).also {
+                    instance = it
+                    sqLiteDatabase = it.writableDatabase
                 }
+            }
 
         // kjyoo 추후 컨텍스트 없을경우 처리 어떻게 해야 할지
         @JvmStatic
@@ -103,17 +104,16 @@ class DatabaseHelper private constructor(private val mContext: Context) : SQLite
     override fun onCreate(db: SQLiteDatabase) {
         Log.e(TAG, "onCreate")
         db.execSQL(CREATE_TABLE_INTEGRATION_LIST)
-        db.execSQL(CREATE_TABLE_REST_DAYS)
     }
 
     // 버전이 업데이트 되었을 때 DB 재생성
     override fun onUpgrade(db: SQLiteDatabase, oldVersion: Int, newVersion: Int) {
         Log.e(TAG, "onUpgrade  $oldVersion > $newVersion")
 
-        // 필요없는 db column 정리 후 첫 업그레이드
-        db.execSQL("DROP TABLE IF EXISTS $DB_TABLE_INTEGRATION_LIST")
-        db.execSQL("DROP TABLE IF EXISTS $DB_TABLE_REST_DAYS")
-        onCreate(db)
+        if (oldVersion < 5) {
+            db.execSQL("DROP TABLE IF EXISTS $DB_TABLE_REST_DAYS")
+        }
+
     }
 
     val dbPath: String
@@ -145,7 +145,12 @@ class DatabaseHelper private constructor(private val mContext: Context) : SQLite
      * @param whereClause   : Where Clause
      * @return              ; int
      */
-    fun update(table: String?, values: ContentValues?, whereClause: String?, whereArgs: Array<String?>?): Int {
+    fun update(
+        table: String?,
+        values: ContentValues?,
+        whereClause: String?,
+        whereArgs: Array<String?>?
+    ): Int {
         return sqLiteDatabase!!.update(table, values, whereClause, whereArgs)
     }
 
