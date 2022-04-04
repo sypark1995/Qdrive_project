@@ -15,7 +15,6 @@ import com.giosis.util.qdrive.international.R;
 public class DataUtil {
 
     public static String appID = "QDRIVE";
-    public static String nationCode = "";
 
     public static String SERVER_TEST = "https://test-api.qxpress.net";
     public static String SERVER_STAGING = "http://staging-qxapi.qxpress.net";

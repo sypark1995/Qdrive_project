@@ -23,6 +23,7 @@ import com.giosis.library.setting.DeveloperModeActivity
 import com.giosis.library.database.DatabaseHelper
 import com.giosis.library.util.PermissionActivity
 import com.giosis.library.util.PermissionChecker
+import com.giosis.library.util.Preferences
 import com.giosis.util.qdrive.international.databinding.ActivityLoginBinding
 import com.giosis.util.qdrive.util.CommonActivity
 import com.giosis.util.qdrive.util.DataUtil
@@ -52,8 +53,10 @@ class LoginActivity : CommonActivity() {
     // Permission
     var isPermissionTrue = false
     val PERMISSION_REQUEST_CODE = 1000
-    val PERMISSIONS = arrayOf(PermissionChecker.ACCESS_FINE_LOCATION, PermissionChecker.ACCESS_COARSE_LOCATION,
-            PermissionChecker.READ_EXTERNAL_STORAGE, PermissionChecker.WRITE_EXTERNAL_STORAGE)
+    val PERMISSIONS = arrayOf(
+        PermissionChecker.ACCESS_FINE_LOCATION, PermissionChecker.ACCESS_COARSE_LOCATION,
+        PermissionChecker.READ_EXTERNAL_STORAGE, PermissionChecker.WRITE_EXTERNAL_STORAGE
+    )
 
 
     @SuppressLint("SetTextI18n")
@@ -62,10 +65,20 @@ class LoginActivity : CommonActivity() {
         setContentView(binding.root)
 
         // Image Shake Animation
-        binding.imgLoginTopBg.startAnimation(AnimationUtils.loadAnimation(this, R.anim.shake_animation))
+        binding.imgLoginTopBg.startAnimation(
+            AnimationUtils.loadAnimation(
+                this,
+                R.anim.shake_animation
+            )
+        )
 
         binding.imgLoginTopLogo.setOnClickListener {
-            binding.imgLoginTopBg.startAnimation(AnimationUtils.loadAnimation(this, R.anim.shake_animation))
+            binding.imgLoginTopBg.startAnimation(
+                AnimationUtils.loadAnimation(
+                    this,
+                    R.anim.shake_animation
+                )
+            )
         }
 
 
@@ -86,23 +99,36 @@ class LoginActivity : CommonActivity() {
         }
 
 
-        progressBar.layoutParams = LinearLayout.LayoutParams(ViewGroup.LayoutParams.WRAP_CONTENT, ViewGroup.LayoutParams.WRAP_CONTENT)
+        progressBar.layoutParams = LinearLayout.LayoutParams(
+            ViewGroup.LayoutParams.WRAP_CONTENT,
+            ViewGroup.LayoutParams.WRAP_CONTENT
+        )
         binding.layoutLogin.addView(progressBar)
         progressBar.visibility = View.GONE
 
 
         // Nation
-        spinnerList.add(LoginNation(resources.getString(R.string.text_malaysia), "MY", "login_icon_my"))
-        spinnerList.add(LoginNation(resources.getString(R.string.text_Indonesia), "ID", "login_icon_id"))
+        spinnerList.add(
+            LoginNation(
+                resources.getString(R.string.text_malaysia),
+                "MY",
+                "login_icon_my"
+            )
+        )
+        spinnerList.add(
+            LoginNation(
+                resources.getString(R.string.text_Indonesia),
+                "ID",
+                "login_icon_id"
+            )
+        )
         binding.spinnerSelectNation.adapter = LoginSpinnerAdapter(this, spinnerList)
 
-        when (MyApplication.preferences.userNation) {
+        when (Preferences.userNation) {
             "MY" -> {
-
                 binding.spinnerSelectNation.setSelection(0)
             }
             "ID" -> {
-
                 binding.spinnerSelectNation.setSelection(1)
             }
             else -> {
@@ -116,31 +142,44 @@ class LoginActivity : CommonActivity() {
             binding.spinnerSelectNation.performClick()
         }
 
-        binding.spinnerSelectNation.onItemSelectedListener = object : AdapterView.OnItemSelectedListener {
-            override fun onItemSelected(parent: AdapterView<*>?, view: View?, position: Int, id: Long) {
+        binding.spinnerSelectNation.onItemSelectedListener =
+            object : AdapterView.OnItemSelectedListener {
+                override fun onItemSelected(
+                    parent: AdapterView<*>?,
+                    view: View?,
+                    position: Int,
+                    id: Long
+                ) {
 
-                parent?.let {
+                    parent?.let {
 
-                    hideKeyboard()
+                        hideKeyboard()
 
-                    spinnerPosition = position
+                        spinnerPosition = position
 
-                    val resourceId = context.resources.getIdentifier(spinnerList[position].nationImg, "drawable", context.packageName)
-                    binding.imgLoginNation.setBackgroundResource(resourceId)
-                    binding.textLoginNation.text = spinnerList[position].nation
-                    Log.e(tag, " Select Nation : ${binding.textLoginNation.text}")
+                        val resourceId = context.resources.getIdentifier(
+                            spinnerList[position].nationImg,
+                            "drawable",
+                            context.packageName
+                        )
+                        binding.imgLoginNation.setBackgroundResource(resourceId)
+                        binding.textLoginNation.text = spinnerList[position].nation
+                        Log.e(tag, " Select Nation : ${binding.textLoginNation.text}")
+                    }
+                }
+
+                override fun onNothingSelected(p0: AdapterView<*>?) {
                 }
             }
 
-            override fun onNothingSelected(p0: AdapterView<*>?) {
-            }
-        }
-
 
         //
-        binding.editLoginId.setText(MyApplication.preferences.userId)
-        binding.editLoginPassword.setText(MyApplication.preferences.userPw)
-        Log.e(tag, "  init Data  -   ${MyApplication.preferences.userNation}  ${MyApplication.preferences.userId}  ${MyApplication.preferences.userPw}")
+        binding.editLoginId.setText(Preferences.userId)
+        binding.editLoginPassword.setText(Preferences.userPw)
+        Log.e(
+            tag,
+            " nation  ${Preferences.userNation}  ${Preferences.userId}  ${Preferences.userPw}"
+        )
         appVersion = getVersion()
 
 
@@ -187,90 +226,104 @@ class LoginActivity : CommonActivity() {
                 }
                 else -> {
 
-                    MyApplication.preferences.userNation = userNationCode
-                    MyApplication.preferences.userId = userID
-                    MyApplication.preferences.userPw = userPW
-                    MyApplication.preferences.deviceUUID = deviceUUID
-                    MyApplication.preferences.appVersion = appVersion
+                    Preferences.userNation = userNationCode
+                    Preferences.userId = userID
+                    Preferences.userPw = userPW
+                    Preferences.deviceUUID = deviceUUID
+                    Preferences.appVersion = appVersion
 
                     progressBar.visibility = View.VISIBLE
 
-                    RetrofitClient.instanceDynamic().requestServerLogin(userID, userPW, "QDRIVE_V2", "", deviceUUID, "",
-                            latitude.toString(), longitude.toString(), DataUtil.appID, userNationCode)
-                            .subscribeOn(Schedulers.io())
-                            .observeOn(AndroidSchedulers.mainThread())
-                            .subscribe({
+                    RetrofitClient.instanceDynamic().requestServerLogin(
+                        userID, userPW, "QDRIVE_V2", "", deviceUUID, "",
+                        latitude.toString(), longitude.toString(), DataUtil.appID, userNationCode
+                    )
+                        .subscribeOn(Schedulers.io())
+                        .observeOn(AndroidSchedulers.mainThread())
+                        .subscribe({
 
-                                Log.e("Server", "result  ${it.resultCode}  ${it.resultMsg}")
+                            Log.e("Server", "result  ${it.resultCode}  ${it.resultMsg}")
 
-                                if (it.resultCode != 0) {        // Login Failed
+                            if (it.resultCode != 0) {        // Login Failed
 
-                                    progressBar.visibility = View.GONE
-                                    MyApplication.preferences.userPw = ""
-                                    binding.editLoginPassword.setText("")
+                                progressBar.visibility = View.GONE
+                                Preferences.userPw = ""
+                                binding.editLoginPassword.setText("")
 
-                                    when {
-                                        it.resultCode == -10 -> {
+                                when {
+                                    it.resultCode == -10 -> {
 
-                                            showDialog(resources.getString(R.string.msg_account_deactivated))
-                                        }
-                                        it.resultMsg != "" -> {
-
-                                            showDialog(it.resultMsg)
-                                        }
-                                        else -> {
-
-                                            showDialog(resources.getString(R.string.msg_not_valid_info))
-                                        }
+                                        showDialog(resources.getString(R.string.msg_account_deactivated))
                                     }
-                                } else {        // Login Success
+                                    it.resultMsg != "" -> {
 
-                                    progressBar.visibility = View.GONE
-                                    val loginData = Gson().fromJson(it.resultObject, LoginResult.LoginData::class.java)
-                                    Log.e(RetrofitClient.TAG, "response : ${it.resultObject}")
+                                        showDialog(it.resultMsg)
+                                    }
+                                    else -> {
 
-                                    if (MyApplication.preferences.appVersion < loginData.serverVersion) {
-
-                                        val msg = java.lang.String.format(resources.getString(R.string.msg_update_version),
-                                                loginData.serverVersion, MyApplication.preferences.appVersion)
-                                        goGooglePlay(msg)
-                                    } else {
-
-                                        DataUtil.nationCode = MyApplication.preferences.userNation
-                                        MyApplication.preferences.userId = loginData.userId
-                                        MyApplication.preferences.userName = loginData.userName
-                                        MyApplication.preferences.userEmail = loginData.userEmail
-                                        MyApplication.preferences.officeCode = loginData.officeCode
-                                        MyApplication.preferences.officeName = loginData.officeName
-                                        MyApplication.preferences.pickupDriver = loginData.pickupDriver
-                                        MyApplication.preferences.outletDriver = loginData.outletDriver
-                                        MyApplication.preferences.lockerStatus = loginData.lockerStatus
-                                        MyApplication.preferences.default = loginData.defaultYn
-                                        MyApplication.preferences.authNo = loginData.authNo
-
-                                        Log.e(tag, "SERVER  DOWNLOAD  DATA : ${loginData.officeCode} / ${loginData.officeName} / " +
-                                                "${loginData.pickupDriver} / ${loginData.outletDriver} / ${loginData.lockerStatus} / " +
-                                                "${loginData.defaultYn} / ${loginData.authNo}")
-                                        Log.e(tag, "  SMS / Device Auth - ${loginData.smsYn}, ${loginData.deviceYn}")
-
-
-                                        if (loginData.smsYn == "Y" && loginData.deviceYn == "Y") {
-
-                                            val intent = Intent(this@LoginActivity, MainActivity::class.java)
-                                            startActivity(intent)
-                                            finish()
-                                        } else {
-
-                                            goSMSVerification(resources.getString(R.string.msg_go_sms_verification))
-                                        }
+                                        showDialog(resources.getString(R.string.msg_not_valid_info))
                                     }
                                 }
-                            }, {
+                            } else {        // Login Success
 
-                                Log.e(RetrofitClient.errorTag, it.toString())
                                 progressBar.visibility = View.GONE
-                                showDialog(it.toString())
-                            })
+                                val loginData = Gson().fromJson(
+                                    it.resultObject,
+                                    LoginResult.LoginData::class.java
+                                )
+                                Log.e(RetrofitClient.TAG, "response : ${it.resultObject}")
+
+                                if (Preferences.appVersion < loginData.serverVersion) {
+
+                                    val msg = java.lang.String.format(
+                                        resources.getString(R.string.msg_update_version),
+                                        loginData.serverVersion,
+                                        Preferences.appVersion
+                                    )
+                                    goGooglePlay(msg)
+                                } else {
+
+                                    Preferences.userId = loginData.userId
+                                    Preferences.userName = loginData.userName
+                                    Preferences.userEmail = loginData.userEmail
+                                    Preferences.officeCode = loginData.officeCode
+                                    Preferences.officeName = loginData.officeName
+                                    Preferences.pickupDriver = loginData.pickupDriver
+                                    Preferences.outletDriver = loginData.outletDriver
+                                    Preferences.lockerStatus = loginData.lockerStatus
+                                    Preferences.default = loginData.defaultYn
+                                    Preferences.authNo = loginData.authNo
+
+                                    Log.e(
+                                        tag,
+                                        "SERVER  DOWNLOAD  DATA : ${loginData.officeCode} / ${loginData.officeName} / " +
+                                                "${loginData.pickupDriver} / ${loginData.outletDriver} / ${loginData.lockerStatus} / " +
+                                                "${loginData.defaultYn} / ${loginData.authNo}"
+                                    )
+                                    Log.e(
+                                        tag,
+                                        "  SMS / Device Auth - ${loginData.smsYn}, ${loginData.deviceYn}"
+                                    )
+
+
+                                    if (loginData.smsYn == "Y" && loginData.deviceYn == "Y") {
+
+                                        val intent =
+                                            Intent(this@LoginActivity, MainActivity::class.java)
+                                        startActivity(intent)
+                                        finish()
+                                    } else {
+
+                                        goSMSVerification(resources.getString(R.string.msg_go_sms_verification))
+                                    }
+                                }
+                            }
+                        }, {
+
+                            Log.e(RetrofitClient.errorTag, it.toString())
+                            progressBar.visibility = View.GONE
+                            showDialog(it.toString())
+                        })
                 }
             }
         }
@@ -295,15 +348,14 @@ class LoginActivity : CommonActivity() {
         super.onResume()
 
         var info = ""
-        if (MyApplication.preferences.serverURL.contains("test")) {
-
+        if (Preferences.serverURL.contains("test")) {
             info = "test / "
-        } else if (MyApplication.preferences.serverURL.contains("staging")) {
-
+        } else if (Preferences.serverURL.contains("staging")) {
             info = "staging / "
         }
-        binding.textLoginVersion.text = "$info${resources.getString(R.string.text_app_version)} - $appVersion"
 
+        binding.textLoginVersion.text =
+            "$info${resources.getString(R.string.text_app_version)} - $appVersion"
 
         if (isPermissionTrue) {
 
@@ -312,7 +364,10 @@ class LoginActivity : CommonActivity() {
             if (gpsEnable == true) {
 
                 gpsTrackerManager?.gpsTrackerStart()
-                Log.e(tag, " onResume  Location  :  ${gpsTrackerManager?.latitude} / ${gpsTrackerManager?.longitude}")
+                Log.e(
+                    tag,
+                    " onResume  Location  :  ${gpsTrackerManager?.latitude} / ${gpsTrackerManager?.longitude}"
+                )
             } else {
 
                 DataUtil.enableLocationSettings(this, context)
@@ -330,7 +385,8 @@ class LoginActivity : CommonActivity() {
 
         return try {
 
-            val packageInfo = applicationContext.packageManager.getPackageInfo(applicationContext.packageName, 0)
+            val packageInfo =
+                applicationContext.packageManager.getPackageInfo(applicationContext.packageName, 0)
             packageInfo.versionName
         } catch (e: Exception) {
 
@@ -343,7 +399,8 @@ class LoginActivity : CommonActivity() {
         val alertBuilder = AlertDialog.Builder(this)
         alertBuilder.setTitle(resources.getString(R.string.text_alert))
         alertBuilder.setMessage(msg)
-        alertBuilder.setPositiveButton(resources.getString(R.string.button_ok)
+        alertBuilder.setPositiveButton(
+            resources.getString(R.string.button_ok)
         ) { dialog, _ -> dialog.dismiss() }
         val alertDialog = alertBuilder.create()
         alertDialog.show()
@@ -365,7 +422,8 @@ class LoginActivity : CommonActivity() {
         val alertBuilder = AlertDialog.Builder(this)
         alertBuilder.setTitle(resources.getString(R.string.text_alert))
         alertBuilder.setMessage(msg)
-        alertBuilder.setPositiveButton(resources.getString(R.string.button_ok)
+        alertBuilder.setPositiveButton(
+            resources.getString(R.string.button_ok)
         ) { dialog, _ ->
             val uri: Uri = Uri.parse("market://details?id=com.giosis.util.qdrive.international")
             val itt = Intent(Intent.ACTION_VIEW, uri)
@@ -382,7 +440,8 @@ class LoginActivity : CommonActivity() {
         val alertBuilder = AlertDialog.Builder(this)
         alertBuilder.setTitle(resources.getString(R.string.text_alert))
         alertBuilder.setMessage(msg)
-        alertBuilder.setPositiveButton(resources.getString(R.string.button_ok)
+        alertBuilder.setPositiveButton(
+            resources.getString(R.string.button_ok)
         ) { _, _ ->
             val intent = Intent(this, SMSVerificationActivity::class.java)
             startActivity(intent)

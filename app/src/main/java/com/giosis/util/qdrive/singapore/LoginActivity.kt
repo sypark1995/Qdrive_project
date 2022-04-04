@@ -11,6 +11,7 @@ import android.view.View
 import android.view.ViewGroup
 import android.view.inputmethod.InputMethodManager
 import android.widget.LinearLayout
+import com.giosis.library.util.Preferences
 import android.widget.ProgressBar
 import androidx.appcompat.app.AlertDialog
 import com.giosis.library.gps.GPSTrackerManager
@@ -86,11 +87,11 @@ class LoginActivity : CommonActivity() {
         binding.layoutLogin.addView(progressBar)
         progressBar.visibility = View.GONE
 
-        binding.editLoginId.setText(MyApplication.preferences.userId)
-        binding.editLoginPassword.setText(MyApplication.preferences.userPw)
+        binding.editLoginId.setText(Preferences.userId)
+        binding.editLoginPassword.setText(Preferences.userPw)
         Log.e(
             tag,
-            "  init Data  -   ${MyApplication.preferences.userNation}  ${MyApplication.preferences.userId}  ${MyApplication.preferences.userPw}"
+            "  init Data  -   ${Preferences.userNation}  ${Preferences.userId}  ${Preferences.userPw}"
         )
         appVersion = getVersion()
 
@@ -132,11 +133,11 @@ class LoginActivity : CommonActivity() {
                 }
                 else -> {
 
-                    MyApplication.preferences.userNation = "SG"
-                    MyApplication.preferences.userId = userID
-                    MyApplication.preferences.userPw = userPW
-                    MyApplication.preferences.deviceUUID = deviceUUID
-                    MyApplication.preferences.appVersion = appVersion
+                    Preferences.userNation = "SG"
+                    Preferences.userId = userID
+                    Preferences.userPw = userPW
+                    Preferences.deviceUUID = deviceUUID
+                    Preferences.appVersion = appVersion
 
                     progressBar.visibility = View.VISIBLE
 
@@ -157,94 +158,89 @@ class LoginActivity : CommonActivity() {
 
                                     if (!loginData.version.isNullOrEmpty()) {
 
-                                        if (MyApplication.preferences.appVersion < loginData.version!!) {
+                                        if (Preferences.appVersion < loginData.version!!) {
 
                                             val msg = java.lang.String.format(
                                                 resources.getString(R.string.msg_update_version),
                                                 loginData.version!!,
-                                                MyApplication.preferences.appVersion
+                                                Preferences.appVersion
                                             )
                                             goGooglePlay(msg)
 
                                         } else {
 
-                                            MyApplication.preferences.userId = loginData.opId!!
-                                            MyApplication.preferences.userPw = userPW
-                                            MyApplication.preferences.deviceUUID = deviceUUID
+                                            Preferences.userId = loginData.opId!!
+                                            Preferences.userPw = userPW
+                                            Preferences.deviceUUID = deviceUUID
 
                                             if (!loginData.version.isNullOrEmpty()) {
-                                                MyApplication.preferences.appVersion =
-                                                    loginData.version!!
+                                                Preferences.appVersion = loginData.version!!
                                             }
 
                                             if (!loginData.opNm.isNullOrEmpty()) {
-                                                MyApplication.preferences.userName =
-                                                    loginData.opNm!!
+                                                Preferences.userName = loginData.opNm!!
                                             } else {
-                                                MyApplication.preferences.userName = ""
+                                                Preferences.userName = ""
                                             }
 
                                             if (!loginData.epEmail.isNullOrEmpty()) {
-                                                MyApplication.preferences.userEmail =
-                                                    loginData.epEmail!!
+                                                Preferences.userEmail = loginData.epEmail!!
                                             } else {
-                                                MyApplication.preferences.userEmail = ""
+                                                Preferences.userEmail = ""
                                             }
 
                                             if (!loginData.officeCode.isNullOrEmpty()) {
-                                                MyApplication.preferences.officeCode =
-                                                    loginData.officeCode!!
+                                                Preferences.officeCode = loginData.officeCode!!
                                             } else {
-                                                MyApplication.preferences.officeCode = ""
+                                                Preferences.officeCode = ""
                                             }
 
                                             if (!loginData.officeName.isNullOrEmpty()) {
-                                                MyApplication.preferences.officeName =
-                                                    loginData.officeName!!
+                                                Preferences.officeName = loginData.officeName!!
                                             } else {
-                                                MyApplication.preferences.officeName = ""
+                                                Preferences.officeName = ""
                                             }
 
                                             if (!loginData.pickupDriverYN.isNullOrEmpty()) {
-                                                MyApplication.preferences.pickupDriver =
+                                                Preferences.pickupDriver =
                                                     loginData.pickupDriverYN!!
                                             } else {
-                                                MyApplication.preferences.pickupDriver = "N"
+                                                Preferences.pickupDriver = "N"
                                             }
 
                                             if (!loginData.shuttle_driver_yn.isNullOrEmpty()) {
-                                                MyApplication.preferences.outletDriver =
+                                                Preferences.outletDriver =
                                                     loginData.shuttle_driver_yn!!
                                             } else {
-                                                MyApplication.preferences.outletDriver = ""
+                                                Preferences.outletDriver = ""
                                             }
 
                                             if (!loginData.locker_driver_status.isNullOrEmpty()) {
-                                                MyApplication.preferences.lockerStatus =
+                                                Preferences.lockerStatus =
                                                     loginData.locker_driver_status!!
                                             } else {
-                                                MyApplication.preferences.lockerStatus = ""
+                                                Preferences.lockerStatus = ""
                                             }
 
                                             if (!loginData.defaultYn.isNullOrEmpty()) {
-                                                MyApplication.preferences.default =
+                                                Preferences.default =
                                                     loginData.defaultYn!!
                                             } else {
-                                                MyApplication.preferences.default = ""
+                                                Preferences.default = ""
                                             }
 
                                             if (!loginData.authNo.isNullOrEmpty()) {
-                                                MyApplication.preferences.authNo =
+                                                Preferences.authNo =
                                                     loginData.authNo!!
                                             } else {
-                                                MyApplication.preferences.authNo = ""
+                                                Preferences.authNo = ""
                                             }
 
                                             if (loginData.smsYn == "Y" && loginData.deviceYn == "Y") {
 
                                                 FirebaseCrashlytics.getInstance().setCustomKey(
                                                     "ID",
-                                                    MyApplication.preferences.userId
+                                                    Preferences.userId
                                                 )
 
                                                 val intent = Intent(
@@ -311,9 +307,9 @@ class LoginActivity : CommonActivity() {
         super.onResume()
 
         var info = ""
-        if (MyApplication.preferences.serverURL.contains("test")) {
+        if (Preferences.serverURL.contains("test")) {
             info = "test / "
-        } else if (MyApplication.preferences.serverURL.contains("staging")) {
+        } else if (Preferences.serverURL.contains("staging")) {
             info = "staging / "
         }
 

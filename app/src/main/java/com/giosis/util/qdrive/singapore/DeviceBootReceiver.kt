@@ -4,6 +4,7 @@ import android.content.BroadcastReceiver
 import android.content.Context
 import android.content.Intent
 import android.util.Log
+import com.giosis.library.util.Preferences
 
 
 class DeviceBootReceiver : BroadcastReceiver() {
@@ -14,9 +15,9 @@ class DeviceBootReceiver : BroadcastReceiver() {
 
             Log.e("Alarm", "DeviceBootReceiver    BOOT_COMPLETED")
 
-            MyApplication.preferences.autoLogoutSetting = false
+            Preferences.autoLogoutSetting = false
 
-            val array = MyApplication.preferences.autoLogoutTime.split(":".toRegex()).toTypedArray()
+            val array = Preferences.autoLogoutTime.split(":".toRegex()).toTypedArray()
             MyApplication.setAutoLogout(array[0].toInt(), array[1].toInt(), false)
         }
     }

@@ -14,21 +14,13 @@ import com.giosis.library.BuildConfig;
 import com.giosis.library.database.DatabaseHelper;
 import com.giosis.library.util.LocaleManager;
 import com.giosis.library.util.Preferences;
-import com.giosis.util.qdrive.util.MySharedPreferences;
 import com.google.firebase.crashlytics.FirebaseCrashlytics;
 
 import java.util.Calendar;
 
-
-/*********
- * @author jtpark_eurasia
- * @editor krm0219
- * 전역 변수 관리
- */
 public class MyApplication extends MultiDexApplication {
     String TAG = "MyApplication";
 
-    public static MySharedPreferences preferences;
     private static Context context;
 
     private int badgeCnt;
@@ -39,7 +31,6 @@ public class MyApplication extends MultiDexApplication {
 
         FirebaseCrashlytics.getInstance().setCrashlyticsCollectionEnabled(!BuildConfig.DEBUG);
 
-        preferences = new MySharedPreferences(getApplicationContext());
         DatabaseHelper.getInstance(this);
         LocaleManager.Companion.getInstance(this);
 
@@ -51,7 +42,7 @@ public class MyApplication extends MultiDexApplication {
         badgeCnt = 0;
 
 
-        String[] array = MyApplication.preferences.getAutoLogoutTime().split(":");
+        String[] array = Preferences.INSTANCE.getAutoLogoutTime().split(":");
         setAutoLogout(Integer.parseInt(array[0]), Integer.parseInt(array[1]), false);
 
         PackageManager pm = context.getPackageManager();
@@ -96,10 +87,10 @@ public class MyApplication extends MultiDexApplication {
         AlarmManager alarmManager = (AlarmManager) context.getSystemService(Context.ALARM_SERVICE);
 
 
-        Log.e("Alarm", "Auto Logout Setting? " + preferences.getAutoLogoutSetting());
+        Log.e("Alarm", "Auto Logout Setting? " + Preferences.INSTANCE.getAutoLogoutSetting());
         Log.e("Alarm", "Auto Logout Time? " + hour + ":" + minute);
 
-        if (!preferences.getAutoLogoutSetting()) {
+        if (!Preferences.INSTANCE.getAutoLogoutSetting()) {
 
             Log.e("Alarm", "AlarmManager Repeating  -  " + hour + ":" + minute);
             // With setInexactRepeating(), you have to use one of the AlarmManager interval
@@ -107,7 +98,7 @@ public class MyApplication extends MultiDexApplication {
             alarmManager.setInexactRepeating(AlarmManager.RTC, calendar.getTimeInMillis(),
                     AlarmManager.INTERVAL_DAY, pendingIntent);
 
-            preferences.setAutoLogoutSetting(true);
+            Preferences.INSTANCE.setAutoLogoutSetting(true);
         } else {
             if (test) {
 

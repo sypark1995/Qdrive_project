@@ -7,6 +7,7 @@ import android.content.Context
 import android.content.Intent
 import android.os.Bundle
 import android.util.Log
+import com.giosis.library.util.Preferences
 
 
 class AlarmReceiver : BroadcastReceiver() {
@@ -32,7 +33,8 @@ class AlarmReceiver : BroadcastReceiver() {
 
         } else {
 
-            MyApplication.preferences.autoLogout = true
+            Preferences.userId = ""
+            Preferences.autoLogout = true
         }
     }
 
