@@ -571,4 +571,7 @@
     <string name="msg_qlps_gps_update" translatable="false">Do you allow the system to replace the saved GPS of this address with your current location?</string>
     <string name="msg_install_google_maps" translatable="false">Please install Google Maps.</string>
     <string name="msg_gps_update_success" translatable="false">GPS information has been updated!</string>
+    <string name="text_lazada_order" translatable="false">It is new Lazada Pickup order!!</string>
+    <string name="text_invoice_no" translatable="false">Pickup no :&#160;</string>
+    <string name="text_lazada_content" translatable="false">Please make sure to pick up this order within today.</string>
 </resources>
