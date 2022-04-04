@@ -22,9 +22,7 @@ import java.text.SimpleDateFormat
 import java.util.*
 import kotlin.collections.ArrayList
 
-/**
- * @author krm0219
- */
+
 class CustomerMessageListDetailActivity : CommonActivity() {
     var TAG = "CustomerMessageListDetailActivity"
 
@@ -95,7 +93,10 @@ class CustomerMessageListDetailActivity : CommonActivity() {
 
             if (!NetworkUtil.isNetworkAvailable(this@CustomerMessageListDetailActivity)) {
 
-                showDialog(resources.getString(R.string.text_warning), resources.getString(R.string.msg_network_connect_error))
+                showDialog(
+                    resources.getString(R.string.text_warning),
+                    resources.getString(R.string.msg_network_connect_error)
+                )
             } else {
                 sendChatMessage()
             }
@@ -110,38 +111,48 @@ class CustomerMessageListDetailActivity : CommonActivity() {
 
         if (!NetworkUtil.isNetworkAvailable(this@CustomerMessageListDetailActivity)) {
 
-            showDialog(resources.getString(R.string.text_warning), resources.getString(R.string.msg_network_connect_error))
+            showDialog(
+                resources.getString(R.string.text_warning),
+                resources.getString(R.string.msg_network_connect_error)
+            )
         } else if (questionNo == "0") {
 
             Log.e(TAG, "in LIST")
 
             progressBar.visibility = View.VISIBLE
             RetrofitClient.instanceDynamic().requestGetMessageToQPostOnPickupMenu(trackingNo)
-                    .subscribeOn(Schedulers.io())
-                    .observeOn(AndroidSchedulers.mainThread())
-                    .subscribe({
+                .subscribeOn(Schedulers.io())
+                .observeOn(AndroidSchedulers.mainThread())
+                .subscribe({
 
-                        progressBar.visibility = View.GONE
+                    progressBar.visibility = View.GONE
 
-                        if (it.resultObject != null) {
+                    if (it.resultObject != null) {
 
-                            val list = Gson().fromJson<ArrayList<MessageQuestionNumberResult>>(it.resultObject, object : TypeToken<ArrayList<MessageQuestionNumberResult>>() {}.type)
+                        val list = Gson().fromJson<ArrayList<MessageQuestionNumberResult>>(
+                            it.resultObject,
+                            object : TypeToken<ArrayList<MessageQuestionNumberResult>>() {}.type
+                        )
 
-                            questionNo = "0"
+                        questionNo = "0"
 
-                            if (list != null && list.isNotEmpty()) {
-                                if (0 < list[0].questionNo)
-                                    questionNo = list[0].questionNo.toString()
-                            }
-
-                            handler.post(task)
+                        if (list != null && list.isNotEmpty()) {
+                            if (0 < list[0].questionNo)
+                                questionNo = list[0].questionNo.toString()
                         }
-                    }, {
 
-                        progressBar.visibility = View.GONE
-                        Toast.makeText(this@CustomerMessageListDetailActivity, resources.getString(R.string.text_error) + "!! " + resources.getString(R.string.msg_please_try_again), Toast.LENGTH_SHORT).show()
-                        Log.e("Exception", "$TAG  GetMessageToQPostOnPickupMenu Exception : $it")
-                    })
+                        handler.post(task)
+                    }
+                }, {
+
+                    progressBar.visibility = View.GONE
+                    Toast.makeText(
+                        this@CustomerMessageListDetailActivity,
+                        resources.getString(R.string.text_error) + "!! " + resources.getString(R.string.msg_please_try_again),
+                        Toast.LENGTH_SHORT
+                    ).show()
+                    Log.e("Exception", "$TAG  GetMessageToQPostOnPickupMenu Exception : $it")
+                })
         } else {
 
             handler.post(task)
@@ -160,55 +171,81 @@ class CustomerMessageListDetailActivity : CommonActivity() {
 
                 Log.e(TAG, "callServer ---- GetQdriverMessageDetail")
                 RetrofitClient.instanceDynamic().requestGetQdriverMessageDetail(questionNo)
-                        .subscribeOn(Schedulers.io())
-                        .observeOn(AndroidSchedulers.mainThread())
-                        .subscribe({
+                    .subscribeOn(Schedulers.io())
+                    .observeOn(AndroidSchedulers.mainThread())
+                    .subscribe({
 
-                            if (oldResultString != "" && oldResultString.equals(newResultString, ignoreCase = true)) {
+                        if (oldResultString != "" && oldResultString.equals(
+                                newResultString,
+                                ignoreCase = true
+                            )
+                        ) {
 
-                                Log.e(TAG, " GetQdriverMessageDetail    EQUAL")
-                            } else {
+                            Log.e(TAG, " GetQdriverMessageDetail    EQUAL")
+                        } else {
 
-                                if (it.resultObject?.isJsonNull == false && it.resultObject != null) {
+                            if (it.resultObject?.isJsonNull == false && it.resultObject != null) {
 
-                                    newResultString = it.toString()
-                                    messageList = Gson().fromJson(it.resultObject, object : TypeToken<ArrayList<MessageDetailResult>>() {}.type)
-                                    if (0 < messageList.size) {
+                                newResultString = it.toString()
+                                messageList = Gson().fromJson(
+                                    it.resultObject,
+                                    object : TypeToken<ArrayList<MessageDetailResult>>() {}.type
+                                )
+                                if (0 < messageList.size) {
 
-                                        for (i in messageList.indices) {
+                                    for (i in messageList.indices) {
 
-                                            var dateString = messageList[i].send_date
-                                            val dateSplitArray = dateString.split(":".toRegex()).toTypedArray()
-                                            dateString = dateSplitArray[0] + ":" + dateSplitArray[1]
-                                            messageList[i].send_date = dateString
-                                        }
-
-                                        binding.textMessageTitle.text = messageList[0].title
-                                        messageDetailAdapter = MessageDetailAdapter(this@CustomerMessageListDetailActivity, messageList, "C")
-                                        binding.listDetailMessage.adapter = messageDetailAdapter
-                                    } else {
-
-                                        binding.textMessageTitle.text = resources.getString(R.string.text_qxpress_driver)
-                                        messageList = ArrayList()
-                                        messageDetailAdapter = MessageDetailAdapter(this@CustomerMessageListDetailActivity, messageList, "C")
-                                        binding.listDetailMessage.adapter = messageDetailAdapter
+                                        var dateString = messageList[i].send_date
+                                        val dateSplitArray =
+                                            dateString.split(":".toRegex()).toTypedArray()
+                                        dateString = dateSplitArray[0] + ":" + dateSplitArray[1]
+                                        messageList[i].send_date = dateString
                                     }
+
+                                    binding.textMessageTitle.text = messageList[0].title
+                                    messageDetailAdapter = MessageDetailAdapter(
+                                        this@CustomerMessageListDetailActivity,
+                                        messageList,
+                                        "C"
+                                    )
+                                    binding.listDetailMessage.adapter = messageDetailAdapter
                                 } else {
 
-                                    binding.textMessageTitle.text = resources.getString(R.string.text_qxpress_driver)
+                                    binding.textMessageTitle.text =
+                                        resources.getString(R.string.text_qxpress_driver)
                                     messageList = ArrayList()
-                                    messageDetailAdapter = MessageDetailAdapter(this@CustomerMessageListDetailActivity, messageList, "C")
+                                    messageDetailAdapter = MessageDetailAdapter(
+                                        this@CustomerMessageListDetailActivity,
+                                        messageList,
+                                        "C"
+                                    )
                                     binding.listDetailMessage.adapter = messageDetailAdapter
                                 }
+                            } else {
+
+                                binding.textMessageTitle.text =
+                                    resources.getString(R.string.text_qxpress_driver)
+                                messageList = ArrayList()
+                                messageDetailAdapter = MessageDetailAdapter(
+                                    this@CustomerMessageListDetailActivity,
+                                    messageList,
+                                    "C"
+                                )
+                                binding.listDetailMessage.adapter = messageDetailAdapter
                             }
+                        }
 
-                            progressBar.visibility = View.GONE
-                        }, {
+                        progressBar.visibility = View.GONE
+                    }, {
 
-                            progressBar.visibility = View.GONE
-                            Toast.makeText(this@CustomerMessageListDetailActivity, resources.getString(R.string.text_error) + "!! " + resources.getString(R.string.msg_please_try_again), Toast.LENGTH_SHORT).show()
-                            Log.e("Exception", "$TAG GetQdriverMessageDetail Exception : $it")
-                        })
+                        progressBar.visibility = View.GONE
+                        Toast.makeText(
+                            this@CustomerMessageListDetailActivity,
+                            resources.getString(R.string.text_error) + "!! " + resources.getString(R.string.msg_please_try_again),
+                            Toast.LENGTH_SHORT
+                        ).show()
+                        Log.e("Exception", "$TAG GetQdriverMessageDetail Exception : $it")
+                    })
             }
         } catch (e: Exception) {
             Log.e("Exception", "$TAG  AsyncHandler Exception : $e")
@@ -232,68 +269,97 @@ class CustomerMessageListDetailActivity : CommonActivity() {
         sendMessage = binding.editMessage.text.toString().trim { it <= ' ' }
 
         if (sendMessage == "") {
-            Toast.makeText(this@CustomerMessageListDetailActivity, resources.getString(R.string.msg_enter_message), Toast.LENGTH_SHORT).show()
+            Toast.makeText(
+                this@CustomerMessageListDetailActivity,
+                resources.getString(R.string.msg_enter_message),
+                Toast.LENGTH_SHORT
+            ).show()
             return
         }
 
 
         progressBar.visibility = View.VISIBLE
-        RetrofitClient.instanceDynamic().requestSendQdriverMessage(trackingNo, sendTitle, sendMessage, questionNo)
-                .subscribeOn(Schedulers.io())
-                .observeOn(AndroidSchedulers.mainThread())
-                .subscribe({
+        RetrofitClient.instanceDynamic()
+            .requestSendQdriverMessage(trackingNo, sendTitle, sendMessage, questionNo)
+            .subscribeOn(Schedulers.io())
+            .observeOn(AndroidSchedulers.mainThread())
+            .subscribe({
 
-                    try {
-                        if (it.resultObject != null) {
+                try {
+                    if (it.resultObject != null) {
 
-                            val result = Gson().fromJson<MessageSendResult>(it.resultObject,
-                                    object : TypeToken<MessageSendResult>() {}.type)
+                        val result = Gson().fromJson<MessageSendResult>(it.resultObject,
+                            object : TypeToken<MessageSendResult>() {}.type
+                        )
 
-                            if (result != null) {
-                                if (result.resultCode == "0") {
+                        if (result != null) {
+                            if (result.resultCode == "0") {
 
-                                    binding.layoutSend.setBackgroundResource(R.color.color_ebebeb)
-                                    binding.editMessage.setHint(R.string.msg_qpost_edit_text_hint)
-                                    binding.editMessage.setText("")
+                                binding.layoutSend.setBackgroundResource(R.color.color_ebebeb)
+                                binding.editMessage.setHint(R.string.msg_qpost_edit_text_hint)
+                                binding.editMessage.setText("")
 
-                                    val simpleDateFormat = SimpleDateFormat("yyyy-MM-dd HH:mm")
-                                    val today = simpleDateFormat.format(Calendar.getInstance().time)
+                                val simpleDateFormat = SimpleDateFormat("yyyy-MM-dd HH:mm")
+                                val today = simpleDateFormat.format(Calendar.getInstance().time)
 
-                                    val item = MessageDetailResult()
-                                    item.tracking_no = trackingNo
-                                    item.question_seq_no = questionNo
-                                    item.title = sendTitle
-                                    item.message = sendMessage
-                                    item.sender_id = Preferences.userId
-                                    item.send_date = today
-                                    item.align = "right"
+                                val item = MessageDetailResult()
+                                item.tracking_no = trackingNo
+                                item.question_seq_no = questionNo
+                                item.title = sendTitle
+                                item.message = sendMessage
+                                item.sender_id = Preferences.userId
+                                item.send_date = today
+                                item.align = "right"
 
-                                    messageList.add(item)
-                                    messageDetailAdapter!!.notifyDataSetChanged()
-                                } else {
-                                    Toast.makeText(this@CustomerMessageListDetailActivity, resources.getString(R.string.msg_send_message_error) +
-                                            " : " + result.resultMsg, Toast.LENGTH_SHORT).show()
-                                    Log.e("Message", "SendQdriverMessage  ResultCode : " + result.resultCode)
-                                }
+                                messageList.add(item)
+                                messageDetailAdapter!!.notifyDataSetChanged()
                             } else {
-
-                                Toast.makeText(this@CustomerMessageListDetailActivity, "${resources.getString(R.string.msg_send_message_error)} ${resources.getString(R.string.msg_please_try_again)}", Toast.LENGTH_SHORT).show()
-                                Log.e("Message", "SendQdriverMessage  result null")
+                                Toast.makeText(
+                                    this@CustomerMessageListDetailActivity,
+                                    resources.getString(R.string.msg_send_message_error) +
+                                            " : " + result.resultMsg,
+                                    Toast.LENGTH_SHORT
+                                ).show()
+                                Log.e(
+                                    "Message",
+                                    "SendQdriverMessage  ResultCode : " + result.resultCode
+                                )
                             }
+                        } else {
+
+                            Toast.makeText(
+                                this@CustomerMessageListDetailActivity,
+                                "${resources.getString(R.string.msg_send_message_error)} ${
+                                    resources.getString(R.string.msg_please_try_again)
+                                }",
+                                Toast.LENGTH_SHORT
+                            ).show()
+                            Log.e("Message", "SendQdriverMessage  result null")
                         }
-                    } catch (e: Exception) {
-
-                        Toast.makeText(this@CustomerMessageListDetailActivity, "${resources.getString(R.string.msg_send_message_error)} ${resources.getString(R.string.msg_please_try_again)}", Toast.LENGTH_SHORT).show()
-                        Log.e("Exception", "$TAG SendQdriverMessage Exception : $e")
                     }
+                } catch (e: Exception) {
 
-                    progressBar.visibility = View.GONE
-                }, {
+                    Toast.makeText(
+                        this@CustomerMessageListDetailActivity,
+                        "${resources.getString(R.string.msg_send_message_error)} ${
+                            resources.getString(R.string.msg_please_try_again)
+                        }",
+                        Toast.LENGTH_SHORT
+                    ).show()
+                    Log.e("Exception", "$TAG SendQdriverMessage Exception : $e")
+                }
 
-                    progressBar.visibility = View.GONE
-                    Toast.makeText(this@CustomerMessageListDetailActivity, resources.getString(R.string.text_error) + "!! " + resources.getString(R.string.msg_please_try_again), Toast.LENGTH_SHORT).show()
-                    Log.e("Exception", "$TAG  GetQdriverMessageListFromMessenger Exception : $it")
-                })
+                progressBar.visibility = View.GONE
+            }, {
+
+                progressBar.visibility = View.GONE
+                Toast.makeText(
+                    this@CustomerMessageListDetailActivity,
+                    resources.getString(R.string.text_error) + "!! " + resources.getString(R.string.msg_please_try_again),
+                    Toast.LENGTH_SHORT
+                ).show()
+                Log.e("Exception", "$TAG  GetQdriverMessageListFromMessenger Exception : $it")
+            })
     }
 
 

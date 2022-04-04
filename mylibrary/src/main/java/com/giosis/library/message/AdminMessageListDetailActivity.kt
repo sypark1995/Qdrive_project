@@ -20,9 +20,7 @@ import io.reactivex.rxjava3.schedulers.Schedulers
 import java.text.SimpleDateFormat
 import java.util.*
 
-/**
- * @author krm0219
- */
+
 class AdminMessageListDetailActivity : CommonActivity() {
     var tag = "AdminMessageListDetailActivity"
 
@@ -86,7 +84,10 @@ class AdminMessageListDetailActivity : CommonActivity() {
 
             if (!NetworkUtil.isNetworkAvailable(this@AdminMessageListDetailActivity)) {
 
-                showDialog(resources.getString(R.string.text_warning), resources.getString(R.string.msg_network_connect_error))
+                showDialog(
+                    resources.getString(R.string.text_warning),
+                    resources.getString(R.string.msg_network_connect_error)
+                )
             } else {
                 sendChatMessage()
             }
@@ -101,7 +102,10 @@ class AdminMessageListDetailActivity : CommonActivity() {
 
         if (!NetworkUtil.isNetworkAvailable(this@AdminMessageListDetailActivity)) {
 
-            showDialog(resources.getString(R.string.text_warning), resources.getString(R.string.msg_network_connect_error))
+            showDialog(
+                resources.getString(R.string.text_warning),
+                resources.getString(R.string.msg_network_connect_error)
+            )
             return
         } else {
 
@@ -121,46 +125,69 @@ class AdminMessageListDetailActivity : CommonActivity() {
 
                 Log.e(tag, "callServer ---- GetQdriverMessageDetailFromMessenger")
                 RetrofitClient.instanceDynamic().requestGetMessageDetailFromAdmin(senderID)
-                        .subscribeOn(Schedulers.io())
-                        .observeOn(AndroidSchedulers.mainThread())
-                        .subscribe({
+                    .subscribeOn(Schedulers.io())
+                    .observeOn(AndroidSchedulers.mainThread())
+                    .subscribe({
 
-                            if (oldResultString != "" && oldResultString.equals(newResultString, ignoreCase = true)) {
+                        if (oldResultString != "" && oldResultString.equals(
+                                newResultString,
+                                ignoreCase = true
+                            )
+                        ) {
 
-                                Log.e("Message", " GetQdriverMessageDetailFromMessenger    EQUAL")
-                            } else {
+                            Log.e("Message", " GetQdriverMessageDetailFromMessenger    EQUAL")
+                        } else {
 
-                                if (it.resultObject != null) {
+                            if (it.resultObject != null) {
 
-                                    newResultString = it.toString()
-                                    messageList = Gson().fromJson(it.resultObject, object : TypeToken<ArrayList<MessageDetailResult>>() {}.type)
+                                newResultString = it.toString()
+                                messageList = Gson().fromJson(
+                                    it.resultObject,
+                                    object : TypeToken<ArrayList<MessageDetailResult>>() {}.type
+                                )
 
-                                    if (0 < messageList.size) {
+                                if (0 < messageList.size) {
 
-                                        for (i in messageList.indices) {
+                                    for (i in messageList.indices) {
 
-                                            var dateString = messageList[i].send_date
-                                            val dateSplitArray = dateString.split(":".toRegex()).toTypedArray()
-                                            dateString = dateSplitArray[0] + ":" + dateSplitArray[1]
-                                            messageList[i].send_date = dateString
-                                        }
-
-                                        messageDetailAdapter = MessageDetailAdapter(this@AdminMessageListDetailActivity, messageList, "A")
-                                        binding.listDetailMessage.adapter = messageDetailAdapter
-                                        binding.listDetailMessage.smoothScrollToPosition(messageList.size - 1)
-                                    } else {
-
-                                        Toast.makeText(this@AdminMessageListDetailActivity, resources.getString(R.string.text_empty), Toast.LENGTH_SHORT).show()
+                                        var dateString = messageList[i].send_date
+                                        val dateSplitArray =
+                                            dateString.split(":".toRegex()).toTypedArray()
+                                        dateString = dateSplitArray[0] + ":" + dateSplitArray[1]
+                                        messageList[i].send_date = dateString
                                     }
+
+                                    messageDetailAdapter = MessageDetailAdapter(
+                                        this@AdminMessageListDetailActivity,
+                                        messageList,
+                                        "A"
+                                    )
+                                    binding.listDetailMessage.adapter = messageDetailAdapter
+                                    binding.listDetailMessage.smoothScrollToPosition(messageList.size - 1)
+                                } else {
+
+                                    Toast.makeText(
+                                        this@AdminMessageListDetailActivity,
+                                        resources.getString(R.string.text_empty),
+                                        Toast.LENGTH_SHORT
+                                    ).show()
                                 }
                             }
+                        }
 
-                            progressBar.visibility = View.GONE
-                        }, {
+                        progressBar.visibility = View.GONE
+                    }, {
 
-                            Toast.makeText(this@AdminMessageListDetailActivity, resources.getString(R.string.text_error) + "!! " + resources.getString(R.string.msg_please_try_again), Toast.LENGTH_SHORT).show()
-                            Log.e("Exception", "$tag  GetQdriverMessageListFromMessenger Exception : $it")
-                        })
+                        Toast.makeText(
+                            this@AdminMessageListDetailActivity,
+                            resources.getString(R.string.text_error) + "!! " + resources.getString(R.string.msg_please_try_again),
+                            Toast.LENGTH_SHORT
+                        ).show()
+                        Log.e(
+                            "Exception",
+                            "$tag  GetQdriverMessageListFromMessenger Exception : $it"
+                        )
+                    })
             }
         } catch (e: Exception) {
             Log.e("Exception", "$tag  AsyncHandler Exception : $e")
@@ -181,60 +208,84 @@ class AdminMessageListDetailActivity : CommonActivity() {
         val sendMessage = binding.editMessage.text.toString().trim { it <= ' ' }
 
         if (sendMessage == "") {
-            Toast.makeText(this@AdminMessageListDetailActivity, resources.getString(R.string.msg_enter_message), Toast.LENGTH_SHORT).show()
+            Toast.makeText(
+                this@AdminMessageListDetailActivity,
+                resources.getString(R.string.msg_enter_message),
+                Toast.LENGTH_SHORT
+            ).show()
             return
         }
 
         progressBar.visibility = View.VISIBLE
         RetrofitClient.instanceDynamic().requestSendQdriveToMessengerMessage(sendMessage, senderID)
-                .subscribeOn(Schedulers.io())
-                .observeOn(AndroidSchedulers.mainThread())
-                .subscribe({
+            .subscribeOn(Schedulers.io())
+            .observeOn(AndroidSchedulers.mainThread())
+            .subscribe({
 
-                    try {
-                        if (it.resultObject != null) {
+                try {
+                    if (it.resultObject != null) {
 
-                            val result = Gson().fromJson<MessageSendResult>(it.resultObject,
-                                    object : TypeToken<MessageSendResult>() {}.type)
+                        val result = Gson().fromJson<MessageSendResult>(it.resultObject,
+                            object : TypeToken<MessageSendResult>() {}.type
+                        )
 
-                            if (result != null) {
+                        if (result != null) {
 
-                                binding.layoutSend.setBackgroundResource(R.drawable.btn_send_qpost)
-                                binding.editMessage.setHint(R.string.msg_qpost_edit_text_hint)
-                                binding.editMessage.setText("")
+                            binding.layoutSend.setBackgroundResource(R.drawable.btn_send_qpost)
+                            binding.editMessage.setHint(R.string.msg_qpost_edit_text_hint)
+                            binding.editMessage.setText("")
 
-                                val simpleDateFormat = SimpleDateFormat("yyyy-MM-dd HH:mm")
-                                val today = simpleDateFormat.format(Calendar.getInstance().time)
+                            val simpleDateFormat = SimpleDateFormat("yyyy-MM-dd HH:mm")
+                            val today = simpleDateFormat.format(Calendar.getInstance().time)
 
-                                val item = MessageDetailResult()
-                                item.message = sendMessage
-                                item.sender_id = senderID
-                                item.receive_id = Preferences.userId
-                                item.send_date = today
-                                item.align = "right"
+                            val item = MessageDetailResult()
+                            item.message = sendMessage
+                            item.sender_id = senderID
+                            item.receive_id = Preferences.userId
+                            item.send_date = today
+                            item.align = "right"
 
-                                messageList.add(item)
-                                messageDetailAdapter!!.notifyDataSetChanged()
-                                binding.listDetailMessage.smoothScrollToPosition(messageList.size - 1)
-                                Log.e("Message", "SendQdriveToMessengerMessage Size : " + messageList.size)
-                            } else {
+                            messageList.add(item)
+                            messageDetailAdapter!!.notifyDataSetChanged()
+                            binding.listDetailMessage.smoothScrollToPosition(messageList.size - 1)
+                            Log.e(
+                                "Message",
+                                "SendQdriveToMessengerMessage Size : " + messageList.size
+                            )
+                        } else {
 
-                                Toast.makeText(this@AdminMessageListDetailActivity, "${resources.getString(R.string.msg_send_message_error)} ${resources.getString(R.string.msg_please_try_again)}", Toast.LENGTH_SHORT).show()
-                                Log.e("Message", "SendQdriveToMessengerMessage  result null")
-                            }
+                            Toast.makeText(
+                                this@AdminMessageListDetailActivity,
+                                "${resources.getString(R.string.msg_send_message_error)} ${
+                                    resources.getString(R.string.msg_please_try_again)
+                                }",
+                                Toast.LENGTH_SHORT
+                            ).show()
+                            Log.e("Message", "SendQdriveToMessengerMessage  result null")
                         }
-                    } catch (e: Exception) {
-
-                        Toast.makeText(this@AdminMessageListDetailActivity, "${resources.getString(R.string.msg_send_message_error)} ${resources.getString(R.string.msg_please_try_again)}", Toast.LENGTH_SHORT).show()
-                        Log.e("Exception", "$tag SendQdriveToMessengerMessage Exception : $e")
                     }
+                } catch (e: Exception) {
 
-                    progressBar.visibility = View.GONE
-                }, {
+                    Toast.makeText(
+                        this@AdminMessageListDetailActivity,
+                        "${resources.getString(R.string.msg_send_message_error)} ${
+                            resources.getString(R.string.msg_please_try_again)
+                        }",
+                        Toast.LENGTH_SHORT
+                    ).show()
+                    Log.e("Exception", "$tag SendQdriveToMessengerMessage Exception : $e")
+                }
 
-                    Toast.makeText(this@AdminMessageListDetailActivity, resources.getString(R.string.text_error) + "!! " + resources.getString(R.string.msg_please_try_again), Toast.LENGTH_SHORT).show()
-                    Log.e("Exception", "$tag  GetQdriverMessageListFromMessenger Exception : $it")
-                })
+                progressBar.visibility = View.GONE
+            }, {
+
+                Toast.makeText(
+                    this@AdminMessageListDetailActivity,
+                    resources.getString(R.string.text_error) + "!! " + resources.getString(R.string.msg_please_try_again),
+                    Toast.LENGTH_SHORT
+                ).show()
+                Log.e("Exception", "$tag  GetQdriverMessageListFromMessenger Exception : $it")
+            })
     }
 
     private fun showDialog(title: String?, msg: String?) {
