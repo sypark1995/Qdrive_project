@@ -80,14 +80,6 @@
         </service>
 
         <receiver
-            android:name="com.giosis.util.qdrive.international.DeviceBootReceiver"
-            android:enabled="false">
-            <intent-filter>
-                <action android:name="android.intent.action.BOOT_COMPLETED" />
-            </intent-filter>
-        </receiver>
-
-        <receiver
             android:name="com.giosis.util.qdrive.international.AlarmReceiver"
             tools:ignore="Instantiatable" />
 

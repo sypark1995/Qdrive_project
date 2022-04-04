@@ -45,13 +45,6 @@ public class MyApplication extends MultiDexApplication {
         String[] array = Preferences.INSTANCE.getAutoLogoutTime().split(":");
         setAutoLogout(Integer.parseInt(array[0]), Integer.parseInt(array[1]), false);
 
-        PackageManager pm = context.getPackageManager();
-        ComponentName receiver = new ComponentName(context, DeviceBootReceiver.class);
-
-        pm.setComponentEnabledSetting(receiver,
-                PackageManager.COMPONENT_ENABLED_STATE_ENABLED,
-                PackageManager.DONT_KILL_APP);
-
     }
 
     @Override

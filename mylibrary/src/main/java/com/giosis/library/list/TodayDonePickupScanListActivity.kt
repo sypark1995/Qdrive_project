@@ -27,6 +27,7 @@ class TodayDonePickupScanListActivity : CommonActivity() {
 
     private var todayDonePickupScanListAdapter: TodayDonePickupScanListAdapter? = null
     private var buttonType: String = ""
+
     var pickupNo: String = ""
     var applicant: String = ""
     var scannedQty: String? = null
