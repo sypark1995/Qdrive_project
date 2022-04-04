@@ -15,6 +15,7 @@ import android.view.inputmethod.InputMethodManager
 import android.widget.AdapterView
 import android.widget.LinearLayout
 import android.widget.ProgressBar
+import com.giosis.library.data.LoginInfo
 import com.giosis.library.database.DatabaseHelper
 import com.giosis.library.gps.GPSTrackerManager
 import com.giosis.library.main.MainActivity
@@ -39,15 +40,14 @@ class LoginActivity : CommonActivity() {
     private val binding by lazy {
         ActivityLoginBinding.inflate(layoutInflater)
     }
-    val context: Context = MyApplication.getContext()
-    private val progressBar = ProgressBar(context)
+    private val progressBar = ProgressBar(this)
 
     private var spinnerList = ArrayList<LoginNation>()
     private var spinnerPosition = 0
     private lateinit var appVersion: String
 
     // Location
-    private val gpsTrackerManager: GPSTrackerManager? = GPSTrackerManager(context)
+    private val gpsTrackerManager: GPSTrackerManager? = GPSTrackerManager(this)
 
     // Permission
     var isPermissionTrue = false
@@ -156,10 +156,10 @@ class LoginActivity : CommonActivity() {
 
                         spinnerPosition = position
 
-                        val resourceId = context.resources.getIdentifier(
+                        val resourceId = resources.getIdentifier(
                             spinnerList[position].nationImg,
                             "drawable",
-                            context.packageName
+                            packageName
                         )
                         binding.imgLoginNation.setBackgroundResource(resourceId)
                         binding.textLoginNation.text = spinnerList[position].nation
@@ -175,21 +175,15 @@ class LoginActivity : CommonActivity() {
         //
         binding.editLoginId.setText(Preferences.userId)
         binding.editLoginPassword.setText(Preferences.userPw)
-        Log.e(
-            tag,
-            " nation  ${Preferences.userNation}  ${Preferences.userId}  ${Preferences.userPw}"
-        )
         appVersion = getVersion()
-
 
         // Login
         binding.btnLoginSign.setOnClickListener {
 
             hideKeyboard()
 
-            var userNationCode = spinnerList[spinnerPosition].nationCode
-            /* // TEST
-             userNationCode = "SG"*/
+            val userNationCode = spinnerList[spinnerPosition].nationCode
+
             val userID = binding.editLoginId.text.toString().trim()
             val userPW = binding.editLoginPassword.text.toString().trim()
             val deviceUUID = getDeviceUUID()
@@ -202,7 +196,6 @@ class LoginActivity : CommonActivity() {
             var latitude = 0.0
             var longitude = 0.0
             gpsTrackerManager?.let {
-
                 latitude = it.latitude
                 longitude = it.longitude
             }
@@ -210,21 +203,18 @@ class LoginActivity : CommonActivity() {
 
             when {
                 userID.isEmpty() -> {
-
                     showDialog(resources.getString(R.string.msg_please_input_id))
                     return@setOnClickListener
                 }
                 userPW.isEmpty() -> {
-
                     showDialog(resources.getString(R.string.msg_please_input_password))
                     return@setOnClickListener
                 }
                 !dbFile.exists() -> {
-
                     showDialog(resources.getString(R.string.msg_db_problem))
                 }
-                else -> {
 
+                else -> {
                     Preferences.userNation = userNationCode
                     Preferences.userId = userID
                     Preferences.userPw = userPW
@@ -236,8 +226,7 @@ class LoginActivity : CommonActivity() {
                     RetrofitClient.instanceDynamic().requestServerLogin(
                         userID, userPW, "QDRIVE_V2", "", deviceUUID, "",
                         latitude.toString(), longitude.toString(), "QDRIVE", userNationCode
-                    )
-                        .subscribeOn(Schedulers.io())
+                    ).subscribeOn(Schedulers.io())
                         .observeOn(AndroidSchedulers.mainThread())
                         .subscribe({
 
@@ -251,59 +240,104 @@ class LoginActivity : CommonActivity() {
 
                                 when {
                                     it.resultCode == -10 -> {
-
                                         showDialog(resources.getString(R.string.msg_account_deactivated))
                                     }
                                     it.resultMsg != "" -> {
-
                                         showDialog(it.resultMsg)
                                     }
                                     else -> {
-
                                         showDialog(resources.getString(R.string.msg_not_valid_info))
                                     }
                                 }
                             } else {        // Login Success
 
                                 progressBar.visibility = View.GONE
-                                val loginData = Gson().fromJson(
-                                    it.resultObject,
-                                    LoginResult.LoginData::class.java
-                                )
+
+                                val loginData =
+                                    Gson().fromJson(it.resultObject, LoginInfo::class.java)
+
                                 Log.e(RetrofitClient.TAG, "response : ${it.resultObject}")
 
-                                if (Preferences.appVersion < loginData.serverVersion) {
+                                if (Preferences.appVersion < loginData.version!!) {
 
                                     val msg = java.lang.String.format(
                                         resources.getString(R.string.msg_update_version),
-                                        loginData.serverVersion,
+                                        loginData.version,
                                         Preferences.appVersion
                                     )
                                     goGooglePlay(msg)
                                 } else {
 
-                                    Preferences.userId = loginData.userId
-                                    Preferences.userName = loginData.userName
-                                    Preferences.userEmail = loginData.userEmail
-                                    Preferences.officeCode = loginData.officeCode
-                                    Preferences.officeName = loginData.officeName
-                                    Preferences.pickupDriver = loginData.pickupDriver
-                                    Preferences.outletDriver = loginData.outletDriver
-                                    Preferences.lockerStatus = loginData.lockerStatus
-                                    Preferences.default = loginData.defaultYn
-                                    Preferences.authNo = loginData.authNo
+                                    Preferences.userId = loginData.opId!!
+                                    Preferences.userPw = userPW
+                                    Preferences.deviceUUID = deviceUUID
 
-                                    Log.e(
-                                        tag,
-                                        "SERVER  DOWNLOAD  DATA : ${loginData.officeCode} / ${loginData.officeName} / " +
-                                                "${loginData.pickupDriver} / ${loginData.outletDriver} / ${loginData.lockerStatus} / " +
-                                                "${loginData.defaultYn} / ${loginData.authNo}"
-                                    )
-                                    Log.e(
-                                        tag,
-                                        "  SMS / Device Auth - ${loginData.smsYn}, ${loginData.deviceYn}"
-                                    )
+                                    if (!loginData.version.isNullOrEmpty()) {
+                                        Preferences.appVersion = loginData.version!!
+                                    }
 
+                                    if (!loginData.version.isNullOrEmpty()) {
+                                        Preferences.appVersion = loginData.version!!
+                                    }
+
+                                    if (!loginData.opNm.isNullOrEmpty()) {
+                                        Preferences.userName = loginData.opNm!!
+                                    } else {
+                                        Preferences.userName = ""
+                                    }
+
+                                    if (!loginData.epEmail.isNullOrEmpty()) {
+                                        Preferences.userEmail = loginData.epEmail!!
+                                    } else {
+                                        Preferences.userEmail = ""
+                                    }
+
+                                    if (!loginData.officeCode.isNullOrEmpty()) {
+                                        Preferences.officeCode = loginData.officeCode!!
+                                    } else {
+                                        Preferences.officeCode = ""
+                                    }
+
+                                    if (!loginData.officeName.isNullOrEmpty()) {
+                                        Preferences.officeName = loginData.officeName!!
+                                    } else {
+                                        Preferences.officeName = ""
+                                    }
+
+                                    if (!loginData.pickupDriverYN.isNullOrEmpty()) {
+                                        Preferences.pickupDriver =
+                                            loginData.pickupDriverYN!!
+                                    } else {
+                                        Preferences.pickupDriver = "N"
+                                    }
+
+                                    if (!loginData.shuttle_driver_yn.isNullOrEmpty()) {
+                                        Preferences.outletDriver =
+                                            loginData.shuttle_driver_yn!!
+                                    } else {
+                                        Preferences.outletDriver = ""
+                                    }
+
+                                    if (!loginData.locker_driver_status.isNullOrEmpty()) {
+                                        Preferences.lockerStatus =
+                                            loginData.locker_driver_status!!
+                                    } else {
+                                        Preferences.lockerStatus = ""
+                                    }
+
+                                    if (!loginData.defaultYn.isNullOrEmpty()) {
+                                        Preferences.default =
+                                            loginData.defaultYn!!
+                                    } else {
+                                        Preferences.default = ""
+                                    }
+
+                                    if (!loginData.authNo.isNullOrEmpty()) {
+                                        Preferences.authNo =
+                                            loginData.authNo!!
+                                    } else {
+                                        Preferences.authNo = ""
+                                    }
 
                                     if (loginData.smsYn == "Y" && loginData.deviceYn == "Y") {
 
@@ -312,7 +346,6 @@ class LoginActivity : CommonActivity() {
                                         startActivity(intent)
                                         finish()
                                     } else {
-
                                         goSMSVerification(resources.getString(R.string.msg_go_sms_verification))
                                     }
                                 }
@@ -371,10 +404,10 @@ class LoginActivity : CommonActivity() {
                 if (!this@LoginActivity.isFinishing) {
                     AlertDialog.Builder(this)
                         .setCancelable(false)
-                        .setTitle(context.resources.getString(R.string.text_location_setting))
-                        .setMessage(context.resources.getString(R.string.msg_location_off))
+                        .setTitle(resources.getString(R.string.text_location_setting))
+                        .setMessage(resources.getString(R.string.msg_location_off))
                         .setPositiveButton(
-                            context.resources.getString(R.string.button_ok)
+                            resources.getString(R.string.button_ok)
                         ) { dialog, which ->
                             val intent = Intent(Settings.ACTION_LOCATION_SOURCE_SETTINGS)
                             intent.addCategory(Intent.CATEGORY_DEFAULT)
