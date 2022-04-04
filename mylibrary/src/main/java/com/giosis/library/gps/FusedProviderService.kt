@@ -19,7 +19,6 @@ import com.giosis.library.util.Preferences
 class FusedProviderService : Service() {
     var TAG = "FusedProviderService"
 
-    var context: Context? = null
     private var fusedProviderTimeWorker: FusedProviderWorker? = null
     private var fusedProviderDistanceWorker: FusedProviderWorker? = null
 
@@ -30,19 +29,16 @@ class FusedProviderService : Service() {
     override fun onStartCommand(intent: Intent, flags: Int, startId: Int): Int {
         Log.e("Location", "$TAG   onStartCommand")
 
-        context = applicationContext
         createFusedProvider()
 
-
-        // eylee
         if (Build.VERSION_CODES.O <= Build.VERSION.SDK_INT) {
 
             val channelId = "GPS_Fused_Provider"
 
             val serviceChannel = NotificationChannel(
-                    channelId,
-                    "Service Channel",
-                    NotificationManager.IMPORTANCE_LOW
+                channelId,
+                "Service Channel",
+                NotificationManager.IMPORTANCE_LOW
             )
 
             serviceChannel.setShowBadge(false)
@@ -62,9 +58,9 @@ class FusedProviderService : Service() {
             }
 
             val builder = NotificationCompat.Builder(this, channelId)
-                    .setContentTitle(resources.getString(R.string.text_gps_service))
-                    .setSmallIcon(resourceId)
-                    .setContentIntent(pendingIntent)
+                .setContentTitle(resources.getString(R.string.text_gps_service))
+                .setSmallIcon(resourceId)
+                .setContentIntent(pendingIntent)
             val notification = builder.build()
             startForeground(1, notification)
         }
@@ -75,8 +71,8 @@ class FusedProviderService : Service() {
     @SuppressLint("RestrictedApi")
     fun createFusedProvider() {
 
-        fusedProviderTimeWorker = FusedProviderWorker(context!!, "time_fused")
-        fusedProviderDistanceWorker = FusedProviderWorker(context!!, "distance_fused")
+        fusedProviderTimeWorker = FusedProviderWorker(this, "time_fused")
+        fusedProviderDistanceWorker = FusedProviderWorker(this, "distance_fused")
 
         fusedProviderTimeWorker?.startLocationUpdates()
         fusedProviderDistanceWorker?.startLocationUpdates()

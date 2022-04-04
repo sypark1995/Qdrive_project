@@ -19,18 +19,17 @@ import com.giosis.library.util.Preferences
 import io.reactivex.rxjava3.android.schedulers.AndroidSchedulers
 import io.reactivex.rxjava3.schedulers.Schedulers
 
-class LocationManagerWorker(private val context: Context, private val reference: String) : LocationListener {
+class LocationManagerWorker(private val context: Context, private val reference: String) :
+    LocationListener {
     private val TAG = "LocationManagerListener"
 
     val locationManager: LocationManager? by lazy {
-
         context.getSystemService(Context.LOCATION_SERVICE) as LocationManager
     }
 
     private var minTime: Long = 0
     private var minDistance = 0f
     private var provider = ""
-
 
     init {
 
@@ -49,27 +48,45 @@ class LocationManagerWorker(private val context: Context, private val reference:
 
     val lastLocation: Unit
         get() {
-            if (ActivityCompat.checkSelfPermission(context, Manifest.permission.ACCESS_FINE_LOCATION) != PackageManager.PERMISSION_GRANTED
-                    && ActivityCompat.checkSelfPermission(context, Manifest.permission.ACCESS_COARSE_LOCATION) != PackageManager.PERMISSION_GRANTED) {
+            if (ActivityCompat.checkSelfPermission(
+                    context,
+                    Manifest.permission.ACCESS_FINE_LOCATION
+                ) != PackageManager.PERMISSION_GRANTED
+                && ActivityCompat.checkSelfPermission(
+                    context,
+                    Manifest.permission.ACCESS_COARSE_LOCATION
+                ) != PackageManager.PERMISSION_GRANTED
+            ) {
                 return
             }
 
             if (locationManager != null) {
 
-                val networkEnable = locationManager!!.isProviderEnabled(LocationManager.NETWORK_PROVIDER)
+                val networkEnable =
+                    locationManager!!.isProviderEnabled(LocationManager.NETWORK_PROVIDER)
                 val gpsEnable = locationManager!!.isProviderEnabled(LocationManager.GPS_PROVIDER)
 
                 try {
                     if (networkEnable) {
 
                         provider = "NETWORK_PROVIDER"
-                        locationManager!!.requestLocationUpdates(LocationManager.NETWORK_PROVIDER, minTime, minDistance, this)
+                        locationManager!!.requestLocationUpdates(
+                            LocationManager.NETWORK_PROVIDER,
+                            minTime,
+                            minDistance,
+                            this
+                        )
                     }
 
                     if (gpsEnable) {
 
                         provider = "GPS_PROVIDER"
-                        locationManager!!.requestLocationUpdates(LocationManager.GPS_PROVIDER, minTime, minDistance, this)
+                        locationManager!!.requestLocationUpdates(
+                            LocationManager.GPS_PROVIDER,
+                            minTime,
+                            minDistance,
+                            this
+                        )
                     }
                 } catch (e: Exception) {
                     Log.e("Location", "fail to request location update, ignore $e")
@@ -88,36 +105,49 @@ class LocationManagerWorker(private val context: Context, private val reference:
             channel = "QDRIVE_V2"
         }
 
-        RetrofitClient.instanceDynamic().requestSetGPSLocation(channel, latitude, longitude, 0.0, reference, provider, NetworkUtil.getNetworkType(context))
-                .subscribeOn(Schedulers.io())
-                .observeOn(AndroidSchedulers.mainThread())
-                .subscribe({
+        RetrofitClient.instanceDynamic().requestSetGPSLocation(
+            channel,
+            latitude,
+            longitude,
+            0.0,
+            reference,
+            provider,
+            NetworkUtil.getNetworkType(context)
+        ).subscribeOn(Schedulers.io())
+            .observeOn(AndroidSchedulers.mainThread())
+            .subscribe({
 
-                    try {
+                try {
 
-                        Log.e("Server", "Location requestSetGPSLocation  result  " + it.resultCode)
+                    Log.e("Server", "Location requestSetGPSLocation  result  " + it.resultCode)
 
-                        if (it.resultCode == -16) {
+                    if (it.resultCode == -16) {
 
-                            val builder = AlertDialog.Builder(context)
-                            builder.setCancelable(false)
-                            builder.setTitle(context.resources.getString(R.string.text_upload_result))
-                            builder.setMessage(context.resources.getString(R.string.msg_network_connect_error_saved))
-                            builder.setPositiveButton(context.resources.getString(R.string.button_ok)) { dialog1: DialogInterface, _ -> dialog1.dismiss() }
-                            builder.show()
-                        } else if (it.resultCode < 0) {
+                        val builder = AlertDialog.Builder(context)
+                        builder.setCancelable(false)
+                        builder.setTitle(context.resources.getString(R.string.text_upload_result))
+                        builder.setMessage(context.resources.getString(R.string.msg_network_connect_error_saved))
+                        builder.setPositiveButton(context.resources.getString(R.string.button_ok)) { dialog1: DialogInterface, _ -> dialog1.dismiss() }
+                        builder.show()
+                    } else if (it.resultCode < 0) {
 
-                            val builder = AlertDialog.Builder(context)
-                            builder.setCancelable(false)
-                            builder.setTitle(context.resources.getString(R.string.text_fail))
-                            builder.setMessage(context.resources.getString(R.string.msg_network_connect_error_saved))
-                            builder.setPositiveButton(context.resources.getString(R.string.button_ok)) { dialog1: DialogInterface, _ -> dialog1.dismiss() }
-                            builder.show()
-                        }
-                    } catch (e: Exception) {
-                        Log.e("Exception", " Location  onLocationChanged  Exception $e")
+                        val builder = AlertDialog.Builder(context)
+                        builder.setCancelable(false)
+                        builder.setTitle(context.resources.getString(R.string.text_fail))
+                        builder.setMessage(context.resources.getString(R.string.msg_network_connect_error_saved))
+                        builder.setPositiveButton(context.resources.getString(R.string.button_ok)) { dialog1: DialogInterface, _ -> dialog1.dismiss() }
+                        builder.show()
                     }
-                }) { Toast.makeText(context, context.resources.getString(R.string.msg_error_check_again), Toast.LENGTH_SHORT).show() }
+                } catch (e: Exception) {
+                    Log.e("Exception", " Location  onLocationChanged  Exception $e")
+                }
+            }) {
+                Toast.makeText(
+                    context,
+                    context.resources.getString(R.string.msg_error_check_again),
+                    Toast.LENGTH_SHORT
+                ).show()
+            }
     }
 
     override fun onStatusChanged(provider: String, status: Int, extras: Bundle) {}

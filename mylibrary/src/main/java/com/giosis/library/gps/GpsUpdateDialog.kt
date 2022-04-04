@@ -14,7 +14,11 @@ import io.reactivex.rxjava3.schedulers.Schedulers
 import kotlinx.android.synthetic.main.dialog_gps_update.*
 
 
-class GpsUpdateDialog(context: Context, private val model: LocationModel, val listener: OnServerEventListener) : Dialog(context) {
+class GpsUpdateDialog(
+    context: Context,
+    private val model: LocationModel,
+    val listener: OnServerEventListener
+) : Dialog(context) {
 
     @SuppressLint("SetTextI18n")
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -43,33 +47,46 @@ class GpsUpdateDialog(context: Context, private val model: LocationModel, val li
                 if (model.state != null && model.city != null && model.street != null) {
 
                     //   Log.e("GPSUpdate", "${Preferences.userNation} / ${model.zipCode} / ${model.state} / ${model.city} / ${model.street} / ${model.driverLat}, ${model.driverLng}")
-                    RetrofitClient.instanceDynamic().requestSetAddressUsingDriver(model.zipCode, model.state!!, model.city!!, model.street!!, model.driverLat, model.driverLng)
-                            .subscribeOn(Schedulers.io())
-                            .observeOn(AndroidSchedulers.mainThread())
-                            .subscribe({
+                    RetrofitClient.instanceDynamic().requestSetAddressUsingDriver(
+                        model.zipCode,
+                        model.state!!,
+                        model.city!!,
+                        model.street!!,
+                        model.driverLat,
+                        model.driverLng
+                    ).subscribeOn(Schedulers.io())
+                        .observeOn(AndroidSchedulers.mainThread())
+                        .subscribe({
 
-                                Log.e("GPSUpdate", "SetAddressUsingDriver Result ${it.resultCode}")
-                                if (it.resultCode == 0) {
+                            Log.e("GPSUpdate", "SetAddressUsingDriver Result ${it.resultCode}")
+                            if (it.resultCode == 0) {
 
-                                    Toast.makeText(context, context.getString(R.string.msg_gps_update_success), Toast.LENGTH_SHORT).show()
-                                    dismiss()
-                                    listener.onPostResult()
-                                } else {
-
-                                    updateCount++
-                                    Toast.makeText(context, context.resources.getString(R.string.msg_please_try_again), Toast.LENGTH_SHORT).show()
-                                }
-                            }, {
-
+                                Toast.makeText(
+                                    context,
+                                    context.getString(R.string.msg_gps_update_success),
+                                    Toast.LENGTH_SHORT
+                                ).show()
                                 dismiss()
                                 listener.onPostResult()
-                            })
+                            } else {
+
+                                updateCount++
+                                Toast.makeText(
+                                    context,
+                                    context.resources.getString(R.string.msg_please_try_again),
+                                    Toast.LENGTH_SHORT
+                                ).show()
+                            }
+                        }, {
+
+                            dismiss()
+                            listener.onPostResult()
+                        })
                 }
             }
         }
 
         btn_gps_update_cancel.setOnClickListener {
-
             dismiss()
             listener.onPostResult()
         }

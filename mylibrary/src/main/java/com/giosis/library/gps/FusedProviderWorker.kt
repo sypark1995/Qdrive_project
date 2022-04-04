@@ -24,7 +24,8 @@ import java.util.*
 class FusedProviderWorker(private val context: Context, private val reference: String) {
     private val TAG = "FusedProviderWorker"
 
-    private val fusedLocationProviderClient: FusedLocationProviderClient = LocationServices.getFusedLocationProviderClient(context)
+    private val fusedLocationProviderClient: FusedLocationProviderClient =
+        LocationServices.getFusedLocationProviderClient(context)
 
     private var MIN_TIME_BW_UPDATES: Long = 0
     private var MIN_FAST_INTERVAL_UPDATES: Long = 0
@@ -34,7 +35,6 @@ class FusedProviderWorker(private val context: Context, private val reference: S
     private var latitude = 0.0
     private var longitude = 0.0
     private var accuracy = 0.0
-
 
     init {
 
@@ -56,7 +56,8 @@ class FusedProviderWorker(private val context: Context, private val reference: S
     fun startLocationUpdates() {
 
         if (ActivityCompat.checkSelfPermission(context, Manifest.permission.ACCESS_FINE_LOCATION) != PackageManager.PERMISSION_GRANTED
-                && ActivityCompat.checkSelfPermission(context, Manifest.permission.ACCESS_COARSE_LOCATION) != PackageManager.PERMISSION_GRANTED) {
+            && ActivityCompat.checkSelfPermission(context, Manifest.permission.ACCESS_COARSE_LOCATION) != PackageManager.PERMISSION_GRANTED
+        ) {
             return
         }
 
@@ -66,7 +67,10 @@ class FusedProviderWorker(private val context: Context, private val reference: S
                 latitude = location.latitude
                 longitude = location.longitude
                 accuracy = location.accuracy.toDouble()
-                Log.e("Location", TAG + " startLocationUpdates  getLastLocation : " + location.latitude + "  /  " + location.longitude)
+                Log.e(
+                    "Location",
+                    TAG + " startLocationUpdates  getLastLocation : " + location.latitude + "  /  " + location.longitude
+                )
             }
         }
 
@@ -77,7 +81,11 @@ class FusedProviderWorker(private val context: Context, private val reference: S
             smallestDisplacement = MIN_DISTANCE_CHANGE_FOR_UPDATES.toFloat()
         }
 
-        fusedLocationProviderClient.requestLocationUpdates(locationRequest, locationCallback, Looper.getMainLooper())
+        fusedLocationProviderClient.requestLocationUpdates(
+            locationRequest,
+            locationCallback,
+            Looper.getMainLooper()
+        )
     }
 
     private val locationCallback: LocationCallback = object : LocationCallback() {
@@ -92,7 +100,10 @@ class FusedProviderWorker(private val context: Context, private val reference: S
                     val provider = location.provider
 
                     if (count < 5) {
-                        Log.e("Location", "$TAG  LocationCallback : $latitude /  $longitude / $provider - $count")
+                        Log.e(
+                            "Location",
+                            "$TAG  LocationCallback : $latitude /  $longitude / $provider - $count"
+                        )
                         count++
                     }
 
@@ -105,43 +116,61 @@ class FusedProviderWorker(private val context: Context, private val reference: S
         }
     }
 
-    private fun uploadGPSData(latitude: Double, longitude: Double, accuracy: Double, provider: String) {
+    private fun uploadGPSData(
+        latitude: Double,
+        longitude: Double,
+        accuracy: Double,
+        provider: String
+    ) {
 
         var channel = "QDRIVE"
         if (!Preferences.userNation.equals("SG", ignoreCase = true)) {
             channel = "QDRIVE_V2"
         }
 
-        RetrofitClient.instanceDynamic().requestSetGPSLocation(channel, latitude, longitude, accuracy, reference, provider, NetworkUtil.getNetworkType(context))
-                .subscribeOn(Schedulers.io())
-                .observeOn(AndroidSchedulers.mainThread())
-                .subscribe({
+        RetrofitClient.instanceDynamic().requestSetGPSLocation(
+            channel,
+            latitude,
+            longitude,
+            accuracy,
+            reference,
+            provider,
+            NetworkUtil.getNetworkType(context)
+        ).subscribeOn(Schedulers.io())
+            .observeOn(AndroidSchedulers.mainThread())
+            .subscribe({
 
-                    try {
+                try {
 
-                        Log.e("Server", "Fused requestSetGPSLocation  result  " + it.resultCode)
+                    Log.e("Server", "Fused requestSetGPSLocation  result  " + it.resultCode)
 
-                        if (it.resultCode == -16) {
+                    if (it.resultCode == -16) {
 
-                            val builder = AlertDialog.Builder(context)
-                            builder.setCancelable(false)
-                            builder.setTitle(context.resources.getString(R.string.text_upload_result))
-                            builder.setMessage(context.resources.getString(R.string.msg_network_connect_error_saved))
-                            builder.setPositiveButton(context.resources.getString(R.string.button_ok)) { dialog1: DialogInterface, _ -> dialog1.dismiss() }
-                            builder.show()
-                        } else if (it.resultCode < 0) {
+                        val builder = AlertDialog.Builder(context)
+                        builder.setCancelable(false)
+                        builder.setTitle(context.resources.getString(R.string.text_upload_result))
+                        builder.setMessage(context.resources.getString(R.string.msg_network_connect_error_saved))
+                        builder.setPositiveButton(context.resources.getString(R.string.button_ok)) { dialog1: DialogInterface, _ -> dialog1.dismiss() }
+                        builder.show()
+                    } else if (it.resultCode < 0) {
 
-                            val builder = AlertDialog.Builder(context)
-                            builder.setCancelable(false)
-                            builder.setTitle(context.resources.getString(R.string.text_fail))
-                            builder.setMessage(context.resources.getString(R.string.msg_network_connect_error_saved))
-                            builder.setPositiveButton(context.resources.getString(R.string.button_ok)) { dialog1: DialogInterface, _ -> dialog1.dismiss() }
-                            builder.show()
-                        }
-                    } catch (e: Exception) {
-                        Log.e("Exception", " Fused requestSetGPSLocation  Exception $e")
+                        val builder = AlertDialog.Builder(context)
+                        builder.setCancelable(false)
+                        builder.setTitle(context.resources.getString(R.string.text_fail))
+                        builder.setMessage(context.resources.getString(R.string.msg_network_connect_error_saved))
+                        builder.setPositiveButton(context.resources.getString(R.string.button_ok)) { dialog1: DialogInterface, _ -> dialog1.dismiss() }
+                        builder.show()
                     }
-                }) { Toast.makeText(context, context.resources.getString(R.string.msg_error_check_again), Toast.LENGTH_SHORT).show() }
+                } catch (e: Exception) {
+                    Log.e("Exception", " Fused requestSetGPSLocation  Exception $e")
+                }
+            }) {
+                Toast.makeText(
+                    context,
+                    context.resources.getString(R.string.msg_error_check_again),
+                    Toast.LENGTH_SHORT
+                ).show()
+            }
     }
 
     @SuppressLint("SimpleDateFormat")
@@ -155,29 +184,40 @@ class FusedProviderWorker(private val context: Context, private val reference: S
         val dateFormat = SimpleDateFormat("yyyy-MM-dd HH:mm:ss")
         val regDataString = dateFormat.format(Date())
 
-        RetrofitClient.instanceDynamic().requestSetAppUserInfo("", NetworkUtil.getNetworkType(context), "FusedProvider Location is null", regDataString, channel)
-                .subscribeOn(Schedulers.io())
-                .observeOn(AndroidSchedulers.mainThread())
-                .subscribe({
+        RetrofitClient.instanceDynamic().requestSetAppUserInfo(
+            "",
+            NetworkUtil.getNetworkType(context),
+            "FusedProvider Location is null",
+            regDataString,
+            channel
+        ).subscribeOn(Schedulers.io())
+            .observeOn(AndroidSchedulers.mainThread())
+            .subscribe({
 
-                    try {
+                try {
 
-                        Log.e("Server", " requestSetAppUserInfo  result  " + it.resultCode)
+                    Log.e("Server", " requestSetAppUserInfo  result  " + it.resultCode)
 
-                        if (it.resultCode < 0) {
+                    if (it.resultCode < 0) {
 
-                            val builder = AlertDialog.Builder(context)
-                            builder.setCancelable(false)
-                            builder.setTitle(context.resources.getString(R.string.text_upload_result))
-                            builder.setMessage(it.resultMsg)
-                            builder.setPositiveButton(context.resources.getString(R.string.button_ok)) { dialog1: DialogInterface, _ -> dialog1.dismiss() }
-                            builder.show()
-                        }
-                    } catch (e: Exception) {
-
-                        Log.e("Exception", "  requestSetAppUserInfo  Exception $e")
+                        val builder = AlertDialog.Builder(context)
+                        builder.setCancelable(false)
+                        builder.setTitle(context.resources.getString(R.string.text_upload_result))
+                        builder.setMessage(it.resultMsg)
+                        builder.setPositiveButton(context.resources.getString(R.string.button_ok)) { dialog1: DialogInterface, _ -> dialog1.dismiss() }
+                        builder.show()
                     }
-                }) { Toast.makeText(context, context.resources.getString(R.string.msg_error_check_again), Toast.LENGTH_SHORT).show() }
+                } catch (e: Exception) {
+
+                    Log.e("Exception", "  requestSetAppUserInfo  Exception $e")
+                }
+            }) {
+                Toast.makeText(
+                    context,
+                    context.resources.getString(R.string.msg_error_check_again),
+                    Toast.LENGTH_SHORT
+                ).show()
+            }
     }
 
     fun removeLocationUpdates() {

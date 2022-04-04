@@ -2,6 +2,7 @@ package com.giosis.library.main;
 
 
 import android.annotation.SuppressLint;
+import android.app.ActivityManager;
 import android.app.AlertDialog;
 import android.content.Context;
 import android.content.Intent;
@@ -93,9 +94,6 @@ public class MainActivity extends AppBaseActivity {
     DatabaseHelper dbHelper;
     String uploadFailedCount = "0";
     String opID = "";
-
-    Intent fusedProviderService = null;
-    Intent locationManagerService = null;
 
     GPSTrackerManager gpsTrackerManager;
     boolean gpsEnable = false;
@@ -551,38 +549,33 @@ public class MainActivity extends AppBaseActivity {
             int status = GoogleApiAvailability.getInstance().isGooglePlayServicesAvailable(this);
             Boolean isGooglePlayService = (ConnectionResult.SUCCESS == status);
 
-            // TEST_
-            // isGooglePlayService = false;
-
             if (isGooglePlayService) {  // Fused Provider Service start (Google play 에 클라이언트 객체 얻어 서비스)
 
-                if (DataUtil.getFusedProviderService() != null) {
-
-                    Log.e(TAG, "  FusedProviderService - not null");
-                } else {
-
-                    Log.e(TAG, "  FusedProviderService - null");
-
-                    fusedProviderService = new Intent(MainActivity.this, FusedProviderService.class);
-                    ContextCompat.startForegroundService(this, fusedProviderService); // 내부에서 알아서 분기
-                    DataUtil.setFusedProviderService(fusedProviderService);
+                if (!isServiceRunning(FusedProviderService.class)) {
+                    Intent intent = new Intent(this, FusedProviderService.class);
+                    ContextCompat.startForegroundService(this, intent);
                 }
+
             } else { // location manager Service start (샤오미 등 구글 플레이 가 작동하지 않는 폰)
 
-                if (DataUtil.getLocationManagerService() != null) {
-
-                    Log.e(TAG, "  LocationManagerService - not null");
-                } else {
-
-                    Log.e(TAG, "  LocationManagerService - null");
-
-                    locationManagerService = new Intent(MainActivity.this, LocationManagerService.class);
-                    ContextCompat.startForegroundService(this, locationManagerService); // 내부에서 알아서 분기
-                    DataUtil.setLocationManagerService(locationManagerService);
+                if (!isServiceRunning(LocationManagerService.class)) {
+                    Intent intent = new Intent(this, LocationManagerService.class);
+                    ContextCompat.startForegroundService(this, intent);
                 }
             }
         }
     }
+
+    private boolean isServiceRunning(Class<?> serviceClass) {
+        ActivityManager manager = (ActivityManager) getSystemService(Context.ACTIVITY_SERVICE);
+        for (ActivityManager.RunningServiceInfo service : manager.getRunningServices(Integer.MAX_VALUE)) {
+            if (serviceClass.getName().equals(service.service.getClassName())) {
+                return true;
+            }
+        }
+        return false;
+    }
+
 
     @Override
     protected void onPause() {
@@ -602,16 +595,22 @@ public class MainActivity extends AppBaseActivity {
         //Bluetooth Setting 화면 connection 없애기
         BluetoothDeviceData.connectedPrinterAddress = null;
 
-        if (DataUtil.getFusedProviderService() != null) {
+        try {
+            if (isServiceRunning(FusedProviderService.class)) {
+                Intent intent = new Intent(this, FusedProviderService.class);
+                stopService(intent);
+            }
+        } catch (Exception e) {
 
-            stopService(DataUtil.getFusedProviderService());
-            DataUtil.setFusedProviderService(null);
         }
 
-        if (DataUtil.getLocationManagerService() != null) {
+        try {
+            if (isServiceRunning(LocationManagerService.class)) {
+                Intent intent = new Intent(this, LocationManagerService.class);
+                stopService(intent);
+            }
+        } catch (Exception e) {
 
-            stopService(DataUtil.getLocationManagerService());
-            DataUtil.setLocationManagerService(null);
         }
 
         dbHelper.close();
