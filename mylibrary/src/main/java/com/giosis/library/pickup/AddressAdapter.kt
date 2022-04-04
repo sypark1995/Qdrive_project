@@ -12,11 +12,11 @@ import com.giosis.library.R
 import com.giosis.library.data.AddressResult
 
 class AddressAdapter(private val viewModel: AddressDialogViewModel) :
-    BaseRecyclerAdapter<AddressAdapter.ViewHolder, AddressResult.AddressResultObject.AddressItem>(
+    BaseRecyclerAdapter<AddressAdapter.ViewHolder, AddressResult.AddressItem>(
         null
     ) {
 
-    override fun getListModel(): ListViewModel<AddressResult.AddressResultObject.AddressItem> {
+    override fun getListModel(): ListViewModel<AddressResult.AddressItem> {
         return viewModel
     }
 
