@@ -15,7 +15,6 @@ import io.reactivex.rxjava3.schedulers.Schedulers
 
 class AddressDialogViewModel : ListViewModel<AddressResult.AddressItem>() {
 
-
     private val _searchText = MutableLiveData<String>()
     val searchText: MutableLiveData<String>
         get() = _searchText
@@ -44,10 +43,8 @@ class AddressDialogViewModel : ListViewModel<AddressResult.AddressItem>() {
             .subscribe({
 
                 try {
-                    val result1 = Gson().fromJson(
-                        it.resultObject.toString(),
-                        AddressResult::class.java
-                    )
+                    val result1 =
+                        Gson().fromJson(it.resultObject.toString(), AddressResult::class.java)
 
                     val result = result1.resultRows!!
 
