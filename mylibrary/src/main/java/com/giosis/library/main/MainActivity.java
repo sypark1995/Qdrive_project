@@ -590,7 +590,6 @@ public class MainActivity extends AppBaseActivity {
         Log.e(TAG, " ** onDestroy()");
 
         MainActivityServer.INSTANCE.setDestroyUserInfo(this);
-//        setDestroyUserInfo();
 
         //Bluetooth Setting 화면 connection 없애기
         BluetoothDeviceData.connectedPrinterAddress = null;

@@ -3,27 +3,29 @@ package com.giosis.library.list
 import java.io.Serializable
 import java.util.*
 
-class RowItem(var contrNo: String,
-              var delay: String,
-              var shipping: String,
-              var name: String,
-              var address: String,
-              var request: String?,
-              var type: String,
-              var route: String,
-              var sender: String,
-              var desiredDate: String?,
-              var qty: String?,
-              var selfMemo: String?,
-              var lat: Double,
-              var lng: Double,
-              var stat: String,
-              var custNo: String?,
-              var partnerID: String?,
-              val secure_delivery_yn: String?,
-              val parcel_amount: String?,
-              val currency: String?,
-              val high_amount_yn: String?) : Serializable {
+class RowItem(
+    var contrNo: String,
+    var delay: String,
+    var shipping: String,
+    var name: String,
+    var address: String,
+    var request: String?,
+    var type: String,
+    var route: String,
+    var sender: String,
+    var desiredDate: String?,
+    var qty: String?,
+    var selfMemo: String?,
+    var lat: Double,
+    var lng: Double,
+    var stat: String,
+    var custNo: String?,
+    var partnerID: String?,
+    val secure_delivery_yn: String?,
+    val parcel_amount: String?,
+    val currency: String?,
+    val high_amount_yn: String?
+) : Serializable {
 
     private var childItems: ArrayList<ChildItem>? = null
 
