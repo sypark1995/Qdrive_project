@@ -92,15 +92,6 @@
             tools:ignore="Instantiatable" />
 
         <activity
-            android:name="com.giosis.util.qdrive.international.AlertDialogActivity"
-            android:launchMode="singleTop"
-            android:theme="@android:style/Theme.Dialog">
-            <intent-filter>
-                <category android:name="android.intent.category.LAUNCHER" />
-            </intent-filter>
-        </activity>
-
-        <activity
             android:name="com.giosis.util.qdrive.international.IntroActivity"
             android:configChanges="orientation|keyboardHidden"
             android:screenOrientation="portrait">

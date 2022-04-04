@@ -13,10 +13,12 @@ import android.os.Bundle
 import android.os.Vibrator
 import android.util.Log
 import androidx.core.app.NotificationCompat
+import com.giosis.library.AlertDialogActivity
 import com.giosis.library.database.DatabaseHelper
 import com.giosis.library.list.ListActivity
 import com.giosis.library.main.MainActivity
 import com.giosis.library.message.MessageListActivity
+import com.giosis.library.push.PushData
 import com.giosis.library.util.DataUtil
 import com.google.firebase.messaging.FirebaseMessagingService
 import com.google.firebase.messaging.RemoteMessage
@@ -24,34 +26,6 @@ import java.util.*
 
 class FCMIntentService : FirebaseMessagingService() {
     var TAG = "FCM"
-
-    companion object {
-        ////////////////////////////////////
-        const val TITLE = "title"
-        const val MESSAGE = "message"
-        const val ACTION_KEY = "action_key"
-        const val ACTION_VALUE = "action_value"
-
-
-        ////////////////////////////////////
-        const val PICKUP_CANCEL = "PX"
-        const val SevenEle_TAKEBACK = "7ETB" // 7E TakeBack
-        const val FL_TAKEBACK = "FLTB" // FL TakeBack
-        const val Locker_EXPIRED = "LAE" // Locker Alliance Expired
-
-        const val LZD_PICK = "LZD_PICK" // lazada pickup 건 처리
-
-        ////////////////////////////////////
-
-        const val DOWNLOAD = "DOWNLOAD"
-
-
-        const val QX_MSG = "QXMSG"
-        const val QST = "QST"
-
-        const val LAE = "LAE"
-        const val SRL = "SRL"
-    }
 
     ////////////////////////////////////
     // 앱이 처음 설치(재설치)되거나 유효기간이 만료되면 자동으로 토큰을 새로 생성해 준다.
@@ -70,10 +44,10 @@ class FCMIntentService : FirebaseMessagingService() {
          * */
 
         if (remoteMessage.data.isNotEmpty()) {
-            var title = remoteMessage.data[TITLE]
-            var message = remoteMessage.data[MESSAGE]
-            var actionKey = remoteMessage.data[ACTION_KEY]
-            var actionValue = remoteMessage.data[ACTION_VALUE]
+            var title = remoteMessage.data[PushData.TITLE]
+            var message = remoteMessage.data[PushData.MESSAGE]
+            var actionKey = remoteMessage.data[PushData.ACTION_KEY]
+            var actionValue = remoteMessage.data[PushData.ACTION_VALUE]
 
             // TEST_ 값 필수 아니어도 push 받을 수 있도록.. 테스트 용도
             if (title == null) {
@@ -97,9 +71,9 @@ class FCMIntentService : FirebaseMessagingService() {
             sendNotification(this, title, message, actionKey, actionValue)
 
             when (actionKey) {
-                PICKUP_CANCEL,
-                SevenEle_TAKEBACK,
-                FL_TAKEBACK -> {
+                PushData.PICKUP_CANCEL,
+                PushData.SevenEle_TAKEBACK,
+                PushData.FL_TAKEBACK -> {
                     // 7E TakeBack : 48시간 초과 후, Pickup Driver가 수거하러 가기 전 고객이 물건을 찾아 갔을 때...
                     // FL TakeBack : 48시간 초과 후, Pickup Driver가 수거하러 가기 전 고객이 물건을 찾아 갔을 때...
                     // AlertDialog에서 'OK' 버튼을 누르지 않을 수 있어서(Dialog 바깥부분. 막기는 했지만...) 추가!
@@ -115,7 +89,7 @@ class FCMIntentService : FirebaseMessagingService() {
 
                 }
 
-                Locker_EXPIRED -> {
+                PushData.Locker_EXPIRED -> {
                     // Locker Alliance Expired - User key(12자리) 값 클립보드에 복사
                     DataUtil.copyClipBoard(this, actionValue)
                 }
@@ -125,13 +99,13 @@ class FCMIntentService : FirebaseMessagingService() {
             val tVibrator = getSystemService(VIBRATOR_SERVICE) as Vibrator
             tVibrator.vibrate(1000)
 
-            if (!actionKey.equals(QX_MSG, ignoreCase = true)) {
-                if (!actionKey.equals(QST, ignoreCase = true)) {
+            if (!actionKey.equals(PushData.QX_MSG, ignoreCase = true)) {
+                if (!actionKey.equals(PushData.QST, ignoreCase = true)) {
                     val bun = Bundle()
-                    bun.putString(TITLE, title)
-                    bun.putString(MESSAGE, message)
-                    bun.putString(ACTION_KEY, actionKey)
-                    bun.putString(ACTION_VALUE, actionValue)
+                    bun.putString(PushData.TITLE, title)
+                    bun.putString(PushData.MESSAGE, message)
+                    bun.putString(PushData.ACTION_KEY, actionKey)
+                    bun.putString(PushData.ACTION_VALUE, actionValue)
 
                     // Alert 메세지 기능
                     val popupIntent = Intent(applicationContext, AlertDialogActivity::class.java)
@@ -171,17 +145,17 @@ class FCMIntentService : FirebaseMessagingService() {
         if (topClassname.contains("singapore.LoginActivity")) {
             intent = Intent(context, LoginActivity::class.java)
 
-        } else if (actionKey == QX_MSG) {
+        } else if (actionKey == PushData.QX_MSG) {
             //  Admin Message
             intent = Intent(context, MessageListActivity::class.java)
             intent.putExtra("position", 1)
 
-        } else if (actionKey == QST) {
+        } else if (actionKey == PushData.QST) {
             //   Customer Message
             intent = Intent(context, MessageListActivity::class.java)
             intent.putExtra("position", 0)
 
-        } else if (actionKey == LAE) {
+        } else if (actionKey == PushData.LAE) {
             try {
                 idNum = actionValue.substring(0, 9).toInt()
             } catch (e: java.lang.Exception) {
@@ -189,7 +163,7 @@ class FCMIntentService : FirebaseMessagingService() {
             }
             intent = Intent(Intent.ACTION_VIEW, Uri.parse(DataUtil.locker_pin_url))
 
-        } else if (actionKey == SRL) {
+        } else if (actionKey == PushData.SRL) {
 
             intent = Intent(context, ListActivity::class.java)
         }
