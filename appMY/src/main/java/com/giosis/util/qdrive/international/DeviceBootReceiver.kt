@@ -16,7 +16,6 @@ class DeviceBootReceiver : BroadcastReceiver() {
 
             Log.e("Alarm", "DeviceBootReceiver    BOOT_COMPLETED")
 
-
             Preferences.autoLogoutSetting = false
 
             val array = Preferences.autoLogoutTime.split(":".toRegex()).toTypedArray()
