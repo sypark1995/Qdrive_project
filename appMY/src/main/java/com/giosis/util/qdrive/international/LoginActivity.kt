@@ -40,15 +40,14 @@ class LoginActivity : CommonActivity() {
     private val binding by lazy {
         ActivityLoginBinding.inflate(layoutInflater)
     }
-    val context: Context = MyApplication.getContext()
-    private val progressBar = ProgressBar(context)
+    private val progressBar = ProgressBar(this)
 
     private var spinnerList = ArrayList<LoginNation>()
     private var spinnerPosition = 0
     private lateinit var appVersion: String
 
     // Location
-    private val gpsTrackerManager: GPSTrackerManager? = GPSTrackerManager(context)
+    private val gpsTrackerManager: GPSTrackerManager? = GPSTrackerManager(this)
 
     // Permission
     var isPermissionTrue = false
@@ -157,10 +156,10 @@ class LoginActivity : CommonActivity() {
 
                         spinnerPosition = position
 
-                        val resourceId = context.resources.getIdentifier(
+                        val resourceId = resources.getIdentifier(
                             spinnerList[position].nationImg,
                             "drawable",
-                            context.packageName
+                            packageName
                         )
                         binding.imgLoginNation.setBackgroundResource(resourceId)
                         binding.textLoginNation.text = spinnerList[position].nation
@@ -405,10 +404,10 @@ class LoginActivity : CommonActivity() {
                 if (!this@LoginActivity.isFinishing) {
                     AlertDialog.Builder(this)
                         .setCancelable(false)
-                        .setTitle(context.resources.getString(R.string.text_location_setting))
-                        .setMessage(context.resources.getString(R.string.msg_location_off))
+                        .setTitle(resources.getString(R.string.text_location_setting))
+                        .setMessage(resources.getString(R.string.msg_location_off))
                         .setPositiveButton(
-                            context.resources.getString(R.string.button_ok)
+                            resources.getString(R.string.button_ok)
                         ) { dialog, which ->
                             val intent = Intent(Settings.ACTION_LOCATION_SOURCE_SETTINGS)
                             intent.addCategory(Intent.CATEGORY_DEFAULT)
