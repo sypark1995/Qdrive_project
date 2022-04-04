@@ -2,7 +2,6 @@ package com.giosis.library.server
 
 import android.os.Build
 import com.giosis.library.MemoryStatus
-import com.giosis.library.server.data.FailedCodeResult
 import com.giosis.library.server.data.ImageResult
 import com.giosis.library.util.DataUtil
 import com.giosis.library.util.Preferences
@@ -152,7 +151,7 @@ interface RetrofitService {
     suspend fun requestGetFailedCode(
         @Field("cd_type") cd_type: String,
         @Field("nation_cd") nation_cd: String = ""
-    ): FailedCodeResult
+    ): APIModel
 
 
     @POST("WriteLog")

@@ -37,7 +37,7 @@ import com.giosis.library.list.pickup.OutletPickupStep1Activity;
 import com.giosis.library.list.pickup.PickupFailedActivity;
 import com.giosis.library.list.pickup.PickupZeroQtyActivity;
 import com.giosis.library.message.CustomerMessageListDetailActivity;
-import com.giosis.library.server.data.FailedCodeResult;
+import com.giosis.library.server.data.FailedCodeData;
 import com.giosis.library.util.BarcodeType;
 import com.giosis.library.util.DataUtil;
 import com.giosis.library.util.DatabaseHelper;
@@ -537,43 +537,18 @@ public class ListInProgressAdapter extends BaseExpandableListAdapter {
         // 2018.12.26  Delivery / Pickup  Fail Reason
         if (child.getStatReason() != null && child.getStatReason().length() > 0) {
 
-            String reasonCode = child.getStatReason();
             String reasonText = "";
 
             if (child.getStat().equals(BarcodeType.DELIVERY_FAIL)) {
 
-                ArrayList<FailedCodeResult.FailedCode> arrayList = DataUtil.getFailCode("D");
-
-                if (arrayList != null) {
-
-                    for (int i = 0; i < arrayList.size(); i++) {
-
-                        FailedCodeResult.FailedCode failedCode = arrayList.get(i);
-
-                        if (failedCode.getFailedCode().equals(reasonCode)) {
-                            reasonText = failedCode.getFailedString();
-                        }
-                    }
-                }
+                reasonText = DataUtil.getDeliveryFailedMsg(child.getStatReason());
 
                 layout_list_item_child_failed.setVisibility(View.VISIBLE);
                 text_list_item_child_failed_reason.setText(reasonText);
 
             } else if (child.getStat().equals(BarcodeType.PICKUP_FAIL)) {
 
-                ArrayList<FailedCodeResult.FailedCode> arrayList = DataUtil.getFailCode("P");
-
-                if (arrayList != null) {
-
-                    for (int i = 0; i < arrayList.size(); i++) {
-
-                        FailedCodeResult.FailedCode failedCode = arrayList.get(i);
-
-                        if (failedCode.getFailedCode().equals(reasonCode)) {
-                            reasonText = failedCode.getFailedString();
-                        }
-                    }
-                }
+                reasonText = DataUtil.getPickupFailedMsg(child.getStatReason());
 
                 layout_list_item_child_failed.setVisibility(View.VISIBLE);
                 text_list_item_child_failed_reason.setText(reasonText);

@@ -21,9 +21,10 @@ import com.giosis.library.gps.GPSTrackerManager;
 import com.giosis.library.main.DriverAssignResult;
 import com.giosis.library.server.ImageUpload;
 import com.giosis.library.server.RetrofitClient;
-import com.giosis.library.server.data.FailedCodeResult;
+import com.giosis.library.server.data.FailedCodeData;
 import com.google.firebase.analytics.FirebaseAnalytics;
 import com.google.gson.Gson;
+import com.google.gson.reflect.TypeToken;
 
 import java.io.ByteArrayOutputStream;
 import java.io.File;
@@ -281,25 +282,73 @@ public class DataUtil {
         }
     }
 
-    public static ArrayList<FailedCodeResult.FailedCode> getFailCode(String type) {
+    public static ArrayList<FailedCodeData> pickupFailedList = null;
+    public static ArrayList<FailedCodeData> deliveryFailedList = null;
 
-        ArrayList<FailedCodeResult.FailedCode> arrayList;
-        String json = "";
+    public static ArrayList<FailedCodeData> getFailCode(String type) {
 
         if (type.equals("D")) {
-            json = Preferences.INSTANCE.getDFailedCode();
-        } else if (type.equals("P")) {
-            json = Preferences.INSTANCE.getPFailedCode();
-        }
+            if (deliveryFailedList == null) {
+                String json = Preferences.INSTANCE.getDFailedCode();
+                deliveryFailedList = new Gson().fromJson(json,
+                        new TypeToken<ArrayList<FailedCodeData>>() {
+                        }.getType());
+            }
+            return deliveryFailedList;
 
-        if (json.equals("")) {
-            return null;
         } else {
-            FailedCodeResult result = new Gson().fromJson(json, FailedCodeResult.class);
-            arrayList = new ArrayList<>(result.getResultObject());
+            if (pickupFailedList == null) {
+                String json = Preferences.INSTANCE.getPFailedCode();
+                pickupFailedList = new Gson().fromJson(json,
+                        new TypeToken<ArrayList<FailedCodeData>>() {
+                        }.getType());
+            }
+
+            return pickupFailedList;
         }
 
-        return arrayList;
+    }
+
+
+    public static String getDeliveryFailedMsg(String code) {
+        if (deliveryFailedList == null) {
+            deliveryFailedList = getFailCode("D");
+        }
+
+        String reasonText = "";
+        if (deliveryFailedList != null) {
+
+            for (int i = 0; i < deliveryFailedList.size(); i++) {
+
+                FailedCodeData failedCode = deliveryFailedList.get(i);
+
+                if (failedCode.getFailedCode().equals(code)) {
+                    reasonText = failedCode.getFailedString();
+                }
+            }
+        }
+        return reasonText;
+    }
+
+
+    public static String getPickupFailedMsg(String code) {
+        if (pickupFailedList == null) {
+            pickupFailedList = DataUtil.getFailCode("P");
+        }
+
+        String reasonText = "";
+        if (pickupFailedList != null) {
+
+            for (int i = 0; i < pickupFailedList.size(); i++) {
+
+                FailedCodeData failedCode = pickupFailedList.get(i);
+
+                if (failedCode.getFailedCode().equals(code)) {
+                    reasonText = failedCode.getFailedString();
+                }
+            }
+        }
+        return reasonText;
     }
 
 

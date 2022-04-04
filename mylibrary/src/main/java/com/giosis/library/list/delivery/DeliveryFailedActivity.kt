@@ -26,12 +26,13 @@ import com.giosis.library.MemoryStatus
 import com.giosis.library.R
 import com.giosis.library.databinding.ActivityDeliveryVisitLogBinding
 import com.giosis.library.gps.GPSTrackerManager
-import com.giosis.library.server.data.FailedCodeResult
+import com.giosis.library.server.data.FailedCodeData
 import com.giosis.library.util.*
 import java.util.*
 
 
-class DeliveryFailedActivity : CommonActivity(), Camera2APIs.Camera2Interface, SurfaceTextureListener {
+class DeliveryFailedActivity : CommonActivity(), Camera2APIs.Camera2Interface,
+    SurfaceTextureListener {
 
     val tag = "DeliveryFailedActivity"
 
@@ -53,11 +54,16 @@ class DeliveryFailedActivity : CommonActivity(), Camera2APIs.Camera2Interface, S
     // Permission
     var isPermissionTrue = false
     val PERMISSION_REQUEST_CODE = 1000
-    val PERMISSIONS = arrayOf(PermissionChecker.ACCESS_FINE_LOCATION, PermissionChecker.ACCESS_COARSE_LOCATION,
-            PermissionChecker.READ_EXTERNAL_STORAGE, PermissionChecker.WRITE_EXTERNAL_STORAGE, PermissionChecker.CAMERA)
+    val PERMISSIONS = arrayOf(
+        PermissionChecker.ACCESS_FINE_LOCATION,
+        PermissionChecker.ACCESS_COARSE_LOCATION,
+        PermissionChecker.READ_EXTERNAL_STORAGE,
+        PermissionChecker.WRITE_EXTERNAL_STORAGE,
+        PermissionChecker.CAMERA
+    )
 
     //
-    var arrayList: ArrayList<FailedCodeResult.FailedCode>? = null
+    var arrayList: ArrayList<FailedCodeData>? = null
     var failedCodeArrayList: ArrayList<String>? = null
 
 
@@ -87,25 +93,33 @@ class DeliveryFailedActivity : CommonActivity(), Camera2APIs.Camera2Interface, S
             binding.spinnerFailedReason.performClick()
         }
 
-        binding.spinnerFailedReason.onItemSelectedListener = object : AdapterView.OnItemSelectedListener {
-            override fun onNothingSelected(p0: AdapterView<*>?) {
-            }
-
-            override fun onItemSelected(parentView: AdapterView<*>, arg1: View?, position: Int, arg3: Long) {
-
-                val reason = parentView.getItemAtPosition(position).toString()
-
-                if (reason.toUpperCase().contains(resources.getString(R.string.text_other).toUpperCase())) {
-
-                    binding.layoutMemo.visibility = View.VISIBLE
-                } else {
-
-                    binding.layoutMemo.visibility = View.GONE
+        binding.spinnerFailedReason.onItemSelectedListener =
+            object : AdapterView.OnItemSelectedListener {
+                override fun onNothingSelected(p0: AdapterView<*>?) {
                 }
 
-                binding.textFailedReason.text = reason
+                override fun onItemSelected(
+                    parentView: AdapterView<*>,
+                    arg1: View?,
+                    position: Int,
+                    arg3: Long
+                ) {
+
+                    val reason = parentView.getItemAtPosition(position).toString()
+
+                    if (reason.toUpperCase()
+                            .contains(resources.getString(R.string.text_other).toUpperCase())
+                    ) {
+
+                        binding.layoutMemo.visibility = View.VISIBLE
+                    } else {
+
+                        binding.layoutMemo.visibility = View.GONE
+                    }
+
+                    binding.textFailedReason.text = reason
+                }
             }
-        }
 
         binding.editMemo.addTextChangedListener(object : TextWatcher {
             override fun afterTextChanged(p0: Editable?) {
@@ -117,7 +131,11 @@ class DeliveryFailedActivity : CommonActivity(), Camera2APIs.Camera2Interface, S
             override fun onTextChanged(p0: CharSequence?, p1: Int, p2: Int, p3: Int) {
 
                 if (99 <= binding.editMemo.length()) {
-                    Toast.makeText(this@DeliveryFailedActivity, resources.getString(R.string.msg_memo_too_long), Toast.LENGTH_SHORT).show()
+                    Toast.makeText(
+                        this@DeliveryFailedActivity,
+                        resources.getString(R.string.msg_memo_too_long),
+                        Toast.LENGTH_SHORT
+                    ).show()
                 }
             }
         })
@@ -137,7 +155,11 @@ class DeliveryFailedActivity : CommonActivity(), Camera2APIs.Camera2Interface, S
                 }
             } else {
 
-                Toast.makeText(this@DeliveryFailedActivity, resources.getString(R.string.msg_back_camera_required), Toast.LENGTH_SHORT).show()
+                Toast.makeText(
+                    this@DeliveryFailedActivity,
+                    resources.getString(R.string.msg_back_camera_required),
+                    Toast.LENGTH_SHORT
+                ).show()
             }
         }
 
@@ -154,7 +176,11 @@ class DeliveryFailedActivity : CommonActivity(), Camera2APIs.Camera2Interface, S
 
         if (checker.lacksPermissions(*PERMISSIONS)) {
             isPermissionTrue = false
-            PermissionActivity.startActivityForResult(this@DeliveryFailedActivity, PERMISSION_REQUEST_CODE, *PERMISSIONS)
+            PermissionActivity.startActivityForResult(
+                this@DeliveryFailedActivity,
+                PERMISSION_REQUEST_CODE,
+                *PERMISSIONS
+            )
             overridePendingTransition(0, 0)
         } else {
             isPermissionTrue = true
@@ -168,18 +194,24 @@ class DeliveryFailedActivity : CommonActivity(), Camera2APIs.Camera2Interface, S
 
         if (arrayList == null) {
 
-            DisplayUtil.AlertDialog(this@DeliveryFailedActivity, resources.getString(R.string.msg_failed_code_error))
+            DisplayUtil.AlertDialog(
+                this@DeliveryFailedActivity,
+                resources.getString(R.string.msg_failed_code_error)
+            )
         } else {
 
             failedCodeArrayList = ArrayList()
 
             for (i in arrayList!!.indices) {
-                val failedCode: FailedCodeResult.FailedCode = arrayList!![i]
-                failedCodeArrayList!!.add(failedCode.failedString)
+                failedCodeArrayList!!.add(arrayList!![i].failedString)
             }
 
             binding.spinnerFailedReason.prompt = resources.getString(R.string.text_failed_reason)
-            val failedCodeArrayAdapter = ArrayAdapter(this@DeliveryFailedActivity, android.R.layout.simple_spinner_item, failedCodeArrayList!!)
+            val failedCodeArrayAdapter = ArrayAdapter(
+                this@DeliveryFailedActivity,
+                android.R.layout.simple_spinner_item,
+                failedCodeArrayList!!
+            )
             failedCodeArrayAdapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item)
             binding.spinnerFailedReason.adapter = failedCodeArrayAdapter
         }
@@ -224,11 +256,20 @@ class DeliveryFailedActivity : CommonActivity(), Camera2APIs.Camera2Interface, S
         if (cameraId != null) {
             camera2.setCameraDevice(cameraManager, cameraId)
         } else {
-            Toast.makeText(this@DeliveryFailedActivity, resources.getString(R.string.msg_back_camera_required), Toast.LENGTH_SHORT).show()
+            Toast.makeText(
+                this@DeliveryFailedActivity,
+                resources.getString(R.string.msg_back_camera_required),
+                Toast.LENGTH_SHORT
+            ).show()
         }
     }
 
-    override fun onCameraDeviceOpened(cameraDevice: CameraDevice, cameraSize: Size, rotation: Int, it: String) {
+    override fun onCameraDeviceOpened(
+        cameraDevice: CameraDevice,
+        cameraSize: Size,
+        rotation: Int,
+        it: String
+    ) {
         Log.e("Camera", "onCameraDeviceOpened  $it")
         binding.texturePreview.rotation = rotation.toFloat()
 
@@ -266,17 +307,18 @@ class DeliveryFailedActivity : CommonActivity(), Camera2APIs.Camera2Interface, S
     }
 
     // Gallery
-    private val getGalleryImage = registerForActivityResult(ActivityResultContracts.GetContent()) { uri: Uri? ->
+    private val getGalleryImage =
+        registerForActivityResult(ActivityResultContracts.GetContent()) { uri: Uri? ->
 
-        try {
-            val selectedImage = MediaStore.Images.Media.getBitmap(contentResolver, uri)
-            val resizeImage = camera2.getResizeBitmap(selectedImage)
-            binding.imgVisitLog.setImageBitmap(resizeImage)
-            binding.imgVisitLog.scaleType = ImageView.ScaleType.CENTER_INSIDE
-        } catch (e: Exception) {
+            try {
+                val selectedImage = MediaStore.Images.Media.getBitmap(contentResolver, uri)
+                val resizeImage = camera2.getResizeBitmap(selectedImage)
+                binding.imgVisitLog.setImageBitmap(resizeImage)
+                binding.imgVisitLog.scaleType = ImageView.ScaleType.CENTER_INSIDE
+            } catch (e: Exception) {
 
+            }
         }
-    }
 
     private fun cancelUpload() {
 
@@ -298,7 +340,10 @@ class DeliveryFailedActivity : CommonActivity(), Camera2APIs.Camera2Interface, S
         try {
 
             if (!NetworkUtil.isNetworkAvailable(this@DeliveryFailedActivity)) {
-                DisplayUtil.AlertDialog(this@DeliveryFailedActivity, resources.getString(R.string.msg_network_connect_error))
+                DisplayUtil.AlertDialog(
+                    this@DeliveryFailedActivity,
+                    resources.getString(R.string.msg_network_connect_error)
+                )
                 return
             }
 
@@ -311,50 +356,78 @@ class DeliveryFailedActivity : CommonActivity(), Camera2APIs.Camera2Interface, S
             Log.e(tag, "  Location $latitude / $longitude")
 
             // other 선택시에만 메모 필수
-            val code: FailedCodeResult.FailedCode = arrayList!![binding.spinnerFailedReason.selectedItemPosition]
+            val code = arrayList!![binding.spinnerFailedReason.selectedItemPosition]
             val failedCode: String = code.failedCode
             Log.e(tag, "Fail Reason Code  >  $failedCode")
 
             var driverMemo = ""
-            if (code.failedString.toUpperCase().contains(resources.getString(R.string.text_other).toUpperCase())) {
+            if (code.failedString.toUpperCase()
+                    .contains(resources.getString(R.string.text_other).toUpperCase())
+            ) {
 
                 driverMemo = binding.editMemo.text.toString()
 
                 if (driverMemo.isEmpty()) {
-                    Toast.makeText(this@DeliveryFailedActivity, resources.getString(R.string.msg_must_enter_memo1), Toast.LENGTH_SHORT).show()
+                    Toast.makeText(
+                        this@DeliveryFailedActivity,
+                        resources.getString(R.string.msg_must_enter_memo1),
+                        Toast.LENGTH_SHORT
+                    ).show()
                     return
                 }
             }
             Log.e(tag, "Memo  >  $driverMemo")
 
             if (!camera2.hasImage(binding.imgVisitLog)) {
-                Toast.makeText(this@DeliveryFailedActivity, resources.getString(R.string.msg_visit_photo_require), Toast.LENGTH_SHORT).show()
+                Toast.makeText(
+                    this@DeliveryFailedActivity,
+                    resources.getString(R.string.msg_visit_photo_require),
+                    Toast.LENGTH_SHORT
+                ).show()
                 return
             }
 
             if (MemoryStatus.availableInternalMemorySize != MemoryStatus.ERROR.toLong() && MemoryStatus.availableInternalMemorySize < MemoryStatus.PRESENT_BYTE) {
-                DisplayUtil.AlertDialog(this@DeliveryFailedActivity, resources.getString(R.string.msg_disk_size_error))
+                DisplayUtil.AlertDialog(
+                    this@DeliveryFailedActivity,
+                    resources.getString(R.string.msg_disk_size_error)
+                )
                 return
             }
 
 
             DataUtil.logEvent("button_click", tag, "SetDeliveryUploadData")
-            DeliveryFailedUploadHelper.Builder(this@DeliveryFailedActivity, Preferences.userId, Preferences.officeCode, Preferences.deviceUUID,
-                    trackingNo, binding.imgVisitLog, failedCode, driverMemo, "RC",
-                    MemoryStatus.availableInternalMemorySize, latitude, longitude)
-                    .setOnServerEventListener(object : OnServerEventListener {
-                        override fun onPostResult() {
-                            DataUtil.inProgressListPosition = 0
-                            finish()
-                        }
+            DeliveryFailedUploadHelper.Builder(
+                this@DeliveryFailedActivity,
+                Preferences.userId,
+                Preferences.officeCode,
+                Preferences.deviceUUID,
+                trackingNo,
+                binding.imgVisitLog,
+                failedCode,
+                driverMemo,
+                "RC",
+                MemoryStatus.availableInternalMemorySize,
+                latitude,
+                longitude
+            )
+                .setOnServerEventListener(object : OnServerEventListener {
+                    override fun onPostResult() {
+                        DataUtil.inProgressListPosition = 0
+                        finish()
+                    }
 
-                        override fun onPostFailList() {
-                        }
-                    }).build().execute()
+                    override fun onPostFailList() {
+                    }
+                }).build().execute()
         } catch (e: Exception) {
 
             Log.e(tag, "   serverUpload  Exception : $e")
-            Toast.makeText(this@DeliveryFailedActivity, resources.getString(R.string.text_error) + " - " + e.toString(), Toast.LENGTH_SHORT).show()
+            Toast.makeText(
+                this@DeliveryFailedActivity,
+                resources.getString(R.string.text_error) + " - " + e.toString(),
+                Toast.LENGTH_SHORT
+            ).show()
         }
     }
 

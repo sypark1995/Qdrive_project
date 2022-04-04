@@ -207,7 +207,7 @@ object MainActivityServer {
             val result = RetrofitClient.instanceDynamic().requestGetFailedCode(DFC)
 
             if (result.resultCode == 10) {
-                val json = Gson().toJson(result)
+                val json = Gson().toJson(result.resultObject)
                 Log.i(TAG, "D  getFailedCode  $json")
                 Preferences.dFailedCode = json
             }
@@ -222,7 +222,7 @@ object MainActivityServer {
             val result = RetrofitClient.instanceDynamic().requestGetFailedCode(PFC)
 
             if (result.resultCode == 10) {
-                val json = Gson().toJson(result)
+                val json = Gson().toJson(result.resultObject)
                 Log.i(TAG, "P  getFailedCode  $json")
                 Preferences.pFailedCode = json
             }

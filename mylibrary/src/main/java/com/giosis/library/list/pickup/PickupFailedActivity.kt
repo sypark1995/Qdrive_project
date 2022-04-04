@@ -28,7 +28,7 @@ import com.giosis.library.databinding.ActivityPickupVisitLogBinding
 import com.giosis.library.gps.GPSTrackerManager
 import com.giosis.library.server.ImageUpload
 import com.giosis.library.server.RetrofitClient
-import com.giosis.library.server.data.FailedCodeResult
+import com.giosis.library.server.data.FailedCodeData
 import com.giosis.library.util.*
 import com.giosis.library.util.dialog.ProgressDialog
 import kotlinx.coroutines.CoroutineScope
@@ -56,7 +56,7 @@ class PickupFailedActivity : CommonActivity(), Camera2APIs.Camera2Interface,
     }
 
     private var rcvType = ""       // VL, RC
-    private var arrayList: ArrayList<FailedCodeResult.FailedCode>? = null
+    private var arrayList: ArrayList<FailedCodeData>? = null
     var driverMemo = ""
     private var failedCode = ""
     private var retryDay = ""
@@ -650,7 +650,7 @@ class PickupFailedActivity : CommonActivity(), Camera2APIs.Camera2Interface,
             val failedCodeArrayList = ArrayList<String>()
 
             for (i in arrayList!!.indices) {
-                val failedCode: FailedCodeResult.FailedCode = arrayList!![i]
+                val failedCode = arrayList!![i]
                 failedCodeArrayList.add(failedCode.failedString)
             }
 

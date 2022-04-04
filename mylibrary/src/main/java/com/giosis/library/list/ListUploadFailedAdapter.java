@@ -28,7 +28,7 @@ import com.giosis.library.R;
 import com.giosis.library.UploadData;
 import com.giosis.library.gps.GPSTrackerManager;
 import com.giosis.library.main.DeviceDataUploadHelper;
-import com.giosis.library.server.data.FailedCodeResult;
+import com.giosis.library.server.data.FailedCodeData;
 import com.giosis.library.util.BarcodeType;
 import com.giosis.library.util.DataUtil;
 import com.giosis.library.util.DatabaseHelper;
@@ -267,48 +267,19 @@ public class ListUploadFailedAdapter extends BaseExpandableListAdapter {
         //  Reason
         if (child.getStatReason() != null && !child.getStatReason().contains(" ") && child.getStatReason().length() > 0) {
 
-            String reasonText = "";
-            String reasonCode = child.getStatReason();
             layout_list_item_child_failed_reason.setVisibility(View.VISIBLE);
 
             switch (child.getStat()) {
                 case BarcodeType.DELIVERY_FAIL: {
 
-                    ArrayList<FailedCodeResult.FailedCode> arrayList = DataUtil.getFailCode("D");
-
-                    if (arrayList != null) {
-
-                        for (int i = 0; i < arrayList.size(); i++) {
-
-                            FailedCodeResult.FailedCode failedCode = arrayList.get(i);
-
-                            if (failedCode.getFailedCode().equals(reasonCode)) {
-                                reasonText = failedCode.getFailedString();
-                            }
-                        }
-                    }
-
+                    String reasonText = DataUtil.getDeliveryFailedMsg(child.getStatReason());
                     text_list_item_child_failed_reason.setText(reasonText);
                 }
                 break;
 
                 case BarcodeType.PICKUP_FAIL: {
 
-                    ArrayList<FailedCodeResult.FailedCode> arrayList = DataUtil.getFailCode("P");
-
-                    if (arrayList != null) {
-
-                        for (int i = 0; i < arrayList.size(); i++) {
-
-                            FailedCodeResult.FailedCode failedCode = arrayList.get(i);
-
-                            if (failedCode.getFailedCode().equals(reasonCode)) {
-
-                                reasonText = failedCode.getFailedString();
-                            }
-                        }
-                    }
-
+                    String reasonText = DataUtil.getPickupFailedMsg(child.getStatReason());
                     text_list_item_child_failed_reason.setText(reasonText);
                 }
                 break;
@@ -624,4 +595,6 @@ public class ListUploadFailedAdapter extends BaseExpandableListAdapter {
         originalRowItem = sortedItems;
         notifyDataSetChanged();
     }
+
+
 }
