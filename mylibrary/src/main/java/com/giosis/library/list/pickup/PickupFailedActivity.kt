@@ -173,8 +173,7 @@ class PickupFailedActivity : CommonActivity(), Camera2APIs.Camera2Interface,
             calendar.get(Calendar.DAY_OF_MONTH)
         )
 
-        if (Preferences.userNation.contentEquals("SG")) {
-
+        if (Preferences.userNation == "SG") {
             val minCalendar = Calendar.getInstance()
             minCalendar.add(Calendar.DAY_OF_YEAR, 1)
             val maxCalendar = Calendar.getInstance()
@@ -182,8 +181,8 @@ class PickupFailedActivity : CommonActivity(), Camera2APIs.Camera2Interface,
 
             datePickupDialog.datePicker.minDate = minCalendar.timeInMillis
             datePickupDialog.datePicker.maxDate = maxCalendar.timeInMillis
-        } else {
 
+        } else {
             val minCalendar = Calendar.getInstance()
             minCalendar.add(Calendar.DAY_OF_YEAR, 1)
             val maxCalendar = Calendar.getInstance()
@@ -412,7 +411,6 @@ class PickupFailedActivity : CommonActivity(), Camera2APIs.Camera2Interface,
                 latitude = it.latitude
                 longitude = it.longitude
             }
-            Log.i(tag, "  Location $latitude / $longitude")
 
             val code = arrayList!![binding.spinnerFailedReason.selectedItemPosition]
             failedCode = code.failedCode
