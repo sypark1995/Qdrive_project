@@ -65,7 +65,7 @@ object ImageUpload {
             return returnValue
         } catch (e: Exception) {
 
-            RetrofitClient.instanceCommonService()
+            RetrofitClient.instanceMobileService()
                     .requestWriteLog("1", "IMAGEUPLOAD", "image upload error in RetrofitClient", "RetrofitClient Exception " + e.localizedMessage)
                     .subscribeOn(Schedulers.io())
                     .observeOn(AndroidSchedulers.mainThread())

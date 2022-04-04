@@ -129,9 +129,9 @@ object RetrofitClient {
     }
 
 
-    fun instanceCommonService(): RetrofitService {
+    fun instanceMobileService(): RetrofitService {
 
-        val serverURL = Preferences.serverURL + DataUtil.API_ADDRESS_QX_APP_COMMON
+        val serverURL = Preferences.serverURL + DataUtil.API_ADDRESS_MOBILE_SERVICE
         Log.e("Server", "Server URL  $serverURL")
 
         val retrofit = Retrofit.Builder()
