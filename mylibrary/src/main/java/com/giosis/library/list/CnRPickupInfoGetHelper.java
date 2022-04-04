@@ -12,6 +12,7 @@ import com.google.gson.Gson;
 
 import org.json.JSONObject;
 
+// TODO_kjyoo 프린트로 테스트 해보기
 public class CnRPickupInfoGetHelper {
     String TAG = "CnRPickupInfoGetHelper";
 
