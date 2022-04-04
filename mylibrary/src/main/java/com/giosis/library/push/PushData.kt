@@ -27,4 +27,6 @@ object PushData {
     const val LAE = "LAE"
     const val SRL = "SRL"
 
+    const val LOGOUT = "LOGOUT"
+
 }
