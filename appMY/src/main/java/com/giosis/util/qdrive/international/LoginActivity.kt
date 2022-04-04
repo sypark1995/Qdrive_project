@@ -15,18 +15,17 @@ import android.view.inputmethod.InputMethodManager
 import android.widget.AdapterView
 import android.widget.LinearLayout
 import android.widget.ProgressBar
+import com.giosis.library.database.DatabaseHelper
 import com.giosis.library.gps.GPSTrackerManager
 import com.giosis.library.main.MainActivity
 import com.giosis.library.main.SMSVerificationActivity
 import com.giosis.library.server.RetrofitClient
 import com.giosis.library.setting.DeveloperModeActivity
-import com.giosis.library.database.DatabaseHelper
+import com.giosis.library.util.CommonActivity
 import com.giosis.library.util.PermissionActivity
 import com.giosis.library.util.PermissionChecker
 import com.giosis.library.util.Preferences
 import com.giosis.util.qdrive.international.databinding.ActivityLoginBinding
-import com.giosis.util.qdrive.util.CommonActivity
-import com.giosis.util.qdrive.util.DataUtil
 import com.google.gson.Gson
 import io.reactivex.rxjava3.android.schedulers.AndroidSchedulers
 import io.reactivex.rxjava3.schedulers.Schedulers
@@ -236,7 +235,7 @@ class LoginActivity : CommonActivity() {
 
                     RetrofitClient.instanceDynamic().requestServerLogin(
                         userID, userPW, "QDRIVE_V2", "", deviceUUID, "",
-                        latitude.toString(), longitude.toString(), DataUtil.appID, userNationCode
+                        latitude.toString(), longitude.toString(), "QDRIVE", userNationCode
                     )
                         .subscribeOn(Schedulers.io())
                         .observeOn(AndroidSchedulers.mainThread())
@@ -369,8 +368,19 @@ class LoginActivity : CommonActivity() {
                     " onResume  Location  :  ${gpsTrackerManager?.latitude} / ${gpsTrackerManager?.longitude}"
                 )
             } else {
-
-                DataUtil.enableLocationSettings(this, context)
+                if (!this@LoginActivity.isFinishing) {
+                    AlertDialog.Builder(this)
+                        .setCancelable(false)
+                        .setTitle(context.resources.getString(R.string.text_location_setting))
+                        .setMessage(context.resources.getString(R.string.msg_location_off))
+                        .setPositiveButton(
+                            context.resources.getString(R.string.button_ok)
+                        ) { dialog, which ->
+                            val intent = Intent(Settings.ACTION_LOCATION_SOURCE_SETTINGS)
+                            intent.addCategory(Intent.CATEGORY_DEFAULT)
+                            startActivity(intent)
+                        }.show()
+                }
             }
         }
     }
@@ -453,7 +463,7 @@ class LoginActivity : CommonActivity() {
 
     override fun onDestroy() {
         super.onDestroy()
-        DataUtil.stopGPSManager(gpsTrackerManager)
+        gpsTrackerManager?.stopFusedProviderService()
     }
 
 

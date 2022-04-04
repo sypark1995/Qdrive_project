@@ -6,10 +6,7 @@ import android.content.Context;
 
 public class DataUtil {
 
-    public static String appID = "QDRIVE";
-    public static String SERVER_REAL = "https://qxapi.qxpress.net";
     public static String locker_pin_url = "https://www.lockeralliance.net/pin";
-
 
     public static void copyClipBoard(Context context, String data) {
 

@@ -20,11 +20,10 @@ import com.giosis.library.main.SMSVerificationActivity
 import com.giosis.library.server.RetrofitClient
 import com.giosis.library.setting.DeveloperModeActivity
 import com.giosis.library.database.DatabaseHelper
+import com.giosis.library.util.CommonActivity
 import com.giosis.library.util.PermissionActivity
 import com.giosis.library.util.PermissionChecker
 import com.giosis.util.qdrive.singapore.databinding.ActivityLoginBinding
-import com.giosis.util.qdrive.util.CommonActivity
-import com.giosis.util.qdrive.util.DataUtil
 import com.google.firebase.crashlytics.FirebaseCrashlytics
 import com.google.gson.Gson
 import io.reactivex.rxjava3.android.schedulers.AndroidSchedulers
@@ -35,6 +34,7 @@ import java.io.File
 class LoginActivity : CommonActivity() {
 
     val tag = "LoginActivity"
+
     private val binding by lazy {
         ActivityLoginBinding.inflate(layoutInflater)
     }
@@ -59,17 +59,16 @@ class LoginActivity : CommonActivity() {
         PermissionChecker.READ_EXTERNAL_STORAGE, PermissionChecker.WRITE_EXTERNAL_STORAGE
     )
 
+    var showDeveloperModeClickCount = 0
 
     @SuppressLint("SetTextI18n")
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(binding.root)
-        DatabaseHelper.getInstance()            // DB 생성
 
-        var showDeveloperModeClickCount = 0
+        DatabaseHelper.getInstance()
 
         binding.imgLoginBottomLogo.setOnClickListener {
-
             if (showDeveloperModeClickCount == 10) {
                 showDeveloperModeClickCount = 0
 
@@ -84,15 +83,13 @@ class LoginActivity : CommonActivity() {
             ViewGroup.LayoutParams.WRAP_CONTENT,
             ViewGroup.LayoutParams.WRAP_CONTENT
         )
+
         binding.layoutLogin.addView(progressBar)
         progressBar.visibility = View.GONE
 
         binding.editLoginId.setText(Preferences.userId)
         binding.editLoginPassword.setText(Preferences.userPw)
-        Log.e(
-            tag,
-            "  init Data  -   ${Preferences.userNation}  ${Preferences.userId}  ${Preferences.userPw}"
-        )
+
         appVersion = getVersion()
 
         // Login
@@ -143,7 +140,7 @@ class LoginActivity : CommonActivity() {
 
                     RetrofitClient.instanceDynamic().requestServerLogin(
                         userID, userPW, "QDRIVE", "", deviceUUID, "",
-                        latitude.toString(), longitude.toString(), DataUtil.appID, "SG"
+                        latitude.toString(), longitude.toString(), "QDRIVE", "SG"
                     ).subscribeOn(Schedulers.io())
                         .observeOn(AndroidSchedulers.mainThread())
                         .subscribe({
