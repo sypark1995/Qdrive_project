@@ -1,5 +1,6 @@
 package com.giosis.util.qdrive.singapore
 
+import android.annotation.SuppressLint
 import android.app.Activity
 import android.content.Intent
 import android.net.Uri
@@ -10,7 +11,6 @@ import androidx.core.app.NotificationManagerCompat
 import com.giosis.library.main.MainActivity
 import com.giosis.util.qdrive.singapore.databinding.DialogPushAlertBinding
 import com.giosis.library.util.DataUtil
-import java.lang.Exception
 
 class AlertDialogActivity : Activity() {
 
@@ -18,11 +18,12 @@ class AlertDialogActivity : Activity() {
         DialogPushAlertBinding.inflate(layoutInflater)
     }
 
+    @SuppressLint("SetTextI18n")
     public override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
+        requestWindowFeature(Window.FEATURE_NO_TITLE)
         setContentView(binding.root)
 
-        requestWindowFeature(Window.FEATURE_NO_TITLE)
         setFinishOnTouchOutside(false)
 
         val bun = intent.extras
@@ -52,15 +53,22 @@ class AlertDialogActivity : Activity() {
                 ""
             }
 
-            if (notiTitle!!.isEmpty()) {
-                binding.titleText.visibility = View.GONE
+
+            if (actionKey == FCMIntentService.LZD_PICK) {
+                binding.titleText.text = "Pickup no : $actionValue"
+                binding.messageText.text = resources.getString(R.string.text_lazada_order) + "\n" + resources.getString(R.string.text_lazada_content)
 
             } else {
-                binding.titleText.visibility = View.VISIBLE
-                binding.titleText.text = notiTitle
-            }
+                if (notiTitle!!.isEmpty()) {
+                    binding.titleText.visibility = View.GONE
 
-            binding.messageText.text = notiMessage
+                } else {
+                    binding.titleText.visibility = View.VISIBLE
+                    binding.titleText.text = notiTitle
+                }
+
+                binding.messageText.text = notiMessage
+            }
 
             binding.okBtn.setOnClickListener {
 
