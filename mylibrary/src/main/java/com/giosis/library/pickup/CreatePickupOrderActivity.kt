@@ -12,7 +12,7 @@ import android.widget.AdapterView
 import androidx.lifecycle.ViewModelProvider
 import com.giosis.library.ActivityRequestCode
 import com.giosis.library.BR
-import com.giosis.library.BaseActivity
+import com.giosis.library.ViewModelActivity
 import com.giosis.library.R
 import com.giosis.library.databinding.ActivityCreatePickupOrderBinding
 import com.giosis.library.util.Preferences
@@ -22,7 +22,7 @@ import kotlinx.android.synthetic.main.top_title.*
 
 
 class CreatePickupOrderActivity :
-    BaseActivity<ActivityCreatePickupOrderBinding, CreatePickupOrderViewModel>() {
+    ViewModelActivity<ActivityCreatePickupOrderBinding, CreatePickupOrderViewModel>() {
     val tag = "CreatePickupOrder"
 
     override fun getLayoutId(): Int {

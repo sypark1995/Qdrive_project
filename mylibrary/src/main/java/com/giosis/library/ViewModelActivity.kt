@@ -12,13 +12,13 @@ import com.giosis.library.util.CommonActivity
 import com.giosis.library.util.dialog.ProgressDialog
 
 
-abstract class BaseActivity<T : ViewDataBinding, V : BaseViewModel> : CommonActivity() {
+abstract class ViewModelActivity<T : ViewDataBinding, V : BaseViewModel> : CommonActivity() {
 
     private lateinit var mViewDataBinding: T
     lateinit var mViewModel: V
 
     private val progressBar by lazy {
-        ProgressDialog(this@BaseActivity)
+        ProgressDialog(this@ViewModelActivity)
     }
 
     @LayoutRes
@@ -85,7 +85,7 @@ abstract class BaseActivity<T : ViewDataBinding, V : BaseViewModel> : CommonActi
                     text = resources.getText(it).toString()
                 }
 
-                Toast.makeText(this@BaseActivity, text, Toast.LENGTH_SHORT).show()
+                Toast.makeText(this@ViewModelActivity, text, Toast.LENGTH_SHORT).show()
             }
         }
     }

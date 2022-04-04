@@ -54,17 +54,10 @@
         <meta-data
             android:name="com.google.android.maps.v2.API_KEY"
             android:value="AIzaSyA1NWLPCM1Ng4go6Al3CxR36_C9Us0BTk0" />
+
         <meta-data
             android:name="com.google.android.gms.version"
             android:value="@integer/google_play_services_version" />
-
-        <receiver
-            android:name="com.giosis.util.qdrive.singapore.DeviceBootReceiver"
-            android:enabled="false">
-            <intent-filter>
-                <action android:name="android.intent.action.BOOT_COMPLETED" />
-            </intent-filter>
-        </receiver>
 
         <receiver
             android:name="com.giosis.util.qdrive.singapore.AlarmReceiver"

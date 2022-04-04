@@ -41,10 +41,6 @@ class GPSTrackerManager(private val context: Context) {
         val status = GoogleApiAvailability.getInstance().isGooglePlayServicesAvailable(context)
         isGooglePlayService = ConnectionResult.SUCCESS == status
 
-        // TEST_
-        // isGooglePlayService = true
-        // isGooglePlayService = false
-
         if (isGooglePlayService) {
             createFusedProvider()
         } else {
@@ -91,6 +87,7 @@ class GPSTrackerManager(private val context: Context) {
 
             return latitude
         }
+
     val longitude: Double
         get() {
             var longitude = 0.0

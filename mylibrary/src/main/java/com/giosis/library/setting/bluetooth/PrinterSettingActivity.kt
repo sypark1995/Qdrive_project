@@ -514,12 +514,12 @@ class PrinterSettingActivity : CommonActivity() {
         printerConnectedAdapter = PrinterConnectedAdapter(connectedItem, listener)
         printerAvailableAdapter = PrinterAvailableAdapter(newDeviceItems, listener)
 
-        list_setting_printer_paired_device.adapter = printerPairedAdapter
-        list_setting_printer_paired_device.layoutManager = LinearLayoutManager(this)
-        list_setting_printer_connected_device.adapter = printerConnectedAdapter
-        list_setting_printer_connected_device.layoutManager = LinearLayoutManager(this)
-        list_setting_printer_available_device.adapter = printerAvailableAdapter
-        list_setting_printer_available_device.layoutManager = LinearLayoutManager(this)
+        paired_device_recycler.adapter = printerPairedAdapter
+        paired_device_recycler.layoutManager = LinearLayoutManager(this)
+        connected_device_recycler.adapter = printerConnectedAdapter
+        connected_device_recycler.layoutManager = LinearLayoutManager(this)
+        available_device_recycler.adapter = printerAvailableAdapter
+        available_device_recycler.layoutManager = LinearLayoutManager(this)
 
         if (mBluetoothAdapter != null) {
             discoveryDevice()
@@ -606,33 +606,33 @@ class PrinterSettingActivity : CommonActivity() {
         }
 
     fun nullAvailableDevices() {
-        list_setting_printer_available_device.visibility = View.GONE
-        layout_setting_printer_no_available_device.visibility = View.VISIBLE
+        available_device_recycler.visibility = View.GONE
+        available_device_view.visibility = View.VISIBLE
     }
 
     fun notnullAvailableDevices() {
-        list_setting_printer_available_device.visibility = View.VISIBLE
-        layout_setting_printer_no_available_device.visibility = View.GONE
+        available_device_recycler.visibility = View.VISIBLE
+        available_device_view.visibility = View.GONE
     }
 
     fun nullPairedDevices() {
-        list_setting_printer_paired_device.visibility = View.GONE
-        layout_setting_printer_no_paired_device.visibility = View.VISIBLE
+        paired_device_recycler.visibility = View.GONE
+        paired_device_view.visibility = View.VISIBLE
     }
 
     fun notnullPairedDevices() {
-        list_setting_printer_paired_device.visibility = View.VISIBLE
-        layout_setting_printer_no_paired_device.visibility = View.GONE
+        paired_device_recycler.visibility = View.VISIBLE
+        paired_device_view.visibility = View.GONE
     }
 
     fun nullConnectedDevice() {
-        list_setting_printer_connected_device.visibility = View.GONE
-        layout_setting_printer_no_connected_device.visibility = View.VISIBLE
+        connected_device_recycler.visibility = View.GONE
+        printer_connected_view.visibility = View.VISIBLE
     }
 
     fun notnullConnectedDevice() {
-        list_setting_printer_connected_device.visibility = View.VISIBLE
-        layout_setting_printer_no_connected_device.visibility = View.GONE
+        connected_device_recycler.visibility = View.VISIBLE
+        printer_connected_view.visibility = View.GONE
     }
 
     override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {

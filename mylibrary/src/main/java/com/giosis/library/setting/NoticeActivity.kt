@@ -5,7 +5,7 @@ import android.widget.Toast
 import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModelProvider
 import com.giosis.library.BR
-import com.giosis.library.BaseActivity
+import com.giosis.library.ViewModelActivity
 import com.giosis.library.R
 import com.giosis.library.databinding.ActivityNoticeBinding
 import kotlinx.android.synthetic.main.activity_notice.*
@@ -14,7 +14,7 @@ import org.greenrobot.eventbus.EventBus
 import org.greenrobot.eventbus.Subscribe
 import org.greenrobot.eventbus.ThreadMode
 
-class NoticeActivity : BaseActivity<ActivityNoticeBinding, NoticeViewModel>() {
+class NoticeActivity : ViewModelActivity<ActivityNoticeBinding, NoticeViewModel>() {
     val tag = "NoticeDetailActivity"
 
     override fun getLayoutId(): Int {

@@ -27,6 +27,7 @@ class TodayDonePickupScanListActivity : CommonActivity() {
 
     private var todayDonePickupScanListAdapter: TodayDonePickupScanListAdapter? = null
     private var buttonType: String = ""
+
     var pickupNo: String = ""
     var applicant: String = ""
     var scannedQty: String? = null
@@ -40,7 +41,8 @@ class TodayDonePickupScanListActivity : CommonActivity() {
         buttonType = intent.getStringExtra("button_type").toString()
 
 
-        binding.layoutTopTitle.textTopTitle.text = resources.getString(R.string.text_today_done_scan_list)
+        binding.layoutTopTitle.textTopTitle.text =
+            resources.getString(R.string.text_today_done_scan_list)
         binding.textPickupNo.text = pickupNo
 
         if (buttonType == "Add Scan") {
@@ -65,22 +67,24 @@ class TodayDonePickupScanListActivity : CommonActivity() {
 
         binding.progressBar.visibility = View.VISIBLE
         RetrofitClient.instanceDynamic().requestGetScanPackingList(pickupNo)
-                .subscribeOn(Schedulers.io())
-                .observeOn(AndroidSchedulers.mainThread())
-                .subscribe({
+            .subscribeOn(Schedulers.io())
+            .observeOn(AndroidSchedulers.mainThread())
+            .subscribe({
 
-                    if (it.resultCode == 0) {
+                if (it.resultCode == 0) {
 
-                        val list = Gson().fromJson<ArrayList<PickupPackingListResult>>(it.resultObject,
-                                object : TypeToken<ArrayList<PickupPackingListResult>>() {}.type)
-                        setScannedList(list)
-                    }
+                    val list = Gson().fromJson<ArrayList<PickupPackingListResult>>(
+                        it.resultObject,
+                        object : TypeToken<ArrayList<PickupPackingListResult>>() {}.type
+                    )
+                    setScannedList(list)
+                }
 
-                    binding.progressBar.visibility = View.GONE
-                }, {
+                binding.progressBar.visibility = View.GONE
+            }, {
 
-                    binding.progressBar.visibility = View.GONE
-                })
+                binding.progressBar.visibility = View.GONE
+            })
     }
 
     private fun setScannedList(result: ArrayList<PickupPackingListResult>) {
@@ -88,18 +92,8 @@ class TodayDonePickupScanListActivity : CommonActivity() {
         scannedQty = result.size.toString()
         binding.textScannedQty.text = scannedQty
 
-
-        val itemArrayList = ArrayList<PickupScanListItem>()
-
-        for (scanPackingList in result) {
-
-            val item = PickupScanListItem()
-            item.tracking_no = scanPackingList.packingNo
-            item.scanned_date = scanPackingList.regDt
-            itemArrayList.add(item)
-        }
-
-        todayDonePickupScanListAdapter = TodayDonePickupScanListAdapter(this@TodayDonePickupScanListActivity, itemArrayList)
+        todayDonePickupScanListAdapter =
+            TodayDonePickupScanListAdapter(this@TodayDonePickupScanListActivity, result)
         binding.listScannedList.adapter = todayDonePickupScanListAdapter
     }
 
@@ -125,7 +119,7 @@ class TodayDonePickupScanListActivity : CommonActivity() {
     }
 
     private val resultLauncher: ActivityResultLauncher<Intent> = registerForActivityResult(
-            ActivityResultContracts.StartActivityForResult()
+        ActivityResultContracts.StartActivityForResult()
     ) {
 
         setResult(RESULT_OK)

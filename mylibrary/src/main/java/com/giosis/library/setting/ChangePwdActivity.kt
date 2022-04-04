@@ -5,7 +5,7 @@ import android.view.View
 import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModelProvider
 import com.giosis.library.BR
-import com.giosis.library.BaseActivity
+import com.giosis.library.ViewModelActivity
 import com.giosis.library.R
 import com.giosis.library.databinding.ActivityChangePwdBinding
 import com.giosis.library.server.APIModel
@@ -16,7 +16,7 @@ import com.giosis.library.util.dialog.DialogViewModel
 import kotlinx.android.synthetic.main.activity_change_pwd.*
 import kotlinx.android.synthetic.main.top_title.*
 
-class ChangePwdActivity : BaseActivity<ActivityChangePwdBinding, ChangePwdViewModel>() {
+class ChangePwdActivity : ViewModelActivity<ActivityChangePwdBinding, ChangePwdViewModel>() {
 
     val tag = "ChangePwdActivity"
 

@@ -58,31 +58,9 @@ public class DataUtil {
     public static String qrcode_url = "https://dp.image-gmkt.com/qr.bar?scale=7&version=4&code=";
     public static String locker_pin_url = "https://www.lockeralliance.net/pin";
 
-
-    // Main Service
-    public static Intent fusedProviderService = null;
-    public static Intent locationManagerService = null;
-
-
     public static int inProgressListPosition = 0;
     public static int uploadFailedListPosition = 0;
 
-
-    public static Intent getFusedProviderService() {
-        return fusedProviderService;
-    }
-
-    public static void setFusedProviderService(Intent fusedProviderService) {
-        DataUtil.fusedProviderService = fusedProviderService;
-    }
-
-    public static Intent getLocationManagerService() {
-        return locationManagerService;
-    }
-
-    public static void setLocationManagerService(Intent locationManagerService) {
-        DataUtil.locationManagerService = locationManagerService;
-    }
 
     public static void copyClipBoard(Context context, String data) {
 

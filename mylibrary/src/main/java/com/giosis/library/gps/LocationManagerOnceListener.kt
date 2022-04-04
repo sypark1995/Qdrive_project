@@ -24,22 +24,40 @@ class LocationManagerOnceListener(private val context: Context) : LocationListen
 
     fun getLastLocation() {
 
-        if (ActivityCompat.checkSelfPermission(context, Manifest.permission.ACCESS_FINE_LOCATION) != PackageManager.PERMISSION_GRANTED
-                && ActivityCompat.checkSelfPermission(context, Manifest.permission.ACCESS_COARSE_LOCATION) != PackageManager.PERMISSION_GRANTED) {
+        if (ActivityCompat.checkSelfPermission(
+                context,
+                Manifest.permission.ACCESS_FINE_LOCATION
+            ) != PackageManager.PERMISSION_GRANTED
+            && ActivityCompat.checkSelfPermission(
+                context,
+                Manifest.permission.ACCESS_COARSE_LOCATION
+            ) != PackageManager.PERMISSION_GRANTED
+        ) {
             return
         }
 
         if (locationManager != null) {
 
-            val networkEnable = locationManager!!.isProviderEnabled(LocationManager.NETWORK_PROVIDER)
+            val networkEnable =
+                locationManager!!.isProviderEnabled(LocationManager.NETWORK_PROVIDER)
             val gpsEnable = locationManager!!.isProviderEnabled(LocationManager.GPS_PROVIDER)
 
             try {
                 if (networkEnable) {
-                    locationManager!!.requestLocationUpdates(LocationManager.NETWORK_PROVIDER, 0, 0f, this)
+                    locationManager!!.requestLocationUpdates(
+                        LocationManager.NETWORK_PROVIDER,
+                        0,
+                        0f,
+                        this
+                    )
                 }
                 if (gpsEnable) {
-                    locationManager!!.requestLocationUpdates(LocationManager.GPS_PROVIDER, 0, 0f, this)
+                    locationManager!!.requestLocationUpdates(
+                        LocationManager.GPS_PROVIDER,
+                        0,
+                        0f,
+                        this
+                    )
                 }
             } catch (e: Exception) {
                 Log.e("Location", "fail to request location update, ignore $e")

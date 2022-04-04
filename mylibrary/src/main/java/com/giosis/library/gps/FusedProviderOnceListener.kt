@@ -22,7 +22,6 @@ class FusedProviderOnceListener(private val context: Context) {
     var longitude = 0.0
     var accuracy = 0.0
 
-
     private val locationCallback: LocationCallback = object : LocationCallback() {
         override fun onLocationResult(locationResult: LocationResult?) {
 
@@ -36,7 +35,10 @@ class FusedProviderOnceListener(private val context: Context) {
                     accuracy = location.accuracy.toDouble()
 
                     if (count < 3) {
-                        Log.e("Location", TAG + "  LocationCallback : " + location.latitude + "  /  " + location.longitude + "  - " + count)
+                        Log.e(
+                            "Location",
+                            TAG + "  LocationCallback : " + location.latitude + "  /  " + location.longitude + "  - " + count
+                        )
                         count++
                     }
                 }
@@ -45,8 +47,15 @@ class FusedProviderOnceListener(private val context: Context) {
     }
 
     fun startLocationUpdates() {
-        if (ActivityCompat.checkSelfPermission(context, Manifest.permission.ACCESS_FINE_LOCATION) != PackageManager.PERMISSION_GRANTED &&
-                ActivityCompat.checkSelfPermission(context, Manifest.permission.ACCESS_COARSE_LOCATION) != PackageManager.PERMISSION_GRANTED) {
+        if (ActivityCompat.checkSelfPermission(
+                context,
+                Manifest.permission.ACCESS_FINE_LOCATION
+            ) != PackageManager.PERMISSION_GRANTED &&
+            ActivityCompat.checkSelfPermission(
+                context,
+                Manifest.permission.ACCESS_COARSE_LOCATION
+            ) != PackageManager.PERMISSION_GRANTED
+        ) {
             return
         }
 
@@ -57,7 +66,10 @@ class FusedProviderOnceListener(private val context: Context) {
                 latitude = location.latitude
                 longitude = location.longitude
                 accuracy = location.accuracy.toDouble()
-                Log.e("Location", TAG + " startLocationUpdates  getLastLocation : " + location.latitude + "  /  " + location.longitude)
+                Log.e(
+                    "Location",
+                    TAG + " startLocationUpdates  getLastLocation : " + location.latitude + "  /  " + location.longitude
+                )
             }
         }
 
@@ -67,7 +79,12 @@ class FusedProviderOnceListener(private val context: Context) {
             fastestInterval = 0
             priority = LocationRequest.PRIORITY_BALANCED_POWER_ACCURACY
         }
-        fusedLocationProviderClient.requestLocationUpdates(locationRequest, locationCallback, Looper.getMainLooper())
+
+        fusedLocationProviderClient.requestLocationUpdates(
+            locationRequest,
+            locationCallback,
+            Looper.getMainLooper()
+        )
     }
 
     fun removeLocationUpdates() {

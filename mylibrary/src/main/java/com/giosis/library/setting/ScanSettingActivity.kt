@@ -5,14 +5,14 @@ import androidx.core.content.ContextCompat
 import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModelProvider
 import com.giosis.library.BR
-import com.giosis.library.BaseActivity
+import com.giosis.library.ViewModelActivity
 import com.giosis.library.R
 import com.giosis.library.databinding.ActivityScanSettingBinding
 import com.giosis.library.util.Preferences
 import kotlinx.android.synthetic.main.activity_scan_setting.*
 import kotlinx.android.synthetic.main.top_title.*
 
-class ScanSettingActivity : BaseActivity<ActivityScanSettingBinding, ScanSettingViewModel>() {
+class ScanSettingActivity : ViewModelActivity<ActivityScanSettingBinding, ScanSettingViewModel>() {
 
     val tag = "ScanSettingActivity"
 

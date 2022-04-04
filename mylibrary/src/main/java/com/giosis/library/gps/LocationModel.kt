@@ -19,8 +19,14 @@ class LocationModel {
     var differenceLat: Double = 0.0
     var differenceLng: Double = 0.0
 
-
-    fun setParcelLocation(parcelLat: Double, parcelLng: Double, zipCode: String, state: String?, city: String?, street: String?) {
+    fun setParcelLocation(
+        parcelLat: Double,
+        parcelLng: Double,
+        zipCode: String,
+        state: String?,
+        city: String?,
+        street: String?
+    ) {
 
         this.parcelLat = parcelLat
         this.parcelLng = parcelLng

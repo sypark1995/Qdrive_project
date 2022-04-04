@@ -12,7 +12,7 @@ import android.widget.Toast
 import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModelProvider
 import com.giosis.library.BR
-import com.giosis.library.BaseActivity
+import com.giosis.library.ViewModelActivity
 import com.giosis.library.R
 import com.giosis.library.databinding.ActivityLockerUserInfoBinding
 import com.giosis.library.util.DataUtil
@@ -21,7 +21,7 @@ import kotlinx.android.synthetic.main.top_title.*
 
 
 class LockerUserInfoActivity :
-    BaseActivity<ActivityLockerUserInfoBinding, LockerUserInfoViewModel>() {
+    ViewModelActivity<ActivityLockerUserInfoBinding, LockerUserInfoViewModel>() {
 
     val tag = "LockerUserInfoActivity"
 

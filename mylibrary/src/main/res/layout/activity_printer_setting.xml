@@ -32,7 +32,7 @@
                     android:textSize="@dimen/text_size_28px" />
 
                 <androidx.recyclerview.widget.RecyclerView
-                    android:id="@+id/list_setting_printer_connected_device"
+                    android:id="@+id/connected_device_recycler"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:layout_marginTop="15dp"
@@ -41,7 +41,7 @@
                     android:visibility="gone" />
 
                 <LinearLayout
-                    android:id="@+id/layout_setting_printer_no_connected_device"
+                    android:id="@+id/printer_connected_view"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:layout_marginTop="15dp"
@@ -91,7 +91,7 @@
                 </RelativeLayout>
 
                 <androidx.recyclerview.widget.RecyclerView
-                    android:id="@+id/list_setting_printer_paired_device"
+                    android:id="@+id/paired_device_recycler"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:divider="@null"
@@ -99,7 +99,7 @@
                     android:visibility="gone" />
 
                 <LinearLayout
-                    android:id="@+id/layout_setting_printer_no_paired_device"
+                    android:id="@+id/paired_device_view"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:layout_marginTop="15dp"
@@ -157,7 +157,7 @@
                 </RelativeLayout>
 
                 <androidx.recyclerview.widget.RecyclerView
-                    android:id="@+id/list_setting_printer_available_device"
+                    android:id="@+id/available_device_recycler"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:divider="@null"
@@ -165,7 +165,7 @@
                     android:visibility="gone" />
 
                 <LinearLayout
-                    android:id="@+id/layout_setting_printer_no_available_device"
+                    android:id="@+id/available_device_view"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:layout_marginTop="15dp"

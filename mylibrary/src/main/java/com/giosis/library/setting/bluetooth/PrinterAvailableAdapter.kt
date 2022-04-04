@@ -10,26 +10,27 @@ import androidx.recyclerview.widget.RecyclerView
 import com.giosis.library.R
 import java.util.*
 
-class PrinterAvailableAdapter(private val dataList: ArrayList<PrinterDeviceItem>, private val listener: PairedAdapterListener)
-    : RecyclerView.Adapter<PrinterAvailableAdapter.ViewHolder>() {
+class PrinterAvailableAdapter(
+    private val dataList: ArrayList<PrinterDeviceItem>,
+    private val listener: PairedAdapterListener
+) : RecyclerView.Adapter<PrinterAvailableAdapter.ViewHolder>() {
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): ViewHolder {
         val view = LayoutInflater.from(parent.context)
-                .inflate(R.layout.item_setting_printer_available_device, parent, false)
+            .inflate(R.layout.printer_item_layout, parent, false)
 
         return ViewHolder(view)
     }
 
     override fun onBindViewHolder(holder: ViewHolder, position: Int) {
-        holder.text_printer_other_item_device_name.text = dataList[position].deviceNm
-        holder.text_printer_other_item_device_address.text = dataList[position].deviceAddress
+        holder.deviceName.text = dataList[position].deviceNm
+        holder.deviceAddress.text = dataList[position].deviceAddress
 
-        holder.btn_printer_other_item_connect.setOnClickListener {
+        holder.connectBtn.setOnClickListener {
 
             try {
-                val _address = dataList[position].deviceAddress
-
-                val device = listener.getRemoteDevice(_address)
+                val address = dataList[position].deviceAddress
+                val device = listener.getRemoteDevice(address)
                 device?.createBond()
             } catch (e: Exception) {
                 Toast.makeText(it.context, "Pairing Exception : $e", Toast.LENGTH_SHORT).show()
@@ -43,9 +44,9 @@ class PrinterAvailableAdapter(private val dataList: ArrayList<PrinterDeviceItem>
 
     class ViewHolder(view: View) : RecyclerView.ViewHolder(view) {
 
-        val text_printer_other_item_device_name = view.findViewById<TextView>(R.id.text_printer_other_item_device_name)
-        val text_printer_other_item_device_address = view.findViewById<TextView>(R.id.text_printer_other_item_device_address)
-        val btn_printer_other_item_connect = view.findViewById<Button>(R.id.btn_printer_other_item_connect)
+        val deviceName: TextView = view.findViewById(R.id.device_name_text)
+        val deviceAddress: TextView = view.findViewById(R.id.device_address_text)
+        val connectBtn: Button = view.findViewById(R.id.connect_btn)
 
     }
 }

@@ -3,7 +3,7 @@ package com.giosis.library.setting
 import android.os.Bundle
 import androidx.lifecycle.ViewModelProvider
 import com.giosis.library.BR
-import com.giosis.library.BaseActivity
+import com.giosis.library.ViewModelActivity
 import com.giosis.library.R
 import com.giosis.library.databinding.ActivityDeveloperModeBinding
 import com.giosis.library.util.DataUtil
@@ -11,7 +11,7 @@ import kotlinx.android.synthetic.main.activity_developer_mode.*
 import kotlinx.android.synthetic.main.top_title.*
 
 
-class DeveloperModeActivity : BaseActivity<ActivityDeveloperModeBinding, DeveloperModeViewModel>() {
+class DeveloperModeActivity : ViewModelActivity<ActivityDeveloperModeBinding, DeveloperModeViewModel>() {
     val tag = "DeveloperModeActivity"
 
 

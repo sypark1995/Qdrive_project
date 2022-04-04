@@ -9,8 +9,11 @@ import com.giosis.library.bluetooth.BluetoothListener
 import com.giosis.library.databinding.DialogPickupTripDetailBinding
 
 
-class PickupTripDetailDialog(context: Context, private val list: ArrayList<RowItem>, private val listener: BluetoothListener)
-    : Dialog(context), PickupTripDetailAdapter.GetViewHeightListener {
+class PickupTripDetailDialog(
+    context: Context,
+    private val list: ArrayList<RowItem>,
+    private val listener: BluetoothListener
+) : Dialog(context), PickupTripDetailAdapter.GetViewHeightListener {
 
     val binding by lazy {
         DialogPickupTripDetailBinding.inflate(layoutInflater)
@@ -27,7 +30,10 @@ class PickupTripDetailDialog(context: Context, private val list: ArrayList<RowIt
             dismiss()
         }
 
-        val msg = String.format(context.resources.getString(R.string.text_trip_detail_requests), list.size)
+        val msg = String.format(
+            context.resources.getString(R.string.text_trip_detail_requests),
+            list.size
+        )
         binding.textCountTitle.text = msg
 
         binding.listTripDetail.layoutManager = LinearLayoutManager(context)

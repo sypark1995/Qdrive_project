@@ -37,9 +37,9 @@ class LocationManagerService : Service() {
 
             val channelId = "GPS_Location_Manager"
             val serviceChannel = NotificationChannel(
-                    channelId,
-                    "Service Channel",
-                    NotificationManager.IMPORTANCE_LOW
+                channelId,
+                "Service Channel",
+                NotificationManager.IMPORTANCE_LOW
             )
 
             serviceChannel.setShowBadge(false)
@@ -58,9 +58,10 @@ class LocationManagerService : Service() {
             }
 
             val builder = NotificationCompat.Builder(this, channelId)
-                    .setContentTitle(resources.getString(R.string.text_gps_location_service))
-                    .setSmallIcon(resourceId)
-                    .setContentIntent(pendingIntent)
+                .setContentTitle(resources.getString(R.string.text_gps_location_service))
+                .setSmallIcon(resourceId)
+                .setContentIntent(pendingIntent)
+
             val notification = builder.build()
             startForeground(1, notification)
         }
