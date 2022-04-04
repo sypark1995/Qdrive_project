@@ -66,7 +66,7 @@ import com.giosis.library.server.data.CnRPickupResult;
 import com.giosis.library.util.BarcodeType;
 import com.giosis.library.util.CommonActivity;
 import com.giosis.library.util.DataUtil;
-import com.giosis.library.util.DatabaseHelper;
+import com.giosis.library.database.DatabaseHelper;
 import com.giosis.library.util.GeoCodeUtil;
 import com.giosis.library.util.NetworkUtil;
 import com.giosis.library.util.PermissionActivity;

@@ -37,10 +37,9 @@ import com.giosis.library.list.pickup.OutletPickupStep1Activity;
 import com.giosis.library.list.pickup.PickupFailedActivity;
 import com.giosis.library.list.pickup.PickupZeroQtyActivity;
 import com.giosis.library.message.CustomerMessageListDetailActivity;
-import com.giosis.library.server.data.FailedCodeData;
 import com.giosis.library.util.BarcodeType;
 import com.giosis.library.util.DataUtil;
-import com.giosis.library.util.DatabaseHelper;
+import com.giosis.library.database.DatabaseHelper;
 import com.giosis.library.util.Preferences;
 
 import java.util.ArrayList;

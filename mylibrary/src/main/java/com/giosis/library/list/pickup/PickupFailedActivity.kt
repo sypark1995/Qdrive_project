@@ -24,6 +24,7 @@ import androidx.activity.result.contract.ActivityResultContracts
 import com.giosis.library.MemoryStatus
 import com.giosis.library.R
 import com.giosis.library.barcodescanner.StdResult
+import com.giosis.library.database.DatabaseHelper
 import com.giosis.library.databinding.ActivityPickupVisitLogBinding
 import com.giosis.library.gps.GPSTrackerManager
 import com.giosis.library.server.ImageUpload

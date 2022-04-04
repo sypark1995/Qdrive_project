@@ -26,7 +26,7 @@ import com.giosis.library.list.BarcodeData;
 import com.giosis.library.list.SigningView;
 import com.giosis.library.util.CommonActivity;
 import com.giosis.library.util.DataUtil;
-import com.giosis.library.util.DatabaseHelper;
+import com.giosis.library.database.DatabaseHelper;
 import com.giosis.library.util.NetworkUtil;
 import com.giosis.library.util.PermissionActivity;
 import com.giosis.library.util.PermissionChecker;

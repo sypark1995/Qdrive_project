@@ -23,7 +23,7 @@ import androidx.annotation.Nullable;
 import com.giosis.library.R;
 import com.giosis.library.list.RowItem;
 import com.giosis.library.util.CommonActivity;
-import com.giosis.library.util.DatabaseHelper;
+import com.giosis.library.database.DatabaseHelper;
 import com.giosis.library.util.Preferences;
 
 import java.lang.reflect.Field;

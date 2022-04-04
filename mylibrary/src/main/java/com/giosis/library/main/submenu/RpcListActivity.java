@@ -24,7 +24,7 @@ import com.giosis.library.list.ChildItem;
 import com.giosis.library.list.ListInProgressAdapter;
 import com.giosis.library.list.RowItem;
 import com.giosis.library.util.CommonActivity;
-import com.giosis.library.util.DatabaseHelper;
+import com.giosis.library.database.DatabaseHelper;
 import com.giosis.library.util.NDSpinner;
 import com.giosis.library.util.PermissionActivity;
 import com.giosis.library.util.PermissionChecker;

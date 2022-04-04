@@ -11,11 +11,12 @@ import android.view.View
 import android.widget.Toast
 import com.giosis.library.MemoryStatus
 import com.giosis.library.R
+import com.giosis.library.database.DatabaseHelper
 import com.giosis.library.gps.GPSTrackerManager
 import com.giosis.library.gps.LocationModel
 import com.giosis.library.list.BarcodeData
 import com.giosis.library.util.*
-import com.giosis.library.util.DatabaseHelper.Companion.getInstance
+import com.giosis.library.database.DatabaseHelper.Companion.getInstance
 import kotlinx.android.synthetic.main.activity_pickup_done.*
 import kotlinx.android.synthetic.main.top_title.*
 import java.util.*

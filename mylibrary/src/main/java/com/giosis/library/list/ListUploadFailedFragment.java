@@ -28,7 +28,7 @@ import androidx.fragment.app.Fragment;
 import com.giosis.library.R;
 import com.giosis.library.gps.GPSTrackerManager;
 import com.giosis.library.util.DataUtil;
-import com.giosis.library.util.DatabaseHelper;
+import com.giosis.library.database.DatabaseHelper;
 import com.giosis.library.util.PermissionActivity;
 import com.giosis.library.util.PermissionChecker;
 import com.giosis.library.util.Preferences;

@@ -11,7 +11,7 @@ import com.giosis.library.BR
 import com.giosis.library.BaseActivity
 import com.giosis.library.R
 import com.giosis.library.databinding.ActivitySettingBinding
-import com.giosis.library.util.DatabaseHelper
+import com.giosis.library.database.DatabaseHelper
 import com.giosis.library.util.Preferences
 import com.giosis.library.util.dialog.CustomDialog
 import com.giosis.library.util.dialog.DialogUiConfig

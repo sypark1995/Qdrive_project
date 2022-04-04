@@ -26,6 +26,7 @@ import com.giosis.library.R
 import com.giosis.library.barcodescanner.bluetooth.BluetoothChatService
 import com.giosis.library.barcodescanner.bluetooth.KScan
 import com.giosis.library.barcodescanner.bluetooth.KTSyncData
+import com.giosis.library.database.DatabaseHelper
 import com.giosis.library.databinding.ActivityCaptureBinding
 import com.giosis.library.gps.GPSTrackerManager
 import com.giosis.library.list.BarcodeData
@@ -36,7 +37,7 @@ import com.giosis.library.main.submenu.SelfCollectionDoneActivity
 import com.giosis.library.server.RetrofitClient
 import com.giosis.library.server.data.CnRPickupResult
 import com.giosis.library.util.*
-import com.giosis.library.util.DatabaseHelper.Companion.getInstance
+import com.giosis.library.database.DatabaseHelper.Companion.getInstance
 import com.giosis.library.util.dialog.ProgressDialog
 import com.google.gson.Gson
 import com.google.gson.reflect.TypeToken
@@ -1487,7 +1488,8 @@ class CaptureActivity1 : CommonActivity(), TorchListener, OnTouchListener, TextW
             // 복수건 배달완료 시점에서는 아무것도 안함 사인전 jmkang 2013-05-08
             val contentVal = ContentValues()
             contentVal.put("reg_id", Preferences.userId) // 해당 배송번호를 가지고 자신의아이디만 없데이트
-            updateCount = getInstance().update(DatabaseHelper.DB_TABLE_INTEGRATION_LIST, contentVal,
+            updateCount = getInstance().update(
+                DatabaseHelper.DB_TABLE_INTEGRATION_LIST, contentVal,
                     "invoice_no=? COLLATE NOCASE " + "and punchOut_stat <> 'S' " + "and reg_id = ?", arrayOf(invoiceNo, Preferences.userId))
         } else if (mScanType == BarcodeType.SELF_COLLECTION) {
             if (isInvoiceCodeRule(invoiceNo)) {

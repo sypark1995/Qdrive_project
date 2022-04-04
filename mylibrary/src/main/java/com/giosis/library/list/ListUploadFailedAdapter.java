@@ -28,10 +28,9 @@ import com.giosis.library.R;
 import com.giosis.library.UploadData;
 import com.giosis.library.gps.GPSTrackerManager;
 import com.giosis.library.main.DeviceDataUploadHelper;
-import com.giosis.library.server.data.FailedCodeData;
 import com.giosis.library.util.BarcodeType;
 import com.giosis.library.util.DataUtil;
-import com.giosis.library.util.DatabaseHelper;
+import com.giosis.library.database.DatabaseHelper;
 import com.giosis.library.util.OnServerEventListener;
 import com.giosis.library.util.Preferences;
 
