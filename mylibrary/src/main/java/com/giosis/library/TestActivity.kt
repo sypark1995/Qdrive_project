@@ -6,7 +6,7 @@ import androidx.lifecycle.ViewModelProvider
 import com.giosis.library.databinding.ActivityTestBinding
 
 
-class TestActivity : BaseActivity<ActivityTestBinding, TestViewModel>() {
+class TestActivity : ViewModelActivity<ActivityTestBinding, TestViewModel>() {
 
     override fun getLayoutId(): Int {
         return R.layout.activity_test

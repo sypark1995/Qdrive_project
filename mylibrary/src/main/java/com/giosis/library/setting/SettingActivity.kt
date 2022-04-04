@@ -8,7 +8,7 @@ import android.widget.Toast
 import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModelProvider
 import com.giosis.library.BR
-import com.giosis.library.BaseActivity
+import com.giosis.library.ViewModelActivity
 import com.giosis.library.R
 import com.giosis.library.databinding.ActivitySettingBinding
 import com.giosis.library.database.DatabaseHelper
@@ -19,7 +19,7 @@ import com.giosis.library.util.dialog.DialogViewModel
 import kotlinx.android.synthetic.main.activity_setting.*
 import kotlinx.android.synthetic.main.top_title.*
 
-class SettingActivity : BaseActivity<ActivitySettingBinding, SettingViewModel>() {
+class SettingActivity : ViewModelActivity<ActivitySettingBinding, SettingViewModel>() {
 
     val tag = "SettingActivity"
 

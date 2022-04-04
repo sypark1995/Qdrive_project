@@ -5,13 +5,13 @@ import android.view.View
 import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModelProvider
 import com.giosis.library.BR
-import com.giosis.library.BaseActivity
+import com.giosis.library.ViewModelActivity
 import com.giosis.library.R
 import com.giosis.library.databinding.ActivityNoticeDetailBinding
 import kotlinx.android.synthetic.main.activity_notice_detail.*
 import kotlinx.android.synthetic.main.top_title.*
 
-class NoticeDetailActivity : BaseActivity<ActivityNoticeDetailBinding, NoticeDetailViewModel>() {
+class NoticeDetailActivity : ViewModelActivity<ActivityNoticeDetailBinding, NoticeDetailViewModel>() {
     val tag = "NoticeDetailActivity"
 
     override fun getLayoutId(): Int {

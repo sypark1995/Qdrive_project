@@ -6,7 +6,7 @@ import android.view.inputmethod.EditorInfo
 import android.widget.Toast
 import androidx.lifecycle.ViewModelProvider
 import com.giosis.library.BR
-import com.giosis.library.BaseActivity
+import com.giosis.library.ViewModelActivity
 import com.giosis.library.R
 import com.giosis.library.databinding.ActivityAddressDialogBinding
 import kotlinx.android.synthetic.main.activity_address_dialog.*
@@ -15,7 +15,7 @@ import org.greenrobot.eventbus.Subscribe
 import org.greenrobot.eventbus.ThreadMode
 
 
-class AddressDialogActivity : BaseActivity<ActivityAddressDialogBinding, AddressDialogViewModel>() {
+class AddressDialogActivity : ViewModelActivity<ActivityAddressDialogBinding, AddressDialogViewModel>() {
 
     override fun getLayoutId(): Int {
         return R.layout.activity_address_dialog
