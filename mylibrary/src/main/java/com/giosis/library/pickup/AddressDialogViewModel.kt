@@ -13,7 +13,7 @@ import com.google.gson.Gson
 import io.reactivex.rxjava3.android.schedulers.AndroidSchedulers
 import io.reactivex.rxjava3.schedulers.Schedulers
 
-class AddressDialogViewModel : ListViewModel<AddressResult.AddressResultObject.AddressItem>() {
+class AddressDialogViewModel : ListViewModel<AddressResult.AddressItem>() {
 
 
     private val _searchText = MutableLiveData<String>()
@@ -46,7 +46,7 @@ class AddressDialogViewModel : ListViewModel<AddressResult.AddressResultObject.A
                 try {
                     val result1 = Gson().fromJson(
                         it.resultObject.toString(),
-                        AddressResult.AddressResultObject::class.java
+                        AddressResult::class.java
                     )
 
                     val result = result1.resultRows!!

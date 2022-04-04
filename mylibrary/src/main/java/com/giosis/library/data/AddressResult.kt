@@ -6,27 +6,16 @@ import java.io.Serializable
 
 class AddressResult : Serializable {
 
-    @SerializedName("ResultCode")
-    var resultCode = "-1"
+    @SerializedName("rows")
+    var resultRows: java.util.ArrayList<AddressItem>? = null
 
-    @SerializedName("ResultMsg")
-    var resultMsg = ""
+    class AddressItem {
 
-    @SerializedName("ResultObject")
-    var resultObject: AddressResultObject? = null
+        @SerializedName("zipcode")
+        var zipCode = ""
 
-    class AddressResultObject {
-
-        @SerializedName("rows")
-        var resultRows: java.util.ArrayList<AddressItem>? = null
-
-        class AddressItem {
-
-            @SerializedName("zipcode")
-            var zipCode = ""
-
-            @SerializedName("front_address")
-            var frontAddress = ""
+        @SerializedName("front_address")
+        var frontAddress = ""
 //
 //        @SerializedName("i_addr_no")
 //        var addressNo = ""
@@ -34,6 +23,5 @@ class AddressResult : Serializable {
 //        @SerializedName("number")
 //        var number = ""
 
-        }
     }
 }
