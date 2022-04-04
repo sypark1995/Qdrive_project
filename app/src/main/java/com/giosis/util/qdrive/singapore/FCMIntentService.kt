@@ -17,7 +17,7 @@ import com.giosis.library.database.DatabaseHelper
 import com.giosis.library.list.ListActivity
 import com.giosis.library.main.MainActivity
 import com.giosis.library.message.MessageListActivity
-import com.giosis.util.qdrive.util.DataUtil
+import com.giosis.library.util.DataUtil
 import com.google.firebase.messaging.FirebaseMessagingService
 import com.google.firebase.messaging.RemoteMessage
 import java.util.*
