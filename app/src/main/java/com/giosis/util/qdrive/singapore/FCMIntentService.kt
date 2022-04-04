@@ -43,7 +43,7 @@ class FCMIntentService : FirebaseMessagingService() {
 
         ////////////////////////////////////
 
-        const val DOWNLOAD = "download"
+        const val DOWNLOAD = "DOWNLOAD"
 
 
         const val QX_MSG = "QXMSG"
