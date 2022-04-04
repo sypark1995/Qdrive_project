@@ -14,6 +14,7 @@ import android.widget.LinearLayout
 import com.giosis.library.util.Preferences
 import android.widget.ProgressBar
 import androidx.appcompat.app.AlertDialog
+import com.giosis.library.data.LoginInfo
 import com.giosis.library.gps.GPSTrackerManager
 import com.giosis.library.main.MainActivity
 import com.giosis.library.main.SMSVerificationActivity
