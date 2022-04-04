@@ -9,7 +9,7 @@ import android.view.Window
 import androidx.core.app.NotificationManagerCompat
 import com.giosis.library.main.MainActivity
 import com.giosis.util.qdrive.singapore.databinding.DialogPushAlertBinding
-import com.giosis.util.qdrive.util.DataUtil
+import com.giosis.library.util.DataUtil
 import java.lang.Exception
 
 class AlertDialogActivity : Activity() {
