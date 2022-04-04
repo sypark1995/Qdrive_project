@@ -17,7 +17,7 @@ import androidx.core.app.NotificationManagerCompat;
 
 import com.giosis.library.main.MainActivity;
 import com.giosis.library.util.LocaleManager;
-import com.giosis.util.qdrive.util.DataUtil;
+import com.giosis.library.util.DataUtil;
 
 public class AlertDialogActivity extends Activity {
 
@@ -50,10 +50,8 @@ public class AlertDialogActivity extends Activity {
         actionValue = bun.getString("actionValue");
 
         try {
-
             outletPush = bun.getString("outletPush");
         } catch (Exception e) {
-
             outletPush = "N";
         }
 
@@ -84,6 +82,7 @@ public class AlertDialogActivity extends Activity {
                 intent.putExtra("outletPush", outletPush);
                 startActivity(intent);
                 overridePendingTransition(0, 0);
+
             } else if (actionKey.equals("LAE")) {      // 2019.02
 
                 try {
@@ -98,6 +97,7 @@ public class AlertDialogActivity extends Activity {
 
                 Intent intent = new Intent(Intent.ACTION_VIEW, Uri.parse(DataUtil.locker_pin_url));
                 startActivity(intent);
+
             } else if (actionKey.equals("LOGOUT")) {
 
                 Log.e("Alarm", "LogOut");
@@ -112,7 +112,6 @@ public class AlertDialogActivity extends Activity {
 
     @Override
     protected void attachBaseContext(Context base) {
-
         super.attachBaseContext(LocaleManager.Companion.getInstance(base).setLocale(base));
     }
 }
