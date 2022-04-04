@@ -40,14 +40,19 @@ class LoginActivity : CommonActivity() {
     private val binding by lazy {
         ActivityLoginBinding.inflate(layoutInflater)
     }
-    private val progressBar = ProgressBar(this)
+
+    private val progressBar by lazy {
+        ProgressBar(this)
+    }
 
     private var spinnerList = ArrayList<LoginNation>()
     private var spinnerPosition = 0
     private lateinit var appVersion: String
 
     // Location
-    private val gpsTrackerManager: GPSTrackerManager? = GPSTrackerManager(this)
+    private val gpsTrackerManager: GPSTrackerManager? by lazy {
+        GPSTrackerManager(this)
+    }
 
     // Permission
     var isPermissionTrue = false
@@ -121,6 +126,7 @@ class LoginActivity : CommonActivity() {
                 "login_icon_id"
             )
         )
+
         binding.spinnerSelectNation.adapter = LoginSpinnerAdapter(this, spinnerList)
 
         when (Preferences.userNation) {
