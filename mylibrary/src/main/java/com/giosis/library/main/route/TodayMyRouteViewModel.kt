@@ -139,7 +139,6 @@ class TodayMyRouteViewModel(application: Application) : AndroidViewModel(applica
                             it.resultObject, object : TypeToken<List<TrackingModel>>() {}.type
                         )
 
-
                         val list = ArrayList<String>()
                         var assignedCount = 0
                         var confirmedCount = 0
@@ -197,7 +196,6 @@ class TodayMyRouteViewModel(application: Application) : AndroidViewModel(applica
                         val result = Gson().fromJson<List<TrackingModel>>(
                             it.resultObject, object : TypeToken<List<TrackingModel>>() {}.type
                         )
-
 
                         val list = ArrayList<String>()
                         var progressCount = 0

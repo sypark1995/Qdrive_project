@@ -10,16 +10,18 @@ import androidx.recyclerview.widget.RecyclerView
 import com.giosis.library.R
 import com.giosis.library.databinding.ItemMyRouteBinding
 
-class RouteAdapter(private val viewModel: TodayMyRouteViewModel) : ListAdapter<RouteModel, RouteAdapter.ViewHolder>(
+class RouteAdapter(private val viewModel: TodayMyRouteViewModel) :
+    ListAdapter<RouteModel, RouteAdapter.ViewHolder>(
         RouteDiffUtil
-) {
+    ) {
 
     var routes: List<RouteModel> = listOf()
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): ViewHolder {
 
         val layoutInflater = LayoutInflater.from(parent.context)
-        val binding = DataBindingUtil.inflate<ItemMyRouteBinding>(layoutInflater, viewType, parent, false)
+        val binding =
+            DataBindingUtil.inflate<ItemMyRouteBinding>(layoutInflater, viewType, parent, false)
         return ViewHolder(binding)
     }
 
@@ -36,7 +38,8 @@ class RouteAdapter(private val viewModel: TodayMyRouteViewModel) : ListAdapter<R
     }
 
 
-    inner class ViewHolder(private val binding: ItemMyRouteBinding) : RecyclerView.ViewHolder(binding.root) {
+    inner class ViewHolder(private val binding: ItemMyRouteBinding) :
+        RecyclerView.ViewHolder(binding.root) {
 
         fun bind(viewModel: TodayMyRouteViewModel, position: Int) {
 

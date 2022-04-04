@@ -26,11 +26,13 @@ class TodayMyRouteActivity : AppCompatActivity() {
     // Permission
     var isPermissionTrue = false
     val PERMISSION_REQUEST_CODE = 1000
-    val PERMISSIONS = arrayOf(PermissionChecker.ACCESS_FINE_LOCATION, PermissionChecker.ACCESS_COARSE_LOCATION)
+    val PERMISSIONS =
+        arrayOf(PermissionChecker.ACCESS_FINE_LOCATION, PermissionChecker.ACCESS_COARSE_LOCATION)
 
     private val gpsTrackerManager: GPSTrackerManager? by lazy {
         GPSTrackerManager(this@TodayMyRouteActivity)
     }
+
     var gpsEnable = false
 
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -111,7 +113,11 @@ class TodayMyRouteActivity : AppCompatActivity() {
                 startActivity(intent)
             } catch (e: Exception) {
 
-                Toast.makeText(this, getString(R.string.msg_install_google_maps), Toast.LENGTH_SHORT).show()
+                Toast.makeText(
+                    this,
+                    getString(R.string.msg_install_google_maps),
+                    Toast.LENGTH_SHORT
+                ).show()
             }
         })
 
