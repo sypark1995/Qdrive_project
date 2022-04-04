@@ -312,18 +312,16 @@ class PickupZeroQtyActivity : CommonActivity() {
                 this@PickupZeroQtyActivity, binding.signCollectorSignature,
                 ImageUpload.QXPOP, "qdriver/sign", pickupNo
             )
+
             Log.e("Image", "  $bitmapString1 / $bitmapString2")
 
             if (bitmapString1 == "" || bitmapString2 == "") {
-
                 stdResult.resultCode = -100
                 stdResult.resultMsg = resources.getString(R.string.msg_upload_fail_image)
                 return@withContext stdResult
             }
 
-
             try {
-
                 val model = RetrofitClient.instanceDynamic().requestSetPickupUploadData(
                     "ZQ",
                     BarcodeType.PICKUP_DONE,
