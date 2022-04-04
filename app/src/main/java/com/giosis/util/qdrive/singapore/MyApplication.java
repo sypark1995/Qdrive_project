@@ -11,7 +11,7 @@ import android.util.Log;
 
 import androidx.multidex.MultiDexApplication;
 
-import com.giosis.library.util.DatabaseHelper;
+import com.giosis.library.database.DatabaseHelper;
 import com.giosis.library.util.LocaleManager;
 import com.giosis.library.util.Preferences;
 import com.giosis.util.qdrive.util.MySharedPreferences;
