@@ -151,17 +151,17 @@ class CustomerMessageListFragment : Fragment() {
                     if (oldResultString != ""
                         && oldResultString.equals(newResultString, ignoreCase = true)
                     ) {
-
                         Log.e(TAG, "  GetQdriverMessageList  EQUAL")
+
                     } else {
+
                         if (it.resultObject != null) {
 
                             newResultString = it.toString()
-                            val list =
-                                Gson().fromJson<ArrayList<MessageListResult>>(
-                                    it.resultObject,
-                                    object : TypeToken<ArrayList<MessageListResult>>() {}.type
-                                )
+                            val list = Gson().fromJson<ArrayList<MessageListResult>>(
+                                it.resultObject,
+                                object : TypeToken<ArrayList<MessageListResult>>() {}.type
+                            )
 
                             if (0 < list.size) {
 
@@ -187,8 +187,8 @@ class CustomerMessageListFragment : Fragment() {
                                     }
                                 }
                                 (activity as MessageListActivity).setCustomerNewImage(count)
-                            } else {
 
+                            } else {
                                 binding.recyclerMessages.visibility = View.GONE
                                 binding.layoutBottom.visibility = View.GONE
                                 binding.textEmpty.visibility = View.VISIBLE

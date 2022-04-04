@@ -95,11 +95,11 @@ class AdminMessageListFragment : Fragment() {
                         if (it.resultObject != null) {
 
                             newResultString = it.toString()
-                            val list =
-                                Gson().fromJson<ArrayList<MessageListResult>>(
-                                    it.resultObject,
-                                    object : TypeToken<ArrayList<MessageListResult>>() {}.type
-                                )
+
+                            val list = Gson().fromJson<ArrayList<MessageListResult>>(
+                                it.resultObject,
+                                object : TypeToken<ArrayList<MessageListResult>>() {}.type
+                            )
 
                             if (0 < list.size) {
 

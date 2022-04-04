@@ -15,11 +15,15 @@ import java.text.DateFormat
 import java.text.SimpleDateFormat
 import java.util.*
 
-class MessageDetailAdapter(var context: Context, var items: ArrayList<MessageDetailResult>?, var calledFragment: String) : RecyclerView.Adapter<MessageDetailAdapter.ViewHolder>() {
+class MessageDetailAdapter(
+    var context: Context,
+    var items: ArrayList<MessageDetailResult>?,
+    var calledFragment: String
+) : RecyclerView.Adapter<MessageDetailAdapter.ViewHolder>() {
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): ViewHolder {
-
-        val binding = ItemMessageDetailBinding.inflate(LayoutInflater.from(parent.context), parent, false)
+        val binding =
+            ItemMessageDetailBinding.inflate(LayoutInflater.from(parent.context), parent, false)
         return ViewHolder(binding)
     }
 
@@ -45,7 +49,6 @@ class MessageDetailAdapter(var context: Context, var items: ArrayList<MessageDet
 
             // Customer(Admin) ID   visible/gone
             if (position == 0) {
-
                 holder.binding.textReceiverId.visibility = View.VISIBLE
             } else {  // 1 이상일 때, 나의 이전  ALIGN  비교
 
@@ -60,7 +63,10 @@ class MessageDetailAdapter(var context: Context, var items: ArrayList<MessageDet
                     val prevDate = items!![position - 1].send_date
                     val thisDate = items!![position].send_date
                     val diffTime = diffTime(prevDate, thisDate)
-                    Log.e("Message", diffTime.toString() + " " + prevDate + "  " + thisDate + "  " + items!![position].message)
+                    Log.e(
+                        "Message",
+                        diffTime.toString() + " " + prevDate + "  " + thisDate + "  " + items!![position].message
+                    )
 
                     if (1 <= diffTime) {
                         holder.binding.textReceiverId.visibility = View.VISIBLE
@@ -71,7 +77,8 @@ class MessageDetailAdapter(var context: Context, var items: ArrayList<MessageDet
             }
 
             if (Build.VERSION.SDK_INT >= 24) {
-                holder.binding.textReceiveMessage.text = Html.fromHtml(item.message, Html.FROM_HTML_MODE_LEGACY)
+                holder.binding.textReceiveMessage.text =
+                    Html.fromHtml(item.message, Html.FROM_HTML_MODE_LEGACY)
             } else {
                 holder.binding.textReceiveMessage.text = Html.fromHtml(item.message)
             }
@@ -83,7 +90,8 @@ class MessageDetailAdapter(var context: Context, var items: ArrayList<MessageDet
             holder.binding.textSendDate.text = item.send_date
 
             if (Build.VERSION.SDK_INT >= 24) {
-                holder.binding.textSendMessage.text = Html.fromHtml(item.message, Html.FROM_HTML_MODE_LEGACY)
+                holder.binding.textSendMessage.text =
+                    Html.fromHtml(item.message, Html.FROM_HTML_MODE_LEGACY)
             } else {
                 holder.binding.textSendMessage.text = Html.fromHtml(item.message)
             }
@@ -102,24 +110,44 @@ class MessageDetailAdapter(var context: Context, var items: ArrayList<MessageDet
             if (nextAlign.equals(thisAlign, ignoreCase = true)) {  // left > left  // right > right
                 if (1 <= diffTime) {
 
-                    holder.binding.layoutMessageDetail.setPadding(dpTopx(15f), dpTopx(5f), dpTopx(15f), dpTopx(10f))
+                    holder.binding.layoutMessageDetail.setPadding(
+                        dpTopx(15f),
+                        dpTopx(5f),
+                        dpTopx(15f),
+                        dpTopx(10f)
+                    )
                     holder.binding.textReceiveDate.visibility = View.VISIBLE
                     holder.binding.textSendDate.visibility = View.VISIBLE
                 } else {        // 1분 미만으로 동일한 사람이 입력!
 
-                    holder.binding.layoutMessageDetail.setPadding(dpTopx(15f), dpTopx(5f), dpTopx(15f), dpTopx(5f))
+                    holder.binding.layoutMessageDetail.setPadding(
+                        dpTopx(15f),
+                        dpTopx(5f),
+                        dpTopx(15f),
+                        dpTopx(5f)
+                    )
                     holder.binding.textReceiveDate.visibility = View.GONE
                     holder.binding.textSendDate.visibility = View.GONE
                 }
             } else {        // left > right  // right > left
 
-                holder.binding.layoutMessageDetail.setPadding(dpTopx(15f), dpTopx(5f), dpTopx(15f), dpTopx(10f))
+                holder.binding.layoutMessageDetail.setPadding(
+                    dpTopx(15f),
+                    dpTopx(5f),
+                    dpTopx(15f),
+                    dpTopx(10f)
+                )
                 holder.binding.textReceiveDate.visibility = View.VISIBLE
                 holder.binding.textSendDate.visibility = View.VISIBLE
             }
         } else {        // last
 
-            holder.binding.layoutMessageDetail.setPadding(dpTopx(15f), dpTopx(5f), dpTopx(15f), dpTopx(10f))
+            holder.binding.layoutMessageDetail.setPadding(
+                dpTopx(15f),
+                dpTopx(5f),
+                dpTopx(15f),
+                dpTopx(10f)
+            )
             holder.binding.textReceiveDate.visibility = View.VISIBLE
             holder.binding.textSendDate.visibility = View.VISIBLE
         }
@@ -139,7 +167,11 @@ class MessageDetailAdapter(var context: Context, var items: ArrayList<MessageDet
 
 
     private fun dpTopx(dp: Float): Int {
-        return TypedValue.applyDimension(TypedValue.COMPLEX_UNIT_DIP, dp, context.resources.displayMetrics).toInt()
+        return TypedValue.applyDimension(
+            TypedValue.COMPLEX_UNIT_DIP,
+            dp,
+            context.resources.displayMetrics
+        ).toInt()
     }
 
     @SuppressLint("SimpleDateFormat")
