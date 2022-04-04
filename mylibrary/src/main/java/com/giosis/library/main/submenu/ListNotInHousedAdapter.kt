@@ -10,7 +10,7 @@ import android.widget.ImageView
 import android.widget.LinearLayout
 import android.widget.TextView
 import com.giosis.library.R
-import com.giosis.library.server.data.NotInHousedResult
+import com.giosis.library.data.NotInHousedResult
 import java.text.ParseException
 import java.text.SimpleDateFormat
 import java.util.*

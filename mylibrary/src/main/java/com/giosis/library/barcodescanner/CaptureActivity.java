@@ -62,7 +62,7 @@ import com.giosis.library.list.pickup.PickupTakeBackActivity;
 import com.giosis.library.main.DriverAssignResult;
 import com.giosis.library.main.submenu.SelfCollectionDoneActivity;
 import com.giosis.library.server.RetrofitClient;
-import com.giosis.library.server.data.CnRPickupResult;
+import com.giosis.library.data.CnRPickupResult;
 import com.giosis.library.util.BarcodeType;
 import com.giosis.library.util.CommonActivity;
 import com.giosis.library.util.DataUtil;

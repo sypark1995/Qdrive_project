@@ -7,7 +7,7 @@ import androidx.lifecycle.MutableLiveData
 import com.giosis.library.ListViewModel
 import com.giosis.library.R
 import com.giosis.library.server.RetrofitClient
-import com.giosis.library.server.data.AddressResult
+import com.giosis.library.data.AddressResult
 import com.giosis.library.util.SingleLiveEvent
 import com.google.gson.Gson
 import io.reactivex.rxjava3.android.schedulers.AndroidSchedulers

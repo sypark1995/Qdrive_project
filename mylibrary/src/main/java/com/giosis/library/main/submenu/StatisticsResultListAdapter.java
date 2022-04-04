@@ -9,7 +9,7 @@ import android.widget.BaseAdapter;
 import android.widget.TextView;
 
 import com.giosis.library.R;
-import com.giosis.library.server.data.StatisticsResult;
+import com.giosis.library.data.StatisticsResult;
 
 import java.util.ArrayList;
 

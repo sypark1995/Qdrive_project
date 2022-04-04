@@ -29,7 +29,7 @@ import com.giosis.library.databinding.ActivityPickupVisitLogBinding
 import com.giosis.library.gps.GPSTrackerManager
 import com.giosis.library.server.ImageUpload
 import com.giosis.library.server.RetrofitClient
-import com.giosis.library.server.data.FailedCodeData
+import com.giosis.library.data.FailedCodeData
 import com.giosis.library.util.*
 import com.giosis.library.util.dialog.ProgressDialog
 import kotlinx.coroutines.CoroutineScope

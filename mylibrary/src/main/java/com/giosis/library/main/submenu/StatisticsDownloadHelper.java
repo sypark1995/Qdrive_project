@@ -7,7 +7,7 @@ import android.util.Log;
 
 import com.giosis.library.R;
 import com.giosis.library.server.Custom_JsonParser;
-import com.giosis.library.server.data.StatisticsResult;
+import com.giosis.library.data.StatisticsResult;
 import com.giosis.library.util.DataUtil;
 import com.giosis.library.util.DisplayUtil;
 import com.giosis.library.util.NetworkUtil;

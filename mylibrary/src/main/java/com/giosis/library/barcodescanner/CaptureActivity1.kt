@@ -35,7 +35,7 @@ import com.giosis.library.list.pickup.*
 import com.giosis.library.main.DriverAssignResult
 import com.giosis.library.main.submenu.SelfCollectionDoneActivity
 import com.giosis.library.server.RetrofitClient
-import com.giosis.library.server.data.CnRPickupResult
+import com.giosis.library.data.CnRPickupResult
 import com.giosis.library.util.*
 import com.giosis.library.database.DatabaseHelper.Companion.getInstance
 import com.giosis.library.util.dialog.ProgressDialog

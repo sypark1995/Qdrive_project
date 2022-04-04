@@ -17,7 +17,7 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import com.giosis.library.R;
-import com.giosis.library.server.data.StatisticsResult;
+import com.giosis.library.data.StatisticsResult;
 import com.giosis.library.util.CommonActivity;
 import com.giosis.library.util.Preferences;
 

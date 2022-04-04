@@ -16,7 +16,7 @@
 
         <variable
             name="item"
-            type="com.giosis.library.server.data.AddressResult.AddressResultObject.AddressItem" />
+            type="com.giosis.library.data.AddressResult.AddressResultObject.AddressItem" />
     </data>
 
     <RelativeLayout

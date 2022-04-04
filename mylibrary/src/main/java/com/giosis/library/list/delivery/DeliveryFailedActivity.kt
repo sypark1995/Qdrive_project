@@ -26,7 +26,7 @@ import com.giosis.library.MemoryStatus
 import com.giosis.library.R
 import com.giosis.library.databinding.ActivityDeliveryVisitLogBinding
 import com.giosis.library.gps.GPSTrackerManager
-import com.giosis.library.server.data.FailedCodeData
+import com.giosis.library.data.FailedCodeData
 import com.giosis.library.util.*
 import java.util.*
 

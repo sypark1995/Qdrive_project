@@ -16,7 +16,7 @@
 
         <variable
             name="item"
-            type="com.giosis.library.server.data.NoticeResult.NoticeItem" />
+            type="com.giosis.library.data.NoticeResult.NoticeItem" />
     </data>
 
     <LinearLayout

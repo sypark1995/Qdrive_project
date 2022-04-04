@@ -7,7 +7,7 @@ import androidx.databinding.ViewDataBinding
 import androidx.databinding.library.baseAdapters.BR
 import androidx.recyclerview.widget.RecyclerView
 import com.giosis.library.*
-import com.giosis.library.server.data.NoticeResult
+import com.giosis.library.data.NoticeResult
 
 class NoticeAdapter(private val viewModel: NoticeViewModel) :
     BaseRecyclerAdapter<NoticeAdapter.ViewHolder, NoticeResult.NoticeItem>(null) {

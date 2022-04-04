@@ -15,9 +15,9 @@ import com.giosis.library.R
 import com.giosis.library.UploadData
 import com.giosis.library.database.DatabaseHelper
 import com.giosis.library.server.RetrofitClient
-import com.giosis.library.server.data.QSignDeliveryList
-import com.giosis.library.server.data.QSignPickupList
-import com.giosis.library.server.data.RestDaysResult
+import com.giosis.library.data.QSignDeliveryList
+import com.giosis.library.data.QSignPickupList
+import com.giosis.library.data.RestDaysResult
 import com.giosis.library.util.*
 import com.google.gson.Gson
 import com.google.gson.reflect.TypeToken

@@ -6,8 +6,7 @@ import androidx.lifecycle.LiveData
 import com.giosis.library.ListViewModel
 import com.giosis.library.R
 import com.giosis.library.server.RetrofitClient
-import com.giosis.library.server.data.NoticeResult
-import com.giosis.library.util.Preferences
+import com.giosis.library.data.NoticeResult
 import com.giosis.library.util.SingleLiveEvent
 import com.google.gson.Gson
 import com.google.gson.reflect.TypeToken

@@ -2,7 +2,7 @@ package com.giosis.library.server
 
 import android.os.Build
 import com.giosis.library.MemoryStatus
-import com.giosis.library.server.data.ImageResult
+import com.giosis.library.data.ImageResult
 import com.giosis.library.util.DataUtil
 import com.giosis.library.util.Preferences
 import io.reactivex.rxjava3.core.Single

@@ -6,7 +6,7 @@ import com.giosis.library.ActivityRequestCode
 import com.giosis.library.BaseViewModel
 import com.giosis.library.R
 import com.giosis.library.server.RetrofitClient
-import com.giosis.library.server.data.CustomSellerInfo
+import com.giosis.library.data.CustomSellerInfo
 import com.giosis.library.util.SingleLiveEvent
 import com.giosis.library.util.dialog.DialogUiConfig
 import com.giosis.library.util.dialog.DialogViewModel

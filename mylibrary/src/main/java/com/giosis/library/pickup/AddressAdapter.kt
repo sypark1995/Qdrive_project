@@ -9,7 +9,7 @@ import com.giosis.library.BR
 import com.giosis.library.BaseRecyclerAdapter
 import com.giosis.library.ListViewModel
 import com.giosis.library.R
-import com.giosis.library.server.data.AddressResult
+import com.giosis.library.data.AddressResult
 
 class AddressAdapter(private val viewModel: AddressDialogViewModel) :
     BaseRecyclerAdapter<AddressAdapter.ViewHolder, AddressResult.AddressResultObject.AddressItem>(

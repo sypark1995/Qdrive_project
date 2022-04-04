@@ -22,7 +22,7 @@ import com.giosis.library.gps.GPSTrackerManager;
 import com.giosis.library.main.DriverAssignResult;
 import com.giosis.library.server.ImageUpload;
 import com.giosis.library.server.RetrofitClient;
-import com.giosis.library.server.data.FailedCodeData;
+import com.giosis.library.data.FailedCodeData;
 import com.google.firebase.analytics.FirebaseAnalytics;
 import com.google.gson.Gson;
 import com.google.gson.reflect.TypeToken;

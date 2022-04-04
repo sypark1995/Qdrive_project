@@ -9,7 +9,7 @@ import com.giosis.library.R
 import com.giosis.library.barcodescanner.CaptureActivity1
 import com.giosis.library.databinding.ActivityPickupScanListBinding
 import com.giosis.library.server.RetrofitClient
-import com.giosis.library.server.data.PickupPackingListResult
+import com.giosis.library.data.PickupPackingListResult
 import com.giosis.library.util.BarcodeType
 import com.giosis.library.util.CommonActivity
 import com.google.gson.Gson
