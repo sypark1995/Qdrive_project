@@ -76,10 +76,6 @@ class DatabaseHelper private constructor(private val mContext: Context) :
                 "street, " +
                 "order_type)"
 
-//        private const val CREATE_TABLE_REST_DAYS = "CREATE TABLE IF NOT EXISTS " +
-//                DB_TABLE_REST_DAYS + "(rest_dt, title)"
-
-
         @Volatile
         private var instance: DatabaseHelper? = null
 
@@ -169,7 +165,7 @@ class DatabaseHelper private constructor(private val mContext: Context) :
      */
     override fun close() {
         if (mInstance != null) {
-            Log.e(TAG, "instance of database (" + DB_NAME + ") close !")
+            Log.e(TAG, "instance of database ($DB_NAME) close !")
             sqLiteDatabase!!.close()
             mInstance = null
         }

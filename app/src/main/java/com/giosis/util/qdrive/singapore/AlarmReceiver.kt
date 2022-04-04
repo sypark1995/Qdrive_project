@@ -7,7 +7,7 @@ import android.content.Context
 import android.content.Intent
 import android.os.Bundle
 import android.util.Log
-import com.giosis.library.AlertDialogActivity
+import com.giosis.library.push.AlertDialogActivity
 import com.giosis.library.util.Preferences
 
 

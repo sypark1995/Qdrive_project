@@ -13,7 +13,7 @@ import android.os.Bundle
 import android.os.Vibrator
 import android.util.Log
 import androidx.core.app.NotificationCompat
-import com.giosis.library.AlertDialogActivity
+import com.giosis.library.push.AlertDialogActivity
 import com.giosis.library.database.DatabaseHelper
 import com.giosis.library.list.ListActivity
 import com.giosis.library.main.MainActivity

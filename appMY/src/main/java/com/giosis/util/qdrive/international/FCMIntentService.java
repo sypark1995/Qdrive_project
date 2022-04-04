@@ -19,7 +19,7 @@ import android.util.Log;
 
 import androidx.core.app.NotificationCompat;
 
-import com.giosis.library.AlertDialogActivity;
+import com.giosis.library.push.AlertDialogActivity;
 import com.giosis.library.main.MainActivity;
 import com.giosis.library.message.MessageListActivity;
 import com.giosis.library.util.BarcodeType;

@@ -1,4 +1,4 @@
-package com.giosis.library
+package com.giosis.library.push
 
 import android.annotation.SuppressLint
 import android.app.Activity
@@ -9,9 +9,9 @@ import android.os.Bundle
 import android.view.View
 import android.view.Window
 import androidx.core.app.NotificationManagerCompat
+import com.giosis.library.R
 import com.giosis.library.databinding.DialogPushAlertBinding
 import com.giosis.library.main.MainActivity
-import com.giosis.library.push.PushData
 import com.giosis.library.util.DataUtil
 import com.giosis.library.util.LocaleManager.Companion.getInstance
 import com.giosis.library.util.Preferences
@@ -60,7 +60,9 @@ class AlertDialogActivity : Activity() {
 
             if (actionKey == PushData.LZD_PICK) {
                 binding.titleText.text = "Pickup no : $actionValue"
-                binding.messageText.text = resources.getString(R.string.text_lazada_order) + "\n" + resources.getString(R.string.text_lazada_content)
+                binding.messageText.text = resources.getString(R.string.text_lazada_order) + "\n" + resources.getString(
+                    R.string.text_lazada_content
+                )
 
             } else {
                 if (notiTitle!!.isEmpty()) {
