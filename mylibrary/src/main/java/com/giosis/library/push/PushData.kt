@@ -27,5 +27,4 @@ object PushData {
     const val LAE = "LAE"
     const val SRL = "SRL"
 
-    //////////////////// MY
 }

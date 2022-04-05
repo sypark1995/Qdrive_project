@@ -60,9 +60,10 @@ class AlertDialogActivity : Activity() {
 
             if (actionKey == PushData.LZD_PICK) {
                 binding.titleText.text = "Pickup no : $actionValue"
-                binding.messageText.text = resources.getString(R.string.text_lazada_order) + "\n" + resources.getString(
-                    R.string.text_lazada_content
-                )
+                binding.messageText.text =
+                    resources.getString(R.string.text_lazada_order) + "\n" + resources.getString(
+                        R.string.text_lazada_content
+                    )
 
             } else {
                 if (notiTitle!!.isEmpty()) {
@@ -103,7 +104,7 @@ class AlertDialogActivity : Activity() {
                     val intent = Intent(Intent.ACTION_VIEW, Uri.parse(DataUtil.locker_pin_url))
                     startActivity(intent)
 
-                } else if (actionKey == "LOGOUT") {
+                } else if (actionKey == PushData.LOGOUT) {
                     val intent = if (Preferences.userNation == "SG") {
                         Intent(
                             this@AlertDialogActivity,
@@ -127,6 +128,7 @@ class AlertDialogActivity : Activity() {
     override fun onBackPressed() {
         //back key 막기
     }
+
     override fun attachBaseContext(base: Context?) {
         super.attachBaseContext(getInstance(base!!).setLocale(base))
     }
