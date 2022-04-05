@@ -18,7 +18,7 @@ object PushData {
 
     ////////////////////////////////////
 
-    const val DOWNLOAD = "download"
+    const val DOWNLOAD = "DOWNLOAD"
 
 
     const val QX_MSG = "QXMSG"
@@ -27,4 +27,5 @@ object PushData {
     const val LAE = "LAE"
     const val SRL = "SRL"
 
+    //////////////////// MY
 }
