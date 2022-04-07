@@ -3,25 +3,17 @@ package com.giosis.library.main
 import android.content.Intent
 import android.graphics.Color
 import android.os.Bundle
+import android.view.Gravity
 import android.view.LayoutInflater
 import android.view.View
-import android.widget.*
-import android.widget.ExpandableListView.*
 import androidx.appcompat.app.ActionBarDrawerToggle
 import androidx.core.content.ContextCompat
 import com.giosis.library.R
-import com.giosis.library.barcodescanner.CaptureActivity1
 import com.giosis.library.databinding.ActivityMainBinding
 import com.giosis.library.databinding.ViewNavListHeaderBinding
 import com.giosis.library.list.ListActivity
-import com.giosis.library.main.route.TodayMyRouteActivity
-import com.giosis.library.main.submenu.ListNotInHousedActivity
-import com.giosis.library.main.submenu.OutletOrderStatusActivity
-import com.giosis.library.main.submenu.StatisticsActivity
 import com.giosis.library.message.MessageListActivity
-import com.giosis.library.pickup.CreatePickupOrderActivity
 import com.giosis.library.setting.SettingActivity
-import com.giosis.library.util.BarcodeType
 import com.giosis.library.util.CommonActivity
 import com.giosis.library.util.Preferences
 import java.util.*
@@ -37,9 +29,10 @@ open class AppBaseActivity : CommonActivity() {
         ViewNavListHeaderBinding.inflate(LayoutInflater.from(this), null, false)
     }
 
-    val adapter by lazy {
-        NavListViewAdapter(this)
-    }
+//    val adapter by lazy {
+//        NavListViewAdapter(this)
+//    }
+
 
     private var titleString: String = ""
 
@@ -51,6 +44,13 @@ open class AppBaseActivity : CommonActivity() {
     fun setTopTitle(title: String) {
         titleString = title
         binding.appBar.textTopTitle.text = titleString
+    }
+    fun leftMenuGone() {
+        val item = NavListItem()
+        if (binding.drawerLayout.isDrawerOpen(Gravity.LEFT)) {
+            binding.drawerLayout.closeDrawer(Gravity.LEFT)
+            item.isClicked = false
+        }
     }
 
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -71,8 +71,9 @@ open class AppBaseActivity : CommonActivity() {
         binding.drawerLayout.addDrawerListener(toggle)
         toggle.syncState()
 
-        binding.navList.addHeaderView(headerBinding.root)
-        binding.navList.setAdapter(adapter)
+//        binding.navList.addHeaderView(headerBinding.root)
+//        val adapter2 = NavListViewAdapter2()
+//        binding.navList.setAdapter(adapter2)
 
         //
         binding.layoutBottomBarHome.setOnClickListener {
@@ -116,8 +117,10 @@ open class AppBaseActivity : CommonActivity() {
         }
 
         // sub divider 칼라 없앰
-        binding.navList.setChildDivider(resources.getDrawable(R.color.transparent))
+//        binding.navList.setChildDivider(resources.getDrawable(R.color.transparent))
 
+        val adapter2 = NavListViewAdapter2()
+        binding.navList.adapter = adapter2
         val arrayList: ArrayList<String>
         val arrayList1: ArrayList<String>
         if (Preferences.outletDriver == "Y") {
@@ -156,32 +159,44 @@ open class AppBaseActivity : CommonActivity() {
                 )
             )
         }
+        val leftList = ArrayList(resources.getStringArray(R.array.left_menu).toMutableList())
 
-        adapter.addItem(
-            ContextCompat.getDrawable(this, R.drawable.side_icon_home_selector),
+        if (Preferences.userNation == "SG" && Preferences.pickupDriver == "Y") {
+            leftList.add(4,resources.getString(R.string.text_create_pickup_order))
+        }
+
+
+        adapter2.addItem(
+            getDrawable(R.drawable.side_icon_home_selector),
             getString(R.string.navi_home),
             null,
             -1
         )
-        adapter.addItem(
+        adapter2.addItem(
+            getDrawable(R.drawable.side_icon_home_selector),
+            getString(R.string.navi_home),
+            null,
+            -1
+        )
+        adapter2.addItem(
             ContextCompat.getDrawable(this, R.drawable.side_icon_scan_selector),
             getString(R.string.navi_scan),
             arrayList,
             -1
         )
-        adapter.addItem(
+        adapter2.addItem(
             ContextCompat.getDrawable(this, R.drawable.side_icon_list_selector),
             getString(R.string.navi_list),
             arrayList1,
             -1
         )
-        adapter.addItem(
+        adapter2.addItem(
             ContextCompat.getDrawable(this, R.drawable.side_icon_statistics_selector),
             getString(R.string.navi_statistics),
             null,
             -1
         )
-        adapter.addItem(
+        adapter2.addItem(
             ContextCompat.getDrawable(this, R.drawable.side_icon_settings_selector),
             getString(R.string.navi_setting),
             null,
@@ -189,7 +204,7 @@ open class AppBaseActivity : CommonActivity() {
         )
 
         if (Preferences.userNation == "SG" && Preferences.pickupDriver == "Y") {
-            adapter.addItem(
+            adapter2.addItem(
                 ContextCompat.getDrawable(this, R.drawable.icon_pickup_order),
                 getString(R.string.text_create_pickup_order),
                 null,
@@ -202,7 +217,7 @@ open class AppBaseActivity : CommonActivity() {
 //             adapter.addItem(ContextCompat.getDrawable(this, R.drawable.side_icon_route_selector), getString(R.string.text_today_my_route), null, 4);
 //        }
 
-        binding.navList.setOnGroupClickListener { _, _, position: Int, _ ->
+/*        binding.navList.setOnGroupClickListener { _, _, position: Int, _ ->
 
             val title = adapter.getItem(position).title
 
@@ -328,7 +343,7 @@ open class AppBaseActivity : CommonActivity() {
             binding.drawerLayout.closeDrawers()
 
             false
-        }
+        }*/
     }
 
     fun setMessageCount(customer_count: Int, admin_count: Int) {

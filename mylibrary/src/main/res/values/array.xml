@@ -56,4 +56,12 @@
         <item>DPC3-Out Date</item>
         <item>Delivered Date</item>
     </string-array>
+
+    <string-array name="left_menu">
+        <item>@string/navi_home</item>
+        <item>@string/navi_scan</item>
+        <item>@string/navi_list</item>
+        <item>@string/navi_statistics</item>
+        <item>@string/navi_setting</item>
+    </string-array>
 </resources>

@@ -3,10 +3,12 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
     android:background="@color/white"
     android:orientation="vertical">
 
     <RelativeLayout
+        android:id="@+id/group_item_layout"
         android:layout_width="match_parent"
         android:layout_height="60dp"
         android:paddingLeft="20dp"
@@ -36,7 +38,6 @@
             android:layout_height="10dp"
             android:layout_alignParentEnd="true"
             android:layout_centerVertical="true"
-            android:src="@drawable/qdrive_side_arrow"
             android:visibility="gone" />
     </RelativeLayout>
 
@@ -51,4 +52,10 @@
             android:layout_height="1dp"
             android:background="@color/color_f1f1f1" />
     </FrameLayout>
+    <androidx.recyclerview.widget.RecyclerView
+        android:id="@+id/childRecyclerView"
+        app:layoutManager="androidx.recyclerview.widget.LinearLayoutManager"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"/>
+
 </LinearLayout>
