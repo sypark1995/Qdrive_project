@@ -21,6 +21,10 @@ android {
         multiDexEnabled true
     }
     buildTypes {
+        debug {
+            debuggable true
+            signingConfig signingConfigs.debug
+        }
         release {
             minifyEnabled false
             proguardFiles getDefaultProguardFile('proguard-android.txt'), 'proguard-rules.pro'
@@ -37,6 +41,15 @@ android {
     buildFeatures {
         dataBinding true
         viewBinding true
+    }
+
+    signingConfigs {
+        debug {
+            keyAlias key_alias_debug
+            keyPassword key_pass_debug
+            storeFile file(keystore_debug)
+            storePassword keystore_pass_debug
+        }
     }
 
     compileOptions {
