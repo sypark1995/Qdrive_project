@@ -7,6 +7,6 @@ class NavListItem {
 
     var icon: Drawable? = null
     var title: String? = null
-    var isClicked: Boolean = false
+    var isClicked: Boolean = true
     var childArrayList: ArrayList<String>? = null
 }

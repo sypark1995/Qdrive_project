@@ -15,7 +15,7 @@ import com.giosis.library.main.submenu.ListNotInHousedActivity
 import com.giosis.library.main.submenu.OutletOrderStatusActivity
 import com.giosis.library.util.BarcodeType
 
-class NavListViewAdapter3(val item: ArrayList<String>) :
+class LeftChildViewAdapter(val item: ArrayList<String>) :
     RecyclerView.Adapter<RecyclerView.ViewHolder>() {
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): RecyclerView.ViewHolder {
         val view =
@@ -24,7 +24,6 @@ class NavListViewAdapter3(val item: ArrayList<String>) :
     }
 
     inner class ViewHolder(val view: View) : RecyclerView.ViewHolder(view) {
-        private val layoutNavListSub: LinearLayout = view.findViewById(R.id.layout_nav_list_sub)
         private val textNavListSubTitle: TextView = view.findViewById(R.id.text_nav_list_sub_title)
 
         fun bind(item: String) {
@@ -92,7 +91,7 @@ class NavListViewAdapter3(val item: ArrayList<String>) :
     }
 
     override fun onBindViewHolder(holder: RecyclerView.ViewHolder, position: Int) {
-        (holder as NavListViewAdapter3.ViewHolder).bind(item[position])
+        (holder as LeftChildViewAdapter.ViewHolder).bind(item[position])
         holder.setIsRecyclable(false)
     }
 

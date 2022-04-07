@@ -17,13 +17,13 @@ import com.giosis.library.setting.SettingActivity
 import com.giosis.library.util.Preferences
 
 
-class NavListViewAdapter2() : RecyclerView.Adapter<RecyclerView.ViewHolder>() {
-    private val TAG = "NavListViewAdapter2"
+class LeftViewAdapter : RecyclerView.Adapter<RecyclerView.ViewHolder>() {
+    private val TAG = "LeftViewAdapter"
     private val item = ArrayList<NavListItem>()
     private var expandedPos = -1
     private var typeHeader = 0
     private var typeItem = 1
-    private var beforeTitle = ""
+
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): RecyclerView.ViewHolder =
         when (viewType) {
             typeHeader -> {
@@ -52,12 +52,18 @@ class NavListViewAdapter2() : RecyclerView.Adapter<RecyclerView.ViewHolder>() {
     }
 
     inner class HeaderViewHolder(val view: View) : RecyclerView.ViewHolder(view) {
+        private val layoutMessage: RelativeLayout = view.findViewById(R.id.layout_message)
         private val driverOffice: TextView = view.findViewById(R.id.text_nav_header_driver_office)
         private val driverName: TextView = view.findViewById(R.id.text_nav_header_driver_name)
         private val btnMessage: ImageView = view.findViewById(R.id.btn_message)
         fun bind() {
             driverOffice.text = Preferences.officeName
             driverName.text = Preferences.userName
+            if (Preferences.userNation == "SG") {
+                layoutMessage.visibility = View.VISIBLE
+            } else {
+                layoutMessage.visibility = View.GONE
+            }
             btnMessage.setOnClickListener {
                 val intent = Intent(it.context, MessageListActivity::class.java)
                 //todo_sypark data
@@ -73,7 +79,8 @@ class NavListViewAdapter2() : RecyclerView.Adapter<RecyclerView.ViewHolder>() {
         private val imgNavListIcon: ImageView = view.findViewById(R.id.img_nav_list_icon)
         private val textNavListTitle: TextView = view.findViewById(R.id.text_nav_list_title)
         private val imgNavListArrowImg: ImageView = view.findViewById(R.id.img_nav_list_arrow_img)
-        private val childRecyclerView: RecyclerView = view.findViewById(R.id.childRecyclerView)
+        private val leftChildRecyclerView: RecyclerView =
+            view.findViewById(R.id.left_child_recyclerView)
 
 
         fun bind(item: NavListItem) {
@@ -85,27 +92,22 @@ class NavListViewAdapter2() : RecyclerView.Adapter<RecyclerView.ViewHolder>() {
                 imgNavListArrowImg.visibility = View.GONE
             } else {
                 imgNavListArrowImg.visibility = View.VISIBLE
-                childRecyclerView.adapter = NavListViewAdapter3(item.childArrayList!!)
+                leftChildRecyclerView.adapter = LeftChildViewAdapter(item.childArrayList!!)
             }
-            beforeTitle = textNavListTitle.text.toString()
+
             groupItemLayout.setOnClickListener {
                 expandedPos = position
-                item.isClicked = !item.isClicked
 
                 when (item.title) {
                     view.resources.getString(R.string.navi_home) -> {
                         (view.context as AppBaseActivity).leftMenuGone()
-//                        val intent = Intent(view.context, MainActivity::class.java)
-//                        (view.context as AppBaseActivity).startActivity(intent)
                     }
                     view.resources.getString(R.string.navi_scan) -> {
-
-//                        val intent = Intent(view.context, ScanActivity::class.java)
-//                        (view.context as AppBaseActivity).startActivity(intent)
                     }
                     view.resources.getString(R.string.navi_list) -> {
-//                        val intent = Intent(view.context, ListActivity::class.java)
-//                        (view.context as AppBaseActivity).startActivity(intent)
+                        leftChildRecyclerView.setOnClickListener {
+                            leftChildRecyclerView.visibility = View.GONE
+                        }
                     }
                     view.resources.getString(R.string.navi_statistics) -> {
                         (view.context as AppBaseActivity).leftMenuGone()
@@ -125,11 +127,14 @@ class NavListViewAdapter2() : RecyclerView.Adapter<RecyclerView.ViewHolder>() {
                 }
                 notifyDataSetChanged()
             }
+
             if (expandedPos == position) {
                 if (item.isClicked) {
-                    childRecyclerView.visibility = View.VISIBLE
+                    leftChildRecyclerView.visibility = View.VISIBLE
                     imgNavListArrowImg.setBackgroundResource(R.drawable.qdrive_side_arrow_up)
-                    if (item.title != view.resources.getString(R.string.navi_home)) {
+                    if (item.title == view.resources.getString(R.string.navi_scan) ||
+                        item.title == view.resources.getString(R.string.navi_list)
+                    ) {
                         textNavListTitle.setTextColor(
                             ContextCompat.getColor(
                                 view.context,
@@ -145,9 +150,12 @@ class NavListViewAdapter2() : RecyclerView.Adapter<RecyclerView.ViewHolder>() {
                         view.resources.getString(R.string.navi_list) -> {
                             imgNavListIcon.setBackgroundResource(R.drawable.qdrive_side_list_h)
                         }
+                        else -> {
+                            item.isClicked = false
+                        }
                     }
                 } else {
-                    childRecyclerView.visibility = View.GONE
+                    leftChildRecyclerView.visibility = View.GONE
                     imgNavListArrowImg.setBackgroundResource(R.drawable.qdrive_side_arrow)
                     textNavListTitle.setTextColor(
                         ContextCompat.getColor(
@@ -155,9 +163,10 @@ class NavListViewAdapter2() : RecyclerView.Adapter<RecyclerView.ViewHolder>() {
                             R.color.color_303030
                         )
                     )
+                    item.isClicked = true
                 }
             } else {
-                childRecyclerView.visibility = View.GONE
+                leftChildRecyclerView.visibility = View.GONE
             }
         }
 
@@ -173,18 +182,13 @@ class NavListViewAdapter2() : RecyclerView.Adapter<RecyclerView.ViewHolder>() {
     fun addItem(
         icon: Drawable?,
         title: String?,
-        list: ArrayList<String>?,
-        position: Int
+        list: ArrayList<String>?
     ) {
         val data = NavListItem()
         data.icon = icon
         data.title = title
         data.childArrayList = list
-        if (position != -1) {
-            item.add(position, data)
-        } else {
-            item.add(data)
-        }
+        item.add(data)
     }
 
     override fun getItemViewType(position: Int): Int =
