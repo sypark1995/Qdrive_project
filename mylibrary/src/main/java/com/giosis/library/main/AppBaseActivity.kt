@@ -1,6 +1,5 @@
 package com.giosis.library.main
 
-import android.annotation.SuppressLint
 import android.content.Intent
 import android.graphics.Color
 import android.os.Bundle
@@ -8,7 +7,6 @@ import android.view.Gravity
 import android.view.LayoutInflater
 import android.view.View
 import androidx.appcompat.app.ActionBarDrawerToggle
-import androidx.core.content.ContextCompat
 import com.giosis.library.R
 import com.giosis.library.databinding.ActivityMainBinding
 import com.giosis.library.databinding.ViewNavListHeaderBinding
@@ -138,48 +136,56 @@ open class AppBaseActivity : CommonActivity() {
         }
 
         leftViewAdapter.addItem(
-            getDrawable(R.drawable.side_icon_home_selector),
+            R.drawable.side_icon_home_selector,
             getString(R.string.navi_home),
             null,
         )
 
         leftViewAdapter.addItem(
-            getDrawable(R.drawable.side_icon_home_selector),
+            R.drawable.side_icon_home_selector,
             getString(R.string.navi_home),
             null,
         )
 
         leftViewAdapter.addItem(
-            ContextCompat.getDrawable(this, R.drawable.side_icon_scan_selector),
+            R.drawable.memu_scan_selector,
             getString(R.string.navi_scan),
             leftSubList,
         )
 
         leftViewAdapter.addItem(
-            ContextCompat.getDrawable(this, R.drawable.side_icon_list_selector),
+            R.drawable.side_icon_list_selector,
             getString(R.string.navi_list),
             leftSubList2,
         )
 
         leftViewAdapter.addItem(
-            ContextCompat.getDrawable(this, R.drawable.side_icon_statistics_selector),
+            R.drawable.side_icon_statistics_selector,
             getString(R.string.navi_statistics),
             null,
         )
 
         if (Preferences.userNation == "SG" && Preferences.pickupDriver == "Y") {
             leftViewAdapter.addItem(
-                ContextCompat.getDrawable(this, R.drawable.icon_pickup_order),
+                R.drawable.icon_pickup_order,
                 getString(R.string.text_create_pickup_order),
                 null,
             )
         }
 
         leftViewAdapter.addItem(
-            ContextCompat.getDrawable(this, R.drawable.side_icon_settings_selector),
+            R.drawable.side_icon_settings_selector,
             getString(R.string.navi_setting),
             null,
         )
+    }
+
+    companion object {
+        enum class MENU_LIST {
+
+        }
+
+
     }
 
     fun setMessageCount(customer_count: Int, admin_count: Int) {
@@ -192,7 +198,6 @@ open class AppBaseActivity : CommonActivity() {
     }
 
     fun goneMessageCount() {
-
         headerBinding.textMessageCount.visibility = View.GONE
     }
 

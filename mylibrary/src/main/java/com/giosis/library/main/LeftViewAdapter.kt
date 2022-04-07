@@ -1,7 +1,6 @@
 package com.giosis.library.main
 
 import android.content.Intent
-import android.graphics.drawable.Drawable
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -19,7 +18,9 @@ import com.giosis.library.util.Preferences
 
 class LeftViewAdapter : RecyclerView.Adapter<RecyclerView.ViewHolder>() {
     private val TAG = "LeftViewAdapter"
+
     private val item = ArrayList<NavListItem>()
+
     private var expandedPos = -1
     private var typeHeader = 0
     private var typeItem = 1
@@ -56,14 +57,17 @@ class LeftViewAdapter : RecyclerView.Adapter<RecyclerView.ViewHolder>() {
         private val driverOffice: TextView = view.findViewById(R.id.text_nav_header_driver_office)
         private val driverName: TextView = view.findViewById(R.id.text_nav_header_driver_name)
         private val btnMessage: ImageView = view.findViewById(R.id.btn_message)
+
         fun bind() {
             driverOffice.text = Preferences.officeName
             driverName.text = Preferences.userName
+
             if (Preferences.userNation == "SG") {
                 layoutMessage.visibility = View.VISIBLE
             } else {
                 layoutMessage.visibility = View.GONE
             }
+
             btnMessage.setOnClickListener {
                 val intent = Intent(it.context, MessageListActivity::class.java)
                 //todo_sypark data
@@ -82,10 +86,9 @@ class LeftViewAdapter : RecyclerView.Adapter<RecyclerView.ViewHolder>() {
         private val leftChildRecyclerView: RecyclerView =
             view.findViewById(R.id.left_child_recyclerView)
 
-
         fun bind(item: NavListItem) {
             textNavListTitle.text = item.title
-            imgNavListIcon.background = item.icon
+            imgNavListIcon.setImageResource(item.id)
             imgNavListArrowImg.setBackgroundResource(R.drawable.qdrive_side_arrow)
 
             if (item.childArrayList == null) {
@@ -96,17 +99,17 @@ class LeftViewAdapter : RecyclerView.Adapter<RecyclerView.ViewHolder>() {
             }
 
             groupItemLayout.setOnClickListener {
-                expandedPos = position
 
                 when (item.title) {
                     view.resources.getString(R.string.navi_home) -> {
                         (view.context as AppBaseActivity).leftMenuGone()
                     }
-                    view.resources.getString(R.string.navi_scan) -> {
-                    }
+                    view.resources.getString(R.string.navi_scan),
                     view.resources.getString(R.string.navi_list) -> {
-                        leftChildRecyclerView.setOnClickListener {
-                            leftChildRecyclerView.visibility = View.GONE
+                        expandedPos = if (expandedPos == layoutPosition) {
+                            -1
+                        } else {
+                            layoutPosition
                         }
                     }
                     view.resources.getString(R.string.navi_statistics) -> {
@@ -128,13 +131,26 @@ class LeftViewAdapter : RecyclerView.Adapter<RecyclerView.ViewHolder>() {
                 notifyDataSetChanged()
             }
 
-            if (expandedPos == position) {
-                if (item.isClicked) {
-                    leftChildRecyclerView.visibility = View.VISIBLE
-                    imgNavListArrowImg.setBackgroundResource(R.drawable.qdrive_side_arrow_up)
-                    if (item.title == view.resources.getString(R.string.navi_scan) ||
-                        item.title == view.resources.getString(R.string.navi_list)
-                    ) {
+            imgNavListIcon.isSelected = false
+
+            if (expandedPos == layoutPosition) {
+                imgNavListIcon.isSelected = true
+                leftChildRecyclerView.visibility = View.VISIBLE
+                imgNavListArrowImg.setBackgroundResource(R.drawable.qdrive_side_arrow_up)
+
+                when (item.title) {
+//                    view.resources.getString(R.string.navi_scan) -> {
+//                        imgNavListIcon.setImageResource(R.drawable.qdrive_side_scan_h)
+//                        textNavListTitle.setTextColor(
+//                            ContextCompat.getColor(
+//                                view.context,
+//                                R.color.color_4fb648
+//                            )
+//                        )
+//                    }
+                    view.resources.getString(R.string.navi_list) -> {
+                        imgNavListIcon.setImageResource(R.drawable.qdrive_side_list_h)
+
                         textNavListTitle.setTextColor(
                             ContextCompat.getColor(
                                 view.context,
@@ -142,29 +158,11 @@ class LeftViewAdapter : RecyclerView.Adapter<RecyclerView.ViewHolder>() {
                             )
                         )
                     }
-
-                    when (item.title) {
-                        view.resources.getString(R.string.navi_scan) -> {
-                            imgNavListIcon.setBackgroundResource(R.drawable.qdrive_side_scan_h)
-                        }
-                        view.resources.getString(R.string.navi_list) -> {
-                            imgNavListIcon.setBackgroundResource(R.drawable.qdrive_side_list_h)
-                        }
-                        else -> {
-                            item.isClicked = false
-                        }
+                    else -> {
+                        //
                     }
-                } else {
-                    leftChildRecyclerView.visibility = View.GONE
-                    imgNavListArrowImg.setBackgroundResource(R.drawable.qdrive_side_arrow)
-                    textNavListTitle.setTextColor(
-                        ContextCompat.getColor(
-                            view.context,
-                            R.color.color_303030
-                        )
-                    )
-                    item.isClicked = true
                 }
+
             } else {
                 leftChildRecyclerView.visibility = View.GONE
             }
@@ -172,22 +170,20 @@ class LeftViewAdapter : RecyclerView.Adapter<RecyclerView.ViewHolder>() {
 
     }
 
-
     override fun getItemCount(): Int {
-        return if (item.size > 0) {
-            item.size
-        } else 0
+        return item.size
     }
 
     fun addItem(
-        icon: Drawable?,
-        title: String?,
+        id: Int,
+        title: String,
         list: ArrayList<String>?
     ) {
         val data = NavListItem()
-        data.icon = icon
+        data.id = id
         data.title = title
         data.childArrayList = list
+
         item.add(data)
     }
 

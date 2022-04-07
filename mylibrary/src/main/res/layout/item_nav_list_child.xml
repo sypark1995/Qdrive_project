@@ -10,11 +10,11 @@
     android:paddingRight="20dp">
 
     <TextView
-        android:gravity="center_vertical"
         android:id="@+id/text_nav_list_sub_title"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         android:layout_gravity="center_vertical"
+        android:gravity="center_vertical"
         android:textColor="@color/color_303030"
         android:textSize="@dimen/text_size_36px"
         tools:text="Delivery done" />
