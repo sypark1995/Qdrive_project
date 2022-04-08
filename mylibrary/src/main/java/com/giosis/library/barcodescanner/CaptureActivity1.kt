@@ -26,7 +26,9 @@ import com.giosis.library.R
 import com.giosis.library.barcodescanner.bluetooth.BluetoothChatService
 import com.giosis.library.barcodescanner.bluetooth.KScan
 import com.giosis.library.barcodescanner.bluetooth.KTSyncData
+import com.giosis.library.data.CnRPickupResult
 import com.giosis.library.database.DatabaseHelper
+import com.giosis.library.database.DatabaseHelper.Companion.getInstance
 import com.giosis.library.databinding.ActivityCaptureBinding
 import com.giosis.library.gps.GPSTrackerManager
 import com.giosis.library.list.BarcodeData
@@ -35,9 +37,7 @@ import com.giosis.library.list.pickup.*
 import com.giosis.library.main.DriverAssignResult
 import com.giosis.library.main.submenu.SelfCollectionDoneActivity
 import com.giosis.library.server.RetrofitClient
-import com.giosis.library.data.CnRPickupResult
 import com.giosis.library.util.*
-import com.giosis.library.database.DatabaseHelper.Companion.getInstance
 import com.giosis.library.util.dialog.ProgressDialog
 import com.google.gson.Gson
 import com.google.gson.reflect.TypeToken
@@ -53,7 +53,8 @@ import java.util.*
 import java.util.regex.Pattern
 
 
-class CaptureActivity1 : CommonActivity(), TorchListener, OnTouchListener, TextWatcher, View.OnKeyListener {
+class CaptureActivity1 : CommonActivity(), TorchListener, OnTouchListener, TextWatcher,
+    View.OnKeyListener {
 
     private val binding by lazy {
         ActivityCaptureBinding.inflate(layoutInflater)
@@ -62,6 +63,9 @@ class CaptureActivity1 : CommonActivity(), TorchListener, OnTouchListener, TextW
     // intent
     val title: String by lazy {
         intent.getStringExtra("title") ?: ""
+    }
+    val titleResource: Int by lazy {
+        intent.getIntExtra("title_resource", 0)
     }
     private val mScanType: String by lazy {
         intent.getStringExtra("type") ?: ""
@@ -92,7 +96,11 @@ class CaptureActivity1 : CommonActivity(), TorchListener, OnTouchListener, TextW
     }
     private var mIsScanDeviceListActivityRun = false
     private var connectedDeviceName: String? = null
-    private val mUpdateTimeTask = Runnable { if (KTSyncData.AutoConnect && KTSyncData.bIsRunning) KTSyncData.mChatService.connect(connectedDevice) }
+    private val mUpdateTimeTask = Runnable {
+        if (KTSyncData.AutoConnect && KTSyncData.bIsRunning) KTSyncData.mChatService.connect(
+            connectedDevice
+        )
+    }
 
     //
     private val deleteDrawable by lazy {
@@ -228,14 +236,19 @@ class CaptureActivity1 : CommonActivity(), TorchListener, OnTouchListener, TextW
 
     public override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        window.addFlags(WindowManager.LayoutParams.FLAG_KEEP_SCREEN_ON
-                or WindowManager.LayoutParams.FLAG_DISMISS_KEYGUARD
-                or WindowManager.LayoutParams.FLAG_SHOW_WHEN_LOCKED
-                or WindowManager.LayoutParams.FLAG_TURN_SCREEN_ON)
+        window.addFlags(
+            WindowManager.LayoutParams.FLAG_KEEP_SCREEN_ON
+                    or WindowManager.LayoutParams.FLAG_DISMISS_KEYGUARD
+                    or WindowManager.LayoutParams.FLAG_SHOW_WHEN_LOCKED
+                    or WindowManager.LayoutParams.FLAG_TURN_SCREEN_ON
+        )
         setContentView(binding.root)
 
-
-        binding.layoutTopTitle.textTopTitle.text = title
+        if (title.isNotEmpty()) {
+            binding.layoutTopTitle.textTopTitle.text = title
+        } else {
+            binding.layoutTopTitle.textTopTitle.text = resources.getString(titleResource)
+        }
 
         binding.layoutCamera.isSelected = true
         binding.layoutScanner.isSelected = false
@@ -246,7 +259,8 @@ class CaptureActivity1 : CommonActivity(), TorchListener, OnTouchListener, TextW
 
         if (mScanType == BarcodeType.OUTLET_PICKUP_SCAN) {
 
-            resultData = intent.getSerializableExtra("tracking_data") as OutletPickupDoneResult.OutletPickupDoneItem
+            resultData =
+                intent.getSerializableExtra("tracking_data") as OutletPickupDoneResult.OutletPickupDoneItem
 
             if (route == "FL") {
                 binding.layoutTopTitle.textTopTitle.setText(R.string.text_title_fl_pickup)
@@ -292,7 +306,12 @@ class CaptureActivity1 : CommonActivity(), TorchListener, OnTouchListener, TextW
         binding.editTrackingNumber.setOnKeyListener(this)
         binding.editTrackingNumber.isLongClickable = false
         binding.editTrackingNumber.setTextIsSelectable(false)
-        deleteDrawable?.setBounds(0, 0, deleteDrawable!!.intrinsicWidth, deleteDrawable!!.intrinsicHeight)
+        deleteDrawable?.setBounds(
+            0,
+            0,
+            deleteDrawable!!.intrinsicWidth,
+            deleteDrawable!!.intrinsicHeight
+        )
 
         // 블루투스 초기화
         initBluetoothDevice()
@@ -351,15 +370,20 @@ class CaptureActivity1 : CommonActivity(), TorchListener, OnTouchListener, TextW
         binding.layoutScannedCount.visibility = View.VISIBLE
         when (scanType) {
 
-            BarcodeType.CONFIRM_MY_DELIVERY_ORDER -> binding.btnConfirm.text = resources.getString(R.string.button_update) //onUpdateButtonClick
-            BarcodeType.CHANGE_DELIVERY_DRIVER -> binding.btnConfirm.text = resources.getString(R.string.button_done) //onUpdateButtonClick
+            BarcodeType.CONFIRM_MY_DELIVERY_ORDER -> binding.btnConfirm.text =
+                resources.getString(R.string.button_update) //onUpdateButtonClick
+            BarcodeType.CHANGE_DELIVERY_DRIVER -> binding.btnConfirm.text =
+                resources.getString(R.string.button_done) //onUpdateButtonClick
             BarcodeType.DELIVERY_DONE -> {
                 binding.layoutScannedCount.visibility = View.GONE
-                binding.btnConfirm.text = resources.getString(R.string.button_confirm) //onConfirmButtonClick
+                binding.btnConfirm.text =
+                    resources.getString(R.string.button_confirm) //onConfirmButtonClick
             }
             BarcodeType.PICKUP_CNR, BarcodeType.PICKUP_SCAN_ALL, BarcodeType.PICKUP_ADD_SCAN,
-            BarcodeType.PICKUP_TAKE_BACK, BarcodeType.OUTLET_PICKUP_SCAN -> binding.btnConfirm.text = resources.getString(R.string.button_next) //onNextButtonClick
-            BarcodeType.SELF_COLLECTION -> binding.btnConfirm.text = resources.getString(R.string.button_confirm) // onCaptureConfirmButtonClick
+            BarcodeType.PICKUP_TAKE_BACK, BarcodeType.OUTLET_PICKUP_SCAN -> binding.btnConfirm.text =
+                resources.getString(R.string.button_next) //onNextButtonClick
+            BarcodeType.SELF_COLLECTION -> binding.btnConfirm.text =
+                resources.getString(R.string.button_confirm) // onCaptureConfirmButtonClick
         }
     }
 
@@ -368,12 +392,22 @@ class CaptureActivity1 : CommonActivity(), TorchListener, OnTouchListener, TextW
         super.onResume()
 
         if (Preferences.userId == "") {
-            Toast.makeText(this@CaptureActivity1, resources.getString(R.string.msg_qdrive_auto_logout), Toast.LENGTH_SHORT).show()
+            Toast.makeText(
+                this@CaptureActivity1,
+                resources.getString(R.string.msg_qdrive_auto_logout),
+                Toast.LENGTH_SHORT
+            ).show()
             try {
                 val intent: Intent = if ("SG" == Preferences.userNation) {
-                    Intent(this@CaptureActivity1, Class.forName("com.giosis.util.qdrive.singapore.LoginActivity"))
+                    Intent(
+                        this@CaptureActivity1,
+                        Class.forName("com.giosis.util.qdrive.singapore.LoginActivity")
+                    )
                 } else {
-                    Intent(this@CaptureActivity1, Class.forName("com.giosis.util.qdrive.international.LoginActivity"))
+                    Intent(
+                        this@CaptureActivity1,
+                        Class.forName("com.giosis.util.qdrive.international.LoginActivity")
+                    )
                 }
                 intent.flags = Intent.FLAG_ACTIVITY_CLEAR_TOP or Intent.FLAG_ACTIVITY_SINGLE_TOP
                 startActivity(intent)
@@ -422,7 +456,10 @@ class CaptureActivity1 : CommonActivity(), TorchListener, OnTouchListener, TextW
                 if (gpsEnable && gpsTrackerManager != null) {
 
                     gpsTrackerManager!!.gpsTrackerStart()
-                    Log.e("Location", "$TAG GPSTrackerManager onResume : ${gpsTrackerManager!!.latitude}  ${gpsTrackerManager!!.longitude}")
+                    Log.e(
+                        "Location",
+                        "$TAG GPSTrackerManager onResume : ${gpsTrackerManager!!.latitude}  ${gpsTrackerManager!!.longitude}"
+                    )
                 } else {
                     DataUtil.enableLocationSettings(this@CaptureActivity1)
                 }
@@ -431,8 +468,9 @@ class CaptureActivity1 : CommonActivity(), TorchListener, OnTouchListener, TextW
 
         // Scanned List
         if (mScanType == BarcodeType.CONFIRM_MY_DELIVERY_ORDER || mScanType == BarcodeType.CHANGE_DELIVERY_DRIVER ||
-                mScanType == BarcodeType.PICKUP_CNR || mScanType == BarcodeType.PICKUP_SCAN_ALL || mScanType == BarcodeType.PICKUP_ADD_SCAN ||
-                mScanType == BarcodeType.PICKUP_TAKE_BACK || mScanType == BarcodeType.OUTLET_PICKUP_SCAN) {
+            mScanType == BarcodeType.PICKUP_CNR || mScanType == BarcodeType.PICKUP_SCAN_ALL || mScanType == BarcodeType.PICKUP_ADD_SCAN ||
+            mScanType == BarcodeType.PICKUP_TAKE_BACK || mScanType == BarcodeType.OUTLET_PICKUP_SCAN
+        ) {
             try {
 
                 scanBarcodeArrayList!!.clear()
@@ -485,7 +523,11 @@ class CaptureActivity1 : CommonActivity(), TorchListener, OnTouchListener, TextW
                 }
             } catch (e: Exception) {
 
-                Toast.makeText(this@CaptureActivity1, resources.getString(R.string.text_data_error), Toast.LENGTH_SHORT).show()
+                Toast.makeText(
+                    this@CaptureActivity1,
+                    resources.getString(R.string.text_data_error),
+                    Toast.LENGTH_SHORT
+                ).show()
                 scanBarcodeArrayList!!.clear()
                 adapter.notifyDataSetChanged()
                 barcodeList.clear()
@@ -527,14 +569,21 @@ class CaptureActivity1 : CommonActivity(), TorchListener, OnTouchListener, TextW
     @SuppressLint("ClickableViewAccessibility")
     override fun onTouch(v: View, event: MotionEvent): Boolean {
         if (mScanType == BarcodeType.PICKUP_CNR || mScanType == BarcodeType.PICKUP_SCAN_ALL || mScanType == BarcodeType.PICKUP_ADD_SCAN ||
-                mScanType == BarcodeType.OUTLET_PICKUP_SCAN || mScanType == BarcodeType.PICKUP_TAKE_BACK) {
+            mScanType == BarcodeType.OUTLET_PICKUP_SCAN || mScanType == BarcodeType.PICKUP_TAKE_BACK
+        ) {
 
             if (Preferences.userId == "karam.kim") {
-                inputMethodManager.showSoftInput(binding.editTrackingNumber, InputMethodManager.SHOW_IMPLICIT)
+                inputMethodManager.showSoftInput(
+                    binding.editTrackingNumber,
+                    InputMethodManager.SHOW_IMPLICIT
+                )
             }
         } else {
 
-            inputMethodManager.showSoftInput(binding.editTrackingNumber, InputMethodManager.SHOW_IMPLICIT)
+            inputMethodManager.showSoftInput(
+                binding.editTrackingNumber,
+                InputMethodManager.SHOW_IMPLICIT
+            )
         }
 
         if (event.action != MotionEvent.ACTION_UP) {
@@ -584,10 +633,14 @@ class CaptureActivity1 : CommonActivity(), TorchListener, OnTouchListener, TextW
                     scannedBarcode.add(tempScanNo)
                 }
 
-                Log.i(TAG, "  onKey  KEYCODE_ENTER : " + tempScanNo + " / " + isDuplicate + "  //  " + event.action)
+                Log.i(
+                    TAG,
+                    "  onKey  KEYCODE_ENTER : " + tempScanNo + " / " + isDuplicate + "  //  " + event.action
+                )
                 if (mScanType == BarcodeType.CONFIRM_MY_DELIVERY_ORDER || mScanType == BarcodeType.CHANGE_DELIVERY_DRIVER ||
-                        mScanType == BarcodeType.PICKUP_CNR || mScanType == BarcodeType.PICKUP_SCAN_ALL || mScanType == BarcodeType.PICKUP_ADD_SCAN ||
-                        mScanType == BarcodeType.PICKUP_TAKE_BACK || mScanType == BarcodeType.OUTLET_PICKUP_SCAN) {
+                    mScanType == BarcodeType.PICKUP_CNR || mScanType == BarcodeType.PICKUP_SCAN_ALL || mScanType == BarcodeType.PICKUP_ADD_SCAN ||
+                    mScanType == BarcodeType.PICKUP_TAKE_BACK || mScanType == BarcodeType.OUTLET_PICKUP_SCAN
+                ) {
                     if (event.action != KeyEvent.ACTION_DOWN) {
                         return true
                     }
@@ -665,7 +718,11 @@ class CaptureActivity1 : CommonActivity(), TorchListener, OnTouchListener, TextW
         if (isDuplicate) {
 
             beepManagerDuple.playBeepSoundAndVibrate()
-            val toast = Toast.makeText(this@CaptureActivity1, R.string.msg_tracking_number_already_entered, Toast.LENGTH_SHORT)
+            val toast = Toast.makeText(
+                this@CaptureActivity1,
+                R.string.msg_tracking_number_already_entered,
+                Toast.LENGTH_SHORT
+            )
             toast.setGravity(Gravity.CENTER, 0, 20)
             toast.show()
 
@@ -684,174 +741,279 @@ class CaptureActivity1 : CommonActivity(), TorchListener, OnTouchListener, TextW
                     type = "OL"
 
                 RetrofitClient.instanceDynamic().requestValidationCheckDpc3Out(strBarcodeNo, type)
-                        .subscribeOn(Schedulers.io())
-                        .observeOn(AndroidSchedulers.mainThread())
-                        .subscribe({
+                    .subscribeOn(Schedulers.io())
+                    .observeOn(AndroidSchedulers.mainThread())
+                    .subscribe({
 
-                            Log.e("Server", "requestValidationCheckDpc3Out  result  " + it.resultCode)
-                            if (it.resultCode < 0) {
+                        Log.e("Server", "requestValidationCheckDpc3Out  result  " + it.resultCode)
+                        if (it.resultCode < 0) {
 
-                                beepManagerError.playBeepSoundAndVibrate()
-                                binding.editTrackingNumber.setText("")
-                                inputMethodManager.hideSoftInputFromWindow(binding.editTrackingNumber.windowToken, 0)
-                                scannedBarcode.remove(strBarcodeNo)
-                                resultDialog(resources.getString(R.string.text_scanned_failed), it.resultMsg)
-                            } else {
+                            beepManagerError.playBeepSoundAndVibrate()
+                            binding.editTrackingNumber.setText("")
+                            inputMethodManager.hideSoftInputFromWindow(
+                                binding.editTrackingNumber.windowToken,
+                                0
+                            )
+                            scannedBarcode.remove(strBarcodeNo)
+                            resultDialog(
+                                resources.getString(R.string.text_scanned_failed),
+                                it.resultMsg
+                            )
+                        } else {
 
-                                beepManager.playBeepSoundAndVibrate()
-                                addScannedBarcode(strBarcodeNo, "checkValidation - CONFIRM_MY_DELIVERY_ORDER")
-                            }
-                        }) { Toast.makeText(this@CaptureActivity1, resources.getString(R.string.msg_error_check_again), Toast.LENGTH_SHORT).show() }
+                            beepManager.playBeepSoundAndVibrate()
+                            addScannedBarcode(
+                                strBarcodeNo,
+                                "checkValidation - CONFIRM_MY_DELIVERY_ORDER"
+                            )
+                        }
+                    }) {
+                        Toast.makeText(
+                            this@CaptureActivity1,
+                            resources.getString(R.string.msg_error_check_again),
+                            Toast.LENGTH_SHORT
+                        ).show()
+                    }
             }
 
             BarcodeType.CHANGE_DELIVERY_DRIVER -> {
 
                 RetrofitClient.instanceDynamic().requestValidationCheckChangeDriver(strBarcodeNo)
-                        .subscribeOn(Schedulers.io())
-                        .observeOn(AndroidSchedulers.mainThread())
-                        .subscribe({
+                    .subscribeOn(Schedulers.io())
+                    .observeOn(AndroidSchedulers.mainThread())
+                    .subscribe({
 
-                            Log.e("Server", "requestValidationCheckChangeDriver  result  " + it.resultCode)
-                            if (it.resultCode < 0) {
+                        Log.e(
+                            "Server",
+                            "requestValidationCheckChangeDriver  result  " + it.resultCode
+                        )
+                        if (it.resultCode < 0) {
 
-                                beepManagerError.playBeepSoundAndVibrate()
-                                binding.editTrackingNumber.setText("")
-                                inputMethodManager.hideSoftInputFromWindow(binding.editTrackingNumber.windowToken, 0)
-                                scannedBarcode.remove(strBarcodeNo)
-                                resultDialog(resources.getString(R.string.text_scanned_failed), it.resultMsg)
-                            } else {
+                            beepManagerError.playBeepSoundAndVibrate()
+                            binding.editTrackingNumber.setText("")
+                            inputMethodManager.hideSoftInputFromWindow(
+                                binding.editTrackingNumber.windowToken,
+                                0
+                            )
+                            scannedBarcode.remove(strBarcodeNo)
+                            resultDialog(
+                                resources.getString(R.string.text_scanned_failed),
+                                it.resultMsg
+                            )
+                        } else {
 
-                                beepManager.playBeepSoundAndVibrate()
-                                changeDriverResult = Gson().fromJson(it.resultObject, ChangeDriverResult.Data::class.java)
-                                addScannedBarcode(strBarcodeNo, "checkValidation - CHANGE_DELIVERY_DRIVER")
-                            }
-                        }) { Toast.makeText(this@CaptureActivity1, resources.getString(R.string.msg_error_check_again), Toast.LENGTH_SHORT).show() }
+                            beepManager.playBeepSoundAndVibrate()
+                            changeDriverResult = Gson().fromJson(
+                                it.resultObject,
+                                ChangeDriverResult.Data::class.java
+                            )
+                            addScannedBarcode(
+                                strBarcodeNo,
+                                "checkValidation - CHANGE_DELIVERY_DRIVER"
+                            )
+                        }
+                    }) {
+                        Toast.makeText(
+                            this@CaptureActivity1,
+                            resources.getString(R.string.msg_error_check_again),
+                            Toast.LENGTH_SHORT
+                        ).show()
+                    }
             }
 
             BarcodeType.PICKUP_CNR -> {
                 // Edit.  2020.03  배포 (기존 CNR 중복 허용됨 > 중복 허용X 수정)    by krm0219
                 RetrofitClient.instanceDynamic().requestValidationCheckCnR(strBarcodeNo)
-                        .subscribeOn(Schedulers.io())
-                        .observeOn(AndroidSchedulers.mainThread())
-                        .subscribe({
+                    .subscribeOn(Schedulers.io())
+                    .observeOn(AndroidSchedulers.mainThread())
+                    .subscribe({
 
-                            Log.e("Server", "requestValidationCheckCnR  result  " + it.resultCode)
-                            if (it.resultCode != 0) {
+                        Log.e("Server", "requestValidationCheckCnR  result  " + it.resultCode)
+                        if (it.resultCode != 0) {
 
-                                beepManagerError.playBeepSoundAndVibrate()
-                                binding.editTrackingNumber.setText("")
-                                inputMethodManager.hideSoftInputFromWindow(binding.editTrackingNumber.windowToken, 0)
-                                scannedBarcode.remove(strBarcodeNo)
-                                resultDialog(resources.getString(R.string.text_scanned_failed), it.resultMsg)
+                            beepManagerError.playBeepSoundAndVibrate()
+                            binding.editTrackingNumber.setText("")
+                            inputMethodManager.hideSoftInputFromWindow(
+                                binding.editTrackingNumber.windowToken,
+                                0
+                            )
+                            scannedBarcode.remove(strBarcodeNo)
+                            resultDialog(
+                                resources.getString(R.string.text_scanned_failed),
+                                it.resultMsg
+                            )
+                        } else {
+
+                            val cnRPickupData =
+                                Gson().fromJson(it.resultObject, CnRPickupResult::class.java)
+                            val isDBDuplicate =
+                                checkDBDuplicate(cnRPickupData.contrNo, cnRPickupData.invoiceNo)
+                            Log.e(
+                                TAG,
+                                "  DB Duplicate  > " + isDBDuplicate + " / " + cnRPickupData.invoiceNo
+                            )
+
+                            if (isDBDuplicate) {
+                                getCnrRequester(cnRPickupData.invoiceNo)
                             } else {
-
-                                val cnRPickupData = Gson().fromJson(it.resultObject, CnRPickupResult::class.java)
-                                val isDBDuplicate = checkDBDuplicate(cnRPickupData.contrNo, cnRPickupData.invoiceNo)
-                                Log.e(TAG, "  DB Duplicate  > " + isDBDuplicate + " / " + cnRPickupData.invoiceNo)
-
-                                if (isDBDuplicate) {
-                                    getCnrRequester(cnRPickupData.invoiceNo)
-                                } else {
-                                    insertCnRData(cnRPickupData)
-                                }
-
-                                beepManager.playBeepSoundAndVibrate()
-                                pickupCNRRequester = cnRPickupData.reqName
-                                addScannedBarcode(strBarcodeNo, "checkValidation - PICKUP_CNR")
+                                insertCnRData(cnRPickupData)
                             }
-                        }) { Toast.makeText(this@CaptureActivity1, resources.getString(R.string.msg_error_check_again), Toast.LENGTH_SHORT).show() }
+
+                            beepManager.playBeepSoundAndVibrate()
+                            pickupCNRRequester = cnRPickupData.reqName
+                            addScannedBarcode(strBarcodeNo, "checkValidation - PICKUP_CNR")
+                        }
+                    }) {
+                        Toast.makeText(
+                            this@CaptureActivity1,
+                            resources.getString(R.string.msg_error_check_again),
+                            Toast.LENGTH_SHORT
+                        ).show()
+                    }
             }
 
             BarcodeType.PICKUP_SCAN_ALL -> {
 
-                RetrofitClient.instanceDynamic().requestValidationCheckPickup(pickupNo, strBarcodeNo)
-                        .subscribeOn(Schedulers.io())
-                        .observeOn(AndroidSchedulers.mainThread())
-                        .subscribe({
+                RetrofitClient.instanceDynamic()
+                    .requestValidationCheckPickup(pickupNo, strBarcodeNo)
+                    .subscribeOn(Schedulers.io())
+                    .observeOn(AndroidSchedulers.mainThread())
+                    .subscribe({
 
-                            Log.e("Server", "requestValidationCheckPickup  result  " + it.resultCode)
-                            if (it.resultCode < 0) {
+                        Log.e("Server", "requestValidationCheckPickup  result  " + it.resultCode)
+                        if (it.resultCode < 0) {
 
-                                beepManagerError.playBeepSoundAndVibrate()
-                                binding.editTrackingNumber.setText("")
-                                inputMethodManager.hideSoftInputFromWindow(binding.editTrackingNumber.windowToken, 0)
-                                scannedBarcode.remove(strBarcodeNo)
-                                resultDialog(resources.getString(R.string.text_scanned_failed), it.resultMsg)
-                            } else {
+                            beepManagerError.playBeepSoundAndVibrate()
+                            binding.editTrackingNumber.setText("")
+                            inputMethodManager.hideSoftInputFromWindow(
+                                binding.editTrackingNumber.windowToken,
+                                0
+                            )
+                            scannedBarcode.remove(strBarcodeNo)
+                            resultDialog(
+                                resources.getString(R.string.text_scanned_failed),
+                                it.resultMsg
+                            )
+                        } else {
 
-                                beepManager.playBeepSoundAndVibrate()
-                                addScannedBarcode(strBarcodeNo, "checkValidation - PICKUP_SCAN_ALL")
-                            }
-                        }) { Toast.makeText(this@CaptureActivity1, resources.getString(R.string.msg_error_check_again), Toast.LENGTH_SHORT).show() }
+                            beepManager.playBeepSoundAndVibrate()
+                            addScannedBarcode(strBarcodeNo, "checkValidation - PICKUP_SCAN_ALL")
+                        }
+                    }) {
+                        Toast.makeText(
+                            this@CaptureActivity1,
+                            resources.getString(R.string.msg_error_check_again),
+                            Toast.LENGTH_SHORT
+                        ).show()
+                    }
             }
 
             BarcodeType.PICKUP_ADD_SCAN -> {
 
-                RetrofitClient.instanceDynamic().requestValidationCheckPickup(pickupNo, strBarcodeNo)
-                        .subscribeOn(Schedulers.io())
-                        .observeOn(AndroidSchedulers.mainThread())
-                        .subscribe({
+                RetrofitClient.instanceDynamic()
+                    .requestValidationCheckPickup(pickupNo, strBarcodeNo)
+                    .subscribeOn(Schedulers.io())
+                    .observeOn(AndroidSchedulers.mainThread())
+                    .subscribe({
 
-                            Log.e("Server", "requestValidationCheckPickup  result  " + it.resultCode)
-                            if (it.resultCode < 0) {
+                        Log.e("Server", "requestValidationCheckPickup  result  " + it.resultCode)
+                        if (it.resultCode < 0) {
 
-                                beepManagerError.playBeepSoundAndVibrate()
-                                binding.editTrackingNumber.setText("")
-                                inputMethodManager.hideSoftInputFromWindow(binding.editTrackingNumber.windowToken, 0)
-                                scannedBarcode.remove(strBarcodeNo)
-                                resultDialog(resources.getString(R.string.text_scanned_failed), it.resultMsg)
-                            } else {
+                            beepManagerError.playBeepSoundAndVibrate()
+                            binding.editTrackingNumber.setText("")
+                            inputMethodManager.hideSoftInputFromWindow(
+                                binding.editTrackingNumber.windowToken,
+                                0
+                            )
+                            scannedBarcode.remove(strBarcodeNo)
+                            resultDialog(
+                                resources.getString(R.string.text_scanned_failed),
+                                it.resultMsg
+                            )
+                        } else {
 
-                                beepManager.playBeepSoundAndVibrate()
-                                addScannedBarcode(strBarcodeNo, "checkValidation - PICKUP_ADD_SCAN")
-                            }
-                        }) { Toast.makeText(this@CaptureActivity1, resources.getString(R.string.msg_error_check_again), Toast.LENGTH_SHORT).show() }
+                            beepManager.playBeepSoundAndVibrate()
+                            addScannedBarcode(strBarcodeNo, "checkValidation - PICKUP_ADD_SCAN")
+                        }
+                    }) {
+                        Toast.makeText(
+                            this@CaptureActivity1,
+                            resources.getString(R.string.msg_error_check_again),
+                            Toast.LENGTH_SHORT
+                        ).show()
+                    }
             }
 
             BarcodeType.PICKUP_TAKE_BACK -> {
 
-                RetrofitClient.instanceDynamic().requestValidationCheckTakeBack(pickupNo, strBarcodeNo)
-                        .subscribeOn(Schedulers.io())
-                        .observeOn(AndroidSchedulers.mainThread())
-                        .subscribe({
+                RetrofitClient.instanceDynamic()
+                    .requestValidationCheckTakeBack(pickupNo, strBarcodeNo)
+                    .subscribeOn(Schedulers.io())
+                    .observeOn(AndroidSchedulers.mainThread())
+                    .subscribe({
 
-                            Log.e("Server", "requestValidationCheckTakeBack  result  " + it.resultCode)
-                            if (it.resultCode < 0) {
+                        Log.e("Server", "requestValidationCheckTakeBack  result  " + it.resultCode)
+                        if (it.resultCode < 0) {
 
-                                beepManagerError.playBeepSoundAndVibrate()
-                                binding.editTrackingNumber.setText("")
-                                inputMethodManager.hideSoftInputFromWindow(binding.editTrackingNumber.windowToken, 0)
-                                scannedBarcode.remove(strBarcodeNo)
-                                resultDialog(resources.getString(R.string.text_scanned_failed), it.resultMsg)
-                            } else {
+                            beepManagerError.playBeepSoundAndVibrate()
+                            binding.editTrackingNumber.setText("")
+                            inputMethodManager.hideSoftInputFromWindow(
+                                binding.editTrackingNumber.windowToken,
+                                0
+                            )
+                            scannedBarcode.remove(strBarcodeNo)
+                            resultDialog(
+                                resources.getString(R.string.text_scanned_failed),
+                                it.resultMsg
+                            )
+                        } else {
 
-                                beepManager.playBeepSoundAndVibrate()
-                                addScannedBarcode(strBarcodeNo, "checkValidation - PICKUP_TAKE_BACK")
-                            }
-                        }) { Toast.makeText(this@CaptureActivity1, resources.getString(R.string.msg_error_check_again), Toast.LENGTH_SHORT).show() }
+                            beepManager.playBeepSoundAndVibrate()
+                            addScannedBarcode(strBarcodeNo, "checkValidation - PICKUP_TAKE_BACK")
+                        }
+                    }) {
+                        Toast.makeText(
+                            this@CaptureActivity1,
+                            resources.getString(R.string.msg_error_check_again),
+                            Toast.LENGTH_SHORT
+                        ).show()
+                    }
             }
 
             BarcodeType.OUTLET_PICKUP_SCAN -> {
 
-                RetrofitClient.instanceDynamic().requestValidationCheckPickup(pickupNo, strBarcodeNo, route)
-                        .subscribeOn(Schedulers.io())
-                        .observeOn(AndroidSchedulers.mainThread())
-                        .subscribe({
+                RetrofitClient.instanceDynamic()
+                    .requestValidationCheckPickup(pickupNo, strBarcodeNo, route)
+                    .subscribeOn(Schedulers.io())
+                    .observeOn(AndroidSchedulers.mainThread())
+                    .subscribe({
 
-                            Log.e("Server", "requestValidationCheckPickup  result  " + it.resultCode)
-                            if (it.resultCode < 0) {
+                        Log.e("Server", "requestValidationCheckPickup  result  " + it.resultCode)
+                        if (it.resultCode < 0) {
 
-                                beepManagerError.playBeepSoundAndVibrate()
-                                binding.editTrackingNumber.setText("")
-                                inputMethodManager.hideSoftInputFromWindow(binding.editTrackingNumber.windowToken, 0)
-                                scannedBarcode.remove(strBarcodeNo)
-                                resultDialog(resources.getString(R.string.text_scanned_failed), it.resultMsg)
-                            } else {
+                            beepManagerError.playBeepSoundAndVibrate()
+                            binding.editTrackingNumber.setText("")
+                            inputMethodManager.hideSoftInputFromWindow(
+                                binding.editTrackingNumber.windowToken,
+                                0
+                            )
+                            scannedBarcode.remove(strBarcodeNo)
+                            resultDialog(
+                                resources.getString(R.string.text_scanned_failed),
+                                it.resultMsg
+                            )
+                        } else {
 
-                                beepManager.playBeepSoundAndVibrate()
-                                addScannedBarcode(strBarcodeNo, "checkValidation - OUTLET_PICKUP_SCAN")
-                            }
-                        }) { Toast.makeText(this@CaptureActivity1, resources.getString(R.string.msg_error_check_again), Toast.LENGTH_SHORT).show() }
+                            beepManager.playBeepSoundAndVibrate()
+                            addScannedBarcode(strBarcodeNo, "checkValidation - OUTLET_PICKUP_SCAN")
+                        }
+                    }) {
+                        Toast.makeText(
+                            this@CaptureActivity1,
+                            resources.getString(R.string.msg_error_check_again),
+                            Toast.LENGTH_SHORT
+                        ).show()
+                    }
             }
 
             BarcodeType.SELF_COLLECTION -> {
@@ -859,7 +1021,11 @@ class CaptureActivity1 : CommonActivity(), TorchListener, OnTouchListener, TextW
                 if (!isInvoiceCodeRule(strBarcodeNo)) {
 
                     beepManagerError.playBeepSoundAndVibrate()
-                    val toast = Toast.makeText(this@CaptureActivity1, resources.getString(R.string.msg_invalid_scan), Toast.LENGTH_SHORT)
+                    val toast = Toast.makeText(
+                        this@CaptureActivity1,
+                        resources.getString(R.string.msg_invalid_scan),
+                        Toast.LENGTH_SHORT
+                    )
                     toast.setGravity(Gravity.CENTER_HORIZONTAL, 0, 0)
                     toast.show()
                     return
@@ -874,7 +1040,11 @@ class CaptureActivity1 : CommonActivity(), TorchListener, OnTouchListener, TextW
 
                     if (tempIsNonQ10QFSOrder != tempValidation) {
                         // alert 띄워줘야 함 type 이 다르다는 - 기존 Self - Collection 과 새로 NQ 가
-                        val toast = Toast.makeText(this@CaptureActivity1, resources.getString(R.string.msg_different_order_type), Toast.LENGTH_SHORT)
+                        val toast = Toast.makeText(
+                            this@CaptureActivity1,
+                            resources.getString(R.string.msg_different_order_type),
+                            Toast.LENGTH_SHORT
+                        )
                         toast.setGravity(Gravity.CENTER_HORIZONTAL, 0, 0)
                         toast.show()
                     } else {
@@ -906,7 +1076,8 @@ class CaptureActivity1 : CommonActivity(), TorchListener, OnTouchListener, TextW
         data.state = "NONE"
 
         if (mScanType == BarcodeType.CHANGE_DELIVERY_DRIVER) {
-            data.barcode = changeDriverResult!!.trackingNo + "  |  " + changeDriverResult!!.status + "  |  " + changeDriverResult!!.currentDriver
+            data.barcode =
+                changeDriverResult!!.trackingNo + "  |  " + changeDriverResult!!.status + "  |  " + changeDriverResult!!.currentDriver
         }
 
         when (mScanType) {
@@ -992,7 +1163,8 @@ class CaptureActivity1 : CommonActivity(), TorchListener, OnTouchListener, TextW
     private fun getCnrRequester(invoiceNo: String): String {
         var requester = ""
         val barcodeNo = invoiceNo.trim().toUpperCase(Locale.ROOT)
-        val selectQuery = "SELECT * FROM " + DatabaseHelper.DB_TABLE_INTEGRATION_LIST + " WHERE invoice_no = '" + barcodeNo + "'"
+        val selectQuery =
+            "SELECT * FROM " + DatabaseHelper.DB_TABLE_INTEGRATION_LIST + " WHERE invoice_no = '" + barcodeNo + "'"
         val cursor = getInstance()[selectQuery]
         if (0 < cursor.count) {
             if (cursor.moveToFirst()) {
@@ -1052,7 +1224,11 @@ class CaptureActivity1 : CommonActivity(), TorchListener, OnTouchListener, TextW
     fun onUpdateButtonClick() {
 
         if (scanBarcodeArrayList == null || scanBarcodeArrayList!!.size < 1) {
-            val toast = Toast.makeText(this@CaptureActivity1, R.string.msg_tracking_number_manually, Toast.LENGTH_SHORT)
+            val toast = Toast.makeText(
+                this@CaptureActivity1,
+                R.string.msg_tracking_number_manually,
+                Toast.LENGTH_SHORT
+            )
             toast.setGravity(Gravity.CENTER_HORIZONTAL, 0, 0)
             toast.show()
             return
@@ -1082,31 +1258,44 @@ class CaptureActivity1 : CommonActivity(), TorchListener, OnTouchListener, TextW
             }
 
             RetrofitClient.instanceDynamic().requestSetShippingStatDpc3out(stringBuilder.toString())
-                    .subscribeOn(Schedulers.io())
-                    .observeOn(AndroidSchedulers.mainThread())
-                    .subscribe({
+                .subscribeOn(Schedulers.io())
+                .observeOn(AndroidSchedulers.mainThread())
+                .subscribe({
 
-                        progressBar.visibility = View.GONE
-                        if (it != null && it.resultCode == 0) {
+                    progressBar.visibility = View.GONE
+                    if (it != null && it.resultCode == 0) {
 
-                            onResetButtonClick()
+                        onResetButtonClick()
 
-                            val list: ArrayList<DriverAssignResult.QSignDeliveryList> = Gson().fromJson(it.resultObject, object : TypeToken<ArrayList<DriverAssignResult.QSignDeliveryList>>() {}.type)
-                            for (item in list) {
-                                if (!TextUtils.isEmpty(item.partnerRefNo.trim())) {
-                                    DataUtil.insertDriverAssignInfo(item)
-                                }
+                        val list: ArrayList<DriverAssignResult.QSignDeliveryList> = Gson().fromJson(
+                            it.resultObject,
+                            object :
+                                TypeToken<ArrayList<DriverAssignResult.QSignDeliveryList>>() {}.type
+                        )
+                        for (item in list) {
+                            if (!TextUtils.isEmpty(item.partnerRefNo.trim())) {
+                                DataUtil.insertDriverAssignInfo(item)
                             }
-                            resultDialog(resources.getString(R.string.text_driver_assign_result), it.resultMsg)
-                        } else {
-
-                            resultDialog(resources.getString(R.string.text_driver_assign_result), resources.getString(R.string.text_fail_update))
                         }
-                    }) {
+                        resultDialog(
+                            resources.getString(R.string.text_driver_assign_result),
+                            it.resultMsg
+                        )
+                    } else {
 
-                        progressBar.visibility = View.GONE
-                        resultDialog(resources.getString(R.string.text_driver_assign_result), resources.getString(R.string.text_fail_update))
+                        resultDialog(
+                            resources.getString(R.string.text_driver_assign_result),
+                            resources.getString(R.string.text_fail_update)
+                        )
                     }
+                }) {
+
+                    progressBar.visibility = View.GONE
+                    resultDialog(
+                        resources.getString(R.string.text_driver_assign_result),
+                        resources.getString(R.string.text_fail_update)
+                    )
+                }
 
 //            ConfirmMyOrderHelper.Builder(this, Preferences.userId, Preferences.officeCode, Preferences.deviceUUID, scanBarcodeArrayList)
 //                    .setOnDriverAssignEventListener { stdResult: DriverAssignResult? ->
@@ -1134,7 +1323,10 @@ class CaptureActivity1 : CommonActivity(), TorchListener, OnTouchListener, TextW
                 latitude = it.latitude
                 longitude = it.longitude
             }
-            Log.e("Location", "$TAG saveServerUpdateButtonClickGPSTrackerManager : $latitude  $longitude")
+            Log.e(
+                "Location",
+                "$TAG saveServerUpdateButtonClickGPSTrackerManager : $latitude  $longitude"
+            )
 
             var stringBuilder = StringBuilder()
             for (item in changeDriverObjectArrayList) {
@@ -1149,47 +1341,66 @@ class CaptureActivity1 : CommonActivity(), TorchListener, OnTouchListener, TextW
 
             val network = NetworkUtil.getNetworkType(this@CaptureActivity1)
 
-            RetrofitClient.instanceDynamic().requestSetChangeDeliveryDriver(stringBuilder.toString(), network, latitude.toString(), longitude.toString())
-                    .subscribeOn(Schedulers.io())
-                    .observeOn(AndroidSchedulers.mainThread())
-                    .subscribe({
+            RetrofitClient.instanceDynamic().requestSetChangeDeliveryDriver(
+                stringBuilder.toString(),
+                network,
+                latitude.toString(),
+                longitude.toString()
+            )
+                .subscribeOn(Schedulers.io())
+                .observeOn(AndroidSchedulers.mainThread())
+                .subscribe({
 
-                        progressBar.visibility = View.GONE
-                        if (it != null && it.resultCode == 0) {
+                    progressBar.visibility = View.GONE
+                    if (it != null && it.resultCode == 0) {
 
-                            onResetButtonClick()
+                        onResetButtonClick()
 
-                            val list: ArrayList<DriverAssignResult.QSignDeliveryList> = Gson().fromJson(it.resultObject, object : TypeToken<ArrayList<DriverAssignResult.QSignDeliveryList>>() {}.type)
-                            for (item in list) {
-                                if (!TextUtils.isEmpty(item.partnerRefNo.trim())) {
+                        val list: ArrayList<DriverAssignResult.QSignDeliveryList> = Gson().fromJson(
+                            it.resultObject,
+                            object :
+                                TypeToken<ArrayList<DriverAssignResult.QSignDeliveryList>>() {}.type
+                        )
+                        for (item in list) {
+                            if (!TextUtils.isEmpty(item.partnerRefNo.trim())) {
 
-                                    val successInsert = DataUtil.insertDriverAssignInfo(item)
+                                val successInsert = DataUtil.insertDriverAssignInfo(item)
 
-                                    if (successInsert) {
+                                if (successInsert) {
 
-                                        RetrofitClient.instanceDynamic().requestSetQdriverMessageChangeQdriver(item.invoiceNo)
-                                                .subscribeOn(Schedulers.io())
-                                                .observeOn(AndroidSchedulers.mainThread())
-                                                .subscribe({
-                                                }) {
-                                                }
+                                    RetrofitClient.instanceDynamic()
+                                        .requestSetQdriverMessageChangeQdriver(item.invoiceNo)
+                                        .subscribeOn(Schedulers.io())
+                                        .observeOn(AndroidSchedulers.mainThread())
+                                        .subscribe({
+                                        }) {
+                                        }
 
 //                                        val changeMessageAsyncTask = ChangeMessageAsyncTask(Preferences.userId, item.invoiceNo)
 //                                        changeMessageAsyncTask.execute()
-                                    }
                                 }
                             }
-
-                            resultDialog(resources.getString(R.string.text_driver_assign_result), it.resultMsg)
-                        } else {
-
-                            resultDialog(resources.getString(R.string.text_driver_assign_result), resources.getString(R.string.text_fail_update))
                         }
-                    }) {
 
-                        progressBar.visibility = View.GONE
-                        resultDialog(resources.getString(R.string.text_driver_assign_result), resources.getString(R.string.text_fail_update))
+                        resultDialog(
+                            resources.getString(R.string.text_driver_assign_result),
+                            it.resultMsg
+                        )
+                    } else {
+
+                        resultDialog(
+                            resources.getString(R.string.text_driver_assign_result),
+                            resources.getString(R.string.text_fail_update)
+                        )
                     }
+                }) {
+
+                    progressBar.visibility = View.GONE
+                    resultDialog(
+                        resources.getString(R.string.text_driver_assign_result),
+                        resources.getString(R.string.text_fail_update)
+                    )
+                }
 
 //            ChangeDriverHelper.Builder(this, Preferences.userId, Preferences.officeCode, Preferences.deviceUUID, changeDriverObjectArrayList, latitude, longitude)
 //                    .setOnChangeDelDriverEventListener { stdResult: DriverAssignResult? ->
@@ -1213,7 +1424,11 @@ class CaptureActivity1 : CommonActivity(), TorchListener, OnTouchListener, TextW
     // NOTIFICATION.  Scan - Delivery Done
     private fun onConfirmButtonClick() {
         if (scanBarcodeArrayList == null || scanBarcodeArrayList!!.size < 1) {
-            val toast = Toast.makeText(this@CaptureActivity1, R.string.msg_tracking_number_manually, Toast.LENGTH_SHORT)
+            val toast = Toast.makeText(
+                this@CaptureActivity1,
+                R.string.msg_tracking_number_manually,
+                Toast.LENGTH_SHORT
+            )
             toast.setGravity(Gravity.CENTER_HORIZONTAL, 0, 0)
             toast.show()
             return
@@ -1249,7 +1464,11 @@ class CaptureActivity1 : CommonActivity(), TorchListener, OnTouchListener, TextW
 
         // 받는사람이 틀리다면 에러 메세지
         if (diffReceiverName) {
-            val toast = Toast.makeText(this@CaptureActivity1, R.string.msg_different_recipient_address, Toast.LENGTH_SHORT)
+            val toast = Toast.makeText(
+                this@CaptureActivity1,
+                R.string.msg_different_recipient_address,
+                Toast.LENGTH_SHORT
+            )
             toast.setGravity(Gravity.CENTER_HORIZONTAL, 0, 0)
             toast.show()
             return
@@ -1261,7 +1480,11 @@ class CaptureActivity1 : CommonActivity(), TorchListener, OnTouchListener, TextW
             intent.putExtra("data", deliveryBarcodeList)
             finishLauncher.launch(intent)
         } else {
-            val toast = Toast.makeText(this@CaptureActivity1, R.string.msg_tracking_number_manually, Toast.LENGTH_SHORT)
+            val toast = Toast.makeText(
+                this@CaptureActivity1,
+                R.string.msg_tracking_number_manually,
+                Toast.LENGTH_SHORT
+            )
             toast.setGravity(Gravity.CENTER_HORIZONTAL, 0, 0)
             toast.show()
         }
@@ -1279,7 +1502,11 @@ class CaptureActivity1 : CommonActivity(), TorchListener, OnTouchListener, TextW
             }
 
             if (!isScanned) {
-                val toast = Toast.makeText(this@CaptureActivity1, R.string.msg_tracking_number_manually, Toast.LENGTH_SHORT)
+                val toast = Toast.makeText(
+                    this@CaptureActivity1,
+                    R.string.msg_tracking_number_manually,
+                    Toast.LENGTH_SHORT
+                )
                 toast.setGravity(Gravity.CENTER_HORIZONTAL, 0, 0)
                 toast.show()
                 return
@@ -1287,7 +1514,11 @@ class CaptureActivity1 : CommonActivity(), TorchListener, OnTouchListener, TextW
         } else {
 
             if (scanBarcodeArrayList == null || scanBarcodeArrayList!!.size < 1) {
-                val toast = Toast.makeText(this@CaptureActivity1, R.string.msg_tracking_number_manually, Toast.LENGTH_SHORT)
+                val toast = Toast.makeText(
+                    this@CaptureActivity1,
+                    R.string.msg_tracking_number_manually,
+                    Toast.LENGTH_SHORT
+                )
                 toast.setGravity(Gravity.CENTER_HORIZONTAL, 0, 0)
                 toast.show()
                 return
@@ -1415,16 +1646,18 @@ class CaptureActivity1 : CommonActivity(), TorchListener, OnTouchListener, TextW
         }
 
         if (mScanType == BarcodeType.CONFIRM_MY_DELIVERY_ORDER || mScanType == BarcodeType.CHANGE_DELIVERY_DRIVER ||
-                mScanType == BarcodeType.PICKUP_CNR || mScanType == BarcodeType.PICKUP_SCAN_ALL || mScanType == BarcodeType.PICKUP_ADD_SCAN ||
-                mScanType == BarcodeType.OUTLET_PICKUP_SCAN || mScanType == BarcodeType.PICKUP_TAKE_BACK) {
+            mScanType == BarcodeType.PICKUP_CNR || mScanType == BarcodeType.PICKUP_SCAN_ALL || mScanType == BarcodeType.PICKUP_ADD_SCAN ||
+            mScanType == BarcodeType.OUTLET_PICKUP_SCAN || mScanType == BarcodeType.PICKUP_TAKE_BACK
+        ) {
             barcodeList.clear()
         }
     }
 
     private fun getDeliveryReceiver(barcodeNo: String?): String {
         var name = ""
-        val cursor = getInstance()["SELECT rcv_nm, sender_nm FROM " + DatabaseHelper.DB_TABLE_INTEGRATION_LIST +
-                " WHERE invoice_no='" + barcodeNo + "' COLLATE NOCASE"]
+        val cursor =
+            getInstance()["SELECT rcv_nm, sender_nm FROM " + DatabaseHelper.DB_TABLE_INTEGRATION_LIST +
+                    " WHERE invoice_no='" + barcodeNo + "' COLLATE NOCASE"]
         if (cursor.moveToFirst()) {
             name = cursor.getString(cursor.getColumnIndexOrThrow("rcv_nm"))
         }
@@ -1489,8 +1722,11 @@ class CaptureActivity1 : CommonActivity(), TorchListener, OnTouchListener, TextW
             val contentVal = ContentValues()
             contentVal.put("reg_id", Preferences.userId) // 해당 배송번호를 가지고 자신의아이디만 없데이트
             updateCount = getInstance().update(
-                DatabaseHelper.DB_TABLE_INTEGRATION_LIST, contentVal,
-                    "invoice_no=? COLLATE NOCASE " + "and punchOut_stat <> 'S' " + "and reg_id = ?", arrayOf(invoiceNo, Preferences.userId))
+                DatabaseHelper.DB_TABLE_INTEGRATION_LIST,
+                contentVal,
+                "invoice_no=? COLLATE NOCASE " + "and punchOut_stat <> 'S' " + "and reg_id = ?",
+                arrayOf(invoiceNo, Preferences.userId)
+            )
         } else if (mScanType == BarcodeType.SELF_COLLECTION) {
             if (isInvoiceCodeRule(invoiceNo)) {
                 updateCount = 1
@@ -1521,7 +1757,12 @@ class CaptureActivity1 : CommonActivity(), TorchListener, OnTouchListener, TextW
 
             val vibrator = getSystemService(VIBRATOR_SERVICE) as Vibrator
             if (Build.VERSION.SDK_INT > Build.VERSION_CODES.N_MR1)
-                vibrator.vibrate(VibrationEffect.createOneShot(200L, VibrationEffect.DEFAULT_AMPLITUDE))
+                vibrator.vibrate(
+                    VibrationEffect.createOneShot(
+                        200L,
+                        VibrationEffect.DEFAULT_AMPLITUDE
+                    )
+                )
             else
                 vibrator.vibrate(200L)
 
@@ -1538,13 +1779,18 @@ class CaptureActivity1 : CommonActivity(), TorchListener, OnTouchListener, TextW
      */
     private fun onCaptureConfirmButtonClick() {
         if (scanBarcodeArrayList == null || scanBarcodeArrayList!!.size < 1) {
-            val toast = Toast.makeText(this, R.string.msg_tracking_number_manually, Toast.LENGTH_SHORT)
+            val toast =
+                Toast.makeText(this, R.string.msg_tracking_number_manually, Toast.LENGTH_SHORT)
             toast.setGravity(Gravity.CENTER_HORIZONTAL, 0, 0)
             toast.show()
             return
         }
         if (!isInvoiceCodeRule(scanBarcodeArrayList!![0].barcode)) {
-            val toast = Toast.makeText(this@CaptureActivity1, resources.getString(R.string.msg_invalid_scan), Toast.LENGTH_SHORT)
+            val toast = Toast.makeText(
+                this@CaptureActivity1,
+                resources.getString(R.string.msg_invalid_scan),
+                Toast.LENGTH_SHORT
+            )
             toast.setGravity(Gravity.CENTER_HORIZONTAL, 0, 0)
             toast.show()
             return
@@ -1571,7 +1817,8 @@ class CaptureActivity1 : CommonActivity(), TorchListener, OnTouchListener, TextW
             intent.putExtra("nonq10qfs", isNonQ10QFSOrder.toString()) //09-12 add isNonQ10QFSOrder
             resetFinishLauncher.launch(intent)
         } else {
-            val toast = Toast.makeText(this, R.string.msg_tracking_number_manually, Toast.LENGTH_SHORT)
+            val toast =
+                Toast.makeText(this, R.string.msg_tracking_number_manually, Toast.LENGTH_SHORT)
             toast.setGravity(Gravity.CENTER_HORIZONTAL, 0, 0)
             toast.show()
         }
@@ -1597,8 +1844,13 @@ class CaptureActivity1 : CommonActivity(), TorchListener, OnTouchListener, TextW
         private const val bluetoothTAG = "Capture_Bluetooth"
 
         private const val PERMISSION_REQUEST_CODE = 1000
-        private val PERMISSIONS = arrayOf(PermissionChecker.ACCESS_FINE_LOCATION, PermissionChecker.ACCESS_COARSE_LOCATION,
-                PermissionChecker.READ_EXTERNAL_STORAGE, PermissionChecker.WRITE_EXTERNAL_STORAGE, PermissionChecker.CAMERA)
+        private val PERMISSIONS = arrayOf(
+            PermissionChecker.ACCESS_FINE_LOCATION,
+            PermissionChecker.ACCESS_COARSE_LOCATION,
+            PermissionChecker.READ_EXTERNAL_STORAGE,
+            PermissionChecker.WRITE_EXTERNAL_STORAGE,
+            PermissionChecker.CAMERA
+        )
 
         /*
      * Qxpress송장번호 규칙(범용)
@@ -1634,20 +1886,24 @@ class CaptureActivity1 : CommonActivity(), TorchListener, OnTouchListener, TextW
 
 
     private val bluetoothLauncher: ActivityResultLauncher<Intent> = registerForActivityResult(
-            ActivityResultContracts.StartActivityForResult()
+        ActivityResultContracts.StartActivityForResult()
     ) {
         Log.e(TAG, "bluetoothLauncher ${it.resultCode} ")
 
         if (it.resultCode == RESULT_OK) {
             setupChat()
         } else {
-            Toast.makeText(this@CaptureActivity1, R.string.msg_bluetooth_enabled, Toast.LENGTH_SHORT).show()
+            Toast.makeText(
+                this@CaptureActivity1,
+                R.string.msg_bluetooth_enabled,
+                Toast.LENGTH_SHORT
+            ).show()
             finish()
         }
     }
 
     private val deviceLauncher: ActivityResultLauncher<Intent> = registerForActivityResult(
-            ActivityResultContracts.StartActivityForResult()
+        ActivityResultContracts.StartActivityForResult()
     ) {
         //  Bluetooth Device 연결
         if (it.resultCode == RESULT_OK) {
@@ -1659,7 +1915,8 @@ class CaptureActivity1 : CommonActivity(), TorchListener, OnTouchListener, TextW
     }
 
     private val finishLauncher: ActivityResultLauncher<Intent> = registerForActivityResult(
-            ActivityResultContracts.StartActivityForResult()) {
+        ActivityResultContracts.StartActivityForResult()
+    ) {
         Log.e(TAG, "finishLauncher ${it.resultCode} ")
 
         if (it.resultCode == RESULT_OK) {
@@ -1668,7 +1925,8 @@ class CaptureActivity1 : CommonActivity(), TorchListener, OnTouchListener, TextW
     }
 
     private val resetFinishLauncher: ActivityResultLauncher<Intent> = registerForActivityResult(
-            ActivityResultContracts.StartActivityForResult()) {
+        ActivityResultContracts.StartActivityForResult()
+    ) {
         Log.e(TAG, "resetFinishLauncher ${it.resultCode} ")
 
         onResetButtonClick()
@@ -1677,16 +1935,18 @@ class CaptureActivity1 : CommonActivity(), TorchListener, OnTouchListener, TextW
         }
     }
 
-    private val resetResultFinishLauncher: ActivityResultLauncher<Intent> = registerForActivityResult(
-            ActivityResultContracts.StartActivityForResult()) {
-        Log.e(TAG, "resetResultFinishLauncher ${it.resultCode} ")
+    private val resetResultFinishLauncher: ActivityResultLauncher<Intent> =
+        registerForActivityResult(
+            ActivityResultContracts.StartActivityForResult()
+        ) {
+            Log.e(TAG, "resetResultFinishLauncher ${it.resultCode} ")
 
-        onResetButtonClick()
-        if (it.resultCode == RESULT_OK) {
-            setResult(RESULT_OK)
-            finish()
+            onResetButtonClick()
+            if (it.resultCode == RESULT_OK) {
+                setResult(RESULT_OK)
+                finish()
+            }
         }
-    }
 
 
     public override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
@@ -1709,7 +1969,11 @@ class CaptureActivity1 : CommonActivity(), TorchListener, OnTouchListener, TextW
 
         // If the adapter is null, then Bluetooth is not supported          // Bluetooth 지원하지 않음
         if (mBluetoothAdapter == null && !BuildConfig.DEBUG) {
-            Toast.makeText(this@CaptureActivity1, resources.getString(R.string.msg_bluetooth_not_supported), Toast.LENGTH_LONG).show()
+            Toast.makeText(
+                this@CaptureActivity1,
+                resources.getString(R.string.msg_bluetooth_not_supported),
+                Toast.LENGTH_LONG
+            ).show()
             finish()
             return
         }
@@ -1750,7 +2014,8 @@ class CaptureActivity1 : CommonActivity(), TorchListener, OnTouchListener, TextW
                     Log.i(bluetoothTAG, "MESSAGE_STATE_CHANGE: " + msg.arg1)
                     when (msg.arg1) {
                         BluetoothChatService.STATE_CONNECTED -> {
-                            binding.textBluetoothConnectState.text = resources.getString(R.string.text_connected)
+                            binding.textBluetoothConnectState.text =
+                                resources.getString(R.string.text_connected)
                             binding.textBluetoothDeviceName.visibility = View.VISIBLE
                             binding.textBluetoothDeviceName.text = "($connectedDeviceName)"
                             binding.btnBluetoothDeviceFind.visibility = View.GONE
@@ -1758,24 +2023,28 @@ class CaptureActivity1 : CommonActivity(), TorchListener, OnTouchListener, TextW
                             KTSyncData.mKScan.DeviceConnected(true)
                         }
                         BluetoothChatService.STATE_CONNECTING -> {
-                            binding.textBluetoothConnectState.text = resources.getString(R.string.text_connecting)
+                            binding.textBluetoothConnectState.text =
+                                resources.getString(R.string.text_connecting)
                             binding.textBluetoothDeviceName.visibility = View.GONE
                             binding.btnBluetoothDeviceFind.visibility = View.GONE
                         }
                         BluetoothChatService.STATE_LISTEN, BluetoothChatService.STATE_NONE -> {
-                            binding.textBluetoothConnectState.text = resources.getString(R.string.text_disconnected)
+                            binding.textBluetoothConnectState.text =
+                                resources.getString(R.string.text_disconnected)
                             binding.textBluetoothDeviceName.visibility = View.GONE
                             binding.btnBluetoothDeviceFind.visibility = View.VISIBLE
                         }
                         BluetoothChatService.STATE_LOST -> {
-                            binding.textBluetoothConnectState.text = resources.getString(R.string.text_disconnected)
+                            binding.textBluetoothConnectState.text =
+                                resources.getString(R.string.text_disconnected)
                             binding.textBluetoothDeviceName.visibility = View.GONE
                             binding.btnBluetoothDeviceFind.visibility = View.VISIBLE
                             KTSyncData.bIsConnected = false
                             postDelayed(mUpdateTimeTask, 2000)
                         }
                         BluetoothChatService.STATE_FAILED -> {
-                            binding.textBluetoothConnectState.text = resources.getString(R.string.text_disconnected)
+                            binding.textBluetoothConnectState.text =
+                                resources.getString(R.string.text_disconnected)
                             binding.textBluetoothDeviceName.visibility = View.GONE
                             binding.btnBluetoothDeviceFind.visibility = View.VISIBLE
                             postDelayed(mUpdateTimeTask, 5000)
@@ -1793,9 +2062,17 @@ class CaptureActivity1 : CommonActivity(), TorchListener, OnTouchListener, TextW
                 BluetoothChatService.MESSAGE_DEVICE_NAME -> {
                     // save the connected device's name
                     connectedDeviceName = msg.data.getString(BluetoothChatService.DEVICE_NAME)
-                    Toast.makeText(this@CaptureActivity1, resources.getString(R.string.text_connected_to) + connectedDeviceName, Toast.LENGTH_SHORT).show()
+                    Toast.makeText(
+                        this@CaptureActivity1,
+                        resources.getString(R.string.text_connected_to) + connectedDeviceName,
+                        Toast.LENGTH_SHORT
+                    ).show()
                 }
-                BluetoothChatService.MESSAGE_TOAST -> Toast.makeText(this@CaptureActivity1, msg.data.getString(BluetoothChatService.TOAST), Toast.LENGTH_SHORT).show()
+                BluetoothChatService.MESSAGE_TOAST -> Toast.makeText(
+                    this@CaptureActivity1,
+                    msg.data.getString(BluetoothChatService.TOAST),
+                    Toast.LENGTH_SHORT
+                ).show()
                 KScan.MESSAGE_DISPLAY -> {
                     val displayBuf = msg.obj as ByteArray
                     val displayMessage = String(displayBuf, 0, msg.arg1)
