@@ -3,16 +3,16 @@ package com.giosis.library.main.submenu
 import android.os.Bundle
 import android.view.View
 import android.widget.Toast
+import androidx.lifecycle.lifecycleScope
 import com.giosis.library.R
+import com.giosis.library.data.NotInHousedResult
 import com.giosis.library.databinding.ActivityNotInHousedBinding
 import com.giosis.library.server.RetrofitClient
-import com.giosis.library.data.NotInHousedResult
 import com.giosis.library.util.CommonActivity
 import com.giosis.library.util.NetworkUtil
 import com.google.gson.Gson
 import com.google.gson.reflect.TypeToken
-import io.reactivex.rxjava3.android.schedulers.AndroidSchedulers
-import io.reactivex.rxjava3.schedulers.Schedulers
+import kotlinx.coroutines.launch
 import java.util.*
 
 
@@ -50,40 +50,50 @@ class ListNotInHousedActivity : CommonActivity() {
         if (NetworkUtil.isNetworkAvailable(this@ListNotInHousedActivity)) {
 
             binding.progressBar.visibility = View.VISIBLE
-            RetrofitClient.instanceDynamic().requestGetOutStandingPickupList(NetworkUtil.getNetworkType(this@ListNotInHousedActivity))
-                    .subscribeOn(Schedulers.io())
-                    .observeOn(AndroidSchedulers.mainThread())
-                    .subscribe({
 
-                        val list = Gson().fromJson<ArrayList<NotInHousedResult>>(it.resultObject,
-                                object : TypeToken<ArrayList<NotInHousedResult>>() {}.type)
+            lifecycleScope.launch {
+                val result = RetrofitClient.instanceDynamic()
+                    .requestGetOutStandingPickupList(NetworkUtil.getNetworkType(this@ListNotInHousedActivity))
 
-                        if (list.isEmpty()) {
+                if (result.resultCode == 0) {
+                    val list = Gson().fromJson<ArrayList<NotInHousedResult>>(
+                        result.resultObject,
+                        object : TypeToken<ArrayList<NotInHousedResult>>() {}.type
+                    )
 
-                            binding.textEmpty.text = resources.getString(R.string.text_empty)
-                            binding.textEmpty.visibility = View.VISIBLE
-                            binding.exlistList.visibility = View.GONE
-                        } else {
+                    if (list.isEmpty()) {
+                        binding.textEmpty.text = resources.getString(R.string.text_empty)
 
-                            binding.textEmpty.visibility = View.GONE
-                            binding.exlistList.visibility = View.VISIBLE
-
-                            listNotInHousedAdapter = ListNotInHousedAdapter(list)
-                            binding.exlistList.setAdapter(listNotInHousedAdapter)
-                        }
-
-                        binding.progressBar.visibility = View.GONE
-                    }, {
-
-                        binding.progressBar.visibility = View.GONE
-
-                        binding.textEmpty.text = resources.getString(R.string.msg_please_try_again)
                         binding.textEmpty.visibility = View.VISIBLE
                         binding.exlistList.visibility = View.GONE
-                    })
-        } else {
 
-            Toast.makeText(this@ListNotInHousedActivity, getString(R.string.msg_network_connect_error), Toast.LENGTH_SHORT).show()
+                    } else {
+                        binding.textEmpty.visibility = View.GONE
+                        binding.exlistList.visibility = View.VISIBLE
+
+                        listNotInHousedAdapter = ListNotInHousedAdapter(list)
+                        binding.exlistList.setAdapter(listNotInHousedAdapter)
+                    }
+
+                    binding.progressBar.visibility = View.GONE
+
+                } else {
+
+                    binding.progressBar.visibility = View.GONE
+
+                    binding.textEmpty.text = resources.getString(R.string.msg_please_try_again)
+                    binding.textEmpty.visibility = View.VISIBLE
+                    binding.exlistList.visibility = View.GONE
+
+                }
+            }
+
+        } else {
+            Toast.makeText(
+                this@ListNotInHousedActivity,
+                getString(R.string.msg_network_connect_error),
+                Toast.LENGTH_SHORT
+            ).show()
         }
     }
 }

@@ -419,14 +419,14 @@ interface RetrofitService {
 
     @POST("GetOutStandingInhousedPickupList")
     @FormUrlEncoded
-    fun requestGetOutStandingPickupList(
+    suspend fun requestGetOutStandingPickupList(
         @Field("network_type") network_type: String,
         @Field("opId") opId: String = Preferences.userId,
         @Field("officeCd") officeCd: String = Preferences.officeCode,
         @Field("device_id") device_id: String = Preferences.deviceUUID,
         @Field("app_id") app_id: String = DataUtil.appID,
         @Field("nation_cd") nation_cd: String = Preferences.userNation
-    ): Single<APIModel>
+    ): APIModel
 
 
     @POST("GetRestDays")
