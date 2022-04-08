@@ -154,7 +154,7 @@ open class AppBaseActivity : CommonActivity() {
         )
 
         leftViewAdapter.addItem(
-            R.drawable.side_icon_list_selector,
+            R.drawable.menu_list_selector,
             getString(R.string.navi_list),
             leftSubList2,
         )

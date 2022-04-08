@@ -7,7 +7,6 @@ import android.view.ViewGroup
 import android.widget.ImageView
 import android.widget.RelativeLayout
 import android.widget.TextView
-import androidx.core.content.ContextCompat
 import androidx.recyclerview.widget.RecyclerView
 import com.giosis.library.R
 import com.giosis.library.message.MessageListActivity
@@ -89,7 +88,6 @@ class LeftViewAdapter : RecyclerView.Adapter<RecyclerView.ViewHolder>() {
         fun bind(item: NavListItem) {
             textNavListTitle.text = item.title
             imgNavListIcon.setImageResource(item.id)
-            imgNavListArrowImg.setBackgroundResource(R.drawable.qdrive_side_arrow)
 
             if (item.childArrayList == null) {
                 imgNavListArrowImg.visibility = View.GONE
@@ -132,38 +130,17 @@ class LeftViewAdapter : RecyclerView.Adapter<RecyclerView.ViewHolder>() {
             }
 
             imgNavListIcon.isSelected = false
+            textNavListTitle.isSelected = false
+            imgNavListArrowImg.isSelected = false
 
             if (expandedPos == layoutPosition) {
+
                 imgNavListIcon.isSelected = true
+                textNavListTitle.isSelected = true
+                imgNavListArrowImg.isSelected = true
                 leftChildRecyclerView.visibility = View.VISIBLE
-                imgNavListArrowImg.setBackgroundResource(R.drawable.qdrive_side_arrow_up)
-
-                when (item.title) {
-//                    view.resources.getString(R.string.navi_scan) -> {
-//                        imgNavListIcon.setImageResource(R.drawable.qdrive_side_scan_h)
-//                        textNavListTitle.setTextColor(
-//                            ContextCompat.getColor(
-//                                view.context,
-//                                R.color.color_4fb648
-//                            )
-//                        )
-//                    }
-                    view.resources.getString(R.string.navi_list) -> {
-                        imgNavListIcon.setImageResource(R.drawable.qdrive_side_list_h)
-
-                        textNavListTitle.setTextColor(
-                            ContextCompat.getColor(
-                                view.context,
-                                R.color.color_4fb648
-                            )
-                        )
-                    }
-                    else -> {
-                        //
-                    }
-                }
-
             } else {
+
                 leftChildRecyclerView.visibility = View.GONE
             }
         }
