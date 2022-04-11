@@ -443,11 +443,11 @@ interface RetrofitService {
     @FormUrlEncoded
     fun requestSetFCMToken(
         @Field("user_key") user_key: String,
-        @Field("op_id") op_id: String,
-        @Field("app_cd") app_cd: String,
-        @Field("device_id") device_id: String,
-        @Field("app_id") app_id: String,
-        @Field("nation_cd") nation_cd: String,
+        @Field("op_id") op_id: String = Preferences.userId,
+        @Field("app_cd") app_cd: String = "01",
+        @Field("device_id") device_id: String = Preferences.userId,
+        @Field("app_id") app_id: String = DataUtil.appID,
+        @Field("nation_cd") nation_cd: String = Preferences.userNation,
     ): Single<APIModel>
 
 
@@ -524,20 +524,20 @@ interface RetrofitService {
     // Message Count
     @POST("GetNewMessageCount")
     @FormUrlEncoded
-    fun requestGetNewMessageCount(
+    suspend fun requestGetNewMessageCount(
         @Field("start_date") start_date: String,
         @Field("qdriver_id") qdriver_id: String = Preferences.userId,
         @Field("app_id") app_id: String = DataUtil.appID,
         @Field("nation_cd") nation_cd: String = Preferences.userNation
-    ): Single<APIModel>
+    ): APIModel
 
     @POST("GetNewMessageCountFromQxSystem")
     @FormUrlEncoded
-    fun requestGetNewMessageCountFromQxSystem(
+    suspend fun requestGetNewMessageCountFromQxSystem(
         @Field("qdriver_id") qdriver_id: String = Preferences.userId,
         @Field("app_id") app_id: String = DataUtil.appID,
         @Field("nation_cd") nation_cd: String = Preferences.userNation
-    ): Single<APIModel>
+    ): APIModel
 
     // message
     @POST("GetQdriverMessageList")

@@ -22,6 +22,7 @@ import android.widget.LinearLayout
 import android.widget.Toast
 import androidx.appcompat.app.ActionBarDrawerToggle
 import androidx.core.content.ContextCompat
+import androidx.lifecycle.lifecycleScope
 import com.giosis.library.R
 import com.giosis.library.UploadData
 import com.giosis.library.barcodescanner.CaptureActivity1
@@ -36,7 +37,6 @@ import com.giosis.library.main.route.TodayMyRouteActivity
 import com.giosis.library.main.submenu.OutletOrderStatusActivity
 import com.giosis.library.main.submenu.RpcListActivity
 import com.giosis.library.pickup.CreatePickupOrderActivity
-import com.giosis.library.server.APIModel
 import com.giosis.library.server.RetrofitClient
 import com.giosis.library.setting.SettingActivity
 import com.giosis.library.setting.bluetooth.BluetoothDeviceData
@@ -50,7 +50,8 @@ import com.google.gson.Gson
 import com.google.gson.reflect.TypeToken
 import io.reactivex.rxjava3.android.schedulers.AndroidSchedulers
 import io.reactivex.rxjava3.schedulers.Schedulers
-import java.lang.Exception
+import kotlinx.coroutines.async
+import kotlinx.coroutines.launch
 import java.net.URLEncoder
 import java.text.SimpleDateFormat
 import java.util.*
@@ -65,8 +66,6 @@ open class AppBaseActivity : CommonActivity() {
     private val headerBinding by lazy {
         ViewNavListHeaderBinding.inflate(LayoutInflater.from(this), null, false)
     }
-
-    private var titleString: String = ""
 
     var isPermissionTrue = false
 
@@ -89,10 +88,6 @@ open class AppBaseActivity : CommonActivity() {
 
     var uploadFailedCount = "0"
 
-    fun setTopTitle(title: String) {
-        titleString = title
-        binding.appBar.textTopTitle.text = titleString
-    }
 
     fun leftMenuGone() {
         if (binding.drawerLayout.isDrawerOpen(Gravity.LEFT)) {
@@ -122,14 +117,8 @@ open class AppBaseActivity : CommonActivity() {
 //        val adapter2 = NavListViewAdapter2()
 //        binding.navList.setAdapter(adapter2)
 
-        //
         binding.layoutBottomBarHome.setOnClickListener {
-
-            if (!titleString.contains(getString(R.string.navi_home))) {
-                val intent = Intent(it.context, AppBaseActivity::class.java)
-                startActivity(intent)
-                finish()
-            }
+            leftMenuGone()
         }
 
         binding.layoutBottomBarScan.setOnClickListener {
@@ -236,7 +225,7 @@ open class AppBaseActivity : CommonActivity() {
         //
 
         QDataUtil.setCustomUserAgent(this@AppBaseActivity)
-        DatabaseHelper.getInstance().dbPath
+        DatabaseHelper.getInstance()
 
         window.addFlags(
             WindowManager.LayoutParams.FLAG_KEEP_SCREEN_ON
@@ -249,15 +238,12 @@ open class AppBaseActivity : CommonActivity() {
         // FCM token
         saveServerFCMToken()
 
-        setTopTitle(resources.getString(R.string.navi_home))
+        binding.appBar.textTopTitle.text = resources.getString(R.string.navi_home)
 
         // 7ETB, FLTB push 받고 온 경우 확인
-        var downloadApi = intent.getStringExtra("DOWNLOAD")
-        if (downloadApi == null) {
-            downloadApi = "N"
-        }
+        val downloadApi = intent.getStringExtra("DOWNLOAD")
 
-        if (DownloadCheck()!! || downloadApi == "Y") {
+        if (downloadCheck() || downloadApi == "Y") {
             download()
         }
 
@@ -265,11 +251,13 @@ open class AppBaseActivity : CommonActivity() {
             val intent = Intent(this, ListActivity::class.java)
             startActivity(intent)
         }
+
         binding.mainView.layoutHomeDownload.setOnClickListener {
             download()
         }
+
         binding.mainView.layoutHomeUpload.setOnClickListener {
-            Upload()
+            upload()
         }
 
 //        binding.mainView.textHomeDriverName.text = Preferences.userName
@@ -333,21 +321,20 @@ open class AppBaseActivity : CommonActivity() {
         }
 
         binding.mainView.btnHomeConfirmMyDeliveryOrder.setOnClickListener {
-
             val intent = Intent(this, CaptureActivity1::class.java)
             intent.putExtra("title", resources.getString(R.string.text_title_driver_assign))
             intent.putExtra("type", BarcodeType.CONFIRM_MY_DELIVERY_ORDER)
             startActivity(intent)
         }
-        binding.mainView.btnHomeAssignPickupDriver.setOnClickListener {
 
+        binding.mainView.btnHomeAssignPickupDriver.setOnClickListener {
             val intent = Intent(this, RpcListActivity::class.java)
             startActivity(intent)
         }
+
         binding.mainView.btnHomeChangeDeliveryDriver.setOnClickListener {
 
             if (gpsEnable && gpsTrackerManager != null) {
-
                 val intent = Intent(this, CaptureActivity1::class.java)
                 intent.putExtra(
                     "title",
@@ -356,22 +343,21 @@ open class AppBaseActivity : CommonActivity() {
                 intent.putExtra("type", BarcodeType.CHANGE_DELIVERY_DRIVER)
                 startActivity(intent)
             } else {
-
                 DataUtil.enableLocationSettings(this)
             }
         }
-        binding.mainView.btnHomeOutletOrderStatus.setOnClickListener {
 
+        binding.mainView.btnHomeOutletOrderStatus.setOnClickListener {
             val intent = Intent(this, OutletOrderStatusActivity::class.java)
             startActivity(intent)
         }
-        binding.mainView.btnHomeCreatePickupOrder.setOnClickListener {
 
+        binding.mainView.btnHomeCreatePickupOrder.setOnClickListener {
             val intent = Intent(this, CreatePickupOrderActivity::class.java)
             startActivity(intent)
         }
-        binding.mainView.btnHomeTodayMyRoute.setOnClickListener {
 
+        binding.mainView.btnHomeTodayMyRoute.setOnClickListener {
             val intent = Intent(this, TodayMyRouteActivity::class.java)
             startActivity(intent)
         }
@@ -380,7 +366,6 @@ open class AppBaseActivity : CommonActivity() {
 
         // 권한 여부 체크 (없으면 true, 있으면 false)
         if (checker.lacksPermissions(*PERMISSIONS)) {
-
             isPermissionTrue = false
             PermissionActivity.startActivityForResult(
                 this,
@@ -388,51 +373,24 @@ open class AppBaseActivity : CommonActivity() {
                 *PERMISSIONS
             )
             overridePendingTransition(0, 0)
-        } else {
 
+        } else {
             isPermissionTrue = true
             gpsTrackerServiceStart()
         }
+
+        DataUtil.mFirebaseAnalytics = FirebaseAnalytics.getInstance(this)
     }
 
-    companion object {
-        enum class MENU_LIST {
-
-        }
-
-
-    }
-
-    fun setMessageCount(customer_count: Int, admin_count: Int) {
-        customerMessageCount = customer_count
-        adminMessageCount = admin_count
-        val count = customer_count + admin_count
-
-        headerBinding.textMessageCount.visibility = View.VISIBLE
-        headerBinding.textMessageCount.text = count.toString()
-    }
-
-    fun goneMessageCount() {
-        headerBinding.textMessageCount.visibility = View.GONE
-    }
-
-    fun setNaviHeader(name: String?, office: String?) {
-
-        headerBinding.textNavHeaderDriverName.text = name
-        headerBinding.textNavHeaderDriverOffice.text = office
-    }
 
     override fun onResume() {
         super.onResume()
 
-        setNaviHeader(Preferences.userName, Preferences.officeName)
         binding.mainView.textHomeDriverName.text = Preferences.userName
         binding.mainView.textHomeDriverOffice.text = Preferences.officeName
 
-        DataUtil.mFirebaseAnalytics = FirebaseAnalytics.getInstance(this)
 
         if (isPermissionTrue) {
-
             gpsTrackerManager = GPSTrackerManager(this)
             gpsEnable = gpsTrackerManager!!.enableGPSSetting()
 
@@ -446,7 +404,6 @@ open class AppBaseActivity : CommonActivity() {
         }
 
         initMessageCount()
-
 
         // TODO_TEST  badge
 //        MyApplication myApp = (MyApplication) getApplicationContext();
@@ -487,7 +444,7 @@ open class AppBaseActivity : CommonActivity() {
             }
         }
 
-        MainActivityServer.getLocalCount1(this)
+        MainActivityServer.getLocalCount(this)
     }
 
     private fun setBadge(context: Context, count: Int) {
@@ -530,7 +487,7 @@ open class AppBaseActivity : CommonActivity() {
     }
 
     @SuppressLint("SimpleDateFormat")
-    private fun DownloadCheck(): Boolean? {
+    private fun downloadCheck(): Boolean {
         val dateFormat = SimpleDateFormat("yyyy-MM-dd")
         dateFormat.timeZone = TimeZone.getTimeZone("GMT")
         val today = dateFormat.format(Date())
@@ -547,10 +504,10 @@ open class AppBaseActivity : CommonActivity() {
             val cs: Cursor = DatabaseHelper.getInstance()[selectQuery]
             if (cs.moveToFirst()) {
 
-                val PunchInDate = cs.getString(cs.getColumnIndex("PI_Date"))
-                if (PunchInDate != null && PunchInDate != "") {
+                val punchInDate = cs.getString(cs.getColumnIndex("PI_Date"))
+                if (punchInDate != null && punchInDate != "") {
                     //오늘 날짜가 있으면 다운로드 하지 않음
-                    if (today == PunchInDate) {
+                    if (today == punchInDate) {
                         return false
                     }
                 }
@@ -562,7 +519,7 @@ open class AppBaseActivity : CommonActivity() {
         return true
     }
 
-    private fun Upload() {
+    private fun upload() {
         if (!NetworkUtil.isNetworkAvailable(this)) {
             Toast.makeText(this, getString(R.string.msg_network_connect_error), Toast.LENGTH_SHORT)
                 .show()
@@ -615,11 +572,11 @@ open class AppBaseActivity : CommonActivity() {
                 songjanglist, "QH", latitude, longitude
             ).setOnServerEventListener(object : OnServerEventListener {
                 override fun onPostResult() {
-                    MainActivityServer.getLocalCount1(this@AppBaseActivity)
+                    MainActivityServer.getLocalCount(this@AppBaseActivity)
                 }
 
                 override fun onPostFailList() {
-                    MainActivityServer.getLocalCount1(this@AppBaseActivity)
+                    MainActivityServer.getLocalCount(this@AppBaseActivity)
                 }
             }).build().execute()
         } else {
@@ -723,10 +680,8 @@ open class AppBaseActivity : CommonActivity() {
 
     private fun enableGPSSetting(locationManager: LocationManager?) {
         if (locationManager != null) {
-
             val gpsEnable = locationManager.isProviderEnabled(LocationManager.GPS_PROVIDER)
             if (!gpsEnable) {
-
                 DataUtil.enableLocationSettings(this)
             }
         }
@@ -741,16 +696,11 @@ open class AppBaseActivity : CommonActivity() {
 
                 RetrofitClient.instanceDynamic().requestSetFCMToken(
                     fcmToken,
-                    Preferences.userId,
-                    "01",
-                    Preferences.deviceUUID,
-                    DataUtil.appID,
-                    Preferences.userNation
                 ).subscribeOn(Schedulers.io())
                     .observeOn(AndroidSchedulers.mainThread())
                     .subscribe(
-                        { it: APIModel? -> }
-                    ) { it: Throwable? -> }
+                        { }
+                    ) { }
             }
         }
     }
@@ -759,66 +709,65 @@ open class AppBaseActivity : CommonActivity() {
 
         if (NetworkUtil.isNetworkAvailable(this)) {
 
-            try {
+            val cal = Calendar.getInstance()
+            cal.time = Date()
+            cal.add(Calendar.DATE, -1) //minus number would decrement the days
+            val yDate = cal.time
+            val dateFormat = SimpleDateFormat("yyyy-MM-dd")
+            val yesterday = dateFormat.format(yDate) + " 00:00:00"
+            val date = URLEncoder.encode(yesterday, "UTF-8")
 
-                val cal = Calendar.getInstance()
-                cal.time = Date()
-                cal.add(Calendar.DATE, -1) //minus number would decrement the days
-                val yDate = cal.time
-                val dateFormat = SimpleDateFormat("yyyy-MM-dd")
-                val yesterday = dateFormat.format(yDate) + " 00:00:00"
-                val date = URLEncoder.encode(yesterday, "UTF-8")
+            lifecycleScope.launch {
 
-                RetrofitClient.instanceDynamic().requestGetNewMessageCount(
-                    date, Preferences.userId,
-                    DataUtil.appID, Preferences.userNation
-                )
-                    .subscribeOn(Schedulers.io())
-                    .subscribe({ it: APIModel ->
-                        if (it.resultObject != null) {
+                try {
+                    val count = async<Int> {
+                        val result =
+                            RetrofitClient.instanceDynamic().requestGetNewMessageCount(date)
+
+                        if (result.resultObject != null) {
                             val count = Gson().fromJson<Int>(
-                                it.resultObject,
+                                result.resultObject,
                                 object : TypeToken<Int?>() {}.type
                             )
-                            RetrofitClient.instanceDynamic().requestGetNewMessageCountFromQxSystem(
-                                Preferences.userId,
-                                DataUtil.appID, Preferences.userNation
-                            )
-                                .subscribeOn(Schedulers.io())
-                                .observeOn(AndroidSchedulers.mainThread())
-                                .subscribe({ it1: APIModel ->
-                                    if (it1.resultObject != null) {
-                                        val adminCount = Gson().fromJson<Int>(
-                                            it1.resultObject,
-                                            object : TypeToken<Int?>() {}.type
-                                        )
-                                        Log.e(
-                                            "Message",
-                                            "count >>>> $count / $adminCount"
-                                        )
-                                        if (0 < count || 0 < adminCount) {
-                                            setMessageCount(count, adminCount)
-                                        } else {
-                                            goneMessageCount()
-                                        }
-                                    }
-                                }
-                                ) { it1: Throwable ->
-                                    Log.e(
-                                        RetrofitClient.errorTag,
-                                        "$TAG - $it1"
-                                    )
-                                }
+                            return@async count
                         }
+                        return@async 0
                     }
-                    ) { it: Throwable ->
-                        Log.e(
-                            RetrofitClient.errorTag,
-                            "$TAG - $it"
-                        )
+
+                    val adminCount = async<Int> {
+                        val result =
+                            RetrofitClient.instanceDynamic()
+                                .requestGetNewMessageCountFromQxSystem()
+
+                        if (result.resultObject != null) {
+
+                            val adminCount = Gson().fromJson<Int>(
+                                result.resultObject,
+                                object : TypeToken<Int?>() {}.type
+                            )
+                            return@async adminCount
+                        }
+
+                        return@async 0
                     }
-            } catch (ignore: Exception) {
+
+                    customerMessageCount = count.await()
+                    adminMessageCount = adminCount.await()
+
+                    if (customerMessageCount > 0 || adminMessageCount > 0) {
+
+                        val count = customerMessageCount + adminMessageCount
+                        headerBinding.textMessageCount.visibility = View.VISIBLE
+                        headerBinding.textMessageCount.text = count.toString()
+
+                    } else {
+                        headerBinding.textMessageCount.visibility = View.GONE
+                    }
+                } catch (e: java.lang.Exception) {
+
+                }
             }
+
         } else {
             Toast.makeText(
                 this,
