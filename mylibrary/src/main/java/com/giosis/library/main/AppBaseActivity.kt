@@ -33,6 +33,8 @@ import com.giosis.library.gps.FusedProviderService
 import com.giosis.library.gps.GPSTrackerManager
 import com.giosis.library.gps.LocationManagerService
 import com.giosis.library.list.ListActivity
+import com.giosis.library.main.leftMenu.LeftMenu
+import com.giosis.library.main.leftMenu.LeftViewAdapter
 import com.giosis.library.main.route.TodayMyRouteActivity
 import com.giosis.library.main.submenu.OutletOrderStatusActivity
 import com.giosis.library.main.submenu.RpcListActivity
@@ -55,6 +57,7 @@ import kotlinx.coroutines.launch
 import java.net.URLEncoder
 import java.text.SimpleDateFormat
 import java.util.*
+
 
 open class AppBaseActivity : CommonActivity() {
     var TAG = "AppBaseActivity"
@@ -139,90 +142,35 @@ open class AppBaseActivity : CommonActivity() {
         val leftViewAdapter = LeftViewAdapter()
         binding.navList.adapter = leftViewAdapter
 
-        val leftSubList: ArrayList<String>
-        val leftSubList2: ArrayList<String>
-
         if (Preferences.outletDriver == "Y") {
-            leftSubList = ArrayList(
-                listOf(
-                    getString(R.string.text_start_delivery_for_outlet),
-                    getString(R.string.navi_sub_delivery_done),
-                    getString(R.string.navi_sub_pickup),
-                    getString(R.string.navi_sub_self)
-                )
-            )
-            leftSubList2 = ArrayList(
-                listOf(
-                    getString(R.string.navi_sub_in_progress),
-                    getString(R.string.navi_sub_upload_fail),
-                    getString(R.string.navi_sub_today_done),
-                    getString(R.string.navi_sub_not_in_housed),
-                    getString(R.string.text_outlet_order_status)
-                )
-            )
+            LeftMenu.SCAN_MENU.subList!!.add(0, LeftMenu.DELIVERY_OUTLET)
         } else {
-            leftSubList = ArrayList(
-                listOf(
-                    getString(R.string.navi_sub_confirm_delivery),
-                    getString(R.string.navi_sub_delivery_done),
-                    getString(R.string.navi_sub_pickup),
-                    getString(R.string.navi_sub_self)
-                )
-            )
-            leftSubList2 = ArrayList(
-                listOf(
-                    getString(R.string.navi_sub_in_progress),
-                    getString(R.string.navi_sub_upload_fail),
-                    getString(R.string.navi_sub_today_done),
-                    getString(R.string.navi_sub_not_in_housed)
-                )
-            )
+            LeftMenu.SCAN_MENU.subList!!.add(0, LeftMenu.CONFIRM_DELIVERY)
         }
 
-        leftViewAdapter.addItem(
-            R.drawable.side_icon_home_selector,
-            getString(R.string.navi_home),
-            null,
-        )
+        if (Preferences.outletDriver == "Y") {
+            LeftMenu.LIST_MENU.subList!!.add(LeftMenu.OUTLET_STATUS)
+        }
 
-        leftViewAdapter.addItem(
-            R.drawable.side_icon_home_selector,
-            getString(R.string.navi_home),
-            null,
-        )
-
-        leftViewAdapter.addItem(
-            R.drawable.memu_scan_selector,
-            getString(R.string.navi_scan),
-            leftSubList,
-        )
-
-        leftViewAdapter.addItem(
-            R.drawable.menu_list_selector,
-            getString(R.string.navi_list),
-            leftSubList2,
-        )
-
-        leftViewAdapter.addItem(
-            R.drawable.side_icon_statistics_selector,
-            getString(R.string.navi_statistics),
-            null,
+        val listItemList = ArrayList(
+            listOf(
+                LeftMenu.EMPTY_MENU,
+                LeftMenu.HOME_MENU,
+                LeftMenu.SCAN_MENU,
+                LeftMenu.LIST_MENU,
+                LeftMenu.STATI_MENU,
+                LeftMenu.SETTING_MENU
+            )
         )
 
         if (Preferences.userNation == "SG" && Preferences.pickupDriver == "Y") {
-            leftViewAdapter.addItem(
-                R.drawable.icon_pickup_order,
-                getString(R.string.text_create_pickup_order),
-                null,
-            )
+            listItemList.add(listItemList.size - 1, LeftMenu.CREATE_PICKUP_MENU)
         }
 
-        leftViewAdapter.addItem(
-            R.drawable.side_icon_settings_selector,
-            getString(R.string.navi_setting),
-            null,
-        )
-        //
+
+        leftViewAdapter.item = listItemList
+
+
 
         QDataUtil.setCustomUserAgent(this@AppBaseActivity)
         DatabaseHelper.getInstance()
@@ -776,4 +724,84 @@ open class AppBaseActivity : CommonActivity() {
             ).show()
         }
     }
+}
+
+}
+
+    private fun initMessageCount() {
+
+        if (NetworkUtil.isNetworkAvailable(this)) {
+
+            val cal = Calendar.getInstance()
+            cal.time = Date()
+            cal.add(Calendar.DATE, -1) //minus number would decrement the days
+            val yDate = cal.time
+            val dateFormat = SimpleDateFormat("yyyy-MM-dd")
+            val yesterday = dateFormat.format(yDate) + " 00:00:00"
+            val date = URLEncoder.encode(yesterday, "UTF-8")
+
+            lifecycleScope.launch {
+
+                try {
+                    val count = async<Int> {
+                        val result =
+                            RetrofitClient.instanceDynamic().requestGetNewMessageCount(date)
+
+                        if (result.resultObject != null) {
+                            val count = Gson().fromJson<Int>(
+                                result.resultObject,
+                                object : TypeToken<Int?>() {}.type
+                            )
+                            return@async count
+                        }
+                        return@async 0
+                    }
+
+                    val adminCount = async<Int> {
+                        val result =
+                            RetrofitClient.instanceDynamic()
+                                .requestGetNewMessageCountFromQxSystem()
+
+                        if (result.resultObject != null) {
+
+                            val adminCount = Gson().fromJson<Int>(
+                                result.resultObject,
+                                object : TypeToken<Int?>() {}.type
+                            )
+                            return@async adminCount
+                        }
+
+                        return@async 0
+                    }
+
+                    customerMessageCount = count.await()
+                    adminMessageCount = adminCount.await()
+
+                    if (customerMessageCount > 0 || adminMessageCount > 0) {
+
+                        val count = customerMessageCount + adminMessageCount
+                        headerBinding.textMessageCount.visibility = View.VISIBLE
+                        headerBinding.textMessageCount.text = count.toString()
+
+                    } else {
+                        headerBinding.textMessageCount.visibility = View.GONE
+                    }
+                } catch (e: java.lang.Exception) {
+
+    fun setNaviHeader(name: String?, office: String?) {
+        headerBinding.textNavHeaderDriverName.text = name
+        headerBinding.textNavHeaderDriverOffice.text = office
+                }
+            }
+
+        } else {
+            Toast.makeText(
+                this,
+                getString(R.string.msg_network_connect_error),
+                Toast.LENGTH_SHORT
+            ).show()
+        }
+    }
+
+
 }

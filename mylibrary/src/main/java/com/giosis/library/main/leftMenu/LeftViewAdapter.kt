@@ -1,4 +1,5 @@
-package com.giosis.library.main
+package com.giosis.library.main.leftMenu
+
 
 import android.content.Intent
 import android.view.LayoutInflater
@@ -9,16 +10,15 @@ import android.widget.RelativeLayout
 import android.widget.TextView
 import androidx.recyclerview.widget.RecyclerView
 import com.giosis.library.R
+import com.giosis.library.main.AppBaseActivity
 import com.giosis.library.message.MessageListActivity
-import com.giosis.library.pickup.CreatePickupOrderActivity
-import com.giosis.library.setting.SettingActivity
 import com.giosis.library.util.Preferences
 
 
 class LeftViewAdapter : RecyclerView.Adapter<RecyclerView.ViewHolder>() {
     private val TAG = "LeftViewAdapter"
 
-    private val item = ArrayList<NavListItem>()
+    var item = ArrayList<NavListItem>()
 
     private var expandedPos = -1
     private var typeHeader = 0
@@ -27,15 +27,13 @@ class LeftViewAdapter : RecyclerView.Adapter<RecyclerView.ViewHolder>() {
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): RecyclerView.ViewHolder =
         when (viewType) {
             typeHeader -> {
-                val view =
-                    LayoutInflater.from(parent.context)
-                        .inflate(R.layout.view_nav_list_header, parent, false)
+                val view = LayoutInflater.from(parent.context)
+                    .inflate(R.layout.view_nav_list_header, parent, false)
                 HeaderViewHolder(view)
             }
             typeItem -> {
-                val view =
-                    LayoutInflater.from(parent.context)
-                        .inflate(R.layout.item_nav_list, parent, false)
+                val view = LayoutInflater.from(parent.context)
+                    .inflate(R.layout.item_nav_list, parent, false)
                 ViewHolder(view)
             }
             else -> throw Exception("Unknown viewType $viewType")
@@ -86,82 +84,60 @@ class LeftViewAdapter : RecyclerView.Adapter<RecyclerView.ViewHolder>() {
             view.findViewById(R.id.left_child_recyclerView)
 
         fun bind(item: NavListItem) {
-            textNavListTitle.text = item.title
-            imgNavListIcon.setImageResource(item.id)
+            textNavListTitle.text = view.resources.getString(item.titleResource)
+            imgNavListIcon.setImageResource(item.iconId)
 
-            if (item.childArrayList == null) {
+            if (item.subList == null) {
                 imgNavListArrowImg.visibility = View.GONE
             } else {
                 imgNavListArrowImg.visibility = View.VISIBLE
-                leftChildRecyclerView.adapter = LeftChildViewAdapter(item.childArrayList!!)
+                leftChildRecyclerView.adapter = LeftChildViewAdapter(item.subList!!)
+            }
+
+            if (expandedPos == layoutPosition) {
+                leftChildRecyclerView.visibility = View.VISIBLE
+
+                imgNavListIcon.isSelected = true
+                textNavListTitle.isSelected = true
+                imgNavListArrowImg.isSelected = true
+
+            } else {
+                leftChildRecyclerView.visibility = View.GONE
+
+                imgNavListIcon.isSelected = false
+                textNavListTitle.isSelected = false
+                imgNavListArrowImg.isSelected = false
             }
 
             groupItemLayout.setOnClickListener {
 
-                when (item.title) {
-                    view.resources.getString(R.string.navi_home) -> {
+                when (item) {
+                    LeftMenu.HOME_MENU -> {
                         (view.context as AppBaseActivity).leftMenuGone()
                     }
-                    view.resources.getString(R.string.navi_scan),
-                    view.resources.getString(R.string.navi_list) -> {
+                    LeftMenu.STATI_MENU,
+                    LeftMenu.CREATE_PICKUP_MENU,
+                    LeftMenu.SETTING_MENU -> {
+                        (view.context as AppBaseActivity).leftMenuGone()
+                        val intent = Intent(view.context, item.className)
+                        (view.context as AppBaseActivity).startActivity(intent)
+                    }
+                    else -> {
                         expandedPos = if (expandedPos == layoutPosition) {
                             -1
                         } else {
                             layoutPosition
                         }
                     }
-                    view.resources.getString(R.string.navi_statistics) -> {
-                        (view.context as AppBaseActivity).leftMenuGone()
-                        val intent = Intent(view.context, ScanActivity::class.java)
-                        (view.context as AppBaseActivity).startActivity(intent)
-                    }
-                    view.resources.getString(R.string.text_create_pickup_order) -> {
-                        (view.context as AppBaseActivity).leftMenuGone()
-                        val intent = Intent(view.context, CreatePickupOrderActivity::class.java)
-                        (view.context as AppBaseActivity).startActivity(intent)
-                    }
-                    view.resources.getString(R.string.navi_setting) -> {
-                        (view.context as AppBaseActivity).leftMenuGone()
-                        val intent = Intent(view.context, SettingActivity::class.java)
-                        (view.context as AppBaseActivity).startActivity(intent)
-                    }
                 }
+
                 notifyDataSetChanged()
             }
-
-            imgNavListIcon.isSelected = false
-            textNavListTitle.isSelected = false
-            imgNavListArrowImg.isSelected = false
-
-            if (expandedPos == layoutPosition) {
-
-                imgNavListIcon.isSelected = true
-                textNavListTitle.isSelected = true
-                imgNavListArrowImg.isSelected = true
-                leftChildRecyclerView.visibility = View.VISIBLE
-            } else {
-
-                leftChildRecyclerView.visibility = View.GONE
-            }
         }
-
     }
 
     override fun getItemCount(): Int {
         return item.size
-    }
-
-    fun addItem(
-        id: Int,
-        title: String,
-        list: ArrayList<String>?
-    ) {
-        val data = NavListItem()
-        data.id = id
-        data.title = title
-        data.childArrayList = list
-
-        item.add(data)
     }
 
     override fun getItemViewType(position: Int): Int =
