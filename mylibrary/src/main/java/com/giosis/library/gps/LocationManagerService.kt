@@ -27,7 +27,7 @@ class LocationManagerService : Service() {
         return null
     }
 
-    override fun onStartCommand(intent: Intent, flags: Int, startId: Int): Int {
+    override fun onStartCommand(intent: Intent?, flags: Int, startId: Int): Int {
 
         Log.e("Location", "$TAG    onStartCommand")
         startLocationService()
@@ -69,7 +69,6 @@ class LocationManagerService : Service() {
     }
 
     private fun startLocationService() {
-
         timeListener = LocationManagerWorker(this, "time_location")
         distanceListener = LocationManagerWorker(this, "distance_location")
 

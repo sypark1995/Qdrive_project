@@ -25,7 +25,7 @@ class FusedProviderService : Service() {
         return null
     }
 
-    override fun onStartCommand(intent: Intent, flags: Int, startId: Int): Int {
+    override fun onStartCommand(intent: Intent?, flags: Int, startId: Int): Int {
         Log.e("Location", "$TAG   onStartCommand")
 
         createFusedProvider()
@@ -60,6 +60,7 @@ class FusedProviderService : Service() {
                 .setContentTitle(resources.getString(R.string.text_gps_service))
                 .setSmallIcon(resourceId)
                 .setContentIntent(pendingIntent)
+
             val notification = builder.build()
             startForeground(1, notification)
         }
