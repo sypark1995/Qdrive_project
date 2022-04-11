@@ -13,14 +13,15 @@ import android.view.View
 import androidx.lifecycle.lifecycleScope
 import com.giosis.library.R
 import com.giosis.library.UploadData
-import com.giosis.library.database.DatabaseHelper
-import com.giosis.library.server.RetrofitClient
 import com.giosis.library.data.QSignDeliveryList
 import com.giosis.library.data.QSignPickupList
-import com.giosis.library.data.RestDaysResult
+import com.giosis.library.database.DatabaseHelper
+import com.giosis.library.server.RetrofitClient
 import com.giosis.library.util.*
 import com.google.gson.Gson
 import com.google.gson.reflect.TypeToken
+import kotlinx.android.synthetic.main.activity_main.*
+import kotlinx.android.synthetic.main.activity_main_home.view.*
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
@@ -43,7 +44,7 @@ object MainActivityServer {
 
         progressDialog.show()
 
-        (context as MainActivity).lifecycleScope.launch {
+        (context as AppBaseActivity).lifecycleScope.launch {
             // 2020.12  Failed Code 가져오기
             getDFCFailedCode()
             getPFCFailedCode()
@@ -186,7 +187,7 @@ object MainActivityServer {
                 }
             }
 
-            getLocalCount(context)
+            getLocalCount1(context)
 
             withContext(Dispatchers.Main) {
                 progressDialog.hide()
@@ -339,6 +340,65 @@ object MainActivityServer {
         var inProgressPickupCnt = 0
         var inProgressRpcCnt = 0
     }
+    fun getLocalCount1(activity: AppBaseActivity) {
+        activity.lifecycleScope.launch(Dispatchers.IO) {
+
+            try {
+                val selectQuery =
+                    "select ifnull(sum(case when chg_dt is null then 1 else 0 end), 0) as InprogressCnt " + //In-Progress
+                            " , ifnull(sum(case when punchOut_stat = 'S' and strftime('%Y-%m-%d', chg_dt) = date('now') then 1 else 0 end) ,0) as TodayUploadedCnt " +// Uploaded Today
+                            " , ifnull(sum(case when punchOut_stat <> 'S' and chg_dt is not null  then 1 else 0 end), 0) as UploadFailedCnt " + //Upload Failed
+                            " , ifnull(sum(case when punchOut_stat <> 'S' and chg_dt is null and type = 'D' then 1 else 0 end), 0) as InprogressDeliveryCnt " +//Delivery
+                            " , ifnull(sum(case when punchOut_stat <> 'S' and chg_dt is null and type = 'P' and route <> 'RPC' then 1 else 0 end), 0) as InprogressPickupCnt " + //Pickup
+                            " , ifnull(sum(case when punchOut_stat <> 'S' and chg_dt is null and route = 'RPC' then 1 else 0 end), 0) as InprogressRpcCnt " + //RPC
+                            " , datetime(max(reg_dt), 'localtime') as PI_Time " +
+                            " from " + DatabaseHelper.DB_TABLE_INTEGRATION_LIST +
+                            " where reg_id= '" + Preferences.userId + "'"
+
+                val cs = DatabaseHelper.getInstance().get(selectQuery)
+
+                if (cs.moveToFirst()) {
+
+                    val count = CountData().apply {
+                        inProgressCnt = cs.getInt(cs.getColumnIndex("InprogressCnt"))
+                        todayUploadedCnt = cs.getInt(cs.getColumnIndex("TodayUploadedCnt"))
+                        uploadFailedCnt = cs.getInt(cs.getColumnIndex("UploadFailedCnt"))
+                        inProgressDeliveryCnt =
+                            cs.getInt(cs.getColumnIndex("InprogressDeliveryCnt"))
+                        inProgressPickupCnt = cs.getInt(cs.getColumnIndex("InprogressPickupCnt"))
+                        inProgressRpcCnt = cs.getInt(cs.getColumnIndex("InprogressRpcCnt"))
+                    }
+
+                    withContext(Dispatchers.Main) {
+                        activity.main_view.text_home_total_qty.text =
+                            (count.inProgressPickupCnt + count.todayUploadedCnt + count.uploadFailedCnt).toString()
+
+                        activity.uploadFailedCount = count.uploadFailedCnt.toString()
+
+                        activity.main_view.text_home_in_progress_count.text = count.inProgressCnt.toString()
+                        activity.main_view.text_home_delivery_count.text =
+                            count.inProgressDeliveryCnt.toString()
+                        activity.main_view.text_home_pickup_count.text = count.inProgressPickupCnt.toString()
+                        activity.main_view.text_home_rpc_count.text = count.inProgressRpcCnt.toString()
+
+                        //파트너 Office Header - RPC Change Driver 버튼 설정
+                        if (Preferences.default == "Y") {
+                            if (count.inProgressRpcCnt.toString() != "0") {
+                                activity.main_view.btn_home_assign_pickup_driver.visibility = View.VISIBLE
+                            } else {
+                                activity.main_view.btn_home_assign_pickup_driver.visibility = View.GONE
+                            }
+                        }
+                        Log.e(TAG, "getLocalCount finish")
+                    }
+                }
+
+            } catch (e: java.lang.Exception) {
+
+            }
+
+        }
+    }
 
     fun getLocalCount(activity: MainActivity) {
 
@@ -446,10 +506,10 @@ object MainActivityServer {
             var longitude = 0.0
 
             try {
-                if ((context as MainActivity).gpsEnable && (context).gpsTrackerManager != null) {
-                    latitude = (context).gpsTrackerManager.latitude
-                    longitude = (context).gpsTrackerManager.longitude
-                    accuracy = (context).gpsTrackerManager.accuracy
+                if ((context as AppBaseActivity).gpsEnable && (context).gpsTrackerManager != null) {
+                    latitude = (context).gpsTrackerManager!!.latitude
+                    longitude = (context).gpsTrackerManager!!.longitude
+                    accuracy = (context).gpsTrackerManager!!.accuracy
                 }
             } catch (e: java.lang.Exception) {
 
@@ -498,7 +558,7 @@ object MainActivityServer {
     }
 
     fun upload(context: Context) {
-        (context as MainActivity).lifecycleScope.launch(Dispatchers.IO) {
+        (context as AppBaseActivity).lifecycleScope.launch(Dispatchers.IO) {
 
             val songjangList = ArrayList<UploadData>()
 
@@ -537,8 +597,8 @@ object MainActivityServer {
             var latitude = 0.0
             var longitude = 0.0
             if ((context).gpsEnable && (context).gpsTrackerManager != null) {
-                latitude = (context).gpsTrackerManager.latitude
-                longitude = (context).gpsTrackerManager.longitude
+                latitude = (context).gpsTrackerManager!!.latitude
+                longitude = (context).gpsTrackerManager!!.longitude
             }
 
             for (item in songjangList) {

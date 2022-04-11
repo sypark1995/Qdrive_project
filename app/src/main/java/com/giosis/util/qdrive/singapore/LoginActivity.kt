@@ -16,11 +16,11 @@ import android.widget.ProgressBar
 import androidx.appcompat.app.AlertDialog
 import com.giosis.library.data.LoginInfo
 import com.giosis.library.gps.GPSTrackerManager
-import com.giosis.library.main.MainActivity
 import com.giosis.library.main.SMSVerificationActivity
 import com.giosis.library.server.RetrofitClient
 import com.giosis.library.setting.DeveloperModeActivity
 import com.giosis.library.database.DatabaseHelper
+import com.giosis.library.main.AppBaseActivity
 import com.giosis.library.util.CommonActivity
 import com.giosis.library.util.PermissionActivity
 import com.giosis.library.util.PermissionChecker
@@ -243,7 +243,7 @@ class LoginActivity : CommonActivity() {
 
                                                 val intent = Intent(
                                                     this@LoginActivity,
-                                                    MainActivity::class.java
+                                                    AppBaseActivity::class.java
                                                 )
                                                 startActivity(intent)
                                                 finish()

@@ -21,7 +21,7 @@ import androidx.viewpager2.widget.ViewPager2;
 
 import com.giosis.library.R;
 import com.giosis.library.bluetooth.BluetoothClass;
-import com.giosis.library.main.MainActivity;
+import com.giosis.library.main.AppBaseActivity;
 import com.giosis.library.util.CommonActivity;
 import com.giosis.library.util.DataUtil;
 import com.giosis.library.util.ListFragmentFactoryImpl;
@@ -188,7 +188,7 @@ public class ListActivity extends CommonActivity implements OnClickListener,
 
             DataUtil.inProgressListPosition = 0;
             DataUtil.uploadFailedListPosition = 0;
-            Intent intent = new Intent(ListActivity.this, MainActivity.class);
+            Intent intent = new Intent(ListActivity.this, AppBaseActivity.class);
             intent.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP | Intent.FLAG_ACTIVITY_SINGLE_TOP);
             startActivity(intent);
 

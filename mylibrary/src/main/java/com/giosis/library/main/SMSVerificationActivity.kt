@@ -427,7 +427,7 @@ class SMSVerificationActivity : CommonActivity() {
                                 Preferences.userName = name
 
                                 val intent =
-                                    Intent(this@SMSVerificationActivity, MainActivity::class.java)
+                                    Intent(this@SMSVerificationActivity, AppBaseActivity::class.java)
                                 intent.addFlags(Intent.FLAG_ACTIVITY_NO_ANIMATION)
                                 startActivity(intent)
                                 overridePendingTransition(

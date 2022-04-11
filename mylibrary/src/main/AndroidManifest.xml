@@ -114,6 +114,9 @@
             android:name=".main.MainActivity"
             android:screenOrientation="portrait" />
 
+        <activity android:name=".main.AppBaseActivity"
+            android:screenOrientation="portrait"/>
+
         <activity
             android:name=".main.ScanActivity"
             android:screenOrientation="portrait" />

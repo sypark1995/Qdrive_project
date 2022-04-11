@@ -18,7 +18,7 @@ import android.widget.ProgressBar
 import com.giosis.library.data.LoginInfo
 import com.giosis.library.database.DatabaseHelper
 import com.giosis.library.gps.GPSTrackerManager
-import com.giosis.library.main.MainActivity
+import com.giosis.library.main.AppBaseActivity
 import com.giosis.library.main.SMSVerificationActivity
 import com.giosis.library.server.RetrofitClient
 import com.giosis.library.setting.DeveloperModeActivity
@@ -348,7 +348,7 @@ class LoginActivity : CommonActivity() {
                                     if (loginData.smsYn == "Y" && loginData.deviceYn == "Y") {
 
                                         val intent =
-                                            Intent(this@LoginActivity, MainActivity::class.java)
+                                            Intent(this@LoginActivity, AppBaseActivity::class.java)
                                         startActivity(intent)
                                         finish()
                                     } else {

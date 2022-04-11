@@ -69,9 +69,9 @@ class LeftViewAdapter : RecyclerView.Adapter<RecyclerView.ViewHolder>() {
 
             btnMessage.setOnClickListener {
                 val intent = Intent(it.context, MessageListActivity::class.java)
-                //todo_sypark data
-//                intent.putExtra("customer_count", customerMessageCount)
-//                intent.putExtra("admin_count", adminMessageCount)
+
+                intent.putExtra("customer_count", (it.context as AppBaseActivity).customerMessageCount)
+                intent.putExtra("admin_count", (it.context as AppBaseActivity).adminMessageCount)
                 (it.context as AppBaseActivity).startActivity(intent)
             }
         }

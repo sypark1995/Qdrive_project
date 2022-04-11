@@ -11,7 +11,7 @@ import android.os.IBinder
 import android.util.Log
 import androidx.core.app.NotificationCompat
 import com.giosis.library.R
-import com.giosis.library.main.MainActivity
+import com.giosis.library.main.AppBaseActivity
 import com.giosis.library.util.Preferences
 
 class LocationManagerService : Service() {
@@ -49,7 +49,7 @@ class LocationManagerService : Service() {
             val notificationManager = getSystemService(NotificationManager::class.java)
             notificationManager.createNotificationChannel(serviceChannel)
 
-            val notificationIntent = Intent(this, MainActivity::class.java)
+            val notificationIntent = Intent(this, AppBaseActivity::class.java)
             val pendingIntent = PendingIntent.getActivity(this, 0, notificationIntent, 0)
             var resourceId = resources.getIdentifier("qdrive_icon", "drawable", packageName)
 
