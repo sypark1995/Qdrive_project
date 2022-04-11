@@ -21,58 +21,17 @@ class LeftViewAdapter : RecyclerView.Adapter<RecyclerView.ViewHolder>() {
     var item = ArrayList<NavListItem>()
 
     private var expandedPos = -1
-    private var typeHeader = 0
-    private var typeItem = 1
 
-    override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): RecyclerView.ViewHolder =
-        when (viewType) {
-            typeHeader -> {
-                val view = LayoutInflater.from(parent.context)
-                    .inflate(R.layout.view_nav_list_header, parent, false)
-                HeaderViewHolder(view)
-            }
-            typeItem -> {
-                val view = LayoutInflater.from(parent.context)
-                    .inflate(R.layout.item_nav_list, parent, false)
-                ViewHolder(view)
-            }
-            else -> throw Exception("Unknown viewType $viewType")
-        }
+    override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): RecyclerView.ViewHolder {
+        val view = LayoutInflater.from(parent.context)
+            .inflate(R.layout.item_nav_list, parent, false)
+        return ViewHolder(view)
+    }
 
 
     override fun onBindViewHolder(holder: RecyclerView.ViewHolder, position: Int) {
-        if (position == 0) {
-            (holder as HeaderViewHolder).bind()
-        } else {
-            (holder as ViewHolder).bind(item[position])
-        }
+        (holder as ViewHolder).bind(item[position])
         holder.setIsRecyclable(false)
-    }
-
-    inner class HeaderViewHolder(val view: View) : RecyclerView.ViewHolder(view) {
-        private val layoutMessage: RelativeLayout = view.findViewById(R.id.layout_message)
-        private val driverOffice: TextView = view.findViewById(R.id.text_nav_header_driver_office)
-        private val driverName: TextView = view.findViewById(R.id.text_nav_header_driver_name)
-        private val btnMessage: ImageView = view.findViewById(R.id.btn_message)
-
-        fun bind() {
-            driverOffice.text = Preferences.officeName
-            driverName.text = Preferences.userName
-
-            if (Preferences.userNation == "SG") {
-                layoutMessage.visibility = View.VISIBLE
-            } else {
-                layoutMessage.visibility = View.GONE
-            }
-
-            btnMessage.setOnClickListener {
-                val intent = Intent(it.context, MessageListActivity::class.java)
-
-                intent.putExtra("customer_count", (it.context as MainActivity).customerMessageCount)
-                intent.putExtra("admin_count", (it.context as MainActivity).adminMessageCount)
-                (it.context as MainActivity).startActivity(intent)
-            }
-        }
     }
 
     inner class ViewHolder(val view: View) : RecyclerView.ViewHolder(view) {
@@ -139,10 +98,4 @@ class LeftViewAdapter : RecyclerView.Adapter<RecyclerView.ViewHolder>() {
     override fun getItemCount(): Int {
         return item.size
     }
-
-    override fun getItemViewType(position: Int): Int =
-        when (position) {
-            0 -> typeHeader
-            else -> typeItem
-        }
 }

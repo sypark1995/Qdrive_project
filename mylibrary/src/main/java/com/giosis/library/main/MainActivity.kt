@@ -15,7 +15,6 @@ import android.location.LocationManager
 import android.os.Bundle
 import android.util.Log
 import android.view.Gravity
-import android.view.LayoutInflater
 import android.view.View
 import android.view.WindowManager
 import android.widget.LinearLayout
@@ -28,7 +27,6 @@ import com.giosis.library.UploadData
 import com.giosis.library.barcodescanner.CaptureActivity1
 import com.giosis.library.database.DatabaseHelper
 import com.giosis.library.databinding.ActivityMainBinding
-import com.giosis.library.databinding.ViewNavListHeaderBinding
 import com.giosis.library.gps.FusedProviderService
 import com.giosis.library.gps.GPSTrackerManager
 import com.giosis.library.gps.LocationManagerService
@@ -38,6 +36,7 @@ import com.giosis.library.main.leftMenu.LeftViewAdapter
 import com.giosis.library.main.route.TodayMyRouteActivity
 import com.giosis.library.main.submenu.OutletOrderStatusActivity
 import com.giosis.library.main.submenu.RpcListActivity
+import com.giosis.library.message.MessageListActivity
 import com.giosis.library.pickup.CreatePickupOrderActivity
 import com.giosis.library.server.RetrofitClient
 import com.giosis.library.setting.SettingActivity
@@ -64,10 +63,6 @@ open class MainActivity : CommonActivity() {
 
     val binding by lazy {
         ActivityMainBinding.inflate(layoutInflater)
-    }
-
-    private val headerBinding by lazy {
-        ViewNavListHeaderBinding.inflate(LayoutInflater.from(this), null, false)
     }
 
     var isPermissionTrue = false
@@ -140,7 +135,7 @@ open class MainActivity : CommonActivity() {
         }
 
         val leftViewAdapter = LeftViewAdapter()
-        binding.navList.adapter = leftViewAdapter
+        binding.leftMenu.navList.adapter = leftViewAdapter
 
         if (Preferences.outletDriver == "Y") {
             LeftMenu.SCAN_MENU.subList!!.add(0, LeftMenu.DELIVERY_OUTLET)
@@ -154,7 +149,6 @@ open class MainActivity : CommonActivity() {
 
         val listItemList = ArrayList(
             listOf(
-                LeftMenu.EMPTY_MENU,
                 LeftMenu.HOME_MENU,
                 LeftMenu.SCAN_MENU,
                 LeftMenu.LIST_MENU,
@@ -326,6 +320,23 @@ open class MainActivity : CommonActivity() {
         }
 
         DataUtil.mFirebaseAnalytics = FirebaseAnalytics.getInstance(this)
+
+        binding.leftMenu.leftMenuHeader.textNavHeaderDriverOffice.text = Preferences.officeName
+        binding.leftMenu.leftMenuHeader.textNavHeaderDriverName.text = Preferences.userName
+
+        if (Preferences.userNation == "SG") {
+            binding.leftMenu.leftMenuHeader.layoutMessage.visibility = View.VISIBLE
+        } else {
+            binding.leftMenu.leftMenuHeader.layoutMessage.visibility = View.GONE
+        }
+
+        binding.leftMenu.leftMenuHeader.btnMessage.setOnClickListener {
+            val intent = Intent(this, MessageListActivity::class.java)
+
+            intent.putExtra("customer_count",customerMessageCount)
+            intent.putExtra("admin_count",adminMessageCount)
+            startActivity(intent)
+        }
     }
 
 
@@ -701,12 +712,11 @@ open class MainActivity : CommonActivity() {
 
                     if (customerMessageCount > 0 || adminMessageCount > 0) {
 
-                        val count = customerMessageCount + adminMessageCount
-                        headerBinding.textMessageCount.visibility = View.VISIBLE
-                        headerBinding.textMessageCount.text = count.toString()
+                        binding.leftMenu.leftMenuHeader.textMessageCount.visibility = View.VISIBLE
+                        binding.leftMenu.leftMenuHeader.textMessageCount.text = (customerMessageCount + adminMessageCount).toString()
 
                     } else {
-                        headerBinding.textMessageCount.visibility = View.GONE
+                        binding.leftMenu.leftMenuHeader.textMessageCount.visibility = View.GONE
                     }
 
                 } catch (e: java.lang.Exception) {

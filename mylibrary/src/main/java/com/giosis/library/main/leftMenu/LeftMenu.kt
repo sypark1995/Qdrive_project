@@ -83,9 +83,6 @@ object LeftMenu {
         className = OutletOrderStatusActivity::class.java,
     )
 
-    val EMPTY_MENU = NavListItem(
-    )
-
     val HOME_MENU = NavListItem(
         iconId = R.drawable.side_icon_home_selector,
         titleResource = R.string.navi_home,

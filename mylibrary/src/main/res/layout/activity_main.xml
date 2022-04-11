@@ -8,8 +8,9 @@
     android:fitsSystemWindows="false"
     tools:openDrawer="start">
 
-    <include layout="@layout/app_bar_main"
-        android:id="@+id/appBar"/>
+    <include
+        android:id="@+id/appBar"
+        layout="@layout/app_bar_main" />
 
     <RelativeLayout
         android:layout_width="match_parent"
@@ -25,7 +26,7 @@
 
         <include
             android:id="@+id/main_view"
-            layout="@layout/activity_main_home"/>
+            layout="@layout/activity_main_home" />
 
         <LinearLayout
             android:id="@+id/layout_bottom_bar"
@@ -96,20 +97,19 @@
         </LinearLayout>
     </RelativeLayout>
 
-    <androidx.recyclerview.widget.RecyclerView
-        android:id="@+id/nav_list"
+    <com.google.android.material.navigation.NavigationView
         android:layout_width="300dp"
         android:layout_height="match_parent"
         android:layout_gravity="start"
-        android:background="@color/color_f6f6f6"
-        android:divider="@null"
-        android:scrollbars="none"
-        android:dividerHeight="0dp"
-        android:groupIndicator="@null"
-        android:headerDividersEnabled="false"
-        app:layoutManager="androidx.recyclerview.widget.LinearLayoutManager"
-        android:listSelector="@android:color/transparent"
-        android:orientation="vertical" />
+        android:visibility="visible"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintLeft_toLeftOf="parent"
+        app:layout_constraintTop_toTopOf="parent">
+
+        <include
+            android:id="@+id/left_menu"
+            layout="@layout/view_left_menu" />
+    </com.google.android.material.navigation.NavigationView>
 </androidx.drawerlayout.widget.DrawerLayout>
 
 
