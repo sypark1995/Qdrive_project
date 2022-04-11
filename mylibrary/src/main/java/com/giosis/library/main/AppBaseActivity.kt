@@ -167,10 +167,7 @@ open class AppBaseActivity : CommonActivity() {
             listItemList.add(listItemList.size - 1, LeftMenu.CREATE_PICKUP_MENU)
         }
 
-
         leftViewAdapter.item = listItemList
-
-
 
         QDataUtil.setCustomUserAgent(this@AppBaseActivity)
         DatabaseHelper.getInstance()
@@ -181,7 +178,6 @@ open class AppBaseActivity : CommonActivity() {
                     or WindowManager.LayoutParams.FLAG_SHOW_WHEN_LOCKED
                     or WindowManager.LayoutParams.FLAG_TURN_SCREEN_ON
         )
-
 
         // FCM token
         saveServerFCMToken()
@@ -216,6 +212,7 @@ open class AppBaseActivity : CommonActivity() {
                 R.drawable.qdrive_img_default
             )
         )
+
         binding.mainView.imgHomeDriverProfile.background = ShapeDrawable(OvalShape())
         binding.mainView.imgHomeDriverProfile.clipToOutline = true
 
@@ -236,6 +233,7 @@ open class AppBaseActivity : CommonActivity() {
             )
             lp.setMargins(0, DisplayUtil.dpTopx(this, 15f), 0, 0)
             binding.mainView.btnHomeChangeDeliveryDriver.layoutParams = lp
+
         } else {
             binding.mainView.btnHomeConfirmMyDeliveryOrder.text =
                 resources.getString(R.string.button_confirm_my_delivery_order)
@@ -336,7 +334,6 @@ open class AppBaseActivity : CommonActivity() {
 
         binding.mainView.textHomeDriverName.text = Preferences.userName
         binding.mainView.textHomeDriverOffice.text = Preferences.officeName
-
 
         if (isPermissionTrue) {
             gpsTrackerManager = GPSTrackerManager(this)
@@ -711,6 +708,7 @@ open class AppBaseActivity : CommonActivity() {
                     } else {
                         headerBinding.textMessageCount.visibility = View.GONE
                     }
+
                 } catch (e: java.lang.Exception) {
 
                 }
@@ -724,84 +722,4 @@ open class AppBaseActivity : CommonActivity() {
             ).show()
         }
     }
-}
-
-}
-
-    private fun initMessageCount() {
-
-        if (NetworkUtil.isNetworkAvailable(this)) {
-
-            val cal = Calendar.getInstance()
-            cal.time = Date()
-            cal.add(Calendar.DATE, -1) //minus number would decrement the days
-            val yDate = cal.time
-            val dateFormat = SimpleDateFormat("yyyy-MM-dd")
-            val yesterday = dateFormat.format(yDate) + " 00:00:00"
-            val date = URLEncoder.encode(yesterday, "UTF-8")
-
-            lifecycleScope.launch {
-
-                try {
-                    val count = async<Int> {
-                        val result =
-                            RetrofitClient.instanceDynamic().requestGetNewMessageCount(date)
-
-                        if (result.resultObject != null) {
-                            val count = Gson().fromJson<Int>(
-                                result.resultObject,
-                                object : TypeToken<Int?>() {}.type
-                            )
-                            return@async count
-                        }
-                        return@async 0
-                    }
-
-                    val adminCount = async<Int> {
-                        val result =
-                            RetrofitClient.instanceDynamic()
-                                .requestGetNewMessageCountFromQxSystem()
-
-                        if (result.resultObject != null) {
-
-                            val adminCount = Gson().fromJson<Int>(
-                                result.resultObject,
-                                object : TypeToken<Int?>() {}.type
-                            )
-                            return@async adminCount
-                        }
-
-                        return@async 0
-                    }
-
-                    customerMessageCount = count.await()
-                    adminMessageCount = adminCount.await()
-
-                    if (customerMessageCount > 0 || adminMessageCount > 0) {
-
-                        val count = customerMessageCount + adminMessageCount
-                        headerBinding.textMessageCount.visibility = View.VISIBLE
-                        headerBinding.textMessageCount.text = count.toString()
-
-                    } else {
-                        headerBinding.textMessageCount.visibility = View.GONE
-                    }
-                } catch (e: java.lang.Exception) {
-
-    fun setNaviHeader(name: String?, office: String?) {
-        headerBinding.textNavHeaderDriverName.text = name
-        headerBinding.textNavHeaderDriverOffice.text = office
-                }
-            }
-
-        } else {
-            Toast.makeText(
-                this,
-                getString(R.string.msg_network_connect_error),
-                Toast.LENGTH_SHORT
-            ).show()
-        }
-    }
-
-
 }
