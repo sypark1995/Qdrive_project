@@ -11,8 +11,6 @@ import android.widget.TextView
 import androidx.recyclerview.widget.RecyclerView
 import com.giosis.library.R
 import com.giosis.library.main.MainActivity
-import com.giosis.library.message.MessageListActivity
-import com.giosis.library.util.Preferences
 
 
 class LeftViewAdapter : RecyclerView.Adapter<RecyclerView.ViewHolder>() {
