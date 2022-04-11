@@ -119,7 +119,7 @@ open class AppBaseActivity : CommonActivity() {
         )
 
         if (Preferences.userNation == "SG" && Preferences.pickupDriver == "Y") {
-            listItemList.add(listItemList.size - 2, LeftMenu.CREATE_PICKUP_MENU)
+            listItemList.add(listItemList.size - 1, LeftMenu.CREATE_PICKUP_MENU)
         }
 
         leftViewAdapter.item = listItemList
