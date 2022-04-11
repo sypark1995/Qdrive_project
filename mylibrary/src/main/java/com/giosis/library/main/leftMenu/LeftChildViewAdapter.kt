@@ -9,7 +9,7 @@ import android.view.ViewGroup
 import android.widget.TextView
 import androidx.recyclerview.widget.RecyclerView
 import com.giosis.library.R
-import com.giosis.library.main.AppBaseActivity
+import com.giosis.library.main.MainActivity
 
 class LeftChildViewAdapter(val item: ArrayList<SubMenuItem>) :
     RecyclerView.Adapter<RecyclerView.ViewHolder>() {
@@ -28,11 +28,11 @@ class LeftChildViewAdapter(val item: ArrayList<SubMenuItem>) :
 
             view.setOnClickListener {
 
-                (view.context as AppBaseActivity).leftMenuGone()
+                (view.context as MainActivity).leftMenuGone()
 
                 val intent = Intent(view.context, item.className)
                 intent.putExtras(Bundle().apply(item.extras))
-                (view.context as AppBaseActivity).startActivity(intent)
+                (view.context as MainActivity).startActivity(intent)
 
 //                when (item) {
 //                    view.resources.getString(R.string.text_start_delivery_for_outlet),

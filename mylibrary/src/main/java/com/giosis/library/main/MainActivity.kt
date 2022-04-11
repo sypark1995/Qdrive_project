@@ -59,7 +59,7 @@ import java.text.SimpleDateFormat
 import java.util.*
 
 
-open class AppBaseActivity : CommonActivity() {
+open class MainActivity : CommonActivity() {
     var TAG = "AppBaseActivity"
 
     val binding by lazy {
@@ -169,7 +169,7 @@ open class AppBaseActivity : CommonActivity() {
 
         leftViewAdapter.item = listItemList
 
-        QDataUtil.setCustomUserAgent(this@AppBaseActivity)
+        QDataUtil.setCustomUserAgent(this@MainActivity)
         DatabaseHelper.getInstance()
 
         window.addFlags(
@@ -517,11 +517,11 @@ open class AppBaseActivity : CommonActivity() {
                 songjanglist, "QH", latitude, longitude
             ).setOnServerEventListener(object : OnServerEventListener {
                 override fun onPostResult() {
-                    MainActivityServer.getLocalCount(this@AppBaseActivity)
+                    MainActivityServer.getLocalCount(this@MainActivity)
                 }
 
                 override fun onPostFailList() {
-                    MainActivityServer.getLocalCount(this@AppBaseActivity)
+                    MainActivityServer.getLocalCount(this@MainActivity)
                 }
             }).build().execute()
         } else {

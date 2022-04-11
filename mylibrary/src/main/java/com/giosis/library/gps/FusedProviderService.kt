@@ -11,7 +11,7 @@ import android.os.IBinder
 import android.util.Log
 import androidx.core.app.NotificationCompat
 import com.giosis.library.R
-import com.giosis.library.main.AppBaseActivity
+import com.giosis.library.main.MainActivity
 import com.giosis.library.util.Preferences
 
 // Main 에서 호출 / 5분 또는 500m 거리 이동 시 마다 호출
@@ -48,7 +48,7 @@ class FusedProviderService : Service() {
             val notificationManager = getSystemService(NotificationManager::class.java)
             notificationManager.createNotificationChannel(serviceChannel)
 
-            val notificationIntent = Intent(this, AppBaseActivity::class.java)
+            val notificationIntent = Intent(this, MainActivity::class.java)
             val pendingIntent = PendingIntent.getActivity(this, 0, notificationIntent, 0)
             var resourceId = resources.getIdentifier("qdrive_icon", "drawable", packageName)
 

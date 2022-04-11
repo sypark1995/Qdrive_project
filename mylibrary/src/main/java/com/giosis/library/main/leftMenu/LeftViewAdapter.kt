@@ -10,7 +10,7 @@ import android.widget.RelativeLayout
 import android.widget.TextView
 import androidx.recyclerview.widget.RecyclerView
 import com.giosis.library.R
-import com.giosis.library.main.AppBaseActivity
+import com.giosis.library.main.MainActivity
 import com.giosis.library.message.MessageListActivity
 import com.giosis.library.util.Preferences
 
@@ -68,9 +68,9 @@ class LeftViewAdapter : RecyclerView.Adapter<RecyclerView.ViewHolder>() {
             btnMessage.setOnClickListener {
                 val intent = Intent(it.context, MessageListActivity::class.java)
 
-                intent.putExtra("customer_count", (it.context as AppBaseActivity).customerMessageCount)
-                intent.putExtra("admin_count", (it.context as AppBaseActivity).adminMessageCount)
-                (it.context as AppBaseActivity).startActivity(intent)
+                intent.putExtra("customer_count", (it.context as MainActivity).customerMessageCount)
+                intent.putExtra("admin_count", (it.context as MainActivity).adminMessageCount)
+                (it.context as MainActivity).startActivity(intent)
             }
         }
     }
@@ -113,14 +113,14 @@ class LeftViewAdapter : RecyclerView.Adapter<RecyclerView.ViewHolder>() {
 
                 when (item) {
                     LeftMenu.HOME_MENU -> {
-                        (view.context as AppBaseActivity).leftMenuGone()
+                        (view.context as MainActivity).leftMenuGone()
                     }
                     LeftMenu.STATI_MENU,
                     LeftMenu.CREATE_PICKUP_MENU,
                     LeftMenu.SETTING_MENU -> {
-                        (view.context as AppBaseActivity).leftMenuGone()
+                        (view.context as MainActivity).leftMenuGone()
                         val intent = Intent(view.context, item.className)
-                        (view.context as AppBaseActivity).startActivity(intent)
+                        (view.context as MainActivity).startActivity(intent)
                     }
                     else -> {
                         expandedPos = if (expandedPos == layoutPosition) {

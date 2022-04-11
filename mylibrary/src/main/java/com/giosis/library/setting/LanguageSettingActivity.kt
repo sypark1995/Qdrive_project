@@ -8,7 +8,7 @@ import android.util.Log
 import androidx.recyclerview.widget.DividerItemDecoration
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.giosis.library.R
-import com.giosis.library.main.AppBaseActivity
+import com.giosis.library.main.MainActivity
 import com.giosis.library.util.CommonActivity
 import com.giosis.library.util.LocaleManager
 import com.giosis.library.util.Preferences
@@ -75,7 +75,7 @@ class LanguageSettingActivity : CommonActivity() {
 //                val mainIntent: Intent = makeRestartActivityTask(componentName)
 //                startActivity(mainIntent)
 
-                val intent = Intent(this@LanguageSettingActivity, AppBaseActivity::class.java)
+                val intent = Intent(this@LanguageSettingActivity, MainActivity::class.java)
                 intent.flags = Intent.FLAG_ACTIVITY_CLEAR_TASK or Intent.FLAG_ACTIVITY_NEW_TASK
                 startActivity(intent)
                 exitProcess(0)

@@ -20,7 +20,7 @@ import com.giosis.library.main.SMSVerificationActivity
 import com.giosis.library.server.RetrofitClient
 import com.giosis.library.setting.DeveloperModeActivity
 import com.giosis.library.database.DatabaseHelper
-import com.giosis.library.main.AppBaseActivity
+import com.giosis.library.main.MainActivity
 import com.giosis.library.util.CommonActivity
 import com.giosis.library.util.PermissionActivity
 import com.giosis.library.util.PermissionChecker
@@ -243,7 +243,7 @@ class LoginActivity : CommonActivity() {
 
                                                 val intent = Intent(
                                                     this@LoginActivity,
-                                                    AppBaseActivity::class.java
+                                                    MainActivity::class.java
                                                 )
                                                 startActivity(intent)
                                                 finish()

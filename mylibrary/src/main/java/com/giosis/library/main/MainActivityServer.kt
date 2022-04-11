@@ -44,7 +44,7 @@ object MainActivityServer {
 
         progressDialog.show()
 
-        (context as AppBaseActivity).lifecycleScope.launch {
+        (context as MainActivity).lifecycleScope.launch {
             // 2020.12  Failed Code 가져오기
             getDFCFailedCode()
             getPFCFailedCode()
@@ -341,7 +341,7 @@ object MainActivityServer {
         var inProgressRpcCnt = 0
     }
 
-    fun getLocalCount(activity: AppBaseActivity) {
+    fun getLocalCount(activity: MainActivity) {
         activity.lifecycleScope.launch(Dispatchers.IO) {
 
             try {
@@ -451,7 +451,7 @@ object MainActivityServer {
             var longitude = 0.0
 
             try {
-                if ((context as AppBaseActivity).gpsEnable && (context).gpsTrackerManager != null) {
+                if ((context as MainActivity).gpsEnable && (context).gpsTrackerManager != null) {
                     latitude = (context).gpsTrackerManager!!.latitude
                     longitude = (context).gpsTrackerManager!!.longitude
                     accuracy = (context).gpsTrackerManager!!.accuracy
@@ -503,7 +503,7 @@ object MainActivityServer {
     }
 
     fun upload(context: Context) {
-        (context as AppBaseActivity).lifecycleScope.launch(Dispatchers.IO) {
+        (context as MainActivity).lifecycleScope.launch(Dispatchers.IO) {
 
             val songjangList = ArrayList<UploadData>()
 

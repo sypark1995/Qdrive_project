@@ -11,7 +11,7 @@ import android.view.Window
 import androidx.core.app.NotificationManagerCompat
 import com.giosis.library.R
 import com.giosis.library.databinding.DialogPushAlertBinding
-import com.giosis.library.main.AppBaseActivity
+import com.giosis.library.main.MainActivity
 import com.giosis.library.util.DataUtil
 import com.giosis.library.util.LocaleManager.Companion.getInstance
 import com.giosis.library.util.Preferences
@@ -83,7 +83,7 @@ class AlertDialogActivity : Activity() {
                     || actionKey == PushData.FL_TAKEBACK
                     || actionKey == PushData.LZD_PICK
                 ) {
-                    val intent = Intent(this@AlertDialogActivity, AppBaseActivity::class.java)
+                    val intent = Intent(this@AlertDialogActivity, MainActivity::class.java)
                     intent.putExtra(PushData.DOWNLOAD, "Y")
                     startActivity(intent)
                     overridePendingTransition(0, 0)

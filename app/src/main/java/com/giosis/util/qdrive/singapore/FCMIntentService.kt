@@ -15,7 +15,7 @@ import android.util.Log
 import androidx.core.app.NotificationCompat
 import com.giosis.library.database.DatabaseHelper
 import com.giosis.library.list.ListActivity
-import com.giosis.library.main.AppBaseActivity
+import com.giosis.library.main.MainActivity
 import com.giosis.library.message.MessageListActivity
 import com.giosis.library.push.AlertDialogActivity
 import com.giosis.library.push.PushData
@@ -140,7 +140,7 @@ class FCMIntentService : FirebaseMessagingService() {
         val topActivity = info[0].topActivity
         val topClassname = topActivity!!.className
 
-        var intent = Intent(context, AppBaseActivity::class.java)
+        var intent = Intent(context, MainActivity::class.java)
 
         if (topClassname.contains("singapore.LoginActivity")) {
             intent = Intent(context, LoginActivity::class.java)
