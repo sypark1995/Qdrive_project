@@ -75,7 +75,7 @@ class SettingActivity : ViewModelActivity<ActivitySettingBinding, SettingViewMod
 
         initDeveloperMode()
 
-        mViewModel.deleteAlert.observe(this, {
+        mViewModel.deleteAlert.observe(this) {
 
             if (it) {
                 val text = DialogUiConfig(
@@ -110,7 +110,9 @@ class SettingActivity : ViewModelActivity<ActivitySettingBinding, SettingViewMod
             } else {
                 deleteAlert.visibility = View.GONE
             }
-        })
+        }
+
+        mViewModel.version.value = packageManager.getPackageInfo(packageName,0).versionName
     }
 
 
