@@ -11,20 +11,17 @@ import android.view.View
 import android.view.ViewGroup
 import android.view.inputmethod.InputMethodManager
 import android.widget.LinearLayout
-import com.giosis.library.util.Preferences
 import android.widget.ProgressBar
 import androidx.appcompat.app.AlertDialog
 import androidx.lifecycle.lifecycleScope
 import com.giosis.library.data.LoginInfo
+import com.giosis.library.database.DatabaseHelper
 import com.giosis.library.gps.GPSTrackerManager
+import com.giosis.library.main.MainActivity
 import com.giosis.library.main.SMSVerificationActivity
 import com.giosis.library.server.RetrofitClient
 import com.giosis.library.setting.DeveloperModeActivity
-import com.giosis.library.database.DatabaseHelper
-import com.giosis.library.main.MainActivity
-import com.giosis.library.util.CommonActivity
-import com.giosis.library.util.PermissionActivity
-import com.giosis.library.util.PermissionChecker
+import com.giosis.library.util.*
 import com.giosis.util.qdrive.singapore.databinding.ActivityLoginBinding
 import com.google.firebase.crashlytics.FirebaseCrashlytics
 import com.google.gson.Gson
@@ -69,6 +66,7 @@ class LoginActivity : CommonActivity() {
         super.onCreate(savedInstanceState)
         setContentView(binding.root)
 
+        QDataUtil.setCustomUserAgent(this@LoginActivity)
         DatabaseHelper.getInstance()
 
         binding.imgLoginBottomLogo.setOnClickListener {
@@ -155,109 +153,110 @@ class LoginActivity : CommonActivity() {
 
                                 if (loginData != null) {
 
-                                    if (!loginData.version.isNullOrEmpty()) {
-                                        lifecycleScope.launch {
-                                            val response = RetrofitClient.instanceDynamic().requestAppVersionCheck()
-                                            if (response.resultCode == -10) {
-                                                val msg = java.lang.String.format(
-                                                    resources.getString(R.string.msg_update_version),
-                                                    loginData.version!!,
-                                                    loginData.version
-                                                )
-                                                goGooglePlay(msg)
+                                    lifecycleScope.launch {
+
+                                        val response = RetrofitClient.instanceDynamic()
+                                            .requestAppVersionCheck()
+
+                                        if (response.resultCode == -10) {
+                                            val msg = java.lang.String.format(
+                                                resources.getString(R.string.msg_update_version),
+                                                loginData.version!!,
+                                                loginData.version
+                                            )
+                                            goGooglePlay(msg)
+                                        } else {
+                                            Preferences.userId = loginData.opId!!
+                                            Preferences.userPw = userPW
+                                            Preferences.deviceUUID = deviceUUID
+
+                                            if (!loginData.opNm.isNullOrEmpty()) {
+                                                Preferences.userName = loginData.opNm!!
                                             } else {
-                                                Preferences.userId = loginData.opId!!
-                                                Preferences.userPw = userPW
-                                                Preferences.deviceUUID = deviceUUID
+                                                Preferences.userName = ""
+                                            }
 
-                                                if (!loginData.opNm.isNullOrEmpty()) {
-                                                    Preferences.userName = loginData.opNm!!
-                                                } else {
-                                                    Preferences.userName = ""
+                                            if (!loginData.epEmail.isNullOrEmpty()) {
+                                                Preferences.userEmail = loginData.epEmail!!
+                                            } else {
+                                                Preferences.userEmail = ""
+                                            }
+
+                                            if (!loginData.officeCode.isNullOrEmpty()) {
+                                                Preferences.officeCode = loginData.officeCode!!
+                                            } else {
+                                                Preferences.officeCode = ""
+                                            }
+
+                                            if (!loginData.officeName.isNullOrEmpty()) {
+                                                Preferences.officeName = loginData.officeName!!
+                                            } else {
+                                                Preferences.officeName = ""
+                                            }
+
+                                            if (!loginData.pickupDriverYN.isNullOrEmpty()) {
+                                                Preferences.pickupDriver =
+                                                    loginData.pickupDriverYN!!
+                                            } else {
+                                                Preferences.pickupDriver = "N"
+                                            }
+
+                                            if (!loginData.shuttle_driver_yn.isNullOrEmpty()) {
+                                                Preferences.outletDriver =
+                                                    loginData.shuttle_driver_yn!!
+                                            } else {
+                                                Preferences.outletDriver = ""
+                                            }
+
+                                            if (!loginData.locker_driver_status.isNullOrEmpty()) {
+                                                Preferences.lockerStatus =
+                                                    loginData.locker_driver_status!!
+                                            } else {
+                                                Preferences.lockerStatus = ""
+                                            }
+
+                                            if (!loginData.defaultYn.isNullOrEmpty()) {
+                                                Preferences.default =
+                                                    loginData.defaultYn!!
+                                            } else {
+                                                Preferences.default = ""
+                                            }
+
+                                            if (!loginData.authNo.isNullOrEmpty()) {
+                                                Preferences.authNo = loginData.authNo!!
+                                            } else {
+                                                Preferences.authNo = ""
+                                            }
+
+                                            if (loginData.smsYn == "Y" && loginData.deviceYn == "Y") {
+
+                                                FirebaseCrashlytics.getInstance().setCustomKey(
+                                                    "ID",
+                                                    Preferences.userId
+                                                )
+
+                                                val intent = Intent(
+                                                    this@LoginActivity,
+                                                    MainActivity::class.java
+                                                )
+                                                startActivity(intent)
+                                                finish()
+
+                                            } else {
+                                                if (loginData.deviceYn == "N") {
+                                                    showDialog(resources.getString(R.string.msg_go_sms_verification))
                                                 }
 
-                                                if (!loginData.epEmail.isNullOrEmpty()) {
-                                                    Preferences.userEmail = loginData.epEmail!!
-                                                } else {
-                                                    Preferences.userEmail = ""
-                                                }
-
-                                                if (!loginData.officeCode.isNullOrEmpty()) {
-                                                    Preferences.officeCode = loginData.officeCode!!
-                                                } else {
-                                                    Preferences.officeCode = ""
-                                                }
-
-                                                if (!loginData.officeName.isNullOrEmpty()) {
-                                                    Preferences.officeName = loginData.officeName!!
-                                                } else {
-                                                    Preferences.officeName = ""
-                                                }
-
-                                                if (!loginData.pickupDriverYN.isNullOrEmpty()) {
-                                                    Preferences.pickupDriver =
-                                                        loginData.pickupDriverYN!!
-                                                } else {
-                                                    Preferences.pickupDriver = "N"
-                                                }
-
-                                                if (!loginData.shuttle_driver_yn.isNullOrEmpty()) {
-                                                    Preferences.outletDriver =
-                                                        loginData.shuttle_driver_yn!!
-                                                } else {
-                                                    Preferences.outletDriver = ""
-                                                }
-
-                                                if (!loginData.locker_driver_status.isNullOrEmpty()) {
-                                                    Preferences.lockerStatus =
-                                                        loginData.locker_driver_status!!
-                                                } else {
-                                                    Preferences.lockerStatus = ""
-                                                }
-
-                                                if (!loginData.defaultYn.isNullOrEmpty()) {
-                                                    Preferences.default =
-                                                        loginData.defaultYn!!
-                                                } else {
-                                                    Preferences.default = ""
-                                                }
-
-                                                if (!loginData.authNo.isNullOrEmpty()) {
-                                                    Preferences.authNo =
-                                                        loginData.authNo!!
-                                                } else {
-                                                    Preferences.authNo = ""
-                                                }
-
-                                                if (loginData.smsYn == "Y" && loginData.deviceYn == "Y") {
-
-                                                    FirebaseCrashlytics.getInstance().setCustomKey(
-                                                        "ID",
-                                                        Preferences.userId
-                                                    )
-
-                                                    val intent = Intent(
-                                                        this@LoginActivity,
-                                                        MainActivity::class.java
-                                                    )
-                                                    startActivity(intent)
-                                                    finish()
-
-                                                } else {
-                                                    if (loginData.deviceYn == "N") {
-                                                        showDialog(resources.getString(R.string.msg_go_sms_verification))
-                                                    }
-
-                                                    val intent = Intent(
-                                                        this@LoginActivity,
-                                                        SMSVerificationActivity::class.java
-                                                    )
-                                                    startActivity(intent)
-                                                    finish()
-                                                }
+                                                val intent = Intent(
+                                                    this@LoginActivity,
+                                                    SMSVerificationActivity::class.java
+                                                )
+                                                startActivity(intent)
+                                                finish()
                                             }
                                         }
                                     }
+
                                 }
                             } else {
                                 when {
