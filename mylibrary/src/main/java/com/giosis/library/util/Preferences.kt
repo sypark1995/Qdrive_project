@@ -62,11 +62,6 @@ object Preferences {
         get() = preferences.getString(PREF_KEY_DEVICE_UUID, "").toString()
         set(value) = preferences.edit().putString(PREF_KEY_DEVICE_UUID, value).apply()
 
-    var appVersion: String
-        get() = preferences.getString(PREF_KEY_APP_VERSION, "").toString()
-        set(value) = preferences.edit().putString(PREF_KEY_APP_VERSION, value).apply()
-
-
     var userName: String
         get() = preferences.getString(PREF_KEY_USER_NAME, "").toString()
         set(value) = preferences.edit().putString(PREF_KEY_USER_NAME, value).apply()

@@ -636,5 +636,11 @@ interface RetrofitService {
         @Field("app_id") app_id: String = DataUtil.appID,
         @Field("nation_cd") nation_cd: String = Preferences.userNation
     ): APIModel
+
+    @POST("GetAppVersionCheck")
+    @FormUrlEncoded
+    suspend fun requestAppVersionCheck(
+        @Field("nation_cd") nation_cd: String = Preferences.userNation
+    ): APIModel
 }
 

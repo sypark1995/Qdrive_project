@@ -67,13 +67,13 @@ class SettingViewModel : BaseViewModel() {
             _visibleSetLocker.value = true
         }
 
-        if (Preferences.serverURL.contains("test")) {
-            version.value = Preferences.appVersion + "_ test"
-        } else if (Preferences.serverURL.contains("staging")) {
-            version.value = Preferences.appVersion + " _ staging"
-        } else {
-            version.value = Preferences.appVersion
-        }
+//        if (Preferences.serverURL.contains("test")) {
+//            version.value = Preferences.appVersion + "_ test"
+//        } else if (Preferences.serverURL.contains("staging")) {
+//            version.value = Preferences.appVersion + " _ staging"
+//        } else {
+//            version.value = Preferences.appVersion
+//        }
     }
 
     fun initData() {
