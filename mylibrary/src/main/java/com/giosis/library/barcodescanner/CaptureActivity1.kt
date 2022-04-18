@@ -1659,7 +1659,11 @@ class CaptureActivity1 : CommonActivity(), TorchListener, OnTouchListener, TextW
             getInstance()["SELECT rcv_nm, sender_nm FROM " + DatabaseHelper.DB_TABLE_INTEGRATION_LIST +
                     " WHERE invoice_no='" + barcodeNo + "' COLLATE NOCASE"]
         if (cursor.moveToFirst()) {
-            name = cursor.getString(cursor.getColumnIndexOrThrow("rcv_nm"))
+            try {
+                name = cursor.getString(cursor.getColumnIndexOrThrow("rcv_nm"))
+            } catch (e: java.lang.Exception) {
+
+            }
         }
         cursor.close()
         return name

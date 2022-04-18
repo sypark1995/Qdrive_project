@@ -11,6 +11,7 @@ import androidx.recyclerview.widget.RecyclerView
 import com.giosis.library.R
 import com.giosis.library.main.MainActivity
 
+
 class LeftChildViewAdapter(val item: ArrayList<SubMenuItem>) :
     RecyclerView.Adapter<RecyclerView.ViewHolder>() {
 
@@ -45,9 +46,7 @@ class LeftChildViewAdapter(val item: ArrayList<SubMenuItem>) :
     }
 
     override fun getItemCount(): Int {
-        return if (item.size > 0) {
-            item.size
-        } else 0
+        return item.size
     }
 
 }

@@ -1,5 +1,6 @@
 package com.giosis.library.main
 
+
 import android.annotation.SuppressLint
 import android.app.ActivityManager
 import android.app.AlertDialog
@@ -17,7 +18,6 @@ import android.util.Log
 import android.view.Gravity
 import android.view.View
 import android.view.WindowManager
-import android.widget.LinearLayout
 import android.widget.Toast
 import androidx.appcompat.app.ActionBarDrawerToggle
 import androidx.core.content.ContextCompat
@@ -58,7 +58,7 @@ import java.text.SimpleDateFormat
 import java.util.*
 
 
-open class MainActivity : CommonActivity() {
+class MainActivity : CommonActivity() {
     var TAG = "AppBaseActivity"
 
     val binding by lazy {
@@ -220,44 +220,10 @@ open class MainActivity : CommonActivity() {
             binding.mainView.btnHomeConfirmMyDeliveryOrder.text =
                 resources.getString(R.string.text_start_delivery_for_outlet)
             binding.mainView.btnHomeOutletOrderStatus.visibility = View.VISIBLE
-
-            val lp = LinearLayout.LayoutParams(
-                LinearLayout.LayoutParams.MATCH_PARENT,
-                LinearLayout.LayoutParams.WRAP_CONTENT
-            )
-            lp.setMargins(0, DisplayUtil.dpTopx(this, 15f), 0, 0)
-            binding.mainView.btnHomeChangeDeliveryDriver.layoutParams = lp
-
         } else {
             binding.mainView.btnHomeConfirmMyDeliveryOrder.text =
                 resources.getString(R.string.button_confirm_my_delivery_order)
             binding.mainView.btnHomeOutletOrderStatus.visibility = View.GONE
-
-            val lp = LinearLayout.LayoutParams(
-                LinearLayout.LayoutParams.MATCH_PARENT,
-                LinearLayout.LayoutParams.WRAP_CONTENT
-            )
-            lp.setMargins(0, DisplayUtil.dpTopx(this, 15f), 0, DisplayUtil.dpTopx(this, 30f))
-
-            if (binding.mainView.btnHomeCreatePickupOrder.visibility == View.VISIBLE) {
-
-                if (binding.mainView.btnHomeTodayMyRoute.visibility == View.VISIBLE) {
-
-                    binding.mainView.btnHomeTodayMyRoute.layoutParams = lp
-                } else {
-
-                    binding.mainView.btnHomeCreatePickupOrder.layoutParams = lp
-                }
-            } else {
-
-                if (binding.mainView.btnHomeTodayMyRoute.visibility == View.VISIBLE) {
-
-                    binding.mainView.btnHomeTodayMyRoute.layoutParams = lp
-                } else {
-
-                    binding.mainView.btnHomeChangeDeliveryDriver.layoutParams = lp
-                }
-            }
         }
 
         binding.mainView.btnHomeConfirmMyDeliveryOrder.setOnClickListener {
@@ -321,20 +287,20 @@ open class MainActivity : CommonActivity() {
 
         DataUtil.mFirebaseAnalytics = FirebaseAnalytics.getInstance(this)
 
-        binding.leftMenu.leftMenuHeader.textNavHeaderDriverOffice.text = Preferences.officeName
-        binding.leftMenu.leftMenuHeader.textNavHeaderDriverName.text = Preferences.userName
+        binding.leftMenu.textNavHeaderDriverOffice.text = Preferences.officeName
+        binding.leftMenu.textNavHeaderDriverName.text = Preferences.userName
 
         if (Preferences.userNation == "SG") {
-            binding.leftMenu.leftMenuHeader.layoutMessage.visibility = View.VISIBLE
+            binding.leftMenu.layoutMessage.visibility = View.VISIBLE
         } else {
-            binding.leftMenu.leftMenuHeader.layoutMessage.visibility = View.GONE
+            binding.leftMenu.layoutMessage.visibility = View.GONE
         }
 
-        binding.leftMenu.leftMenuHeader.btnMessage.setOnClickListener {
+        binding.leftMenu.btnMessage.setOnClickListener {
             val intent = Intent(this, MessageListActivity::class.java)
 
-            intent.putExtra("customer_count",customerMessageCount)
-            intent.putExtra("admin_count",adminMessageCount)
+            intent.putExtra("customer_count", customerMessageCount)
+            intent.putExtra("admin_count", adminMessageCount)
             startActivity(intent)
         }
     }
@@ -712,11 +678,12 @@ open class MainActivity : CommonActivity() {
 
                     if (customerMessageCount > 0 || adminMessageCount > 0) {
 
-                        binding.leftMenu.leftMenuHeader.textMessageCount.visibility = View.VISIBLE
-                        binding.leftMenu.leftMenuHeader.textMessageCount.text = (customerMessageCount + adminMessageCount).toString()
+                        binding.leftMenu.textMessageCount.visibility = View.VISIBLE
+                        binding.leftMenu.textMessageCount.text =
+                            (customerMessageCount + adminMessageCount).toString()
 
                     } else {
-                        binding.leftMenu.leftMenuHeader.textMessageCount.visibility = View.GONE
+                        binding.leftMenu.textMessageCount.visibility = View.GONE
                     }
 
                 } catch (e: java.lang.Exception) {
