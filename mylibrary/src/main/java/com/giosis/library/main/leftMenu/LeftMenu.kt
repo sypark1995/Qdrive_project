@@ -108,8 +108,7 @@ object LeftMenu {
                 IN_PROGRESS,
                 UPLOAD_FAIL,
                 DEL_DONE,
-                NOT_IN_PARCELS,
-                OUTLET_STATUS,
+                NOT_IN_PARCELS
             )
         )
     )
