@@ -5,13 +5,12 @@ import android.content.Intent
 import android.os.Bundle
 import android.view.View
 import android.widget.Toast
-import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModelProvider
 import com.giosis.library.BR
-import com.giosis.library.ViewModelActivity
 import com.giosis.library.R
-import com.giosis.library.databinding.ActivitySettingBinding
+import com.giosis.library.ViewModelActivity
 import com.giosis.library.database.DatabaseHelper
+import com.giosis.library.databinding.ActivitySettingBinding
 import com.giosis.library.util.Preferences
 import com.giosis.library.util.dialog.CustomDialog
 import com.giosis.library.util.dialog.DialogUiConfig
@@ -76,7 +75,7 @@ class SettingActivity : ViewModelActivity<ActivitySettingBinding, SettingViewMod
 
         initDeveloperMode()
 
-        mViewModel.deleteAlert.observe(this, Observer {
+        mViewModel.deleteAlert.observe(this, {
 
             if (it) {
                 val text = DialogUiConfig(
@@ -123,9 +122,9 @@ class SettingActivity : ViewModelActivity<ActivitySettingBinding, SettingViewMod
 
     private fun initDeveloperMode() {
         if (Preferences.developerMode) {
-            btn_setting_developer_mode.visibility = View.VISIBLE;
+            btn_setting_developer_mode.visibility = View.VISIBLE
         } else {
-            btn_setting_developer_mode.visibility = View.GONE;
+            btn_setting_developer_mode.visibility = View.GONE
         }
     }
 
