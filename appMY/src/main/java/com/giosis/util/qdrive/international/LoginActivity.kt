@@ -266,89 +266,93 @@ class LoginActivity : CommonActivity() {
                                 Log.e(RetrofitClient.TAG, "response : ${it.resultObject}")
 
                                 lifecycleScope.launch {
-                                    val response = RetrofitClient.instanceDynamic()
-                                        .requestAppVersionCheck()
+                                    try {
+                                        val response = RetrofitClient.instanceDynamic()
+                                            .requestAppVersionCheck()
 
-                                    if (response.resultCode == -10) {
-                                        val msg = java.lang.String.format(
-                                            resources.getString(R.string.msg_update_version),
-                                            loginData.version,
-                                            loginData.version
-                                        )
-                                        goGooglePlay(msg)
-                                    } else {
-                                        Preferences.userId = loginData.opId!!
-                                        Preferences.userPw = userPW
-                                        Preferences.deviceUUID = deviceUUID
-
-                                        if (!loginData.opNm.isNullOrEmpty()) {
-                                            Preferences.userName = loginData.opNm!!
+                                        if (response.resultCode == -10) {
+                                            val msg = java.lang.String.format(
+                                                resources.getString(R.string.msg_update_version),
+                                                loginData.version,
+                                                loginData.version
+                                            )
+                                            goGooglePlay(msg)
                                         } else {
-                                            Preferences.userName = ""
-                                        }
+                                            Preferences.userId = loginData.opId!!
+                                            Preferences.userPw = userPW
+                                            Preferences.deviceUUID = deviceUUID
 
-                                        if (!loginData.epEmail.isNullOrEmpty()) {
-                                            Preferences.userEmail = loginData.epEmail!!
-                                        } else {
-                                            Preferences.userEmail = ""
-                                        }
+                                            if (!loginData.opNm.isNullOrEmpty()) {
+                                                Preferences.userName = loginData.opNm!!
+                                            } else {
+                                                Preferences.userName = ""
+                                            }
 
-                                        if (!loginData.officeCode.isNullOrEmpty()) {
-                                            Preferences.officeCode = loginData.officeCode!!
-                                        } else {
-                                            Preferences.officeCode = ""
-                                        }
+                                            if (!loginData.epEmail.isNullOrEmpty()) {
+                                                Preferences.userEmail = loginData.epEmail!!
+                                            } else {
+                                                Preferences.userEmail = ""
+                                            }
 
-                                        if (!loginData.officeName.isNullOrEmpty()) {
-                                            Preferences.officeName = loginData.officeName!!
-                                        } else {
-                                            Preferences.officeName = ""
-                                        }
+                                            if (!loginData.officeCode.isNullOrEmpty()) {
+                                                Preferences.officeCode = loginData.officeCode!!
+                                            } else {
+                                                Preferences.officeCode = ""
+                                            }
 
-                                        if (!loginData.pickupDriverYN.isNullOrEmpty()) {
-                                            Preferences.pickupDriver =
-                                                loginData.pickupDriverYN!!
-                                        } else {
-                                            Preferences.pickupDriver = "N"
-                                        }
+                                            if (!loginData.officeName.isNullOrEmpty()) {
+                                                Preferences.officeName = loginData.officeName!!
+                                            } else {
+                                                Preferences.officeName = ""
+                                            }
 
-                                        if (!loginData.shuttle_driver_yn.isNullOrEmpty()) {
-                                            Preferences.outletDriver =
-                                                loginData.shuttle_driver_yn!!
-                                        } else {
-                                            Preferences.outletDriver = ""
-                                        }
+                                            if (!loginData.pickupDriverYN.isNullOrEmpty()) {
+                                                Preferences.pickupDriver =
+                                                    loginData.pickupDriverYN!!
+                                            } else {
+                                                Preferences.pickupDriver = "N"
+                                            }
 
-                                        if (!loginData.locker_driver_status.isNullOrEmpty()) {
-                                            Preferences.lockerStatus =
-                                                loginData.locker_driver_status!!
-                                        } else {
-                                            Preferences.lockerStatus = ""
-                                        }
+                                            if (!loginData.shuttle_driver_yn.isNullOrEmpty()) {
+                                                Preferences.outletDriver =
+                                                    loginData.shuttle_driver_yn!!
+                                            } else {
+                                                Preferences.outletDriver = ""
+                                            }
 
-                                        if (!loginData.defaultYn.isNullOrEmpty()) {
-                                            Preferences.default =
-                                                loginData.defaultYn!!
-                                        } else {
-                                            Preferences.default = ""
-                                        }
+                                            if (!loginData.locker_driver_status.isNullOrEmpty()) {
+                                                Preferences.lockerStatus =
+                                                    loginData.locker_driver_status!!
+                                            } else {
+                                                Preferences.lockerStatus = ""
+                                            }
 
-                                        if (!loginData.authNo.isNullOrEmpty()) {
-                                            Preferences.authNo =
-                                                loginData.authNo!!
-                                        } else {
-                                            Preferences.authNo = ""
-                                        }
+                                            if (!loginData.defaultYn.isNullOrEmpty()) {
+                                                Preferences.default =
+                                                    loginData.defaultYn!!
+                                            } else {
+                                                Preferences.default = ""
+                                            }
 
-                                        if (loginData.smsYn == "Y" && loginData.deviceYn == "Y") {
+                                            if (!loginData.authNo.isNullOrEmpty()) {
+                                                Preferences.authNo =
+                                                    loginData.authNo!!
+                                            } else {
+                                                Preferences.authNo = ""
+                                            }
 
-                                            val intent =
-                                                Intent(this@LoginActivity, MainActivity::class.java)
-                                            startActivity(intent)
-                                            finish()
-                                        } else {
-                                            goSMSVerification(resources.getString(R.string.msg_go_sms_verification))
+                                            if (loginData.smsYn == "Y" && loginData.deviceYn == "Y") {
+
+                                                val intent =
+                                                    Intent(this@LoginActivity, MainActivity::class.java)
+                                                startActivity(intent)
+                                                finish()
+                                            } else {
+                                                goSMSVerification(resources.getString(R.string.msg_go_sms_verification))
+                                            }
                                         }
+                                    } catch (e: java.lang.Exception) {
+                                        Log.e(tag,e.toString())
                                     }
                                 }
                             }

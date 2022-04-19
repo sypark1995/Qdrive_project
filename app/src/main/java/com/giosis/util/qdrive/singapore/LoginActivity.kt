@@ -154,107 +154,111 @@ class LoginActivity : CommonActivity() {
                                 if (loginData != null) {
 
                                     lifecycleScope.launch {
+                                        try {
+                                            val response = RetrofitClient.instanceDynamic()
+                                                .requestAppVersionCheck()
 
-                                        val response = RetrofitClient.instanceDynamic()
-                                            .requestAppVersionCheck()
-
-                                        if (response.resultCode == -10) {
-                                            val msg = java.lang.String.format(
-                                                resources.getString(R.string.msg_update_version),
-                                                loginData.version!!,
-                                                loginData.version
-                                            )
-                                            goGooglePlay(msg)
-                                        } else {
-                                            Preferences.userId = loginData.opId!!
-                                            Preferences.userPw = userPW
-                                            Preferences.deviceUUID = deviceUUID
-
-                                            if (!loginData.opNm.isNullOrEmpty()) {
-                                                Preferences.userName = loginData.opNm!!
-                                            } else {
-                                                Preferences.userName = ""
-                                            }
-
-                                            if (!loginData.epEmail.isNullOrEmpty()) {
-                                                Preferences.userEmail = loginData.epEmail!!
-                                            } else {
-                                                Preferences.userEmail = ""
-                                            }
-
-                                            if (!loginData.officeCode.isNullOrEmpty()) {
-                                                Preferences.officeCode = loginData.officeCode!!
-                                            } else {
-                                                Preferences.officeCode = ""
-                                            }
-
-                                            if (!loginData.officeName.isNullOrEmpty()) {
-                                                Preferences.officeName = loginData.officeName!!
-                                            } else {
-                                                Preferences.officeName = ""
-                                            }
-
-                                            if (!loginData.pickupDriverYN.isNullOrEmpty()) {
-                                                Preferences.pickupDriver =
-                                                    loginData.pickupDriverYN!!
-                                            } else {
-                                                Preferences.pickupDriver = "N"
-                                            }
-
-                                            if (!loginData.shuttle_driver_yn.isNullOrEmpty()) {
-                                                Preferences.outletDriver =
-                                                    loginData.shuttle_driver_yn!!
-                                            } else {
-                                                Preferences.outletDriver = ""
-                                            }
-
-                                            if (!loginData.locker_driver_status.isNullOrEmpty()) {
-                                                Preferences.lockerStatus =
-                                                    loginData.locker_driver_status!!
-                                            } else {
-                                                Preferences.lockerStatus = ""
-                                            }
-
-                                            if (!loginData.defaultYn.isNullOrEmpty()) {
-                                                Preferences.default =
-                                                    loginData.defaultYn!!
-                                            } else {
-                                                Preferences.default = ""
-                                            }
-
-                                            if (!loginData.authNo.isNullOrEmpty()) {
-                                                Preferences.authNo = loginData.authNo!!
-                                            } else {
-                                                Preferences.authNo = ""
-                                            }
-
-                                            if (loginData.smsYn == "Y" && loginData.deviceYn == "Y") {
-
-                                                FirebaseCrashlytics.getInstance().setCustomKey(
-                                                    "ID",
-                                                    Preferences.userId
+                                            if (response.resultCode == -10) {
+                                                val msg = java.lang.String.format(
+                                                    resources.getString(R.string.msg_update_version),
+                                                    loginData.version!!,
+                                                    loginData.version
                                                 )
-
-                                                val intent = Intent(
-                                                    this@LoginActivity,
-                                                    MainActivity::class.java
-                                                )
-                                                startActivity(intent)
-                                                finish()
-
+                                                goGooglePlay(msg)
                                             } else {
-                                                if (loginData.deviceYn == "N") {
-                                                    showDialog(resources.getString(R.string.msg_go_sms_verification))
+                                                Preferences.userId = loginData.opId!!
+                                                Preferences.userPw = userPW
+                                                Preferences.deviceUUID = deviceUUID
+
+                                                if (!loginData.opNm.isNullOrEmpty()) {
+                                                    Preferences.userName = loginData.opNm!!
+                                                } else {
+                                                    Preferences.userName = ""
                                                 }
 
-                                                val intent = Intent(
-                                                    this@LoginActivity,
-                                                    SMSVerificationActivity::class.java
-                                                )
-                                                startActivity(intent)
-                                                finish()
+                                                if (!loginData.epEmail.isNullOrEmpty()) {
+                                                    Preferences.userEmail = loginData.epEmail!!
+                                                } else {
+                                                    Preferences.userEmail = ""
+                                                }
+
+                                                if (!loginData.officeCode.isNullOrEmpty()) {
+                                                    Preferences.officeCode = loginData.officeCode!!
+                                                } else {
+                                                    Preferences.officeCode = ""
+                                                }
+
+                                                if (!loginData.officeName.isNullOrEmpty()) {
+                                                    Preferences.officeName = loginData.officeName!!
+                                                } else {
+                                                    Preferences.officeName = ""
+                                                }
+
+                                                if (!loginData.pickupDriverYN.isNullOrEmpty()) {
+                                                    Preferences.pickupDriver =
+                                                        loginData.pickupDriverYN!!
+                                                } else {
+                                                    Preferences.pickupDriver = "N"
+                                                }
+
+                                                if (!loginData.shuttle_driver_yn.isNullOrEmpty()) {
+                                                    Preferences.outletDriver =
+                                                        loginData.shuttle_driver_yn!!
+                                                } else {
+                                                    Preferences.outletDriver = ""
+                                                }
+
+                                                if (!loginData.locker_driver_status.isNullOrEmpty()) {
+                                                    Preferences.lockerStatus =
+                                                        loginData.locker_driver_status!!
+                                                } else {
+                                                    Preferences.lockerStatus = ""
+                                                }
+
+                                                if (!loginData.defaultYn.isNullOrEmpty()) {
+                                                    Preferences.default =
+                                                        loginData.defaultYn!!
+                                                } else {
+                                                    Preferences.default = ""
+                                                }
+
+                                                if (!loginData.authNo.isNullOrEmpty()) {
+                                                    Preferences.authNo = loginData.authNo!!
+                                                } else {
+                                                    Preferences.authNo = ""
+                                                }
+
+                                                if (loginData.smsYn == "Y" && loginData.deviceYn == "Y") {
+
+                                                    FirebaseCrashlytics.getInstance().setCustomKey(
+                                                        "ID",
+                                                        Preferences.userId
+                                                    )
+
+                                                    val intent = Intent(
+                                                        this@LoginActivity,
+                                                        MainActivity::class.java
+                                                    )
+                                                    startActivity(intent)
+                                                    finish()
+
+                                                } else {
+                                                    if (loginData.deviceYn == "N") {
+                                                        showDialog(resources.getString(R.string.msg_go_sms_verification))
+                                                    }
+
+                                                    val intent = Intent(
+                                                        this@LoginActivity,
+                                                        SMSVerificationActivity::class.java
+                                                    )
+                                                    startActivity(intent)
+                                                    finish()
+                                                }
                                             }
+                                        } catch (e: java.lang.Exception) {
+                                            Log.e(tag,e.toString())
                                         }
+
                                     }
 
                                 }
