@@ -23,10 +23,7 @@ import com.giosis.library.main.MainActivity
 import com.giosis.library.main.SMSVerificationActivity
 import com.giosis.library.server.RetrofitClient
 import com.giosis.library.setting.DeveloperModeActivity
-import com.giosis.library.util.CommonActivity
-import com.giosis.library.util.PermissionActivity
-import com.giosis.library.util.PermissionChecker
-import com.giosis.library.util.Preferences
+import com.giosis.library.util.*
 import com.giosis.util.qdrive.international.databinding.ActivityLoginBinding
 import com.google.gson.Gson
 import io.reactivex.rxjava3.android.schedulers.AndroidSchedulers
@@ -70,6 +67,7 @@ class LoginActivity : CommonActivity() {
         super.onCreate(savedInstanceState)
         setContentView(binding.root)
 
+        QDataUtil.setCustomUserAgent(this@LoginActivity)
         // Image Shake Animation
         binding.imgLoginTopBg.startAnimation(
             AnimationUtils.loadAnimation(
