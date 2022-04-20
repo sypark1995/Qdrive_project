@@ -158,7 +158,7 @@ class LoginActivity : CommonActivity() {
                                             val response = RetrofitClient.instanceDynamic()
                                                 .requestAppVersionCheck()
 
-                                            if (response.resultCode == -10) {
+                                            if (response.resultCode == -10 && !BuildConfig.DEBUG) {
                                                 val msg = java.lang.String.format(
                                                     resources.getString(R.string.msg_update_version),
                                                     loginData.version!!,
@@ -256,7 +256,7 @@ class LoginActivity : CommonActivity() {
                                                 }
                                             }
                                         } catch (e: java.lang.Exception) {
-                                            Log.e(tag,e.toString())
+                                            Log.e(tag, e.toString())
                                         }
 
                                     }

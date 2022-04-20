@@ -138,13 +138,19 @@ class MainActivity : CommonActivity() {
         binding.leftMenu.navList.adapter = leftViewAdapter
 
         if (Preferences.outletDriver == "Y") {
-            LeftMenu.SCAN_MENU.subList!!.add(0, LeftMenu.DELIVERY_OUTLET)
+            if (!LeftMenu.SCAN_MENU.subList!!.contains(LeftMenu.DELIVERY_OUTLET)) {
+                LeftMenu.SCAN_MENU.subList!!.add(0, LeftMenu.DELIVERY_OUTLET)
+            }
         } else {
-            LeftMenu.SCAN_MENU.subList!!.add(0, LeftMenu.CONFIRM_DELIVERY)
+            if (!LeftMenu.SCAN_MENU.subList!!.contains(LeftMenu.CONFIRM_DELIVERY)) {
+                LeftMenu.SCAN_MENU.subList!!.add(0, LeftMenu.CONFIRM_DELIVERY)
+            }
         }
 
         if (Preferences.outletDriver == "Y") {
-            LeftMenu.LIST_MENU.subList!!.add(LeftMenu.OUTLET_STATUS)
+            if (!LeftMenu.LIST_MENU.subList!!.contains(LeftMenu.OUTLET_STATUS)) {
+                LeftMenu.LIST_MENU.subList!!.add(LeftMenu.OUTLET_STATUS)
+            }
         }
 
         val listItemList = ArrayList(
