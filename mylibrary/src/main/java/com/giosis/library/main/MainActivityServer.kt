@@ -111,17 +111,21 @@ object MainActivityServer {
 
                 launch {
                     if (Preferences.userNation == "SG") {
-                        val response =
-                            RetrofitClient.instanceDynamic().requestGetDeliveryOutlet(network)
+                        try {
+                            val response =
+                                RetrofitClient.instanceDynamic().requestGetDeliveryOutlet(network)
 
-                        if (response.resultCode >= 0) {
-                            outletDeliveryList = Gson().fromJson(
-                                response.resultObject,
-                                object : TypeToken<ArrayList<QSignDeliveryList>>() {}.type
-                            )
-                        } else {
+                            if (response.resultCode >= 0) {
+                                outletDeliveryList = Gson().fromJson(
+                                    response.resultObject,
+                                    object : TypeToken<ArrayList<QSignDeliveryList>>() {}.type
+                                )
+                            } else {
 
-                            errorMsg += response.resultMsg
+                                errorMsg += response.resultMsg
+                            }
+                        } catch (e: java.lang.Exception) {
+
                         }
                     }
                 }
@@ -465,38 +469,41 @@ object MainActivityServer {
             } else {
                 "QDRIVE_V2"
             }
+            try {
+                val response = RetrofitClient.instanceDynamic().requestSetDriverPerformanceLog(
+                    channel, latitude.toString(), longitude.toString(), accuracy.toString()
+                )
 
-            val response = RetrofitClient.instanceDynamic().requestSetDriverPerformanceLog(
-                channel, latitude.toString(), longitude.toString(), accuracy.toString()
-            )
+                Log.e(TAG, "requestSetDriverPerformanceLog called ${response.resultCode}")
 
-            Log.e(TAG, "requestSetDriverPerformanceLog called ${response.resultCode}")
+                if (response.resultCode < 0) {
 
-            if (response.resultCode < 0) {
+                    var resultMsg = response.resultMsg
+                    if (response.resultCode != -16) {
+                        resultMsg = String.format(
+                            context.getResources().getString(R.string.text_upload_failed_msg),
+                            response.resultMsg
+                        )
+                    }
 
-                var resultMsg = response.resultMsg
-                if (response.resultCode != -16) {
-                    resultMsg = String.format(
-                        context.getResources().getString(R.string.text_upload_failed_msg),
-                        response.resultMsg
-                    )
-                }
-
-                AlertDialog.Builder(context)
-                    .setTitle(context.getResources().getString(R.string.text_upload_result))
-                    .setMessage(resultMsg)
-                    .setCancelable(true)
-                    .setPositiveButton(
-                        context.getResources().getString(R.string.button_ok)
-                    ) { dialog1: DialogInterface?, which: Int ->
-                        if (dialog1 != null) {
-                            if (!(context as Activity).isFinishing) {
-                                dialog1.dismiss()
+                    AlertDialog.Builder(context)
+                        .setTitle(context.getResources().getString(R.string.text_upload_result))
+                        .setMessage(resultMsg)
+                        .setCancelable(true)
+                        .setPositiveButton(
+                            context.getResources().getString(R.string.button_ok)
+                        ) { dialog1: DialogInterface?, which: Int ->
+                            if (dialog1 != null) {
+                                if (!(context as Activity).isFinishing) {
+                                    dialog1.dismiss()
+                                }
                             }
                         }
-                    }
-                    .create()
-                    .show()
+                        .create()
+                        .show()
+                }
+            } catch (e: java.lang.Exception) {
+
             }
         }
         Log.e(TAG, "setDestroyUserInfo end ")

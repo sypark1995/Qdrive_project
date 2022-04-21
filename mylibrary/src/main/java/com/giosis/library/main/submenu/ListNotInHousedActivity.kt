@@ -13,6 +13,7 @@ import com.giosis.library.util.NetworkUtil
 import com.google.gson.Gson
 import com.google.gson.reflect.TypeToken
 import kotlinx.coroutines.launch
+import java.lang.Exception
 import java.util.*
 
 
@@ -52,38 +53,42 @@ class ListNotInHousedActivity : CommonActivity() {
             binding.progressBar.visibility = View.VISIBLE
 
             lifecycleScope.launch {
-                val result = RetrofitClient.instanceDynamic()
-                    .requestGetOutStandingPickupList(NetworkUtil.getNetworkType(this@ListNotInHousedActivity))
+                try {
+                    val result = RetrofitClient.instanceDynamic()
+                        .requestGetOutStandingPickupList(NetworkUtil.getNetworkType(this@ListNotInHousedActivity))
 
-                if (result.resultCode == 0) {
-                    val list = Gson().fromJson<ArrayList<NotInHousedResult>>(
-                        result.resultObject,
-                        object : TypeToken<ArrayList<NotInHousedResult>>() {}.type
-                    )
+                    if (result.resultCode == 0) {
+                        val list = Gson().fromJson<ArrayList<NotInHousedResult>>(
+                            result.resultObject,
+                            object : TypeToken<ArrayList<NotInHousedResult>>() {}.type
+                        )
 
-                    if (list.isEmpty()) {
-                        binding.textEmpty.text = resources.getString(R.string.text_empty)
+                        if (list.isEmpty()) {
+                            binding.textEmpty.text = resources.getString(R.string.text_empty)
 
+                            binding.textEmpty.visibility = View.VISIBLE
+                            binding.exlistList.visibility = View.GONE
+
+                        } else {
+                            binding.textEmpty.visibility = View.GONE
+                            binding.exlistList.visibility = View.VISIBLE
+
+                            listNotInHousedAdapter = ListNotInHousedAdapter(list)
+                            binding.exlistList.setAdapter(listNotInHousedAdapter)
+                        }
+
+                        binding.progressBar.visibility = View.GONE
+
+                    } else {
+
+                        binding.progressBar.visibility = View.GONE
+
+                        binding.textEmpty.text = resources.getString(R.string.msg_please_try_again)
                         binding.textEmpty.visibility = View.VISIBLE
                         binding.exlistList.visibility = View.GONE
 
-                    } else {
-                        binding.textEmpty.visibility = View.GONE
-                        binding.exlistList.visibility = View.VISIBLE
-
-                        listNotInHousedAdapter = ListNotInHousedAdapter(list)
-                        binding.exlistList.setAdapter(listNotInHousedAdapter)
                     }
-
-                    binding.progressBar.visibility = View.GONE
-
-                } else {
-
-                    binding.progressBar.visibility = View.GONE
-
-                    binding.textEmpty.text = resources.getString(R.string.msg_please_try_again)
-                    binding.textEmpty.visibility = View.VISIBLE
-                    binding.exlistList.visibility = View.GONE
+                } catch (e: Exception) {
 
                 }
             }
