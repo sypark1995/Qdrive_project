@@ -30,8 +30,11 @@ object RetrofitClient {
     }
 
     private fun loggingInterceptor(): HttpLoggingInterceptor {
-
-        val interceptor = HttpLoggingInterceptor { message -> Log.i(TAG, message + "") }
+        val interceptor = HttpLoggingInterceptor(object : HttpLoggingInterceptor.Logger {
+            override fun log(message: String) {
+                Log.i(TAG, message + "")
+            }
+        })
 
         // BASIC
         // HEADERS
