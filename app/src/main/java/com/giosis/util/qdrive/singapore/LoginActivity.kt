@@ -232,7 +232,7 @@ class LoginActivity : CommonActivity() {
 
                                                     FirebaseCrashlytics.getInstance().setCustomKey(
                                                         "ID",
-                                                        Preferences.userId
+                                                        Preferences.userId + " / " + NetworkUtil.getNetworkType(this@LoginActivity)
                                                     )
 
                                                     val intent = Intent(
