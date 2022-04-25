@@ -765,8 +765,8 @@ public class DeliveryDoneActivity extends CommonActivity implements Camera2APIs.
                 return;
             }
 
-
             DataUtil.logEvent("button_click", TAG, "SetDeliveryUploadData");
+
             new DeliveryDoneUploadHelper.Builder(this, opID, officeCode, deviceID,
                     barcodeList, mReceiveType, driverMemo,
                     sign_view_sign_d_signature, hasSignImage, img_sign_d_visit_log, hasVisitImage,
