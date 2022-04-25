@@ -36,6 +36,7 @@ import androidx.annotation.Nullable;
 
 import com.giosis.library.MemoryStatus;
 import com.giosis.library.R;
+import com.giosis.library.database.DatabaseHelper;
 import com.giosis.library.gps.GPSTrackerManager;
 import com.giosis.library.gps.LocationModel;
 import com.giosis.library.list.BarcodeData;
@@ -47,7 +48,6 @@ import com.giosis.library.util.BarcodeType;
 import com.giosis.library.util.Camera2APIs;
 import com.giosis.library.util.CommonActivity;
 import com.giosis.library.util.DataUtil;
-import com.giosis.library.database.DatabaseHelper;
 import com.giosis.library.util.DisplayUtil;
 import com.giosis.library.util.NetworkUtil;
 import com.giosis.library.util.OnServerEventListener;
@@ -383,7 +383,6 @@ public class DeliveryDoneActivity extends CommonActivity implements Camera2APIs.
         text_sign_d_receiver.setText(receiverName);
         text_sign_d_sender.setText(senderName);
         DisplayUtil.setPreviewCamera(img_sign_d_preview_bg);
-        Log.e(TAG, "  Outlet info Route : " + outletInfo.getRoute().substring(0, 2) + " / " + outletInfo.getRoute());
 
         // NOTIFICATION.  Outlet Delivery
         if (outletInfo.getRoute() != null) {
@@ -535,7 +534,6 @@ public class DeliveryDoneActivity extends CommonActivity implements Camera2APIs.
         }
 
 
-
         // Memo 입력제한
         edit_sign_d_memo.addTextChangedListener(new TextWatcher() {
             @Override
@@ -587,7 +585,6 @@ public class DeliveryDoneActivity extends CommonActivity implements Camera2APIs.
                 img_sign_d_visit_log.setScaleType(ImageView.ScaleType.CENTER_INSIDE);
                 onResume();
             } catch (Exception e) {
-                Log.e("eylee", e.toString());
                 e.printStackTrace();
             }
         } else if (requestCode == PERMISSION_REQUEST_CODE) {   // permission
