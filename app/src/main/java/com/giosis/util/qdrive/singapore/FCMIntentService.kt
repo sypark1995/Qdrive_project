@@ -137,13 +137,13 @@ class FCMIntentService : FirebaseMessagingService() {
 
         val am = getSystemService(ACTIVITY_SERVICE) as ActivityManager
         val info = am.getRunningTasks(1)
-        val topActivity = info[0].topActivity
 
-        if (topActivity != null) {
+        var intent = Intent(context, MainActivity::class.java)
 
-            val topClassname = topActivity.className
+        if (info[0] != null) {
+            val topActivity = info[0].topActivity
 
-            var intent = Intent(context, MainActivity::class.java)
+            val topClassname = topActivity!!.className
 
             if (topClassname.contains("singapore.LoginActivity")) {
                 intent = Intent(context, LoginActivity::class.java)
@@ -170,52 +170,51 @@ class FCMIntentService : FirebaseMessagingService() {
 
                 intent = Intent(context, ListActivity::class.java)
             }
-
-            val notificationManager = getSystemService(NOTIFICATION_SERVICE) as NotificationManager
-
-            intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP or Intent.FLAG_ACTIVITY_SINGLE_TOP)
-
-            // Oreo 버전(API 26) 이상부터는 Notification Channel 설정 필요
-            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
-                val channel = "FCM"
-                val channelNm = "Qdrive PUSH"
-
-                val notiChannel =
-                    NotificationChannel(channel, channelNm, NotificationManager.IMPORTANCE_LOW)
-                notiChannel.setShowBadge(true)
-                notiChannel.vibrationPattern = longArrayOf(0)
-                notiChannel.enableVibration(true)
-
-                notificationManager.createNotificationChannel(notiChannel)
-
-                val pendingIntent =
-                    PendingIntent.getActivity(this, idNum, intent, PendingIntent.FLAG_UPDATE_CURRENT)
-
-                val builder = NotificationCompat.Builder(this, channel)
-                    .setSmallIcon(R.drawable.qdrive_icon)
-                    .setContentTitle(title)
-                    .setContentText(message)
-                    .setAutoCancel(true)
-                    .setContentIntent(pendingIntent)
-
-                notificationManager.notify(idNum, builder.build())
-
-            } else {
-
-                val pendingIntent =
-                    PendingIntent.getActivity(this, idNum, intent, PendingIntent.FLAG_UPDATE_CURRENT)
-
-                val builder = NotificationCompat.Builder(this, "")
-                    .setSmallIcon(R.drawable.qdrive_icon)
-                    .setContentTitle(title)
-                    .setContentText(message)
-                    .setAutoCancel(true)
-                    .setContentIntent(pendingIntent)
-
-                notificationManager.notify(idNum, builder.build())
-            }
         }
 
+        val notificationManager = getSystemService(NOTIFICATION_SERVICE) as NotificationManager
+
+        intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP or Intent.FLAG_ACTIVITY_SINGLE_TOP)
+
+        // Oreo 버전(API 26) 이상부터는 Notification Channel 설정 필요
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
+            val channel = "FCM"
+            val channelNm = "Qdrive PUSH"
+
+            val notiChannel =
+                NotificationChannel(channel, channelNm, NotificationManager.IMPORTANCE_LOW)
+            notiChannel.setShowBadge(true)
+            notiChannel.vibrationPattern = longArrayOf(0)
+            notiChannel.enableVibration(true)
+
+            notificationManager.createNotificationChannel(notiChannel)
+
+            val pendingIntent =
+                PendingIntent.getActivity(this, idNum, intent, PendingIntent.FLAG_UPDATE_CURRENT)
+
+            val builder = NotificationCompat.Builder(this, channel)
+                .setSmallIcon(R.drawable.qdrive_icon)
+                .setContentTitle(title)
+                .setContentText(message)
+                .setAutoCancel(true)
+                .setContentIntent(pendingIntent)
+
+            notificationManager.notify(idNum, builder.build())
+
+        } else {
+
+            val pendingIntent =
+                PendingIntent.getActivity(this, idNum, intent, PendingIntent.FLAG_UPDATE_CURRENT)
+
+            val builder = NotificationCompat.Builder(this, "")
+                .setSmallIcon(R.drawable.qdrive_icon)
+                .setContentTitle(title)
+                .setContentText(message)
+                .setAutoCancel(true)
+                .setContentIntent(pendingIntent)
+
+            notificationManager.notify(idNum, builder.build())
+        }
     }
 
 
