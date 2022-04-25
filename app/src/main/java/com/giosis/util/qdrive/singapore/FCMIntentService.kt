@@ -140,36 +140,41 @@ class FCMIntentService : FirebaseMessagingService() {
 
         var intent = Intent(context, MainActivity::class.java)
 
-        if (info[0] != null) {
-            val topActivity = info[0].topActivity
+        try {
+            if (info != null && info.isNotEmpty()) {
+                val topActivity = info[0].topActivity
 
-            val topClassname = topActivity!!.className
+                val topClassname = topActivity!!.className
 
-            if (topClassname.contains("singapore.LoginActivity")) {
-                intent = Intent(context, LoginActivity::class.java)
-
-            } else if (actionKey == PushData.QX_MSG) {
-                //  Admin Message
-                intent = Intent(context, MessageListActivity::class.java)
-                intent.putExtra("position", 1)
-
-            } else if (actionKey == PushData.QST) {
-                //   Customer Message
-                intent = Intent(context, MessageListActivity::class.java)
-                intent.putExtra("position", 0)
-
-            } else if (actionKey == PushData.LAE) {
-                try {
-                    idNum = actionValue.substring(0, 9).toInt()
-                } catch (e: java.lang.Exception) {
-
+                if (topClassname.contains("singapore.LoginActivity")) {
+                    intent = Intent(context, LoginActivity::class.java)
                 }
-                intent = Intent(Intent.ACTION_VIEW, Uri.parse(DataUtil.locker_pin_url))
-
-            } else if (actionKey == PushData.SRL) {
-
-                intent = Intent(context, ListActivity::class.java)
             }
+        } catch (e: Exception) {
+
+        }
+
+        if (actionKey == PushData.QX_MSG) {
+            //  Admin Message
+            intent = Intent(context, MessageListActivity::class.java)
+            intent.putExtra("position", 1)
+
+        } else if (actionKey == PushData.QST) {
+            //   Customer Message
+            intent = Intent(context, MessageListActivity::class.java)
+            intent.putExtra("position", 0)
+
+        } else if (actionKey == PushData.LAE) {
+            try {
+                idNum = actionValue.substring(0, 9).toInt()
+            } catch (e: java.lang.Exception) {
+
+            }
+            intent = Intent(Intent.ACTION_VIEW, Uri.parse(DataUtil.locker_pin_url))
+
+        } else if (actionKey == PushData.SRL) {
+
+            intent = Intent(context, ListActivity::class.java)
         }
 
         val notificationManager = getSystemService(NOTIFICATION_SERVICE) as NotificationManager
