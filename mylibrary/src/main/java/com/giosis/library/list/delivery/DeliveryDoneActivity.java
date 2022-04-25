@@ -383,140 +383,149 @@ public class DeliveryDoneActivity extends CommonActivity implements Camera2APIs.
         text_sign_d_receiver.setText(receiverName);
         text_sign_d_sender.setText(senderName);
         DisplayUtil.setPreviewCamera(img_sign_d_preview_bg);
-        //Log.e(TAG, "  Outlet info Route : " + outletInfo.getRoute().substring(0, 2) + " / " + outletInfo.getRoute());
+        Log.e(TAG, "  Outlet info Route : " + outletInfo.getRoute().substring(0, 2) + " / " + outletInfo.getRoute());
 
         // NOTIFICATION.  Outlet Delivery
-        if (outletInfo.getRoute().substring(0, 2).contains("7E") || outletInfo.getRoute().substring(0, 2).contains("FL")) {
+        if (outletInfo.getRoute() != null) {
+            if (outletInfo.getRoute().substring(0, 2).contains("7E") || outletInfo.getRoute().substring(0, 2).contains("FL")) {
 
-            layout_sign_d_outlet_address.setVisibility(View.VISIBLE);
-            text_sign_d_outlet_address.setText("(" + outletInfo.getZip_code() + ") " + outletInfo.getAddress());
+                layout_sign_d_outlet_address.setVisibility(View.VISIBLE);
+                text_sign_d_outlet_address.setText("(" + outletInfo.getZip_code() + ") " + outletInfo.getAddress());
 
-            // 2019.04
-            String outletAddress = outletInfo.getAddress().toUpperCase();
-            String operationHour = null;
-            Log.e(TAG, "Operation Address : " + outletInfo.getAddress());
+                // 2019.04
+                String outletAddress = outletInfo.getAddress().toUpperCase();
+                String operationHour = null;
+                Log.e(TAG, "Operation Address : " + outletInfo.getAddress());
 
-            if (outletAddress.contains(getResources().getString(R.string.text_operation_hours).toUpperCase())) {
+                if (outletAddress.contains(getResources().getString(R.string.text_operation_hours).toUpperCase())) {
 
-                String indexString = "(" + getResources().getString(R.string.text_operation_hours).toUpperCase() + ":";
-                int operationHourIndex = outletAddress.indexOf(indexString);
+                    String indexString = "(" + getResources().getString(R.string.text_operation_hours).toUpperCase() + ":";
+                    int operationHourIndex = outletAddress.indexOf(indexString);
 
-                operationHour = outletInfo.getAddress().substring(operationHourIndex + indexString.length(), outletAddress.length() - 1);
-                outletAddress = outletInfo.getAddress().substring(0, operationHourIndex);
-                Log.e(TAG, "Operation Hour : " + operationHour);
-            } else if (outletAddress.contains(getResources().getString(R.string.text_operation_hour).toUpperCase())) {
+                    operationHour = outletInfo.getAddress().substring(operationHourIndex + indexString.length(), outletAddress.length() - 1);
+                    outletAddress = outletInfo.getAddress().substring(0, operationHourIndex);
+                    Log.e(TAG, "Operation Hour : " + operationHour);
+                } else if (outletAddress.contains(getResources().getString(R.string.text_operation_hour).toUpperCase())) {
 
-                String indexString = "(" + getResources().getString(R.string.text_operation_hour).toUpperCase() + ":";
-                int operationHourIndex = outletAddress.indexOf(indexString);
+                    String indexString = "(" + getResources().getString(R.string.text_operation_hour).toUpperCase() + ":";
+                    int operationHourIndex = outletAddress.indexOf(indexString);
 
-                operationHour = outletInfo.getAddress().substring(operationHourIndex + indexString.length(), outletAddress.length() - 1);
-                outletAddress = outletInfo.getAddress().substring(0, operationHourIndex);
-                Log.e(TAG, "Operation Hour : " + operationHour);
-            }
+                    operationHour = outletInfo.getAddress().substring(operationHourIndex + indexString.length(), outletAddress.length() - 1);
+                    outletAddress = outletInfo.getAddress().substring(0, operationHourIndex);
+                    Log.e(TAG, "Operation Hour : " + operationHour);
+                }
 
-            if (operationHour != null) {
+                if (operationHour != null) {
 
-                layout_sign_d_outlet_operation_hour.setVisibility(View.VISIBLE);
-                text_sign_d_outlet_operation_time.setText(operationHour);
-            }
+                    layout_sign_d_outlet_operation_hour.setVisibility(View.VISIBLE);
+                    text_sign_d_outlet_operation_time.setText(operationHour);
+                }
 
-            text_sign_d_outlet_address.setText("(" + outletInfo.getZip_code() + ") " + outletAddress);
-
-
-            text_sign_d_tracking_no_more.setVisibility(View.GONE);
-            layout_sign_d_receiver.setVisibility(View.GONE);
-            list_sign_d_outlet_list.setVisibility(View.VISIBLE);
+                text_sign_d_outlet_address.setText("(" + outletInfo.getZip_code() + ") " + outletAddress);
 
 
-            outletDeliveryDoneListItemArrayList = new ArrayList<>();
+                text_sign_d_tracking_no_more.setVisibility(View.GONE);
+                layout_sign_d_receiver.setVisibility(View.GONE);
+                list_sign_d_outlet_list.setVisibility(View.VISIBLE);
 
-            DatabaseHelper dbHelper = DatabaseHelper.getInstance();
 
-            if (routeNumber == null) {      // SCAN > Delivery Done
+                outletDeliveryDoneListItemArrayList = new ArrayList<>();
 
-                for (int i = 0; i < barcodeList.size(); i++) {
+                DatabaseHelper dbHelper = DatabaseHelper.getInstance();
 
-                    Cursor cs = dbHelper.get("SELECT rcv_nm FROM " + DatabaseHelper.DB_TABLE_INTEGRATION_LIST
-                            + " WHERE punchOut_stat = 'N' and chg_dt is null and type = 'D' and reg_id='" + opID + "' and invoice_no='" + barcodeList.get(i).getBarcode() + "'");
+                if (routeNumber == null) {      // SCAN > Delivery Done
+
+                    for (int i = 0; i < barcodeList.size(); i++) {
+
+                        Cursor cs = dbHelper.get("SELECT rcv_nm FROM " + DatabaseHelper.DB_TABLE_INTEGRATION_LIST
+                                + " WHERE punchOut_stat = 'N' and chg_dt is null and type = 'D' and reg_id='" + opID + "' and invoice_no='" + barcodeList.get(i).getBarcode() + "'");
+
+                        if (cs.moveToFirst()) {
+                            do {
+
+                                String receiver_name = cs.getString(cs.getColumnIndex("rcv_nm"));
+
+                                OutletDeliveryDoneListItem outletDeliveryDoneListItem = new OutletDeliveryDoneListItem();
+                                outletDeliveryDoneListItem.setTrackingNo(barcodeList.get(i).getBarcode());
+                                outletDeliveryDoneListItem.setReceiverName(receiver_name);
+                                outletDeliveryDoneListItemArrayList.add(outletDeliveryDoneListItem);
+                            } while (cs.moveToNext());
+                        }
+                    }
+                } else {    // LIST > In Progress
+
+                    barcodeList = new ArrayList<>();
+                    BarcodeData barcodeData;
+
+                    Cursor cs = dbHelper.get("SELECT invoice_no, rcv_nm FROM " + DatabaseHelper.DB_TABLE_INTEGRATION_LIST
+                            + " WHERE punchOut_stat = 'N' and chg_dt is null and type = 'D' and reg_id='" + opID + "' and route LIKE '%" + routeNumber + "%'");
 
                     if (cs.moveToFirst()) {
                         do {
 
+                            String invoice_no = cs.getString(cs.getColumnIndex("invoice_no"));
                             String receiver_name = cs.getString(cs.getColumnIndex("rcv_nm"));
 
+                            barcodeData = new BarcodeData();
+                            barcodeData.setBarcode(invoice_no);
+                            barcodeData.setState(mType);
+                            barcodeList.add(barcodeData);
+
                             OutletDeliveryDoneListItem outletDeliveryDoneListItem = new OutletDeliveryDoneListItem();
-                            outletDeliveryDoneListItem.setTrackingNo(barcodeList.get(i).getBarcode());
+                            outletDeliveryDoneListItem.setTrackingNo(invoice_no);
                             outletDeliveryDoneListItem.setReceiverName(receiver_name);
                             outletDeliveryDoneListItemArrayList.add(outletDeliveryDoneListItem);
                         } while (cs.moveToNext());
                     }
-                }
-            } else {    // LIST > In Progress
 
-                barcodeList = new ArrayList<>();
-                BarcodeData barcodeData;
+                    if (outletDeliveryDoneListItemArrayList.size() > 1) {
 
-                Cursor cs = dbHelper.get("SELECT invoice_no, rcv_nm FROM " + DatabaseHelper.DB_TABLE_INTEGRATION_LIST
-                        + " WHERE punchOut_stat = 'N' and chg_dt is null and type = 'D' and reg_id='" + opID + "' and route LIKE '%" + routeNumber + "%'");
-
-                if (cs.moveToFirst()) {
-                    do {
-
-                        String invoice_no = cs.getString(cs.getColumnIndex("invoice_no"));
-                        String receiver_name = cs.getString(cs.getColumnIndex("rcv_nm"));
-
-                        barcodeData = new BarcodeData();
-                        barcodeData.setBarcode(invoice_no);
-                        barcodeData.setState(mType);
-                        barcodeList.add(barcodeData);
-
-                        OutletDeliveryDoneListItem outletDeliveryDoneListItem = new OutletDeliveryDoneListItem();
-                        outletDeliveryDoneListItem.setTrackingNo(invoice_no);
-                        outletDeliveryDoneListItem.setReceiverName(receiver_name);
-                        outletDeliveryDoneListItemArrayList.add(outletDeliveryDoneListItem);
-                    } while (cs.moveToNext());
+                        String qtyFormat = String.format(getResources().getString(R.string.text_total_qty_count), outletDeliveryDoneListItemArrayList.size());
+                        text_sign_d_tracking_no_title.setText(R.string.text_parcel_qty1);
+                        text_sign_d_tracking_no.setText(qtyFormat);
+                        layout_sign_d_sender.setVisibility(View.GONE);
+                    }
                 }
 
-                if (outletDeliveryDoneListItemArrayList.size() > 1) {
 
-                    String qtyFormat = String.format(getResources().getString(R.string.text_total_qty_count), outletDeliveryDoneListItemArrayList.size());
-                    text_sign_d_tracking_no_title.setText(R.string.text_parcel_qty1);
-                    text_sign_d_tracking_no.setText(qtyFormat);
-                    layout_sign_d_sender.setVisibility(View.GONE);
-                }
-            }
+                if ((outletInfo.getRoute().substring(0, 2).contains("7E"))) {
 
+                    text_top_title.setText(R.string.text_title_7e_store_delivery);
+                    text_sign_d_outlet_address_title.setText(R.string.text_7e_store_address);
+                    layout_sign_d_sign_memo.setVisibility(View.VISIBLE);
+                    layout_sign_d_visit_log.setVisibility(View.VISIBLE);
 
-            if ((outletInfo.getRoute().substring(0, 2).contains("7E"))) {
+                    if (!NetworkUtil.isNetworkAvailable(this)) {
 
-                text_top_title.setText(R.string.text_title_7e_store_delivery);
-                text_sign_d_outlet_address_title.setText(R.string.text_7e_store_address);
-                layout_sign_d_sign_memo.setVisibility(View.VISIBLE);
-                layout_sign_d_visit_log.setVisibility(View.VISIBLE);
+                        AlertShow(getResources().getString(R.string.msg_network_connect_error));
+                        return;
+                    } else {
 
-                if (!NetworkUtil.isNetworkAvailable(this)) {
-
-                    AlertShow(getResources().getString(R.string.msg_network_connect_error));
-                    return;
+                        closeCamera();
+                        QRCodeAsyncTask qrCodeAsyncTask = new QRCodeAsyncTask(getString(R.string.text_outlet_7e), outletDeliveryDoneListItemArrayList);
+                        qrCodeAsyncTask.execute();
+                    }
                 } else {
 
-                    closeCamera();
-                    QRCodeAsyncTask qrCodeAsyncTask = new QRCodeAsyncTask(getString(R.string.text_outlet_7e), outletDeliveryDoneListItemArrayList);
-                    qrCodeAsyncTask.execute();
+                    text_top_title.setText(R.string.text_title_fl_delivery);
+                    text_sign_d_outlet_address_title.setText(R.string.text_federated_locker_address);
+                    layout_sign_d_sign_memo.setVisibility(View.GONE);
+                    layout_sign_d_visit_log.setVisibility(View.GONE);
+
+                    outletTrackingNoAdapter = new OutletTrackingNoAdapter(DeliveryDoneActivity.this, outletDeliveryDoneListItemArrayList, "FL");
+                    list_sign_d_outlet_list.setAdapter(outletTrackingNoAdapter);
+                    setListViewHeightBasedOnChildren(list_sign_d_outlet_list);
                 }
             } else {
 
-                text_top_title.setText(R.string.text_title_fl_delivery);
-                text_sign_d_outlet_address_title.setText(R.string.text_federated_locker_address);
-                layout_sign_d_sign_memo.setVisibility(View.GONE);
-                layout_sign_d_visit_log.setVisibility(View.GONE);
-
-                outletTrackingNoAdapter = new OutletTrackingNoAdapter(DeliveryDoneActivity.this, outletDeliveryDoneListItemArrayList, "FL");
-                list_sign_d_outlet_list.setAdapter(outletTrackingNoAdapter);
-                setListViewHeightBasedOnChildren(list_sign_d_outlet_list);
+                layout_sign_d_outlet_address.setVisibility(View.GONE);
+                layout_sign_d_outlet_operation_hour.setVisibility(View.GONE);
+                layout_sign_d_receiver.setVisibility(View.VISIBLE);
+                list_sign_d_outlet_list.setVisibility(View.GONE);
+                layout_sign_d_sign_memo.setVisibility(View.VISIBLE);
+                layout_sign_d_visit_log.setVisibility(View.VISIBLE);
             }
         } else {
-
             layout_sign_d_outlet_address.setVisibility(View.GONE);
             layout_sign_d_outlet_operation_hour.setVisibility(View.GONE);
             layout_sign_d_receiver.setVisibility(View.VISIBLE);
@@ -524,6 +533,7 @@ public class DeliveryDoneActivity extends CommonActivity implements Camera2APIs.
             layout_sign_d_sign_memo.setVisibility(View.VISIBLE);
             layout_sign_d_visit_log.setVisibility(View.VISIBLE);
         }
+
 
 
         // Memo 입력제한
