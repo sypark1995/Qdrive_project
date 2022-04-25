@@ -4,6 +4,7 @@ package com.giosis.library.main
 import android.annotation.SuppressLint
 import android.app.ActivityManager
 import android.app.AlertDialog
+import android.app.ProgressDialog
 import android.content.Context
 import android.content.DialogInterface
 import android.content.Intent
@@ -51,8 +52,10 @@ import com.google.gson.Gson
 import com.google.gson.reflect.TypeToken
 import io.reactivex.rxjava3.android.schedulers.AndroidSchedulers
 import io.reactivex.rxjava3.schedulers.Schedulers
+import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.async
 import kotlinx.coroutines.launch
+import kotlinx.coroutines.withContext
 import java.net.URLEncoder
 import java.text.SimpleDateFormat
 import java.util.*
@@ -372,7 +375,9 @@ class MainActivity : CommonActivity() {
             }
         }
 
-        MainActivityServer.getLocalCount(this)
+        lifecycleScope.launch {
+            MainActivityServer.getLocalCount(this@MainActivity)
+        }
     }
 
     private fun setBadge(context: Context, count: Int) {
@@ -500,11 +505,16 @@ class MainActivity : CommonActivity() {
                 songjanglist, "QH", latitude, longitude
             ).setOnServerEventListener(object : OnServerEventListener {
                 override fun onPostResult() {
-                    MainActivityServer.getLocalCount(this@MainActivity)
+                    lifecycleScope.launch {
+                        MainActivityServer.getLocalCount(this@MainActivity)
+                    }
+
                 }
 
                 override fun onPostFailList() {
-                    MainActivityServer.getLocalCount(this@MainActivity)
+                    lifecycleScope.launch {
+                        MainActivityServer.getLocalCount(this@MainActivity)
+                    }
                 }
             }).build().execute()
         } else {
@@ -523,7 +533,48 @@ class MainActivity : CommonActivity() {
                 .show()
             return
         } else {
-            MainActivityServer.download(this)
+            val progressDialog = ProgressDialog(this)
+            progressDialog.setProgressStyle(ProgressDialog.STYLE_HORIZONTAL)
+            progressDialog.setMessage(resources.getString(R.string.text_downloading))
+            progressDialog.setCancelable(false)
+
+            progressDialog.show()
+
+            val network = NetworkUtil.getNetworkType(this)
+
+            lifecycleScope.launch {
+                val returnString = MainActivityServer.download(progressDialog, network)
+
+                if (returnString.isNotEmpty()) {
+                    withContext(Dispatchers.Main) {
+                        progressDialog.hide()
+
+                        AlertDialog.Builder(this@MainActivity)
+                            .setTitle(
+                                resources.getString(R.string.text_download_result)
+                            )
+                            .setMessage(returnString)
+                            .setCancelable(true)
+                            .setPositiveButton(
+                                resources.getString(R.string.button_ok)
+                            ) { dialog1: DialogInterface?, which: Int ->
+                                if (dialog1 != null) {
+                                    if (!(this@MainActivity).isFinishing) {
+                                        dialog1.dismiss()
+                                    }
+                                }
+                            }
+                            .create()
+                            .show()
+                    }
+                }
+
+                MainActivityServer.getLocalCount(this@MainActivity)
+
+                withContext(Dispatchers.Main) {
+                    progressDialog.hide()
+                }
+            }
         }
 
         if (0 < uploadFailedCount.toInt()) {
