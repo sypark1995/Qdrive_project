@@ -154,7 +154,7 @@ class LoginActivity : CommonActivity() {
                                 if (loginData != null) {
                                     lifecycleScope.launch {
                                         try {
-                                            val response = RetrofitClient.instanceDynamic()
+                                            val response = RetrofitClient.instanceCoroutine()
                                                 .requestAppVersionCheck()
 
                                             if (response.resultCode == -10 && !BuildConfig.DEBUG) {
