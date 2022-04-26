@@ -85,6 +85,19 @@ object RetrofitClient {
         return instanceDynamic
     }
 
+    fun instanceCoroutine(): RetrofitService {
+
+        val serverURL = Preferences.serverURL + DataUtil.API_ADDRESS
+        //   Log.e("Server", "Server URL  $serverURL")
+
+        return Retrofit.Builder()
+            .baseUrl(serverURL)
+            .client(provideOkHttpClient(AppInterceptor()))
+            .build()
+            .create(RetrofitService::class.java)
+    }
+
+
     fun instanceBarcode(): RetrofitService {
 
         // "http://image.qxpress.net/code128/code128.php?no="

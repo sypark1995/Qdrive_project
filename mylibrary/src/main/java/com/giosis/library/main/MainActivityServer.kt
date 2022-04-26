@@ -60,7 +60,7 @@ object MainActivityServer {
 
         try {
             val response =
-                RetrofitClient.instanceDynamic().requestGetPickupList(network)
+                RetrofitClient.instanceCoroutine().requestGetPickupList(network)
 
             if (response.resultCode >= 0) {
                 pickupList = Gson().fromJson(
@@ -78,7 +78,7 @@ object MainActivityServer {
 
         try {
             val response =
-                RetrofitClient.instanceDynamic().requestGetDeliveryList(network)
+                RetrofitClient.instanceCoroutine().requestGetDeliveryList(network)
 
             if (response.resultCode >= 0) {
                 deliveryList = Gson().fromJson(
@@ -95,7 +95,7 @@ object MainActivityServer {
         if (Preferences.userNation == "SG") {
             try {
                 val response =
-                    RetrofitClient.instanceDynamic().requestGetDeliveryOutlet(network)
+                    RetrofitClient.instanceCoroutine().requestGetDeliveryOutlet(network)
 
                 if (response.resultCode >= 0) {
                     outletDeliveryList = Gson().fromJson(
@@ -160,7 +160,7 @@ object MainActivityServer {
 
     suspend fun getDFCFailedCode() {
         try {
-            val result = RetrofitClient.instanceDynamic().requestGetFailedCode(DFC)
+            val result = RetrofitClient.instanceCoroutine().requestGetFailedCode(DFC)
 
             if (result.resultCode == 10) {
                 val json = Gson().toJson(result.resultObject)
@@ -175,7 +175,7 @@ object MainActivityServer {
 
     suspend fun getPFCFailedCode() {
         try {
-            val result = RetrofitClient.instanceDynamic().requestGetFailedCode(PFC)
+            val result = RetrofitClient.instanceCoroutine().requestGetFailedCode(PFC)
 
             if (result.resultCode == 10) {
                 val json = Gson().toJson(result.resultObject)
