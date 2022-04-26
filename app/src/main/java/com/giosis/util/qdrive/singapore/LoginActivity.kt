@@ -152,7 +152,7 @@ class LoginActivity : CommonActivity() {
                                     Gson().fromJson(it.resultObject, LoginInfo::class.java)
 
                                 if (loginData != null) {
-
+                                    Log.e(":>>SA>DAS>DAS",appVersion.toString())
                                     lifecycleScope.launch {
                                         try {
                                             val response = RetrofitClient.instanceDynamic()
@@ -161,7 +161,7 @@ class LoginActivity : CommonActivity() {
                                             if (response.resultCode == -10 && !BuildConfig.DEBUG) {
                                                 val msg = java.lang.String.format(
                                                     resources.getString(R.string.msg_update_version),
-                                                    loginData.version!!,
+                                                    appVersion,
                                                     loginData.version
                                                 )
                                                 goGooglePlay(msg)
