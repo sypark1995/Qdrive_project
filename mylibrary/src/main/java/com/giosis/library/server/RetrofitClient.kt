@@ -93,6 +93,7 @@ object RetrofitClient {
         return Retrofit.Builder()
             .baseUrl(serverURL)
             .client(provideOkHttpClient(AppInterceptor()))
+            .addConverterFactory(GsonConverterFactory.create())
             .build()
             .create(RetrofitService::class.java)
     }

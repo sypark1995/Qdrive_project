@@ -445,7 +445,7 @@ interface RetrofitService {
         @Field("user_key") user_key: String,
         @Field("op_id") op_id: String = Preferences.userId,
         @Field("app_cd") app_cd: String = "01",
-        @Field("device_id") device_id: String = Preferences.userId,
+        @Field("device_id") device_id: String = Preferences.deviceUUID,
         @Field("app_id") app_id: String = DataUtil.appID,
         @Field("nation_cd") nation_cd: String = Preferences.userNation,
     ): Single<APIModel>
@@ -457,7 +457,7 @@ interface RetrofitService {
         @Field("network_type") network_type: String,
         @Field("opId") opId: String = Preferences.userId,
         @Field("officeCd") officeCode: String = Preferences.officeCode,
-        @Field("device_id") device_id: String = Preferences.userId,
+        @Field("device_id") device_id: String = Preferences.deviceUUID,
         @Field("app_id") app_id: String = DataUtil.appID,
         @Field("nation_cd") nation_cd: String = Preferences.userNation,
     ): APIModel
@@ -468,7 +468,7 @@ interface RetrofitService {
         @Field("network_type") network_type: String,
         @Field("opId") opId: String = Preferences.userId,
         @Field("officeCd") officeCode: String = Preferences.officeCode,
-        @Field("device_id") device_id: String = Preferences.userId,
+        @Field("device_id") device_id: String = Preferences.deviceUUID,
         @Field("app_id") app_id: String = DataUtil.appID,
         @Field("nation_cd") nation_cd: String = Preferences.userNation,
     ): APIModel
@@ -480,7 +480,7 @@ interface RetrofitService {
         @Field("network_type") network_type: String,
         @Field("opId") opId: String = Preferences.userId,
         @Field("officeCd") officeCode: String = Preferences.officeCode,
-        @Field("device_id") device_id: String = Preferences.userId,
+        @Field("device_id") device_id: String = Preferences.deviceUUID,
         @Field("app_id") app_id: String = DataUtil.appID,
         @Field("nation_cd") nation_cd: String = Preferences.userNation,
     ): APIModel
