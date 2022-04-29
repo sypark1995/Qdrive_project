@@ -21,7 +21,7 @@ import android.widget.TextView;
 import com.giosis.library.R;
 import com.giosis.library.bluetooth.BluetoothClass;
 import com.giosis.library.list.ChildItem;
-import com.giosis.library.list.ListInProgressAdapter;
+import com.giosis.library.list.ListInProgressAdapter2;
 import com.giosis.library.list.RowItem;
 import com.giosis.library.util.CommonActivity;
 import com.giosis.library.database.DatabaseHelper;
@@ -35,7 +35,7 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Date;
 
-public class RpcListActivity extends CommonActivity implements SearchView.OnQueryTextListener, SearchView.OnCloseListener, ListInProgressAdapter.OnMoveUpListener {
+public class RpcListActivity extends CommonActivity implements SearchView.OnQueryTextListener, SearchView.OnCloseListener, ListInProgressAdapter2.OnMoveUpListener {
     private static final int PERMISSION_REQUEST_CODE = 1000;
     private static final String[] PERMISSIONS = new String[]{PermissionChecker.ACCESS_FINE_LOCATION, PermissionChecker.ACCESS_COARSE_LOCATION};
     String TAG = "RpcListActivity";
@@ -52,7 +52,7 @@ public class RpcListActivity extends CommonActivity implements SearchView.OnQuer
     private String opID;
     private boolean isOpen = false;
     private String orderby = "zip_code asc";
-    private ListInProgressAdapter adapter;
+    private ListInProgressAdapter2 adapter;
     private ArrayList<RowItem> rowItems;
     //
     private PermissionChecker checker;
@@ -168,7 +168,7 @@ public class RpcListActivity extends CommonActivity implements SearchView.OnQuer
 
 
         rowItems = new ArrayList<>();
-        adapter = new ListInProgressAdapter(rowItems, bluetoothClass);
+        adapter = new ListInProgressAdapter2(rowItems, bluetoothClass);
 
 
         exlist_card_list.setOnGroupCollapseListener(groupPosition -> isOpen = false);
@@ -217,7 +217,7 @@ public class RpcListActivity extends CommonActivity implements SearchView.OnQuer
 
 
         rowItems = getSortList(orderby);
-        adapter = new ListInProgressAdapter(rowItems, bluetoothClass);
+        adapter = new ListInProgressAdapter2(rowItems, bluetoothClass);
         adapter.setOnMoveUpListener(this);
         exlist_card_list.setAdapter(adapter);
         adapter.setSorting(rowItems);

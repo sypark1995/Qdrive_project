@@ -51,7 +51,7 @@ import io.reactivex.rxjava3.schedulers.Schedulers;
 
 
 public class ListInProgressFragment extends Fragment
-        implements SearchView.OnQueryTextListener, SearchView.OnCloseListener, ListInProgressAdapter.OnMoveUpListener {
+        implements SearchView.OnQueryTextListener, SearchView.OnCloseListener, ListInProgressAdapter2.OnMoveUpListener {
     String TAG = "ListInProgressFragment";
 
     private static final int PERMISSION_REQUEST_CODE = 1000;
@@ -69,7 +69,7 @@ public class ListInProgressFragment extends Fragment
             "rcv_nm desc"
     };
 
-    private ListInProgressAdapter adapter;
+    private ListInProgressAdapter2 adapter;
     private ArrayList<RowItem> rowItems;
 
     // 2020.07  ByTrip 정렬기능 추가
@@ -320,7 +320,7 @@ public class ListInProgressFragment extends Fragment
             Log.e(TAG, "getSortList  Finish");
         }
 
-        adapter = new ListInProgressAdapter(rowItems, bluetoothListener);
+        adapter = new ListInProgressAdapter2(rowItems, bluetoothListener);
         adapter.setOnMoveUpListener(this);
         exlist_card_list.setAdapter(adapter);
         adapter.setSorting(rowItems);

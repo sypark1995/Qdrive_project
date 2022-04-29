@@ -47,7 +47,7 @@ public class ListTodayDoneFragment extends Fragment implements SearchView.OnQuer
 
     private ArrayList<RowItem> rowItems;
     private ArrayList<ChildItem> childItems;
-    private ListTodayDoneAdapter adapter;
+    private ListTodayDoneAdapter2 adapter;
 
     BluetoothListener bluetoothListener;
 
@@ -192,7 +192,7 @@ public class ListTodayDoneFragment extends Fragment implements SearchView.OnQuer
                                     rowItems.add(rowitem);
                                 }
 
-                                adapter = new ListTodayDoneAdapter(rowItems, bluetoothListener);
+                                adapter = new ListTodayDoneAdapter2(rowItems, bluetoothListener);
                                 exlist_card_list.setAdapter(adapter);
                                 adapter.setSorting(rowItems);
 

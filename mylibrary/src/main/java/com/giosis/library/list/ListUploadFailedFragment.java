@@ -41,7 +41,7 @@ import java.util.Arrays;
  */
 
 public class ListUploadFailedFragment extends Fragment
-        implements OnQueryTextListener, OnCloseListener, ListUploadFailedAdapter.AdapterInterface {
+        implements OnQueryTextListener, OnCloseListener, ListUploadFailedAdapter2.AdapterInterface {
 
     String TAG = "List_UploadFailedFragment";
 
@@ -66,7 +66,7 @@ public class ListUploadFailedFragment extends Fragment
 
     private String orderby = "zip_code desc";
 
-    private ListUploadFailedAdapter adapter;
+    private ListUploadFailedAdapter2 adapter;
 
     private ArrayList<RowItemNotUpload> rowItems;
 
@@ -195,7 +195,7 @@ public class ListUploadFailedFragment extends Fragment
                 }));
 
         rowItems = new ArrayList<>();
-        adapter = new ListUploadFailedAdapter(rowItems, this);
+        adapter = new ListUploadFailedAdapter2(rowItems, this);
         exlist_card_list.setAdapter(adapter);
 
         exlist_card_list.setOnGroupCollapseListener(groupPosition -> {
