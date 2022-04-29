@@ -63,9 +63,9 @@ class FCMIntentService : FirebaseMessagingService() {
                 actionValue = "QDRIVE ACTION_VALUE"
             }
 
-            val myApp = applicationContext as MyApplication
-            val badgeCnt = myApp.badgeCnt + 1
-            myApp.badgeCnt = badgeCnt
+            val myApp = applicationContext as MyApplication2
+            val badgeCnt = myApp.getBadgeCnt() + 1
+            myApp.setBadgeCnt(badgeCnt)
             setBadge(this, badgeCnt)
 
             sendNotification(this, title, message, actionKey, actionValue)

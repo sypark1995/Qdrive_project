@@ -248,7 +248,7 @@ public class ListTodayDoneAdapter extends BaseExpandableListAdapter {
             intent.putExtra("pickup_no", tracking_no);
             intent.putExtra("applicant", applicant);
             intent.putExtra("button_type", "Add Scan");
-            ((Activity) v.getContext()).startActivityForResult(intent, ListTodayDoneFragment.REQUEST_ADD_SCAN);
+            ((Activity) v.getContext()).startActivityForResult(intent, ListTodayDoneFragment2.REQUEST_ADD_SCAN);
         });
 
         btn_list_item_child_done_print_label.setOnClickListener(v -> {
@@ -265,7 +265,7 @@ public class ListTodayDoneAdapter extends BaseExpandableListAdapter {
             intent.putExtra("pickup_no", tracking_no);
             intent.putExtra("applicant", applicant);
             intent.putExtra("button_type", "Take Back");
-            ((Activity) v.getContext()).startActivityForResult(intent, ListTodayDoneFragment.REQUEST_TAKE_BACK);
+            ((Activity) v.getContext()).startActivityForResult(intent, ListTodayDoneFragment2.REQUEST_TAKE_BACK);
         });
 
         return convertView;

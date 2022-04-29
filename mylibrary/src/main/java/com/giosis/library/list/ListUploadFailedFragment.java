@@ -46,9 +46,7 @@ public class ListUploadFailedFragment extends Fragment
     String TAG = "List_UploadFailedFragment";
 
     private GPSTrackerManager gpsTrackerManager;
-    private boolean gpsEnable = false;
 
-    private PermissionChecker checker;
     private boolean isPermissionTrue = false;
     private static final int PERMISSION_REQUEST_CODE = 1000;
 
@@ -112,7 +110,7 @@ public class ListUploadFailedFragment extends Fragment
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
 
-        checker = new PermissionChecker(requireActivity());
+        PermissionChecker checker = new PermissionChecker(requireActivity());
 
         if (checker.lacksPermissions(PERMISSIONS)) {
             isPermissionTrue = false;
@@ -304,7 +302,7 @@ public class ListUploadFailedFragment extends Fragment
         if (isPermissionTrue) {
 
             gpsTrackerManager = new GPSTrackerManager(requireActivity());
-            gpsEnable = gpsTrackerManager.enableGPSSetting();
+            boolean gpsEnable = gpsTrackerManager.enableGPSSetting();
 
             if (gpsEnable && gpsTrackerManager != null) {
                 gpsTrackerManager.gpsTrackerStart();

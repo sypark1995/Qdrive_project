@@ -257,7 +257,7 @@ class ListTodayDoneAdapter2(
                 intent.putExtra("button_type", "Add Scan")
                 (v.context as Activity).startActivityForResult(
                     intent,
-                    ListTodayDoneFragment.REQUEST_ADD_SCAN
+                    ListTodayDoneFragment2.REQUEST_ADD_SCAN
                 )
             }
             btnListItemChildDonePrintLabel.setOnClickListener {
@@ -276,7 +276,7 @@ class ListTodayDoneAdapter2(
                 intent.putExtra("button_type", "Take Back")
                 (v.context as Activity).startActivityForResult(
                     intent,
-                    ListTodayDoneFragment.REQUEST_TAKE_BACK
+                    ListTodayDoneFragment2.REQUEST_TAKE_BACK
                 )
             }
         }
