@@ -23,7 +23,7 @@ import com.giosis.library.util.DataUtil
 import com.giosis.library.util.ListFragmentFactoryImpl
 import com.giosis.library.util.Preferences
 
-class ListActivity2 : CommonActivity(), ListInProgressFragment.OnInProgressFragmentListener,
+class ListActivity2 : CommonActivity(), ListInProgressFragment2.OnInProgressFragmentListener,
     ListUploadFailedFragment2.OnFailedCountListener,
     ListTodayDoneFragment2.OnTodayDoneCountListener {
 

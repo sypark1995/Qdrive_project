@@ -31,7 +31,7 @@ import com.giosis.library.util.Preferences;
  * In progress  // Not Upload  //  Today Done
  */
 public class ListActivity extends CommonActivity implements OnClickListener,
-        ListInProgressFragment.OnInProgressFragmentListener, ListUploadFailedFragment2.OnFailedCountListener,
+        ListInProgressFragment2.OnInProgressFragmentListener, ListUploadFailedFragment2.OnFailedCountListener,
         ListTodayDoneFragment2.OnTodayDoneCountListener {
 
     String TAG = "ListActivity";
@@ -208,7 +208,7 @@ public class ListActivity extends CommonActivity implements OnClickListener,
         public Fragment createFragment(int position) {
             switch (position) {
                 case 0: {
-                    return new ListInProgressFragment(bluetoothClass);
+                    return new ListInProgressFragment2(bluetoothClass);
                 }
                 case 1:
                     return new ListUploadFailedFragment2();
