@@ -24,12 +24,15 @@ import kotlin.collections.ArrayList
 class ListTodayDoneAdapter2(
     rowItem: ArrayList<RowItem>?,
     bluetoothListener: BluetoothListener
-) :
-    BaseExpandableListAdapter() {
+) : BaseExpandableListAdapter() {
+
     var TAG = "CustomTodayDoneExpandableAdapter"
+
     private val rowItem: ArrayList<RowItem> = ArrayList()
     private val originalRowItem: ArrayList<RowItem>
+
     var bluetoothListener: BluetoothListener
+
     @SuppressLint("InflateParams")
     override fun getGroupView(
         groupPosition: Int,
@@ -43,6 +46,7 @@ class ListTodayDoneAdapter2(
                 parent.context.getSystemService(Activity.LAYOUT_INFLATER_SERVICE) as LayoutInflater
             view = mInflater.inflate(R.layout.list_group_item, null)
         }
+
         view?.let {
             val layoutListItemCardView =
                 view.findViewById<LinearLayout>(R.id.layout_list_item_card_view) // background change
@@ -55,6 +59,7 @@ class ListTodayDoneAdapter2(
                 layoutListItemCardView.setBackgroundResource(R.drawable.bg_round_10_ffffff_shadow)
                 imgListItemUpIcon.visibility = View.GONE
             }
+
             if (groupPosition == 0) {
                 val lp = LinearLayout.LayoutParams(
                     LinearLayout.LayoutParams.MATCH_PARENT,
@@ -70,6 +75,7 @@ class ListTodayDoneAdapter2(
                 lp.setMargins(0, 20, 0, 0)
                 layoutListItemCardView.layoutParams = lp
             }
+
             val textListItemDDay = view.findViewById<TextView>(R.id.text_list_item_d_day)
             val imgListItemSecureDelivery =
                 view.findViewById<ImageView>(R.id.img_list_item_secure_delivery)
@@ -100,8 +106,10 @@ class ListTodayDoneAdapter2(
                 view.findViewById<LinearLayout>(R.id.layout_list_item_driver_memo)
             val textListItemDriverMemo =
                 view.findViewById<TextView>(R.id.text_list_item_driver_memo)
+
             val rowPos = rowItem[groupPosition]
             textListItemDDay.text = rowPos.delay
+
             if (rowPos.delay == "D+0" || rowPos.delay == "D+1") {
                 textListItemDDay.setTextColor(Color.parseColor("#303030"))
             } else {
@@ -111,6 +119,7 @@ class ListTodayDoneAdapter2(
             //
             imgListItemSecureDelivery.visibility = View.GONE
             imgListItemStationIcon.visibility = View.GONE
+
             if (rowPos.route.contains("7E")) {
                 imgListItemStationIcon.visibility = View.VISIBLE
             } else {
@@ -144,6 +153,7 @@ class ListTodayDoneAdapter2(
                     }
                 }
             }
+
             textListItemTrackingNo.text = rowPos.shipping
             textListItemAddress.text = rowPos.address
             layoutListItemMenuIcon.tag = rowPos.shipping

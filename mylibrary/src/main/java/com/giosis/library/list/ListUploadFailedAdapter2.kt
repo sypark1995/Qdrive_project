@@ -35,8 +35,8 @@ import java.util.*
 class ListUploadFailedAdapter2(
     rowItem: ArrayList<RowItemNotUpload>?,
     listener: AdapterInterface
-) :
-    BaseExpandableListAdapter() {
+) : BaseExpandableListAdapter() {
+
     private val TAG = "UploadFailedAdapter"
     private var gpsTrackerManager: GPSTrackerManager? = null
     private var gpsEnable = false

@@ -92,13 +92,14 @@ class ListInProgressAdapter2(rowItems: ArrayList<RowItem>?, bluetoothListener: B
         convertView: View?,
         parent: ViewGroup
     ): View {
-        var view: View? = convertView
+        var view = convertView
 
         if (view == null) {
             val mInflater =
                 parent.context.getSystemService(Activity.LAYOUT_INFLATER_SERVICE) as LayoutInflater
             view = mInflater.inflate(R.layout.list_group_item, null)
         }
+
         view?.let {
             val cardView =
                 view.findViewById<LinearLayout>(R.id.layout_list_item_card_view) // background change
@@ -145,6 +146,7 @@ class ListInProgressAdapter2(rowItems: ArrayList<RowItem>?, bluetoothListener: B
                 cardView.setBackgroundResource(R.drawable.bg_round_10_ffffff_shadow)
                 imgItemUpIcon.visibility = View.GONE
             }
+
             if (groupPosition == 0) {
                 val lp = LinearLayout.LayoutParams(
                     LinearLayout.LayoutParams.MATCH_PARENT,
@@ -160,6 +162,7 @@ class ListInProgressAdapter2(rowItems: ArrayList<RowItem>?, bluetoothListener: B
                 lp.setMargins(0, 24, 0, 0)
                 cardView.layoutParams = lp
             }
+
             val rowPos = rowItem[groupPosition]
             //   Log.i(TAG, "  Route : " + row_pos.getRoute() + " / Stat : " + row_pos.getStat() + " / Number : " + row_pos.getShipping());
             textDday.text = rowPos.delay
@@ -194,6 +197,7 @@ class ListInProgressAdapter2(rowItems: ArrayList<RowItem>?, bluetoothListener: B
             } else {        // Delivery
                 textTrackingNo.text = rowPos.shipping
             }
+
             textAddress.text = rowPos.address
             menuIcon.tag = rowPos.shipping
             textReceiptName.text = rowPos.name
@@ -204,6 +208,7 @@ class ListInProgressAdapter2(rowItems: ArrayList<RowItem>?, bluetoothListener: B
                 imgSecureDelivery.visibility = View.GONE
                 textEconomy.visibility = View.GONE
                 textHighAmount.visibility = View.GONE
+
                 when (rowPos.stat) {
                     BarcodeType.PICKUP_REASSIGN -> {
                         textPickupState.visibility = View.VISIBLE
@@ -219,9 +224,8 @@ class ListInProgressAdapter2(rowItems: ArrayList<RowItem>?, bluetoothListener: B
                         textPickupState.visibility = View.GONE
                     }
                 }
-                if (rowPos.outlet_store_name != null) {
 
-                    // 2019.04
+                if (rowPos.outlet_store_name != null) {
                     if (rowPos.outlet_company == "7E") {
                         textTrackingNo.text = rowPos.outlet_company!!.replace(
                             "FL",
@@ -234,15 +238,17 @@ class ListInProgressAdapter2(rowItems: ArrayList<RowItem>?, bluetoothListener: B
                         ) + " " + rowPos.outlet_store_name
                     }
                 }
+
                 deliveryInfo.visibility = View.GONE
                 deliveryOutletInfo.visibility = View.GONE
                 textPickupInfo.visibility = View.VISIBLE
                 textDesiredDate.text = rowPos.desiredDate
                 textQty.text = rowPos.qty
+
                 if (rowPos.route.equals("RPC", ignoreCase = true)) {
-                    textDesiredDate.text =
-                        rowPos.desiredDate + " / " + rowPos.desired_time
+                    textDesiredDate.text = rowPos.desiredDate + " / " + rowPos.desired_time
                 }
+
             } else {       //배송
                 textTrackingNo.setTextColor(Color.parseColor("#32BD87"))
                 if (rowPos.secure_delivery_yn != null && rowPos.secure_delivery_yn == "Y") {
@@ -250,22 +256,22 @@ class ListInProgressAdapter2(rowItems: ArrayList<RowItem>?, bluetoothListener: B
                 } else {
                     imgSecureDelivery.visibility = View.GONE
                 }
+
                 if (rowPos.stat == BarcodeType.DELIVERY_FAIL) {
                     textPickupState.visibility = View.VISIBLE
-                    textPickupState.text =
-                        parent.context.resources.getString(R.string.text_failed)
+                    textPickupState.text = parent.context.resources.getString(R.string.text_failed)
                 } else {
                     textPickupState.visibility = View.GONE
                 }
 
-                // 2021.04  High amount
+                // High amount
                 if (rowPos.high_amount_yn == "Y") {
                     textHighAmount.visibility = View.VISIBLE
                 } else {
                     textHighAmount.visibility = View.GONE
                 }
 
-                // 2021.09 Economy
+                // Economy
                 if (rowPos.orderType == "ECO") {
                     textEconomy.visibility = View.VISIBLE
                 } else {
@@ -273,13 +279,13 @@ class ListInProgressAdapter2(rowItems: ArrayList<RowItem>?, bluetoothListener: B
                 }
                 deliveryInfo.visibility = View.VISIBLE
                 textPickupInfo.visibility = View.GONE
+
                 if (rowPos.outlet_store_name != null) {
 
                     //text_list_item_tracking_no.setText(row_pos.getOutlet_company().replace("FL", "LA") + " " + row_pos.getOutlet_store_name());
                     deliveryOutletInfo.visibility = View.VISIBLE
                     textParcelQty.text = String.format("%d", rowPos.outlet_qty)
 
-                    // 2019.04
                     if (rowPos.outlet_company == "7E") {
                         textTrackingNo.text = rowPos.outlet_company!!.replace(
                             "FL",
@@ -292,6 +298,7 @@ class ListInProgressAdapter2(rowItems: ArrayList<RowItem>?, bluetoothListener: B
                         ) + " " + rowPos.outlet_store_name
                     }
                     deliveryInfo.visibility = View.GONE
+
                 } else {
                     deliveryOutletInfo.visibility = View.GONE
                 }
@@ -313,8 +320,7 @@ class ListInProgressAdapter2(rowItems: ArrayList<RowItem>?, bluetoothListener: B
                 textDriverMemo.text = rowPos.selfMemo
             }
 
-
-            //  2019.04 Outlet
+            //  Outlet
             if (rowPos.outlet_company == "7E" || rowPos.outlet_company == "FL") {
                 if (rowPos.type == BarcodeType.TYPE_PICKUP) {
                     textPickupState.text =
@@ -326,7 +332,6 @@ class ListInProgressAdapter2(rowItems: ArrayList<RowItem>?, bluetoothListener: B
                 textPickupState.visibility = View.VISIBLE
                 layoutRequest.visibility = View.GONE
             }
-
 
             //우측 메뉴 아이콘 클릭 이벤트  Quick Menu
             menuIcon.setOnClickListener { v: View ->
@@ -346,6 +351,7 @@ class ListInProgressAdapter2(rowItems: ArrayList<RowItem>?, bluetoothListener: B
                             Uri.parse("http://maps.google.co.in/maps?q=$address")
                         val intent = Intent(Intent.ACTION_VIEW, uri)
                         v.context.startActivity(intent)
+
                     } else if (itemId == R.id.menu_up) {
                         if (0 < groupPosition) {
                             val upItem = rowItem.removeAt(groupPosition)
@@ -357,6 +363,7 @@ class ListInProgressAdapter2(rowItems: ArrayList<RowItem>?, bluetoothListener: B
                                 onMoveUpListener!!.onMoveUp(groupPosition - 1)
                             }
                         }
+
                     } else if (itemId == R.id.menu_down) {
                         if (groupPosition < rowItem.size - 1) {
                             val downItem = rowItem.removeAt(groupPosition)
@@ -372,7 +379,6 @@ class ListInProgressAdapter2(rowItems: ArrayList<RowItem>?, bluetoothListener: B
                     true
                 }
             }
-
         }
         return view!!
     }
@@ -391,6 +397,7 @@ class ListInProgressAdapter2(rowItems: ArrayList<RowItem>?, bluetoothListener: B
                 parent.context.getSystemService(Activity.LAYOUT_INFLATER_SERVICE) as LayoutInflater
             view = layoutInflater.inflate(R.layout.item_list_child, null)
         }
+
         view?.let {
             val layoutFailed =
                 view.findViewById<LinearLayout>(R.id.layout_list_item_child_failed)
@@ -462,6 +469,7 @@ class ListInProgressAdapter2(rowItems: ArrayList<RowItem>?, bluetoothListener: B
             val requester = rowItem[groupPosition].name
             val route = rowItem[groupPosition].route
             val qty = rowItem[groupPosition].qty
+
             if (child.secretNoType == "T") {    // Qtalk 안심번호 타입 T - Qnumber 사용
                 layoutTelephone.visibility = View.GONE
                 layoutMobile.visibility = View.GONE
@@ -482,6 +490,7 @@ class ListInProgressAdapter2(rowItems: ArrayList<RowItem>?, bluetoothListener: B
                 } else {
                     layoutTelephone.visibility = View.GONE
                 }
+
                 if (child.hp != null && child.hp!!.length > 5) {
                     layoutMobile.visibility = View.VISIBLE
                     val content = SpannableString(child.hp)
@@ -491,11 +500,13 @@ class ListInProgressAdapter2(rowItems: ArrayList<RowItem>?, bluetoothListener: B
                     layoutMobile.visibility = View.GONE
                 }
             }
+
             if (Preferences.authNo.contains("137")) {
                 imgLive10.visibility = View.VISIBLE
             } else {
                 imgLive10.visibility = View.GONE
             }
+
             try {
                 val orderType = rowItem[groupPosition].order_type_etc
                 //    Log.e(TAG, "Order Type ETC : " + rowItem.get(groupPosition).getOrder_type_etc());
@@ -509,7 +520,7 @@ class ListInProgressAdapter2(rowItems: ArrayList<RowItem>?, bluetoothListener: B
                 imgQpost.visibility = View.GONE
             }
 
-            // 2018.12.26  Delivery / Pickup  Fail Reason
+            //  Delivery / Pickup  Fail Reason
             if (child.statReason != null && child.statReason!!.isNotEmpty()) {
                 val reasonText: String?
                 when (child.stat) {
@@ -531,8 +542,6 @@ class ListInProgressAdapter2(rowItems: ArrayList<RowItem>?, bluetoothListener: B
                 layoutFailed.visibility = View.GONE
             }
 
-
-            //
             if (rowItem[groupPosition].type == BarcodeType.TYPE_DELIVERY) {
                 textParcelAmountTitle.text =
                     parent.context.resources.getString(R.string.text_parcel_amount)
@@ -543,12 +552,14 @@ class ListInProgressAdapter2(rowItems: ArrayList<RowItem>?, bluetoothListener: B
                     parcelAmount = "0.00"
                 }
                 textParcelAmount.text = parcelAmount
+
                 var parcelAmountUnit = rowItem[groupPosition].currency
                 if (parcelAmountUnit == null) {
                     parcelAmountUnit = "SGD"
                 } else if (parcelAmountUnit == "" || parcelAmountUnit.lowercase(Locale.getDefault()) == "null") {
                     parcelAmountUnit = "SGD"
                 }
+
                 val currencyUnit: String = when (parcelAmountUnit) {
                     "SGD" -> {
                         "S$"
@@ -560,8 +571,10 @@ class ListInProgressAdapter2(rowItems: ArrayList<RowItem>?, bluetoothListener: B
                         parcelAmountUnit
                     }
                 }
+
                 textParcelAmountUnit.visibility = View.VISIBLE
                 textParcelAmountUnit.text = currencyUnit
+
                 if (rowItem[groupPosition].route == "QXQ") {
                     layoutChildDeliveryButtons.visibility = View.GONE
                     layoutQuickButtons.visibility = View.VISIBLE
@@ -569,15 +582,16 @@ class ListInProgressAdapter2(rowItems: ArrayList<RowItem>?, bluetoothListener: B
                     layoutChildDeliveryButtons.visibility = View.VISIBLE
                     layoutQuickButtons.visibility = View.GONE
                 }
+
                 layoutPickupButtons.visibility = View.GONE
                 layoutCnrButtons.visibility = View.GONE
                 layoutOutletPickup.visibility = View.GONE
+
                 if (rowItem[groupPosition].outlet_company == "7E" || rowItem[groupPosition].outlet_company == "FL") {
                     layoutParcelAmount.visibility = View.GONE
-                    // k. 2018.10.24   VisitLog 시 화물이 DPC3-Out 처리됨... 7E 화물은 DPC2-Out 까지만 처리되야 함..
+                    //  VisitLog 시 화물이 DPC3-Out 처리됨... 7E 화물은 DPC2-Out 까지만 처리되야 함..
                     btnDeliveryFailed.visibility = View.GONE
 
-                    // 2019.04
                     layoutTelephone.visibility = View.GONE
                     layoutMobile.visibility = View.GONE
                     imgSms.visibility = View.GONE
@@ -587,7 +601,9 @@ class ListInProgressAdapter2(rowItems: ArrayList<RowItem>?, bluetoothListener: B
                     layoutParcelAmount.visibility = View.VISIBLE
                     btnDeliveryFailed.visibility = View.VISIBLE
                 }
+
                 layoutButtons2.visibility = View.GONE
+
             } else {            // Pickup
                 textParcelAmountTitle.text =
                     parent.context.resources.getString(R.string.text_name)
@@ -599,11 +615,14 @@ class ListInProgressAdapter2(rowItems: ArrayList<RowItem>?, bluetoothListener: B
                 //tracking_no 에 따라서 layout 선택하기  by 2016-09-23
                 val isNotCNR = isPickupNotCNR(trackingNo)
 
-                /* //TEST.  CNR
-                isNotCNR = true;*/if (isNotCNR) { // true 이면 cnr      // C&R  주문건
+                //TEST.  CNR
+                /* isNotCNR = true;*/
+
+                if (isNotCNR) { // true 이면 cnr      // C&R  주문건
                     layoutPickupButtons.visibility = View.GONE
                     layoutCnrButtons.visibility = View.VISIBLE
                     layoutOutletPickup.visibility = View.GONE
+
                 } else if (rowItem[groupPosition].outlet_company == "7E" || rowItem[groupPosition].outlet_company == "FL") {       // 7E, FL
                     layoutPickupButtons.visibility = View.GONE
                     layoutCnrButtons.visibility = View.GONE
@@ -613,11 +632,13 @@ class ListInProgressAdapter2(rowItems: ArrayList<RowItem>?, bluetoothListener: B
                     imgSms.visibility = View.GONE
                     imgLive10.visibility = View.GONE
                     imgQpost.visibility = View.GONE
+
                 } else {    //  일반 Pickup
                     layoutPickupButtons.visibility = View.VISIBLE
                     layoutCnrButtons.visibility = View.GONE
                     layoutOutletPickup.visibility = View.GONE
                 }
+
                 if ("SG" == Preferences.userNation) {
                     // Trip
                     if (rowItem[groupPosition].isPrimaryKey) {
@@ -629,6 +650,7 @@ class ListInProgressAdapter2(rowItems: ArrayList<RowItem>?, bluetoothListener: B
                     layoutButtons2.visibility = View.GONE
                 }
             }
+
             if ("SG" == Preferences.userNation) {
                 btnDetailButton.visibility = View.VISIBLE
                 btnDetailButton.setOnClickListener { v: View ->
@@ -649,16 +671,19 @@ class ListInProgressAdapter2(rowItems: ArrayList<RowItem>?, bluetoothListener: B
             } else {
                 btnDetailButton.visibility = View.GONE
             }
+
             textTelephoneNumber.setOnClickListener { v: View ->
                 val callUri = Uri.parse("tel:" + child.tel)
                 val intent = Intent(Intent.ACTION_DIAL, callUri)
                 v.context.startActivity(intent)
             }
+
             textMobileNumber.setOnClickListener { v: View ->
                 val callUri = Uri.parse("tel:" + child.hp)
                 val intent = Intent(Intent.ACTION_DIAL, callUri)
                 v.context.startActivity(intent)
             }
+
             imgSms.setOnClickListener { v: View ->
                 try {
                     val smsBody = String.format(
@@ -677,6 +702,7 @@ class ListInProgressAdapter2(rowItems: ArrayList<RowItem>?, bluetoothListener: B
                     ).show()
                 }
             }
+
             imgLive10.setOnClickListener { v: View ->
                 val pQlpsCustNo = groupItem.custNo
                 val pDeliveryType = groupItem.type //P,D
@@ -689,6 +715,7 @@ class ListInProgressAdapter2(rowItems: ArrayList<RowItem>?, bluetoothListener: B
                     pQlpsCustNo!!, pDeliveryType, pOrderType, pTrackingNo, pSellerId!!
                 )
             }
+
             imgQpost.setOnClickListener { view: View ->
                 val intent = Intent(
                     view.context,
@@ -697,9 +724,9 @@ class ListInProgressAdapter2(rowItems: ArrayList<RowItem>?, bluetoothListener: B
                 intent.putExtra("tracking_no", trackingNo)
                 view.context.startActivity(intent)
             }
+
             imgDriverMemo.setOnClickListener { v: View ->
-                val alert =
-                    AlertDialog.Builder(v.context)
+                val alert = AlertDialog.Builder(v.context)
                 val msg = groupItem.selfMemo
                 val shipping = groupItem.shipping
                 alert.setTitle(v.context.resources.getString(R.string.text_driver_memo1))
@@ -728,6 +755,7 @@ class ListInProgressAdapter2(rowItems: ArrayList<RowItem>?, bluetoothListener: B
                     ) { _: DialogInterface?, _: Int -> }
                 alert.show()
             }
+
             btnDelivered.setOnClickListener { v: View ->
                 if (route.contains("7E") || route.contains("FL")) {
                     val intent = Intent(v.context, DeliveryDoneActivity::class.java)
@@ -740,6 +768,7 @@ class ListInProgressAdapter2(rowItems: ArrayList<RowItem>?, bluetoothListener: B
                     v.context.startActivity(intent)
                 }
             }
+
             btnDeliveryFailed.setOnClickListener { v: View ->
                 val intent = Intent(
                     v.context,
@@ -750,6 +779,7 @@ class ListInProgressAdapter2(rowItems: ArrayList<RowItem>?, bluetoothListener: B
                 intent.putExtra("senderName", sender)
                 v.context.startActivity(intent)
             }
+
             btnPickupScan.setOnClickListener { v: View ->
                 val intent = Intent(v.context, CaptureActivity1::class.java)
                 intent.putExtra(
@@ -761,6 +791,7 @@ class ListInProgressAdapter2(rowItems: ArrayList<RowItem>?, bluetoothListener: B
                 intent.putExtra("applicant", requester)
                 v.context.startActivity(intent)
             }
+
             btnPickupZeroQty.setOnClickListener { v: View ->
                 val intent = Intent(
                     v.context,
@@ -774,6 +805,7 @@ class ListInProgressAdapter2(rowItems: ArrayList<RowItem>?, bluetoothListener: B
                 intent.putExtra("applicant", requester)
                 v.context.startActivity(intent)
             }
+
             btnPickupVisitLog.setOnClickListener { v: View ->
                 val intent = Intent(v.context, PickupFailedActivity::class.java)
                 intent.putExtra("type", BarcodeType.TYPE_PICKUP)
@@ -799,18 +831,20 @@ class ListInProgressAdapter2(rowItems: ArrayList<RowItem>?, bluetoothListener: B
                 intent.putExtra("route", route)
                 view.context.startActivity(intent)
             }
-            btnQuickDelivered.setOnClickListener { v: View ->
+
+            btnQuickDelivered.setOnClickListener {
                 val intent = Intent(
-                    v.context,
+                    it.context,
                     QuickReturnedActivity::class.java
                 )
                 intent.putExtra(
                     "title",
-                    v.context.resources.getString(R.string.text_signature)
+                    it.context.resources.getString(R.string.text_signature)
                 )
                 intent.putExtra("waybillNo", trackingNo)
-                v.context.startActivity(intent)
+                it.context.startActivity(intent)
             }
+
             btnQuickFailed.setOnClickListener { v: View ->
                 val intent = Intent(
                     v.context,
@@ -823,6 +857,7 @@ class ListInProgressAdapter2(rowItems: ArrayList<RowItem>?, bluetoothListener: B
                 intent.putExtra("waybillNo", trackingNo)
                 v.context.startActivity(intent)
             }
+
             btnCnrFailed.setOnClickListener { v: View ->
                 val intent = Intent(v.context, PickupFailedActivity::class.java)
                 intent.putExtra("type", BarcodeType.TYPE_CNR)
@@ -831,6 +866,7 @@ class ListInProgressAdapter2(rowItems: ArrayList<RowItem>?, bluetoothListener: B
                 intent.putExtra("pickupNo", trackingNo)
                 v.context.startActivity(intent)
             }
+
             btnChildCnrPrint.setOnClickListener {
                 DataUtil.logEvent("button_click", "ListActivity", "Print_CNR")
                 bluetoothListener.isConnectPortablePrint(trackingNo)
@@ -863,28 +899,31 @@ class ListInProgressAdapter2(rowItems: ArrayList<RowItem>?, bluetoothListener: B
 
     //Search
     fun filterData(query: String) {
-        var query = query
+
         try {
-            query = query.uppercase(Locale.getDefault())
+            val queryUpper = query.uppercase(Locale.getDefault())
             rowItem.clear()
-            if (query.isEmpty()) {
+
+            if (queryUpper.isEmpty()) {
                 rowItem.addAll(originalRowItem)
+
             } else {
                 val newList = ArrayList<RowItem>()
                 for (rowItem in originalRowItem) {
                     //이름 or 송장번호 조회
-                    if (rowItem.name.uppercase(Locale.getDefault())
-                            .contains(query) || rowItem.shipping.uppercase(Locale.getDefault())
-                            .contains(query)
+                    if (rowItem.name.uppercase(Locale.getDefault()).contains(queryUpper)
+                        || rowItem.shipping.uppercase(Locale.getDefault()).contains(queryUpper)
                     ) {
                         newList.add(rowItem)
                     }
                 }
+
                 if (0 < newList.size) {
                     rowItem.addAll(newList)
                 }
             }
             notifyDataSetChanged()
+
         } catch (e: Exception) {
             Log.e(TAG, "filterData  Exception  $e")
         }

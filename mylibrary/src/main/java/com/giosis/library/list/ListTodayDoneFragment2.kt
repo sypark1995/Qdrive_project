@@ -27,6 +27,7 @@ import io.reactivex.rxjava3.schedulers.Schedulers
 
 class ListTodayDoneFragment2(var bluetoothListener: BluetoothListener) : Fragment(),
     SearchView.OnQueryTextListener, SearchView.OnCloseListener {
+
     var TAG = "ListTodayDoneFragment"
     private var searchViewList: SearchView? = null
     private lateinit var editListSearchView: EditText
@@ -62,7 +63,7 @@ class ListTodayDoneFragment2(var bluetoothListener: BluetoothListener) : Fragmen
         savedInstanceState: Bundle?
     ): View? {
         val view = inflater.inflate(R.layout.fragment_inprogress, container, false)
-        searchViewList = view.findViewById(R.id.searchview_list)
+        searchViewList = view.findViewById(R.id.search_view)
         layoutListSort = view.findViewById(R.id.layout_list_sort)
         exlistCardList = view.findViewById(R.id.exlist_card_list)
         return view

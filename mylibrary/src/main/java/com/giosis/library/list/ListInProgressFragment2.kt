@@ -33,6 +33,7 @@ import java.util.*
 class ListInProgressFragment2(var bluetoothListener: BluetoothListener) : Fragment(),
     SearchView.OnQueryTextListener, SearchView.OnCloseListener,
     ListInProgressAdapter2.OnMoveUpListener {
+
     var TAG = "ListInProgressFragment"
     private var selectedSort: String = ""
     private var check = 0
@@ -44,6 +45,7 @@ class ListInProgressFragment2(var bluetoothListener: BluetoothListener) : Fragme
         "rcv_nm asc",
         "rcv_nm desc"
     )
+
     private var adapter: ListInProgressAdapter2? = null
     private var rowItems = ArrayList<RowItem>()
 
@@ -58,7 +60,7 @@ class ListInProgressFragment2(var bluetoothListener: BluetoothListener) : Fragme
     private var layoutListPickupSortCondition: ConstraintLayout? = null
 
     private var progressInProgress: ProgressBar? = null
-    private var searchViewList: SearchView? = null
+    private var searchView: SearchView? = null
     private lateinit var editListSearchView: EditText
     private var layoutListSort: FrameLayout? = null
     private var spinnerListSort: NDSpinner? = null
@@ -109,15 +111,17 @@ class ListInProgressFragment2(var bluetoothListener: BluetoothListener) : Fragme
         container: ViewGroup?,
         savedInstanceState: Bundle?
     ): View? {
+
         inputMethodManager =
             requireActivity().getSystemService(Context.INPUT_METHOD_SERVICE) as InputMethodManager
         val view = inflater.inflate(R.layout.fragment_inprogress, container, false)
+
         layoutListPickupSortCondition =
             view.findViewById(R.id.layout_list_pickup_sort_condition)
         val btnListPickupSortRequest = view.findViewById<Button>(R.id.btn_list_pickup_sort_request)
         val btnListPickupSortTrip = view.findViewById<Button>(R.id.btn_list_pickup_sort_trip)
         progressInProgress = view.findViewById(R.id.progress_in_progress)
-        searchViewList = view.findViewById(R.id.searchview_list)
+        searchView = view.findViewById(R.id.search_view)
         layoutListSort = view.findViewById(R.id.layout_list_sort)
         spinnerListSort = view.findViewById(R.id.spinner_list_sort)
         exlistCardList = view.findViewById(R.id.exlist_card_list)
@@ -153,17 +157,19 @@ class ListInProgressFragment2(var bluetoothListener: BluetoothListener) : Fragme
         // Search
         val searchManager =
             requireActivity().getSystemService(Context.SEARCH_SERVICE) as SearchManager
-        searchViewList!!.setSearchableInfo(searchManager.getSearchableInfo(requireActivity().componentName))
-        searchViewList!!.queryHint = resources.getString(R.string.text_search)
-        searchViewList!!.setOnQueryTextListener(this)
-        searchViewList!!.setOnCloseListener(this)
-        val id = searchViewList!!.resources.getIdentifier("android:id/search_src_text", null, null)
-        editListSearchView = searchViewList!!.findViewById(id)
+        searchView!!.setSearchableInfo(searchManager.getSearchableInfo(requireActivity().componentName))
+        searchView!!.queryHint = resources.getString(R.string.text_search)
+        searchView!!.setOnQueryTextListener(this)
+        searchView!!.setOnCloseListener(this)
+
+        val id = searchView!!.resources.getIdentifier("android:id/search_src_text", null, null)
+        editListSearchView = searchView!!.findViewById(id)
         editListSearchView.setTextColor(Color.parseColor("#8F8F8F"))
         editListSearchView.setTextSize(
             TypedValue.COMPLEX_UNIT_PX,
             resources.getDimension(R.dimen.text_size_26px)
         )
+
         editListSearchView.setHintTextColor(Color.parseColor("#8F8F8F"))
         layoutListSort!!.setOnClickListener { spinnerListSort!!.performClick() }
         val sortArrayList: ArrayList<String> = ArrayList<String>(
@@ -211,10 +217,12 @@ class ListInProgressFragment2(var bluetoothListener: BluetoothListener) : Fragme
         exlistCardList!!.setOnGroupCollapseListener {
             isOpen = false
         }
+
         exlistCardList!!.setOnGroupExpandListener { groupPosition: Int ->
             isOpen = true
             DataUtil.inProgressListPosition = groupPosition
             inputMethodManager!!.hideSoftInputFromWindow(editListSearchView.windowToken, 0)
+
             for (i in 0 until adapter!!.groupCount) {
                 if (i != groupPosition) exlistCardList!!.collapseGroup(i)
             }

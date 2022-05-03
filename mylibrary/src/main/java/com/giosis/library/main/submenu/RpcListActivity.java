@@ -88,7 +88,7 @@ public class RpcListActivity extends CommonActivity implements SearchView.OnQuer
         text_top_title = findViewById(R.id.text_top_title);
 
 
-        searchview_list = findViewById(R.id.searchview_list);
+        searchview_list = findViewById(R.id.search_view);
         layout_list_sort = findViewById(R.id.layout_list_sort);
         spinner_list_sort = findViewById(R.id.spinner_list_sort);
         exlist_card_list = findViewById(R.id.exlist_card_list);

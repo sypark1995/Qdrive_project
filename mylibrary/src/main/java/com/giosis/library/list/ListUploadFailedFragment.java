@@ -126,7 +126,7 @@ public class ListUploadFailedFragment extends Fragment
 
         View view = inflater.inflate(R.layout.fragment_inprogress, container, false);
 
-        searchview_list = view.findViewById(R.id.searchview_list);
+        searchview_list = view.findViewById(R.id.search_view);
         layout_list_sort = view.findViewById(R.id.layout_list_sort);
         spinner_list_sort = view.findViewById(R.id.spinner_list_sort);
         exlist_card_list = view.findViewById(R.id.exlist_card_list);

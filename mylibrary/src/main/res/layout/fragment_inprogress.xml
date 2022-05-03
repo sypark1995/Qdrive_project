@@ -46,7 +46,7 @@
                 android:background="@drawable/qdrive_btn_icon_expand" />
 
             <SearchView
-                android:id="@+id/searchview_list"
+                android:id="@+id/search_view"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_gravity="center_vertical"

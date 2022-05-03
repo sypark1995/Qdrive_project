@@ -28,6 +28,7 @@ import java.util.*
  */
 class ListUploadFailedFragment2 : Fragment(), SearchView.OnQueryTextListener,
     SearchView.OnCloseListener, ListUploadFailedAdapter2.AdapterInterface {
+
     var TAG = "List_UploadFailedFragment"
     private var gpsTrackerManager: GPSTrackerManager? = null
     private var gpsEnable = false
@@ -91,7 +92,8 @@ class ListUploadFailedFragment2 : Fragment(), SearchView.OnQueryTextListener,
         savedInstanceState: Bundle?
     ): View? {
         val view = inflater.inflate(R.layout.fragment_inprogress, container, false)
-        searchViewList = view.findViewById(R.id.searchview_list)
+
+        searchViewList = view.findViewById(R.id.search_view)
         layoutListSort = view.findViewById(R.id.layout_list_sort)
         spinnerListSort = view.findViewById(R.id.spinner_list_sort)
         exListCardList = view.findViewById(R.id.exlist_card_list)

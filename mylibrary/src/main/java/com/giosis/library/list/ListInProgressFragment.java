@@ -26,10 +26,10 @@ import androidx.fragment.app.Fragment;
 
 import com.giosis.library.R;
 import com.giosis.library.bluetooth.BluetoothListener;
+import com.giosis.library.database.DatabaseHelper;
 import com.giosis.library.main.PickupAssignResult;
 import com.giosis.library.server.RetrofitClient;
 import com.giosis.library.util.DataUtil;
-import com.giosis.library.database.DatabaseHelper;
 import com.giosis.library.util.NDSpinner;
 import com.giosis.library.util.PermissionActivity;
 import com.giosis.library.util.PermissionChecker;
@@ -160,7 +160,7 @@ public class ListInProgressFragment extends Fragment
         btn_list_pickup_sort_trip = view.findViewById(R.id.btn_list_pickup_sort_trip);
         progress_in_progress = view.findViewById(R.id.progress_in_progress);
 
-        searchview_list = view.findViewById(R.id.searchview_list);
+        searchview_list = view.findViewById(R.id.search_view);
         layout_list_sort = view.findViewById(R.id.layout_list_sort);
         spinner_list_sort = view.findViewById(R.id.spinner_list_sort);
 
@@ -237,7 +237,6 @@ public class ListInProgressFragment extends Fragment
         try {
             spinner_list_sort.setSelection(Preferences.INSTANCE.getSortIndex());
             selectedSort = orderbyQuery[Preferences.INSTANCE.getSortIndex()];
-
         } catch (Exception e) {
             Log.e("Exception", TAG + "  Spinner Exception : " + e.toString());
             Preferences.INSTANCE.setSortIndex(0);
@@ -283,7 +282,7 @@ public class ListInProgressFragment extends Fragment
     public void onResume() {
         super.onResume();
 
-        // NOTIFICATION.  2020.07
+        // NOTIFICATION.
         if ("SG".equals(Preferences.INSTANCE.getUserNation()) && pickupDriverYn.equals("Y")) {
             layout_list_pickup_sort_condition.setVisibility(View.VISIBLE);
 
