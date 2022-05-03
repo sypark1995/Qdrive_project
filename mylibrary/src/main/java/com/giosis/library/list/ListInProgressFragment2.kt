@@ -16,6 +16,7 @@ import android.view.inputmethod.InputMethodManager
 import android.widget.*
 import androidx.constraintlayout.widget.ConstraintLayout
 import androidx.fragment.app.Fragment
+import androidx.recyclerview.widget.RecyclerView
 import com.giosis.library.R
 import com.giosis.library.bluetooth.BluetoothListener
 import com.giosis.library.database.DatabaseHelper
@@ -32,7 +33,7 @@ import java.util.*
 
 class ListInProgressFragment2(var bluetoothListener: BluetoothListener) : Fragment(),
     SearchView.OnQueryTextListener, SearchView.OnCloseListener,
-    ListInProgressAdapter2.OnMoveUpListener {
+    ListInProgressAdapter3.OnMoveUpListener {
 
     var TAG = "ListInProgressFragment"
     private var selectedSort: String = ""
@@ -46,7 +47,7 @@ class ListInProgressFragment2(var bluetoothListener: BluetoothListener) : Fragme
         "rcv_nm desc"
     )
 
-    private var adapter: ListInProgressAdapter2? = null
+    private lateinit var adapter: ListInProgressAdapter3
     private var rowItems = ArrayList<RowItem>()
 
     // 2020.07  ByTrip 정렬기능 추가
@@ -64,7 +65,7 @@ class ListInProgressFragment2(var bluetoothListener: BluetoothListener) : Fragme
     private lateinit var editListSearchView: EditText
     private var layoutListSort: FrameLayout? = null
     private var spinnerListSort: NDSpinner? = null
-    private var exlistCardList: ExpandableListView? = null
+    private var exlistCardList: RecyclerView? = null
 
     interface OnInProgressFragmentListener {
         fun onCountRefresh(count: Int)
@@ -87,7 +88,7 @@ class ListInProgressFragment2(var bluetoothListener: BluetoothListener) : Fragme
 
     override fun onMoveUp(pos: Int) {
         if (isOpen) {
-            exlistCardList!!.expandGroup(pos)
+//            exlistCardList!!.expandGroup(pos)
         }
     }
 
@@ -214,19 +215,19 @@ class ListInProgressFragment2(var bluetoothListener: BluetoothListener) : Fragme
 
             override fun onNothingSelected(parent: AdapterView<*>?) {}
         }
-        exlistCardList!!.setOnGroupCollapseListener {
-            isOpen = false
-        }
+//        exlistCardList!!.setOnGroupCollapseListener {
+//            isOpen = false
+//        }
 
-        exlistCardList!!.setOnGroupExpandListener { groupPosition: Int ->
-            isOpen = true
-            DataUtil.inProgressListPosition = groupPosition
-            inputMethodManager!!.hideSoftInputFromWindow(editListSearchView.windowToken, 0)
-
-            for (i in 0 until adapter!!.groupCount) {
-                if (i != groupPosition) exlistCardList!!.collapseGroup(i)
-            }
-        }
+//        exlistCardList!!.setOnGroupExpandListener { groupPosition: Int ->
+//            isOpen = true
+//            DataUtil.inProgressListPosition = groupPosition
+//            inputMethodManager!!.hideSoftInputFromWindow(editListSearchView.windowToken, 0)
+//
+//            for (i in 0 until adapter!!.groupCount) {
+//                if (i != groupPosition) exlistCardList!!.collapseGroup(i)
+//            }
+//        }
     }
 
     override fun onResume() {
@@ -264,30 +265,32 @@ class ListInProgressFragment2(var bluetoothListener: BluetoothListener) : Fragme
             Log.e(TAG, "getSortList  Finish")
         }
 
-        adapter = ListInProgressAdapter2(rowItems, bluetoothListener)
-        adapter!!.setOnMoveUpListener(this)
-        exlistCardList!!.setAdapter(adapter)
-        adapter!!.setSorting(rowItems)
+        adapter = ListInProgressAdapter3(bluetoothListener)
+        adapter.itemList = rowItems
 
-        val groupCount = adapter!!.groupCount
+        exlistCardList!!.adapter = adapter
+        adapter.setOnMoveUpListener(this)
+        adapter.setSorting(rowItems)
 
-        for (i in 0 until groupCount) {
-            exlistCardList!!.collapseGroup(i)
-        }
+//        val groupCount = adapter!!.groupCount
 
-        try {
-            if (groupCount <= DataUtil.inProgressListPosition) {
-                DataUtil.inProgressListPosition = 0
-            }
-            exlistCardList!!.setSelectedGroup(DataUtil.inProgressListPosition)
-            if (DataUtil.inProgressListPosition != 0) {
-                exlistCardList!!.expandGroup(DataUtil.inProgressListPosition)
-            }
-        } catch (e: java.lang.Exception) {
-            Log.e("Exception", "$TAG  setSelectedGroup Exception : $e")
-        }
+//        for (i in 0 until groupCount) {
+//            exlistCardList!!.collapseGroup(i)
+//        }
 
-        fragmentListener!!.onCountRefresh(groupCount)
+//        try {
+//            if (groupCount <= DataUtil.inProgressListPosition) {
+//                DataUtil.inProgressListPosition = 0
+//            }
+////            exlistCardList!!.setSelectedGroup(DataUtil.inProgressListPosition)
+////            if (DataUtil.inProgressListPosition != 0) {
+////                exlistCardList!!.expandGroup(DataUtil.inProgressListPosition)
+////            }
+//        } catch (e: java.lang.Exception) {
+//            Log.e("Exception", "$TAG  setSelectedGroup Exception : $e")
+//        }
+//
+//        fragmentListener!!.onCountRefresh(groupCount)
 
         // LIST 들어갈 때 TODAY DONE Count 표시하기 위함.
         // ViewPage 특성상 TODAY DONE 페이지는 처음에 호출되지 않아서 0 으로 표시되어있음.
@@ -344,23 +347,17 @@ class ListInProgressFragment2(var bluetoothListener: BluetoothListener) : Fragme
     }
 
     override fun onClose(): Boolean {
-        if (adapter != null) {
-            adapter!!.filterData("")
-        }
+        adapter.filterData("")
         return false
     }
 
     override fun onQueryTextSubmit(query: String): Boolean {
-        if (adapter != null) {
-            adapter!!.filterData(query)
-        }
+        adapter.filterData(query)
         return false
     }
 
     override fun onQueryTextChange(query: String): Boolean {
-        if (adapter != null) {
-            adapter!!.filterData(query)
-        }
+        adapter.filterData(query)
         return false
     }
 
