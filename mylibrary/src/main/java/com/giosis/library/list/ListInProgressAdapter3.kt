@@ -40,8 +40,17 @@ class ListInProgressAdapter3(bluetoothListener: BluetoothListener) :
 
     private val TAG = "ListInProgressAdapter"
     private var onMoveUpListener: OnMoveUpListener? = null
-    lateinit var bluetoothListener: BluetoothListener
+    var bluetoothListener: BluetoothListener
     private var expandedPos = -1
+    private var listener: OnItemClickListener? = null
+
+    interface OnItemClickListener {
+        fun selectItem(v: View, selectedPos: Int)
+    }
+
+    fun setOnItemClickListener(listener: OnItemClickListener) {
+        this.listener = listener
+    }
 
     var itemList = ArrayList<RowItem>()
         set(value) {
@@ -49,7 +58,7 @@ class ListInProgressAdapter3(bluetoothListener: BluetoothListener) :
             itemList.addAll(value)
         }
 
-    private val originalRowItem = ArrayList<RowItem>()
+    private var originalRowItem = ArrayList<RowItem>()
 
     fun setOnMoveUpListener(listener: OnMoveUpListener?) {
         onMoveUpListener = listener
@@ -456,6 +465,8 @@ class ListInProgressAdapter3(bluetoothListener: BluetoothListener) :
                 data.isClicked = !data.isClicked
                 expandedPos = adapterPosition
                 notifyDataSetChanged()
+                Log.e("!@#@!$!@",it.height.toString())
+                listener?.selectItem(it,expandedPos)
             }
 
             try {
@@ -900,5 +911,12 @@ class ListInProgressAdapter3(bluetoothListener: BluetoothListener) :
         originalRowItem.clear()
         originalRowItem.addAll(sortedItems)
         notifyDataSetChanged()
+    }
+
+    init {
+        itemList.addAll(itemList)
+        originalRowItem = ArrayList()
+        originalRowItem.addAll(itemList)
+        this.bluetoothListener = bluetoothListener
     }
 }

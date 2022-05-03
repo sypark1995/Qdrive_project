@@ -47,7 +47,10 @@ class ListInProgressFragment2(var bluetoothListener: BluetoothListener) : Fragme
         "rcv_nm desc"
     )
 
-    private lateinit var adapter: ListInProgressAdapter3
+    private val adapter by lazy {
+        ListInProgressAdapter3(bluetoothListener)
+    }
+
     private var rowItems = ArrayList<RowItem>()
 
     // 2020.07  ByTrip 정렬기능 추가
@@ -215,6 +218,13 @@ class ListInProgressFragment2(var bluetoothListener: BluetoothListener) : Fragme
 
             override fun onNothingSelected(parent: AdapterView<*>?) {}
         }
+
+        adapter.setOnItemClickListener(object :ListInProgressAdapter3.OnItemClickListener{
+            override fun selectItem(v: View, selectedPos: Int) {
+                exlistCardList!!.scrollToPosition(selectedPos)
+            }
+
+        })
 //        exlistCardList!!.setOnGroupCollapseListener {
 //            isOpen = false
 //        }
@@ -265,7 +275,6 @@ class ListInProgressFragment2(var bluetoothListener: BluetoothListener) : Fragme
             Log.e(TAG, "getSortList  Finish")
         }
 
-        adapter = ListInProgressAdapter3(bluetoothListener)
         adapter.itemList = rowItems
 
         exlistCardList!!.adapter = adapter
