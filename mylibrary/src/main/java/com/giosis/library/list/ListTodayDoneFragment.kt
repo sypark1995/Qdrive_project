@@ -14,6 +14,7 @@ import android.view.ViewGroup
 import android.view.inputmethod.InputMethodManager
 import android.widget.*
 import androidx.fragment.app.Fragment
+import androidx.recyclerview.widget.RecyclerView
 import com.giosis.library.R
 import com.giosis.library.bluetooth.BluetoothListener
 import com.giosis.library.main.PickupAssignResult
@@ -25,18 +26,20 @@ import com.google.gson.reflect.TypeToken
 import io.reactivex.rxjava3.android.schedulers.AndroidSchedulers
 import io.reactivex.rxjava3.schedulers.Schedulers
 
-class ListTodayDoneFragment2(var bluetoothListener: BluetoothListener) : Fragment(),
+class ListTodayDoneFragment(var bluetoothListener: BluetoothListener) : Fragment(),
     SearchView.OnQueryTextListener, SearchView.OnCloseListener {
 
     var TAG = "ListTodayDoneFragment"
     private var searchViewList: SearchView? = null
     private lateinit var editListSearchView: EditText
     private var layoutListSort: FrameLayout? = null
-    private var exlistCardList: ExpandableListView? = null
+    private var exlistCardList: RecyclerView? = null
     private var mCountCallback: OnTodayDoneCountListener? = null
     private var rowItems = ArrayList<RowItem>()
     private var childItems = ArrayList<ChildItem>()
-    private lateinit var adapter: ListTodayDoneAdapter2
+    private val adapter by lazy {
+        ListTodayDoneAdapter(bluetoothListener)
+    }
 
     //리스트 카운트를 갱신하기 위한 인터페이스
     interface OnTodayDoneCountListener {
@@ -91,14 +94,6 @@ class ListTodayDoneFragment2(var bluetoothListener: BluetoothListener) : Fragmen
         )
         editListSearchView.setHintTextColor(Color.parseColor("#8F8F8F"))
         layoutListSort!!.visibility = View.GONE
-        exlistCardList!!.setOnGroupExpandListener { groupPosition: Int ->
-            val groupCount = adapter.groupCount
-
-            // 한 그룹을 클릭하면 나머지 그룹들은 닫힌다.
-            for (i in 0 until groupCount) {
-                if (i != groupPosition) exlistCardList!!.collapseGroup(i)
-            }
-        }
     }
 
     override fun onResume() {
@@ -144,7 +139,7 @@ class ListTodayDoneFragment2(var bluetoothListener: BluetoothListener) : Fragmen
                                 child.secretNoType = pickupInfo.secretNoType
                                 child.secretNo = pickupInfo.secretNo
                                 childItems.add(child)
-                                val rowitem = RowItem(
+                                val rowItem = RowItem(
                                     pickupInfo.contrNo,
                                     "D+0",
                                     pickupInfo.invoiceNo,
@@ -166,19 +161,13 @@ class ListTodayDoneFragment2(var bluetoothListener: BluetoothListener) : Fragmen
                                     "",
                                     "", ""
                                 )
-                                rowitem.items = childItems
-                                rowItems.add(rowitem)
+                                rowItem.items = childItems
+                                rowItems.add(rowItem)
                             }
-                            adapter = ListTodayDoneAdapter2(rowItems, bluetoothListener)
-                            exlistCardList!!.setAdapter(adapter)
-                            adapter.setSorting(rowItems)
-                            val groupCount = adapter.groupCount
-                            for (i in 0 until groupCount) {
-                                exlistCardList!!.collapseGroup(i)
-                            }
+                            adapter.rowItem = rowItems
+                            exlistCardList!!.adapter = adapter
 
-                            //카운트 전달
-                            mCountCallback!!.onTodayDoneCountRefresh(groupCount)
+                            adapter.setSorting(rowItems)
                         }
                     }
                 }) {

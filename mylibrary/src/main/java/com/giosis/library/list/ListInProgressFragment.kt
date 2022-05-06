@@ -31,9 +31,8 @@ import io.reactivex.rxjava3.schedulers.Schedulers
 import java.text.SimpleDateFormat
 import java.util.*
 
-class ListInProgressFragment2(var bluetoothListener: BluetoothListener) : Fragment(),
-    SearchView.OnQueryTextListener, SearchView.OnCloseListener,
-    ListInProgressAdapter3.OnMoveUpListener {
+class ListInProgressFragment(var bluetoothListener: BluetoothListener) : Fragment(),
+    SearchView.OnQueryTextListener, SearchView.OnCloseListener {
 
     var TAG = "ListInProgressFragment"
     private var selectedSort: String = ""
@@ -48,7 +47,7 @@ class ListInProgressFragment2(var bluetoothListener: BluetoothListener) : Fragme
     )
 
     private val adapter by lazy {
-        ListInProgressAdapter3(bluetoothListener)
+        ListInProgressAdapter(bluetoothListener)
     }
 
     private var rowItems = ArrayList<RowItem>()
@@ -57,8 +56,6 @@ class ListInProgressFragment2(var bluetoothListener: BluetoothListener) : Fragme
     private var pickupSortCondition = "R" // R : Request(기본) / T : Trip (묶음배송)
     private var tripArrayList = ArrayList<RowItem>()
 
-    //
-    private var isOpen = false
     private var fragmentListener: OnInProgressFragmentListener? = null
     private var inputMethodManager: InputMethodManager? = null
     private var layoutListPickupSortCondition: ConstraintLayout? = null
@@ -86,12 +83,6 @@ class ListInProgressFragment2(var bluetoothListener: BluetoothListener) : Fragme
             fragmentListener = activity as OnInProgressFragmentListener?
         } catch (e: ClassCastException) {
             throw ClassCastException(activity.toString() + " must implement OnCountListener")
-        }
-    }
-
-    override fun onMoveUp(pos: Int) {
-        if (isOpen) {
-//            exlistCardList!!.expandGroup(pos)
         }
     }
 
@@ -219,31 +210,18 @@ class ListInProgressFragment2(var bluetoothListener: BluetoothListener) : Fragme
             override fun onNothingSelected(parent: AdapterView<*>?) {}
         }
 
-        adapter.setOnItemClickListener(object :ListInProgressAdapter3.OnItemClickListener{
-            override fun selectItem(v: View, selectedPos: Int) {
+        adapter.setOnItemClickListener(object : ListInProgressAdapter.OnItemClickListener {
+            override fun selectItem(v: View, selectedPos: Int, height: Int) {
                 exlistCardList!!.scrollToPosition(selectedPos)
             }
 
         })
-//        exlistCardList!!.setOnGroupCollapseListener {
-//            isOpen = false
-//        }
-
-//        exlistCardList!!.setOnGroupExpandListener { groupPosition: Int ->
-//            isOpen = true
-//            DataUtil.inProgressListPosition = groupPosition
-//            inputMethodManager!!.hideSoftInputFromWindow(editListSearchView.windowToken, 0)
-//
-//            for (i in 0 until adapter!!.groupCount) {
-//                if (i != groupPosition) exlistCardList!!.collapseGroup(i)
-//            }
-//        }
     }
 
     override fun onResume() {
         super.onResume()
 
-        // NOTIFICATION.  2020.07
+        // NOTIFICATION
         if (Preferences.userNation == "SG" && Preferences.pickupDriver == "Y") {
             layoutListPickupSortCondition!!.visibility = View.VISIBLE
             if (pickupSortCondition == "T") {
@@ -278,28 +256,7 @@ class ListInProgressFragment2(var bluetoothListener: BluetoothListener) : Fragme
         adapter.itemList = rowItems
 
         exlistCardList!!.adapter = adapter
-        adapter.setOnMoveUpListener(this)
         adapter.setSorting(rowItems)
-
-//        val groupCount = adapter!!.groupCount
-
-//        for (i in 0 until groupCount) {
-//            exlistCardList!!.collapseGroup(i)
-//        }
-
-//        try {
-//            if (groupCount <= DataUtil.inProgressListPosition) {
-//                DataUtil.inProgressListPosition = 0
-//            }
-////            exlistCardList!!.setSelectedGroup(DataUtil.inProgressListPosition)
-////            if (DataUtil.inProgressListPosition != 0) {
-////                exlistCardList!!.expandGroup(DataUtil.inProgressListPosition)
-////            }
-//        } catch (e: java.lang.Exception) {
-//            Log.e("Exception", "$TAG  setSelectedGroup Exception : $e")
-//        }
-//
-//        fragmentListener!!.onCountRefresh(groupCount)
 
         // LIST 들어갈 때 TODAY DONE Count 표시하기 위함.
         // ViewPage 특성상 TODAY DONE 페이지는 처음에 호출되지 않아서 0 으로 표시되어있음.
@@ -334,6 +291,7 @@ class ListInProgressFragment2(var bluetoothListener: BluetoothListener) : Fragme
         } catch (e: java.lang.Exception) {
             Log.e("Exception", "getTodayPickupDone API Exception : $e")
         }
+        fragmentListener!!.onCountRefresh(rowItems.size)
     }
 
     override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
@@ -411,7 +369,7 @@ class ListInProgressFragment2(var bluetoothListener: BluetoothListener) : Fragme
                 } else if (deliveryType == "P") {
                     rcvName = cs.getString(cs.getColumnIndex("req_nm")) //픽업 요청 셀러
                 }
-                val rowitem = RowItem(
+                val rowItem = RowItem(
                     cs.getString(cs.getColumnIndex("contr_no")),
                     "D+$delay",
                     cs.getString(cs.getColumnIndex("invoice_no")),
@@ -435,10 +393,10 @@ class ListInProgressFragment2(var bluetoothListener: BluetoothListener) : Fragme
                     cs.getString(cs.getColumnIndex("currency")),
                     cs.getString(cs.getColumnIndex("high_amount_yn"))
                 )
-                rowitem.zip_code = cs.getString(cs.getColumnIndex("zip_code"))
-                rowitem.state = cs.getString(cs.getColumnIndex("state"))
-                rowitem.city = cs.getString(cs.getColumnIndex("city"))
-                rowitem.street = cs.getString(cs.getColumnIndex("street"))
+                rowItem.zip_code = cs.getString(cs.getColumnIndex("zip_code"))
+                rowItem.state = cs.getString(cs.getColumnIndex("state"))
+                rowItem.city = cs.getString(cs.getColumnIndex("city"))
+                rowItem.street = cs.getString(cs.getColumnIndex("street"))
                 //
 
                 // NOTIFICATION.  2019.10  invoice와 같은지 체크! 같으면 저장 x
@@ -449,19 +407,19 @@ class ListInProgressFragment2(var bluetoothListener: BluetoothListener) : Fragme
                             )
                         ))
                     ) {
-                        rowitem.ref_pickup_no = ""
+                        rowItem.ref_pickup_no = ""
                     } else {
-                        rowitem.ref_pickup_no = cs.getString(cs.getColumnIndex("partner_ref_no"))
+                        rowItem.ref_pickup_no = cs.getString(cs.getColumnIndex("partner_ref_no"))
                     }
                 }
                 if ((deliveryType == "D")) {
-                    rowitem.order_type_etc = cs.getString(cs.getColumnIndex("order_type_etc"))
-                    rowitem.orderType = cs.getString(cs.getColumnIndex("order_type"))
+                    rowItem.order_type_etc = cs.getString(cs.getColumnIndex("order_type_etc"))
+                    rowItem.orderType = cs.getString(cs.getColumnIndex("order_type"))
                 }
                 if ((routeType == "RPC")) {
-                    rowitem.desired_time = cs.getString(cs.getColumnIndex("desired_time"))
+                    rowItem.desired_time = cs.getString(cs.getColumnIndex("desired_time"))
                 }
-                rowitem.items = childItems
+                rowItem.items = childItems
 
                 // k. Outlet Delivery 경우 같은 지점은 하나만 나오도록 수정
                 if (0 < resultArrayList.size) {
@@ -485,10 +443,10 @@ class ListInProgressFragment2(var bluetoothListener: BluetoothListener) : Fragme
                         }
                     }
                     if (!isRegisteredRoute) {
-                        resultArrayList.add(rowitem)
+                        resultArrayList.add(rowItem)
                     }
                 } else {
-                    resultArrayList.add(rowitem)
+                    resultArrayList.add(rowItem)
                 }
             } while (cs.moveToNext())
         }
@@ -537,7 +495,7 @@ class ListInProgressFragment2(var bluetoothListener: BluetoothListener) : Fragme
         return resultArrayList
     }
 
-    // NOTIFICATION.  2020.07 By Trip 정렬기능 추가
+    // NOTIFICATION. By Trip 정렬기능 추가
     // 픽업 우편번호 & 픽업지 핸드폰 번호 동일
     // P 번호로만 묶인 경우는 제외
     // C or R 번호로만 묶이거나, C or R + P 번호와 묶인 경우에만 해당

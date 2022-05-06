@@ -35,17 +35,16 @@ import com.giosis.library.util.Preferences
 import java.util.*
 import kotlin.collections.ArrayList
 
-class ListInProgressAdapter3(bluetoothListener: BluetoothListener) :
+class ListInProgressAdapter(bluetoothListener: BluetoothListener) :
     RecyclerView.Adapter<RecyclerView.ViewHolder>() {
 
     private val TAG = "ListInProgressAdapter"
-    private var onMoveUpListener: OnMoveUpListener? = null
     var bluetoothListener: BluetoothListener
     private var expandedPos = -1
     private var listener: OnItemClickListener? = null
 
     interface OnItemClickListener {
-        fun selectItem(v: View, selectedPos: Int)
+        fun selectItem(v: View, selectedPos: Int, height: Int)
     }
 
     fun setOnItemClickListener(listener: OnItemClickListener) {
@@ -60,17 +59,9 @@ class ListInProgressAdapter3(bluetoothListener: BluetoothListener) :
 
     private var originalRowItem = ArrayList<RowItem>()
 
-    fun setOnMoveUpListener(listener: OnMoveUpListener?) {
-        onMoveUpListener = listener
-    }
-
-    interface OnMoveUpListener {
-        fun onMoveUp(pos: Int)
-    }
-
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): RecyclerView.ViewHolder {
         val view =
-            LayoutInflater.from(parent.context).inflate(R.layout.list_group_item2, parent, false)
+            LayoutInflater.from(parent.context).inflate(R.layout.item_in_progress, parent, false)
         return ViewHolder(view)
     }
 
@@ -79,120 +70,96 @@ class ListInProgressAdapter3(bluetoothListener: BluetoothListener) :
     }
 
     inner class ViewHolder(view: View) : RecyclerView.ViewHolder(view) {
+        private val cardView: LinearLayout =
+            view.findViewById(R.id.layout_list_item_card_view) // background change
+        private val textDday = view.findViewById<TextView>(R.id.text_list_item_d_day)
+        private val imgSecureDelivery: ImageView =
+            view.findViewById(R.id.img_list_item_secure_delivery)
+        private val imgStationIcon: ImageView = view.findViewById(R.id.img_list_item_station_icon)
+        private val textTrackingNo: TextView = view.findViewById(R.id.text_list_item_tracking_no)
+        private val textPickupState: TextView = view.findViewById(R.id.text_list_item_pickup_state)
+        private val textEconomy: TextView = view.findViewById(R.id.text_list_item_economy)
+        private val textHighAmount: TextView = view.findViewById(R.id.text_list_item_high_amount)
+        private val imgItemUpIcon: ImageView = view.findViewById(R.id.img_list_item_up_icon)
+        private val textAddress: TextView = view.findViewById(R.id.text_list_item_address)
+        private val menuIcon: FrameLayout = view.findViewById(R.id.layout_list_item_menu_icon)
+        private val deliveryInfo: LinearLayout =
+            view.findViewById(R.id.layout_list_item_delivery_info)
+        private val textReceiptName: TextView = view.findViewById(R.id.text_list_item_receipt_name)
+        private val deliveryOutletInfo: LinearLayout =
+            view.findViewById(R.id.layout_list_item_delivery_outlet_info)
+        private val textParcelQty: TextView = view.findViewById(R.id.text_list_item_parcel_qty)
+        private val textPickupInfo: RelativeLayout =
+            view.findViewById(R.id.layout_list_item_pickup_info)
+        private val textDesiredDate: TextView = view.findViewById(R.id.text_list_item_desired_date)
+        private val textQty: TextView = view.findViewById(R.id.text_list_item_qty)
+        private val layoutRequest: LinearLayout = view.findViewById(R.id.layout_list_item_request)
+        private val textRequest: TextView = view.findViewById(R.id.text_list_item_request)
+        private val layoutDriverMemo: LinearLayout =
+            view.findViewById(R.id.layout_list_item_driver_memo)
+        private val textDriverMemo: TextView = view.findViewById(R.id.text_list_item_driver_memo)
+
+        private val childLayout: LinearLayout = view.findViewById(R.id.layout_child_view)
+        private val layoutFailed: LinearLayout =
+            view.findViewById(R.id.layout_list_item_child_failed)
+        private val textFailedReason: TextView =
+            view.findViewById(R.id.text_list_item_child_failed_reason)
+        private val layoutParcelAmount: LinearLayout =
+            view.findViewById(R.id.layout_list_item_child_parcel_amount)
+        private val textParcelAmountTitle: TextView =
+            view.findViewById(R.id.text_list_item_child_parcel_amount_title)
+        private val textParcelAmount: TextView =
+            view.findViewById(R.id.text_list_item_child_parcel_amount)
+        private val textParcelAmountUnit: TextView =
+            view.findViewById(R.id.text_list_item_child_parcel_amount_unit)
+        private val layoutTelephone: LinearLayout =
+            view.findViewById(R.id.layout_list_item_child_telephone)
+        private val textTelephoneNumber: TextView =
+            view.findViewById(R.id.text_list_item_child_telephone_number)
+        private val layoutMobile: LinearLayout =
+            view.findViewById(R.id.layout_list_item_child_mobile)
+        private val textMobileNumber: TextView =
+            view.findViewById(R.id.text_list_item_child_mobile_number)
+        private val imgSms: ImageView = view.findViewById(R.id.img_list_item_child_sms)
+        private val imgLive10: ImageView = view.findViewById(R.id.img_list_item_child_live10)
+        private val imgQpost: ImageView = view.findViewById(R.id.img_list_item_child_qpost)
+        private val imgDriverMemo: ImageView =
+            view.findViewById(R.id.img_list_item_child_driver_memo)
+        private val layoutChildDeliveryButtons: RelativeLayout =
+            view.findViewById(R.id.layout_list_item_child_delivery_buttons)
+        private val btnDelivered: Button = view.findViewById(R.id.btn_list_item_child_delivered)
+        private val btnDeliveryFailed: Button =
+            view.findViewById(R.id.btn_list_item_child_delivery_failed)
+        private val layoutQuickButtons: RelativeLayout =
+            view.findViewById(R.id.layout_list_item_child_quick_buttons)
+        private val btnQuickDelivered: Button =
+            view.findViewById(R.id.btn_list_item_child_quick_delivered)
+        private val btnQuickFailed: Button =
+            view.findViewById(R.id.btn_list_item_child_quick_failed)
+        private val layoutPickupButtons: LinearLayout =
+            view.findViewById(R.id.layout_list_item_child_pickup_buttons)
+        private val btnPickupScan: Button = view.findViewById(R.id.btn_list_item_child_pickup_scan)
+        private val btnPickupZeroQty: Button =
+            view.findViewById(R.id.btn_list_item_child_pickup_zero_qty)
+        private val btnPickupVisitLog: Button =
+            view.findViewById(R.id.btn_list_item_child_pickup_visit_log)
+        private val layoutCnrButtons: LinearLayout =
+            view.findViewById(R.id.layout_list_item_child_cnr_buttons)
+        private val btnCnrFailed: Button = view.findViewById(R.id.btn_list_item_child_cnr_failed)
+        private val btnChildCnrPrint: Button = view.findViewById(R.id.btn_list_item_child_cnr_print)
+        private val layoutOutletPickup: RelativeLayout =
+            view.findViewById(R.id.layout_list_item_child_outlet_pickup)
+        private val btnOutletPickupScan: Button =
+            view.findViewById(R.id.btn_list_item_child_outlet_pickup_scan)
+        private val layoutButtons2: LinearLayout =
+            view.findViewById(R.id.layout_list_item_child_buttons2)
+        private val btnDetailButton: Button =
+            view.findViewById(R.id.btn_list_item_child_detail_button)
 
 
-        val cardView =
-            view.findViewById<LinearLayout>(R.id.layout_list_item_card_view) // background change
-        val textDday = view.findViewById<TextView>(R.id.text_list_item_d_day)
-        val imgSecureDelivery =
-            view.findViewById<ImageView>(R.id.img_list_item_secure_delivery)
-        val imgStationIcon =
-            view.findViewById<ImageView>(R.id.img_list_item_station_icon)
-        val textTrackingNo =
-            view.findViewById<TextView>(R.id.text_list_item_tracking_no)
-        val textPickupState =
-            view.findViewById<TextView>(R.id.text_list_item_pickup_state)
-        val textEconomy = view.findViewById<TextView>(R.id.text_list_item_economy)
-        val textHighAmount =
-            view.findViewById<TextView>(R.id.text_list_item_high_amount)
-        val imgItemUpIcon = view.findViewById<ImageView>(R.id.img_list_item_up_icon)
-        val textAddress = view.findViewById<TextView>(R.id.text_list_item_address)
-        val menuIcon =
-            view.findViewById<FrameLayout>(R.id.layout_list_item_menu_icon)
-        val deliveryInfo =
-            view.findViewById<LinearLayout>(R.id.layout_list_item_delivery_info)
-        val textReceiptName =
-            view.findViewById<TextView>(R.id.text_list_item_receipt_name)
-        val deliveryOutletInfo =
-            view.findViewById<LinearLayout>(R.id.layout_list_item_delivery_outlet_info)
-        val textParcelQty =
-            view.findViewById<TextView>(R.id.text_list_item_parcel_qty)
-        val textPickupInfo =
-            view.findViewById<RelativeLayout>(R.id.layout_list_item_pickup_info)
-        val textDesiredDate =
-            view.findViewById<TextView>(R.id.text_list_item_desired_date)
-        val textQty = view.findViewById<TextView>(R.id.text_list_item_qty)
-        val layoutRequest =
-            view.findViewById<LinearLayout>(R.id.layout_list_item_request)
-        val textRequest = view.findViewById<TextView>(R.id.text_list_item_request)
-        val layoutDriverMemo =
-            view.findViewById<LinearLayout>(R.id.layout_list_item_driver_memo)
-        val textDriverMemo =
-            view.findViewById<TextView>(R.id.text_list_item_driver_memo)
-
-        val childLayout = view.findViewById<LinearLayout>(R.id.layout_child_view)
-        val layoutFailed =
-            view.findViewById<LinearLayout>(R.id.layout_list_item_child_failed)
-        val textFailedReason =
-            view.findViewById<TextView>(R.id.text_list_item_child_failed_reason)
-        val layoutParcelAmount =
-            view.findViewById<LinearLayout>(R.id.layout_list_item_child_parcel_amount)
-        val textParcelAmountTitle =
-            view.findViewById<TextView>(R.id.text_list_item_child_parcel_amount_title)
-        val textParcelAmount =
-            view.findViewById<TextView>(R.id.text_list_item_child_parcel_amount)
-        val textParcelAmountUnit =
-            view.findViewById<TextView>(R.id.text_list_item_child_parcel_amount_unit)
-        val layoutTelephone =
-            view.findViewById<LinearLayout>(R.id.layout_list_item_child_telephone)
-        val textTelephoneNumber =
-            view.findViewById<TextView>(R.id.text_list_item_child_telephone_number)
-        val layoutMobile =
-            view.findViewById<LinearLayout>(R.id.layout_list_item_child_mobile)
-        val textMobileNumber =
-            view.findViewById<TextView>(R.id.text_list_item_child_mobile_number)
-        val imgSms =
-            view.findViewById<ImageView>(R.id.img_list_item_child_sms)
-        val imgLive10 =
-            view.findViewById<ImageView>(R.id.img_list_item_child_live10)
-        val imgQpost =
-            view.findViewById<ImageView>(R.id.img_list_item_child_qpost)
-        val imgDriverMemo =
-            view.findViewById<ImageView>(R.id.img_list_item_child_driver_memo)
-        val layoutChildDeliveryButtons =
-            view.findViewById<RelativeLayout>(R.id.layout_list_item_child_delivery_buttons)
-        val btnDelivered =
-            view.findViewById<Button>(R.id.btn_list_item_child_delivered)
-        val btnDeliveryFailed =
-            view.findViewById<Button>(R.id.btn_list_item_child_delivery_failed)
-        val layoutQuickButtons =
-            view.findViewById<RelativeLayout>(R.id.layout_list_item_child_quick_buttons)
-        val btnQuickDelivered =
-            view.findViewById<Button>(R.id.btn_list_item_child_quick_delivered)
-        val btnQuickFailed =
-            view.findViewById<Button>(R.id.btn_list_item_child_quick_failed)
-        val layoutPickupButtons =
-            view.findViewById<LinearLayout>(R.id.layout_list_item_child_pickup_buttons)
-        val btnPickupScan =
-            view.findViewById<Button>(R.id.btn_list_item_child_pickup_scan)
-        val btnPickupZeroQty =
-            view.findViewById<Button>(R.id.btn_list_item_child_pickup_zero_qty)
-        val btnPickupVisitLog =
-            view.findViewById<Button>(R.id.btn_list_item_child_pickup_visit_log)
-        val layoutCnrButtons =
-            view.findViewById<LinearLayout>(R.id.layout_list_item_child_cnr_buttons)
-        val btnCnrFailed =
-            view.findViewById<Button>(R.id.btn_list_item_child_cnr_failed)
-        val btnChildCnrPrint =
-            view.findViewById<Button>(R.id.btn_list_item_child_cnr_print)
-        val layoutOutletPickup =
-            view.findViewById<RelativeLayout>(R.id.layout_list_item_child_outlet_pickup)
-        val btnOutletPickupScan =
-            view.findViewById<Button>(R.id.btn_list_item_child_outlet_pickup_scan)
-        val layoutButtons2 =
-            view.findViewById<LinearLayout>(R.id.layout_list_item_child_buttons2)
-        val btnDetailButton =
-            view.findViewById<Button>(R.id.btn_list_item_child_detail_button)
-
-
+        @SuppressLint("SetTextI18n", "NotifyDataSetChanged")
         fun bind(position: Int) {
             val data = itemList[position]
-            bindItem(data)
-        }
-
-        @SuppressLint("NotifyDataSetChanged", "SetTextI18n")
-        private fun bindItem(data: RowItem) {
-
             if (adapterPosition == 0) {
                 val lp = LinearLayout.LayoutParams(
                     LinearLayout.LayoutParams.MATCH_PARENT,
@@ -404,9 +371,6 @@ class ListInProgressAdapter3(bluetoothListener: BluetoothListener) :
                             originalRowItem.clear()
                             originalRowItem.addAll(itemList)
                             notifyDataSetChanged()
-                            if (onMoveUpListener != null) {
-                                onMoveUpListener!!.onMoveUp(adapterPosition - 1)
-                            }
                         }
 
                     } else if (itemId == R.id.menu_down) {
@@ -416,9 +380,6 @@ class ListInProgressAdapter3(bluetoothListener: BluetoothListener) :
                             originalRowItem.clear()
                             originalRowItem.addAll(itemList)
                             notifyDataSetChanged()
-                            if (onMoveUpListener != null) {
-                                onMoveUpListener!!.onMoveUp(adapterPosition + 1)
-                            }
                         }
                     }
                     true
@@ -462,11 +423,15 @@ class ListInProgressAdapter3(bluetoothListener: BluetoothListener) :
             }
 
             cardView.setOnClickListener {
-                data.isClicked = !data.isClicked
+
                 expandedPos = adapterPosition
+                if (expandedPos == adapterPosition) {
+                    data.isClicked = !data.isClicked
+                }
+
                 notifyDataSetChanged()
-                Log.e("!@#@!$!@",it.height.toString())
-                listener?.selectItem(it,expandedPos)
+                childLayout.measure(0, 0)
+                listener?.selectItem(it, expandedPos, it.height + childLayout.measuredHeight)
             }
 
             try {
@@ -482,7 +447,7 @@ class ListInProgressAdapter3(bluetoothListener: BluetoothListener) :
                 imgQpost.visibility = View.GONE
             }
 
-            if (data.isClicked) {
+            if (expandedPos == adapterPosition) {
                 childLayout.visibility = View.VISIBLE
                 cardView.setBackgroundResource(R.drawable.bg_top_round_10_ffffff)
                 imgItemUpIcon.visibility = View.VISIBLE
@@ -584,7 +549,7 @@ class ListInProgressAdapter3(bluetoothListener: BluetoothListener) :
                 layoutChildDeliveryButtons.visibility = View.GONE
                 layoutQuickButtons.visibility = View.GONE
 
-                //tracking_no 에 따라서 layout 선택하기  by 2016-09-23
+                //tracking_no 에 따라서 layout 선택하기
                 val isNotCNR = isPickupNotCNR(data.shipping)
 
                 //TEST.  CNR
@@ -848,7 +813,7 @@ class ListInProgressAdapter3(bluetoothListener: BluetoothListener) :
         }
     }
 
-    // 2016-09-23 eylee pickup C&R number check
+    //eylee pickup C&R number check
     private fun isPickupNotCNR(trackingNo: String): Boolean {
         var isCNR = false
         if (trackingNo != "") {
@@ -874,6 +839,7 @@ class ListInProgressAdapter3(bluetoothListener: BluetoothListener) :
     }
 
     //Search
+    @SuppressLint("NotifyDataSetChanged")
     fun filterData(query: String) {
 
         try {
@@ -905,6 +871,7 @@ class ListInProgressAdapter3(bluetoothListener: BluetoothListener) :
         }
     }
 
+    @SuppressLint("NotifyDataSetChanged")
     fun setSorting(sortedItems: ArrayList<RowItem>?) {
         itemList.clear()
         itemList.addAll(sortedItems!!)
@@ -914,7 +881,6 @@ class ListInProgressAdapter3(bluetoothListener: BluetoothListener) :
     }
 
     init {
-        itemList.addAll(itemList)
         originalRowItem = ArrayList()
         originalRowItem.addAll(itemList)
         this.bluetoothListener = bluetoothListener

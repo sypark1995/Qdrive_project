@@ -1,7 +1,6 @@
 package com.giosis.library.list
 
 import android.annotation.SuppressLint
-import android.app.Activity
 import android.app.AlertDialog
 import android.content.DialogInterface
 import android.content.Intent
@@ -17,108 +16,134 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.*
+import androidx.recyclerview.widget.RecyclerView
 import com.giosis.library.R
 import com.giosis.library.UploadData
 import com.giosis.library.database.DatabaseHelper
-import com.giosis.library.database.DatabaseHelper.Companion.getInstance
 import com.giosis.library.gps.GPSTrackerManager
 import com.giosis.library.main.DeviceDataUploadHelper
 import com.giosis.library.util.BarcodeType
 import com.giosis.library.util.DataUtil
 import com.giosis.library.util.OnServerEventListener
-import com.giosis.library.util.Preferences.deviceUUID
-import com.giosis.library.util.Preferences.officeCode
-import com.giosis.library.util.Preferences.userId
+import com.giosis.library.util.Preferences
 import java.io.File
 import java.util.*
 
-class ListUploadFailedAdapter2(
-    rowItem: ArrayList<RowItemNotUpload>?,
-    listener: AdapterInterface
-) : BaseExpandableListAdapter() {
+class ListUploadFailedAdapter :
+    RecyclerView.Adapter<RecyclerView.ViewHolder>() {
 
     private val TAG = "UploadFailedAdapter"
     private var gpsTrackerManager: GPSTrackerManager? = null
     private var gpsEnable = false
-    private val mCountListener: AdapterInterface
-    private val rowItem: ArrayList<RowItemNotUpload> = ArrayList()
+
+    var rowItem = ArrayList<RowItemNotUpload>()
+        set(value) {
+            rowItem.clear()
+            rowItem.addAll(value)
+        }
+
     private var originalRowItem: ArrayList<RowItemNotUpload>
     fun setGpsTrackerManager(gpsTrackerManager: GPSTrackerManager?) {
         this.gpsTrackerManager = gpsTrackerManager
         gpsEnable = this.gpsTrackerManager!!.enableGPSSetting()
     }
 
-    interface AdapterInterface {
-        fun getFailedCountRefresh()
+    override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): RecyclerView.ViewHolder {
+        val view =
+            LayoutInflater.from(parent.context).inflate(R.layout.item_upload_failed, parent, false)
+        return ViewHolder(view)
     }
 
-    @SuppressLint("InflateParams")
-    override fun getGroupView(
-        groupPosition: Int,
-        isExpanded: Boolean,
-        convertView: View?,
-        parent: ViewGroup
-    ): View {
-        var view = convertView
-        if (view == null) {
-            val mInflater =
-                parent.context.getSystemService(Activity.LAYOUT_INFLATER_SERVICE) as LayoutInflater
-            view = mInflater.inflate(R.layout.list_group_item, null)
-        }
-        view?.let {
-            val layoutListItemCardView =
-                view.findViewById<LinearLayout>(R.id.layout_list_item_card_view) // background change
-            val textListItemDDay = view.findViewById<TextView>(R.id.text_list_item_d_day)
-            val textListItemUploadFailedState =
-                view.findViewById<TextView>(R.id.text_list_item_upload_failed_state)
-            val imgListItemSecureDelivery =
-                view.findViewById<ImageView>(R.id.img_list_item_secure_delivery)
-            val imgListItemStationIcon =
-                view.findViewById<ImageView>(R.id.img_list_item_station_icon)
-            val textListItemTrackingNo =
-                view.findViewById<TextView>(R.id.text_list_item_tracking_no)
-            val textListItemPickupState =
-                view.findViewById<TextView>(R.id.text_list_item_pickup_state)
-            val imgListItemUpIcon = view.findViewById<ImageView>(R.id.img_list_item_up_icon)
-            val textListItemAddress = view.findViewById<TextView>(R.id.text_list_item_address)
-            val layoutListItemMenuIcon =
-                view.findViewById<FrameLayout>(R.id.layout_list_item_menu_icon)
-            val textListItemReceiptName =
-                view.findViewById<TextView>(R.id.text_list_item_receipt_name)
-            val layoutListItemDeliveryOutletInfo =
-                view.findViewById<LinearLayout>(R.id.layout_list_item_delivery_outlet_info)
-            val layoutListItemPickupInfo =
-                view.findViewById<RelativeLayout>(R.id.layout_list_item_pickup_info)
-            val layoutListItemRequest =
-                view.findViewById<LinearLayout>(R.id.layout_list_item_request)
-            val textListItemRequest = view.findViewById<TextView>(R.id.text_list_item_request)
-            val layoutListItemDriverMemo =
-                view.findViewById<LinearLayout>(R.id.layout_list_item_driver_memo)
-            if (isExpanded) {
-                layoutListItemCardView.setBackgroundResource(R.drawable.bg_top_round_10_ffffff)
-                imgListItemUpIcon.visibility = View.VISIBLE
-            } else {
-                layoutListItemCardView.setBackgroundResource(R.drawable.bg_round_10_ffffff_shadow)
-                imgListItemUpIcon.visibility = View.GONE
+    override fun onBindViewHolder(holder: RecyclerView.ViewHolder, position: Int) {
+        (holder as ViewHolder).bind(position)
+    }
+
+    inner class ViewHolder(view: View) : RecyclerView.ViewHolder(view) {
+
+        private val layoutListItemCardView: LinearLayout =
+            view.findViewById(R.id.layout_list_item_card_view) // background change
+        private val layoutFailedChildLayout: LinearLayout =
+            view.findViewById(R.id.layout_failed_child_layout)
+        private val textListItemDDay: TextView = view.findViewById(R.id.text_list_item_d_day)
+        private val textListItemUploadFailedState: TextView =
+            view.findViewById(R.id.text_list_item_upload_failed_state)
+        private val imgListItemSecureDelivery: ImageView =
+            view.findViewById(R.id.img_list_item_secure_delivery)
+        private val imgListItemStationIcon: ImageView =
+            view.findViewById(R.id.img_list_item_station_icon)
+        private val textListItemTrackingNo: TextView =
+            view.findViewById(R.id.text_list_item_tracking_no)
+        private val textListItemPickupState: TextView =
+            view.findViewById(R.id.text_list_item_pickup_state)
+        private val imgListItemUpIcon: ImageView = view.findViewById(R.id.img_list_item_up_icon)
+        private val textListItemAddress: TextView = view.findViewById(R.id.text_list_item_address)
+        private val layoutListItemMenuIcon: FrameLayout =
+            view.findViewById(R.id.layout_list_item_menu_icon)
+        private val textListItemReceiptName: TextView =
+            view.findViewById(R.id.text_list_item_receipt_name)
+        private val layoutListItemDeliveryOutletInfo: LinearLayout =
+            view.findViewById(R.id.layout_list_item_delivery_outlet_info)
+        private val layoutListItemPickupInfo: RelativeLayout =
+            view.findViewById(R.id.layout_list_item_pickup_info)
+        private val layoutListItemRequest: LinearLayout =
+            view.findViewById(R.id.layout_list_item_request)
+        private val textListItemRequest: TextView = view.findViewById(R.id.text_list_item_request)
+        private val layoutListItemDriverMemo: LinearLayout =
+            view.findViewById(R.id.layout_list_item_driver_memo)
+
+        private val layoutListItemChildTelephone: LinearLayout =
+            view.findViewById(R.id.layout_list_item_child_telephone)
+        private val textListItemChildTelephoneNumber: TextView =
+            view.findViewById(R.id.text_list_item_child_telephone_number)
+        private val layoutListItemChildMobile: LinearLayout =
+            view.findViewById(R.id.layout_list_item_child_mobile)
+        private val textListItemChildMobileNumber: TextView =
+            view.findViewById(R.id.text_list_item_child_mobile_number)
+        private val imgListItemChildSms: ImageView =
+            view.findViewById(R.id.img_list_item_child_sms)
+        private val imgListItemChildLive10: ImageView =
+            view.findViewById(R.id.img_list_item_child_live10)
+        private val layoutListItemChildFailedReason: LinearLayout =
+            view.findViewById(R.id.layout_list_item_child_failed_reason)
+        private val textListItemChildFailedReason: TextView =
+            view.findViewById(R.id.text_list_item_child_failed_reason)
+        private val layoutListItemChildMemo: LinearLayout =
+            view.findViewById(R.id.layout_list_item_child_memo)
+        private val textListItemChildMemo: TextView =
+            view.findViewById(R.id.text_list_item_child_memo)
+        private val layoutListItemChildRequester: LinearLayout =
+            view.findViewById(R.id.layout_list_item_child_requester)
+        private val textListItemChildRequester: TextView =
+            view.findViewById(R.id.text_list_item_child_requester)
+        private val imgListItemChildRequesterSign: ImageView =
+            view.findViewById(R.id.img_list_item_child_requester_sign)
+        private val layoutListItemChildDriver: LinearLayout =
+            view.findViewById(R.id.layout_list_item_child_driver)
+        private val imgListItemChildDriverSign: ImageView =
+            view.findViewById(R.id.img_list_item_child_driver_sign)
+        private val btnListItemChildUpload: Button =
+            view.findViewById(R.id.btn_list_item_child_upload)
+
+        @SuppressLint("NotifyDataSetChanged")
+        fun bind(position: Int) {
+            val data = rowItem[position]
+            layoutListItemCardView.setOnClickListener {
+                data.isClicked = !data.isClicked
+                if (data.isClicked) {
+                    layoutListItemCardView.setBackgroundResource(R.drawable.bg_top_round_10_ffffff)
+                    imgListItemUpIcon.visibility = View.GONE
+                    layoutFailedChildLayout.visibility = View.VISIBLE
+                } else {
+                    layoutListItemCardView.setBackgroundResource(R.drawable.bg_round_10_ffffff_shadow)
+                    imgListItemUpIcon.visibility = View.VISIBLE
+                    layoutFailedChildLayout.visibility = View.GONE
+                }
+                notifyDataSetChanged()
             }
-            if (groupPosition == 0) {
-                val lp = LinearLayout.LayoutParams(
-                    LinearLayout.LayoutParams.MATCH_PARENT,
-                    LinearLayout.LayoutParams.WRAP_CONTENT
-                )
-                lp.setMargins(0, 0, 0, 0)
-                layoutListItemCardView.layoutParams = lp
-            } else {
-                val lp = LinearLayout.LayoutParams(
-                    LinearLayout.LayoutParams.MATCH_PARENT,
-                    LinearLayout.LayoutParams.WRAP_CONTENT
-                )
-                lp.setMargins(0, 20, 0, 0)
-                layoutListItemCardView.layoutParams = lp
-            }
-            val rowPosition = rowItem[groupPosition]
+
             var status = ""
-            when (rowPosition.stat) {
+
+            when (data.stat) {
                 BarcodeType.DELIVERY_FAIL -> status =
                     textListItemUploadFailedState.context.resources.getString(R.string.text_d_failed)
                 BarcodeType.DELIVERY_DONE -> status =
@@ -130,122 +155,70 @@ class ListUploadFailedAdapter2(
                 BarcodeType.PICKUP_DONE -> status =
                     textListItemUploadFailedState.context.resources.getString(R.string.text_p_done)
             }
+
+            textListItemUploadFailedState.text = status
             textListItemDDay.visibility = View.GONE
             textListItemUploadFailedState.visibility = View.VISIBLE
             textListItemUploadFailedState.setTextColor(Color.parseColor("#FF0000"))
-            textListItemUploadFailedState.text = status
             imgListItemSecureDelivery.visibility = View.GONE
             imgListItemStationIcon.visibility = View.GONE
-            textListItemTrackingNo.text = rowPosition.shipping
+            textListItemTrackingNo.text = data.shipping
             textListItemPickupState.visibility = View.GONE
-            textListItemAddress.text = rowPosition.address
-            textListItemReceiptName.text = rowPosition.name
+            textListItemAddress.text = data.address
+            textListItemReceiptName.text = data.name
             layoutListItemDeliveryOutletInfo.visibility = View.GONE
             layoutListItemPickupInfo.visibility = View.GONE
             layoutListItemDriverMemo.visibility = View.GONE
-            if (rowPosition.request.isEmpty()) {
+
+            if (data.request.isEmpty()) {
                 layoutListItemRequest.visibility = View.GONE
             } else {
                 layoutListItemRequest.visibility = View.VISIBLE
-                textListItemRequest.text = rowPosition.request
+                textListItemRequest.text = data.request
             }
-            layoutListItemMenuIcon.tag = rowPosition.shipping // 퀵메뉴 아이콘에 shipping no
-            layoutListItemMenuIcon.setOnClickListener { v: View ->
+
+            layoutListItemMenuIcon.tag = data.shipping // 퀵메뉴 아이콘에 shipping no
+            layoutListItemMenuIcon.setOnClickListener { view ->
                 val popup =
-                    PopupMenu(v.context, layoutListItemMenuIcon)
+                    PopupMenu(view.context, layoutListItemMenuIcon)
                 popup.menuInflater.inflate(R.menu.quickmenu_failed, popup.menu)
                 popup.setOnMenuItemClickListener {
                     val cs3 =
-                        getInstance()["SELECT address FROM " + DatabaseHelper.DB_TABLE_INTEGRATION_LIST + " WHERE invoice_no='" + layoutListItemMenuIcon.tag
+                        DatabaseHelper.getInstance()["SELECT address FROM " + DatabaseHelper.DB_TABLE_INTEGRATION_LIST + " WHERE invoice_no='" + layoutListItemMenuIcon.tag
                             .toString() + "' LIMIT 1"]
                     cs3.moveToFirst()
                     val address = cs3.getString(cs3.getColumnIndex("address"))
                     val uri =
                         Uri.parse("http://maps.google.co.in/maps?q=$address")
                     val intent = Intent(Intent.ACTION_VIEW, uri)
-                    v.context.startActivity(intent)
+                    view.context.startActivity(intent)
                     true
                 }
                 popup.show()
             }
-        }
 
-        return view!!
-    }
-
-    @SuppressLint("InflateParams")
-    override fun getChildView(
-        groupPosition: Int,
-        childPosition: Int,
-        isLastChild: Boolean,
-        convertView: View?,
-        parent: ViewGroup
-    ): View {
-        var view = convertView
-        if (view == null) {
-            val inflater =
-                parent.context.getSystemService(Activity.LAYOUT_INFLATER_SERVICE) as LayoutInflater
-            view = inflater.inflate(R.layout.item_list_upload_failed_child, null)
-        }
-        view?.let {
-
-            val layoutListItemChildTelephone =
-                view.findViewById<LinearLayout>(R.id.layout_list_item_child_telephone)
-            val textListItemChildTelephoneNumber =
-                view.findViewById<TextView>(R.id.text_list_item_child_telephone_number)
-            val layoutListItemChildMobile =
-                view.findViewById<LinearLayout>(R.id.layout_list_item_child_mobile)
-            val textListItemChildMobileNumber =
-                view.findViewById<TextView>(R.id.text_list_item_child_mobile_number)
-            val imgListItemChildSms =
-                view.findViewById<ImageView>(R.id.img_list_item_child_sms)
-            val imgListItemChildLive10 =
-                view.findViewById<ImageView>(R.id.img_list_item_child_live10)
-            val layoutListItemChildFailedReason =
-                view.findViewById<LinearLayout>(R.id.layout_list_item_child_failed_reason)
-            val textListItemChildFailedReason =
-                view.findViewById<TextView>(R.id.text_list_item_child_failed_reason)
-            val layoutListItemChildMemo =
-                view.findViewById<LinearLayout>(R.id.layout_list_item_child_memo)
-            val textListItemChildMemo =
-                view.findViewById<TextView>(R.id.text_list_item_child_memo)
-            val layoutListItemChildRequester =
-                view.findViewById<LinearLayout>(R.id.layout_list_item_child_requester)
-            val textListItemChildRequester =
-                view.findViewById<TextView>(R.id.text_list_item_child_requester)
-            val imgListItemChildRequesterSign =
-                view.findViewById<ImageView>(R.id.img_list_item_child_requester_sign)
-            val layoutListItemChildDriver =
-                view.findViewById<LinearLayout>(R.id.layout_list_item_child_driver)
-            val imgListItemChildDriverSign =
-                view.findViewById<ImageView>(R.id.img_list_item_child_driver_sign)
-            val btnListItemChildUpload =
-                view.findViewById<Button>(R.id.btn_list_item_child_upload)
-            val child = getChild(groupPosition, childPosition) as ChildItemNotUpload
-            val trackingNo = rowItem[groupPosition].shipping
-            val receiver = rowItem[groupPosition].name
-            if (child.secretNoType == "T") {     // Qtalk 안심번호 타입 T - Qnumber 사용
+            if (data.items?.get(0)?.secretNoType == "T") {     // Qtalk 안심번호 타입 T - Qnumber 사용
                 layoutListItemChildTelephone.visibility = View.GONE
                 layoutListItemChildMobile.visibility = View.GONE
                 imgListItemChildLive10.visibility = View.VISIBLE
-            } else if (child.secretNoType == "P") {  // Phone 안심번호 - 핸드폰만 활성화
+            } else if (data.items?.get(0)?.secretNoType == "P") {  // Phone 안심번호 - 핸드폰만 활성화
                 layoutListItemChildTelephone.visibility = View.GONE
                 layoutListItemChildMobile.visibility = View.VISIBLE
-                textListItemChildMobileNumber.text = child.hp
+                textListItemChildMobileNumber.text = data.items?.get(0)?.hp
                 imgListItemChildLive10.visibility = View.GONE
-            } else {          //안심번호 사용안함
+            } else {    //안심번호 사용안함
                 imgListItemChildLive10.visibility = View.GONE
-                if (child.tel != null && child.tel!!.length > 5) {
+                if (data.items?.get(0)?.tel != null && data.items?.get(0)?.tel!!.length > 5) {
                     layoutListItemChildTelephone.visibility = View.VISIBLE
-                    val content = SpannableString(child.tel)
+                    val content = SpannableString(data.items?.get(0)?.tel)
                     content.setSpan(UnderlineSpan(), 0, content.length, 0)
                     textListItemChildTelephoneNumber.text = content
                 } else {
                     layoutListItemChildTelephone.visibility = View.GONE
                 }
-                if (child.hp != null && child.hp!!.length > 5) {
+                if (data.items?.get(0)?.hp != null && data.items?.get(0)?.hp!!.length > 5) {
                     layoutListItemChildMobile.visibility = View.VISIBLE
-                    val content = SpannableString(child.hp)
+                    val content = SpannableString(data.items?.get(0)?.hp)
                     content.setSpan(UnderlineSpan(), 0, content.length, 0)
                     textListItemChildMobileNumber.text = content
                 } else {
@@ -254,15 +227,19 @@ class ListUploadFailedAdapter2(
             }
 
             //  Reason
-            if (child.statReason != null && !child.statReason!!.contains(" ") && child.statReason!!.isNotEmpty()) {
+            if (data.items?.get(0)?.statReason != null && !data.items?.get(0)?.statReason!!.contains(
+                    " "
+                ) && data.items?.get(0)?.statReason!!.isNotEmpty()
+            ) {
                 layoutListItemChildFailedReason.visibility = View.VISIBLE
-                when (child.stat) {
+                when (data.items?.get(0)?.stat) {
                     BarcodeType.DELIVERY_FAIL -> {
-                        val reasonText = DataUtil.getDeliveryFailedMsg(child.statReason)
+                        val reasonText =
+                            DataUtil.getDeliveryFailedMsg(data.items?.get(0)?.statReason)
                         textListItemChildFailedReason.text = reasonText
                     }
                     BarcodeType.PICKUP_FAIL -> {
-                        val reasonText = DataUtil.getPickupFailedMsg(child.statReason)
+                        val reasonText = DataUtil.getPickupFailedMsg(data.items?.get(0)?.statReason)
                         textListItemChildFailedReason.text = reasonText
                     }
                 }
@@ -271,26 +248,28 @@ class ListUploadFailedAdapter2(
             }
 
             // 메모
-            if (child.stat != BarcodeType.PICKUP_DONE) {
-                if (child.statMsg!!.isNotEmpty()) {
+            if (data.items?.get(0)?.stat != BarcodeType.PICKUP_DONE) {
+                if (data.items?.get(0)?.statMsg!!.isNotEmpty()) {
                     layoutListItemChildMemo.visibility = View.VISIBLE
-                    textListItemChildMemo.text = child.statMsg
+                    textListItemChildMemo.text = data.items?.get(0)?.statMsg
                 } else {
                     layoutListItemChildMemo.visibility = View.GONE
                 }
             } else {
                 layoutListItemChildMemo.visibility = View.GONE
             }
+
             val pickupSign = "/QdrivePickup"
             val pickupDriverSign = "/QdriveCollector"
             val deliverySign = "/Qdrive"
             val myBitmap: Bitmap
-            when (child.stat) {
+
+            when (data.items?.get(0)?.stat) {
                 BarcodeType.DELIVERY_DONE -> {
                     // Delivery   sign 1개
                     var dirPath =
                         Environment.getExternalStorageDirectory().toString() + deliverySign
-                    var filePath = "$dirPath/$trackingNo.png"
+                    var filePath = "$dirPath/${data.shipping}.png"
                     var imgFile = File(filePath)
                     if (imgFile.exists()) {
                         DataUtil.FirebaseSelectEvents("DELIVERY_DONE", "original")
@@ -302,7 +281,7 @@ class ListUploadFailedAdapter2(
                     } else {
                         dirPath =
                             Environment.getExternalStorageDirectory().toString() + deliverySign
-                        filePath = dirPath + "/" + trackingNo + "_1.png"
+                        filePath = dirPath + "/" + data.shipping + "_1.png"
                         imgFile = File(filePath)
                         if (imgFile.exists()) {
                             DataUtil.FirebaseSelectEvents("DELIVERY_DONE", "original")
@@ -320,8 +299,8 @@ class ListUploadFailedAdapter2(
                     val dirPath2 =
                         Environment.getExternalStorageDirectory()
                             .toString() + "/" + pickupDriverSign
-                    val filePath = "$dirPath/$trackingNo.png"
-                    val filePath2 = "$dirPath2/$trackingNo.png"
+                    val filePath = "$dirPath/${data.shipping}.png"
+                    val filePath2 = "$dirPath2/${data.shipping}.png"
                     val imgFile = File(filePath)
                     val imgFile2 = File(filePath2)
                     layoutListItemChildDriver.visibility = View.VISIBLE
@@ -341,30 +320,34 @@ class ListUploadFailedAdapter2(
                     layoutListItemChildDriver.visibility = View.GONE
                 }
             }
+
             textListItemChildTelephoneNumber.setOnClickListener { v: View ->
-                val callUri = Uri.parse("tel:" + child.tel)
+                val callUri = Uri.parse("tel:" + data.items?.get(0)?.tel)
                 val intent = Intent(Intent.ACTION_DIAL, callUri)
                 v.context.startActivity(intent)
             }
+
             textListItemChildMobileNumber.setOnClickListener { v: View ->
-                val callUri = Uri.parse("tel:" + child.hp)
+                val callUri = Uri.parse("tel:" + data.items?.get(0)?.hp)
                 val intent = Intent(Intent.ACTION_DIAL, callUri)
                 v.context.startActivity(intent)
             }
+
             imgListItemChildSms.setOnClickListener { v: View ->
                 val smsBody = String.format(
-                    v.context.resources.getString(R.string.msg_delivery_start_sms), receiver
+                    v.context.resources.getString(R.string.msg_delivery_start_sms), data.name
                 )
-                val smsUri = Uri.parse("sms:" + child.hp)
+                val smsUri = Uri.parse("sms:" + data.items?.get(0)?.hp)
                 val intent = Intent(Intent.ACTION_SENDTO, smsUri)
                 intent.putExtra("sms_body", smsBody)
                 v.context.startActivity(intent)
             }
+
             imgListItemChildLive10.setOnClickListener { v: View ->
                 val alert =
                     AlertDialog.Builder(v.context)
                 val msg = String.format(
-                    v.context.resources.getString(R.string.msg_delivery_start_sms), receiver
+                    v.context.resources.getString(R.string.msg_delivery_start_sms), data.name
                 )
                 alert.setTitle(v.context.resources.getString(R.string.text_qpost_message))
                 val input = EditText(v.context)
@@ -378,7 +361,7 @@ class ListUploadFailedAdapter2(
                     val intent = Intent()
                     intent.action = Intent.ACTION_VIEW
                     intent.data =
-                        Uri.parse("qtalk://link?qnumber=" + child.secretNo + "&msg=" + value + "&link=&execurl=")
+                        Uri.parse("qtalk://link?qnumber=" + data.items?.get(0)?.secretNo + "&msg=" + value + "&link=&execurl=")
                     v.context.startActivity(intent)
                 }
                 alert.setNegativeButton(
@@ -386,6 +369,7 @@ class ListUploadFailedAdapter2(
                 ) { _: DialogInterface?, _: Int -> }
                 alert.show()
             }
+
             btnListItemChildUpload.setOnClickListener { v: View ->
                 val songjanglist = ArrayList<UploadData>()
                 // 업로드 대상건 로컬 DB 조회
@@ -398,10 +382,10 @@ class ListUploadFailedAdapter2(
                         " , ifnull(retry_dt , '') as retry_dt" +
                         " , type " +
                         " FROM " + DatabaseHelper.DB_TABLE_INTEGRATION_LIST +
-                        " WHERE reg_id= '" + userId + "'" +
-                        " and invoice_no = '" + trackingNo + "'" +
+                        " WHERE reg_id= '" + Preferences.userId + "'" +
+                        " and invoice_no = '" + data.shipping + "'" +
                         " and punchOut_stat <> 'S' "
-                val cs = getInstance()[selectQuery]
+                val cs = DatabaseHelper.getInstance()[selectQuery]
                 if (cs.moveToFirst()) {
                     do {
                         val data = UploadData()
@@ -434,23 +418,23 @@ class ListUploadFailedAdapter2(
                     )
                     DeviceDataUploadHelper.Builder(
                         v.context,
-                        userId,
-                        officeCode,
-                        deviceUUID,
+                        Preferences.userId,
+                        Preferences.officeCode,
+                        Preferences.deviceUUID,
                         songjanglist,
                         "QL",
                         latitude,
                         longitude
                     ).setOnServerEventListener(object : OnServerEventListener {
+                        @SuppressLint("NotifyDataSetChanged")
                         override fun onPostResult() {
                             try {
-                                rowItem.removeAt(groupPosition)
+                                rowItem.removeAt(adapterPosition)
                             } catch (ignored: Exception) {
                             }
                             DataUtil.uploadFailedListPosition = 0
                             originalRowItem = rowItem
                             notifyDataSetChanged()
-                            mCountListener.getFailedCountRefresh()
                         }
 
                         override fun onPostFailList() {}
@@ -469,44 +453,16 @@ class ListUploadFailedAdapter2(
                 }
             }
         }
-        return view!!
+
+
     }
 
-    override fun getGroupCount(): Int {
+    override fun getItemCount(): Int {
         return rowItem.size
     }
 
-    override fun getChildrenCount(groupPosition: Int): Int {
-        val chList = rowItem[groupPosition].items
-        return chList!!.size
-    }
-
-    override fun getGroup(groupPosition: Int): Any {
-        return rowItem[groupPosition]
-    }
-
-    override fun getChild(groupPosition: Int, childPosition: Int): Any {
-        val chList = rowItem[groupPosition].items
-        return chList!![childPosition]
-    }
-
-    override fun getGroupId(groupPosition: Int): Long {
-        return groupPosition.toLong()
-    }
-
-    override fun getChildId(groupPosition: Int, childPosition: Int): Long {
-        return childPosition.toLong()
-    }
-
-    override fun hasStableIds(): Boolean {
-        return false
-    }
-
-    override fun isChildSelectable(groupPosition: Int, childPosition: Int): Boolean {
-        return true
-    }
-
     //Search
+    @SuppressLint("NotifyDataSetChanged")
     fun filterData(query: String) {
         var query = query
         query = query.uppercase(Locale.getDefault())
@@ -531,6 +487,7 @@ class ListUploadFailedAdapter2(
         notifyDataSetChanged()
     }
 
+    @SuppressLint("NotifyDataSetChanged")
     fun setSorting(sortedItems: ArrayList<RowItemNotUpload>) {
         rowItem.clear()
         rowItem.addAll(sortedItems)
@@ -539,9 +496,8 @@ class ListUploadFailedAdapter2(
     }
 
     init {
-        this.rowItem.addAll(rowItem!!)
+        this.rowItem.addAll(rowItem)
         originalRowItem = ArrayList()
         originalRowItem.addAll(rowItem)
-        mCountListener = listener
     }
 }

@@ -14,5 +14,5 @@ class RowItemNotUpload(
 ) {
 
     var items: ArrayList<ChildItemNotUpload>? = null
-
+    var isClicked: Boolean = false
 }

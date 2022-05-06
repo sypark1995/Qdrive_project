@@ -13,6 +13,7 @@ import android.view.View
 import android.view.ViewGroup
 import android.widget.*
 import androidx.fragment.app.Fragment
+import androidx.recyclerview.widget.RecyclerView
 import com.giosis.library.R
 import com.giosis.library.database.DatabaseHelper
 import com.giosis.library.database.DatabaseHelper.Companion.getInstance
@@ -26,10 +27,10 @@ import java.util.*
 /**
  * In-Progress Tab Fragment
  */
-class ListUploadFailedFragment2 : Fragment(), SearchView.OnQueryTextListener,
-    SearchView.OnCloseListener, ListUploadFailedAdapter2.AdapterInterface {
+class ListUploadFailedFragment : Fragment(), SearchView.OnQueryTextListener,
+    SearchView.OnCloseListener {
 
-    var TAG = "List_UploadFailedFragment"
+    var TAG = "ListUploadFailedFragment"
     private var gpsTrackerManager: GPSTrackerManager? = null
     private var gpsEnable = false
     private var checker: PermissionChecker? = null
@@ -37,23 +38,17 @@ class ListUploadFailedFragment2 : Fragment(), SearchView.OnQueryTextListener,
     private var searchViewList: SearchView? = null
     private var layoutListSort: FrameLayout? = null
     private var spinnerListSort: Spinner? = null
-    private var exListCardList: ExpandableListView? = null
+    private var exListCardList: RecyclerView? = null
     var mFailedCountCallback: OnFailedCountListener? = null
     private var orderby = "zip_code desc"
-    private var adapter: ListUploadFailedAdapter2? = null
+    private val adapter by lazy {
+        ListUploadFailedAdapter()
+    }
     private var rowItems = ArrayList<RowItemNotUpload>()
 
-    //리스트 카운트를 갱신하기 위한 인터페이스
+//    리스트 카운트를 갱신하기 위한 인터페이스
     interface OnFailedCountListener {
         fun onFailedCountRefresh(count: Int)
-    }
-
-    override fun getFailedCountRefresh() {
-        //Adapter 에서 단일건 업로드 후 카운트 갱신
-        mFailedCountCallback!!.onFailedCountRefresh(adapter!!.groupCount)
-        for (i in 0 until adapter!!.groupCount) {
-            exListCardList!!.collapseGroup(i)
-        }
     }
 
     //부모 Activity와 통신을 하기 위한 연결
@@ -166,20 +161,8 @@ class ListUploadFailedFragment2 : Fragment(), SearchView.OnQueryTextListener,
             }
         }
         rowItems = ArrayList()
-        adapter = ListUploadFailedAdapter2(rowItems, this)
-        exListCardList!!.setAdapter(adapter)
-        exListCardList!!.setOnGroupCollapseListener { }
-        exListCardList!!.setOnGroupExpandListener { groupPosition: Int ->
-            DataUtil.uploadFailedListPosition = groupPosition
-            val groupCount = adapter!!.groupCount
-
-            // 한 그룹을 클릭하면 나머지 그룹들은 닫힌다.
-            for (i in 0 until groupCount) {
-                if (i != groupPosition) exListCardList!!.collapseGroup(i)
-            }
-        }
-        exListCardList!!.setOnChildClickListener { _: ExpandableListView?, _: View?, _: Int, _: Int, _: Long -> false }
-        exListCardList!!.setOnGroupClickListener { _: ExpandableListView?, _: View?, _: Int, _: Long -> false }
+        adapter.rowItem = rowItems
+        exListCardList!!.adapter = adapter
     }
 
     override fun onResume() {
@@ -228,30 +211,17 @@ class ListUploadFailedFragment2 : Fragment(), SearchView.OnQueryTextListener,
                 rowItems.add(rowitem)
             } while (cs2.moveToNext())
         }
-        adapter!!.setSorting(rowItems)
-        val groupCount = adapter!!.groupCount
-        for (i in 0 until groupCount) {
-            exListCardList!!.collapseGroup(i)
-        }
-        try {
-            if (groupCount <= DataUtil.uploadFailedListPosition) {
-                DataUtil.uploadFailedListPosition = 0
-            }
-            exListCardList!!.setSelectedGroup(DataUtil.uploadFailedListPosition)
-            if (DataUtil.uploadFailedListPosition != 0) {
-                exListCardList!!.expandGroup(DataUtil.uploadFailedListPosition)
-            }
-        } catch (ignore: Exception) {
-        }
+
+        adapter.setSorting(rowItems)
 
         //카운트 갱신
-        mFailedCountCallback!!.onFailedCountRefresh(groupCount)
+        mFailedCountCallback!!.onFailedCountRefresh(rowItems.size)
         if (isPermissionTrue) {
             gpsTrackerManager = GPSTrackerManager(requireActivity())
             gpsEnable = gpsTrackerManager!!.enableGPSSetting()
             if (gpsEnable && gpsTrackerManager != null) {
                 gpsTrackerManager!!.gpsTrackerStart()
-                adapter!!.setGpsTrackerManager(gpsTrackerManager)
+                adapter.setGpsTrackerManager(gpsTrackerManager)
             } else {
                 DataUtil.enableLocationSettings(requireActivity())
             }
@@ -277,18 +247,18 @@ class ListUploadFailedFragment2 : Fragment(), SearchView.OnQueryTextListener,
     }
 
     override fun onClose(): Boolean {
-        adapter!!.filterData("")
+        adapter.filterData("")
         return false
     }
 
     override fun onQueryTextSubmit(query: String): Boolean {
-        adapter!!.filterData(query)
+        adapter.filterData(query)
         return false
     }
 
     override fun onQueryTextChange(query: String): Boolean {
         try {
-            adapter!!.filterData(query)
+            adapter.filterData(query)
         } catch (e: Exception) {
             Log.e("Exception", "$TAG  onQueryTextChange Exception : $e")
         }

@@ -23,9 +23,8 @@ import com.giosis.library.util.DataUtil
 import com.giosis.library.util.ListFragmentFactoryImpl
 import com.giosis.library.util.Preferences
 
-class ListActivity2 : CommonActivity(), ListInProgressFragment2.OnInProgressFragmentListener,
-    ListUploadFailedFragment2.OnFailedCountListener,
-    ListTodayDoneFragment2.OnTodayDoneCountListener {
+class ListActivity : CommonActivity(), ListInProgressFragment.OnInProgressFragmentListener,
+    ListTodayDoneFragment.OnTodayDoneCountListener, ListUploadFailedFragment.OnFailedCountListener {
 
     var TAG = "ListActivity"
     private var listInProgressCount: TextView? = null
@@ -94,7 +93,7 @@ class ListActivity2 : CommonActivity(), ListInProgressFragment2.OnInProgressFrag
         layoutTopBack.setOnClickListener {
             DataUtil.inProgressListPosition = 0
             DataUtil.uploadFailedListPosition = 0
-            val intent = Intent(this@ListActivity2, MainActivity::class.java)
+            val intent = Intent(this@ListActivity, MainActivity::class.java)
             intent.flags = Intent.FLAG_ACTIVITY_CLEAR_TOP or Intent.FLAG_ACTIVITY_SINGLE_TOP
             startActivity(intent)
         }
@@ -132,19 +131,19 @@ class ListActivity2 : CommonActivity(), ListInProgressFragment2.OnInProgressFrag
 
         if (Preferences.userId == "") {
             Toast.makeText(
-                this@ListActivity2,
+                this@ListActivity,
                 resources.getString(R.string.msg_qdrive_auto_logout),
                 Toast.LENGTH_SHORT
             ).show()
             try {
                 val intent: Intent = if ("SG" == Preferences.userNation) {
                     Intent(
-                        this@ListActivity2,
+                        this@ListActivity,
                         Class.forName("com.giosis.util.qdrive.singapore.LoginActivity")
                     )
                 } else {
                     Intent(
-                        this@ListActivity2,
+                        this@ListActivity,
                         Class.forName("com.giosis.util.qdrive.international.LoginActivity")
                     )
                 }
@@ -172,10 +171,10 @@ class ListActivity2 : CommonActivity(), ListInProgressFragment2.OnInProgressFrag
         override fun createFragment(position: Int): Fragment {
             return when (position) {
                 0 -> {
-                    ListInProgressFragment2(bluetoothClass as BluetoothListener)
+                    ListInProgressFragment(bluetoothClass as BluetoothListener)
                 }
-                1 -> ListUploadFailedFragment2()
-                2 -> ListTodayDoneFragment2(bluetoothClass as BluetoothListener)
+                1 -> ListUploadFailedFragment()
+                2 -> ListTodayDoneFragment(bluetoothClass as BluetoothListener)
                 else -> throw IllegalArgumentException("unKnown")
             }
         }
