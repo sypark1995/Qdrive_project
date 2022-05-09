@@ -425,10 +425,6 @@ class ListInProgressAdapter(bluetoothListener: BluetoothListener) :
             cardView.setOnClickListener {
 
                 expandedPos = adapterPosition
-                if (expandedPos == adapterPosition) {
-                    data.isClicked = !data.isClicked
-                }
-
                 notifyDataSetChanged()
                 childLayout.measure(0, 0)
                 listener?.selectItem(it, expandedPos, it.height + childLayout.measuredHeight)
