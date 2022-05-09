@@ -425,9 +425,9 @@ class ListInProgressAdapter(bluetoothListener: BluetoothListener) :
             cardView.setOnClickListener {
 
                 expandedPos = adapterPosition
-                notifyDataSetChanged()
                 childLayout.measure(0, 0)
-                listener?.selectItem(it, expandedPos, it.height + childLayout.measuredHeight)
+                listener?.selectItem(it, adapterPosition, it.height)
+                notifyDataSetChanged()
             }
 
             try {
@@ -880,5 +880,8 @@ class ListInProgressAdapter(bluetoothListener: BluetoothListener) :
         originalRowItem = ArrayList()
         originalRowItem.addAll(itemList)
         this.bluetoothListener = bluetoothListener
+    }
+    fun getPosition(): Int {
+        return expandedPos
     }
 }

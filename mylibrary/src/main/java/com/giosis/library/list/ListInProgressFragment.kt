@@ -16,6 +16,8 @@ import android.view.inputmethod.InputMethodManager
 import android.widget.*
 import androidx.constraintlayout.widget.ConstraintLayout
 import androidx.fragment.app.Fragment
+import androidx.recyclerview.widget.LinearLayoutManager
+import androidx.recyclerview.widget.LinearSmoothScroller
 import androidx.recyclerview.widget.RecyclerView
 import com.giosis.library.R
 import com.giosis.library.bluetooth.BluetoothListener
@@ -209,13 +211,25 @@ class ListInProgressFragment(var bluetoothListener: BluetoothListener) : Fragmen
 
             override fun onNothingSelected(parent: AdapterView<*>?) {}
         }
+        val linearLayoutManager = exlistCardList!!.layoutManager as LinearLayoutManager
 
+//        exlistCardList!!.layoutManager = LinearLayoutManager(requireActivity())
         adapter.setOnItemClickListener(object : ListInProgressAdapter.OnItemClickListener {
             override fun selectItem(v: View, selectedPos: Int, height: Int) {
-                exlistCardList!!.scrollToPosition(selectedPos)
+//                linearLayoutManager.scrollToPositionWithOffset(selectedPos,0)
+                exlistCardList!!.smoothSnapToPosition(selectedPos)
             }
 
         })
+    }
+
+    fun RecyclerView.smoothSnapToPosition(position: Int, snapMode: Int = LinearSmoothScroller.SNAP_TO_START) {
+        val smoothScroller = object : LinearSmoothScroller(this.context) {
+            override fun getVerticalSnapPreference(): Int = snapMode
+            override fun getHorizontalSnapPreference(): Int = snapMode
+        }
+        smoothScroller.targetPosition = position
+        layoutManager?.startSmoothScroll(smoothScroller)
     }
 
     override fun onResume() {
