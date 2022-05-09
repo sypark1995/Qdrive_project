@@ -1,12 +1,15 @@
 package com.giosis.library.setting
 
+import android.os.Build
 import android.os.Bundle
+import androidx.annotation.RequiresApi
 import androidx.lifecycle.ViewModelProvider
 import com.giosis.library.BR
 import com.giosis.library.ViewModelActivity
 import com.giosis.library.R
 import com.giosis.library.databinding.ActivityDeveloperModeBinding
 import com.giosis.library.util.DataUtil
+import com.giosis.library.util.QDataUtil
 import kotlinx.android.synthetic.main.activity_developer_mode.*
 import kotlinx.android.synthetic.main.top_title.*
 
@@ -28,6 +31,7 @@ class DeveloperModeActivity : ViewModelActivity<ActivityDeveloperModeBinding, De
     }
 
 
+    @RequiresApi(Build.VERSION_CODES.Q)
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
 
@@ -74,6 +78,9 @@ class DeveloperModeActivity : ViewModelActivity<ActivityDeveloperModeBinding, De
                     getViewModel().changeGPS("TEST")
                 }
             }
+        }
+        rssi_btn.setOnClickListener {
+            rssi_text.text = QDataUtil.getMobileNetworkSignal(it.context)
         }
     }
 
