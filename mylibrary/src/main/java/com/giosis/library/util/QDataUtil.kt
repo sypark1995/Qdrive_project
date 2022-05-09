@@ -5,11 +5,13 @@ import android.content.pm.PackageManager
 import android.content.res.Configuration
 import android.os.Build
 import android.provider.Settings
+import android.telephony.TelephonyManager
 import android.text.TextUtils
+import android.util.Log
 import android.view.View
+import androidx.annotation.RequiresApi
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.withContext
-import java.util.*
 
 
 object QDataUtil {
@@ -163,4 +165,24 @@ object QDataUtil {
                 trackingNo
             )
         }
+
+    @RequiresApi(Build.VERSION_CODES.Q)
+    fun getMobileNetworkSignal(context: Context): String {
+        val mTelephonyManager =
+            context.getSystemService(Context.TELEPHONY_SERVICE) as TelephonyManager
+        return if (mTelephonyManager.signalStrength != null && mTelephonyManager.signalStrength!!.cellSignalStrengths.size != 0) {
+            Log.e("signalStrength", mTelephonyManager.signalStrength!!.toString())
+            Log.e("signalStrength level", mTelephonyManager.signalStrength!!.level.toString())
+            Log.e(
+                "signalStrength",
+                mTelephonyManager.signalStrength!!.cellSignalStrengths[0].dbm.toString()
+            )
+            Log.e(">>>",mTelephonyManager.signalStrength!!.cellSignalStrengths[0].asuLevel.toString())
+            "level : " + mTelephonyManager.signalStrength!!.level + "\n" + "RSRP : " + mTelephonyManager.signalStrength!!.cellSignalStrengths[0].dbm + "RSRP"
+        } else {
+            "null"
+        }
+
+
+    }
 }
