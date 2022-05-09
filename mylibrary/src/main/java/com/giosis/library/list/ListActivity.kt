@@ -5,14 +5,10 @@ import android.os.Bundle
 import android.util.Log
 import android.view.KeyEvent
 import android.view.WindowManager
-import android.widget.FrameLayout
-import android.widget.LinearLayout
-import android.widget.TextView
 import android.widget.Toast
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.FragmentActivity
 import androidx.viewpager2.adapter.FragmentStateAdapter
-import androidx.viewpager2.widget.ViewPager2
 import androidx.viewpager2.widget.ViewPager2.OnPageChangeCallback
 import com.giosis.library.R
 import com.giosis.library.bluetooth.BluetoothClass
@@ -22,16 +18,13 @@ import com.giosis.library.util.CommonActivity
 import com.giosis.library.util.DataUtil
 import com.giosis.library.util.ListFragmentFactoryImpl
 import com.giosis.library.util.Preferences
+import kotlinx.android.synthetic.main.activity_list.*
+import kotlinx.android.synthetic.main.top_title.*
 
 class ListActivity : CommonActivity(), ListInProgressFragment.OnInProgressFragmentListener,
     ListTodayDoneFragment.OnTodayDoneCountListener, ListUploadFailedFragment.OnFailedCountListener {
 
     var TAG = "ListActivity"
-    private var listInProgressCount: TextView? = null
-
-    private var listUploadFailedCount: TextView? = null
-
-    private var listTodayDoneCount: TextView? = null
 
     var bluetoothClass: BluetoothClass? = null
 
@@ -42,15 +35,15 @@ class ListActivity : CommonActivity(), ListInProgressFragment.OnInProgressFragme
 
 
     override fun onCountRefresh(count: Int) {
-        listInProgressCount!!.text = count.toString()
+        text_list_in_progress_count.text = count.toString()
     }
 
     override fun onFailedCountRefresh(count: Int) {
-        listUploadFailedCount!!.text = count.toString()
+        text_list_upload_failed_count.text = count.toString()
     }
 
     override fun onTodayDoneCountRefresh(count: Int) {
-        listTodayDoneCount!!.text = count.toString()
+        text_list_today_done_count.text = count.toString()
     }
 
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -66,31 +59,21 @@ class ListActivity : CommonActivity(), ListInProgressFragment.OnInProgressFragme
                     or WindowManager.LayoutParams.FLAG_TURN_SCREEN_ON
         )
 
-        val layoutTopBack = findViewById<FrameLayout>(R.id.layout_top_back)
-        val textTopTitle = findViewById<TextView>(R.id.text_top_title)
-        textTopTitle.text = resources.getString(R.string.navi_list)
+        text_top_title.text = resources.getString(R.string.navi_list)
 
-        val layoutListInProgress = findViewById<LinearLayout>(R.id.layout_list_in_progress)
-        listInProgressCount = findViewById(R.id.text_list_in_progress_count)
-        val layoutListUploadFailed = findViewById<LinearLayout>(R.id.layout_list_upload_failed)
-        listUploadFailedCount = findViewById(R.id.text_list_upload_failed_count)
-        val layoutListTodayDone = findViewById<LinearLayout>(R.id.layout_list_today_done)
-        listTodayDoneCount = findViewById(R.id.text_list_today_done_count)
-        val viewpager2List = findViewById<ViewPager2>(R.id.viewpager2_list)
-
-        layoutListInProgress.setOnClickListener {
-            viewpager2List.currentItem = fragmentPage1
+        layout_in_progress.setOnClickListener {
+            viewpager.currentItem = fragmentPage1
         }
 
-        layoutListUploadFailed.setOnClickListener {
-            viewpager2List.currentItem = fragmentPage2
+        layout_upload_failed.setOnClickListener {
+            viewpager.currentItem = fragmentPage2
         }
 
-        layoutListTodayDone.setOnClickListener {
-            viewpager2List.currentItem = fragmentPage3
+        layout_today_done.setOnClickListener {
+            viewpager.currentItem = fragmentPage3
         }
 
-        layoutTopBack.setOnClickListener {
+        layout_top_back.setOnClickListener {
             DataUtil.inProgressListPosition = 0
             DataUtil.uploadFailedListPosition = 0
             val intent = Intent(this@ListActivity, MainActivity::class.java)
@@ -99,25 +82,25 @@ class ListActivity : CommonActivity(), ListInProgressFragment.OnInProgressFragme
         }
 
         val pagerAdapter2 = PagerAdapter2(this)
-        viewpager2List.adapter = pagerAdapter2
+        viewpager.adapter = pagerAdapter2
 
         bluetoothClass = BluetoothClass(this)
 
-        viewpager2List.registerOnPageChangeCallback(object : OnPageChangeCallback() {
+        viewpager.registerOnPageChangeCallback(object : OnPageChangeCallback() {
             override fun onPageSelected(position: Int) {
                 super.onPageSelected(position)
-                layoutListInProgress.isSelected = false
-                layoutListUploadFailed.isSelected = false
-                layoutListTodayDone.isSelected = false
+                layout_in_progress.isSelected = false
+                layout_upload_failed.isSelected = false
+                layout_today_done.isSelected = false
                 when (position) {
                     0 -> {
-                        layoutListInProgress.isSelected = true
+                        layout_in_progress.isSelected = true
                     }
                     1 -> {
-                        layoutListUploadFailed.isSelected = true
+                        layout_upload_failed.isSelected = true
                     }
                     2 -> {
-                        layoutListTodayDone.isSelected = true
+                        layout_today_done.isSelected = true
                     }
                     else -> {}
                 }
@@ -135,6 +118,7 @@ class ListActivity : CommonActivity(), ListInProgressFragment.OnInProgressFragme
                 resources.getString(R.string.msg_qdrive_auto_logout),
                 Toast.LENGTH_SHORT
             ).show()
+
             try {
                 val intent: Intent = if ("SG" == Preferences.userNation) {
                     Intent(

@@ -43,13 +43,7 @@ class ListInProgressAdapter(bluetoothListener: BluetoothListener) :
     private var expandedPos = -1
     private var listener: OnItemClickListener? = null
 
-    interface OnItemClickListener {
-        fun selectItem(v: View, selectedPos: Int, height: Int)
-    }
-
-    fun setOnItemClickListener(listener: OnItemClickListener) {
-        this.listener = listener
-    }
+    private var originalRowItem = ArrayList<RowItem>()
 
     var itemList = ArrayList<RowItem>()
         set(value) {
@@ -57,7 +51,19 @@ class ListInProgressAdapter(bluetoothListener: BluetoothListener) :
             itemList.addAll(value)
         }
 
-    private var originalRowItem = ArrayList<RowItem>()
+    init {
+        originalRowItem = ArrayList()
+        originalRowItem.addAll(itemList)
+        this.bluetoothListener = bluetoothListener
+    }
+
+    interface OnItemClickListener {
+        fun selectItem(v: View, selectedPos: Int, height: Int)
+    }
+
+    fun setOnItemClickListener(listener: OnItemClickListener) {
+        this.listener = listener
+    }
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): RecyclerView.ViewHolder {
         val view =
@@ -160,21 +166,6 @@ class ListInProgressAdapter(bluetoothListener: BluetoothListener) :
         @SuppressLint("SetTextI18n", "NotifyDataSetChanged")
         fun bind(position: Int) {
             val data = itemList[position]
-            if (adapterPosition == 0) {
-                val lp = LinearLayout.LayoutParams(
-                    LinearLayout.LayoutParams.MATCH_PARENT,
-                    LinearLayout.LayoutParams.WRAP_CONTENT
-                )
-                lp.setMargins(0, 0, 0, 0)
-                cardView.layoutParams = lp
-            } else {
-                val lp = LinearLayout.LayoutParams(
-                    LinearLayout.LayoutParams.MATCH_PARENT,
-                    LinearLayout.LayoutParams.WRAP_CONTENT
-                )
-                lp.setMargins(0, 24, 0, 0)
-                cardView.layoutParams = lp
-            }
 
             textDday.text = data.delay
             if (data.delay == "D+0" || data.delay == "D+1") {
@@ -347,8 +338,7 @@ class ListInProgressAdapter(bluetoothListener: BluetoothListener) :
 
             //우측 메뉴 아이콘 클릭 이벤트  Quick Menu
             menuIcon.setOnClickListener { v: View ->
-                val popup =
-                    PopupMenu(v.context, menuIcon)
+                val popup = PopupMenu(v.context, menuIcon)
                 popup.menuInflater.inflate(R.menu.quickmenu, popup.menu)
                 popup.show()
                 popup.setOnMenuItemClickListener { item: MenuItem ->
@@ -385,10 +375,12 @@ class ListInProgressAdapter(bluetoothListener: BluetoothListener) :
                     true
                 }
             }
+
             if (data.items?.get(0)?.secretNoType == "T") {    // Qtalk 안심번호 타입 T - Qnumber 사용
                 layoutTelephone.visibility = View.GONE
                 layoutMobile.visibility = View.GONE
                 imgLive10.visibility = View.VISIBLE
+
             } else if (data.items?.get(0)?.secretNoType == "P") {  // Phone 안심번호 - 핸드폰만 활성화
                 layoutTelephone.visibility = View.GONE
                 layoutMobile.visibility = View.VISIBLE
@@ -396,6 +388,7 @@ class ListInProgressAdapter(bluetoothListener: BluetoothListener) :
                 val content = SpannableString(data.items?.get(0)?.hp)
                 content.setSpan(UnderlineSpan(), 0, content.length, 0)
                 textMobileNumber.text = content
+
             } else {          //안심번호 사용안함
                 if (data.items?.get(0)?.tel != null && data.items?.get(0)?.tel!!.length > 5) {
                     layoutTelephone.visibility = View.VISIBLE
@@ -425,15 +418,17 @@ class ListInProgressAdapter(bluetoothListener: BluetoothListener) :
             cardView.setOnClickListener {
 
                 expandedPos = adapterPosition
-                childLayout.measure(0, 0)
                 listener?.selectItem(it, adapterPosition, it.height)
-                notifyDataSetChanged()
+                notifyItemChanged(adapterPosition)
             }
 
             try {
-                val orderType = data.order_type_etc
                 //    Log.e(TAG, "Order Type ETC : " + rowItem.get(groupPosition).getOrder_type_etc());
-                if (orderType != null && orderType.equals("DPC", ignoreCase = true)) {
+                if (data.order_type_etc != null && data.order_type_etc.equals(
+                        "DPC",
+                        ignoreCase = true
+                    )
+                ) {
                     imgQpost.visibility = View.VISIBLE
                 } else {
                     imgQpost.visibility = View.GONE
@@ -455,45 +450,49 @@ class ListInProgressAdapter(bluetoothListener: BluetoothListener) :
 
             //  Delivery / Pickup  Fail Reason
             if (data.items?.get(0)?.statReason != null && data.items?.get(0)?.statReason!!.isNotEmpty()) {
-                val reasonText: String?
+
                 when (data.items?.get(0)?.stat) {
                     BarcodeType.DELIVERY_FAIL -> {
-                        reasonText = DataUtil.getDeliveryFailedMsg(data.items?.get(0)?.statReason)
                         layoutFailed.visibility = View.VISIBLE
-                        textFailedReason.text = reasonText
+                        textFailedReason.text =
+                            DataUtil.getDeliveryFailedMsg(data.items?.get(0)?.statReason)
                     }
                     BarcodeType.PICKUP_FAIL -> {
-                        reasonText = DataUtil.getPickupFailedMsg(data.items?.get(0)?.statReason)
                         layoutFailed.visibility = View.VISIBLE
-                        textFailedReason.text = reasonText
+                        textFailedReason.text =
+                            DataUtil.getPickupFailedMsg(data.items?.get(0)?.statReason)
                     }
                     else -> {
                         layoutFailed.visibility = View.GONE
                     }
                 }
+
             } else {
                 layoutFailed.visibility = View.GONE
             }
 
             if (data.type == BarcodeType.TYPE_DELIVERY) {
                 textParcelAmountTitle.text =
-                    itemView.context.resources.getString(R.string.text_parcel_amount)
+                    textParcelAmountTitle.context.resources.getString(R.string.text_parcel_amount)
+
                 var parcelAmount = data.parcel_amount
-                if (parcelAmount == null) {
-                    parcelAmount = "0.00"
-                } else if (parcelAmount == "" || parcelAmount.lowercase(Locale.getDefault()) == "null") {
+                if (data.parcel_amount == null
+                    || data.parcel_amount == ""
+                    || data.parcel_amount.lowercase(Locale.getDefault()) == "null"
+                ) {
                     parcelAmount = "0.00"
                 }
                 textParcelAmount.text = parcelAmount
 
                 var parcelAmountUnit = data.currency
-                if (parcelAmountUnit == null) {
-                    parcelAmountUnit = "SGD"
-                } else if (parcelAmountUnit == "" || parcelAmountUnit.lowercase(Locale.getDefault()) == "null") {
+                if (parcelAmountUnit == null
+                    || parcelAmountUnit == ""
+                    || parcelAmountUnit.lowercase(Locale.getDefault()) == "null"
+                ) {
                     parcelAmountUnit = "SGD"
                 }
 
-                val currencyUnit: String = when (parcelAmountUnit) {
+                val currencyUnit = when (parcelAmountUnit) {
                     "SGD" -> {
                         "S$"
                     }
@@ -539,7 +538,7 @@ class ListInProgressAdapter(bluetoothListener: BluetoothListener) :
 
             } else {            // Pickup
                 textParcelAmountTitle.text =
-                    itemView.context.resources.getString(R.string.text_name)
+                    textParcelAmountTitle.context.resources.getString(R.string.text_name)
                 textParcelAmount.text = data.name
                 textParcelAmountUnit.visibility = View.GONE
                 layoutChildDeliveryButtons.visibility = View.GONE
@@ -582,7 +581,6 @@ class ListInProgressAdapter(bluetoothListener: BluetoothListener) :
                 } else {
                     layoutButtons2.visibility = View.GONE
                 }
-
 
             }
 
@@ -741,30 +739,30 @@ class ListInProgressAdapter(bluetoothListener: BluetoothListener) :
                 v.context.startActivity(intent)
             }
 
-            btnPickupVisitLog.setOnClickListener { v: View ->
-                val intent = Intent(v.context, PickupFailedActivity::class.java)
+            btnPickupVisitLog.setOnClickListener {
+                val intent = Intent(it.context, PickupFailedActivity::class.java)
                 intent.putExtra("type", BarcodeType.TYPE_PICKUP)
                 intent.putExtra("reqQty", data.qty)
                 intent.putExtra("applicant", data.name)
                 intent.putExtra("pickupNo", data.shipping)
-                v.context.startActivity(intent)
+                it.context.startActivity(intent)
             }
 
             // NOTIFICATION.  Outlet Pickup Done
-            btnOutletPickupScan.setOnClickListener { view: View ->
+            btnOutletPickupScan.setOnClickListener {
                 val intent = Intent(
-                    view.context,
+                    it.context,
                     OutletPickupStep1Activity::class.java
                 )
                 intent.putExtra(
                     "title",
-                    view.context.resources.getString(R.string.text_outlet_pickup_done)
+                    it.context.resources.getString(R.string.text_outlet_pickup_done)
                 )
                 intent.putExtra("pickup_no", data.shipping)
                 intent.putExtra("applicant", data.name)
                 intent.putExtra("qty", data.qty)
                 intent.putExtra("route", data.route)
-                view.context.startActivity(intent)
+                it.context.startActivity(intent)
             }
 
             btnQuickDelivered.setOnClickListener {
@@ -876,12 +874,5 @@ class ListInProgressAdapter(bluetoothListener: BluetoothListener) :
         notifyDataSetChanged()
     }
 
-    init {
-        originalRowItem = ArrayList()
-        originalRowItem.addAll(itemList)
-        this.bluetoothListener = bluetoothListener
-    }
-    fun getPosition(): Int {
-        return expandedPos
-    }
+
 }

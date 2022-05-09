@@ -23,7 +23,6 @@ import com.giosis.library.bluetooth.BluetoothListener
 import com.giosis.library.database.DatabaseHelper
 import com.giosis.library.main.PickupAssignResult
 import com.giosis.library.server.RetrofitClient
-import com.giosis.library.server.RetrofitClient.instanceDynamic
 import com.giosis.library.util.*
 import com.google.gson.Gson
 import com.google.gson.reflect.TypeToken
@@ -218,7 +217,10 @@ class ListInProgressFragment(var bluetoothListener: BluetoothListener) : Fragmen
         })
     }
 
-    fun RecyclerView.smoothSnapToPosition(position: Int, snapMode: Int = LinearSmoothScroller.SNAP_TO_START) {
+    fun RecyclerView.smoothSnapToPosition(
+        position: Int,
+        snapMode: Int = LinearSmoothScroller.SNAP_TO_START
+    ) {
         val smoothScroller = object : LinearSmoothScroller(this.context) {
             override fun getVerticalSnapPreference(): Int = snapMode
             override fun getHorizontalSnapPreference(): Int = snapMode
@@ -270,10 +272,7 @@ class ListInProgressFragment(var bluetoothListener: BluetoothListener) : Fragmen
         // LIST 들어갈 때 TODAY DONE Count 표시하기 위함.
         // ViewPage 특성상 TODAY DONE 페이지는 처음에 호출되지 않아서 0 으로 표시되어있음.
         try {
-            instanceDynamic().requestGetTodayPickupDoneList(
-                Preferences.userId, "", "",
-                DataUtil.appID, Preferences.userNation
-            )
+            RetrofitClient.instanceDynamic().requestGetTodayPickupDoneList()
                 .subscribeOn(Schedulers.io())
                 .observeOn(AndroidSchedulers.mainThread())
                 .subscribe({

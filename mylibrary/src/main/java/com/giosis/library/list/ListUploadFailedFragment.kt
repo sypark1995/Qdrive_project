@@ -21,7 +21,7 @@ import com.giosis.library.gps.GPSTrackerManager
 import com.giosis.library.util.DataUtil
 import com.giosis.library.util.PermissionActivity
 import com.giosis.library.util.PermissionChecker
-import com.giosis.library.util.Preferences.userId
+import com.giosis.library.util.Preferences
 import java.util.*
 
 /**
@@ -167,11 +167,13 @@ class ListUploadFailedFragment : Fragment(), SearchView.OnQueryTextListener,
 
     override fun onResume() {
         super.onResume()
-        val opID = userId
+
         val cs2 =
-            getInstance()["SELECT * FROM " + DatabaseHelper.DB_TABLE_INTEGRATION_LIST + " WHERE punchOut_stat <> 'S' and chg_dt is not null and reg_id='" + opID + "' order by " + orderby]
+            getInstance()["SELECT * FROM " + DatabaseHelper.DB_TABLE_INTEGRATION_LIST + " WHERE punchOut_stat <> 'S' and chg_dt is not null and reg_id='" + Preferences.userId + "' order by " + orderby]
+
         rowItems = ArrayList()
         var childItems: ArrayList<ChildItemNotUpload>
+
         if (cs2.moveToFirst()) {
             do {
                 childItems = ArrayList()
