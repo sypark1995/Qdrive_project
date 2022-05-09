@@ -16,7 +16,6 @@ import android.view.inputmethod.InputMethodManager
 import android.widget.*
 import androidx.constraintlayout.widget.ConstraintLayout
 import androidx.fragment.app.Fragment
-import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.LinearSmoothScroller
 import androidx.recyclerview.widget.RecyclerView
 import com.giosis.library.R
@@ -211,15 +210,11 @@ class ListInProgressFragment(var bluetoothListener: BluetoothListener) : Fragmen
 
             override fun onNothingSelected(parent: AdapterView<*>?) {}
         }
-        val linearLayoutManager = exlistCardList!!.layoutManager as LinearLayoutManager
 
-//        exlistCardList!!.layoutManager = LinearLayoutManager(requireActivity())
         adapter.setOnItemClickListener(object : ListInProgressAdapter.OnItemClickListener {
             override fun selectItem(v: View, selectedPos: Int, height: Int) {
-//                linearLayoutManager.scrollToPositionWithOffset(selectedPos,0)
                 exlistCardList!!.smoothSnapToPosition(selectedPos)
             }
-
         })
     }
 
