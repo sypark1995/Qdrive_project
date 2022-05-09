@@ -79,6 +79,7 @@ class ListTodayDoneAdapter(bluetoothListener: BluetoothListener) :
             view.findViewById(R.id.layout_list_item_driver_memo)
         private val textListItemDriverMemo: TextView =
             view.findViewById(R.id.text_list_item_driver_memo)
+
         @SuppressLint("NotifyDataSetChanged")
         fun bind(position: Int) {
             val data = rowItem[position]

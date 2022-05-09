@@ -3,6 +3,8 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
+    android:layout_marginTop="5dp"
+    android:layout_marginBottom="5dp"
     android:background="@color/color_f0f0f0"
     android:orientation="vertical">
 
@@ -10,7 +12,6 @@
         android:id="@+id/layout_list_item_card_view"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_marginTop="10dp"
         android:animateLayoutChanges="true"
         android:background="@drawable/bg_round_10_ffffff_shadow"
         android:orientation="vertical"
@@ -396,6 +397,7 @@
                         android:layout_width="wrap_content"
                         android:layout_height="match_parent"
                         android:textColor="@color/color_666666"
+                        android:text="0.00"
                         android:textSize="@dimen/text_size_26px"
                         tools:text="0.00" />
 

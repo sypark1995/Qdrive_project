@@ -227,9 +227,9 @@ class ListUploadFailedAdapter :
             }
 
             //  Reason
-            if (data.items?.get(0)?.statReason != null && !data.items?.get(0)?.statReason!!.contains(
-                    " "
-                ) && data.items?.get(0)?.statReason!!.isNotEmpty()
+            if (data.items?.get(0)?.statReason != null
+                && data.items?.get(0)?.statReason!! != " "
+                && data.items?.get(0)?.statReason!!.isNotEmpty()
             ) {
                 layoutListItemChildFailedReason.visibility = View.VISIBLE
                 when (data.items?.get(0)?.stat) {
@@ -453,8 +453,6 @@ class ListUploadFailedAdapter :
                 }
             }
         }
-
-
     }
 
     override fun getItemCount(): Int {
