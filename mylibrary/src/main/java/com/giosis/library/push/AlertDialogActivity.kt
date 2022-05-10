@@ -57,6 +57,11 @@ class AlertDialogActivity : Activity() {
                 ""
             }
 
+            val activityName = if (bun.getString(PushData.ACTIVITY_NAME) != null) {
+                bun.getString(PushData.ACTIVITY_NAME)
+            } else {
+                ""
+            }
 
             if (actionKey == PushData.LZD_PICK) {
                 binding.titleText.text = "Pickup no : $actionValue"
@@ -83,10 +88,25 @@ class AlertDialogActivity : Activity() {
                     || actionKey == PushData.FL_TAKEBACK
                     || actionKey == PushData.LZD_PICK
                 ) {
-                    val intent = Intent(this@AlertDialogActivity, MainActivity::class.java)
-                    intent.putExtra(PushData.DOWNLOAD, "Y")
-                    startActivity(intent)
-                    overridePendingTransition(0, 0)
+                    if (activityName!!.contains("com.giosis.library.barcodescanner.CaptureActivity1")) {
+                        finish()
+                    } else {
+                        if (actionValue!!.isEmpty()) {
+                            try {
+                                // ok 버튼 눌러서 이동하면 Notification 지우기
+                                NotificationManagerCompat.from(application)
+                                    .cancel(actionValue.substring(0, 9).toInt())
+
+                            } catch (e: Exception) {
+
+                            }
+                        }
+                        val intent = Intent(this@AlertDialogActivity, MainActivity::class.java)
+                        intent.putExtra(PushData.DOWNLOAD, "Y")
+                        intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP or Intent.FLAG_ACTIVITY_NEW_TASK)
+                        startActivity(intent)
+                        overridePendingTransition(0, 0)
+                    }
 
                 } else if (actionKey == PushData.LAE) {      // 2019.02
 

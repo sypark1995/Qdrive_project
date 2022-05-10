@@ -6,7 +6,7 @@ object PushData {
     const val MESSAGE = "message"
     const val ACTION_KEY = "action_key"
     const val ACTION_VALUE = "action_value"
-
+    const val ACTIVITY_NAME = "activity_name"
 
     ////////////////////////////////////
     const val PICKUP_CANCEL = "PX"
