@@ -35,6 +35,8 @@ object Preferences {
     private val PREF_KEY_LIST_SORT_INDEX = "sortIndex"
     private val PREF_KEY_SCAN_VIBRATION = "scanVibration"
     private val PREF_KEY_LANGUAGE = "PREF_LANGUAGE_SETTING"
+    private val PREF_KEY_PICKUP_PING = "pickup_ping"
+    private val PREF_KEY_DELIVERY_PING = "delivery_ping"
 
     // SG , MY 둘중 하나 만 넣고 빼기로....
     var appInfo: String
@@ -106,6 +108,13 @@ object Preferences {
         get() = preferences.getString(PREF_KEY_AUTH_NO, "").toString()
         set(value) = preferences.edit().putString(PREF_KEY_AUTH_NO, value).apply()
 
+    var pickupPing: String
+        get() = preferences.getString(PREF_KEY_PICKUP_PING, "default").toString()
+        set(value) = preferences.edit().putString(PREF_KEY_PICKUP_PING, value).apply()
+
+    var deliveryPing: String
+        get() = preferences.getString(PREF_KEY_DELIVERY_PING, "default").toString()
+        set(value) = preferences.edit().putString(PREF_KEY_DELIVERY_PING, value).apply()
 
     const val LANGUAGE_ENGLISH = "en"
     const val LANGUAGE_MALAY = "ms"

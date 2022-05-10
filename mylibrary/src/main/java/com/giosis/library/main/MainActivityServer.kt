@@ -26,6 +26,10 @@ import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
+import java.net.Inet4Address
+import java.net.InetAddress
+import java.net.NetworkInterface
+import java.net.UnknownHostException
 import java.text.SimpleDateFormat
 import java.util.*
 
@@ -62,6 +66,8 @@ object MainActivityServer {
             val response =
                 RetrofitClient.instanceCoroutine().requestGetPickupList(network)
 
+            Preferences.pickupPing = pingCheck()
+
             if (response.resultCode >= 0) {
                 pickupList = Gson().fromJson(
                     response.resultObject,
@@ -79,6 +85,8 @@ object MainActivityServer {
         try {
             val response =
                 RetrofitClient.instanceCoroutine().requestGetDeliveryList(network)
+
+            Preferences.deliveryPing = pingCheck()
 
             if (response.resultCode >= 0) {
                 deliveryList = Gson().fromJson(
@@ -585,6 +593,45 @@ object MainActivityServer {
                     }
                 }
             }
+        }
+    }
+
+    private fun pingCheck(): String {
+        return try {
+            val runTime = Runtime.getRuntime()
+            val cmd = "ping -c 1 -W 2 ${getIpAddress()}"
+
+            val proc = runTime.exec(cmd)
+            proc.waitFor()
+            return when (proc.exitValue()) {
+                0 -> "Ping Success"
+                1 -> "Ping Fail"
+                else -> "Ping Error"
+            }
+        } catch (e: Exception) {
+            e.toString()
+        }
+    }
+
+    private fun getIpAddress(): String {
+        var result = ""
+        NetworkInterface.getNetworkInterfaces().iterator().forEach { networkInterface ->
+            networkInterface.inetAddresses.iterator().forEach {
+                if (!it.isLoopbackAddress && isIPv4Address(it.hostAddress)) {
+                    result = it.hostAddress
+                }
+            }
+        }
+        return result
+    }
+
+    private fun isIPv4Address(address: String): Boolean {
+        return if (address.isEmpty()) {
+            false
+        } else try {
+            InetAddress.getByName(address) is Inet4Address
+        } catch (exception: UnknownHostException) {
+            false
         }
     }
 
