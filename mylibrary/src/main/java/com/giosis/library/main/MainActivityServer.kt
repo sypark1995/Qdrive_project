@@ -60,10 +60,14 @@ object MainActivityServer {
         var errorMsg = ""
 
         try {
+            pingCheck()
+        } catch (e: Exception) {
+
+        }
+
+        try {
             val response =
                 RetrofitClient.instanceCoroutine().requestGetPickupList(network)
-
-            pingCheck()
 
             if (response.resultCode >= 0) {
                 pickupList = Gson().fromJson(

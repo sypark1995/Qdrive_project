@@ -106,10 +106,16 @@ class FCMIntentService : FirebaseMessagingService() {
                     bun.putString(PushData.MESSAGE, message)
                     bun.putString(PushData.ACTION_KEY, actionKey)
                     bun.putString(PushData.ACTION_VALUE, actionValue)
-                    bun.putString(
-                        PushData.ACTIVITY_NAME,
-                        (getSystemService(ACTIVITY_SERVICE) as ActivityManager).getRunningTasks(1)[0].topActivity!!.className
-                    )
+
+                    try {
+                        bun.putString(
+                            PushData.ACTIVITY_NAME,
+                            (getSystemService(ACTIVITY_SERVICE) as ActivityManager).getRunningTasks(1)[0].topActivity!!.className
+                        )
+                    } catch (e: Exception) {
+
+                    }
+
                     // Alert 메세지 기능
                     val popupIntent = Intent(applicationContext, AlertDialogActivity::class.java)
                     popupIntent.putExtras(bun)
