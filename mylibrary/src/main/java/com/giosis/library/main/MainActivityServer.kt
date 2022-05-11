@@ -26,10 +26,7 @@ import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
-import java.net.Inet4Address
-import java.net.InetAddress
-import java.net.NetworkInterface
-import java.net.UnknownHostException
+import com.google.firebase.crashlytics.FirebaseCrashlytics
 import java.text.SimpleDateFormat
 import java.util.*
 
@@ -66,7 +63,7 @@ object MainActivityServer {
             val response =
                 RetrofitClient.instanceCoroutine().requestGetPickupList(network)
 
-            Preferences.pickupPing = pingCheck()
+            pingCheck()
 
             if (response.resultCode >= 0) {
                 pickupList = Gson().fromJson(
@@ -85,8 +82,6 @@ object MainActivityServer {
         try {
             val response =
                 RetrofitClient.instanceCoroutine().requestGetDeliveryList(network)
-
-            Preferences.deliveryPing = pingCheck()
 
             if (response.resultCode >= 0) {
                 deliveryList = Gson().fromJson(
@@ -596,42 +591,33 @@ object MainActivityServer {
         }
     }
 
-    private fun pingCheck(): String {
-        return try {
-            val runTime = Runtime.getRuntime()
-            val cmd = "ping -c 1 -W 2 ${getIpAddress()}"
+    private fun pingCheck() {
 
-            val proc = runTime.exec(cmd)
-            proc.waitFor()
-            return when (proc.exitValue()) {
-                0 -> "Ping Success"
-                1 -> "Ping Fail"
-                else -> "Ping Error"
+        CoroutineScope(Dispatchers.IO).launch {
+            val result: String = try {
+                val runTime = Runtime.getRuntime()
+                val cmd = "ping -c 1 -W 10 211.115.104.21"
+
+                val proc = runTime.exec(cmd)
+                proc.waitFor()
+
+
+                proc.exitValue().toString()
+            } catch (e: Exception) {
+                e.toString()
             }
-        } catch (e: Exception) {
-            e.toString()
-        }
-    }
 
-    private fun getIpAddress(): String {
-        var result = ""
-        NetworkInterface.getNetworkInterfaces().iterator().forEach { networkInterface ->
-            networkInterface.inetAddresses.iterator().forEach {
-                if (!it.isLoopbackAddress && isIPv4Address(it.hostAddress)) {
-                    result = it.hostAddress
-                }
+            when (result) {
+                "0" -> "Ping Success"
+                "1" -> "Ping Fail"
+                "2" -> "Ping Error"
+                else -> result
             }
-        }
-        return result
-    }
 
-    private fun isIPv4Address(address: String): Boolean {
-        return if (address.isEmpty()) {
-            false
-        } else try {
-            InetAddress.getByName(address) is Inet4Address
-        } catch (exception: UnknownHostException) {
-            false
+            FirebaseCrashlytics.getInstance().setCustomKey(
+                "PING",
+                result
+            )
         }
     }
 

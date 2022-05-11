@@ -234,16 +234,6 @@ class LoginActivity : CommonActivity() {
                                                         Preferences.userId
                                                     )
 
-                                                    FirebaseCrashlytics.getInstance().setCustomKey(
-                                                        "NETWORK",
-                                                        NetworkUtil.getNetworkType(this@LoginActivity)
-                                                    )
-
-                                                    FirebaseCrashlytics.getInstance().setCustomKey(
-                                                        "PING",
-                                                        "Pickup Ping " + Preferences.pickupPing + "Delivery Ping " + Preferences.deliveryPing
-                                                    )
-
                                                     val intent = Intent(
                                                         this@LoginActivity,
                                                         MainActivity::class.java
