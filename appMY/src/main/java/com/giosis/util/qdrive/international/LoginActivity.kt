@@ -4,7 +4,9 @@ import android.annotation.SuppressLint
 import android.app.AlertDialog
 import android.content.Context
 import android.content.Intent
+import android.content.res.Resources
 import android.net.Uri
+import android.os.Build
 import android.os.Bundle
 import android.provider.Settings
 import android.util.Log
@@ -25,6 +27,7 @@ import com.giosis.library.server.RetrofitClient
 import com.giosis.library.setting.DeveloperModeActivity
 import com.giosis.library.util.*
 import com.giosis.util.qdrive.international.databinding.ActivityLoginBinding
+import com.giosis.util.qdrive.international.util.Common
 import com.google.gson.Gson
 import io.reactivex.rxjava3.android.schedulers.AndroidSchedulers
 import io.reactivex.rxjava3.schedulers.Schedulers
@@ -46,7 +49,6 @@ class LoginActivity : CommonActivity() {
 
     private var spinnerList = ArrayList<LoginNation>()
     private var spinnerPosition = 0
-    private lateinit var appVersion: String
 
     // Location
     private val gpsTrackerManager: GPSTrackerManager? by lazy {
@@ -60,7 +62,6 @@ class LoginActivity : CommonActivity() {
         PermissionChecker.ACCESS_FINE_LOCATION, PermissionChecker.ACCESS_COARSE_LOCATION,
         PermissionChecker.READ_EXTERNAL_STORAGE, PermissionChecker.WRITE_EXTERNAL_STORAGE
     )
-
 
     @SuppressLint("SetTextI18n")
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -112,33 +113,45 @@ class LoginActivity : CommonActivity() {
 
 
         // Nation
+        val nationCode = if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.N) {
+            Resources.getSystem().configuration.locales[0].country
+        } else {
+            Resources.getSystem().configuration.locale.country
+        }
+
         spinnerList.add(
             LoginNation(
                 resources.getString(R.string.text_malaysia),
-                "MY",
+                Common.MY,
                 "login_icon_my"
             )
         )
         spinnerList.add(
             LoginNation(
                 resources.getString(R.string.text_Indonesia),
-                "ID",
+                Common.ID,
                 "login_icon_id"
+            )
+        )
+        spinnerList.add(
+            LoginNation(
+                resources.getString(R.string.text_signature),
+                Common.SG,
+                "login_icon_sg"
             )
         )
 
         binding.spinnerSelectNation.adapter = LoginSpinnerAdapter(this, spinnerList)
 
-        when (Preferences.userNation) {
-            "MY" -> {
+        when (nationCode) {
+            Common.MY -> {
                 binding.spinnerSelectNation.setSelection(0)
             }
-            "ID" -> {
+            Common.ID -> {
                 binding.spinnerSelectNation.setSelection(1)
             }
-            else -> {
-                // TEST
-                binding.spinnerSelectNation.setSelection(0)
+            else -> {   //SG
+                binding.spinnerSelectNation.setSelection(2)
             }
         }
 
@@ -181,7 +194,6 @@ class LoginActivity : CommonActivity() {
         //
         binding.editLoginId.setText(Preferences.userId)
         binding.editLoginPassword.setText(Preferences.userPw)
-        appVersion = getVersion()
 
         // Login
         binding.btnLoginSign.setOnClickListener {
@@ -228,8 +240,14 @@ class LoginActivity : CommonActivity() {
 
                     progressBar.visibility = View.VISIBLE
 
+                    val chanel = if (userNationCode == Common.SG) {
+                        Common.QDRIVE
+                    } else {
+                        Common.QDRIVE_V2
+                    }
+
                     RetrofitClient.instanceDynamic().requestServerLogin(
-                        userID, userPW, "QDRIVE_V2", "", deviceUUID, "",
+                        userID, userPW, chanel, "", deviceUUID, "",
                         latitude.toString(), longitude.toString(), "QDRIVE", userNationCode
                     ).subscribeOn(Schedulers.io())
                         .observeOn(AndroidSchedulers.mainThread())
@@ -244,7 +262,7 @@ class LoginActivity : CommonActivity() {
                                 binding.editLoginPassword.setText("")
 
                                 when {
-                                    it.resultCode == -10 -> {
+                                    it.resultCode == -10  && !BuildConfig.DEBUG -> {
                                         showDialog(resources.getString(R.string.msg_account_deactivated))
                                     }
                                     it.resultMsg != "" -> {
@@ -267,11 +285,11 @@ class LoginActivity : CommonActivity() {
                                     try {
                                         val response = RetrofitClient.instanceDynamic()
                                             .requestAppVersionCheck()
-
-                                        if (response.resultCode == -10) {
+                                        Log.e(">>",Preferences.userNation)
+                                        if (response.resultCode == -10 && !BuildConfig.DEBUG) {
                                             val msg = java.lang.String.format(
                                                 resources.getString(R.string.msg_update_version),
-                                                loginData.version,
+                                                getVersion(),
                                                 loginData.version
                                             )
                                             goGooglePlay(msg)
@@ -391,7 +409,7 @@ class LoginActivity : CommonActivity() {
         }
 
         binding.textLoginVersion.text =
-            "$info${resources.getString(R.string.text_app_version)} - $appVersion"
+            "$info${resources.getString(R.string.text_app_version)} - ${getVersion()}"
 
         if (isPermissionTrue) {
 
