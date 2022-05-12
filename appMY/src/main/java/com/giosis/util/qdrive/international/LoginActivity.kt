@@ -18,6 +18,7 @@ import android.widget.AdapterView
 import android.widget.LinearLayout
 import android.widget.ProgressBar
 import androidx.lifecycle.lifecycleScope
+import com.bumptech.glide.Glide
 import com.giosis.library.data.LoginInfo
 import com.giosis.library.database.DatabaseHelper
 import com.giosis.library.gps.GPSTrackerManager
@@ -29,6 +30,7 @@ import com.giosis.library.util.*
 import com.giosis.util.qdrive.international.databinding.ActivityLoginBinding
 import com.giosis.util.qdrive.international.util.Common
 import com.google.gson.Gson
+import com.google.gson.reflect.TypeToken
 import io.reactivex.rxjava3.android.schedulers.AndroidSchedulers
 import io.reactivex.rxjava3.schedulers.Schedulers
 import kotlinx.coroutines.launch
@@ -47,7 +49,7 @@ class LoginActivity : CommonActivity() {
         ProgressBar(this)
     }
 
-    private var spinnerList = ArrayList<LoginNation>()
+    private var nationList = ArrayList<LoginNation>()
     private var spinnerPosition = 0
 
     // Location
@@ -119,29 +121,7 @@ class LoginActivity : CommonActivity() {
             Resources.getSystem().configuration.locale.country
         }
 
-        spinnerList.add(
-            LoginNation(
-                resources.getString(R.string.text_malaysia),
-                Common.MY,
-                "login_icon_my"
-            )
-        )
-        spinnerList.add(
-            LoginNation(
-                resources.getString(R.string.text_Indonesia),
-                Common.ID,
-                "login_icon_id"
-            )
-        )
-        spinnerList.add(
-            LoginNation(
-                resources.getString(R.string.text_signature),
-                Common.SG,
-                "login_icon_sg"
-            )
-        )
-
-        binding.spinnerSelectNation.adapter = LoginSpinnerAdapter(this, spinnerList)
+        getNation()
 
         when (nationCode) {
             Common.MY -> {
@@ -156,7 +136,9 @@ class LoginActivity : CommonActivity() {
         }
 
         binding.layoutLoginSelectNation.setOnClickListener {
-
+            if (nationList.size == 0) {
+                getNation()
+            }
             binding.spinnerSelectNation.performClick()
         }
 
@@ -174,14 +156,11 @@ class LoginActivity : CommonActivity() {
                         hideKeyboard()
 
                         spinnerPosition = position
-
-                        val resourceId = resources.getIdentifier(
-                            spinnerList[position].nationImg,
-                            "drawable",
-                            packageName
+                        Glide.with(this@LoginActivity).load(nationList[position].nation_img_url).into(
+                            binding.imgLoginNation
                         )
-                        binding.imgLoginNation.setBackgroundResource(resourceId)
-                        binding.textLoginNation.text = spinnerList[position].nation
+
+                        binding.textLoginNation.text = nationList[position].nation_nm
                         Log.e(tag, " Select Nation : ${binding.textLoginNation.text}")
                     }
                 }
@@ -200,7 +179,7 @@ class LoginActivity : CommonActivity() {
 
             hideKeyboard()
 
-            val userNationCode = spinnerList[spinnerPosition].nationCode
+            val userNationCode = nationList[spinnerPosition].nation_cd
 
             val userID = binding.editLoginId.text.toString().trim()
             val userPW = binding.editLoginPassword.text.toString().trim()
@@ -514,6 +493,24 @@ class LoginActivity : CommonActivity() {
         }
         val alertDialog = alertBuilder.create()
         alertDialog.show()
+    }
+
+    private fun getNation() {
+        lifecycleScope.launch {
+            try {
+                val response = RetrofitClient.instanceDynamic().requestNationList()
+                if (response.resultCode == 0) {
+                    nationList = Gson().fromJson(
+                        response.resultObject,
+                        object : TypeToken<ArrayList<LoginNation>>() {}.type
+                    )
+                }
+            } catch (e: java.lang.Exception) {
+                Log.e(tag,e.toString())
+            }
+
+            binding.spinnerSelectNation.adapter = LoginSpinnerAdapter(this@LoginActivity, nationList)
+        }
     }
 
     override fun onDestroy() {

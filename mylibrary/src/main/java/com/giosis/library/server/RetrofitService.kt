@@ -642,5 +642,8 @@ interface RetrofitService {
     suspend fun requestAppVersionCheck(
         @Field("nation_cd") nation_cd: String = Preferences.userNation
     ): APIModel
+
+    @POST("GetServiceNationList")
+    suspend fun requestNationList(): APIModel
 }
 

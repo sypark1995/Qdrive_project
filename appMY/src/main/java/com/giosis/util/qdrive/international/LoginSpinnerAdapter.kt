@@ -5,8 +5,8 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.BaseAdapter
-import android.widget.ImageView
 import android.widget.TextView
+import com.bumptech.glide.Glide
 
 class LoginSpinnerAdapter(val context: Context, private val nationList: ArrayList<LoginNation>) : BaseAdapter() {
 
@@ -14,15 +14,13 @@ class LoginSpinnerAdapter(val context: Context, private val nationList: ArrayLis
 
         val view: View = LayoutInflater.from(context).inflate(R.layout.item_login_nation, null)
 
-        val img_login_spinner_item = view.findViewById<ImageView>(R.id.img_login_spinner_item)
-        val text_login_spinner_item = view.findViewById<TextView>(R.id.text_login_spinner_item)
+        val textItem = view.findViewById<TextView>(R.id.text_login_spinner_item)
 
 
         val nation = nationList[position]
 
-        val resourceId = context.resources.getIdentifier(nation.nationImg, "drawable", context.packageName)
-        img_login_spinner_item.setBackgroundResource(resourceId)
-        text_login_spinner_item.text = nation.nation
+        Glide.with(context).load(nation.nation_img_url).error(R.drawable.login_icon_sg).into(view.findViewById(R.id.img_login_spinner_item))
+        textItem.text = nation.nation_nm
 
         return view
     }

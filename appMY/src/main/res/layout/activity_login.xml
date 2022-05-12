@@ -147,7 +147,7 @@
                 android:layout_gravity="center"
                 android:layout_marginStart="8dp"
                 android:layout_marginEnd="4dp"
-                android:background="@drawable/login_icon_my" />
+                android:background="@drawable/login_icon_sg" />
 
             <TextView
                 android:id="@+id/text_login_nation"
@@ -155,7 +155,7 @@
                 android:layout_height="wrap_content"
                 android:layout_gravity="center"
                 android:layout_marginEnd="8dp"
-                android:text="@string/text_malaysia"
+                android:text="@string/text_singapore"
                 android:textColor="@color/white"
                 android:textSize="@dimen/text_size_28px" />
         </LinearLayout>

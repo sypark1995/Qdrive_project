@@ -1,7 +1,9 @@
 package com.giosis.util.qdrive.international
 
-class LoginNation(
-    val nation: String,
-    val nationCode: String,
-    val nationImg: String
-)
+import java.io.Serializable
+
+data class LoginNation(
+    val nation_nm: String,
+    val nation_cd: String,
+    val nation_img_url: String
+): Serializable
