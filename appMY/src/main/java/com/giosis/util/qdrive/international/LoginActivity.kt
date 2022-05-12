@@ -112,21 +112,18 @@ class LoginActivity : CommonActivity() {
         getNation()
 
         // Nation
-        val nationCode = if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.N) {
+        var nationCode = if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.N) {
             Resources.getSystem().configuration.locales[0].country
         } else {
             Resources.getSystem().configuration.locale.country
         }
 
-        when (nationCode) {
-            Common.MY -> {
-                binding.spinnerSelectNation.setSelection(0)
-            }
-            Common.ID -> {
-                binding.spinnerSelectNation.setSelection(1)
-            }
-            else -> {   //SG
-                binding.spinnerSelectNation.setSelection(2)
+        nationCode = "MY"
+        for (item in nationList) {
+            if (nationCode == item.nation_cd) {
+                binding.textLoginNation.text = item.nation_nm
+                Glide.with(this@LoginActivity).load(item.nation_img_url).into(binding.imgLoginNation)
+                break
             }
         }
 
