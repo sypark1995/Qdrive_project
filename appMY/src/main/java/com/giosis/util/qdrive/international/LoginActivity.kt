@@ -123,7 +123,7 @@ class LoginActivity : CommonActivity() {
             } else {
                 Resources.getSystem().configuration.locale.country
             }
-
+            Log.e(">>>>",nationCode)
             for ((index, item) in nationList.withIndex()) {
                 if (nationCode == item.nation_cd) {
                     binding.textLoginNation.text = item.nation_nm
@@ -131,7 +131,7 @@ class LoginActivity : CommonActivity() {
                         .load(item.nation_img_url)
                         .into(binding.imgLoginNation)
 
-                    binding.spinnerSelectNation.setSelection(1)
+                    binding.spinnerSelectNation.setSelection(index)
 
                     spinnerPosition = index
                     break
