@@ -8,7 +8,8 @@ import android.widget.BaseAdapter
 import android.widget.TextView
 import com.bumptech.glide.Glide
 
-class LoginSpinnerAdapter(val context: Context, private val nationList: ArrayList<LoginNation>) : BaseAdapter() {
+class LoginSpinnerAdapter(val context: Context, private val nationList: ArrayList<LoginNation>) :
+    BaseAdapter() {
 
     override fun getView(position: Int, convertView: View?, parent: ViewGroup?): View {
 
@@ -16,10 +17,13 @@ class LoginSpinnerAdapter(val context: Context, private val nationList: ArrayLis
 
         val textItem = view.findViewById<TextView>(R.id.text_login_spinner_item)
 
-
         val nation = nationList[position]
 
-        Glide.with(context).load(nation.nation_img_url).error(R.drawable.login_icon_sg).into(view.findViewById(R.id.img_login_spinner_item))
+        Glide.with(context)
+            .load(nation.nation_img_url)
+            .error(R.drawable.login_icon_sg)
+            .into(view.findViewById(R.id.img_login_spinner_item))
+
         textItem.text = nation.nation_nm
 
         return view

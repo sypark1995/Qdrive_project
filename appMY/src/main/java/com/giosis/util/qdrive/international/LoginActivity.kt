@@ -1,5 +1,6 @@
 package com.giosis.util.qdrive.international
 
+
 import android.annotation.SuppressLint
 import android.app.AlertDialog
 import android.content.Context
@@ -35,7 +36,6 @@ import io.reactivex.rxjava3.android.schedulers.AndroidSchedulers
 import io.reactivex.rxjava3.schedulers.Schedulers
 import kotlinx.coroutines.launch
 import java.io.File
-import java.util.*
 
 
 class LoginActivity : CommonActivity() {
@@ -88,23 +88,19 @@ class LoginActivity : CommonActivity() {
             )
         }
 
-
         var showDeveloperModeClickCount = 0
 
         binding.imgLoginBottomLogo.setOnClickListener {
 
             if (showDeveloperModeClickCount == 10) {
-
                 showDeveloperModeClickCount = 0
 
                 val intent = Intent(this, DeveloperModeActivity::class.java)
                 startActivity(intent)
             } else {
-
                 showDeveloperModeClickCount++
             }
         }
-
 
         progressBar.layoutParams = LinearLayout.LayoutParams(
             ViewGroup.LayoutParams.WRAP_CONTENT,
@@ -113,6 +109,7 @@ class LoginActivity : CommonActivity() {
         binding.layoutLogin.addView(progressBar)
         progressBar.visibility = View.GONE
 
+        getNation()
 
         // Nation
         val nationCode = if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.N) {
@@ -120,8 +117,6 @@ class LoginActivity : CommonActivity() {
         } else {
             Resources.getSystem().configuration.locale.country
         }
-
-        getNation()
 
         when (nationCode) {
             Common.MY -> {
@@ -150,26 +145,23 @@ class LoginActivity : CommonActivity() {
                     position: Int,
                     id: Long
                 ) {
-
                     parent?.let {
 
-                        hideKeyboard()
-
                         spinnerPosition = position
-                        Glide.with(this@LoginActivity).load(nationList[position].nation_img_url)
-                            .into(
-                                binding.imgLoginNation
-                            )
+                        Glide.with(this@LoginActivity)
+                            .load(nationList[position].nation_img_url)
+                            .into(binding.imgLoginNation)
 
                         binding.textLoginNation.text = nationList[position].nation_nm
                         Log.e(tag, " Select Nation : ${binding.textLoginNation.text}")
                     }
+
+                    hideKeyboard()
                 }
 
                 override fun onNothingSelected(p0: AdapterView<*>?) {
                 }
             }
-
 
         //
         binding.editLoginId.setText(Preferences.userId)
@@ -465,7 +457,7 @@ class LoginActivity : CommonActivity() {
         }
     }
 
-    fun goGooglePlay(msg: String?) {
+    private fun goGooglePlay(msg: String?) {
 
         val alertBuilder = AlertDialog.Builder(this)
         alertBuilder.setTitle(resources.getString(R.string.text_alert))
@@ -483,7 +475,7 @@ class LoginActivity : CommonActivity() {
     }
 
 
-    fun goSMSVerification(msg: String?) {
+    private fun goSMSVerification(msg: String?) {
 
         val alertBuilder = AlertDialog.Builder(this)
         alertBuilder.setTitle(resources.getString(R.string.text_alert))
