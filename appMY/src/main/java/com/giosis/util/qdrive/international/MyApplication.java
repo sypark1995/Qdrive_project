@@ -35,7 +35,6 @@ public class MyApplication extends MultiDexApplication {
         LocaleManager.Companion.getInstance(this);
 
         Preferences.INSTANCE.init(this);
-        Preferences.INSTANCE.setAppInfo("MY");
         Preferences.INSTANCE.setUserNation("MY");
 
         context = getApplicationContext();

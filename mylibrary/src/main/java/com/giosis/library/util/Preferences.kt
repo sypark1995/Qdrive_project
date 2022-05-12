@@ -37,9 +37,6 @@ object Preferences {
     private val PREF_KEY_LANGUAGE = "PREF_LANGUAGE_SETTING"
 
     // SG , MY 둘중 하나 만 넣고 빼기로....
-    var appInfo: String
-        get() = preferences.getString(APP_INFO, "SG").toString()
-        set(value) = preferences.edit().putString(APP_INFO, value).apply()
 
     var userAgent: String
         get() = preferences.getString(USER_AGENT, "").toString()

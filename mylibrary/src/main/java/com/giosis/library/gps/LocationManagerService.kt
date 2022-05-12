@@ -53,7 +53,7 @@ class LocationManagerService : Service() {
             val pendingIntent = PendingIntent.getActivity(this, 0, notificationIntent, 0)
             var resourceId = resources.getIdentifier("qdrive_icon", "drawable", packageName)
 
-            if (!Preferences.userNation.equals("SG", ignoreCase = true)) {
+            if (Preferences.userNation != "SG") {
                 resourceId = resources.getIdentifier("icon_qdrive_my", "drawable", packageName)
             }
 

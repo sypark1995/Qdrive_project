@@ -16,9 +16,11 @@ import androidx.lifecycle.lifecycleScope
 import com.giosis.library.R
 import com.giosis.library.databinding.ActivitySmsVerificationBinding
 import com.giosis.library.server.RetrofitClient
-import com.giosis.library.util.*
+import com.giosis.library.util.CommonActivity
+import com.giosis.library.util.PermissionActivity
+import com.giosis.library.util.PermissionChecker
+import com.giosis.library.util.Preferences
 import kotlinx.coroutines.launch
-import java.util.*
 import java.util.regex.Pattern
 
 class SMSVerificationActivity : CommonActivity() {
@@ -174,7 +176,7 @@ class SMSVerificationActivity : CommonActivity() {
           맨 앞자리 0을 포함한 13자리	 // 0813 11111 8569
           */
 
-        if (Preferences.userNation.equals("SG", ignoreCase = true)) {
+        if (Preferences.userNation == ("SG")) {
             if (phoneNo.length != 8) {
                 if (phoneNo.indexOf("+65") == 0 && phoneNo.length == 11) {
                     val pattern = "\\+[0-9]+"

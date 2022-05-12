@@ -269,7 +269,7 @@ class LoginActivity : CommonActivity() {
                                     try {
                                         val response = RetrofitClient.instanceDynamic()
                                             .requestAppVersionCheck()
-                                        Log.e(">>", Preferences.userNation)
+
                                         if (response.resultCode == -10 && !BuildConfig.DEBUG) {
                                             val msg = java.lang.String.format(
                                                 resources.getString(R.string.msg_update_version),

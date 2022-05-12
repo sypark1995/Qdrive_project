@@ -100,9 +100,10 @@ class LocationManagerWorker(private val context: Context, private val reference:
         val longitude = location.longitude
         Log.e("Location", "$TAG  onLocationChanged : $latitude / $longitude")
 
-        var channel = "QDRIVE"
-        if (!Preferences.userNation.equals("SG", ignoreCase = true)) {
-            channel = "QDRIVE_V2"
+        val channel = if (Preferences.userNation == "SG") {
+            "QDRIVE"
+        } else {
+            "QDRIVE_V2"
         }
 
         RetrofitClient.instanceDynamic().requestSetGPSLocation(

@@ -13,7 +13,7 @@ import com.giosis.library.util.Preferences
 import com.google.firebase.crashlytics.FirebaseCrashlytics
 import java.util.*
 
-class MyApplication2 : MultiDexApplication() {
+class MyApplication : MultiDexApplication() {
 
     private var badgeCnt = 0
 
@@ -73,7 +73,6 @@ class MyApplication2 : MultiDexApplication() {
         DatabaseHelper.getInstance(this)
         LocaleManager.getInstance(this)
         Preferences.init(this)
-        Preferences.appInfo = "SG"
         Preferences.userNation = "SG"
 
         context = applicationContext

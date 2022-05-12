@@ -55,8 +55,14 @@ class FusedProviderWorker(private val context: Context, private val reference: S
 
     fun startLocationUpdates() {
 
-        if (ActivityCompat.checkSelfPermission(context, Manifest.permission.ACCESS_FINE_LOCATION) != PackageManager.PERMISSION_GRANTED
-            && ActivityCompat.checkSelfPermission(context, Manifest.permission.ACCESS_COARSE_LOCATION) != PackageManager.PERMISSION_GRANTED
+        if (ActivityCompat.checkSelfPermission(
+                context,
+                Manifest.permission.ACCESS_FINE_LOCATION
+            ) != PackageManager.PERMISSION_GRANTED
+            && ActivityCompat.checkSelfPermission(
+                context,
+                Manifest.permission.ACCESS_COARSE_LOCATION
+            ) != PackageManager.PERMISSION_GRANTED
         ) {
             return
         }
@@ -123,9 +129,10 @@ class FusedProviderWorker(private val context: Context, private val reference: S
         provider: String
     ) {
 
-        var channel = "QDRIVE"
-        if (!Preferences.userNation.equals("SG", ignoreCase = true)) {
-            channel = "QDRIVE_V2"
+        val channel = if (Preferences.userNation == "SG") {
+            "QDRIVE"
+        } else {
+            "QDRIVE_V2"
         }
 
         RetrofitClient.instanceDynamic().requestSetGPSLocation(
@@ -175,10 +182,10 @@ class FusedProviderWorker(private val context: Context, private val reference: S
 
     @SuppressLint("SimpleDateFormat")
     private fun uploadGPSFailedLogData() {
-
-        var channel = "QDRIVE"
-        if (!Preferences.userNation.equals("SG", ignoreCase = true)) {
-            channel = "QDRIVE_V2"
+        val channel = if (Preferences.userNation == "SG") {
+            "QDRIVE"
+        } else {
+            "QDRIVE_V2"
         }
 
         val dateFormat = SimpleDateFormat("yyyy-MM-dd HH:mm:ss")

@@ -349,7 +349,7 @@ class MainActivity : CommonActivity() {
             ).show()
 
             try {
-                if (Preferences.userNation.equals("SG")) {
+                if (Preferences.userNation == "SG") {
 
                     val intent = Intent(
                         this,
