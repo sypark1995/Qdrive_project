@@ -15,7 +15,7 @@
         android:weightSum="3">
 
         <LinearLayout
-            android:id="@+id/layout_list_in_progress"
+            android:id="@+id/layout_in_progress"
             android:layout_width="0dp"
             android:layout_height="match_parent"
             android:layout_weight="1"
@@ -43,7 +43,7 @@
         </LinearLayout>
 
         <LinearLayout
-            android:id="@+id/layout_list_upload_failed"
+            android:id="@+id/layout_upload_failed"
             android:layout_width="0dp"
             android:layout_height="match_parent"
             android:layout_weight="1"
@@ -71,7 +71,7 @@
         </LinearLayout>
 
         <LinearLayout
-            android:id="@+id/layout_list_today_done"
+            android:id="@+id/layout_today_done"
             android:layout_width="0dp"
             android:layout_height="match_parent"
             android:layout_weight="1"
@@ -100,7 +100,7 @@
     </LinearLayout>
 
     <androidx.viewpager2.widget.ViewPager2
-        android:id="@+id/viewpager2_list"
+        android:id="@+id/viewpager"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         android:background="@color/color_f0f0f0"

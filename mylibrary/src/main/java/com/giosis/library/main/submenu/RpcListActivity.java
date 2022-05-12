@@ -13,10 +13,11 @@ import android.view.inputmethod.InputMethodManager;
 import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
 import android.widget.EditText;
-import android.widget.ExpandableListView;
 import android.widget.FrameLayout;
 import android.widget.SearchView;
 import android.widget.TextView;
+
+import androidx.recyclerview.widget.RecyclerView;
 
 import com.giosis.library.R;
 import com.giosis.library.bluetooth.BluetoothClass;
@@ -35,7 +36,7 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Date;
 
-public class RpcListActivity extends CommonActivity implements SearchView.OnQueryTextListener, SearchView.OnCloseListener, ListInProgressAdapter.OnMoveUpListener {
+public class RpcListActivity extends CommonActivity implements SearchView.OnQueryTextListener, SearchView.OnCloseListener {
     private static final int PERMISSION_REQUEST_CODE = 1000;
     private static final String[] PERMISSIONS = new String[]{PermissionChecker.ACCESS_FINE_LOCATION, PermissionChecker.ACCESS_COARSE_LOCATION};
     String TAG = "RpcListActivity";
@@ -48,7 +49,7 @@ public class RpcListActivity extends CommonActivity implements SearchView.OnQuer
     private EditText edit_list_searchview;
     private FrameLayout layout_list_sort;
     private NDSpinner spinner_list_sort;
-    private ExpandableListView exlist_card_list;
+    private RecyclerView exlist_card_list;
     private String opID;
     private boolean isOpen = false;
     private String orderby = "zip_code asc";
@@ -88,7 +89,7 @@ public class RpcListActivity extends CommonActivity implements SearchView.OnQuer
         text_top_title = findViewById(R.id.text_top_title);
 
 
-        searchview_list = findViewById(R.id.searchview_list);
+        searchview_list = findViewById(R.id.search_view);
         layout_list_sort = findViewById(R.id.layout_list_sort);
         spinner_list_sort = findViewById(R.id.spinner_list_sort);
         exlist_card_list = findViewById(R.id.exlist_card_list);
@@ -168,30 +169,8 @@ public class RpcListActivity extends CommonActivity implements SearchView.OnQuer
 
 
         rowItems = new ArrayList<>();
-        adapter = new ListInProgressAdapter(rowItems, bluetoothClass);
+        adapter = new ListInProgressAdapter(bluetoothClass);
 
-
-        exlist_card_list.setOnGroupCollapseListener(groupPosition -> isOpen = false);
-
-        exlist_card_list.setOnGroupExpandListener(groupPosition -> {
-
-            int groupCount = adapter.getGroupCount();
-
-            // 한 그룹을 클릭하면 나머지 그룹들은 닫힌다.
-            for (int i = 0; i < groupCount; i++) {
-                if (!(i == groupPosition))
-                    exlist_card_list.collapseGroup(i);
-            }
-
-            isOpen = true;
-        });
-
-        exlist_card_list.setOnChildClickListener((parent, v, groupPosition, childPosition, id1) -> false);
-
-        exlist_card_list.setOnGroupClickListener((parent, v, groupPosition, id12) -> false);
-
-
-        //
         checker = new PermissionChecker(this);
 
         if (checker.lacksPermissions(PERMISSIONS)) {
@@ -217,17 +196,10 @@ public class RpcListActivity extends CommonActivity implements SearchView.OnQuer
 
 
         rowItems = getSortList(orderby);
-        adapter = new ListInProgressAdapter(rowItems, bluetoothClass);
-        adapter.setOnMoveUpListener(this);
+        adapter = new ListInProgressAdapter(bluetoothClass);
+        adapter.setItemList(rowItems);
         exlist_card_list.setAdapter(adapter);
         adapter.setSorting(rowItems);
-
-
-        int groupCount = adapter.getGroupCount();
-
-        for (int i = 0; i < groupCount; i++) {
-            exlist_card_list.collapseGroup(i);
-        }
     }
 
     @Override
@@ -255,14 +227,6 @@ public class RpcListActivity extends CommonActivity implements SearchView.OnQuer
             Log.e("Exception", TAG + "  onQueryTextChange Exception : " + e.toString());
         }
         return false;
-    }
-
-    @Override
-    public void onMoveUp(int pos) {
-
-        if (isOpen) {
-            exlist_card_list.expandGroup(pos);
-        }
     }
 
     // NOTIFICATION. 기본 정렬

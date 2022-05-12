@@ -60,4 +60,5 @@ class RowItem(
         set(Items) {
             childItems = Items
         }
+    var isClicked = false
 }

@@ -1,4 +1,5 @@
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:background="@color/color_f0f0f0"
@@ -50,7 +51,7 @@
                     android:background="@drawable/qdrive_btn_icon_expand" />
 
                 <SearchView
-                    android:id="@+id/searchview_list"
+                    android:id="@+id/search_view"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:layout_gravity="center_vertical"
@@ -80,15 +81,11 @@
                 android:layout_marginBottom="10dp"
                 android:background="@color/color_f0f0f0">
 
-                <ExpandableListView
+                <androidx.recyclerview.widget.RecyclerView
                     android:id="@+id/exlist_card_list"
                     android:layout_width="match_parent"
                     android:layout_height="match_parent"
-                    android:childDivider="@null"
-                    android:divider="@null"
-                    android:groupIndicator="@null"
-                    android:listSelector="@android:color/transparent"
-                    android:scrollbars="none" />
+                    app:layoutManager="androidx.recyclerview.widget.LinearLayoutManager" />
             </RelativeLayout>
         </LinearLayout>
 
