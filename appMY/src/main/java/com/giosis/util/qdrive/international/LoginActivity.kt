@@ -108,31 +108,41 @@ class LoginActivity : CommonActivity() {
         )
         binding.layoutLogin.addView(progressBar)
         progressBar.visibility = View.GONE
+
         lifecycleScope.launch {
-            getNation()
+            getNationList()
+
+            if (nationList.size > 0) {
+                binding.spinnerSelectNation.adapter =
+                    LoginSpinnerAdapter(this@LoginActivity, nationList)
+            }
 
             // Nation
-            var nationCode = if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.N) {
+            val nationCode = if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.N) {
                 Resources.getSystem().configuration.locales[0].country
             } else {
                 Resources.getSystem().configuration.locale.country
             }
 
-            nationCode = "MY"
-            for (item in nationList) {
+            for ((index, item) in nationList.withIndex()) {
                 if (nationCode == item.nation_cd) {
                     binding.textLoginNation.text = item.nation_nm
-                    Glide.with(this@LoginActivity).load(item.nation_img_url).into(binding.imgLoginNation)
+                    Glide.with(this@LoginActivity)
+                        .load(item.nation_img_url)
+                        .into(binding.imgLoginNation)
+
+                    binding.spinnerSelectNation.setSelection(1)
+
+                    spinnerPosition = index
                     break
                 }
             }
         }
 
-
         binding.layoutLoginSelectNation.setOnClickListener {
             if (nationList.size == 0) {
                 lifecycleScope.launch {
-                    getNation()
+                    getNationList()
                 }
             }
             binding.spinnerSelectNation.performClick()
@@ -146,15 +156,16 @@ class LoginActivity : CommonActivity() {
                     position: Int,
                     id: Long
                 ) {
+
                     parent?.let {
 
                         spinnerPosition = position
-//                        Glide.with(this@LoginActivity)
-//                            .load(nationList[position].nation_img_url)
-//                            .into(binding.imgLoginNation)
-//
-//                        binding.textLoginNation.text = nationList[position].nation_nm
-//                        Log.e(tag, " Select Nation : ${binding.textLoginNation.text}")
+                        Glide.with(this@LoginActivity)
+                            .load(nationList[position].nation_img_url)
+                            .into(binding.imgLoginNation)
+
+                        binding.textLoginNation.text = nationList[position].nation_nm
+
                     }
 
                     hideKeyboard()
@@ -492,22 +503,22 @@ class LoginActivity : CommonActivity() {
         alertDialog.show()
     }
 
-    private suspend fun getNation() {
+    private suspend fun getNationList() {
 
-            try {
-                val response = RetrofitClient.instanceDynamic().requestNationList()
-                if (response.resultCode == 0) {
-                    nationList = Gson().fromJson(
-                        response.resultObject,
-                        object : TypeToken<ArrayList<LoginNation>>() {}.type
-                    )
-                }
-            } catch (e: java.lang.Exception) {
-                Log.e(tag, e.toString())
+        try {
+            val response = RetrofitClient.instanceDynamic().requestNationList()
+
+            if (response.resultCode == 0) {
+
+                nationList = Gson().fromJson(
+                    response.resultObject,
+                    object : TypeToken<ArrayList<LoginNation>>() {}.type
+                )
+
             }
-
-            binding.spinnerSelectNation.adapter =
-                LoginSpinnerAdapter(this@LoginActivity, nationList)
+        } catch (e: java.lang.Exception) {
+            Log.e(tag, e.toString())
+        }
     }
 
     override fun onDestroy() {
