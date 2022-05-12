@@ -156,9 +156,10 @@ class LoginActivity : CommonActivity() {
                         hideKeyboard()
 
                         spinnerPosition = position
-                        Glide.with(this@LoginActivity).load(nationList[position].nation_img_url).into(
-                            binding.imgLoginNation
-                        )
+                        Glide.with(this@LoginActivity).load(nationList[position].nation_img_url)
+                            .into(
+                                binding.imgLoginNation
+                            )
 
                         binding.textLoginNation.text = nationList[position].nation_nm
                         Log.e(tag, " Select Nation : ${binding.textLoginNation.text}")
@@ -241,7 +242,7 @@ class LoginActivity : CommonActivity() {
                                 binding.editLoginPassword.setText("")
 
                                 when {
-                                    it.resultCode == -10  && !BuildConfig.DEBUG -> {
+                                    it.resultCode == -10 && !BuildConfig.DEBUG -> {
                                         showDialog(resources.getString(R.string.msg_account_deactivated))
                                     }
                                     it.resultMsg != "" -> {
@@ -264,7 +265,7 @@ class LoginActivity : CommonActivity() {
                                     try {
                                         val response = RetrofitClient.instanceDynamic()
                                             .requestAppVersionCheck()
-                                        Log.e(">>",Preferences.userNation)
+                                        Log.e(">>", Preferences.userNation)
                                         if (response.resultCode == -10 && !BuildConfig.DEBUG) {
                                             val msg = java.lang.String.format(
                                                 resources.getString(R.string.msg_update_version),
@@ -339,7 +340,10 @@ class LoginActivity : CommonActivity() {
                                             if (loginData.smsYn == "Y" && loginData.deviceYn == "Y") {
 
                                                 val intent =
-                                                    Intent(this@LoginActivity, MainActivity::class.java)
+                                                    Intent(
+                                                        this@LoginActivity,
+                                                        MainActivity::class.java
+                                                    )
                                                 startActivity(intent)
                                                 finish()
                                             } else {
@@ -347,7 +351,7 @@ class LoginActivity : CommonActivity() {
                                             }
                                         }
                                     } catch (e: java.lang.Exception) {
-                                        Log.e(tag,e.toString())
+                                        Log.e(tag, e.toString())
                                     }
                                 }
                             }
@@ -506,10 +510,11 @@ class LoginActivity : CommonActivity() {
                     )
                 }
             } catch (e: java.lang.Exception) {
-                Log.e(tag,e.toString())
+                Log.e(tag, e.toString())
             }
 
-            binding.spinnerSelectNation.adapter = LoginSpinnerAdapter(this@LoginActivity, nationList)
+            binding.spinnerSelectNation.adapter =
+                LoginSpinnerAdapter(this@LoginActivity, nationList)
         }
     }
 
