@@ -5,6 +5,8 @@ import android.app.AlarmManager
 import android.app.PendingIntent
 import android.content.Context
 import android.content.Intent
+import android.content.res.Resources
+import android.os.Build
 import android.util.Log
 import androidx.multidex.MultiDexApplication
 import com.giosis.library.database.DatabaseHelper
@@ -73,7 +75,14 @@ class MyApplication : MultiDexApplication() {
         DatabaseHelper.getInstance(this)
         LocaleManager.getInstance(this)
         Preferences.init(this)
-        Preferences.userNation = "SG"
+
+        val nationCode = if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.N) {
+            Resources.getSystem().configuration.locales[0].country
+        } else {
+            Resources.getSystem().configuration.locale.country
+        }
+
+        Preferences.userNation = nationCode
 
         context = applicationContext
         badgeCnt = 0
