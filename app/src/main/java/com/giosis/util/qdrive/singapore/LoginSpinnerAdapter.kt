@@ -1,4 +1,4 @@
-package com.giosis.util.qdrive.international
+package com.giosis.util.qdrive.singapore
 
 import android.content.Context
 import android.view.LayoutInflater

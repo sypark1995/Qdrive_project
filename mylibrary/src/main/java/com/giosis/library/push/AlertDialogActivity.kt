@@ -108,7 +108,7 @@ class AlertDialogActivity : Activity() {
                         overridePendingTransition(0, 0)
                     }
 
-                } else if (actionKey == PushData.LAE) {      // 2019.02
+                } else if (actionKey == PushData.Locker_EXPIRED) {      // 2019.02
 
                     if (actionValue!!.isEmpty()) {
                         try {

@@ -1,27 +1,512 @@
 <?xml version="1.0" encoding="utf-8"?>
-<resources xmlns:tools="http://schemas.android.com/tools" tools:ignore="MissingTranslation">
-    <string name="app_name">Qdrive</string>
+<resources>
+    <string name="app_name">Qdrive Malaysia</string>
+    <string name="text_malaysia">Malaysia</string>
+    <string name="text_Indonesia">Indonesia</string>
+    <string name="text_singapore">Singapore</string>
 
-    <string name="text_app_version">App Version</string>
+    <string name="navi_home">HOME</string>
+    <string name="navi_scan">SCAN</string>
+    <string name="navi_list">LIST</string>
+    <string name="navi_statistics">STATISTICS</string>
+    <string name="navi_setting">SETTING</string>
+
+    <string name="navi_sub_confirm_delivery">Confirm my delivery order</string>
+    <string name="navi_sub_delivery_done">Delivery Done</string>
+    <string name="navi_sub_pickup">Pickup C&amp;R Parcels</string>
+    <string name="navi_sub_self">Self-collection</string>
+    <string name="navi_sub_in_progress">In Progress</string>
+    <string name="navi_sub_upload_fail">Upload Failed</string>
+    <string name="navi_sub_today_done">Today Done</string>
+    <string name="navi_sub_not_in_housed">Not-IN Parcels</string>
+
+    <string name="text_title_7e_store_delivery">7E Store Delivery</string>
+    <string name="text_title_fl_delivery">Locker Alliance Delivery</string>
+    <string name="text_title_fail_list">Fail List</string>
+    <string name="text_title_pod_list">POD List</string>
+    <string name="text_title_change_password">Change Password</string>
+    <string name="text_title_my_info">My Info</string>
+    <string name="text_title_message">Message</string>
+    <string name="text_title_printer_setting">Printer Setting</string>
+    <string name="text_title_device_info">Device Info</string>
+    <string name="text_title_sms_verification">SMS Verification</string>
+    <string name="text_title_scan_setting">Scan Setting</string>
+    <string name="text_title_fl_pickup">Locker Alliance Pickup</string>
+    <string name="text_title_locker_user_info">Locker Information</string>
+    <string name="text_title_delivery_scan">Delivery Scan</string>
+    <string name="text_title_language_setting">Language Setting</string>
+    <string name="text_title_scan_barcode">(Step1) Scan Barcode</string>
+    <string name="text_cnr_pickup_done">C&amp;R Pickup Done</string>
+    <string name="text_title_add_pickup">Add Pickup Scan No.</string>
+    <string name="text_title_driver_assign">Driver Assign</string>
+    <string name="text_title_scan_pickup_cnr">Scan Pickup C&amp;R no</string>
+    <string name="text_title_notice">Notice</string>
+
+    <!-- Text -->
+    <string name="text_office">Office</string>
+    <string name="text_total_qty">Total Qty</string>
+    <string name="text_in_progress">In Progress</string>
+    <string name="text_delivery">Delivery</string>
+    <string name="text_pickup">Pickup</string>
+    <string name="text_rpc">RPC</string>
+    <string name="text_downloading">Downloading</string>
+    <string name="text_download_result">[Download] Result</string>
+    <string name="text_upload_result">[Upload] Result</string>
+    <string name="text_upload_failed_msg">Failed : %1$s</string>
+    <string name="text_exception">Exception : %1$s</string>
+    <string name="text_upload_success_count">Upload Success : %1$d</string>
+    <string name="text_upload_fail_count">Upload Success : %1$d\nUpload Failed : %2$d\nFail Reason : %3$s</string>
+    <string name="text_upload_fail_count3">Upload Success : %1$d\nUpload Failed : %2$d</string>
     <string name="text_location_setting">Location setting</string>
-    <string name="text_alert">Alert</string>
-    <string name="text_id">ID</string>
-    <string name="login_password">Password</string>
-    <string name="login_sign">Sign</string>
-    <string name="login_footer">Only Qxpress partner driver can use the application</string>
-    <string name="text_qdrive_message">Qdrive Message</string>
 
-    <string name="login_desc">Delivery &amp; Pickup for Qxpress SG</string>
-    <string name="msg_qdrive_auto_logout">Qdrive app logout at 11:59pm every day.</string>
+    <string name="text_upload_failed">Upload Failed</string>
+    <string name="text_today_done">Today Done</string>
+    <string name="text_search">Search</string>
+    <string name="text_sort_postal_code_asc">Postal Code : Low to High</string>
+    <string name="text_sort_postal_code_desc">Postal Code : High to Low</string>
+    <string name="text_sort_tracking_no_asc">Tracking No : Low to High</string>
+    <string name="text_sort_tracking_no_desc">Tracking No : High to Low</string>
+    <string name="text_sort_name_asc">Name : Low to High</string>
+    <string name="text_sort_name_desc">Name : High to Low</string>
+    <string name="text_receipt_name">Receipt name&#160;:&#160;</string>
+    <string name="text_parcel_qty">Parcel Qty&#160;:&#160;</string>
+    <string name="text_desired_date">Desired Date&#160;:&#160;</string>
+    <string name="text_qty">Qty&#160;:&#160;</string>
+    <string name="text_request">Request&#160;:&#160;</string>
+    <string name="text_driver_memo">Driver memo&#160;:&#160;</string>
+    <string name="text_pickup_reassigned">Pickup Reassigned</string>
+    <string name="text_pickup_failed">Pickup Failed</string>
+    <string name="text_failed">Failed</string>
+    <string name="text_retrieve">Retrieve</string>
+    <string name="text_google_map">Google Map</string>
+    <string name="text_up">Up</string>
+    <string name="text_down">Down</string>
+    <string name="text_parcel_amount">Parcel Amount&#160;:&#160;</string>
+    <string name="text_tel">Tel&#160;:&#160;</string>
+    <string name="text_mobile">Mobile&#160;:&#160;</string>
+    <string name="text_name">Name&#160;:&#160;</string>
+    <string name="text_driver_memo1">Driver Memo</string>
+    <string name="text_signature">Signature</string>
+    <string name="text_visit_log">Visit Log</string>
+    <string name="text_start_to_scan">Start to Scan</string>
+    <string name="text_zero_qty">Zero Q\'ty</string>
+    <string name="text_outlet_pickup_done">Qsuttle : Pickup Done</string>
+    <string name="text_pickup_cancel">Pickup Cancel</string>
+    <string name="text_pickup_fail">Pickup Fail</string>
+    <string name="text_qpost_auto_message">QTalk Auto Message</string>
+    <string name="text_d_failed">D. Failed</string>
+    <string name="text_delivered">Delivered</string>
+    <string name="text_p_failed">P. Failed</string>
+    <string name="text_p_cancelled">P. Cancelled</string>
+    <string name="text_p_done">P. Done</string>
+    <string name="text_reason">Reason&#160;:&#160;</string>
+    <string name="text_memo1">Memo&#160;:&#160;</string>
+    <string name="text_requestor">Requestor</string>
+    <string name="text_driver">Driver</string>
+    <string name="text_qpost_message">QTalk Message</string>
+    <string name="text_data_error">Data error</string>
+    <string name="text_scanned_qty">Scanned Qty&#160;:&#160;</string>
+    <string name="text_today_done_scan_list">Today Done Scan List</string>
+    <string name="text_warning">Warning</string>
+
+    <string name="text_7e_store_address">7E Store Address</string>
+    <string name="text_operation_hour">Operation hour</string>
+    <string name="text_operation_hours">Operation hours</string>
+    <string name="text_tracking_no">Tracking No.</string>
+    <string name="text_receiver">Receiver</string>
+    <string name="text_self">Self</string>
+    <string name="text_substitute">Substitute</string>
+    <string name="text_other">Other</string>
+    <string name="text_sender">Sender</string>
+    <string name="text_clear">Clear</string>
+    <string name="text_memo">Memo</string>
+    <string name="text_total_qty_count">Total %1$d Qty</string>
+    <string name="text_parcel_qty1">Parcel Qty</string>
+    <string name="text_federated_locker_address">Address</string>
+    <string name="text_not_assigned_failed">&#160;Not Assigned - Failed&#160;</string>
+    <string name="text_delivery_done_success">&#160;Delivery Done - Success&#160;</string>
+    <string name="text_error">Error</string>
+    <string name="text_please_wait">Please wait…</string>
+    <string name="text_set_transfer">Set Transfer…</string>
+    <string name="text_upload_fail_count1">Upload Failed : %1$d\nFail Reason : %2$s</string>
+    <string name="text_date">Date</string>
+    <string name="text_job_id">Job ID</string>
+    <string name="text_vendor_code">Vendor Code</string>
+    <string name="text_take_photo">Take Photo</string>
+    <string name="text_gallery">Gallery</string>
+    <string name="text_pickup_no">Pickup No.</string>
+    <string name="text_applicant">Applicant</string>
+    <string name="text_bundle_type">Bundle Type</string>
+    <string name="text_applicant_signature">Applicant\'s Signature</string>
+    <string name="text_collector_signature">Collector\'s Signature</string>
+    <string name="text_pickup_requested_qty">Pickup requested Qty</string>
+    <string name="text_parcels">Parcels</string>
+    <string name="text_detail_list">Detail List</string>
+    <string name="text_non_q10_qfs">Non-Q10 QFS (ROUTE: Other)</string>
+    <string name="text_pickup_done_success">&#160;Pickup Done - Success&#160;</string>
+    <string name="text_self_collector">Self Collector…</string>
+    <string name="text_self_collector_result">[Self Collector] Result</string>
+    <string name="text_request_qty">Request Qty</string>
+    <string name="text_cancel_reason">Cancel reason</string>
+    <string name="text_wrong_address">Wrong Address</string>
+    <string name="text_request_to_cancel">Request to Cancel</string>
+    <string name="text_pickup_cancel_success">&#160;Pickup Cancel - Success&#160;</string>
+    <string name="text_pickup_date_retried">Pickup date will be retried</string>
+    <string name="text_select">Select</string>
+    <string name="text_pickup_fail_success">&#160;Pickup Fail - Success&#160;</string>
+    <string name="text_total_scan_qty_pop">Total Pickup Scan(POP) Qty</string>
+    <string name="text_take_back_qty">Take Back Scan Qty</string>
+    <string name="text_changed_scan_qty_pop">Changed Pickup Scan(POP) Qty</string>
+
+    <string name="text_camera">Camera</string>
+    <string name="text_scanner">Scanner</string>
+    <string name="text_bluetooth">Bluetooth</string>
+    <string name="text_scanner_mode">Cable Scanner reader mode</string>
+    <string name="text_bluetooth_mode">Bluetooth reader mode</string>
+    <string name="text_disconnected">Disconnected</string>
+    <string name="text_scan_for_devices">Scan for devices</string>
+    <string name="text_please_type_number">Please type a tracking number</string>
+    <string name="text_scanned">Scanned&#160;:&#160;</string>
+    <string name="text_scanning">Scanning</string>
+    <string name="text_connected">Connected</string>
+    <string name="text_connecting">Connecting…</string>
+    <string name="text_connected_to">Connected to </string>
+    <string name="text_driver_assign_result">[Driver Assign] Result</string>
+    <string name="text_not_assigned"> Not Assigned </string>
+    <string name="text_success"> Success </string>
+    <string name="text_scanned_failed">Scanned Failed</string>
+    <string name="text_driver_assign">Driver Assign…</string>
+    <string name="text_fail_update">FAIL Update</string>
+    <string name="text_http_request_error">Http Request Error</string>
+
+    <string name="text_invalidation_alert">Invalidation alert</string>
+    <string name="text_verification">Verification</string>
+    <string name="text_alert">Alert</string>
+    <string name="text_enter_your_information">Enter your Information</string>
+
+    <string name="text_summary">Summary</string>
+    <string name="text_detail">Detail</string>
+    <string name="text_dpc3_out_date">DPC3-Out Date</string>
+    <string name="text_delivered_date">Delivered Date</string>
+    <string name="text_bar">~</string>
+    <string name="text_not_delivered">Not Delivered</string>
+    <string name="text_done">Done</string>
+    <string name="text_cancelled">Cancelled</string>
+    <string name="text_confirmed">Confirmed</string>
+    <string name="text_percent">%</string>
+    <string name="text_avg_date">Avg Date</string>
+    <string name="text_shipping_no">Shipping No.</string>
+    <string name="text_desired_date1">Desired Date</string>
+    <string name="text_qty1">Qty</string>
+
+    <!-- Message -->
     <string name="msg_live10_installed">To use Qdrive, Qoo10 Live app should be installed on your phone.</string>
+    <string name="msg_your_account_deactivated">Your Qdrive account has been deactivated.</string>
+    <string name="msg_no_data_to_upload">There is no data to upload</string>
+    <string name="msg_download_not_supported">Download is not supported\nReason : The modified data has not uploaded.</string>
+    <string name="msg_network_connect_error">Please check your network connection.</string>
+    <string name="msg_network_connect_error_saved">Please check your network connection. Saved at local device</string>
+    <string name="msg_qdrive_app_exited">QDRIVE app exited</string>
+    <string name="msg_manual_assign_failed">Manual assign Failed</string>
+    <string name="msg_no_data_to_download">There is no data to download</string>
+    <string name="msg_upload_fail_14"> The signature is not exists. In this case, upload job is not allowed. You have to take back to Qxpress DPC.</string>
+    <string name="msg_upload_fail_15"> The upload job is failed (request timeout). This data moved to [UPLOAD FAILED] tab. You can upload it at the [UPLOAD FAILED] tab.</string>
+    <string name="msg_upload_fail_16"> The upload job is failed (network disconnected). This data moved to [UPLOAD FAILED] tab. You can upload it at the [UPLOAD FAILED] tab.</string>
+    <string name="msg_upload_fail_etc"> The upload job is failed (err code : %d). This data moved to [UPLOAD FAILED] tab. You can upload it at the [UPLOAD FAILED] tab.</string>
     <string name="msg_location_off">Location is off.\nYou should turn on Location.</string>
+
+    <string name="msg_delivery_start_sms">Dear %1$s, Your parcels has been started to delivery by Qxpress. Thank you.</string>
+    <string name="msg_send_sms_error">SMS Send Error</string>
+    <string name="msg_qpost_delivery_1">First Message</string>
+    <string name="msg_qpost_delivery_2">Second Message</string>
+    <string name="msg_qpost_pickup_1">[Qxpress]\nPickup vehicle departed.\n-Seller : %s-Pickup No.:  %s\n-Qxpress Driver:  %s</string>
+    <string name="msg_qpost_pickup_2">[Qxpress]\nThe pickup was failed by the absence of seller.\n-Seller : %s\n-Pickup No.:  %s\n-Qxpress Driver:  %s</string>
+    <string name="msg_qpost_pickup1">Pickup vehicle departed</string>
+    <string name="msg_qpost_pickup2">Pickup Failed by Absence</string>
+    <string name="msg_qpost_delivery1">Out for delivery</string>
+    <string name="msg_qpost_delivery2">Delivery Failed by Absence</string>
+    <string name="msg_first_connect_printer">First of all, try to connect portable printer.</string>
+    <string name="msg_wait_while_print_job">Please wait while print completes the print job.</string>
+    <string name="msg_bluetooth_not_supported">Bluetooth is not supported by the device</string>
+    <string name="msg_check_again_print">Please check the printer status again.</string>
+
+    <string name="msg_delivered_sign_cancel">Select \'OK\' to cancel updating.</string>
+    <string name="msg_outlet_qrcode_require">QRCode is necessary. Please try again..</string>
+    <string name="msg_signature_require">Signature input is required.</string>
+    <string name="msg_disk_size_error">Please check your disk storage size</string>
+    <string name="msg_outlet_qrcode_data_error">QRCode Data Error! Please try again..</string>
+    <string name="msg_qrcode_loading_error">QRCode Loading Error.\nPlease try again..</string>
+    <string name="msg_must_enter_memo1">You must leave your memo so then inform the shipper or the recipient.</string>
+    <string name="msg_visit_photo_require">The Photo attachments is required.</string>
+    <string name="msg_must_enter_memo">You must enter the memo.</string>
+    <string name="msg_collector_signature_require">Collector Signature input is required.</string>
+    <string name="msg_self_collection_fail_11">The status of the item is \'DPC1-In\'. You can not do Self-Collection.</string>
+    <string name="msg_self_collection_fail_12">Invalid Shipping No.</string>
+    <string name="msg_self_collection_fail_13">Already Pickup Done</string>
+    <string name="msg_self_collection_fail_14">Already Pickup Cancel</string>
+    <string name="msg_self_collection_fail_etc">Please contact to the helpdesk. </string>
+    <string name="msg_real_parcels_require">Real Parcels Qty input is required.</string>
+    <string name="msg_customer_signature_require">Customer Signature input is required.</string>
+    <string name="msg_duplicate_address">There is a not processed pick-up request to the same address.\n( %1$s )</string>
+    <string name="msg_choose_one_week">Please choose the date from tomorrow within one week(7 days).</string>
+    <string name="msg_choose_sunday_error">The chosen date is on sunday! Please choose another date.</string>
+    <string name="msg_choose_another_day"> - Please choose another date</string>
+    <string name="msg_select_fail_reason">You must select the \'Pickup Failed Reason\'.</string>
+    <string name="msg_select_retry_date">You must select the \'Pickup Re-try Date\'.</string>
+
+    <string name="msg_bluetooth_enabled">Bluetooth enabled.</string>
+    <string name="msg_camera_framework_bug">Sorry, the Android camera encountered a problem. You may need to restart the device.</string>
+    <string name="msg_different_recipient_address">The recipient name is not the same.\n Please try again after check the same recipient.</string>
+    <string name="msg_tracking_number_manually">Please type a tracking number manually.</string>
+    <string name="msg_invalid_scan">Invalid Scan Tracking No</string>
+    <string name="msg_click_next_before_upload">Click \'Next (Step2)\' before upload</string>
+    <string name="msg_duplicate_tracking_no">Duplicate Scan Tracking No</string>
+    <string name="msg_different_order_type">You can not scan the different order type.</string>
+    <string name="msg_tracking_number_already_entered">This number is already scanned.</string>
+    <string name="msg_no_outlet_parcels">No Outlet Pickup Parcels</string>
+    <string name="msg_internal_error">The internal Application Error.</string>
+    <string name="msg_message_change_error">Message Changer Error..</string>
+
+    <string name="msg_please_enter_name">please enter your name.</string>
+    <string name="msg_please_enter_right_number">please enter your right number.</string>
+    <string name="msg_enter_right_format_number">please enter your right format number.</string>
+    <string name="msg_verify_phone_number">Qdrive will be verifying the phone number</string>
+    <string name="msg_is_this_ok">Is this OK?</string>
+    <string name="msg_sms_request_failed">SMS request failed.</string>
+    <string name="msg_sms_verification_failed">SMS verification failed.</string>
+    <string name="msg_verification_not_use">If you doesn\'t get the verification, you can not use Qdrive App.</string>
+    <string name="msg_sms_verification_success">SMS verification Success.</string>
+    <string name="msg_language_change_restart">The language will not change until you restart the app. Do you want to restart?</string>
+
+    <string name="msg_memo_too_long">Memo is too long. (limit 100 char)</string>
+    <string name="msg_only_one_device_connected">Only one device can be connected.</string>
+    <string name="msg_disconnecting_old_device">Disconnecting old device. Please wait and try again.</string>
+
+    <string name="msg_no_results">There are no results.</string>
+    <string name="msg_check_date_range">Please check the date range. Max 1 month</string>
+
+    <string name="msg_back_camera_required">Back camera is required.(LENS_FACING_BACK) \n Please use the \'Gallery\' button.</string>
+    <string name="msg_failed_code_error" translatable="false">CodeData Error.\nPlease press the \'Download\' button again at Home.</string>
+
+    <!-- Button -->
+    <string name="button_download">Download</string>
+    <string name="button_upload">Upload</string>
+    <string name="button_confirm_my_delivery_order">Confirm my delivery order</string>
+    <string name="button_assign_pickup_driver">Assign pickup driver</string>
+    <string name="button_scan_delivery_sheet">Scan Delivery Sheet</string>
+    <string name="button_change_delivery_driver">Change Delivery Driver</string>
+
+    <string name="button_delivered">Delivered</string>
+    <string name="button_failed">Failed</string>
+    <string name="button_delivered_returned">Delivered\n(Returned)</string>
+    <string name="button_failed_return_failed">Delivery Failed\n(Return Failed)</string>
+    <string name="button_start_to_scan">Start to Scan</string>
+    <string name="button_zero_qty">Zero Qty</string>
+    <string name="button_visit_log">Visit Log</string>
+    <string name="button_cancelled">Cancelled</string>
+    <string name="button_pickup_failed">Pickup Failed</string>
+    <string name="button_print_label">Print Label</string>
+    <string name="button_pickup_done">Pickup Done</string>
+    <string name="button_ok">OK</string>
+    <string name="button_cancel">Cancel</string>
+    <string name="button_send">Send</string>
+    <string name="button_add_scan">Add Scan</string>
+    <string name="button_take_back">Take Back</string>
+    <string name="button_close">Close</string>
+
+    <string name="button_save">Save</string>
+    <string name="button_reload">Reload</string>
+    <string name="button_add">ADD</string>
+    <string name="button_reset">Reset</string>
+    <string name="button_update">Update</string>
+    <string name="button_next_step2">Next (Step2)</string>
+    <string name="button_done">Done</string>
+    <string name="button_confirm">Confirm</string>
+    <string name="button_next">Next</string>
+
+    <string name="permission_title">Help</string>
+    <string name="permission_content">You denied the permission request. So you cannot use this function.\nTab \'Re-Try\', then the Android permission dialog will be appear again.</string>
+    <string name="permission_dont_again_content">You don\'t allow the access to this function.\nYou have to turn on the permission again.
+        \n\n1. Click the \'SETTING\'\n2. Go to Permissions. And turn on the permissions all.</string>
+    <string name="permission_re_try">Re-Try</string>
+    <string name="permission_setting">SETTING</string>
+
+
+    <!--  2차  start   -->
+    <string name="text_developer_mode">Developer Mode</string>
+    <string name="msg_qdrive_auto_logout">Qdrive app logout at 11:59pm every day.  </string>
+
+    <string name="text_mobile_no">Mobile no.</string>
+    <string name="text_full_name">Full Name</string>
+    <string name="text_email">Email</string>
+    <string name="text_digit">4-digit</string>
+    <string name="text_delivery_data_scan">Delivery Data scan</string>
+    <string name="text_pickup_scan">Pickup Scan</string>
+    <string name="text_self_scan">Self scan</string>
+    <string name="text_start_delivery_for_outlet">Start Delivery for Outlet</string>
+    <string name="text_id">ID</string>
+    <string name="text_branch">Branch</string>
+    <string name="text_work">Work</string>
+    <string name="text_delete_data">Delete data in Device</string>
+    <string name="text_setting">Setting</string>
+    <string name="text_app_version">App Version</string>
+    <string name="text_qdrive_id">Qdrive ID</string>
+    <string name="text_write_hint">write…</string>
+    <string name="text_modify_my_info">Modify My Info</string>
+    <string name="text_invalidation">Invalidation</string>
+    <string name="text_old_password">Old Password</string>
+    <string name="text_new_password">New Password</string>
+    <string name="text_confirm_password">Confirm Password</string>
+    <string name="text_reload">Reload</string>
+    <string name="text_connected_device">Connected Device</string>
+    <string name="text_paired_devices">Paired Devices</string>
+    <string name="text_available_devices">Available Devices</string>
+    <string name="text_device_name">Device Name</string>
+    <string name="text_rename">Rename</string>
+    <string name="text_vibration">Vibration</string>
+    <string name="text_user_key">User Key</string>
+    <string name="text_status">Status</string>
+    <string name="text_expiry_pin_date">Expiry Pin Date</string>
+    <string name="text_register_change_pin">Register/Change PIN</string>
+    <string name="text_language_en">English(Default)</string>
+    <string name="text_language_ko">한국어</string>
+    <string name="text_language_zh_cn">简体中文</string>
+    <string name="text_language_zh_tw">繁体中文</string>
+    <string name="text_language_ms">Melayu</string>
+    <string name="text_language_id">Indonesian</string>
+
+    <string name="text_empty">Empty</string>
+    <string name="text_pickup_date">Pickup Date&#160;:&#160;</string>
+    <string name="text_not_processed">Not Processed</string>
+    <string name="text_scanned_qty1">Scanned Qty</string>
+
+    <string name="text_customer">Customer</string>
+    <string name="text_administrator">Administrator</string>
+    <string name="text_first_page">First Page…</string>
+    <string name="text_last_page">Last Page…</string>
+    <string name="text_qxpress_driver">This is Qxpress Driver</string>
+    <string name="text_send_message">send message</string>
+
+
+    <string name="msg_error_check_again">Please check again..</string>
+    <string name="msg_enter_phone_number">please enter your mobile phone number</string>
+    <string name="msg_enter_phone_number_excluding_code">Please enter a phone number excluding the country code.</string>
+    <string name="msg_enter_verification_number">please enter the SMS verification number.</string>
+    <string name="msg_sms_arrive">The SMS will arrive within a few minutes.</string>
+    <string name="msg_make_sure_sms">Please make sure you have a working SMS plan.</string>
+
+    <string name="msg_delivery_scan1">* This is for Qdrive delivery use(normal case)</string>
+    <string name="msg_delivery_scan2">* When your delivery data not shown, Execute \'%1$s\'</string>
+    <string name="msg_want_sign_out">In case you sign out before uploading, your lists won\'t be synchronized.  Do you want to continue?</string>
+    <string name="msg_want_to_delete_data">Your data of device will be deleted.\n Do you want to continue?</string>
+    <string name="msg_deleted_data">Your lists deleted</string>
+    <string name="msg_full_name_info">Full name should be 6 or more letter words.</string>
+    <string name="msg_want_change_info">Do you want to change your information?</string>
+    <string name="msg_email_format_error">Please enter right email format.</string>
+    <string name="msg_password_info">* Password should be 11 or more letter words.\n* Use a mix of letters, numbers, and special symbols(!@#$%) in your password.</string>
+    <string name="msg_want_change_password">Do you want to change your Password?</string>
+    <string name="msg_same_password_error">Confirm password should be the same as New password.</string>
+    <string name="msg_password_symbols_error">Use a mix of letters, numbers, and special symbols(!@#$%) in your password.</string>
+    <string name="msg_password_length_error">Password should be 11 or more letter words.</string>
+    <string name="msg_empty_password_error">Please enter your password.</string>
+    <string name="msg_no_connected_device">No connected device..</string>
+    <string name="msg_no_device">No device..</string>
+    <string name="msg_bluetooth_not_enabled">Bluetooth not enabled…</string>
+    <string name="msg_bluetooth_device_rename">Device rename.</string>
+    <string name="msg_sure_disconnect_bluetooth">Are you sure to disconnect </string>
+    <string name="msg_already_connected">Already connected</string>
+    <string name="msg_already_disconnected">Already disconnected</string>
+    <string name="msg_request_disconnect"> requested to disconnect.</string>
+    <string name="msg_disconnect_requested">Disconnect requested.</string>
+    <string name="msg_is_disconnected"> is disconnected.</string>
+    <string name="msg_is_disconnecting"> is disconnecting.</string>
+    <string name="msg_is_connecting"> is connecting.</string>
+    <string name="msg_is_connected"> is connected.</string>
+    <string name="msg_please_try_again">Please try again…</string>
+    <string name="msg_connection_failed"> Connection Failed</string>
+    <string name="msg_pairing_requested">Pairing requested.</string>
+    <string name="msg_device_bone_state_changed">Device bond state changed.</string>
+    <string name="msg_correct_printer_instruction">Please select the correct printer instructions</string>
+    <string name="msg_connect_printer_first">Please connect the printer first</string>
+    <string name="msg_is_paired"> is paired.</string>
+    <string name="msg_is_unpaired"> is unpaired.</string>
+    <string name="msg_device_name_info">Device name should be 1 or more letter words.</string>
+    <string name="text_error_retry">Error! Retry..</string>
+    <string name="msg_download_locker_info_error">Download Locker Info Error</string>
+    <string name="msg_app_restarted">App restarted</string>
+
+    <string name="msg_left_and_come_back">You left the current page. And Come back in.</string>
+    <string name="msg_qpost_edit_text_hint">Please Enter contents</string>
+    <string name="msg_enter_message">Please enter the message</string>
+    <string name="msg_send_message_error">Send Message Error.</string>
+
+
+    <string name="button_request">Request</string>
+    <string name="button_submit">Submit</string>
+    <string name="button_delete">Delete</string>
+    <string name="button_prev">Prev</string>
+    <string name="button_connect">Connect</string>
+    <string name="button_modify">Modify</string>
+    <string name="button_disconnect">Disconnect</string>
+    <string name="button_on">On</string>
+    <string name="button_off">Off</string>
+    <string name="button_go">Go</string>
+
+    <!--    -->
+    <string name="text_qdrive_message">Qdrive Message</string>
+    <string name="text_fail">Fail</string>
+    <string name="text_gps_tracking">GPS tracking…</string>
+    <string name="text_gps_service">GPS Service</string>
+    <string name="text_gps_location_service">GPS Location Service</string>
+    <string name="text_failed_reason">Failed reason</string>
+    <string name="text_rpc_change_driver">RPC - Change Driver</string>
+    <string name="text_select_all">Select All</string>
+    <string name="text_ready">Ready</string>
+    <string name="text_fl">FL</string>
+    <string name="text_outlet_7e">7E</string>
+    <string name="text_outlet_order_status">Outlet Order Status</string>
+    <string name="text_total">Total</string>
+    <string name="text_all">ALL</string>
+    <string name="text_outlet_status_1">Need to be scanned Today</string>
+    <string name="text_outlet_status_2">Need to go to Outlets (Scanned already)</string>
+    <string name="text_outlet_status_3">Today Done List</string>
+    <string name="text_upload_fail_count2">Upload Failed Reason : %1$s</string>
+
+    <string name="button_add_scan_list">Add Scan List</string>
+    <string name="button_save_continue">Save &amp; Continue</string>
+
+    <string name="select_device">Select a device to connect</string>
+    <string name="button_scan">Scan for devices</string>
+    <string name="scanning">Scanning for devices …</string>
+    <string name="title_other_devices">Other available devices</string>
+    <string name="title_paired_devices">Paired Devices</string>
+    <string name="none_paired">No devices have been paired</string>
+    <string name="none_found">No devices found</string>
+
+    <string name="button_open">Open</string>
+
+    <!--   2019.06   -->
+    <string name="text_delivery_pickup">Delivery &amp; Pickup for Qxpress</string>
+    <string name="text_select_nation">Select Nation</string>
+    <string name="text_password">Password</string>
+    <string name="button_sign">Sign</string>
+    <string name="msg_only_qxpress_partner">Only Qxpress partner driver can use this application</string>
+    <string name="msg_please_select_nation">Please select Nation.</string>
     <string name="msg_please_input_id">Please input ID.</string>
     <string name="msg_please_input_password">Please input Password.</string>
     <string name="msg_db_problem">Sorry, DB encountered a problem. You may need to restart the device.</string>
-    <string name="msg_update_version">Qdrive is updated to v%1$s\nYour Qdrive versions is v%2$s\nYour version will be upgraded.</string>
-    <string name="msg_go_sms_verification">You have attempted to login from unauthorized mobile phone.\nIf your mobile phone was changed, you have to pass the SMS verification.</string>
     <string name="msg_account_deactivated">Your Qdrive account has been deactivated.</string>
     <string name="msg_not_valid_info">Sorry, your sign-in information is not valid. Please try again with your correct ID and password.</string>
+    <string name="msg_update_version">Qdrive is updated to v%1$s\nYour Qdrive versions is v%2$s\nYour version will be upgraded.</string>
+    <string name="msg_go_sms_verification">You have attempted to login from unauthorized mobile phone.\nIf your mobile phone was changed, you have to pass the SMS verification.</string>
 
-    <string name="button_ok">OK</string>
+    <string name="msg_print_done">Print Done!</string>
+    <string name="msg_please_select_printer">Please select the correct printer instructions.</string>
+    <string name="msg_please_print_again">Please print it again.</string>
+
+    <!--  2020  Login  -->
+    <string name="login_desc">Delivery &amp; Pickup for Qxpress SG</string>
+    <string name="login_password">Password</string>
+    <string name="login_sign">Sign</string>
+    <string name="login_footer">Only Qxpress partner driver can use the application</string>
 </resources>

@@ -1,4 +1,4 @@
-package com.giosis.util.qdrive.international
+package com.giosis.util.qdrive.singapore
 
 import java.io.Serializable
 

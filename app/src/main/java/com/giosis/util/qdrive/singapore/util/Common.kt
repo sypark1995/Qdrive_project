@@ -1,4 +1,4 @@
-package com.giosis.util.qdrive.international.util
+package com.giosis.util.qdrive.singapore.util
 
 object Common {
 

@@ -31,7 +31,7 @@ class FCMIntentService : FirebaseMessagingService() {
     // 앱이 처음 설치(재설치)되거나 유효기간이 만료되면 자동으로 토큰을 새로 생성해 준다.
     override fun onNewToken(token: String) {
         super.onNewToken(token)
-        Log.e(TAG, "$TAG  new Token : $token")
+        Log.e(TAG, " new Token : $token")
     }
 
     override fun onMessageReceived(remoteMessage: RemoteMessage) {
@@ -110,7 +110,9 @@ class FCMIntentService : FirebaseMessagingService() {
                     try {
                         bun.putString(
                             PushData.ACTIVITY_NAME,
-                            (getSystemService(ACTIVITY_SERVICE) as ActivityManager).getRunningTasks(1)[0].topActivity!!.className
+                            (getSystemService(ACTIVITY_SERVICE) as ActivityManager).getRunningTasks(
+                                1
+                            )[0].topActivity!!.className
                         )
                     } catch (e: Exception) {
 
@@ -173,7 +175,7 @@ class FCMIntentService : FirebaseMessagingService() {
             intent = Intent(context, MessageListActivity::class.java)
             intent.putExtra("position", 0)
 
-        } else if (actionKey == PushData.LAE) {
+        } else if (actionKey == PushData.Locker_EXPIRED) {
             try {
                 idNum = actionValue.substring(0, 9).toInt()
             } catch (e: java.lang.Exception) {

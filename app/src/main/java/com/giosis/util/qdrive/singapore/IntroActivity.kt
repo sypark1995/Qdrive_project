@@ -8,6 +8,7 @@ import android.net.Uri
 import android.os.Bundle
 import android.os.Handler
 import androidx.appcompat.app.AppCompatActivity
+import com.giosis.library.setting.bluetooth.BluetoothDeviceData
 
 class IntroActivity : AppCompatActivity() {
 
@@ -48,6 +49,9 @@ class IntroActivity : AppCompatActivity() {
                     finish()
                 }.show()
         } else {
+
+            // Bluetooth Print 연결 초기화 (앱 종료시 못했을 경우를 대비  : MainActivity onDestroy 호출 안되는 경우 있음 !)
+            BluetoothDeviceData.connectedPrinterAddress = null
 
             Handler().postDelayed({
                 val intent12 = Intent()
