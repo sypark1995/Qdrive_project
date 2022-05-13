@@ -8,7 +8,7 @@ import android.net.Uri
 import android.os.Bundle
 import android.os.Handler
 import androidx.appcompat.app.AppCompatActivity
-import com.giosis.library.setting.bluetooth.BluetoothDeviceData
+import com.giosis.util.qdrive.singapore.setting.bluetooth.BluetoothDeviceData
 
 class IntroActivity : AppCompatActivity() {
 

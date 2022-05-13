@@ -2,7 +2,9 @@
 <resources>
 
     <color name="color_4fb648">#4FB648</color>
+    <color name="color_93c21b">#93c21b</color>
 
+    <color name="color_46a73f">#46A73F</color>
     <color name="color_ccffffff">#CCFFFFFF</color>
     <color name="color_f6f6f6">#F6F6F6</color>
     <color name="color_303030">#303030</color>
@@ -38,17 +40,32 @@
     <color name="color_e6e6e6">#e6e6e6</color>
     <color name="color_222222">#222222</color>
     <color name="color_9dd59a">#9dd59a</color>
-    <color name="color_46a73f">#46A73F</color>
-    <color name="color_e1e1e1">#E1E1E1</color>
-    <color name="color_4e4e4e">#4E4E4E</color>
-    <color name="color_707070">#707070</color>
-    <color name="color_3e3e3e">#3E3E3E</color>
-    <color name="color_84cc80">#84CC80</color>
+    <color name="color_cccccc">#cccccc</color>
+    <color name="color_929292">#929292</color>
+    <color name="color_e2e2e2">#E2E2E2</color>
+    <color name="color_14000000">#14000000</color>
+    <color name="color_dedede">#DEDEDE</color>
+    <color name="color_1a000000">#1A000000</color>
+    <color name="color_dddddd">#DDDDDD</color>
+    <color name="color_b3000000">#B3000000</color>
+    <color name="color_ffcc00">#FFCC00</color>
+    <color name="color_64b542">#64B542</color>
+    <color name="color_77c756">#77C756</color>
+    <color name="color_42752c">#42752C</color>
+    <color name="color_bfe6af">#bfe6af</color>
+    <color name="color_396427">#396427</color>
     <color name="color_232323">#232323</color>
     <color name="color_aeaeae">#AEAEAE</color>
-    <color name="color_e4e4e4">#E4E4E4</color>
-    <color name="color_747474">#747474</color>
-    <color name="color_959595">#959595</color>
+    <color name="color_e1e1e1">#E1E1E1</color>
+    <color name="color_3e3e3e">#3E3E3E</color>
+    <color name="color_e5f6e4">#e5f6e4</color>
+    <color name="color_4e4e4e">#4e4e4e</color>
+    <color name="color_84cc80">#84CC80</color>
+    <color name="color_707070">#707070</color>
+    <color name="color_333333">#333333</color>
+    <color name="color_b1b1b1">#b1b1b1</color>
+    <color name="color_3b88ee">#3b88ee</color>
+
 
 
     <color name="white">#ffffff</color>

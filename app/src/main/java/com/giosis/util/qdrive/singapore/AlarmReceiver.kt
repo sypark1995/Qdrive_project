@@ -7,8 +7,8 @@ import android.content.Context
 import android.content.Intent
 import android.os.Bundle
 import android.util.Log
-import com.giosis.library.push.AlertDialogActivity
-import com.giosis.library.util.Preferences
+import com.giosis.util.qdrive.singapore.push.AlertDialogActivity
+import com.giosis.util.qdrive.singapore.util.Preferences
 
 
 class AlarmReceiver : BroadcastReceiver() {

@@ -5,13 +5,11 @@ import android.app.AlarmManager
 import android.app.PendingIntent
 import android.content.Context
 import android.content.Intent
-import android.content.res.Resources
-import android.os.Build
 import android.util.Log
 import androidx.multidex.MultiDexApplication
-import com.giosis.library.database.DatabaseHelper
-import com.giosis.library.util.LocaleManager
-import com.giosis.library.util.Preferences
+import com.giosis.util.qdrive.singapore.database.DatabaseHelper
+import com.giosis.util.qdrive.singapore.util.LocaleManager
+import com.giosis.util.qdrive.singapore.util.Preferences
 import com.google.firebase.crashlytics.FirebaseCrashlytics
 import java.util.*
 

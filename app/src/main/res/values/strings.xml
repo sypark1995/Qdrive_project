@@ -509,4 +509,63 @@
     <string name="login_password">Password</string>
     <string name="login_sign">Sign</string>
     <string name="login_footer">Only Qxpress partner driver can use the application</string>
+
+    <string name="msg_upload_fail_image" translatable="false">ImageServer Error.\nPlease try again..</string>
+    <string name="text_search_address" translatable="false">Search Address</string>
+    <string name="text_zip_code_or_address" translatable="false">Postal Code</string>
+
+    <string name="text_pickup_address" translatable="false">Pickup Address</string>
+    <string name="text_create_pickup_order" translatable="false">Create Pickup Order</string>
+    <string name="text_remarks" translatable="false">Remarks</string>
+    <string name="text_register" translatable="false">Register</string>
+    <string name="text_sender_info" translatable="false">Sender Information</string>
+    <string name="pickup_order_seller" translatable="false">Qoo10 Seller\'s Pickup Order</string>
+    <string name="pickup_order_general" translatable="false">General Pickup Order</string>
+    <string name="enter_seller_id" translatable="false">Enter Seller id </string>
+    <string name="enter_pickup_no" translatable="false">Enter Pickup No.</string>
+    <string name="enter_address" translatable="false">Enter Address</string>
+    <string name="enter_phone_no" translatable="false">Enter Phone Number</string>
+    <string name="search_pickup_no" translatable="false">Do you want to search by %s</string>
+    <string name="regist_pickup_order" translatable="false">Do you want to register pickup order?</string>
+    <string name="confirm_pickup_order" translatable="false">Your pickup order has been registered.</string>
+
+    <string name="text_qoo10_account" translatable="false">Qoo10 Account</string>
+    <string name="text_device_name_info" translatable="false">Device name should be 1 or more letter words.</string>
+
+    <string name="text_today_my_route" translatable="false">Today\'s My Route</string>
+    <string name="text_my_pickup_route" translatable="false">My Pickup Route</string>
+    <string name="text_my_delivery_route" translatable="false">My Delivery Route</string>
+    <string name="text_pickup_assigned_e" translatable="false">Pickup\nAssigned</string>
+    <string name="text_pickup_confirmed_e" translatable="false">Pickup\nConfirmed</string>
+    <string name="text_pickup_done_e" translatable="false">Pickup\nDone</string>
+    <string name="text_pickup_failed_e" translatable="false">Pickup\nFailed</string>
+    <string name="text_on_delivery_e" translatable="false">On\nDelivery</string>
+    <string name="text_delivery_failed_e" translatable="false">Delivery\nFailed</string>
+
+    <string name="msg_please_input_data" translatable="false">Please enter ZipCode or Address</string>
+    <string name="msg_high_amount_sign_photo" translatable="false">You must receive the Recipient’s Signature and the Delivered Picture both for high value parcels</string>
+
+
+    <string name="text_run" translatable="false">Run</string>
+    <string name="text_hour_s" translatable="false">H</string>
+    <string name="text_minute_s" translatable="false">Min</string>
+    <string name="text_kilometer_s" translatable="false">Km</string>
+    <string name="text_trip" translatable="false">Trip</string>
+    <string name="text_start_navigator" translatable="false">Start Navigator</string>
+    <string name="text_qlps_gps_location" translatable="false">QLPS GPS Location</string>
+    <string name="text_your_gps_location" translatable="false">Your GPS Location</string>
+    <string name="msg_qlps_gps_update" translatable="false">Do you allow the system to replace the saved GPS of this address with your current location?</string>
+    <string name="msg_install_google_maps" translatable="false">Please install Google Maps.</string>
+    <string name="msg_gps_update_success" translatable="false">GPS information has been updated!</string>
+    <string name="text_lazada_order" translatable="false">It is new Lazada Pickup order!!</string>
+    <string name="text_invoice_no" translatable="false">Pickup no :&#160;</string>
+    <string name="text_lazada_content" translatable="false">Please make sure to pick up this order within today.</string>
+
+    <string name="msg_orders_not_found" translatable="false">Orders are not found.</string>
+    <string name="text_trip_detail_requests" translatable="false">Trip Details (%d requests)</string>
+    <string name="text_payment_check" translatable="false">Payment Check</string>
+
+    <string name="text_economy" translatable="false">Economy</string>
+    <string name="text_by_request" translatable="false">By Request</string>
+    <string name="text_by_trip" translatable="false">By Trip</string>
 </resources>
