@@ -23,6 +23,7 @@ import android.widget.Toast
 import androidx.appcompat.app.ActionBarDrawerToggle
 import androidx.core.content.ContextCompat
 import androidx.lifecycle.lifecycleScope
+import com.giosis.util.qdrive.singapore.LoginActivity
 import com.giosis.util.qdrive.singapore.R
 import com.giosis.util.qdrive.singapore.UploadData
 import com.giosis.util.qdrive.singapore.barcodescanner.CaptureActivity1
@@ -349,10 +350,7 @@ class MainActivity : CommonActivity() {
             ).show()
 
             try {
-                val intent = Intent(
-                    this,
-                    Class.forName("com.giosis.util.qdrive.singapore.LoginActivity")
-                )
+                val intent = Intent(this, LoginActivity::class.java)
 
                 intent.flags = Intent.FLAG_ACTIVITY_CLEAR_TOP or Intent.FLAG_ACTIVITY_SINGLE_TOP
                 startActivity(intent)

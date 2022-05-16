@@ -21,6 +21,7 @@ import androidx.activity.result.ActivityResultLauncher
 import androidx.activity.result.contract.ActivityResultContracts
 import androidx.core.content.ContextCompat
 import com.giosis.util.qdrive.singapore.BuildConfig
+import com.giosis.util.qdrive.singapore.LoginActivity
 import com.giosis.util.qdrive.singapore.MemoryStatus
 import com.giosis.util.qdrive.singapore.R
 import com.giosis.util.qdrive.singapore.barcodescanner.bluetooth.BluetoothChatService
@@ -398,10 +399,7 @@ class CaptureActivity1 : CommonActivity(), TorchListener, OnTouchListener, TextW
                 Toast.LENGTH_SHORT
             ).show()
             try {
-                val intent = Intent(
-                        this@CaptureActivity1,
-                        Class.forName("com.giosis.util.qdrive.singapore.LoginActivity")
-                    )
+                val intent = Intent(this@CaptureActivity1, LoginActivity::class.java)
                 intent.flags = Intent.FLAG_ACTIVITY_CLEAR_TOP or Intent.FLAG_ACTIVITY_SINGLE_TOP
                 startActivity(intent)
             } catch (ignored: Exception) {

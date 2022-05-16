@@ -7,6 +7,7 @@ import android.view.View
 import android.widget.Toast
 import androidx.lifecycle.ViewModelProvider
 import com.giosis.util.qdrive.singapore.BR
+import com.giosis.util.qdrive.singapore.LoginActivity
 import com.giosis.util.qdrive.singapore.R
 import com.giosis.util.qdrive.singapore.ViewModelActivity
 import com.giosis.util.qdrive.singapore.database.DatabaseHelper
@@ -139,10 +140,7 @@ class SettingActivity : ViewModelActivity<ActivitySettingBinding, SettingViewMod
 
         alertBuilder.setPositiveButton(resources.getString(R.string.button_ok)) { _, _ ->
 
-            val intent = Intent(
-                this@SettingActivity,
-                Class.forName("com.giosis.util.qdrive.singapore.LoginActivity")
-            )
+            val intent = Intent(this@SettingActivity, LoginActivity::class.java)
             intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP or Intent.FLAG_ACTIVITY_SINGLE_TOP)
             startActivity(intent)
             finish()

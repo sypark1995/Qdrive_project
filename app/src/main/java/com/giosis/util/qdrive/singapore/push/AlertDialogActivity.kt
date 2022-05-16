@@ -9,12 +9,12 @@ import android.os.Bundle
 import android.view.View
 import android.view.Window
 import androidx.core.app.NotificationManagerCompat
+import com.giosis.util.qdrive.singapore.LoginActivity
 import com.giosis.util.qdrive.singapore.R
 import com.giosis.util.qdrive.singapore.databinding.DialogPushAlertBinding
 import com.giosis.util.qdrive.singapore.main.MainActivity
 import com.giosis.util.qdrive.singapore.util.DataUtil
 import com.giosis.util.qdrive.singapore.util.LocaleManager.Companion.getInstance
-import com.giosis.util.qdrive.singapore.util.Preferences
 
 class AlertDialogActivity : Activity() {
 
@@ -125,10 +125,7 @@ class AlertDialogActivity : Activity() {
                     startActivity(intent)
 
                 } else if (actionKey == PushData.LOGOUT) {
-                    val intent = Intent(
-                        this@AlertDialogActivity,
-                        Class.forName("com.giosis.util.qdrive.singapore.LoginActivity")
-                    )
+                    val intent = Intent(this@AlertDialogActivity, LoginActivity::class.java)
                     intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP or Intent.FLAG_ACTIVITY_SINGLE_TOP)
                     startActivity(intent)
                 }

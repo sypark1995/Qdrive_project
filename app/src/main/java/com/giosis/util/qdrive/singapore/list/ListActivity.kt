@@ -10,6 +10,7 @@ import androidx.fragment.app.Fragment
 import androidx.fragment.app.FragmentActivity
 import androidx.viewpager2.adapter.FragmentStateAdapter
 import androidx.viewpager2.widget.ViewPager2.OnPageChangeCallback
+import com.giosis.util.qdrive.singapore.LoginActivity
 import com.giosis.util.qdrive.singapore.R
 import com.giosis.util.qdrive.singapore.bluetooth.BluetoothClass
 import com.giosis.util.qdrive.singapore.bluetooth.BluetoothListener
@@ -120,10 +121,7 @@ class ListActivity : CommonActivity(), ListInProgressFragment.OnInProgressFragme
             ).show()
 
             try {
-                val intent = Intent(
-                    this@ListActivity,
-                    Class.forName("com.giosis.util.qdrive.singapore.LoginActivity")
-                )
+                val intent = Intent(this@ListActivity, LoginActivity::class.java)
                 intent.flags = Intent.FLAG_ACTIVITY_CLEAR_TOP or Intent.FLAG_ACTIVITY_SINGLE_TOP
                 startActivity(intent)
             } catch (ignore: Exception) {

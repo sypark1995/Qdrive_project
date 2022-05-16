@@ -4,6 +4,7 @@ import android.content.Context
 import android.content.Intent
 import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
+import com.giosis.util.qdrive.singapore.LoginActivity
 import com.giosis.util.qdrive.singapore.R
 
 
@@ -25,10 +26,7 @@ open class CommonActivity : AppCompatActivity() {
                 Toast.LENGTH_SHORT
             ).show()
 
-            val intent = Intent(
-                this@CommonActivity,
-                Class.forName("com.giosis.util.qdrive.singapore.LoginActivity")
-            )
+            val intent = Intent(this@CommonActivity, LoginActivity::class.java)
 
             intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP or Intent.FLAG_ACTIVITY_SINGLE_TOP)
             startActivity(intent)

@@ -18,6 +18,7 @@ import android.view.inputmethod.InputMethodManager
 import android.widget.AdapterView
 import android.widget.LinearLayout
 import android.widget.ProgressBar
+import android.widget.Toast
 import androidx.lifecycle.lifecycleScope
 import com.bumptech.glide.Glide
 import com.giosis.util.qdrive.singapore.data.LoginInfo
@@ -183,7 +184,12 @@ class LoginActivity : CommonActivity() {
         binding.btnLoginSign.setOnClickListener {
 
             hideKeyboard()
-
+            if (nationList.size == 0) {
+                lifecycleScope.launch {
+                    getNationList()
+                }
+                return@setOnClickListener
+            }
             val userNationCode = nationList[spinnerPosition].nation_cd  //todo_sypark  size 0 일때 처리
 
             val userID = binding.editLoginId.text.toString().trim()
@@ -493,6 +499,7 @@ class LoginActivity : CommonActivity() {
 
             }
         } catch (e: java.lang.Exception) {
+            Toast.makeText(this,resources.getText(R.string.msg_network_connect_error),Toast.LENGTH_SHORT).show()
             Log.e(tag, e.toString())
         }
     }

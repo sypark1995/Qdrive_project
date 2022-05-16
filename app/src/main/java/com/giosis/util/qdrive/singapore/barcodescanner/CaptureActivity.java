@@ -42,6 +42,7 @@ import androidx.annotation.NonNull;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.giosis.util.qdrive.singapore.BuildConfig;
+import com.giosis.util.qdrive.singapore.LoginActivity;
 import com.giosis.util.qdrive.singapore.MemoryStatus;
 import com.giosis.util.qdrive.singapore.R;
 import com.giosis.util.qdrive.singapore.barcodescanner.bluetooth.BluetoothChatService;
@@ -736,7 +737,7 @@ public final class CaptureActivity extends CommonActivity implements DecoratedBa
             Toast.makeText(CaptureActivity.this, getResources().getString(R.string.msg_qdrive_auto_logout), Toast.LENGTH_SHORT).show();
 
             try {
-                Intent intent = new Intent(CaptureActivity.this, Class.forName("com.giosis.util.qdrive.singapore.LoginActivity"));
+                Intent intent = new Intent(CaptureActivity.this, LoginActivity.class);
                 intent.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP | Intent.FLAG_ACTIVITY_SINGLE_TOP);
                 startActivity(intent);
             } catch (Exception ignored) {
