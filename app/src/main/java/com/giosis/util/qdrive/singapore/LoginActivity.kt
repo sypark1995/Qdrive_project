@@ -190,7 +190,7 @@ class LoginActivity : CommonActivity() {
                 }
                 return@setOnClickListener
             }
-            val userNationCode = nationList[spinnerPosition].nation_cd  //todo_sypark  size 0 일때 처리
+            val userNationCode = nationList[spinnerPosition].nation_cd
 
             val userID = binding.editLoginId.text.toString().trim()
             val userPW = binding.editLoginPassword.text.toString().trim()
