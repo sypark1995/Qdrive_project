@@ -25,17 +25,10 @@ open class CommonActivity : AppCompatActivity() {
                 Toast.LENGTH_SHORT
             ).show()
 
-            val intent = if (Preferences.userNation == "SG") {
-                Intent(
-                    this@CommonActivity,
-                    Class.forName("com.giosis.util.qdrive.singapore.LoginActivity")
-                )
-            } else {
-                Intent(
-                    this@CommonActivity,
-                    Class.forName("com.giosis.util.qdrive.international.LoginActivity")
-                )
-            }
+            val intent = Intent(
+                this@CommonActivity,
+                Class.forName("com.giosis.util.qdrive.singapore.LoginActivity")
+            )
 
             intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP or Intent.FLAG_ACTIVITY_SINGLE_TOP)
             startActivity(intent)

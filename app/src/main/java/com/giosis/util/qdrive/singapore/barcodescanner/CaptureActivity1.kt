@@ -398,17 +398,10 @@ class CaptureActivity1 : CommonActivity(), TorchListener, OnTouchListener, TextW
                 Toast.LENGTH_SHORT
             ).show()
             try {
-                val intent: Intent = if ("SG" == Preferences.userNation) {
-                    Intent(
+                val intent = Intent(
                         this@CaptureActivity1,
                         Class.forName("com.giosis.util.qdrive.singapore.LoginActivity")
                     )
-                } else {
-                    Intent(
-                        this@CaptureActivity1,
-                        Class.forName("com.giosis.util.qdrive.international.LoginActivity")
-                    )
-                }
                 intent.flags = Intent.FLAG_ACTIVITY_CLEAR_TOP or Intent.FLAG_ACTIVITY_SINGLE_TOP
                 startActivity(intent)
             } catch (ignored: Exception) {

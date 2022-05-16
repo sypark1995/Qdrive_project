@@ -112,7 +112,7 @@ class SettingActivity : ViewModelActivity<ActivitySettingBinding, SettingViewMod
             }
         }
 
-        mViewModel.version.value = packageManager.getPackageInfo(packageName,0).versionName
+        mViewModel.version.value = packageManager.getPackageInfo(packageName, 0).versionName
     }
 
 
@@ -139,25 +139,13 @@ class SettingActivity : ViewModelActivity<ActivitySettingBinding, SettingViewMod
 
         alertBuilder.setPositiveButton(resources.getString(R.string.button_ok)) { _, _ ->
 
-            if (Preferences.userNation == "SG") {
-                val intent = Intent(
-                    this@SettingActivity,
-                    Class.forName("com.giosis.util.qdrive.singapore.LoginActivity")
-                )
-                intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP or Intent.FLAG_ACTIVITY_SINGLE_TOP)
-                startActivity(intent)
-                finish()
-
-            } else {
-
-                val intent = Intent(
-                    this@SettingActivity,
-                    Class.forName("com.giosis.util.qdrive.international.LoginActivity")
-                )
-                intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP or Intent.FLAG_ACTIVITY_SINGLE_TOP)
-                startActivity(intent)
-                finish()
-            }
+            val intent = Intent(
+                this@SettingActivity,
+                Class.forName("com.giosis.util.qdrive.singapore.LoginActivity")
+            )
+            intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP or Intent.FLAG_ACTIVITY_SINGLE_TOP)
+            startActivity(intent)
+            finish()
         }
 
         alertBuilder.setNegativeButton(resources.getString(R.string.button_cancel)) { dialogInterface, _ ->

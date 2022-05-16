@@ -453,7 +453,7 @@ class LoginActivity : CommonActivity() {
         alertBuilder.setPositiveButton(
             resources.getString(R.string.button_ok)
         ) { dialog, _ ->
-            val uri: Uri = Uri.parse("market://details?id=com.giosis.util.qdrive.international")
+            val uri: Uri = Uri.parse("market://details?id=com.giosis.util.qdrive.singapore")
             val itt = Intent(Intent.ACTION_VIEW, uri)
             startActivity(itt)
             dialog.dismiss()

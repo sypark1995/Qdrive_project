@@ -120,17 +120,10 @@ class ListActivity : CommonActivity(), ListInProgressFragment.OnInProgressFragme
             ).show()
 
             try {
-                val intent: Intent = if ("SG" == Preferences.userNation) {
-                    Intent(
-                        this@ListActivity,
-                        Class.forName("com.giosis.util.qdrive.singapore.LoginActivity")
-                    )
-                } else {
-                    Intent(
-                        this@ListActivity,
-                        Class.forName("com.giosis.util.qdrive.international.LoginActivity")
-                    )
-                }
+                val intent = Intent(
+                    this@ListActivity,
+                    Class.forName("com.giosis.util.qdrive.singapore.LoginActivity")
+                )
                 intent.flags = Intent.FLAG_ACTIVITY_CLEAR_TOP or Intent.FLAG_ACTIVITY_SINGLE_TOP
                 startActivity(intent)
             } catch (ignore: Exception) {

@@ -349,25 +349,14 @@ class MainActivity : CommonActivity() {
             ).show()
 
             try {
-                if (Preferences.userNation == "SG") {
+                val intent = Intent(
+                    this,
+                    Class.forName("com.giosis.util.qdrive.singapore.LoginActivity")
+                )
 
-                    val intent = Intent(
-                        this,
-                        Class.forName("com.giosis.util.qdrive.singapore.LoginActivity")
-                    )
+                intent.flags = Intent.FLAG_ACTIVITY_CLEAR_TOP or Intent.FLAG_ACTIVITY_SINGLE_TOP
+                startActivity(intent)
 
-                    intent.flags = Intent.FLAG_ACTIVITY_CLEAR_TOP or Intent.FLAG_ACTIVITY_SINGLE_TOP
-                    startActivity(intent)
-                } else {
-
-                    val intent = Intent(
-                        this,
-                        Class.forName("com.giosis.util.qdrive.international.LoginActivity")
-                    )
-
-                    intent.flags = Intent.FLAG_ACTIVITY_CLEAR_TOP or Intent.FLAG_ACTIVITY_SINGLE_TOP
-                    startActivity(intent)
-                }
             } catch (e: Exception) {
 
                 Log.e("Exception", "  Exception : $e")

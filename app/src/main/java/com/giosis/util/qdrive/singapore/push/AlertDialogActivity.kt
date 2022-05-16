@@ -125,17 +125,10 @@ class AlertDialogActivity : Activity() {
                     startActivity(intent)
 
                 } else if (actionKey == PushData.LOGOUT) {
-                    val intent = if (Preferences.userNation == "SG") {
-                        Intent(
-                            this@AlertDialogActivity,
-                            Class.forName("com.giosis.util.qdrive.singapore.LoginActivity")
-                        )
-                    } else {
-                        Intent(
-                            this@AlertDialogActivity,
-                            Class.forName("com.giosis.util.qdrive.international.LoginActivity")
-                        )
-                    }
+                    val intent = Intent(
+                        this@AlertDialogActivity,
+                        Class.forName("com.giosis.util.qdrive.singapore.LoginActivity")
+                    )
                     intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP or Intent.FLAG_ACTIVITY_SINGLE_TOP)
                     startActivity(intent)
                 }
