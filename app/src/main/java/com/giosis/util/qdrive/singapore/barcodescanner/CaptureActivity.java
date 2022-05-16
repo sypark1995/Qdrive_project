@@ -736,12 +736,7 @@ public final class CaptureActivity extends CommonActivity implements DecoratedBa
             Toast.makeText(CaptureActivity.this, getResources().getString(R.string.msg_qdrive_auto_logout), Toast.LENGTH_SHORT).show();
 
             try {
-                Intent intent;
-                if ("SG".equals(Preferences.INSTANCE.getUserNation())) {
-                    intent = new Intent(CaptureActivity.this, Class.forName("com.giosis.util.qdrive.singapore.LoginActivity"));
-                } else {
-                    intent = new Intent(CaptureActivity.this, Class.forName("com.giosis.util.qdrive.international.LoginActivity"));
-                }
+                Intent intent = new Intent(CaptureActivity.this, Class.forName("com.giosis.util.qdrive.singapore.LoginActivity"));
                 intent.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP | Intent.FLAG_ACTIVITY_SINGLE_TOP);
                 startActivity(intent);
             } catch (Exception ignored) {
