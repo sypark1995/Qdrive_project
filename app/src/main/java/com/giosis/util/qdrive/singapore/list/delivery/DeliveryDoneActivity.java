@@ -115,7 +115,7 @@ public class DeliveryDoneActivity extends CommonActivity implements Camera2APIs.
     String mStrWaybillNo = "";
     String mReceiveType = "RC";
     String mType = BarcodeType.TYPE_DELIVERY;
-    String routeNumber;
+    String routeNumber = null;
 
     ArrayList<BarcodeData> barcodeList;
     String senderName;
@@ -268,9 +268,9 @@ public class DeliveryDoneActivity extends CommonActivity implements Camera2APIs.
 
         barcodeList = new ArrayList<>();
 
-        // in List (단건)
-        try {
 
+        if (getIntent().hasExtra("parcel")) {
+            // in List (단건)
             RowItem parcel = (RowItem) getIntent().getSerializableExtra("parcel");
 
             BarcodeData songData;
@@ -287,25 +287,12 @@ public class DeliveryDoneActivity extends CommonActivity implements Camera2APIs.
                 Log.e("GPSUpdate", "Parcel " + parcel.getShipping() + " // " + parcel.getLat() + ", " + parcel.getLng() + " // "
                         + parcel.getZip_code() + " - " + parcel.getState() + " - " + parcel.getCity() + " - " + parcel.getStreet());
             }
-        } catch (Exception e) {
-
-            Log.e("Exception", "Exception " + e.toString());
-        }
-
-        try {
-            RowItem parcel = (RowItem) getIntent().getSerializableExtra("parcel");
 
             String[] routeSplit = parcel.getRoute().split(" ");
             routeNumber = routeSplit[0] + " " + routeSplit[1];
-        } catch (Exception e) {
 
-            routeNumber = null;
-        }
-
-
-        // in Capture (bulk)
-        try {
-
+        } else if (getIntent().hasExtra("data")) {
+            // in Capture (bulk)
             ArrayList<BarcodeData> list = (ArrayList<BarcodeData>) getIntent().getSerializableExtra("data");
 
             for (int i = 0; i < list.size(); i++) {
@@ -323,18 +310,17 @@ public class DeliveryDoneActivity extends CommonActivity implements Camera2APIs.
 
                 if (cs.moveToFirst()) {
                     try {
-
                         String value = cs.getString(cs.getColumnIndex("high_amount_yn"));
 
                         if (value.equalsIgnoreCase("Y")) {
-
                             highAmountYn = value;
                         }
                     } catch (Exception ignore) {
+
                     }
 
-
                     if (!Preferences.INSTANCE.getUserNation().equals("SG")) {
+
                         if (barcodeList.size() == 1) {
 
                             double parcelLat = cs.getDouble(cs.getColumnIndex("lat"));
@@ -343,38 +329,33 @@ public class DeliveryDoneActivity extends CommonActivity implements Camera2APIs.
                             String state = cs.getString(cs.getColumnIndex("state"));
                             String city = cs.getString(cs.getColumnIndex("city"));
                             String street = cs.getString(cs.getColumnIndex("street"));
-                            Log.e("GPSUpdate", "Parcel " + trackingNo + " // " + parcelLat + ", " + parcelLng + " // "
-                                    + zipCode + " - " + state + " - " + city + " - " + street);
 
                             locationModel.setParcelLocation(parcelLat, parcelLng, zipCode, state, city, street);
                         }
                     }
                 }
             }
-        } catch (Exception ignored) {
-        }
 
+        }
 
         StringBuilder barcodeMsg = new StringBuilder();
-        int size = barcodeList.size();
-        for (int i = 0; i < size; i++) {
+        for (int i = 0; i < barcodeList.size(); i++) {
             barcodeMsg.append(barcodeList.get(i).getBarcode()).append("  ");
         }
-
         text_sign_d_tracking_no_title.setText(R.string.text_tracking_no);
-        if (1 < size) {  // 다수건
 
-            String qtyFormat = String.format(getResources().getString(R.string.text_total_qty_count), size);
+        if (barcodeList.size() == 1) {
+            text_sign_d_tracking_no.setText(barcodeMsg.toString().trim());
+            text_sign_d_tracking_no_more.setVisibility(View.GONE);
+
+        } else {
+            // 다수건
+            String qtyFormat = String.format(getResources().getString(R.string.text_total_qty_count), barcodeList.size());
             text_sign_d_tracking_no.setText(qtyFormat);
             text_sign_d_tracking_no_more.setVisibility(View.VISIBLE);
             text_sign_d_tracking_no_more.setText(barcodeMsg.toString());
             layout_sign_d_sender.setVisibility(View.GONE);
-        } else {  //1건
-
-            text_sign_d_tracking_no.setText(barcodeMsg.toString().trim());
-            text_sign_d_tracking_no_more.setVisibility(View.GONE);
         }
-
 
         getDeliveryInfo(barcodeList.get(0).getBarcode());
         outletInfo = getOutletInfo(barcodeList.get(0).getBarcode());
