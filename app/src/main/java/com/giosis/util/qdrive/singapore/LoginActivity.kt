@@ -31,10 +31,13 @@ import com.giosis.util.qdrive.singapore.setting.DeveloperModeActivity
 import com.giosis.util.qdrive.singapore.databinding.ActivityLoginBinding
 import com.giosis.util.qdrive.singapore.util.*
 import com.giosis.util.qdrive.singapore.util.Common
+import com.google.firebase.crashlytics.FirebaseCrashlytics
 import com.google.gson.Gson
 import com.google.gson.reflect.TypeToken
 import io.reactivex.rxjava3.android.schedulers.AndroidSchedulers
 import io.reactivex.rxjava3.schedulers.Schedulers
+import kotlinx.coroutines.CoroutineScope
+import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
 import java.io.File
 
@@ -70,6 +73,8 @@ class LoginActivity : CommonActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(binding.root)
+
+        pingCheck()
 
         QDataUtil.setCustomUserAgent(this@LoginActivity)
         // Image Shake Animation
@@ -501,6 +506,36 @@ class LoginActivity : CommonActivity() {
         } catch (e: java.lang.Exception) {
             Toast.makeText(this,resources.getText(R.string.msg_network_connect_error),Toast.LENGTH_SHORT).show()
             Log.e(tag, e.toString())
+        }
+    }
+
+    private fun pingCheck() {
+
+        CoroutineScope(Dispatchers.IO).launch {
+            val result: String = try {
+                val runTime = Runtime.getRuntime()
+                val cmd = "ping -c 1 -W 10 8.8.8.8"
+
+                val proc = runTime.exec(cmd)
+                proc.waitFor()
+
+
+                proc.exitValue().toString()
+            } catch (e: Exception) {
+                e.toString()
+            }
+
+            when (result) {
+                "0" -> "Ping Success"
+                "1" -> "Ping Fail"
+                "2" -> "Ping Error"
+                else -> result
+            }
+
+            FirebaseCrashlytics.getInstance().setCustomKey(
+                "GOOGLE PING",
+                result
+            )
         }
     }
 
