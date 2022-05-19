@@ -293,9 +293,9 @@ public class DeliveryDoneActivity extends CommonActivity implements Camera2APIs.
         }
 
         try {
+            RowItem parcel = (RowItem) getIntent().getSerializableExtra("parcel");
 
-            String routeType = getIntent().getStringExtra("route");
-            String[] routeSplit = routeType.split(" ");
+            String[] routeSplit = parcel.getRoute().split(" ");
             routeNumber = routeSplit[0] + " " + routeSplit[1];
         } catch (Exception e) {
 

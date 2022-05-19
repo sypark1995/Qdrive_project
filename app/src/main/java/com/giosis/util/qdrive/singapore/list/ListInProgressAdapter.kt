@@ -693,7 +693,6 @@ class ListInProgressAdapter(bluetoothListener: BluetoothListener) :
                 if (data.route.contains("7E") || data.route.contains("FL")) {
                     val intent = Intent(v.context, DeliveryDoneActivity::class.java)
                     intent.putExtra("parcel", data)
-                    intent.putExtra("route", data.route)    //todo_sypark 합치기
                     v.context.startActivity(intent)
                 } else {
                     val intent = Intent(v.context, DeliveryDoneActivity::class.java)
