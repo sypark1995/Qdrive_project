@@ -13,7 +13,7 @@
 
     <string name="navi_sub_confirm_delivery">Confirm my delivery order</string>
     <string name="navi_sub_delivery_done">Delivery Done</string>
-    <string name="navi_sub_pickup">Pickup C&amp;R Parcels</string>
+    <string name="navi_sub_pickup">Pickup C&amp;R Parcels/Lazada Parcels</string>
     <string name="navi_sub_self">Self-collection</string>
     <string name="navi_sub_in_progress">In Progress</string>
     <string name="navi_sub_upload_fail">Upload Failed</string>
@@ -568,4 +568,5 @@
     <string name="text_economy" translatable="false">Economy</string>
     <string name="text_by_request" translatable="false">By Request</string>
     <string name="text_by_trip" translatable="false">By Trip</string>
+    <string name="text_logout" translatable="false">Qdrive app logout at 11:59pm every day.</string>
 </resources>
