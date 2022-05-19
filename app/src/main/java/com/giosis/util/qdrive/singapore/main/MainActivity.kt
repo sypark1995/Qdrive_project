@@ -2,9 +2,7 @@ package com.giosis.util.qdrive.singapore.main
 
 
 import android.annotation.SuppressLint
-import android.app.ActivityManager
-import android.app.AlertDialog
-import android.app.ProgressDialog
+import android.app.*
 import android.content.Context
 import android.content.DialogInterface
 import android.content.Intent
@@ -23,9 +21,7 @@ import android.widget.Toast
 import androidx.appcompat.app.ActionBarDrawerToggle
 import androidx.core.content.ContextCompat
 import androidx.lifecycle.lifecycleScope
-import com.giosis.util.qdrive.singapore.LoginActivity
-import com.giosis.util.qdrive.singapore.R
-import com.giosis.util.qdrive.singapore.UploadData
+import com.giosis.util.qdrive.singapore.*
 import com.giosis.util.qdrive.singapore.barcodescanner.CaptureActivity1
 import com.giosis.util.qdrive.singapore.database.DatabaseHelper
 import com.giosis.util.qdrive.singapore.databinding.ActivityMainBinding
@@ -313,8 +309,36 @@ class MainActivity : CommonActivity() {
             intent.putExtra("admin_count", adminMessageCount)
             startActivity(intent)
         }
+        setNextDayLogout()
     }
 
+    private fun setNextDayLogout() {
+        try {
+            Preferences.autoLogoutTime = "23:59"
+            val calendar = Calendar.getInstance()
+            calendar.timeInMillis = System.currentTimeMillis()
+
+            val array = Preferences.autoLogoutTime.split(":")
+            calendar[Calendar.HOUR_OF_DAY] = array[0].toInt()
+            calendar[Calendar.MINUTE] = array[1].toInt()
+            calendar[Calendar.SECOND] = 0
+
+            if (!Calendar.getInstance().after(calendar)) {
+                val intent = Intent(MyApplication.context, AlarmReceiver::class.java)
+                val pendingIntent =
+                    PendingIntent.getBroadcast(MyApplication.context, 123, intent, 0)
+                val alarmManager =
+                    MyApplication.context.getSystemService(ALARM_SERVICE) as AlarmManager
+
+                alarmManager.setInexactRepeating(
+                    AlarmManager.RTC, calendar.timeInMillis,
+                    AlarmManager.INTERVAL_DAY, pendingIntent
+                )
+            }
+        } catch (e: Exception) {
+
+        }
+    }
 
     override fun onResume() {
         super.onResume()

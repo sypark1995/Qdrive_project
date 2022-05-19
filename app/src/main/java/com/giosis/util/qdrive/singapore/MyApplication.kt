@@ -1,17 +1,12 @@
 package com.giosis.util.qdrive.singapore
 
 import android.annotation.SuppressLint
-import android.app.AlarmManager
-import android.app.PendingIntent
 import android.content.Context
-import android.content.Intent
-import android.util.Log
 import androidx.multidex.MultiDexApplication
 import com.giosis.util.qdrive.singapore.database.DatabaseHelper
 import com.giosis.util.qdrive.singapore.util.LocaleManager
 import com.giosis.util.qdrive.singapore.util.Preferences
 import com.google.firebase.crashlytics.FirebaseCrashlytics
-import java.util.*
 
 class MyApplication : MultiDexApplication() {
 
@@ -43,52 +38,6 @@ class MyApplication : MultiDexApplication() {
 
         context = applicationContext
         badgeCnt = 0
-
-        val array = Preferences.autoLogoutTime.split(":").toTypedArray()
-        setAutoLogout(array[0].toInt(), array[1].toInt(), false)
-    }
-
-    fun setAutoLogout(hour: Int, minute: Int, test: Boolean) {
-
-        // Auto LogOut
-        val calendar = Calendar.getInstance()
-        calendar.timeInMillis = System.currentTimeMillis()
-        calendar[Calendar.HOUR_OF_DAY] = hour
-        calendar[Calendar.MINUTE] = minute
-        calendar[Calendar.SECOND] = 0
-
-        val intent = Intent(
-            context,
-            AlarmReceiver::class.java
-        )
-        val pendingIntent = PendingIntent.getBroadcast(context, 123, intent, 0)
-        val alarmManager = context.getSystemService(ALARM_SERVICE) as AlarmManager
-        Log.e("Alarm", "Auto Logout Setting? " + Preferences.autoLogoutSetting)
-        Log.e("Alarm", "Auto Logout Time? $hour:$minute")
-
-        if (!Preferences.autoLogoutSetting) {
-            Log.e("Alarm", "AlarmManager Repeating  -  $hour:$minute")
-            // With setInexactRepeating(), you have to use one of the AlarmManager interval
-            // constants--in this case, AlarmManager.INTERVAL_DAY.
-            // With setInexactRepeating(), you have to use one of the AlarmManager interval
-            // constants--in this case, AlarmManager.INTERVAL_DAY.
-            alarmManager.setInexactRepeating(
-                AlarmManager.RTC, calendar.timeInMillis,
-                AlarmManager.INTERVAL_DAY, pendingIntent
-            )
-
-            Preferences.autoLogoutSetting = true
-        } else {
-            if (test) {
-                Log.e("Alarm", "test Time? $hour:$minute")
-                alarmManager.cancel(pendingIntent)
-
-                alarmManager.setInexactRepeating(
-                    AlarmManager.RTC, calendar.timeInMillis,
-                    AlarmManager.INTERVAL_DAY, pendingIntent
-                )
-            }
-        }
     }
 
     @Override

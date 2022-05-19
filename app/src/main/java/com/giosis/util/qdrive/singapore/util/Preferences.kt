@@ -115,22 +115,11 @@ object Preferences {
         }
 
     // 202008.  Auto Logout
-    private val PREF_KEY_AUTO_LOGOUT = "autoLogout"
     private val PREF_KEY_AUTO_LOGOUT_TIME = "autoLogoutTime"
-    private val PREF_KEY_AUTO_LOGOUT_SETTING = "autoLogoutSetting"
-
-    var autoLogout: Boolean
-        get() = preferences.getBoolean(PREF_KEY_AUTO_LOGOUT, false)
-        set(value) = preferences.edit().putBoolean(PREF_KEY_AUTO_LOGOUT, value).apply()
 
     var autoLogoutTime: String
         get() = preferences.getString(PREF_KEY_AUTO_LOGOUT_TIME, "23:59").toString()
         set(value) = preferences.edit().putString(PREF_KEY_AUTO_LOGOUT_TIME, value).apply()
-
-    var autoLogoutSetting: Boolean
-        get() = preferences.getBoolean(PREF_KEY_AUTO_LOGOUT_SETTING, false)
-        set(value) = preferences.edit().putBoolean(PREF_KEY_AUTO_LOGOUT_SETTING, value).apply()
-
 
     // 202009.  Developer Mode, change ServerURL
     private val PREF_KEY_DEVELOPER_MODE = "developerMode"

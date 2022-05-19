@@ -70,6 +70,9 @@ class AlertDialogActivity : Activity() {
                         R.string.text_lazada_content
                     )
 
+            } else if(actionKey == PushData.LOGOUT) {
+                binding.titleText.visibility = View.GONE
+                binding.messageText.text = resources.getString(R.string.text_logout)
             } else {
                 if (notiTitle!!.isEmpty()) {
                     binding.titleText.visibility = View.GONE
