@@ -4,10 +4,12 @@ package com.giosis.util.qdrive.singapore.main
 import android.content.Intent
 import android.os.Bundle
 import android.view.View
+import com.bumptech.glide.util.Util
 import com.giosis.util.qdrive.singapore.R
 import com.giosis.util.qdrive.singapore.barcodescanner.CaptureActivity1
 import com.giosis.util.qdrive.singapore.databinding.ActivityScanBinding
 import com.giosis.util.qdrive.singapore.util.BarcodeType
+import com.giosis.util.qdrive.singapore.util.Common
 import com.giosis.util.qdrive.singapore.util.CommonActivity
 import com.giosis.util.qdrive.singapore.util.Preferences
 
@@ -41,6 +43,11 @@ class ScanActivity : CommonActivity() {
         }
 
         binding.textDeliveryScanMsg.text = msg
+        if (Preferences.userNation == Common.SG) {
+            binding.textPickupScan.text = resources.getText(R.string.navi_sub_pickup_sg)
+        } else {
+            binding.textPickupScan.text = resources.getText(R.string.navi_sub_pickup)
+        }
 
         if (Preferences.officeName.contains("Qxpress SG")) {
             binding.layoutSelfCollectionShown.visibility = View.VISIBLE

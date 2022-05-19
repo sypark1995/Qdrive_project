@@ -130,6 +130,7 @@
         android:paddingStart="20dp">
 
         <TextView
+            android:id="@+id/text_pickup_scan"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_centerVertical="true"
