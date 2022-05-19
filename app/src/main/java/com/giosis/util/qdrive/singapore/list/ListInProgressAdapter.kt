@@ -690,15 +690,9 @@ class ListInProgressAdapter(bluetoothListener: BluetoothListener) :
             }
 
             btnDelivered.setOnClickListener { v: View ->
-                if (data.route.contains("7E") || data.route.contains("FL")) {
-                    val intent = Intent(v.context, DeliveryDoneActivity::class.java)
-                    intent.putExtra("parcel", data)
-                    v.context.startActivity(intent)
-                } else {
-                    val intent = Intent(v.context, DeliveryDoneActivity::class.java)
-                    intent.putExtra("parcel", data)
-                    v.context.startActivity(intent)
-                }
+                val intent = Intent(v.context, DeliveryDoneActivity::class.java)
+                intent.putExtra("parcel", data)
+                v.context.startActivity(intent)
             }
 
             btnDeliveryFailed.setOnClickListener { v: View ->
