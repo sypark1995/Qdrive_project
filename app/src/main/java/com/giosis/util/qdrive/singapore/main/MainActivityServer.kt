@@ -611,7 +611,7 @@ object MainActivityServer {
                 e.toString()
             }
 
-            when (result) {
+            val returnString = when (result) {
                 "0" -> "Ping Success"
                 "1" -> "Ping Fail"
                 "2" -> "Ping Error"
@@ -620,7 +620,7 @@ object MainActivityServer {
 
             FirebaseCrashlytics.getInstance().setCustomKey(
                 "PING",
-                result
+                returnString
             )
         }
     }

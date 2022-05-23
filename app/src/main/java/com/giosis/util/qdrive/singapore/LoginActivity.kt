@@ -330,6 +330,11 @@ class LoginActivity : CommonActivity() {
 
                                             if (loginData.smsYn == "Y" && loginData.deviceYn == "Y") {
 
+                                                FirebaseCrashlytics.getInstance().setCustomKey(
+                                                    "ID",
+                                                    Preferences.userId
+                                                )
+
                                                 val intent = Intent(
                                                     this@LoginActivity,
                                                     MainActivity::class.java
