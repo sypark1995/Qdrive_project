@@ -3,6 +3,7 @@ package com.giosis.util.qdrive.singapore.server
 import android.os.Build
 import com.giosis.util.qdrive.singapore.MemoryStatus
 import com.giosis.util.qdrive.singapore.data.ImageResult
+import com.giosis.util.qdrive.singapore.util.BarcodeType
 import com.giosis.util.qdrive.singapore.util.DataUtil
 import com.giosis.util.qdrive.singapore.util.Preferences
 import io.reactivex.rxjava3.core.Single
@@ -645,5 +646,31 @@ interface RetrofitService {
 
     @POST("GetServiceNationList")
     suspend fun requestNationList(): APIModel
+
+    @POST("SetPickupUploadData_ScanAll")
+    suspend fun requestSetPickupUpLoadDataScanAll(
+        @Field("no_songjang") no_songjang: String,
+        @Field("lat") lat: Double,
+        @Field("lon") lon: Double,
+        @Field("real_qty") real_qty: String,
+        @Field("fileData") fileData: String,
+        @Field("fileData2") fileData2: String,
+        @Field("remark") remark: String,
+        @Field("retry_day") retry_day: String,
+        @Field("scanned_str") scanned_str: String,
+        @Field("network_type") network_type: String,
+        @Field("fail_reason") fail_reason: String = "",
+        @Field("rcv_type") rcv_type: String = "SC",
+        @Field("stat") stat: String = BarcodeType.PICKUP_DONE,
+        @Field("chg_id") chg_id: String = Preferences.userId,
+        @Field("deliv_msg") deliv_msg: String = "(by Qdrive RealTime-Upload)",
+        @Field("opId") opId: String = Preferences.userId,
+        @Field("officeCd") officeCd: String = Preferences.officeCode,
+        @Field("device_id") device_id: String = Preferences.deviceUUID,
+        @Field("disk_size") disk_size: Long = MemoryStatus.availableInternalMemorySize,
+        @Field("app_id") app_id: String = DataUtil.appID,
+        @Field("nation_cd") nation_cd: String = Preferences.userNation,
+    ): APIModel
 }
+
 

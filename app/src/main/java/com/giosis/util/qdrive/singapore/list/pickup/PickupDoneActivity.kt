@@ -1,6 +1,8 @@
 package com.giosis.util.qdrive.singapore.list.pickup
 
+import android.annotation.SuppressLint
 import android.app.AlertDialog
+import android.content.ContentValues
 import android.content.DialogInterface
 import android.content.Intent
 import android.os.Bundle
@@ -8,13 +10,22 @@ import android.text.Editable
 import android.text.TextWatcher
 import android.util.Log
 import android.widget.Toast
+import androidx.lifecycle.lifecycleScope
 import com.giosis.util.qdrive.singapore.MemoryStatus
 import com.giosis.util.qdrive.singapore.R
+import com.giosis.util.qdrive.singapore.barcodescanner.StdResult
 import com.giosis.util.qdrive.singapore.database.DatabaseHelper
 import com.giosis.util.qdrive.singapore.databinding.ActivityPickupStartToScanBinding
 import com.giosis.util.qdrive.singapore.gps.GPSTrackerManager
 import com.giosis.util.qdrive.singapore.gps.LocationModel
+import com.giosis.util.qdrive.singapore.server.ImageUpload
+import com.giosis.util.qdrive.singapore.server.RetrofitClient
 import com.giosis.util.qdrive.singapore.util.*
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.launch
+import kotlinx.coroutines.withContext
+import java.text.SimpleDateFormat
+import java.util.*
 
 /**
  * Pickup done -> Bundle type scan all 로 기능개선
@@ -56,7 +67,8 @@ class PickupDoneActivity : CommonActivity() {
 
 
         // 위, 경도
-        val cs = DatabaseHelper.getInstance()["SELECT * FROM " + DatabaseHelper.DB_TABLE_INTEGRATION_LIST + " WHERE invoice_no='" + pickupNo + "'"]
+        val cs =
+            DatabaseHelper.getInstance()["SELECT * FROM " + DatabaseHelper.DB_TABLE_INTEGRATION_LIST + " WHERE invoice_no='" + pickupNo + "'"]
         if (cs.moveToFirst()) {
 
             val parcelLat = cs.getDouble(cs.getColumnIndex("lat"))
@@ -65,7 +77,10 @@ class PickupDoneActivity : CommonActivity() {
             val state = cs.getString(cs.getColumnIndex("state"))
             val city = cs.getString(cs.getColumnIndex("city"))
             val street = cs.getString(cs.getColumnIndex("street"))
-            Log.e("GPSUpdate", "Parcel $pickupNo // $parcelLat, $parcelLng // $zipCode - $state - $city - $street")
+            Log.e(
+                "GPSUpdate",
+                "Parcel $pickupNo // $parcelLat, $parcelLng // $zipCode - $state - $city - $street"
+            )
 
             locationModel.setParcelLocation(parcelLat, parcelLng, zipCode, state, city, street)
         }
@@ -78,7 +93,11 @@ class PickupDoneActivity : CommonActivity() {
 
                 if (99 <= binding.editMemo.length()) {
 
-                    Toast.makeText(this@PickupDoneActivity, resources.getText(R.string.msg_memo_too_long), Toast.LENGTH_SHORT).show()
+                    Toast.makeText(
+                        this@PickupDoneActivity,
+                        resources.getText(R.string.msg_memo_too_long),
+                        Toast.LENGTH_SHORT
+                    ).show()
                 }
             }
 
@@ -111,7 +130,11 @@ class PickupDoneActivity : CommonActivity() {
 
         if (checker.lacksPermissions(*PERMISSIONS)) {
             isPermissionTrue = false
-            PermissionActivity.startActivityForResult(this@PickupDoneActivity, PERMISSION_REQUEST_CODE, *PERMISSIONS)
+            PermissionActivity.startActivityForResult(
+                this@PickupDoneActivity,
+                PERMISSION_REQUEST_CODE,
+                *PERMISSIONS
+            )
             overridePendingTransition(0, 0)
         } else {
             isPermissionTrue = true
@@ -132,7 +155,10 @@ class PickupDoneActivity : CommonActivity() {
             if (gpsEnable && gpsTrackerManager != null) {
 
                 gpsTrackerManager!!.gpsTrackerStart()
-                Log.e("Location", "$tag GPSTrackerManager onResume : ${gpsTrackerManager!!.latitude}  ${gpsTrackerManager!!.longitude}  ")
+                Log.e(
+                    "Location",
+                    "$tag GPSTrackerManager onResume : ${gpsTrackerManager!!.latitude}  ${gpsTrackerManager!!.longitude}  "
+                )
             } else {
 
                 DataUtil.enableLocationSettings(this@PickupDoneActivity)
@@ -156,16 +182,21 @@ class PickupDoneActivity : CommonActivity() {
 
     fun cancelSigning() {
         AlertDialog.Builder(this@PickupDoneActivity)
-                .setMessage(R.string.msg_delivered_sign_cancel)
-                .setPositiveButton(R.string.button_ok) { _: DialogInterface?, _: Int -> finish() }
-                .setNegativeButton(R.string.button_cancel) { dialog: DialogInterface, _: Int -> dialog.dismiss() }.show()
+            .setMessage(R.string.msg_delivered_sign_cancel)
+            .setPositiveButton(R.string.button_ok) { _: DialogInterface?, _: Int -> finish() }
+            .setNegativeButton(R.string.button_cancel) { dialog: DialogInterface, _: Int -> dialog.dismiss() }
+            .show()
     }
 
+    @SuppressLint("SimpleDateFormat")
     private fun saveServerUploadSign() {
         try {
 
             if (!NetworkUtil.isNetworkAvailable(this@PickupDoneActivity)) {
-                DisplayUtil.AlertDialog(this@PickupDoneActivity, resources.getString(R.string.msg_network_connect_error))
+                DisplayUtil.AlertDialog(
+                    this@PickupDoneActivity,
+                    resources.getString(R.string.msg_network_connect_error)
+                )
                 return
             }
 
@@ -176,34 +207,136 @@ class PickupDoneActivity : CommonActivity() {
                 longitude = it.longitude
             }
             locationModel.setDriverLocation(latitude, longitude)
-            Log.e("Location", "$tag saveServerUploadSign  GPSTrackerManager : $latitude  $longitude  - ${locationModel.driverLat}, ${locationModel.driverLng}")
+            Log.e(
+                "Location",
+                "$tag saveServerUploadSign  GPSTrackerManager : $latitude  $longitude  - ${locationModel.driverLat}, ${locationModel.driverLng}"
+            )
 
             val realQty = binding.textTotalQty.text.toString()
 
             //사인이미지를 그리지 않았다면
             if (!binding.signApplicantSignature.isTouch) {
-                Toast.makeText(this@PickupDoneActivity, resources.getString(R.string.msg_signature_require), Toast.LENGTH_SHORT).show()
+                Toast.makeText(
+                    this@PickupDoneActivity,
+                    resources.getString(R.string.msg_signature_require),
+                    Toast.LENGTH_SHORT
+                ).show()
                 return
             }
             //사인이미지를 그리지 않았다면
             if (!binding.signCollectorSignature.isTouch) {
-                Toast.makeText(this@PickupDoneActivity, resources.getString(R.string.msg_collector_signature_require), Toast.LENGTH_SHORT).show()
+                Toast.makeText(
+                    this@PickupDoneActivity,
+                    resources.getString(R.string.msg_collector_signature_require),
+                    Toast.LENGTH_SHORT
+                ).show()
                 return
             }
 
             val driverMemo = binding.editMemo.text.toString().trim { it <= ' ' }
             if (driverMemo == "") {
-                Toast.makeText(this@PickupDoneActivity, resources.getString(R.string.msg_must_enter_memo), Toast.LENGTH_SHORT).show()
+                Toast.makeText(
+                    this@PickupDoneActivity,
+                    resources.getString(R.string.msg_must_enter_memo),
+                    Toast.LENGTH_SHORT
+                ).show()
                 return
             }
 
             if (MemoryStatus.availableInternalMemorySize != MemoryStatus.ERROR.toLong() && MemoryStatus.availableInternalMemorySize < MemoryStatus.PRESENT_BYTE) {
-                DisplayUtil.AlertDialog(this@PickupDoneActivity, resources.getString(R.string.msg_disk_size_error))
+                DisplayUtil.AlertDialog(
+                    this@PickupDoneActivity,
+                    resources.getString(R.string.msg_disk_size_error)
+                )
                 return
             }
 
             DataUtil.logEvent("button_click", tag, "SetPickupUploadData_ScanAll")
+            lifecycleScope.launch {
+                val stdResult = StdResult()
 
+                DataUtil.captureSign("/QdrivePickup", pickupNo, binding.signApplicantSignature)
+                DataUtil.captureSign("/QdriveCollector", pickupNo, binding.signCollectorSignature)
+
+                val bitmap1 = QDataUtil.getBitmapString(
+                    this@PickupDoneActivity,
+                    binding.signApplicantSignature,
+                    ImageUpload.QXPOP,
+                    "qdriver/sign",
+                    pickupNo
+                )
+
+                val bitmap2 = QDataUtil.getBitmapString(
+                    this@PickupDoneActivity,
+                    binding.signCollectorSignature,
+                    ImageUpload.QXPOP,
+                    "qdriver/sign",
+                    pickupNo
+                )
+                withContext(Dispatchers.Main) {
+                    if (bitmap1 == "" || bitmap2 == "") {
+                        stdResult.resultCode = -100
+                        stdResult.resultMsg = resources.getString(R.string.msg_upload_fail_image)
+                        return@withContext stdResult
+                    } else {
+
+                    }
+                }
+
+                try {
+
+                    val contentVal = ContentValues()
+                    contentVal.put("stat", BarcodeType.PICKUP_DONE)
+                    contentVal.put("real_qty", realQty)
+                    contentVal.put("fail_reason", "")
+                    contentVal.put("driver_memo", driverMemo)
+                    contentVal.put("retry_dt", "")
+
+                    DatabaseHelper.getInstance().update(
+                        DatabaseHelper.DB_TABLE_INTEGRATION_LIST, contentVal,
+                        "invoice_no=? COLLATE NOCASE " + "and reg_id = ?", arrayOf(pickupNo, Preferences.userId)
+                    )
+                    val response = RetrofitClient.instanceDynamic().requestSetPickupUpLoadDataScanAll(
+                        pickupNo,
+                        latitude,
+                        longitude,
+                        realQty,
+                        bitmap1,
+                        bitmap2,
+                        driverMemo,
+                        "",
+                        mStrWaybillNo,
+                        NetworkUtil.getNetworkType(this@PickupDoneActivity),
+                        ""
+                    )
+                    if (response.resultCode == 0) {
+                        val dateFormat = SimpleDateFormat("yyyy-MM-dd HH:mm:ss")
+                        val date = Date()
+
+                        val changeDataString: String = dateFormat.format(date)
+
+                        val contentVal2 = ContentValues()
+                        contentVal2.put("punchOut_stat", "S")
+                        contentVal2.put("chg_dt", changeDataString)
+
+                        DatabaseHelper.getInstance().update(
+                            DatabaseHelper.DB_TABLE_INTEGRATION_LIST,
+                            contentVal2,
+                            "invoice_no=? COLLATE NOCASE " + "and reg_id = ?",
+                            arrayOf(pickupNo, Preferences.userId)
+                        )
+
+                        DataUtil.inProgressListPosition = 0
+                        finish()
+                    }
+                } catch (e: java.lang.Exception) {
+                    Log.e("Exception", "$tag  Exception : $e")
+                    stdResult.resultCode = -15
+
+                    stdResult.resultMsg = resources.getString(R.string.msg_upload_fail_15)
+                }
+
+            }
             PickupDoneUploadHelper.Builder(
                 this@PickupDoneActivity,
                 Preferences.userId,
@@ -218,19 +351,23 @@ class PickupDoneActivity : CommonActivity() {
                 MemoryStatus.availableInternalMemorySize,
                 locationModel
             )
-                    .setOnServerEventListener(object : OnServerEventListener {
-                        override fun onPostResult() {
+                .setOnServerEventListener(object : OnServerEventListener {
+                    override fun onPostResult() {
 
-                            DataUtil.inProgressListPosition = 0
-                            finish()
-                        }
+                        DataUtil.inProgressListPosition = 0
+                        finish()
+                    }
 
-                        override fun onPostFailList() {}
-                    }).build().execute()
+                    override fun onPostFailList() {}
+                }).build().execute()
         } catch (e: Exception) {
 
             Log.e("Exception", "$tag  Exception : $e")
-            Toast.makeText(this@PickupDoneActivity, resources.getString(R.string.text_error) + " - " + e.toString(), Toast.LENGTH_SHORT).show()
+            Toast.makeText(
+                this@PickupDoneActivity,
+                resources.getString(R.string.text_error) + " - " + e.toString(),
+                Toast.LENGTH_SHORT
+            ).show()
         }
     }
 
@@ -244,6 +381,7 @@ class PickupDoneActivity : CommonActivity() {
         private const val PERMISSION_REQUEST_CODE = 1000
         private val PERMISSIONS = arrayOf(
             PermissionChecker.ACCESS_FINE_LOCATION, PermissionChecker.ACCESS_COARSE_LOCATION,
-                PermissionChecker.READ_EXTERNAL_STORAGE, PermissionChecker.WRITE_EXTERNAL_STORAGE)
+            PermissionChecker.READ_EXTERNAL_STORAGE, PermissionChecker.WRITE_EXTERNAL_STORAGE
+        )
     }
 }
