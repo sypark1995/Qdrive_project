@@ -415,11 +415,16 @@ class PickupDoneActivity : CommonActivity() {
 
 
         } catch (e: java.lang.Exception) {
-            Log.e("Exception", "$tag  Exception : $e")
-            stdResult.resultCode = -15
-            stdResult.resultMsg = resources.getString(R.string.msg_upload_fail_15)
+            return if (e.message == "Software caused connection abort") {
+                stdResult.resultCode = 0
+                stdResult.resultMsg = ""
+                stdResult
+            } else {
+                stdResult.resultCode = -15
+                stdResult.resultMsg = resources.getString(R.string.msg_upload_fail_15)
+                stdResult
+            }
 
-            return stdResult
         }
 
 

@@ -2,16 +2,25 @@ package com.giosis.util.qdrive.singapore.list.pickup
 
 import android.app.Activity
 import android.app.AlertDialog
+import android.content.DialogInterface
 import android.content.Intent
 import android.os.Bundle
 import android.util.Log
+import android.view.View
 import android.widget.Toast
+import androidx.lifecycle.lifecycleScope
 import com.giosis.util.qdrive.singapore.MemoryStatus
 import com.giosis.util.qdrive.singapore.R
+import com.giosis.util.qdrive.singapore.barcodescanner.StdResult
 import com.giosis.util.qdrive.singapore.gps.GPSTrackerManager
+import com.giosis.util.qdrive.singapore.server.ImageUpload
+import com.giosis.util.qdrive.singapore.server.RetrofitClient
 import com.giosis.util.qdrive.singapore.util.*
+import com.giosis.util.qdrive.singapore.util.dialog.ProgressDialog
 import kotlinx.android.synthetic.main.activity_pickup_done.*
 import kotlinx.android.synthetic.main.top_title.*
+import kotlinx.coroutines.launch
+import retrofit2.HttpException
 
 class PickupAddScanActivity : CommonActivity() {
 
@@ -32,6 +41,10 @@ class PickupAddScanActivity : CommonActivity() {
         PermissionChecker.ACCESS_FINE_LOCATION, PermissionChecker.ACCESS_COARSE_LOCATION,
         PermissionChecker.READ_EXTERNAL_STORAGE, PermissionChecker.WRITE_EXTERNAL_STORAGE
     )
+
+    val progressBar by lazy {
+        ProgressDialog(this@PickupAddScanActivity)
+    }
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -111,6 +124,7 @@ class PickupAddScanActivity : CommonActivity() {
 
                 DataUtil.enableLocationSettings(this@PickupAddScanActivity)
             }
+            progressBar.setCancelable(false)
         }
     }
 
@@ -186,30 +200,24 @@ class PickupAddScanActivity : CommonActivity() {
 
             DataUtil.logEvent("button_click", tag, "SetPickupUploadData_AddScan")
 
-            PickupAddScanUploadHelper.Builder(
-                this@PickupAddScanActivity,
-                Preferences.userId,
-                Preferences.officeCode,
-                Preferences.deviceUUID,
-                pickupNo,
-                scannedList,
-                scannedQty,
-                sign_view_sign_p_applicant_signature,
-                sign_view_sign_p_collector_signature,
-                MemoryStatus.availableInternalMemorySize,
-                latitude,
-                longitude
-            ).setOnServerEventListener(object : OnServerEventListener {
-                override fun onPostResult() {
+            progressBar.visibility = View.VISIBLE
+            lifecycleScope.launch {
+                val result = callPickupUploadDataAddScanApi(latitude, longitude)
 
-                    DataUtil.inProgressListPosition = 0
-                    setResult(Activity.RESULT_OK)
-                    finish()
-                }
+                progressBar.visibility = View.GONE
 
-                override fun onPostFailList() {
+                when (result.resultCode) {
+                    0 -> {
+                        resultDialog(String.format(resources.getString(R.string.text_upload_success_count),1))
+                    }
+                    -16 -> {
+                        resultDialog(resources.getString(R.string.msg_network_connect_error_saved))
+                    }
+                    else -> {
+                        alertShow(result.resultMsg)
+                    }
                 }
-            }).build().execute()
+            }
 
         } catch (e: Exception) {
 
@@ -219,6 +227,85 @@ class PickupAddScanActivity : CommonActivity() {
                 resources.getString(R.string.text_error) + " - " + e.toString(),
                 Toast.LENGTH_SHORT
             ).show()
+        }
+    }
+
+    private suspend fun callPickupUploadDataAddScanApi(
+        latitude: Double,
+        longitude: Double
+    ): StdResult {
+        val result = StdResult()
+
+        if (!NetworkUtil.isNetworkAvailable(this@PickupAddScanActivity)) {
+            result.resultCode = -16
+            result.resultMsg = resources.getString(R.string.msg_network_connect_error_saved)
+            return result
+        }
+
+        try {
+
+            val scannedItems: Array<String> = scannedList.split(",").toTypedArray()
+            for (item in scannedItems) {
+                DataUtil.captureSign(
+                    "/QdrivePickup",
+                    item,
+                    sign_view_sign_p_applicant_signature
+                )
+                DataUtil.captureSign(
+                    "/QdriveCollector",
+                    item,
+                    sign_view_sign_p_collector_signature
+                )
+            }
+
+            val bitmap1 = QDataUtil.getBitmapString(
+                this@PickupAddScanActivity,
+                sign_view_sign_p_applicant_signature,
+                ImageUpload.QXPOP,
+                "qdriver/sign",
+                pickupNo
+            )
+
+            val bitmap2 = QDataUtil.getBitmapString(
+                this@PickupAddScanActivity,
+                sign_view_sign_p_collector_signature,
+                ImageUpload.QXPOP,
+                "qdriver/sign",
+                pickupNo
+            )
+
+            if (bitmap1 == "" || bitmap2 == "") {
+                result.resultCode = -100
+                result.resultMsg = resources.getString(R.string.msg_upload_fail_image)
+                return result
+            }
+
+            val response = RetrofitClient.instanceDynamic().requestSetPickupUploadDataAddScan(
+                pickupNo,
+                bitmap1,
+                bitmap2,
+                scannedList,
+                NetworkUtil.getNetworkType(this@PickupAddScanActivity),
+                latitude,
+                longitude,
+                scannedQty
+            )
+
+            result.resultCode = response.resultCode
+            result.resultMsg = response.resultMsg
+            return result
+
+        } catch (e: Exception) {
+            return if (e.message == "Software caused connection abort") {   // todo_sypark api호출..
+                result.resultCode = 0
+                result.resultMsg = ""
+                result
+            } else {
+                result.resultCode = -15
+                result.resultMsg = resources.getString(R.string.msg_upload_fail_15)
+                result
+            }
+
         }
     }
 
@@ -234,6 +321,40 @@ class PickupAddScanActivity : CommonActivity() {
         DataUtil.stopGPSManager(gpsTrackerManager)
     }
 
+    private fun alertShow(msg: String) {
+        val alertInternetStatus = AlertDialog.Builder(this)
+        alertInternetStatus.setTitle(
+            resources.getString(R.string.text_upload_failed)
+        )
+        alertInternetStatus.setMessage(msg)
+        alertInternetStatus.setPositiveButton(
+            resources
+                .getString(R.string.button_close)
+        ) { dialog: DialogInterface, _: Int ->
+            dialog.dismiss() // 닫기
+        }
+        alertInternetStatus.show()
+    }
+
+    private fun resultDialog(msg: String) {
+
+        if (!this@PickupAddScanActivity.isFinishing) {
+
+            val builder = AlertDialog.Builder(this@PickupAddScanActivity)
+            builder.setCancelable(false)
+            builder.setTitle(resources.getString(R.string.text_upload_result))
+            builder.setMessage(msg)
+            builder.setPositiveButton(resources.getString(R.string.button_ok)) { dialog, _ ->
+
+                dialog.dismiss()
+
+                DataUtil.inProgressListPosition = 0
+                setResult(Activity.RESULT_OK)
+                finish()
+            }
+            builder.show()
+        }
+    }
 
     override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
         super.onActivityResult(requestCode, resultCode, data)

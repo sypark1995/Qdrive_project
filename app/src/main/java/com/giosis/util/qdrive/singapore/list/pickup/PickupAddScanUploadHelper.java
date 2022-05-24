@@ -20,7 +20,7 @@ import com.giosis.util.qdrive.singapore.util.OnServerEventListener;
 import com.giosis.util.qdrive.singapore.util.Preferences;
 
 import org.json.JSONObject;
-
+@Deprecated
 public class PickupAddScanUploadHelper {
     String TAG = "PickupAddScanUploadHelper";
 
