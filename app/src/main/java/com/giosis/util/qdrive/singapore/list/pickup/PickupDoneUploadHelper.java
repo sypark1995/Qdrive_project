@@ -35,6 +35,7 @@ import java.util.Date;
 
 
 // Pickup - Start to Scan
+@Deprecated
 public class PickupDoneUploadHelper {
     String TAG = "PickupDoneUploadHelper";
 

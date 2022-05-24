@@ -648,6 +648,7 @@ interface RetrofitService {
     suspend fun requestNationList(): APIModel
 
     @POST("SetPickupUploadData_ScanAll")
+    @FormUrlEncoded
     suspend fun requestSetPickupUpLoadDataScanAll(
         @Field("no_songjang") no_songjang: String,
         @Field("lat") lat: Double,

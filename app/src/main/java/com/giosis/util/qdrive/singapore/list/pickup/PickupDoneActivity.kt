@@ -9,6 +9,7 @@ import android.os.Bundle
 import android.text.Editable
 import android.text.TextWatcher
 import android.util.Log
+import android.view.View
 import android.widget.Toast
 import androidx.lifecycle.lifecycleScope
 import com.giosis.util.qdrive.singapore.MemoryStatus
@@ -21,9 +22,8 @@ import com.giosis.util.qdrive.singapore.gps.LocationModel
 import com.giosis.util.qdrive.singapore.server.ImageUpload
 import com.giosis.util.qdrive.singapore.server.RetrofitClient
 import com.giosis.util.qdrive.singapore.util.*
-import kotlinx.coroutines.Dispatchers
+import com.giosis.util.qdrive.singapore.util.dialog.ProgressDialog
 import kotlinx.coroutines.launch
-import kotlinx.coroutines.withContext
 import java.text.SimpleDateFormat
 import java.util.*
 
@@ -48,6 +48,10 @@ class PickupDoneActivity : CommonActivity() {
     private var locationModel = LocationModel()
 
     var isPermissionTrue = false
+
+    val progressBar by lazy {
+        ProgressDialog(this@PickupDoneActivity)
+    }
 
     public override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -163,6 +167,7 @@ class PickupDoneActivity : CommonActivity() {
 
                 DataUtil.enableLocationSettings(this@PickupDoneActivity)
             }
+            progressBar.setCancelable(false)
         }
     }
 
@@ -251,115 +256,31 @@ class PickupDoneActivity : CommonActivity() {
                 return
             }
 
+            progressBar.visibility = View.VISIBLE
+
             DataUtil.logEvent("button_click", tag, "SetPickupUploadData_ScanAll")
             lifecycleScope.launch {
-                val stdResult = StdResult()
+                val result = callPickupUpLoadApi(latitude, longitude)
 
-                DataUtil.captureSign("/QdrivePickup", pickupNo, binding.signApplicantSignature)
-                DataUtil.captureSign("/QdriveCollector", pickupNo, binding.signCollectorSignature)
+                progressBar.visibility = View.GONE
 
-                val bitmap1 = QDataUtil.getBitmapString(
-                    this@PickupDoneActivity,
-                    binding.signApplicantSignature,
-                    ImageUpload.QXPOP,
-                    "qdriver/sign",
-                    pickupNo
-                )
-
-                val bitmap2 = QDataUtil.getBitmapString(
-                    this@PickupDoneActivity,
-                    binding.signCollectorSignature,
-                    ImageUpload.QXPOP,
-                    "qdriver/sign",
-                    pickupNo
-                )
-                withContext(Dispatchers.Main) {
-                    if (bitmap1 == "" || bitmap2 == "") {
-                        stdResult.resultCode = -100
-                        stdResult.resultMsg = resources.getString(R.string.msg_upload_fail_image)
-                        return@withContext stdResult
-                    } else {
-
-                    }
-                }
-
-                try {
-
-                    val contentVal = ContentValues()
-                    contentVal.put("stat", BarcodeType.PICKUP_DONE)
-                    contentVal.put("real_qty", realQty)
-                    contentVal.put("fail_reason", "")
-                    contentVal.put("driver_memo", driverMemo)
-                    contentVal.put("retry_dt", "")
-
-                    DatabaseHelper.getInstance().update(
-                        DatabaseHelper.DB_TABLE_INTEGRATION_LIST, contentVal,
-                        "invoice_no=? COLLATE NOCASE " + "and reg_id = ?", arrayOf(pickupNo, Preferences.userId)
-                    )
-                    val response = RetrofitClient.instanceDynamic().requestSetPickupUpLoadDataScanAll(
-                        pickupNo,
-                        latitude,
-                        longitude,
-                        realQty,
-                        bitmap1,
-                        bitmap2,
-                        driverMemo,
-                        "",
-                        mStrWaybillNo,
-                        NetworkUtil.getNetworkType(this@PickupDoneActivity),
-                        ""
-                    )
-                    if (response.resultCode == 0) {
-                        val dateFormat = SimpleDateFormat("yyyy-MM-dd HH:mm:ss")
-                        val date = Date()
-
-                        val changeDataString: String = dateFormat.format(date)
-
-                        val contentVal2 = ContentValues()
-                        contentVal2.put("punchOut_stat", "S")
-                        contentVal2.put("chg_dt", changeDataString)
-
-                        DatabaseHelper.getInstance().update(
-                            DatabaseHelper.DB_TABLE_INTEGRATION_LIST,
-                            contentVal2,
-                            "invoice_no=? COLLATE NOCASE " + "and reg_id = ?",
-                            arrayOf(pickupNo, Preferences.userId)
+                when (result.resultCode) {
+                    0 -> {
+                        val msg = String.format(
+                            resources.getString(R.string.text_upload_success_count),
+                            1
                         )
-
-                        DataUtil.inProgressListPosition = 0
-                        finish()
+                        resultDialog(msg)
                     }
-                } catch (e: java.lang.Exception) {
-                    Log.e("Exception", "$tag  Exception : $e")
-                    stdResult.resultCode = -15
+                    -16 -> {
+                        resultDialog(result.resultMsg)
+                    }
+                    else -> {
+                        alertShow(result.resultMsg)
+                    }
 
-                    stdResult.resultMsg = resources.getString(R.string.msg_upload_fail_15)
                 }
-
             }
-            PickupDoneUploadHelper.Builder(
-                this@PickupDoneActivity,
-                Preferences.userId,
-                Preferences.officeCode,
-                Preferences.deviceUUID,
-                pickupNo,
-                mStrWaybillNo,
-                realQty,
-                binding.signApplicantSignature,
-                binding.signCollectorSignature,
-                driverMemo,
-                MemoryStatus.availableInternalMemorySize,
-                locationModel
-            )
-                .setOnServerEventListener(object : OnServerEventListener {
-                    override fun onPostResult() {
-
-                        DataUtil.inProgressListPosition = 0
-                        finish()
-                    }
-
-                    override fun onPostFailList() {}
-                }).build().execute()
         } catch (e: Exception) {
 
             Log.e("Exception", "$tag  Exception : $e")
@@ -369,6 +290,173 @@ class PickupDoneActivity : CommonActivity() {
                 Toast.LENGTH_SHORT
             ).show()
         }
+    }
+
+    private suspend fun callPickupUpLoadApi(latitude: Double, longitude: Double): StdResult {
+
+        val stdResult = StdResult()
+
+        DataUtil.captureSign("/QdrivePickup", pickupNo, binding.signApplicantSignature)
+        DataUtil.captureSign("/QdriveCollector", pickupNo, binding.signCollectorSignature)
+
+        val contentVal = ContentValues()
+        contentVal.put("stat", BarcodeType.PICKUP_DONE)
+        contentVal.put("real_qty", binding.textTotalQty.text.toString())
+        contentVal.put("fail_reason", "")
+        contentVal.put("driver_memo", binding.editMemo.text.toString().trim { it <= ' ' })
+        contentVal.put("retry_dt", "")
+
+        DatabaseHelper.getInstance().update(
+            DatabaseHelper.DB_TABLE_INTEGRATION_LIST,
+            contentVal,
+            "invoice_no=? COLLATE NOCASE " + "and reg_id = ?",
+            arrayOf(pickupNo, Preferences.userId)
+        )
+
+        if (!NetworkUtil.isNetworkAvailable(this@PickupDoneActivity)) {
+            stdResult.resultCode = -16
+            stdResult.resultMsg = resources.getString(R.string.msg_network_connect_error_saved)
+            return stdResult
+        }
+
+        try {
+            val bitmap1 = QDataUtil.getBitmapString(
+                this@PickupDoneActivity,
+                binding.signApplicantSignature,
+                ImageUpload.QXPOP,
+                "qdriver/sign",
+                pickupNo
+            )
+
+            val bitmap2 = QDataUtil.getBitmapString(
+                this@PickupDoneActivity,
+                binding.signCollectorSignature,
+                ImageUpload.QXPOP,
+                "qdriver/sign",
+                pickupNo
+            )
+
+
+            if (bitmap1 == "" || bitmap2 == "") {
+                stdResult.resultCode = -100
+                stdResult.resultMsg =
+                    resources.getString(R.string.msg_upload_fail_image)
+                return stdResult
+            }
+
+            val response = RetrofitClient.instanceDynamic().requestSetPickupUpLoadDataScanAll(
+                pickupNo,
+                latitude,
+                longitude,
+                binding.textTotalQty.text.toString(),
+                bitmap1,
+                bitmap2,
+                binding.editMemo.text.toString().trim { it <= ' ' },
+                "",
+                mStrWaybillNo,
+                NetworkUtil.getNetworkType(this@PickupDoneActivity),
+                ""
+            )
+
+            if (response.resultCode == 0) {
+                val dateFormat = SimpleDateFormat("yyyy-MM-dd HH:mm:ss")
+                val date = Date()
+
+                val changeDataString: String = dateFormat.format(date)
+
+                val contentVal2 = ContentValues()
+                contentVal2.put("punchOut_stat", "S")
+                contentVal2.put("chg_dt", changeDataString)
+
+                DatabaseHelper.getInstance().update(
+                    DatabaseHelper.DB_TABLE_INTEGRATION_LIST,
+                    contentVal2,
+                    "invoice_no=? COLLATE NOCASE " + "and reg_id = ?",
+                    arrayOf(pickupNo, Preferences.userId)
+                )
+
+                // CnR, Lazada Data Scan시 함께 Done 처리
+                val scannedList: Array<String> = mStrWaybillNo.split(",").toTypedArray()
+                for (item in scannedList) {
+                    val cursor =
+                        DatabaseHelper.getInstance()["SELECT rcv_nm, sender_nm FROM " + DatabaseHelper.DB_TABLE_INTEGRATION_LIST + " WHERE invoice_no='" + item + "' COLLATE NOCASE"]
+
+                    if (cursor.moveToFirst()) {
+                        val contentVal3 = ContentValues()
+                        contentVal3.put("stat", BarcodeType.PICKUP_DONE)
+                        contentVal3.put("real_qty", "1")
+                        contentVal3.put("chg_dt", dateFormat.format(date))
+                        contentVal3.put("fail_reason", "")
+                        contentVal3.put("retry_dt", "")
+                        contentVal3.put(
+                            "driver_memo",
+                            binding.editMemo.text.toString().trim { it <= ' ' })
+                        contentVal3.put("reg_id", Preferences.userId)
+                        contentVal3.put("punchOut_stat", "S")
+
+                        DatabaseHelper.getInstance().update(
+                            DatabaseHelper.DB_TABLE_INTEGRATION_LIST,
+                            contentVal3,
+                            "invoice_no=? COLLATE NOCASE " + "and reg_id = ?",
+                            arrayOf(item, Preferences.userId)
+                        )
+                    }
+                    cursor.close()
+                }
+
+                stdResult.resultCode = response.resultCode
+                stdResult.resultMsg = response.resultMsg
+                return stdResult
+            } else {
+                stdResult.resultCode = response.resultCode
+                stdResult.resultMsg = response.resultMsg
+                return stdResult
+            }
+
+
+        } catch (e: java.lang.Exception) {
+            Log.e("Exception", "$tag  Exception : $e")
+            stdResult.resultCode = -15
+            stdResult.resultMsg = resources.getString(R.string.msg_upload_fail_15)
+
+            return stdResult
+        }
+
+
+    }
+
+    private fun resultDialog(msg: String) {
+
+        if (!this@PickupDoneActivity.isFinishing) {
+
+            val builder = AlertDialog.Builder(this@PickupDoneActivity)
+            builder.setCancelable(false)
+            builder.setTitle(resources.getString(R.string.text_upload_result))
+            builder.setMessage(msg)
+            builder.setPositiveButton(resources.getString(R.string.button_ok)) { dialog, _ ->
+
+                dialog.dismiss()
+
+                DataUtil.inProgressListPosition = 0
+                finish()
+            }
+            builder.show()
+        }
+    }
+
+    private fun alertShow(msg: String) {
+        val alert_internet_status = AlertDialog.Builder(this)
+        alert_internet_status.setTitle(
+            resources.getString(R.string.text_upload_failed)
+        )
+        alert_internet_status.setMessage(msg)
+        alert_internet_status.setPositiveButton(
+            resources
+                .getString(R.string.button_close)
+        ) { dialog: DialogInterface, _: Int ->
+            dialog.dismiss() // 닫기
+        }
+        alert_internet_status.show()
     }
 
 
