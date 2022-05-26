@@ -36,7 +36,6 @@ class ListTodayDoneFragment(var bluetoothListener: BluetoothListener) : Fragment
     private var exlistCardList: RecyclerView? = null
     private var mCountCallback: OnTodayDoneCountListener? = null
     private var rowItems = ArrayList<RowItem>()
-    private var childItems = ArrayList<ChildItem>()
     private val adapter by lazy {
         ListTodayDoneAdapter(bluetoothListener)
     }
@@ -76,7 +75,8 @@ class ListTodayDoneFragment(var bluetoothListener: BluetoothListener) : Fragment
         super.onActivityCreated(savedInstanceState)
 
         // Search
-        val searchManager = requireActivity().getSystemService(Context.SEARCH_SERVICE) as SearchManager
+        val searchManager =
+            requireActivity().getSystemService(Context.SEARCH_SERVICE) as SearchManager
         searchViewList!!.setSearchableInfo(searchManager.getSearchableInfo(requireActivity().componentName))
         searchViewList!!.queryHint = resources.getString(R.string.text_search)
         searchViewList!!.setOnQueryTextListener(this)
@@ -129,7 +129,6 @@ class ListTodayDoneFragment(var bluetoothListener: BluetoothListener) : Fragment
                         if (isAdded) {
                             rowItems = ArrayList()
                             for (pickupInfo in list) {
-                                childItems = ArrayList()
                                 val child = ChildItem()
                                 child.hp = pickupInfo.hpNo
                                 child.tel = pickupInfo.telNo
@@ -138,7 +137,7 @@ class ListTodayDoneFragment(var bluetoothListener: BluetoothListener) : Fragment
                                 child.statReason = pickupInfo.failReason
                                 child.secretNoType = pickupInfo.secretNoType
                                 child.secretNo = pickupInfo.secretNo
-                                childItems.add(child)
+
                                 val rowItem = RowItem(
                                     pickupInfo.contrNo,
                                     "D+0",
@@ -161,7 +160,8 @@ class ListTodayDoneFragment(var bluetoothListener: BluetoothListener) : Fragment
                                     "",
                                     "", ""
                                 )
-                                rowItem.items = childItems
+
+                                rowItem.childItems = child
                                 rowItems.add(rowItem)
                             }
                             adapter.rowItem = rowItems

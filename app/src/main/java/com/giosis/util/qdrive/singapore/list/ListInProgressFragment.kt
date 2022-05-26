@@ -343,7 +343,6 @@ class ListInProgressFragment(var bluetoothListener: BluetoothListener) : Fragmen
                 + DatabaseHelper.DB_TABLE_INTEGRATION_LIST + " WHERE punchOut_stat = 'N' and chg_dt is null and reg_id='" + Preferences.userId + "' order by " + orderby)]
         if (cs.moveToFirst()) {
             do {
-                val childItems = ArrayList<ChildItem>()
                 val child = ChildItem()
                 child.hp = cs.getString(cs.getColumnIndex("hp_no"))
                 child.tel = cs.getString(cs.getColumnIndex("tel_no"))
@@ -352,7 +351,7 @@ class ListInProgressFragment(var bluetoothListener: BluetoothListener) : Fragmen
                 child.statReason = cs.getString(cs.getColumnIndex("fail_reason"))
                 child.secretNoType = cs.getString(cs.getColumnIndex("secret_no_type"))
                 child.secretNo = cs.getString(cs.getColumnIndex("secret_no"))
-                childItems.add(child)
+
                 var delay: Long = 0
                 if (cs.getString(cs.getColumnIndex("delivery_dt")) != null && cs.getString(
                         cs.getColumnIndex(
@@ -427,7 +426,7 @@ class ListInProgressFragment(var bluetoothListener: BluetoothListener) : Fragmen
                 if ((routeType == "RPC")) {
                     rowItem.desired_time = cs.getString(cs.getColumnIndex("desired_time"))
                 }
-                rowItem.items = childItems
+                rowItem.childItems = child
 
                 // k. Outlet Delivery 경우 같은 지점은 하나만 나오도록 수정
                 if (0 < resultArrayList.size) {
@@ -517,7 +516,7 @@ class ListInProgressFragment(var bluetoothListener: BluetoothListener) : Fragmen
         while (count < tempArrayList.size - 1) {
             val item = tempArrayList[count]
             val nextItem = tempArrayList[count + 1]
-            if ((item.zip_code == nextItem.zip_code) && (item.items!![0].hp == nextItem.items!![0].hp)) {
+            if ((item.zip_code == nextItem.zip_code) && (item.childItems.hp == nextItem.childItems.hp)) {
                 // 픽업 우편번호 & 픽업지 핸드폰 번호 동일
                 if (item.shipping[0] == 'P' && nextItem.shipping[0] == 'P') {
                     // P번호 끼리는 묶일 수 없음
@@ -612,10 +611,10 @@ class ListInProgressFragment(var bluetoothListener: BluetoothListener) : Fragmen
         override fun compare(o1: RowItem, o2: RowItem): Int {
             // 우편번호 > 핸드폰번호 > 송장번호
             return if ((o1.zip_code == o2.zip_code)) {
-                if ((o1.items!![0].hp == o2.items!![0].hp)) {
+                if ((o1.childItems.hp == o2.childItems.hp)) {
                     o1.shipping.compareTo(o2.shipping)
                 } else {
-                    o1.items!![0].hp!!.compareTo((o2.items!![0].hp)!!)
+                    o1.childItems.hp!!.compareTo((o2.childItems.hp)!!)
                 }
             } else {
                 o1.zip_code!!.compareTo((o2.zip_code)!!)

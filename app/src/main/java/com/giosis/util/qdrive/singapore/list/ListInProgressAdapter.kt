@@ -376,32 +376,32 @@ class ListInProgressAdapter(bluetoothListener: BluetoothListener) :
                 }
             }
 
-            if (data.items?.get(0)?.secretNoType == "T") {    // Qtalk 안심번호 타입 T - Qnumber 사용
+            if (data.childItems.secretNoType == "T") {    // Qtalk 안심번호 타입 T - Qnumber 사용
                 layoutTelephone.visibility = View.GONE
                 layoutMobile.visibility = View.GONE
                 imgLive10.visibility = View.VISIBLE
 
-            } else if (data.items?.get(0)?.secretNoType == "P") {  // Phone 안심번호 - 핸드폰만 활성화
+            } else if (data.childItems.secretNoType == "P") {  // Phone 안심번호 - 핸드폰만 활성화
                 layoutTelephone.visibility = View.GONE
                 layoutMobile.visibility = View.VISIBLE
                 imgLive10.visibility = View.GONE
-                val content = SpannableString(data.items?.get(0)?.hp)
+                val content = SpannableString(data.childItems.hp)
                 content.setSpan(UnderlineSpan(), 0, content.length, 0)
                 textMobileNumber.text = content
 
             } else {          //안심번호 사용안함
-                if (data.items?.get(0)?.tel != null && data.items?.get(0)?.tel!!.length > 5) {
+                if (data.childItems.tel != null && data.childItems.tel!!.length > 5) {
                     layoutTelephone.visibility = View.VISIBLE
-                    val content = SpannableString(data.items?.get(0)?.tel)
+                    val content = SpannableString(data.childItems.tel)
                     content.setSpan(UnderlineSpan(), 0, content.length, 0)
                     textTelephoneNumber.text = content
                 } else {
                     layoutTelephone.visibility = View.GONE
                 }
 
-                if (data.items?.get(0)?.hp != null && data.items?.get(0)?.hp!!.length > 5) {
+                if (data.childItems.hp != null && data.childItems.hp!!.length > 5) {
                     layoutMobile.visibility = View.VISIBLE
-                    val content = SpannableString(data.items?.get(0)?.hp)
+                    val content = SpannableString(data.childItems.hp)
                     content.setSpan(UnderlineSpan(), 0, content.length, 0)
                     textMobileNumber.text = content
                 } else {
@@ -449,18 +449,18 @@ class ListInProgressAdapter(bluetoothListener: BluetoothListener) :
             }
 
             //  Delivery / Pickup  Fail Reason
-            if (data.items?.get(0)?.statReason != null && data.items?.get(0)?.statReason!!.isNotEmpty()) {
+            if (data.childItems.statReason != null && data.childItems.statReason!!.isNotEmpty()) {
 
-                when (data.items?.get(0)?.stat) {
+                when (data.childItems.stat) {
                     BarcodeType.DELIVERY_FAIL -> {
                         layoutFailed.visibility = View.VISIBLE
                         textFailedReason.text =
-                            DataUtil.getDeliveryFailedMsg(data.items?.get(0)?.statReason)
+                            DataUtil.getDeliveryFailedMsg(data.childItems.statReason)
                     }
                     BarcodeType.PICKUP_FAIL -> {
                         layoutFailed.visibility = View.VISIBLE
                         textFailedReason.text =
-                            DataUtil.getPickupFailedMsg(data.items?.get(0)?.statReason)
+                            DataUtil.getPickupFailedMsg(data.childItems.statReason)
                     }
                     else -> {
                         layoutFailed.visibility = View.GONE
@@ -606,13 +606,13 @@ class ListInProgressAdapter(bluetoothListener: BluetoothListener) :
             }
 
             textTelephoneNumber.setOnClickListener { v: View ->
-                val callUri = Uri.parse("tel:" + data.items?.get(0)?.tel)
+                val callUri = Uri.parse("tel:" + data.childItems.tel)
                 val intent = Intent(Intent.ACTION_DIAL, callUri)
                 v.context.startActivity(intent)
             }
 
             textMobileNumber.setOnClickListener { v: View ->
-                val callUri = Uri.parse("tel:" + data.items?.get(0)?.hp)
+                val callUri = Uri.parse("tel:" + data.childItems.hp)
                 val intent = Intent(Intent.ACTION_DIAL, callUri)
                 v.context.startActivity(intent)
             }
@@ -623,7 +623,7 @@ class ListInProgressAdapter(bluetoothListener: BluetoothListener) :
                         v.context.resources.getString(R.string.msg_delivery_start_sms),
                         data.name
                     )
-                    val smsUri = Uri.parse("sms:" + data.items?.get(0)?.hp)
+                    val smsUri = Uri.parse("sms:" + data.childItems.hp)
                     val intent = Intent(Intent.ACTION_SENDTO, smsUri)
                     intent.putExtra("sms_body", smsBody)
                     v.context.startActivity(intent)

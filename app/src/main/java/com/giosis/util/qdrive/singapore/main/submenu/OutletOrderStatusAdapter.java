@@ -414,8 +414,7 @@ public class OutletOrderStatusAdapter extends BaseExpandableListAdapter {
 
     @Override
     public int getChildrenCount(int groupPosition) {
-        ArrayList<ChildItem> chList = rowItem.get(groupPosition).getItems();
-        return chList.size();
+        return 1;
     }
 
 
@@ -427,8 +426,7 @@ public class OutletOrderStatusAdapter extends BaseExpandableListAdapter {
 
     @Override
     public Object getChild(int groupPosition, int childPosition) {
-        ArrayList<ChildItem> chList = rowItem.get(groupPosition).getItems();
-        return chList.get(childPosition);
+        return rowItem.get(groupPosition).getChildItems();
     }
 
 
@@ -505,11 +503,11 @@ public class OutletOrderStatusAdapter extends BaseExpandableListAdapter {
         AlertDialog.Builder ab = new AlertDialog.Builder(context);
         ab.setTitle("QTalk Auto Message");
         ab.setSingleChoiceItems(delivery_type.equals("P") ? Pickup_items : Delivery_items, -1,
-                (dialog, whichButton) -> {
+                        (dialog, whichButton) -> {
 
-                    ListView lv = ((AlertDialog) dialog).getListView();
-                    lv.setTag(new Integer(whichButton));
-                })
+                            ListView lv = ((AlertDialog) dialog).getListView();
+                            lv.setTag(new Integer(whichButton));
+                        })
                 .setPositiveButton("Ok", (dialog, whichButton) -> {
                     //
                     ListView lv = ((AlertDialog) dialog).getListView();
@@ -523,9 +521,9 @@ public class OutletOrderStatusAdapter extends BaseExpandableListAdapter {
                         sendLive10MessageTask.execute(qtalk_params);
                     }
                 }).setNegativeButton("Cancel",
-                (dialog, whichButton) -> {
-                    // Cancel 버튼 클릭시
-                });
+                        (dialog, whichButton) -> {
+                            // Cancel 버튼 클릭시
+                        });
         ab.show();
     }
 

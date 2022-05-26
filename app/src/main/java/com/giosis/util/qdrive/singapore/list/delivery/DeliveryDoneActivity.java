@@ -837,9 +837,7 @@ public class DeliveryDoneActivity extends CommonActivity implements Camera2APIs.
     // Gallery
     private void getImageFromAlbum() {
         try {
-
             if (!isGalleryActivate) {
-
                 Intent intent = new Intent();
                 intent.setType("image/*");
                 intent.setAction(Intent.ACTION_GET_CONTENT);
@@ -847,9 +845,7 @@ public class DeliveryDoneActivity extends CommonActivity implements Camera2APIs.
                 startActivityForResult(Intent.createChooser(intent, "Select Picture"), RESULT_LOAD_IMAGE);
             }
         } catch (Exception ex) {
-
             isGalleryActivate = false;
-            Log.i("eylee", ex.toString());
         }
     }
 
