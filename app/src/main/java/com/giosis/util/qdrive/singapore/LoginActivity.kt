@@ -45,6 +45,7 @@ import java.io.File
 class LoginActivity : CommonActivity() {
 
     val tag = "LoginActivity"
+
     private val binding by lazy {
         ActivityLoginBinding.inflate(layoutInflater)
     }
@@ -181,7 +182,6 @@ class LoginActivity : CommonActivity() {
                 }
             }
 
-        //
         binding.editLoginId.setText(Preferences.userId)
         binding.editLoginPassword.setText(Preferences.userPw)
 
@@ -195,12 +195,12 @@ class LoginActivity : CommonActivity() {
                 }
                 return@setOnClickListener
             }
+
             val userNationCode = nationList[spinnerPosition].nation_cd
 
             val userID = binding.editLoginId.text.toString().trim()
             val userPW = binding.editLoginPassword.text.toString().trim()
             val deviceUUID = getDeviceUUID()
-            Log.e(tag, " Input Data  -  $userNationCode  / $userID  / $userPW  / $deviceUUID")
 
             // DB 파일 생성여부
             // todo_sypark  없으면 만들도록 . ...
@@ -426,18 +426,14 @@ class LoginActivity : CommonActivity() {
     }
 
     private fun getVersion(): String {
-
         return try {
-
             val packageInfo =
                 applicationContext.packageManager.getPackageInfo(applicationContext.packageName, 0)
             packageInfo.versionName
         } catch (e: Exception) {
-
             ""
         }
     }
-
 
     fun showDialog(msg: String?) {
         val alertBuilder = AlertDialog.Builder(this)
@@ -451,11 +447,9 @@ class LoginActivity : CommonActivity() {
     }
 
     fun hideKeyboard() {
-
         val view = this.currentFocus
 
         if (view != null) {
-
             val imm = getSystemService(Context.INPUT_METHOD_SERVICE) as InputMethodManager
             imm.hideSoftInputFromWindow(view.windowToken, 0)
         }
@@ -480,7 +474,6 @@ class LoginActivity : CommonActivity() {
 
 
     private fun goSMSVerification(msg: String?) {
-
         val alertBuilder = AlertDialog.Builder(this)
         alertBuilder.setTitle(resources.getString(R.string.text_alert))
         alertBuilder.setMessage(msg)
@@ -496,18 +489,16 @@ class LoginActivity : CommonActivity() {
     }
 
     private suspend fun getNationList() {
-
         try {
             val response = RetrofitClient.instanceDynamic().requestNationList()
 
             if (response.resultCode == 0) {
-
                 nationList = Gson().fromJson(
                     response.resultObject,
                     object : TypeToken<ArrayList<LoginNation>>() {}.type
                 )
-
             }
+
         } catch (e: java.lang.Exception) {
             Toast.makeText(
                 this,

@@ -31,6 +31,7 @@ import io.reactivex.rxjava3.schedulers.Schedulers
 import java.text.SimpleDateFormat
 import java.util.*
 
+
 class ListInProgressFragment(var bluetoothListener: BluetoothListener) : Fragment(),
     SearchView.OnQueryTextListener, SearchView.OnCloseListener {
 
@@ -115,6 +116,7 @@ class ListInProgressFragment(var bluetoothListener: BluetoothListener) : Fragmen
             view.findViewById(R.id.layout_list_pickup_sort_condition)
         val btnListPickupSortRequest = view.findViewById<Button>(R.id.btn_list_pickup_sort_request)
         val btnListPickupSortTrip = view.findViewById<Button>(R.id.btn_list_pickup_sort_trip)
+
         progressInProgress = view.findViewById(R.id.progress_in_progress)
         searchView = view.findViewById(R.id.search_view)
         layoutListSort = view.findViewById(R.id.layout_list_sort)
@@ -175,22 +177,23 @@ class ListInProgressFragment(var bluetoothListener: BluetoothListener) : Fragmen
                 resources.getString(R.string.text_sort_name_desc)
             )
         )
-        val sortArrayAdapter =
-            ArrayAdapter(
-                requireActivity(),
-                android.R.layout.simple_spinner_dropdown_item,
-                sortArrayList
-            )
+        val sortArrayAdapter = ArrayAdapter(
+            requireActivity(),
+            android.R.layout.simple_spinner_dropdown_item,
+            sortArrayList
+        )
+
         spinnerListSort!!.adapter = sortArrayAdapter
+
         try {
             spinnerListSort!!.setSelection(Preferences.sortIndex)
             selectedSort = orderbyQuery[Preferences.sortIndex]
         } catch (e: Exception) {
-            Log.e("Exception", "$TAG  Spinner Exception : $e")
             Preferences.sortIndex = 0
             spinnerListSort!!.setSelection(0)
             selectedSort = orderbyQuery[0]
         }
+
         spinnerListSort!!.onItemSelectedListener = object : AdapterView.OnItemSelectedListener {
             override fun onItemSelected(
                 parent: AdapterView<*>?,

@@ -36,7 +36,10 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Date;
 
-public class RpcListActivity extends CommonActivity implements SearchView.OnQueryTextListener, SearchView.OnCloseListener {
+// return 화물 리스트
+public class RpcListActivity extends CommonActivity
+        implements SearchView.OnQueryTextListener, SearchView.OnCloseListener {
+
     private static final int PERMISSION_REQUEST_CODE = 1000;
     private static final String[] PERMISSIONS = new String[]{PermissionChecker.ACCESS_FINE_LOCATION, PermissionChecker.ACCESS_COARSE_LOCATION};
     String TAG = "RpcListActivity";
@@ -50,7 +53,6 @@ public class RpcListActivity extends CommonActivity implements SearchView.OnQuer
     private FrameLayout layout_list_sort;
     private NDSpinner spinner_list_sort;
     private RecyclerView exlist_card_list;
-    private String opID;
     private String orderby = "zip_code asc";
     private ListInProgressAdapter adapter;
     private ArrayList<RowItem> rowItems;
@@ -93,14 +95,10 @@ public class RpcListActivity extends CommonActivity implements SearchView.OnQuer
         spinner_list_sort = findViewById(R.id.spinner_list_sort);
         exlist_card_list = findViewById(R.id.exlist_card_list);
 
-
-        //
         layout_top_back.setOnClickListener(v -> finish());
         text_top_title.setText(R.string.text_rpc_change_driver);
-        opID = Preferences.INSTANCE.getUserId();
 
         inputMethodManager = (InputMethodManager) getSystemService(Context.INPUT_METHOD_SERVICE);
-
 
         // Search
         SearchManager searchManager = (SearchManager) getSystemService(Context.SEARCH_SERVICE);
@@ -118,8 +116,6 @@ public class RpcListActivity extends CommonActivity implements SearchView.OnQuer
 
         layout_list_sort.setOnClickListener(v -> spinner_list_sort.performClick());
 
-
-        // 스피너  sort by 초기화
         int OrderBySeq = Preferences.INSTANCE.getSortIndex();
 
         ArrayList<String> spinnerlist = new ArrayList<>(Arrays.asList("Postal Code : Low to High",
@@ -139,7 +135,6 @@ public class RpcListActivity extends CommonActivity implements SearchView.OnQuer
         };
 
         if (OrderBySeq <= 6) {
-
             Preferences.INSTANCE.setSortIndex(0);
             OrderBySeq = 0;
         }
@@ -165,7 +160,6 @@ public class RpcListActivity extends CommonActivity implements SearchView.OnQuer
             public void onNothingSelected(AdapterView<?> parent) {
             }
         });
-
 
         rowItems = new ArrayList<>();
         adapter = new ListInProgressAdapter(bluetoothClass);
@@ -216,11 +210,8 @@ public class RpcListActivity extends CommonActivity implements SearchView.OnQuer
     public boolean onQueryTextChange(String newText) {
 
         try {
-
             adapter.filterData(newText);
         } catch (Exception e) {
-
-            Log.e("Exception", TAG + "  onQueryTextChange Exception : " + e.toString());
         }
         return false;
     }
@@ -230,7 +221,7 @@ public class RpcListActivity extends CommonActivity implements SearchView.OnQuer
 
         ArrayList<RowItem> resultArrayList = new ArrayList<>();
 
-        Cursor cs = DatabaseHelper.getInstance().get("SELECT * FROM " + DatabaseHelper.DB_TABLE_INTEGRATION_LIST + " WHERE punchOut_stat = 'N' and chg_dt is null and route='RPC' and reg_id='" + opID + "' order by " + orderby);
+        Cursor cs = DatabaseHelper.getInstance().get("SELECT * FROM " + DatabaseHelper.DB_TABLE_INTEGRATION_LIST + " WHERE punchOut_stat = 'N' and chg_dt is null and route='RPC' and reg_id='" + Preferences.INSTANCE.getUserId() + "' order by " + orderby);
 
         if (cs.moveToFirst()) {
             do {
@@ -286,7 +277,6 @@ public class RpcListActivity extends CommonActivity implements SearchView.OnQuer
                         cs.getString(cs.getColumnIndex("currency")),
                         cs.getString(cs.getColumnIndex("high_amount_yn"))
                 );
-//                rowitem.setZip_code(cs.getString(cs.getColumnIndex("zip_code")));
 
                 // NOTIFICATION.  2019.10  invoice와 같은지 체크! 같으면 저장 x
                 if (deliveryType.equals("P")) {
@@ -308,93 +298,9 @@ public class RpcListActivity extends CommonActivity implements SearchView.OnQuer
 
                 rowitem.setChildItems(child);
 
-                // k. Outlet Delivery 경우 같은 지점은 하나만 나오도록 수정
-                if (0 < resultArrayList.size()) {
-                    boolean isRegisteredRoute = false;
-
-                    for (int i = 0; i < resultArrayList.size(); i++) {
-                        if (deliveryType.equalsIgnoreCase("D")) {
-                            if (routeType.contains("7E") || routeType.contains("FL")) {
-                                // ex. 7E 001 name1, 7E 002 name2  / ex. FL FLA10001 mrtA, FL FLS10001 mrtB
-
-                                String[] routeSplit = routeType.split(" ");
-
-                                if (1 < routeSplit.length) {
-
-                                    String routeNumber = routeSplit[0] + " " + routeSplit[1];
-                                    if (resultArrayList.get(i).getType().equals("D") && resultArrayList.get(i).getRoute().contains(routeNumber)) {
-                                        isRegisteredRoute = true;
-                                    }
-                                }
-                            }
-                        }
-                    }
-
-                    if (!isRegisteredRoute) {
-                        resultArrayList.add(rowitem);
-                    }
-
-                } else {
-                    resultArrayList.add(rowitem);
-                }
+                resultArrayList.add(rowitem);
 
             } while (cs.moveToNext());
-        }
-
-
-        // k. Outlet 정보 추가
-        for (int i = 0; i < resultArrayList.size(); i++) {
-            if (resultArrayList.get(i).getType().equalsIgnoreCase("D")) {
-
-                resultArrayList.get(i).setOutlet_company(resultArrayList.get(i).getRoute());
-                if (resultArrayList.get(i).getRoute().contains("7E") || resultArrayList.get(i).getRoute().contains("FL")) {
-
-                    String[] routeSplit = resultArrayList.get(i).getRoute().split(" ");
-
-                    if (1 < routeSplit.length) {
-
-                        String routeNumber = routeSplit[0] + " " + routeSplit[1];
-                        Cursor cursor = DatabaseHelper.getInstance().get("SELECT count(*) FROM " + DatabaseHelper.DB_TABLE_INTEGRATION_LIST + " WHERE punchOut_stat = 'N' and chg_dt is null and type = 'D' and reg_id='" + opID + "' and route LIKE '%" + routeNumber + "%'");
-                        cursor.moveToFirst();
-                        int count = cursor.getInt(0);
-
-                        StringBuilder sb = new StringBuilder();
-
-                        for (int j = 2; j < routeSplit.length; j++) {
-
-                            sb.append(routeSplit[j]);
-                            sb.append(" ");
-                        }
-
-                        resultArrayList.get(i).setOutlet_company(routeSplit[0]);
-                        resultArrayList.get(i).setOutlet_store_code(routeSplit[1]);
-                        resultArrayList.get(i).setOutlet_store_name(sb.toString().trim());
-                        resultArrayList.get(i).setOutlet_qty(count);
-                    }
-                }
-            } else {        // Pickup
-
-                resultArrayList.get(i).setOutlet_company(resultArrayList.get(i).getRoute());
-                if (resultArrayList.get(i).getRoute().contains("7E") || resultArrayList.get(i).getRoute().contains("FL")) {
-
-                    String[] routeSplit = resultArrayList.get(i).getRoute().split(" ");
-
-                    if (1 < routeSplit.length) {
-
-                        StringBuilder sb = new StringBuilder();
-
-                        for (int j = 2; j < routeSplit.length; j++) {
-
-                            sb.append(routeSplit[j]);
-                            sb.append(" ");
-                        }
-
-                        resultArrayList.get(i).setOutlet_company(routeSplit[0]);
-                        resultArrayList.get(i).setOutlet_store_code(routeSplit[1]);
-                        resultArrayList.get(i).setOutlet_store_name(sb.toString().trim());
-                    }
-                }
-            }
         }
 
         return resultArrayList;
