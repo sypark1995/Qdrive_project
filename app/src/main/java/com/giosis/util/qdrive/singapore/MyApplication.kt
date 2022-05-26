@@ -10,12 +10,12 @@ import com.google.firebase.crashlytics.FirebaseCrashlytics
 
 class MyApplication : MultiDexApplication() {
 
-    private var badgeCnt = 0
-
     companion object {
         @SuppressLint("StaticFieldLeak")
         lateinit var context: Context
 
+        // TODO_kjyoo 머하는 뱃지 인지 모르겠음...
+        var badgeCnt = 0
     }
 
     @Override
@@ -26,15 +26,7 @@ class MyApplication : MultiDexApplication() {
 
         DatabaseHelper.getInstance(this)
         LocaleManager.getInstance(this)
-
         Preferences.init(this)
-
-//        val nationCode = if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.N) {
-//            Resources.getSystem().configuration.locales[0].country
-//        } else {
-//            Resources.getSystem().configuration.locale.country
-//        }
-//        Preferences.userNation = nationCode
 
         context = applicationContext
         badgeCnt = 0
@@ -43,15 +35,7 @@ class MyApplication : MultiDexApplication() {
     @Override
     override fun attachBaseContext(base: Context) {
         Preferences.init(base)
-        super.attachBaseContext(LocaleManager.Companion.getInstance(base).setLocale(base))
-    }
-
-    fun setBadgeCnt(badgeCnt: Int) {
-        this.badgeCnt = badgeCnt
-    }
-
-    fun getBadgeCnt(): Int {
-        return badgeCnt
+        super.attachBaseContext(LocaleManager.getInstance(base).setLocale(base))
     }
 
 }
