@@ -4,13 +4,6 @@
     package="com.giosis.util.qdrive.singapore"
     android:windowSoftInputMode="adjustPan">
 
-    <queries>
-        <package android:name="net.giosis.qpost" />
-        <intent>
-            <action android:name="android.media.action.IMAGE_CAPTURE" />
-        </intent>
-    </queries>
-
     <application
         android:name="com.giosis.util.qdrive.singapore.MyApplication"
         android:allowBackup="false"
@@ -356,15 +349,11 @@
     <uses-permission android:name="android.permission.BLUETOOTH" />
     <uses-permission android:name="android.permission.BLUETOOTH_ADMIN" />
     <uses-permission android:name="android.permission.CHANGE_WIFI_STATE" />
-
     <uses-permission android:name="android.permission.ACCESS_WIFI_STATE" />
     <uses-permission android:name="android.permission.WAKE_LOCK" />
     <uses-permission android:name="com.google.android.providers.gsf.permission.READ_GSERVICES" />
     <uses-permission android:name="com.google.android.providers.gsf.permission.WRITE_GSERVICES" />
 
     <uses-permission android:name="android.permission.GET_TASKS" />
-    <uses-permission
-        android:name="android.permission.QUERY_ALL_PACKAGES"
-        tools:ignore="QueryAllPackagesPermission" />
 
 </manifest>
