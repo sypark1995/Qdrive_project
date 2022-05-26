@@ -342,6 +342,7 @@ class ListInProgressFragment(var bluetoothListener: BluetoothListener) : Fragmen
         val resultArrayList = ArrayList<RowItem>()
         val cs = DatabaseHelper.getInstance()[("SELECT * FROM "
                 + DatabaseHelper.DB_TABLE_INTEGRATION_LIST + " WHERE punchOut_stat = 'N' and chg_dt is null and reg_id='" + Preferences.userId + "' order by " + orderby)]
+
         if (cs.moveToFirst()) {
             do {
                 val child = ChildItem()
@@ -354,11 +355,8 @@ class ListInProgressFragment(var bluetoothListener: BluetoothListener) : Fragmen
                 child.secretNo = cs.getString(cs.getColumnIndex("secret_no"))
 
                 var delay: Long = 0
-                if (cs.getString(cs.getColumnIndex("delivery_dt")) != null && cs.getString(
-                        cs.getColumnIndex(
-                            "delivery_dt"
-                        )
-                    ) != ""
+                if (cs.getString(cs.getColumnIndex("delivery_dt")) != null
+                    && cs.getString(cs.getColumnIndex("delivery_dt")) != ""
                 ) {
                     try {
                         delay = diffOfDate(cs.getString(cs.getColumnIndex("delivery_dt")))
@@ -371,17 +369,18 @@ class ListInProgressFragment(var bluetoothListener: BluetoothListener) : Fragmen
                 val routeType = cs.getString(cs.getColumnIndex("route"))
                 //배송 타입
                 val deliveryType = cs.getString(cs.getColumnIndex("type"))
-                var rcvName: String? = ""
+                var rcvName = ""
                 if (deliveryType == "D") {
                     rcvName = cs.getString(cs.getColumnIndex("rcv_nm")) //구매자
                 } else if (deliveryType == "P") {
                     rcvName = cs.getString(cs.getColumnIndex("req_nm")) //픽업 요청 셀러
                 }
+
                 val rowItem = RowItem(
                     cs.getString(cs.getColumnIndex("contr_no")),
                     "D+$delay",
                     cs.getString(cs.getColumnIndex("invoice_no")),
-                    rcvName!!,
+                    rcvName,
                     "(" + cs.getString(cs.getColumnIndex("zip_code")) + ") "
                             + cs.getString(cs.getColumnIndex("address")),
                     cs.getString(cs.getColumnIndex("rcv_request")),
@@ -405,108 +404,82 @@ class ListInProgressFragment(var bluetoothListener: BluetoothListener) : Fragmen
                 rowItem.state = cs.getString(cs.getColumnIndex("state"))
                 rowItem.city = cs.getString(cs.getColumnIndex("city"))
                 rowItem.street = cs.getString(cs.getColumnIndex("street"))
-                //
 
                 // NOTIFICATION.  2019.10  invoice와 같은지 체크! 같으면 저장 x
-                if ((deliveryType == "P")) {
-                    if ((cs.getString(cs.getColumnIndex("invoice_no")) == cs.getString(
-                            cs.getColumnIndex(
-                                "partner_ref_no"
-                            )
-                        ))
-                    ) {
-                        rowItem.ref_pickup_no = ""
-                    } else {
-                        rowItem.ref_pickup_no = cs.getString(cs.getColumnIndex("partner_ref_no"))
-                    }
+                if (deliveryType == "P") {
+                    val partnerRefNo = cs.getString(cs.getColumnIndex("partner_ref_no"))
+
+                    rowItem.ref_pickup_no =
+                        if ((cs.getString(cs.getColumnIndex("invoice_no")) == partnerRefNo)) {
+                            ""
+                        } else {
+                            partnerRefNo
+                        }
                 }
-                if ((deliveryType == "D")) {
+
+                if (deliveryType == "D") {
                     rowItem.order_type_etc = cs.getString(cs.getColumnIndex("order_type_etc"))
                     rowItem.orderType = cs.getString(cs.getColumnIndex("order_type"))
                 }
-                if ((routeType == "RPC")) {
+
+                if (routeType == "RPC") {
                     rowItem.desired_time = cs.getString(cs.getColumnIndex("desired_time"))
                 }
+
                 rowItem.childItems = child
 
-                // k. Outlet Delivery 경우 같은 지점은 하나만 나오도록 수정
-                if (0 < resultArrayList.size) {
-                    var isRegisteredRoute = false
-                    for (i in resultArrayList.indices) {
-                        if (deliveryType.equals("D", ignoreCase = true)) {
-                            if (routeType.contains("7E") || routeType.contains("FL")) {
+                // Outlet Delivery 경우 같은 지점은 하나만 나오도록 수정
+                var isAdded = true
 
-                                // ex. 7E 001 name1, 7E 002 name2  / ex. FL FLA10001 mrtA, FL FLS10001 mrtB
-                                val routeSplit = routeType.split(" ").toTypedArray()
-                                if (1 < routeSplit.size) {
-                                    val routeNumber = routeSplit[0] + " " + routeSplit[1]
-                                    if ((resultArrayList[i].type == "D") && resultArrayList[i].route.contains(
-                                            routeNumber
-                                        )
-                                    ) {
-                                        isRegisteredRoute = true
-                                    }
-                                }
+                val routeSplit = routeType.split(" ").toTypedArray()
+
+                if (deliveryType == "D" && (routeType.contains("7E") || routeType.contains("FL"))) {
+
+                    for (i in resultArrayList.indices) {
+                        // ex. 7E 001 name1, 7E 002 name2  / ex. FL FLA10001 mrtA, FL FLS10001 mrtB
+
+                        if (1 < routeSplit.size) {
+                            val routeNumber = routeSplit[0] + " " + routeSplit[1]
+                            if ((resultArrayList[i].type == "D")
+                                && resultArrayList[i].route.contains(routeNumber)
+                            ) {
+                                // 같은 지점에 있는 것은 카운트는 추가해 준다.
+                                resultArrayList[i].outlet_qty++
+                                isAdded = false
                             }
                         }
                     }
-                    if (!isRegisteredRoute) {
-                        resultArrayList.add(rowItem)
+
+                    // Outlet 정보 추가
+                    rowItem.outlet_company = routeType
+
+                    if (1 < routeSplit.size) {
+                        val sb = StringBuilder()
+                        for (j in 2 until routeSplit.size) {
+                            sb.append(routeSplit[j])
+                            sb.append(" ")
+                        }
+                        rowItem.outlet_company = routeSplit[0]
+                        rowItem.outlet_store_code = routeSplit[1]
+                        rowItem.outlet_store_name = sb.toString().trim { it <= ' ' }
                     }
-                } else {
+                }
+
+                if (isAdded) {
+                    rowItem.outlet_qty++
                     resultArrayList.add(rowItem)
                 }
+
             } while (cs.moveToNext())
         }
 
-        // k. Outlet 정보 추가
-        for (i in resultArrayList.indices) {
-            if (resultArrayList[i].type.equals("D", ignoreCase = true)) {
-                resultArrayList[i].outlet_company = resultArrayList[i].route
-                if (resultArrayList[i].route.contains("7E") || resultArrayList[i].route.contains("FL")) {
-                    val routeSplit = resultArrayList[i].route.split(" ").toTypedArray()
-                    if (1 < routeSplit.size) {
-                        val routeNumber = routeSplit[0] + " " + routeSplit[1]
-                        val cursor = DatabaseHelper.getInstance()[("SELECT count(*) FROM "
-                                + DatabaseHelper.DB_TABLE_INTEGRATION_LIST + " WHERE punchOut_stat = 'N' and chg_dt is null and type = 'D' and " +
-                                "reg_id='" + Preferences.userId + "' and route LIKE '%" + routeNumber + "%'")]
-                        cursor.moveToFirst()
-                        val count = cursor.getInt(0)
-                        val sb = StringBuilder()
-                        for (j in 2 until routeSplit.size) {
-                            sb.append(routeSplit[j])
-                            sb.append(" ")
-                        }
-                        resultArrayList[i].outlet_company = routeSplit[0]
-                        resultArrayList[i].outlet_store_code = routeSplit[1]
-                        resultArrayList[i].outlet_store_name = sb.toString().trim { it <= ' ' }
-                        resultArrayList[i].outlet_qty = count
-                    }
-                }
-            } else {        // Pickup
-                resultArrayList[i].outlet_company = resultArrayList[i].route
-                if (resultArrayList[i].route.contains("7E") || resultArrayList[i].route.contains("FL")) {
-                    val routeSplit = resultArrayList[i].route.split(" ").toTypedArray()
-                    if (1 < routeSplit.size) {
-                        val sb = StringBuilder()
-                        for (j in 2 until routeSplit.size) {
-                            sb.append(routeSplit[j])
-                            sb.append(" ")
-                        }
-                        resultArrayList[i].outlet_company = routeSplit[0]
-                        resultArrayList[i].outlet_store_code = routeSplit[1]
-                        resultArrayList[i].outlet_store_name = sb.toString().trim { it <= ' ' }
-                    }
-                }
-            }
-        }
         return resultArrayList
     }
 
     // NOTIFICATION. By Trip 정렬기능 추가
-    // 픽업 우편번호 & 픽업지 핸드폰 번호 동일
-    // P 번호로만 묶인 경우는 제외
-    // C or R 번호로만 묶이거나, C or R + P 번호와 묶인 경우에만 해당
+// 픽업 우편번호 & 픽업지 핸드폰 번호 동일
+// P 번호로만 묶인 경우는 제외
+// C or R 번호로만 묶이거나, C or R + P 번호와 묶인 경우에만 해당
     private fun sortByTrip() {
         tripArrayList = ArrayList()
         val tempArrayList = getSortList(orderbyQuery[0])
