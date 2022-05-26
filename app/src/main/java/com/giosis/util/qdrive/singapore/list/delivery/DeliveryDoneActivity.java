@@ -756,7 +756,6 @@ public class DeliveryDoneActivity extends CommonActivity implements Camera2APIs.
                         @Override
                         public void onPostResult() {
 
-                            DataUtil.inProgressListPosition = 0;
                             setResult(Activity.RESULT_OK);
                             finish();
                         }

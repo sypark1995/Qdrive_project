@@ -265,7 +265,6 @@ public class QuickReturnedActivity extends CommonActivity {
                         @Override
                         public void onPostResult() {
 
-                            DataUtil.inProgressListPosition = 0;
                             setResult(Activity.RESULT_OK);
                             finish();
                         }

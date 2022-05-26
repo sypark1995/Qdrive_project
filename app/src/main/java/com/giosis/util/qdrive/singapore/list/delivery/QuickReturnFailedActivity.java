@@ -332,7 +332,6 @@ public class QuickReturnFailedActivity extends CommonActivity implements Camera2
                         @Override
                         public void onPostResult() {
 
-                            DataUtil.inProgressListPosition = 0;
                             finish();
                         }
 

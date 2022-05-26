@@ -305,8 +305,6 @@ public class OutletPickupStep3Activity extends CommonActivity {
                     MemoryStatus.getAvailableInternalMemorySize(), latitude, longitude, Integer.toString(mScannedQty), scanned_list, mRoute)
                     .setOnOutletDataUploadEventListener(() -> {
 
-                        DataUtil.inProgressListPosition = 0;
-
                         Intent intent = new Intent(OutletPickupStep3Activity.this, ListActivity.class);
                         startActivity(intent);
                     }).build().execute();
