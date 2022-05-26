@@ -51,7 +51,6 @@ public class RpcListActivity extends CommonActivity implements SearchView.OnQuer
     private NDSpinner spinner_list_sort;
     private RecyclerView exlist_card_list;
     private String opID;
-    private boolean isOpen = false;
     private String orderby = "zip_code asc";
     private ListInProgressAdapter adapter;
     private ArrayList<RowItem> rowItems;
@@ -185,15 +184,12 @@ public class RpcListActivity extends CommonActivity implements SearchView.OnQuer
         super.onResume();
 
         try {
-
             inputMethodManager.hideSoftInputFromWindow(edit_list_searchview.getWindowToken(), 0);
             edit_list_searchview.setText("");
             edit_list_searchview.clearFocus();
         } catch (Exception e) {
 
-            Log.e("Exception", "search init  Exception : " + e.toString());
         }
-
 
         rowItems = getSortList(orderby);
         adapter = new ListInProgressAdapter(bluetoothClass);
@@ -239,7 +235,6 @@ public class RpcListActivity extends CommonActivity implements SearchView.OnQuer
         if (cs.moveToFirst()) {
             do {
 
-                ArrayList<ChildItem> childItems = new ArrayList<>();
                 ChildItem child = new ChildItem();
                 child.setHp(cs.getString(cs.getColumnIndex("hp_no")));
                 child.setTel(cs.getString(cs.getColumnIndex("tel_no")));
@@ -248,16 +243,12 @@ public class RpcListActivity extends CommonActivity implements SearchView.OnQuer
                 child.setStatReason(cs.getString(cs.getColumnIndex("fail_reason")));
                 child.setSecretNoType(cs.getString(cs.getColumnIndex("secret_no_type")));
                 child.setSecretNo(cs.getString(cs.getColumnIndex("secret_no")));
-                childItems.add(child);
 
                 long delay = 0;
                 if (cs.getString(cs.getColumnIndex("delivery_dt")) != null && !cs.getString(cs.getColumnIndex("delivery_dt")).equals("")) {
                     try {
-
                         delay = diffOfDate(cs.getString(cs.getColumnIndex("delivery_dt")));
                     } catch (Exception e) {
-
-                        Log.e("Exception", TAG + "  diffOfDate Exception : " + e.toString());
                     }
                 }
 
@@ -300,15 +291,11 @@ public class RpcListActivity extends CommonActivity implements SearchView.OnQuer
                 // NOTIFICATION.  2019.10  invoice와 같은지 체크! 같으면 저장 x
                 if (deliveryType.equals("P")) {
                     if (cs.getString(cs.getColumnIndex("invoice_no")).equals(cs.getString(cs.getColumnIndex("partner_ref_no")))) {
-
                         rowitem.setRef_pickup_no("");
                     } else {
-
-                        Log.e("krm0219", "Ref. Pickup > " + cs.getString(cs.getColumnIndex("invoice_no")) + " / " + cs.getString(cs.getColumnIndex("partner_ref_no")));
                         rowitem.setRef_pickup_no(cs.getString(cs.getColumnIndex("partner_ref_no")));
                     }
                 }
-
 
                 if (deliveryType.equals("D")) {
                     rowitem.setOrder_type_etc(cs.getString(cs.getColumnIndex("order_type_etc")));
@@ -319,8 +306,7 @@ public class RpcListActivity extends CommonActivity implements SearchView.OnQuer
                     rowitem.setDesired_time(cs.getString(cs.getColumnIndex("desired_time")));
                 }
 
-                rowitem.setItems(childItems);
-
+                rowitem.setChildItems(child);
 
                 // k. Outlet Delivery 경우 같은 지점은 하나만 나오도록 수정
                 if (0 < resultArrayList.size()) {
@@ -371,7 +357,6 @@ public class RpcListActivity extends CommonActivity implements SearchView.OnQuer
                         Cursor cursor = DatabaseHelper.getInstance().get("SELECT count(*) FROM " + DatabaseHelper.DB_TABLE_INTEGRATION_LIST + " WHERE punchOut_stat = 'N' and chg_dt is null and type = 'D' and reg_id='" + opID + "' and route LIKE '%" + routeNumber + "%'");
                         cursor.moveToFirst();
                         int count = cursor.getInt(0);
-
 
                         StringBuilder sb = new StringBuilder();
 

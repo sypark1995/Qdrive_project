@@ -330,6 +330,11 @@ class LoginActivity : CommonActivity() {
 
                                             if (loginData.smsYn == "Y" && loginData.deviceYn == "Y") {
 
+                                                FirebaseCrashlytics.getInstance().setCustomKey(
+                                                    "ID",
+                                                    Preferences.userId
+                                                )
+
                                                 val intent = Intent(
                                                     this@LoginActivity,
                                                     MainActivity::class.java
@@ -504,7 +509,11 @@ class LoginActivity : CommonActivity() {
 
             }
         } catch (e: java.lang.Exception) {
-            Toast.makeText(this,resources.getText(R.string.msg_network_connect_error),Toast.LENGTH_SHORT).show()
+            Toast.makeText(
+                this,
+                resources.getText(R.string.msg_network_connect_error),
+                Toast.LENGTH_SHORT
+            ).show()
             Log.e(tag, e.toString())
         }
     }
@@ -519,13 +528,12 @@ class LoginActivity : CommonActivity() {
                 val proc = runTime.exec(cmd)
                 proc.waitFor()
 
-
                 proc.exitValue().toString()
             } catch (e: Exception) {
                 e.toString()
             }
 
-            when (result) {
+            val returnString = when (result) {
                 "0" -> "Ping Success"
                 "1" -> "Ping Fail"
                 "2" -> "Ping Error"
@@ -533,8 +541,8 @@ class LoginActivity : CommonActivity() {
             }
 
             FirebaseCrashlytics.getInstance().setCustomKey(
-                "GOOGLE PING",
-                result
+                "GOOGLE PING(8.8.8.8)",
+                returnString
             )
         }
     }

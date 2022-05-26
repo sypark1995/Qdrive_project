@@ -27,7 +27,7 @@ class RowItem(
     val high_amount_yn: String?
 ) : Serializable {
 
-    private var childItems: ArrayList<ChildItem>? = null
+    var childItems = ChildItem()
 
     //
     var order_type_etc: String? = null
@@ -37,7 +37,7 @@ class RowItem(
     var outlet_company: String? = null
     var outlet_store_code: String? = null
     var outlet_store_name: String? = null
-    var outlet_operation_hour: String? = null
+
     var desired_time: String? = null
     var zip_code: String? = null
     var ref_pickup_no: String? = null
@@ -45,7 +45,6 @@ class RowItem(
     var state: String? = null
     var city: String? = null
     var street: String? = null
-
 
     // 2020.06  Trip 단위 묶음
     var tripNo = 0
@@ -55,10 +54,5 @@ class RowItem(
     // 드라이버 위치와의 거리
     var distance = 0f
 
-    var items: ArrayList<ChildItem>?
-        get() = childItems
-        set(Items) {
-            childItems = Items
-        }
     var isClicked = false
 }

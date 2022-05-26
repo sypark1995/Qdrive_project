@@ -185,7 +185,6 @@ public class OutletStatusDownloadHelper {
         DriverAssignResult resultObj;
 
         try {
-
             JSONObject job = new JSONObject();
             job.accumulate("opId", opID);
             job.accumulate("officeCd", officeCode);
@@ -195,7 +194,6 @@ public class OutletStatusDownloadHelper {
             job.accumulate("network_type", networkType);
             job.accumulate("app_id", DataUtil.appID);
             job.accumulate("nation_cd", Preferences.INSTANCE.getUserNation());
-
 
             String methodName = "GetDeliveryList_Outlet";
             String jsonString = Custom_JsonParser.requestServerDataReturnJSON(methodName, job);
@@ -231,7 +229,7 @@ public class OutletStatusDownloadHelper {
             resultObj = gson.fromJson(jsonString, PickupAssignResult.class);
         } catch (Exception e) {
 
-            Log.e("Exception", TAG + "  GetPickupList Json Exception : " + e.toString());
+            Log.e("Exception", TAG + "  GetPickupList Json Exception : " + e);
             resultObj = null;
         }
 
@@ -262,7 +260,6 @@ public class OutletStatusDownloadHelper {
         }
 
         try {
-            ArrayList<ChildItem> childItemArrayList = new ArrayList<>();
             ChildItem childItem = new ChildItem();
 
             childItem.setHp(data.getHpNo());
@@ -272,7 +269,6 @@ public class OutletStatusDownloadHelper {
             childItem.setStatReason(data.getFailReason());
             childItem.setSecretNoType(data.getSecretNoType());
             childItem.setSecretNo(data.getSecretNo());
-            childItemArrayList.add(childItem);
 
             //
             long delay = 0;
@@ -320,7 +316,7 @@ public class OutletStatusDownloadHelper {
                 rowItem.setType("P");
             }
 
-            rowItem.setItems(childItemArrayList);
+            rowItem.setChildItems(childItem);
             outletDataArrayList.add(rowItem);
 
             return 100;
@@ -334,13 +330,11 @@ public class OutletStatusDownloadHelper {
     private long setOutletPickupData(PickupAssignResult.QSignPickupList data) {
 
         if (outletStatusPosition == 2) {
-
             insertDevicePickupData(data);
         }
 
         try {
 
-            ArrayList<ChildItem> childItemArrayList = new ArrayList<>();
             ChildItem childItem = new ChildItem();
 
             childItem.setHp(data.getHpNo());
@@ -350,9 +344,7 @@ public class OutletStatusDownloadHelper {
             childItem.setStatReason(data.getFailReason());
             childItem.setSecretNoType(data.getSecretNoType());
             childItem.setSecretNo(data.getSecretNo());
-            childItemArrayList.add(childItem);
 
-//
             long delay = 0;
 
             RowItem rowItem = new RowItem(data.getContrNo(), "D+" + delay, data.getInvoiceNo(), data.getReqName(),
@@ -387,12 +379,11 @@ public class OutletStatusDownloadHelper {
                 }
             }
 
-            rowItem.setItems(childItemArrayList);
+            rowItem.setChildItems(childItem);
             outletDataArrayList.add(rowItem);
 
             return 100;
         } catch (Exception e) {
-
             return 0;
         }
     }
