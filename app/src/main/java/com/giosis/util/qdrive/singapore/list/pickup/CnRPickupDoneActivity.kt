@@ -252,8 +252,6 @@ class CnRPickupDoneActivity : CommonActivity() {
                 locationModel
             ).setOnServerEventListener(object : OnServerEventListener {
                 override fun onPostResult() {
-
-                    DataUtil.inProgressListPosition = 0
                     setResult(Activity.RESULT_OK)
                     finish()
                 }

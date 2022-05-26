@@ -404,8 +404,6 @@ class PickupDoneActivity : CommonActivity() {
             builder.setPositiveButton(resources.getString(R.string.button_ok)) { dialog, _ ->
 
                 dialog.dismiss()
-
-                DataUtil.inProgressListPosition = 0
                 finish()
             }
             builder.show()

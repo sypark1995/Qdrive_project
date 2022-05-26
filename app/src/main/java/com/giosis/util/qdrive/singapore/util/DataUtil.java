@@ -58,9 +58,6 @@ public class DataUtil {
     public static String qrcode_url = "https://dp.image-gmkt.com/qr.bar?scale=7&version=4&code=";
     public static String locker_pin_url = "https://www.lockeralliance.net/pin";
 
-    public static int inProgressListPosition = 0;
-    public static int uploadFailedListPosition = 0;
-
 
     public static void copyClipBoard(Context context, String data) {
 

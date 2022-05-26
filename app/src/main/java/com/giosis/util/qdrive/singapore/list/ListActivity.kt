@@ -75,8 +75,6 @@ class ListActivity : CommonActivity(), ListInProgressFragment.OnInProgressFragme
         }
 
         layout_top_back.setOnClickListener {
-            DataUtil.inProgressListPosition = 0
-            DataUtil.uploadFailedListPosition = 0
             val intent = Intent(this@ListActivity, MainActivity::class.java)
             intent.flags = Intent.FLAG_ACTIVITY_CLEAR_TOP or Intent.FLAG_ACTIVITY_SINGLE_TOP
             startActivity(intent)

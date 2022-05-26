@@ -432,7 +432,6 @@ class ListUploadFailedAdapter :
                                 rowItem.removeAt(adapterPosition)
                             } catch (ignored: Exception) {
                             }
-                            DataUtil.uploadFailedListPosition = 0
                             originalRowItem = rowItem
                             notifyDataSetChanged()
                         }

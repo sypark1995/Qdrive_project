@@ -1,5 +1,6 @@
 package com.giosis.util.qdrive.singapore.list.pickup
 
+
 import android.annotation.SuppressLint
 import android.app.AlertDialog
 import android.content.ContentValues
@@ -104,7 +105,6 @@ class PickupZeroQtyActivity : CommonActivity() {
             serverUpload()
         }
 
-
         // permission
         val checker = PermissionChecker(this@PickupZeroQtyActivity)
 
@@ -136,14 +136,8 @@ class PickupZeroQtyActivity : CommonActivity() {
             }
 
             if (gpsEnable && gpsTrackerManager != null) {
-
                 gpsTrackerManager!!.gpsTrackerStart()
-                Log.e(
-                    tag,
-                    " onResume  Location  :  ${gpsTrackerManager!!.latitude} / ${gpsTrackerManager!!.longitude}"
-                )
             } else {
-
                 DataUtil.enableLocationSettings(this@PickupZeroQtyActivity)
             }
 
@@ -158,7 +152,6 @@ class PickupZeroQtyActivity : CommonActivity() {
         try {
 
             if (!NetworkUtil.isNetworkAvailable(this@PickupZeroQtyActivity)) {
-
                 DisplayUtil.AlertDialog(
                     this@PickupZeroQtyActivity,
                     resources.getString(R.string.msg_network_connect_error)
@@ -167,7 +160,6 @@ class PickupZeroQtyActivity : CommonActivity() {
             }
 
             gpsTrackerManager?.let {
-
                 latitude = it.latitude
                 longitude = it.longitude
             }
@@ -175,7 +167,6 @@ class PickupZeroQtyActivity : CommonActivity() {
 
 
             if (!binding.signApplicantSignature.isTouch) {
-
                 Toast.makeText(
                     this@PickupZeroQtyActivity,
                     resources.getString(R.string.msg_signature_require),
@@ -183,8 +174,8 @@ class PickupZeroQtyActivity : CommonActivity() {
                 ).show()
                 return
             }
-            if (!binding.signCollectorSignature.isTouch) {
 
+            if (!binding.signCollectorSignature.isTouch) {
                 Toast.makeText(
                     this@PickupZeroQtyActivity,
                     resources.getString(R.string.msg_collector_signature_require),
@@ -195,7 +186,6 @@ class PickupZeroQtyActivity : CommonActivity() {
 
             driverMemo = binding.editMemo.text.toString()
             if (driverMemo.isEmpty()) {
-
                 Toast.makeText(
                     this@PickupZeroQtyActivity,
                     resources.getString(R.string.msg_must_enter_memo1),
@@ -207,14 +197,12 @@ class PickupZeroQtyActivity : CommonActivity() {
             if (MemoryStatus.availableInternalMemorySize != MemoryStatus.ERROR.toLong()
                 && MemoryStatus.availableInternalMemorySize < MemoryStatus.PRESENT_BYTE
             ) {
-
                 DisplayUtil.AlertDialog(
                     this@PickupZeroQtyActivity,
                     resources.getString(R.string.msg_disk_size_error)
                 )
                 return
             }
-
 
             DataUtil.logEvent("button_click", tag, "SetPickupUploadData")
 
@@ -337,16 +325,11 @@ class PickupZeroQtyActivity : CommonActivity() {
                     "",
                     ""
                 )
-                Log.e(
-                    "Server",
-                    "requestSetPickupUploadData $pickupNo  result  ${model.resultCode}/${model.resultMsg}"
-                )
 
                 stdResult.resultCode = model.resultCode
                 stdResult.resultMsg = model.resultMsg
 
                 if (model.resultCode == 0) {
-
                     val contentVal2 = ContentValues()
                     contentVal2.put("punchOut_stat", "S")
                     DatabaseHelper.getInstance().update(
@@ -367,17 +350,13 @@ class PickupZeroQtyActivity : CommonActivity() {
 
     private fun resultDialog(msg: String) {
 
-        if (!this@PickupZeroQtyActivity.isFinishing) {
-
+        if (!isFinishing) {
             val builder = AlertDialog.Builder(this@PickupZeroQtyActivity)
             builder.setCancelable(false)
             builder.setTitle(resources.getString(R.string.text_upload_result))
             builder.setMessage(msg)
             builder.setPositiveButton(resources.getString(R.string.button_ok)) { dialog, _ ->
-
                 dialog.dismiss()
-
-                DataUtil.inProgressListPosition = 0
                 finish()
             }
             builder.show()
@@ -385,12 +364,10 @@ class PickupZeroQtyActivity : CommonActivity() {
     }
 
     override fun onBackPressed() {
-
         cancelUpload()
     }
 
     private fun cancelUpload() {
-
         if (!this@PickupZeroQtyActivity.isFinishing) {
             AlertDialog.Builder(this@PickupZeroQtyActivity)
                 .setMessage(R.string.msg_delivered_sign_cancel)

@@ -299,7 +299,6 @@ class PickupAddScanActivity : CommonActivity() {
 
                 dialog.dismiss()
 
-                DataUtil.inProgressListPosition = 0
                 setResult(Activity.RESULT_OK)
                 finish()
             }

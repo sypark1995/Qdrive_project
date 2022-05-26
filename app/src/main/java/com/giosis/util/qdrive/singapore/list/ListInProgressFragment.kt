@@ -122,7 +122,6 @@ class ListInProgressFragment(var bluetoothListener: BluetoothListener) : Fragmen
         exlistCardList = view.findViewById(R.id.exlist_card_list)
 
         btnListPickupSortRequest.setOnClickListener {
-            DataUtil.inProgressListPosition = 0
             if (pickupSortCondition != "R") {
                 btnListPickupSortRequest.setBackgroundResource(R.drawable.bg_round_4_ffffff)
                 btnListPickupSortRequest.setTextColor(Color.parseColor("#4e4e4e"))
@@ -134,7 +133,6 @@ class ListInProgressFragment(var bluetoothListener: BluetoothListener) : Fragmen
         }
 
         btnListPickupSortTrip.setOnClickListener {
-            DataUtil.inProgressListPosition = 0
             if (pickupSortCondition != "T") {
                 btnListPickupSortRequest.setBackgroundResource(R.color.transparent)
                 btnListPickupSortRequest.setTextColor(Color.parseColor("#8F8F8F"))

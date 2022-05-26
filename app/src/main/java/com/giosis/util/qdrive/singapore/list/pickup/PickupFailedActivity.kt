@@ -616,8 +616,6 @@ class PickupFailedActivity : CommonActivity(), Camera2APIs.Camera2Interface,
             builder.setPositiveButton(resources.getString(R.string.button_ok)) { dialog, _ ->
 
                 dialog.dismiss()
-
-                DataUtil.inProgressListPosition = 0
                 finish()
             }
             builder.show()

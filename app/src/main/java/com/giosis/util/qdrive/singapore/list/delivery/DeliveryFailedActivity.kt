@@ -364,7 +364,6 @@ class DeliveryFailedActivity : CommonActivity(), Camera2APIs.Camera2Interface,
             if (code.failedString.toUpperCase()
                     .contains(resources.getString(R.string.text_other).toUpperCase())
             ) {
-
                 driverMemo = binding.editMemo.text.toString()
 
                 if (driverMemo.isEmpty()) {
@@ -376,7 +375,6 @@ class DeliveryFailedActivity : CommonActivity(), Camera2APIs.Camera2Interface,
                     return
                 }
             }
-            Log.e(tag, "Memo  >  $driverMemo")
 
             if (!camera2.hasImage(binding.imgVisitLog)) {
                 Toast.makeText(
@@ -395,7 +393,6 @@ class DeliveryFailedActivity : CommonActivity(), Camera2APIs.Camera2Interface,
                 return
             }
 
-
             DataUtil.logEvent("button_click", tag, "SetDeliveryUploadData")
             DeliveryFailedUploadHelper.Builder(
                 this@DeliveryFailedActivity,
@@ -410,16 +407,15 @@ class DeliveryFailedActivity : CommonActivity(), Camera2APIs.Camera2Interface,
                 MemoryStatus.availableInternalMemorySize,
                 latitude,
                 longitude
-            )
-                .setOnServerEventListener(object : OnServerEventListener {
-                    override fun onPostResult() {
-                        DataUtil.inProgressListPosition = 0
-                        finish()
-                    }
+            ).setOnServerEventListener(object : OnServerEventListener {
+                override fun onPostResult() {
+                    finish()
+                }
 
-                    override fun onPostFailList() {
-                    }
-                }).build().execute()
+                override fun onPostFailList() {
+                }
+            }).build().execute()
+
         } catch (e: Exception) {
 
             Log.e(tag, "   serverUpload  Exception : $e")
