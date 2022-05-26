@@ -166,7 +166,6 @@ class PickupTakeBackActivity : CommonActivity() {
                 return
             }
 
-
             DataUtil.logEvent("button_click", tag, "SetPickupUploadData_TakeBack")
 
             PickupTakeBackUploadHelper.Builder(

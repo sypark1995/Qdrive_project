@@ -33,9 +33,8 @@ import org.json.JSONObject;
 import java.text.SimpleDateFormat;
 import java.util.Date;
 
-
 // Pickup - Start to Scan
-@Deprecated
+@Deprecated // TODO_sypark ver 3.9.0  부터 사용 안함 추후 삭제
 public class PickupDoneUploadHelper {
     String TAG = "PickupDoneUploadHelper";
 

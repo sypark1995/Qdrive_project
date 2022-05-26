@@ -20,7 +20,8 @@ import com.giosis.util.qdrive.singapore.util.OnServerEventListener;
 import com.giosis.util.qdrive.singapore.util.Preferences;
 
 import org.json.JSONObject;
-@Deprecated
+
+@Deprecated // TODO_sypark ver 3.9.0 부터 사용 안함 추후 삭제
 public class PickupAddScanUploadHelper {
     String TAG = "PickupAddScanUploadHelper";
 

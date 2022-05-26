@@ -80,7 +80,6 @@ class PickupAddScanActivity : CommonActivity() {
             serverUpload()
         }
 
-
         // permission
         val checker = PermissionChecker(this@PickupAddScanActivity)
 
@@ -103,64 +102,45 @@ class PickupAddScanActivity : CommonActivity() {
     override fun onResume() {
         super.onResume()
 
-
         if (isPermissionTrue) {
-
             // Location
             gpsTrackerManager = GPSTrackerManager(this@PickupAddScanActivity)
             gpsTrackerManager?.let {
-
                 gpsEnable = it.enableGPSSetting()
             }
 
             if (gpsEnable && gpsTrackerManager != null) {
-
                 gpsTrackerManager!!.gpsTrackerStart()
-                Log.e(
-                    tag,
-                    " onResume  Location  :  ${gpsTrackerManager!!.latitude} / ${gpsTrackerManager!!.longitude}"
-                )
             } else {
-
                 DataUtil.enableLocationSettings(this@PickupAddScanActivity)
             }
             progressBar.setCancelable(false)
         }
     }
 
-
     private fun cancelUpload() {
-
-        val alertBuilder = AlertDialog.Builder(this@PickupAddScanActivity)
-        alertBuilder.setMessage(resources.getString(R.string.msg_delivered_sign_cancel))
-
-        alertBuilder.setPositiveButton(resources.getString(R.string.button_ok)) { _, _ ->
-
-            setResult(Activity.RESULT_CANCELED)
-            finish()
-        }
-
-        alertBuilder.setNegativeButton(resources.getString(R.string.button_cancel)) { dialogInterface, _ ->
-
-            dialogInterface.dismiss()
-        }
-
-        alertBuilder.show()
+        AlertDialog.Builder(this@PickupAddScanActivity)
+            .setMessage(resources.getString(R.string.msg_delivered_sign_cancel))
+            .setPositiveButton(resources.getString(R.string.button_ok)) { _, _ ->
+                setResult(Activity.RESULT_CANCELED)
+                finish()
+            }
+            .setNegativeButton(resources.getString(R.string.button_cancel)) { dialogInterface, _ ->
+                dialogInterface.dismiss()
+            }
+            .show()
     }
 
 
     private fun serverUpload() {
 
         try {
-
             var latitude = 0.0
             var longitude = 0.0
-
             gpsTrackerManager?.let {
                 latitude = it.latitude
                 longitude = it.longitude
             }
-            Log.e(tag, "  Location $latitude / $longitude")
 
             if (!NetworkUtil.isNetworkAvailable(this@PickupAddScanActivity)) {
                 DisplayUtil.AlertDialog(
@@ -201,27 +181,80 @@ class PickupAddScanActivity : CommonActivity() {
             DataUtil.logEvent("button_click", tag, "SetPickupUploadData_AddScan")
 
             progressBar.visibility = View.VISIBLE
+
             lifecycleScope.launch {
-                val result = callPickupUploadDataAddScanApi(latitude, longitude)
+
+                try {
+                    val scannedItems: Array<String> = scannedList.split(",").toTypedArray()
+
+                    for (item in scannedItems) {
+                        DataUtil.captureSign(
+                            "/QdrivePickup",
+                            item,
+                            sign_view_sign_p_applicant_signature
+                        )
+
+                        DataUtil.captureSign(
+                            "/QdriveCollector",
+                            item,
+                            sign_view_sign_p_collector_signature
+                        )
+                    }
+
+                    val bitmap1 = QDataUtil.getBitmapString(
+                        this@PickupAddScanActivity,
+                        sign_view_sign_p_applicant_signature,
+                        ImageUpload.QXPOP,
+                        "qdriver/sign",
+                        pickupNo
+                    )
+
+                    val bitmap2 = QDataUtil.getBitmapString(
+                        this@PickupAddScanActivity,
+                        sign_view_sign_p_collector_signature,
+                        ImageUpload.QXPOP,
+                        "qdriver/sign",
+                        pickupNo
+                    )
+
+                    if (bitmap1 == "" || bitmap2 == "") {
+                        resultDialog(resources.getString(R.string.msg_upload_fail_image))
+                        return@launch
+                    }
+
+                    val response =
+                        RetrofitClient.instanceDynamic().requestSetPickupUploadDataAddScan(
+                            pickupNo,
+                            bitmap1,
+                            bitmap2,
+                            scannedList,
+                            NetworkUtil.getNetworkType(this@PickupAddScanActivity),
+                            latitude,
+                            longitude,
+                            scannedQty
+                        )
+
+                    if (response.resultCode == 0) {
+                        resultDialog(
+                            String.format(
+                                resources.getString(R.string.text_upload_success_count),
+                                1
+                            )
+                        )
+                    } else {
+                        alertShow("AddScan api error ${response.resultCode} ${response.resultMsg} ")
+                    }
+
+                    return@launch
+
+                } catch (e: Exception) {
+                    resultDialog("AddScan api exception $e")
+                }
 
                 progressBar.visibility = View.GONE
-
-                when (result.resultCode) {
-                    0 -> {
-                        resultDialog(String.format(resources.getString(R.string.text_upload_success_count),1))
-                    }
-                    -16 -> {
-                        resultDialog(resources.getString(R.string.msg_network_connect_error_saved))
-                    }
-                    else -> {
-                        alertShow(result.resultMsg)
-                    }
-                }
             }
 
         } catch (e: Exception) {
-
-            Log.e("Exception", "$tag   serverUpload  Exception : $e")
             Toast.makeText(
                 this@PickupAddScanActivity,
                 resources.getString(R.string.text_error) + " - " + e.toString(),
@@ -230,91 +263,9 @@ class PickupAddScanActivity : CommonActivity() {
         }
     }
 
-    private suspend fun callPickupUploadDataAddScanApi(
-        latitude: Double,
-        longitude: Double
-    ): StdResult {
-        val result = StdResult()
-
-        if (!NetworkUtil.isNetworkAvailable(this@PickupAddScanActivity)) {
-            result.resultCode = -16
-            result.resultMsg = resources.getString(R.string.msg_network_connect_error_saved)
-            return result
-        }
-
-        try {
-
-            val scannedItems: Array<String> = scannedList.split(",").toTypedArray()
-            for (item in scannedItems) {
-                DataUtil.captureSign(
-                    "/QdrivePickup",
-                    item,
-                    sign_view_sign_p_applicant_signature
-                )
-                DataUtil.captureSign(
-                    "/QdriveCollector",
-                    item,
-                    sign_view_sign_p_collector_signature
-                )
-            }
-
-            val bitmap1 = QDataUtil.getBitmapString(
-                this@PickupAddScanActivity,
-                sign_view_sign_p_applicant_signature,
-                ImageUpload.QXPOP,
-                "qdriver/sign",
-                pickupNo
-            )
-
-            val bitmap2 = QDataUtil.getBitmapString(
-                this@PickupAddScanActivity,
-                sign_view_sign_p_collector_signature,
-                ImageUpload.QXPOP,
-                "qdriver/sign",
-                pickupNo
-            )
-
-            if (bitmap1 == "" || bitmap2 == "") {
-                result.resultCode = -100
-                result.resultMsg = resources.getString(R.string.msg_upload_fail_image)
-                return result
-            }
-
-            val response = RetrofitClient.instanceDynamic().requestSetPickupUploadDataAddScan(
-                pickupNo,
-                bitmap1,
-                bitmap2,
-                scannedList,
-                NetworkUtil.getNetworkType(this@PickupAddScanActivity),
-                latitude,
-                longitude,
-                scannedQty
-            )
-
-            result.resultCode = response.resultCode
-            result.resultMsg = response.resultMsg
-            return result
-
-        } catch (e: Exception) {
-            return if (e.message == "Software caused connection abort") {   // todo_sypark api호출..
-                result.resultCode = 0
-                result.resultMsg = ""
-                result
-            } else {
-                result.resultCode = -15
-                result.resultMsg = resources.getString(R.string.msg_upload_fail_15)
-                result
-            }
-
-        }
-    }
-
-
     override fun onBackPressed() {
-
         cancelUpload()
     }
-
 
     override fun onDestroy() {
         super.onDestroy()
@@ -322,23 +273,23 @@ class PickupAddScanActivity : CommonActivity() {
     }
 
     private fun alertShow(msg: String) {
-        val alertInternetStatus = AlertDialog.Builder(this)
-        alertInternetStatus.setTitle(
-            resources.getString(R.string.text_upload_failed)
-        )
-        alertInternetStatus.setMessage(msg)
-        alertInternetStatus.setPositiveButton(
-            resources
-                .getString(R.string.button_close)
-        ) { dialog: DialogInterface, _: Int ->
-            dialog.dismiss() // 닫기
-        }
-        alertInternetStatus.show()
+        AlertDialog.Builder(this)
+            .setTitle(
+                resources.getString(R.string.text_upload_failed)
+            )
+            .setMessage(msg)
+            .setPositiveButton(
+                resources
+                    .getString(R.string.button_close)
+            ) { dialog: DialogInterface, _: Int ->
+                dialog.dismiss() // 닫기
+            }
+            .show()
     }
 
     private fun resultDialog(msg: String) {
 
-        if (!this@PickupAddScanActivity.isFinishing) {
+        if (!isFinishing) {
 
             val builder = AlertDialog.Builder(this@PickupAddScanActivity)
             builder.setCancelable(false)
@@ -361,7 +312,6 @@ class PickupAddScanActivity : CommonActivity() {
 
         if (requestCode == PERMISSION_REQUEST_CODE) {
             if (resultCode == PermissionActivity.PERMISSIONS_GRANTED) {
-
                 isPermissionTrue = true
             }
         }
