@@ -276,8 +276,8 @@ public class QuickReturnedActivity extends CommonActivity {
                     }).build().execute();
         } catch (Exception e) {
 
-            Log.e("Exception", TAG + "  Exception : " + e.toString());
-            Toast.makeText(this, getResources().getString(R.string.text_error) + " - " + e.toString(), Toast.LENGTH_SHORT).show();
+            Log.e("Exception", TAG + "  Exception : " + e);
+            Toast.makeText(this, getResources().getString(R.string.text_error) + " - " + e, Toast.LENGTH_SHORT).show();
         }
     }
 
@@ -296,17 +296,15 @@ public class QuickReturnedActivity extends CommonActivity {
 
 
     private void AlertShow(String msg) {
-        AlertDialog.Builder alert_internet_status = new AlertDialog.Builder(this);
-        alert_internet_status.setTitle(getResources().getString(R.string.text_warning));
-        alert_internet_status.setMessage(msg);
-        alert_internet_status.setPositiveButton(getResources().getString(R.string.button_close),
-                new DialogInterface.OnClickListener() {
-                    public void onClick(DialogInterface dialog, int which) {
-                        dialog.dismiss(); // 닫기
-                        finish();
-                    }
-                });
-        alert_internet_status.show();
+        new AlertDialog.Builder(this)
+                .setTitle(getResources().getString(R.string.text_warning))
+                .setMessage(msg)
+                .setPositiveButton(getResources().getString(R.string.button_close),
+                        (dialog, which) -> {
+                            dialog.dismiss(); // 닫기
+                            finish();
+                        })
+                .show();
     }
 
 

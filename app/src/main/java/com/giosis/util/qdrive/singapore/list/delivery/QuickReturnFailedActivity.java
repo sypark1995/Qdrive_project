@@ -271,21 +271,9 @@ public class QuickReturnFailedActivity extends CommonActivity implements Camera2
 
         new AlertDialog.Builder(this)
                 .setMessage(R.string.msg_delivered_sign_cancel)
-                .setPositiveButton(R.string.button_ok, new DialogInterface.OnClickListener() {
-                    @Override
-                    public void onClick(DialogInterface dialog, int which) {
-
-                        finish();
-                    }
-                })
-                .setNegativeButton(R.string.button_cancel, new DialogInterface.OnClickListener() {
-
-                    @Override
-                    public void onClick(DialogInterface dialog, int which) {
-
-                        dialog.dismiss();
-                    }
-                }).show();
+                .setPositiveButton(R.string.button_ok, (dialog, which) -> finish())
+                .setNegativeButton(R.string.button_cancel, (dialog, which) -> dialog.dismiss())
+                .show();
     }
 
 
@@ -341,8 +329,7 @@ public class QuickReturnFailedActivity extends CommonActivity implements Camera2
                     }).build().execute();
         } catch (Exception e) {
 
-            Log.e("Exception", TAG + "  Exception : " + e.toString());
-            Toast.makeText(this, getResources().getString(R.string.text_error) + " - " + e.toString(), Toast.LENGTH_SHORT).show();
+            Toast.makeText(this, getResources().getString(R.string.text_error) + " - " + e, Toast.LENGTH_SHORT).show();
         }
     }
 

@@ -163,7 +163,7 @@ public class OutletPickupStep3Activity extends CommonActivity {
         text_sign_p_outlet_pickup_no.setText(mPickupNo);
         text_sign_p_outlet_applicant.setText(mApplicant);
         text_sign_p_outlet_total_qty.setText(mQty);
-        text_sign_p_outlet_scanned_qty.setText(Integer.toString(mScannedQty));
+        text_sign_p_outlet_scanned_qty.setText(String.valueOf(mScannedQty));
 
         // Memo 입력제한
         edit_sign_p_outlet_memo.addTextChangedListener(new TextWatcher() {
@@ -310,9 +310,7 @@ public class OutletPickupStep3Activity extends CommonActivity {
                     }).build().execute();
 
         } catch (Exception e) {
-
-            String msg = String.format(getResources().getString(R.string.text_exception), e.toString());
-            Log.e(TAG, msg);
+            String msg = String.format(getResources().getString(R.string.text_exception), e);
             Toast.makeText(OutletPickupStep3Activity.this, msg, Toast.LENGTH_SHORT).show();
         }
     }
