@@ -5,16 +5,20 @@ import android.os.Bundle
 import android.widget.Toast
 import com.giosis.util.qdrive.singapore.R
 import com.giosis.util.qdrive.singapore.util.CommonActivity
+import com.giosis.util.qdrive.singapore.util.FirebaseEvent
 import kotlinx.android.synthetic.main.activity_modify_device_info.*
 import kotlinx.android.synthetic.main.top_title.*
 
 class ModifyDeviceInfoActivity : CommonActivity() {
+    val TAG = "ModifyDeviceInfoActivity"
 
     var device: BluetoothDevice? = null
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_modify_device_info)
+
+        FirebaseEvent.createEvent(this, TAG)
 
         text_top_title.setText(R.string.text_title_device_info)
 

@@ -13,6 +13,7 @@ import com.giosis.util.qdrive.singapore.R
 import com.giosis.util.qdrive.singapore.databinding.ActivityMessageDetailBinding
 import com.giosis.util.qdrive.singapore.server.RetrofitClient
 import com.giosis.util.qdrive.singapore.util.CommonActivity
+import com.giosis.util.qdrive.singapore.util.FirebaseEvent
 import com.giosis.util.qdrive.singapore.util.dialog.ProgressDialog
 import com.giosis.util.qdrive.singapore.util.NetworkUtil
 import com.giosis.util.qdrive.singapore.util.Preferences
@@ -39,7 +40,6 @@ class CustomerMessageListDetailActivity : CommonActivity() {
     val handler = Handler(Looper.getMainLooper())
     private val task = object : Runnable {
         override fun run() {
-
             callServer()
             handler.postDelayed(this, 60 * 1000)
         }
@@ -60,6 +60,8 @@ class CustomerMessageListDetailActivity : CommonActivity() {
     public override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(binding.root)
+
+        FirebaseEvent.createEvent(this, TAG)
 
         //
         questionNo = intent.getIntExtra("question_no", 0).toString() // 최초 0

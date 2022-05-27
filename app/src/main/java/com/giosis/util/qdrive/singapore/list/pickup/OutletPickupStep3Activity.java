@@ -26,6 +26,7 @@ import com.giosis.util.qdrive.singapore.list.ListActivity;
 import com.giosis.util.qdrive.singapore.list.SigningView;
 import com.giosis.util.qdrive.singapore.util.CommonActivity;
 import com.giosis.util.qdrive.singapore.util.DataUtil;
+import com.giosis.util.qdrive.singapore.util.FirebaseEvent;
 import com.giosis.util.qdrive.singapore.util.NetworkUtil;
 import com.giosis.util.qdrive.singapore.util.PermissionActivity;
 import com.giosis.util.qdrive.singapore.util.PermissionChecker;
@@ -35,7 +36,7 @@ import com.giosis.util.qdrive.singapore.util.Preferences;
 public class OutletPickupStep3Activity extends CommonActivity {
     private static final String[] PERMISSIONS = new String[]{PermissionChecker.READ_EXTERNAL_STORAGE, PermissionChecker.WRITE_EXTERNAL_STORAGE,
             PermissionChecker.ACCESS_FINE_LOCATION, PermissionChecker.ACCESS_COARSE_LOCATION};
-    String TAG = "OutletPickupDoneActivity";
+    String TAG = "OutletPickupStep3Activity";
 
     TextView text_top_title;
     FrameLayout layout_top_back;
@@ -115,6 +116,8 @@ public class OutletPickupStep3Activity extends CommonActivity {
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_outlet_pickup_step3);
+
+        FirebaseEvent.INSTANCE.createEvent(this, TAG);
 
         layout_top_back = findViewById(R.id.layout_top_back);
         text_top_title = findViewById(R.id.text_top_title);
@@ -298,7 +301,7 @@ public class OutletPickupStep3Activity extends CommonActivity {
 
             mDriverMemo = edit_sign_p_outlet_memo.getText().toString();
 
-            DataUtil.logEvent("button_click", TAG, "SetOutletPickupUploadData");
+            FirebaseEvent.INSTANCE.clickEvent(this, TAG, "SetOutletPickupUploadData");
 
             new OutletPickupDoneHelper.Builder(this, Preferences.INSTANCE.getUserId(), Preferences.INSTANCE.getOfficeCode(), Preferences.INSTANCE.getDeviceUUID(),
                     mPickupNo, sign_view_sign_p_outlet_signature, mDriverMemo,

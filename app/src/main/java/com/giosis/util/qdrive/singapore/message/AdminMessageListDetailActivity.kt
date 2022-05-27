@@ -12,6 +12,7 @@ import com.giosis.util.qdrive.singapore.R
 import com.giosis.util.qdrive.singapore.databinding.ActivityMessageDetailBinding
 import com.giosis.util.qdrive.singapore.server.RetrofitClient
 import com.giosis.util.qdrive.singapore.util.CommonActivity
+import com.giosis.util.qdrive.singapore.util.FirebaseEvent
 import com.giosis.util.qdrive.singapore.util.dialog.ProgressDialog
 import com.giosis.util.qdrive.singapore.util.NetworkUtil
 import com.giosis.util.qdrive.singapore.util.Preferences
@@ -24,7 +25,7 @@ import java.util.*
 
 
 class AdminMessageListDetailActivity : CommonActivity() {
-    var tag = "AdminMessageListDetailActivity"
+    var TAG = "AdminMessageListDetailActivity"
 
     private val binding by lazy {
         ActivityMessageDetailBinding.inflate(layoutInflater)
@@ -37,7 +38,6 @@ class AdminMessageListDetailActivity : CommonActivity() {
     val handler = Handler(Looper.getMainLooper())
     private val task = object : Runnable {
         override fun run() {
-
             callServer()
             handler.postDelayed(this, 5 * 60 * 1000)
         }
@@ -54,7 +54,8 @@ class AdminMessageListDetailActivity : CommonActivity() {
         super.onCreate(savedInstanceState)
         setContentView(binding.root)
 
-        //
+        FirebaseEvent.createEvent(this, TAG)
+
         senderID = intent.getStringExtra("sender_id").toString()
 
         binding.layoutTopTitle.textTopTitle.text = senderID
@@ -125,7 +126,7 @@ class AdminMessageListDetailActivity : CommonActivity() {
                 if (newResultString.isEmpty())
                     progressBar.visibility = View.VISIBLE
 
-                Log.e(tag, "callServer ---- GetQdriverMessageDetailFromMessenger")
+                Log.e(TAG, "callServer ---- GetQdriverMessageDetailFromMessenger")
                 RetrofitClient.instanceDynamic().requestGetMessageDetailFromAdmin(senderID)
                     .subscribeOn(Schedulers.io())
                     .observeOn(AndroidSchedulers.mainThread())
@@ -185,14 +186,11 @@ class AdminMessageListDetailActivity : CommonActivity() {
                             resources.getString(R.string.text_error) + "!! " + resources.getString(R.string.msg_please_try_again),
                             Toast.LENGTH_SHORT
                         ).show()
-                        Log.e(
-                            "Exception",
-                            "$tag  GetQdriverMessageListFromMessenger Exception : $it"
-                        )
+                        Log.e(TAG, "  GetQdriverMessageListFromMessenger Exception : $it")
                     })
             }
         } catch (e: Exception) {
-            Log.e("Exception", "$tag  AsyncHandler Exception : $e")
+
         }
     }
 
@@ -201,7 +199,7 @@ class AdminMessageListDetailActivity : CommonActivity() {
         try {
             handler.removeCallbacks(task)
         } catch (e: Exception) {
-            Log.e(tag, "onStop Exception $e")
+            Log.e(TAG, "onStop Exception $e")
         }
     }
 
@@ -227,7 +225,8 @@ class AdminMessageListDetailActivity : CommonActivity() {
                 try {
                     if (it.resultObject != null) {
 
-                        val result = Gson().fromJson<MessageSendResult>(it.resultObject,
+                        val result = Gson().fromJson<MessageSendResult>(
+                            it.resultObject,
                             object : TypeToken<MessageSendResult>() {}.type
                         )
 
@@ -275,7 +274,7 @@ class AdminMessageListDetailActivity : CommonActivity() {
                         }",
                         Toast.LENGTH_SHORT
                     ).show()
-                    Log.e("Exception", "$tag SendQdriveToMessengerMessage Exception : $e")
+                    Log.e(TAG, "SendQdriveToMessengerMessage Exception : $e")
                 }
 
                 progressBar.visibility = View.GONE
@@ -286,7 +285,7 @@ class AdminMessageListDetailActivity : CommonActivity() {
                     resources.getString(R.string.text_error) + "!! " + resources.getString(R.string.msg_please_try_again),
                     Toast.LENGTH_SHORT
                 ).show()
-                Log.e("Exception", "$tag  GetQdriverMessageListFromMessenger Exception : $it")
+                Log.e(TAG, " GetQdriverMessageListFromMessenger Exception : $it")
             })
     }
 

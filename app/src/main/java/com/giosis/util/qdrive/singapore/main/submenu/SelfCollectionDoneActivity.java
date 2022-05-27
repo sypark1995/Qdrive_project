@@ -1,5 +1,6 @@
 package com.giosis.util.qdrive.singapore.main.submenu;
 
+
 import android.app.Activity;
 import android.app.AlertDialog;
 import android.content.Intent;
@@ -25,8 +26,8 @@ import com.giosis.util.qdrive.singapore.R;
 import com.giosis.util.qdrive.singapore.list.BarcodeData;
 import com.giosis.util.qdrive.singapore.list.SigningView;
 import com.giosis.util.qdrive.singapore.util.CommonActivity;
-import com.giosis.util.qdrive.singapore.util.DataUtil;
 import com.giosis.util.qdrive.singapore.database.DatabaseHelper;
+import com.giosis.util.qdrive.singapore.util.FirebaseEvent;
 import com.giosis.util.qdrive.singapore.util.NetworkUtil;
 import com.giosis.util.qdrive.singapore.util.PermissionActivity;
 import com.giosis.util.qdrive.singapore.util.PermissionChecker;
@@ -148,7 +149,8 @@ public class SelfCollectionDoneActivity extends CommonActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_self_collection);
 
-        //
+        FirebaseEvent.INSTANCE.createEvent(this, TAG);
+
         layout_top_back = findViewById(R.id.layout_top_back);
         text_top_title = findViewById(R.id.text_top_title);
 
@@ -289,7 +291,7 @@ public class SelfCollectionDoneActivity extends CommonActivity {
         }
 
         // Self-Collector 경우 서버로부터 수취인, 셀러명을 가지고 온다. (비동기)
-        DataUtil.logEvent("button_click", TAG, "GetContrInfo");
+        FirebaseEvent.INSTANCE.clickEvent(this, TAG, "GetContrInfo");
 
         //2016-09-12 eylee        // 배송상태값에 따른 정보 습득
         // 콜백으로 받은 결과값을 쓰레드를 이용하여 TextView 갱신한다.
@@ -360,7 +362,7 @@ public class SelfCollectionDoneActivity extends CommonActivity {
 
             String driverMemo = edit_sign_memo.getText().toString();
 
-            DataUtil.logEvent("button_click", TAG, "SetSelfCollectorData");
+            FirebaseEvent.INSTANCE.clickEvent(this, TAG, "SetSelfCollectorData");
 
             new SelfCollectionDoneHelper.Builder(this, Preferences.INSTANCE.getUserId(), Preferences.INSTANCE.getOfficeCode(), Preferences.INSTANCE.getDeviceUUID(),
                     songjanglist, sign_view_sign_signature, driverMemo, mReceiveType)

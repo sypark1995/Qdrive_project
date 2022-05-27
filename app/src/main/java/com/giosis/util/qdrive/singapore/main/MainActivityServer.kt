@@ -49,7 +49,6 @@ object MainActivityServer {
                 val params = Bundle()
                 params.putString("Activity", TAG)
                 params.putString("message", " DB.delete > $e")
-                DataUtil.mFirebaseAnalytics.logEvent("error_exception", params)
             } catch (ignored: java.lang.Exception) {
             }
         }

@@ -31,7 +31,6 @@ import com.giosis.util.qdrive.singapore.gps.LocationManagerService
 import com.giosis.util.qdrive.singapore.list.ListActivity
 import com.giosis.util.qdrive.singapore.main.leftMenu.LeftMenu
 import com.giosis.util.qdrive.singapore.main.leftMenu.LeftViewAdapter
-import com.giosis.util.qdrive.singapore.main.route.TodayMyRouteActivity
 import com.giosis.util.qdrive.singapore.main.submenu.OutletOrderStatusActivity
 import com.giosis.util.qdrive.singapore.main.submenu.RpcListActivity
 import com.giosis.util.qdrive.singapore.message.MessageListActivity
@@ -43,7 +42,6 @@ import com.giosis.util.qdrive.singapore.util.*
 import com.google.android.gms.common.ConnectionResult
 import com.google.android.gms.common.GoogleApiAvailability
 import com.google.android.gms.tasks.Task
-import com.google.firebase.analytics.FirebaseAnalytics
 import com.google.firebase.messaging.FirebaseMessaging
 import com.google.gson.Gson
 import com.google.gson.reflect.TypeToken
@@ -59,7 +57,7 @@ import java.util.*
 
 
 class MainActivity : CommonActivity() {
-    var TAG = "AppBaseActivity"
+    var TAG = "MainActivity"
 
     val binding by lazy {
         ActivityMainBinding.inflate(layoutInflater)
@@ -269,11 +267,6 @@ class MainActivity : CommonActivity() {
             startActivity(intent)
         }
 
-        binding.mainView.btnHomeTodayMyRoute.setOnClickListener {
-            val intent = Intent(this, TodayMyRouteActivity::class.java)
-            startActivity(intent)
-        }
-
         val checker = PermissionChecker(this)
 
         // 권한 여부 체크 (없으면 true, 있으면 false)
@@ -290,8 +283,6 @@ class MainActivity : CommonActivity() {
             isPermissionTrue = true
             gpsTrackerServiceStart()
         }
-
-        DataUtil.mFirebaseAnalytics = FirebaseAnalytics.getInstance(this)
 
         binding.leftMenu.textNavHeaderDriverOffice.text = Preferences.officeName
         binding.leftMenu.textNavHeaderDriverName.text = Preferences.userName
@@ -504,12 +495,12 @@ class MainActivity : CommonActivity() {
         if (gpsEnable && gpsTrackerManager != null) {
             latitude = gpsTrackerManager!!.latitude
             longitude = gpsTrackerManager!!.longitude
-            Log.e("Location", "$TAG - Upload() > $latitude, $longitude")
+            Log.e(TAG, "Upload() > $latitude, $longitude")
         }
 
         if (songjanglist.size > 0) {
 
-            DataUtil.logEvent("button_click", TAG, "SetDeliveryUploadData / SetPickupUploadData")
+            FirebaseEvent.clickEvent(this, TAG, "upload")
 
             DeviceDataUploadHelper.Builder(
                 this, Preferences.userId, Preferences.officeCode, Preferences.deviceUUID,

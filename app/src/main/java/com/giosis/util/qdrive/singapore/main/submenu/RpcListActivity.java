@@ -26,6 +26,7 @@ import com.giosis.util.qdrive.singapore.list.ListInProgressAdapter;
 import com.giosis.util.qdrive.singapore.list.RowItem;
 import com.giosis.util.qdrive.singapore.util.CommonActivity;
 import com.giosis.util.qdrive.singapore.database.DatabaseHelper;
+import com.giosis.util.qdrive.singapore.util.FirebaseEvent;
 import com.giosis.util.qdrive.singapore.util.NDSpinner;
 import com.giosis.util.qdrive.singapore.util.PermissionActivity;
 import com.giosis.util.qdrive.singapore.util.PermissionChecker;
@@ -83,6 +84,7 @@ public class RpcListActivity extends CommonActivity
                 | WindowManager.LayoutParams.FLAG_SHOW_WHEN_LOCKED
                 | WindowManager.LayoutParams.FLAG_TURN_SCREEN_ON);
 
+        FirebaseEvent.INSTANCE.createEvent(this, TAG);
 
         bluetoothClass = new BluetoothClass(this);
 

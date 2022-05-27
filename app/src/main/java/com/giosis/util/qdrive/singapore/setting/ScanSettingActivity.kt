@@ -8,6 +8,7 @@ import com.giosis.util.qdrive.singapore.BR
 import com.giosis.util.qdrive.singapore.ViewModelActivity
 import com.giosis.util.qdrive.singapore.R
 import com.giosis.util.qdrive.singapore.databinding.ActivityScanSettingBinding
+import com.giosis.util.qdrive.singapore.util.FirebaseEvent
 import com.giosis.util.qdrive.singapore.util.Preferences
 import kotlinx.android.synthetic.main.activity_scan_setting.*
 import kotlinx.android.synthetic.main.top_title.*
@@ -32,12 +33,13 @@ class ScanSettingActivity : ViewModelActivity<ActivityScanSettingBinding, ScanSe
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
 
+        FirebaseEvent.createEvent(this, tag)
+
         text_top_title.text = resources.getString(R.string.text_title_scan_setting)
 
         layout_top_back.setOnClickListener {
             finish()
         }
-
 
         getViewModel().vibration.observe(this, Observer {
 

@@ -7,6 +7,7 @@ import android.content.DialogInterface
 import android.content.Intent
 import android.database.Cursor
 import android.os.Bundle
+import android.text.TextUtils
 import android.util.Log
 import android.view.View
 import android.widget.Toast
@@ -20,6 +21,7 @@ import com.giosis.util.qdrive.singapore.list.BarcodeData
 import com.giosis.util.qdrive.singapore.server.ImageUpload
 import com.giosis.util.qdrive.singapore.server.RetrofitClient
 import com.giosis.util.qdrive.singapore.util.*
+import com.giosis.util.qdrive.singapore.util.dialog.ProgressDialog
 import kotlinx.android.synthetic.main.activity_pickup_done.*
 import kotlinx.android.synthetic.main.top_title.*
 import kotlinx.coroutines.launch
@@ -39,7 +41,11 @@ class CnRPickupDoneActivity : CommonActivity() {
         )
     }
 
-    var tag = "CnRPickupDoneActivity"
+    var TAG = "CnRPickupDoneActivity"
+
+    private val progressBar by lazy {
+        ProgressDialog(this@CnRPickupDoneActivity)
+    }
 
     private var mStrWaybillNo: String = ""
     private var mType = BarcodeType.PICKUP_CNR
@@ -51,11 +57,12 @@ class CnRPickupDoneActivity : CommonActivity() {
 
     private var locationModel = LocationModel()
 
-    var isPermissionTrue = false
 
     public override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_pickup_done)
+
+        FirebaseEvent.createEvent(this, TAG)
 
         layout_top_back.setOnClickListener {
             cancelSigning()
@@ -83,7 +90,6 @@ class CnRPickupDoneActivity : CommonActivity() {
         text_sign_p_requester_title.setText(R.string.text_parcel_qty1)
         text_sign_p_request_qty_title.setText(R.string.text_applicant)
 
-        pickupNoList = ArrayList()
         var pickupBarcodeData: BarcodeData
 
         val mWaybillList = mStrWaybillNo.split(",".toRegex()).toTypedArray()
@@ -94,7 +100,7 @@ class CnRPickupDoneActivity : CommonActivity() {
             pickupBarcodeData = BarcodeData()
             pickupBarcodeData.barcode = barcode
             pickupBarcodeData.state = mType
-            pickupNoList!!.add(pickupBarcodeData)
+            pickupNoList.add(pickupBarcodeData)
 
             // 위, 경도
             if (strReqQty.equals("1")) {
@@ -123,15 +129,10 @@ class CnRPickupDoneActivity : CommonActivity() {
             }
         }
 
-        var barcodeMsg: String? = ""
-        val songJangListSize = pickupNoList!!.size
-
-        for (i in 0 until songJangListSize) {
-            barcodeMsg += if (barcodeMsg == "") pickupNoList!![i].barcode else ", " + pickupNoList!![i].barcode
-        }
+        val barcodeMsg = TextUtils.join(",", pickupNoList)
 
         val qtyFormat =
-            String.format(resources.getString(R.string.text_total_qty_count), songJangListSize)
+            String.format(resources.getString(R.string.text_total_qty_count), pickupNoList.size)
 
         text_sign_p_tracking_no.text = qtyFormat
         text_sign_p_tracking_no_more.visibility = View.VISIBLE
@@ -145,36 +146,14 @@ class CnRPickupDoneActivity : CommonActivity() {
 
         // 권한 여부 체크 (없으면 true, 있으면 false)
         if (checker.lacksPermissions(*PERMISSIONS)) {
-            isPermissionTrue = false
             PermissionActivity.startActivityForResult(
                 this@CnRPickupDoneActivity,
                 PERMISSION_REQUEST_CODE,
                 *PERMISSIONS
             )
             overridePendingTransition(0, 0)
-        } else {
-            isPermissionTrue = true
         }
-    }
 
-    override fun onResume() {
-        super.onResume()
-
-        if (isPermissionTrue) {
-
-            gpsTrackerManager = GPSTrackerManager(this@CnRPickupDoneActivity)
-            gpsTrackerManager?.let {
-                gpsEnable = it.enableGPSSetting()
-            }
-
-            if (gpsEnable && gpsTrackerManager != null) {
-
-                gpsTrackerManager!!.gpsTrackerStart()
-
-            } else {
-                DataUtil.enableLocationSettings(this@CnRPickupDoneActivity)
-            }
-        }
     }
 
     override fun onDestroy() {
@@ -186,8 +165,16 @@ class CnRPickupDoneActivity : CommonActivity() {
         super.onActivityResult(requestCode, resultCode, data)
         if (requestCode == PERMISSION_REQUEST_CODE) {   // permission
             if (resultCode == PermissionActivity.PERMISSIONS_GRANTED) {
-                Log.e("Permission", "$tag   onActivityResult  PERMISSIONS_GRANTED")
-                isPermissionTrue = true
+                gpsTrackerManager = GPSTrackerManager(this@CnRPickupDoneActivity)
+                gpsTrackerManager?.let {
+                    gpsEnable = it.enableGPSSetting()
+                }
+
+                if (gpsEnable && gpsTrackerManager != null) {
+                    gpsTrackerManager!!.gpsTrackerStart()
+                } else {
+                    DataUtil.enableLocationSettings(this@CnRPickupDoneActivity)
+                }
             }
         }
     }
@@ -213,7 +200,6 @@ class CnRPickupDoneActivity : CommonActivity() {
 
             locationModel.setDriverLocation(latitude, longitude)
 
-
             if (!sign_view_sign_p_applicant_signature!!.isTouch) {
                 Toast.makeText(
                     this.applicationContext,
@@ -235,7 +221,6 @@ class CnRPickupDoneActivity : CommonActivity() {
             if (MemoryStatus.availableInternalMemorySize != MemoryStatus.ERROR.toLong()
                 && MemoryStatus.availableInternalMemorySize < MemoryStatus.PRESENT_BYTE
             ) {
-
                 DisplayUtil.AlertDialog(
                     this@CnRPickupDoneActivity,
                     resources.getString(R.string.msg_disk_size_error)
@@ -251,8 +236,11 @@ class CnRPickupDoneActivity : CommonActivity() {
                 return
             }
 
-            DataUtil.logEvent("button_click", tag, "SetPickupUploadData")
+            FirebaseEvent.clickEvent(this, TAG, "SetPickupUploadData ")
+
             lifecycleScope.launch {
+                progressBar.visibility = View.VISIBLE
+
                 val bitmap1 = QDataUtil.getBitmapString(
                     this@CnRPickupDoneActivity,
                     sign_view_sign_p_applicant_signature,
@@ -274,9 +262,11 @@ class CnRPickupDoneActivity : CommonActivity() {
                     return@launch
                 }
 
+                var resultMsg = ""
 
 
-                for ((index,item) in pickupNoList.withIndex()) {
+
+                for (item in pickupNoList) {
                     val dateFormat = SimpleDateFormat("yyyy-MM-dd HH:mm:ss")
                     val date = Date()
 
@@ -317,21 +307,24 @@ class CnRPickupDoneActivity : CommonActivity() {
                                 "invoice_no=? COLLATE NOCASE " + "and reg_id = ?",
                                 arrayOf(item.barcode!!, Preferences.userId)
                             )
-
-                            if (index == pickupNoList.size -1) {
-                                resultDialog("" +response.resultMsg)
-                            }
                         }
+
+                        resultMsg = response.resultMsg.toString()
+
                     } catch (e: java.lang.Exception) {
-                        resultDialog("SetPickupUploadData api error $e")
+                        resultMsg = "SetPickupUploadData api error $e"
                         break
                     }
+                }
+                progressBar.visibility = View.GONE
+                if (resultMsg.isNotEmpty()) {
+                    resultDialog(resultMsg)
                 }
             }
 
         } catch (e: Exception) {
 
-            Log.e("Exception", "$tag  Exception : $e")
+            Log.e("Exception", "$TAG  Exception : $e")
             Toast.makeText(
                 this@CnRPickupDoneActivity,
                 resources.getString(R.string.text_error) + " - " + e.toString(),

@@ -64,6 +64,8 @@ class PickupDoneActivity : CommonActivity() {
         super.onCreate(savedInstanceState)
         setContentView(binding.root)
 
+        FirebaseEvent.createEvent(this, tag)
+
         pickupNo = intent.getStringExtra("pickupNo").toString()
         val applicant = intent.getStringExtra("applicant")
         mStrWaybillNo = intent.getStringExtra("scannedList").toString()
@@ -159,19 +161,12 @@ class PickupDoneActivity : CommonActivity() {
 
             gpsTrackerManager = GPSTrackerManager(this@PickupDoneActivity)
             gpsTrackerManager?.let {
-
                 gpsEnable = it.enableGPSSetting()
             }
 
             if (gpsEnable && gpsTrackerManager != null) {
-
                 gpsTrackerManager!!.gpsTrackerStart()
-                Log.e(
-                    "Location",
-                    "$tag GPSTrackerManager onResume : ${gpsTrackerManager!!.latitude}  ${gpsTrackerManager!!.longitude}  "
-                )
             } else {
-
                 DataUtil.enableLocationSettings(this@PickupDoneActivity)
             }
             progressBar.setCancelable(false)
@@ -182,7 +177,6 @@ class PickupDoneActivity : CommonActivity() {
         super.onActivityResult(requestCode, resultCode, data)
         if (requestCode == PERMISSION_REQUEST_CODE) {   // permission
             if (resultCode == PermissionActivity.PERMISSIONS_GRANTED) {
-                Log.e("Permission", "$tag   onActivityResult  PERMISSIONS_GRANTED")
                 isPermissionTrue = true
             }
         }
@@ -261,7 +255,7 @@ class PickupDoneActivity : CommonActivity() {
 
             progressBar.visibility = View.VISIBLE
 
-            DataUtil.logEvent("button_click", tag, "SetPickupUploadData_ScanAll")
+            FirebaseEvent.clickEvent(this, tag, "SetPickupUploadData_ScanAll ")
 
             lifecycleScope.launch {
 

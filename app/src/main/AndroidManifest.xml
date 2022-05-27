@@ -64,7 +64,6 @@
             </intent-filter>
         </service>
 
-
         <activity
             android:name="com.giosis.util.qdrive.singapore.setting.ChangePwdActivity"
             android:screenOrientation="portrait" />
@@ -141,6 +140,7 @@
         <activity
             android:name="com.giosis.util.qdrive.singapore.main.submenu.OutletOrderStatusActivity"
             android:screenOrientation="portrait" />
+
         <activity
             android:name="com.giosis.util.qdrive.singapore.main.submenu.RpcListActivity"
             android:screenOrientation="portrait" />
@@ -216,10 +216,6 @@
             android:configChanges="orientation|keyboardHidden"
             android:screenOrientation="portrait"
             android:windowSoftInputMode="stateAlwaysHidden|adjustPan" />
-
-        <activity
-            android:name="com.giosis.util.qdrive.singapore.main.route.TodayMyRouteActivity"
-            android:screenOrientation="portrait" />
 
         <activity
             android:name="com.giosis.util.qdrive.singapore.list.pickup.PickupTakeBackActivity"

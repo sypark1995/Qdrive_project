@@ -1,5 +1,6 @@
 package com.giosis.util.qdrive.singapore.pickup
 
+
 import android.app.Activity
 import android.content.Intent
 import android.os.Bundle
@@ -15,6 +16,7 @@ import com.giosis.util.qdrive.singapore.BR
 import com.giosis.util.qdrive.singapore.ViewModelActivity
 import com.giosis.util.qdrive.singapore.R
 import com.giosis.util.qdrive.singapore.databinding.ActivityCreatePickupOrderBinding
+import com.giosis.util.qdrive.singapore.util.FirebaseEvent
 import com.giosis.util.qdrive.singapore.util.Preferences
 import com.giosis.util.qdrive.singapore.util.dialog.CustomDialog
 import kotlinx.android.synthetic.main.activity_create_pickup_order.*
@@ -48,6 +50,8 @@ class CreatePickupOrderActivity :
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
+
+        FirebaseEvent.createEvent(this, tag)
 
         text_top_title.text = resources.getString(R.string.text_create_pickup_order)
 

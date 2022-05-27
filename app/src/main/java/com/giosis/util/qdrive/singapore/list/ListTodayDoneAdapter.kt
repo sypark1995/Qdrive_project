@@ -18,6 +18,7 @@ import androidx.recyclerview.widget.RecyclerView
 import com.giosis.util.qdrive.singapore.R
 import com.giosis.util.qdrive.singapore.bluetooth.BluetoothListener
 import com.giosis.util.qdrive.singapore.util.DataUtil
+import com.giosis.util.qdrive.singapore.util.FirebaseEvent
 import com.giosis.util.qdrive.singapore.util.NetworkUtil
 import java.util.*
 import kotlin.collections.ArrayList
@@ -240,7 +241,7 @@ class ListTodayDoneAdapter(bluetoothListener: BluetoothListener) :
             }
 
             btnListItemChildDonePrintLabel.setOnClickListener {
-                DataUtil.logEvent("button_click", "ListActivity", "Print_CNR")
+                FirebaseEvent.clickEvent(it.context,TAG,"btnListItemChildDonePrintLabel click")
                 bluetoothListener.isConnectPortablePrint(data.shipping)
             }
 

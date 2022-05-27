@@ -68,6 +68,7 @@ import com.giosis.util.qdrive.singapore.util.BarcodeType;
 import com.giosis.util.qdrive.singapore.util.CommonActivity;
 import com.giosis.util.qdrive.singapore.util.DataUtil;
 import com.giosis.util.qdrive.singapore.database.DatabaseHelper;
+import com.giosis.util.qdrive.singapore.util.FirebaseEvent;
 import com.giosis.util.qdrive.singapore.util.GeoCodeUtil;
 import com.giosis.util.qdrive.singapore.util.NetworkUtil;
 import com.giosis.util.qdrive.singapore.util.PermissionActivity;
@@ -447,6 +448,8 @@ public final class CaptureActivity extends CommonActivity implements DecoratedBa
                 | WindowManager.LayoutParams.FLAG_TURN_SCREEN_ON);
 
         setContentView(R.layout.activity_capture1);
+
+        FirebaseEvent.INSTANCE.createEvent(this, TAG);
 
         layout_top_back = findViewById(R.id.layout_top_back);
         text_top_title = findViewById(R.id.text_top_title);
@@ -995,7 +998,6 @@ public final class CaptureActivity extends CommonActivity implements DecoratedBa
 
         if (keyCode == KeyEvent.KEYCODE_NUMPAD_ENTER || keyCode == KeyEvent.KEYCODE_ENTER) {
 
-            DataUtil.logEvent("capture", TAG, "Scanner");
             String tempStrScanNo = edit_capture_type_number.getText().toString().trim();
 
             if (!tempStrScanNo.equals("")) {
@@ -1037,7 +1039,6 @@ public final class CaptureActivity extends CommonActivity implements DecoratedBa
     // Bluetooth
     private void onBluetoothBarcodeAdd(String strBarcodeNo) {
 
-        DataUtil.logEvent("capture", TAG, "Bluetooth");
         // bluetooth "\n"이 포함되어서 다른번호로 인식 > trim 으로 공백 없애기
         strBarcodeNo = strBarcodeNo.trim();
 
@@ -1084,7 +1085,6 @@ public final class CaptureActivity extends CommonActivity implements DecoratedBa
             }
             Log.i(TAG, "  onAddButtonClick > " + inputBarcodeNumber + " / " + isDuplicate);
 
-            DataUtil.logEvent("capture", TAG, "EditText");
             checkValidation(inputBarcodeNumber, isDuplicate, "onAddButtonClick");
         }
     }
@@ -1307,7 +1307,7 @@ public final class CaptureActivity extends CommonActivity implements DecoratedBa
                     type = "OL";        // Outlet
 
                 RetrofitClient.INSTANCE.instanceDynamic().requestValidationCheckDpc3Out(strBarcodeNo, type, Preferences.INSTANCE.getUserId(),
-                        DataUtil.appID, Preferences.INSTANCE.getUserNation())
+                                DataUtil.appID, Preferences.INSTANCE.getUserNation())
                         .subscribeOn(Schedulers.io())
                         .observeOn(AndroidSchedulers.mainThread())
                         .subscribe(it -> {
@@ -1347,7 +1347,7 @@ public final class CaptureActivity extends CommonActivity implements DecoratedBa
                 final String scanNo = strBarcodeNo;
 
                 RetrofitClient.INSTANCE.instanceDynamic().requestValidationCheckChangeDriver(strBarcodeNo, Preferences.INSTANCE.getUserId(),
-                        DataUtil.appID, Preferences.INSTANCE.getUserNation())
+                                DataUtil.appID, Preferences.INSTANCE.getUserNation())
                         .subscribeOn(Schedulers.io())
                         .observeOn(AndroidSchedulers.mainThread())
                         .subscribe(it -> {
@@ -1396,7 +1396,7 @@ public final class CaptureActivity extends CommonActivity implements DecoratedBa
                 final String scanNo = strBarcodeNo;
 
                 RetrofitClient.INSTANCE.instanceDynamic().requestValidationCheckCnR(strBarcodeNo, Preferences.INSTANCE.getUserId(),
-                        DataUtil.appID, Preferences.INSTANCE.getUserNation())
+                                DataUtil.appID, Preferences.INSTANCE.getUserNation())
                         .subscribeOn(Schedulers.io())
                         .observeOn(AndroidSchedulers.mainThread())
                         .subscribe(it -> {
@@ -1450,7 +1450,7 @@ public final class CaptureActivity extends CommonActivity implements DecoratedBa
                 final String scanNo = strBarcodeNo;
 
                 RetrofitClient.INSTANCE.instanceDynamic().requestValidationCheckPickup(pickupNo, strBarcodeNo, "QX",
-                        Preferences.INSTANCE.getUserId(), DataUtil.appID, Preferences.INSTANCE.getUserNation())
+                                Preferences.INSTANCE.getUserId(), DataUtil.appID, Preferences.INSTANCE.getUserNation())
                         .subscribeOn(Schedulers.io())
                         .observeOn(AndroidSchedulers.mainThread())
                         .subscribe(it -> {
@@ -1488,7 +1488,7 @@ public final class CaptureActivity extends CommonActivity implements DecoratedBa
                 final String scanNo = strBarcodeNo;
 
                 RetrofitClient.INSTANCE.instanceDynamic().requestValidationCheckPickup(pickupNo, scanNo, "QX",
-                        Preferences.INSTANCE.getUserId(), DataUtil.appID, Preferences.INSTANCE.getUserNation())
+                                Preferences.INSTANCE.getUserId(), DataUtil.appID, Preferences.INSTANCE.getUserNation())
                         .subscribeOn(Schedulers.io())
                         .observeOn(AndroidSchedulers.mainThread())
                         .subscribe(it -> {
@@ -1526,7 +1526,7 @@ public final class CaptureActivity extends CommonActivity implements DecoratedBa
                 final String scanNo = strBarcodeNo;
 
                 RetrofitClient.INSTANCE.instanceDynamic().requestValidationCheckTakeBack(pickupNo, scanNo, Preferences.INSTANCE.getUserId(),
-                        DataUtil.appID, Preferences.INSTANCE.getUserNation())
+                                DataUtil.appID, Preferences.INSTANCE.getUserNation())
                         .subscribeOn(Schedulers.io())
                         .observeOn(AndroidSchedulers.mainThread())
                         .subscribe(it -> {
@@ -1564,7 +1564,7 @@ public final class CaptureActivity extends CommonActivity implements DecoratedBa
                 final String scanNo = strBarcodeNo;
 
                 RetrofitClient.INSTANCE.instanceDynamic().requestValidationCheckPickup(pickupNo, strBarcodeNo, mRoute,
-                        Preferences.INSTANCE.getUserId(), DataUtil.appID, Preferences.INSTANCE.getUserNation())
+                                Preferences.INSTANCE.getUserId(), DataUtil.appID, Preferences.INSTANCE.getUserNation())
                         .subscribeOn(Schedulers.io())
                         .observeOn(AndroidSchedulers.mainThread())
                         .subscribe(it -> {
@@ -1758,7 +1758,7 @@ public final class CaptureActivity extends CommonActivity implements DecoratedBa
 
         if (mScanType.equals(BarcodeType.CONFIRM_MY_DELIVERY_ORDER)) {
 
-            DataUtil.logEvent("button_click", TAG, "SetShippingStatDpc3out");
+            FirebaseEvent.INSTANCE.clickEvent(this, TAG, "SetShippingStatDpc3out");
 
             new ConfirmMyOrderHelper.Builder(this, opID, officeCode, deviceID, scanBarcodeArrayList)
                     .setOnDriverAssignEventListener(stdResult -> {
@@ -1787,7 +1787,7 @@ public final class CaptureActivity extends CommonActivity implements DecoratedBa
                     }).build().execute();
         } else if (mScanType.equals(BarcodeType.CHANGE_DELIVERY_DRIVER)) {
 
-            DataUtil.logEvent("button_click", TAG, "SetChangeDeliveryDriver");
+            FirebaseEvent.INSTANCE.clickEvent(this, TAG, "SetChangeDeliveryDriver");
 
             if (gpsEnable && gpsTrackerManager != null) {
 
@@ -2060,7 +2060,6 @@ public final class CaptureActivity extends CommonActivity implements DecoratedBa
                         scanned_list.append(resultData.getResultObject().getTrackingNoList().get(i).getTrackingNo());
                     }
                 }
-                Log.e(TAG, "Outlet Pickup Scanned List : " + scanned_list);
 
                 Intent intent = new Intent(this, OutletPickupStep3Activity.class);
                 intent.putExtra("title", title);

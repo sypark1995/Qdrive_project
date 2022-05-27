@@ -20,6 +20,7 @@ import android.widget.ListView;
 import android.widget.TextView;
 
 import com.giosis.util.qdrive.singapore.R;
+import com.giosis.util.qdrive.singapore.util.FirebaseEvent;
 
 import java.util.Set;
 
@@ -98,6 +99,7 @@ public class DeviceListActivity extends Activity {
         requestWindowFeature(Window.FEATURE_INDETERMINATE_PROGRESS);
         setContentView(R.layout.dialog_device_list);
 
+        FirebaseEvent.INSTANCE.createEvent(this, TAG);
 
         text_capture_bluetooth_paired_devices_title = findViewById(R.id.text_capture_bluetooth_paired_devices_title);
         list_capture_bluetooth_paired_devices = findViewById(R.id.list_capture_bluetooth_paired_devices);

@@ -18,6 +18,7 @@ import android.widget.Toast
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.giosis.util.qdrive.singapore.R
 import com.giosis.util.qdrive.singapore.util.CommonActivity
+import com.giosis.util.qdrive.singapore.util.FirebaseEvent
 import com.giosis.util.qdrive.singapore.util.PermissionActivity
 import com.giosis.util.qdrive.singapore.util.PermissionChecker
 import kotlinx.android.synthetic.main.activity_printer_setting.*
@@ -53,6 +54,8 @@ class PrinterSettingActivity : CommonActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_printer_setting)
+
+        FirebaseEvent.createEvent(this, TAG)
 
         text_top_title.setText(R.string.text_title_printer_setting)
         layout_top_back.setOnClickListener {

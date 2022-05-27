@@ -24,6 +24,7 @@ import com.giosis.util.qdrive.singapore.R;
 import com.giosis.util.qdrive.singapore.list.RowItem;
 import com.giosis.util.qdrive.singapore.util.CommonActivity;
 import com.giosis.util.qdrive.singapore.database.DatabaseHelper;
+import com.giosis.util.qdrive.singapore.util.FirebaseEvent;
 import com.giosis.util.qdrive.singapore.util.Preferences;
 
 import java.lang.reflect.Field;
@@ -35,7 +36,6 @@ import java.util.Comparator;
 
 public class OutletOrderStatusActivity extends CommonActivity implements SearchView.OnQueryTextListener, SearchView.OnCloseListener {
     String TAG = "OutletOrderStatusActivity";
-
 
     FrameLayout layout_top_back;
     TextView text_top_title;
@@ -369,6 +369,8 @@ public class OutletOrderStatusActivity extends CommonActivity implements SearchV
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_outlet_order_status);
+
+        FirebaseEvent.INSTANCE.createEvent(this, TAG);
 
         layout_top_back = findViewById(R.id.layout_top_back);
         text_top_title = findViewById(R.id.text_top_title);

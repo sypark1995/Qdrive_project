@@ -29,6 +29,7 @@ import com.giosis.util.qdrive.singapore.util.CommonActivity;
 import com.giosis.util.qdrive.singapore.util.DataUtil;
 import com.giosis.util.qdrive.singapore.database.DatabaseHelper;
 import com.giosis.util.qdrive.singapore.util.DisplayUtil;
+import com.giosis.util.qdrive.singapore.util.FirebaseEvent;
 import com.giosis.util.qdrive.singapore.util.Preferences;
 import com.google.gson.Gson;
 
@@ -48,7 +49,6 @@ import javax.net.ssl.X509TrustManager;
 /**
  * LIST > In-Progress > Outlet Pickup Done (Step 1)
  */
-
 
 // TODO_kjyoo
 public class OutletPickupStep1Activity extends CommonActivity {
@@ -156,6 +156,8 @@ public class OutletPickupStep1Activity extends CommonActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_outlet_pickup_step1);
 
+        FirebaseEvent.INSTANCE.createEvent(this, TAG);
+
         layout_top_back = findViewById(R.id.layout_top_back);
         text_top_title = findViewById(R.id.text_top_title);
 
@@ -192,14 +194,12 @@ public class OutletPickupStep1Activity extends CommonActivity {
 
         OutletInfo outletInfo = getOutletInfo(mPickupNo);
 
-       /* // TEST
-        outletInfo.route = "7E";
-        outletInfo.zip_code = "123";
-        outletInfo.address = "address";*/
-
+//        // TEST
+//        outletInfo.setRoute("7E");
+//        outletInfo.setZip_code("123");
+//        outletInfo.setAddress("address");
 
         mRoute = outletInfo.getRoute().substring(0, 2);
-        Log.e(TAG, TAG + " Data : " + mRoute + " / " + mPickupNo);
 
         text_top_title.setText(mTitle);
         if (mRoute.equals("FL")) {
