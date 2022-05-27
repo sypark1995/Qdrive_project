@@ -819,7 +819,7 @@ public class DeliveryDoneActivity extends CommonActivity implements Camera2APIs.
 
             String driverMemo = edit_sign_d_memo.getText().toString();
 
-            FirebaseEvent.INSTANCE.clickEvent(this , TAG, "SetOutletDeliveryUploadData");
+            FirebaseEvent.INSTANCE.clickEvent(this, TAG, "SetOutletDeliveryUploadData");
 
             // 2019.02 - stat : D3 로..   서버에서 outlet stat 변경
             new OutletDeliveryDoneHelper.Builder(this, opID, officeCode, deviceID,
@@ -832,8 +832,7 @@ public class DeliveryDoneActivity extends CommonActivity implements Camera2APIs.
                     }).build().execute();
         } catch (Exception e) {
 
-            Log.e("Exception", "saveOutletDeliveryDone   Exception ; " + e.toString());
-            Toast.makeText(this, getResources().getString(R.string.text_error) + " - " + e.toString(), Toast.LENGTH_SHORT).show();
+            Toast.makeText(this, getResources().getString(R.string.text_error) + " - " + e, Toast.LENGTH_SHORT).show();
         }
     }
 

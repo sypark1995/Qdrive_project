@@ -314,7 +314,7 @@ public class OutletDeliveryDoneHelper {
 
                     bitmapString = "";
                 }
-                Log.e("krm0219", "Outlet Delivery DATA > " + receiveType + " " + opID + " " + bitmapString + " " + assignNo + " " + outletRoute);
+                Log.e(TAG, "Outlet Delivery DATA > " + receiveType + " " + opID + " " + bitmapString + " " + assignNo + " " + outletRoute);
 
                 JSONObject job = new JSONObject();
                 job.accumulate("rcv_type", receiveType);
@@ -360,7 +360,6 @@ public class OutletDeliveryDoneHelper {
                 }
             } catch (Exception e) {
 
-                Log.e("Exception", TAG + "  SetOutletDeliveryUploadData Exception : " + e.toString());
                 result.setResultCode(-15);
                 result.setResultMsg(context.getResources().getString(R.string.msg_upload_fail_15));
             }
