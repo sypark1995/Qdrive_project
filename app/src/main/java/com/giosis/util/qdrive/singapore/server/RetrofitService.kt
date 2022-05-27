@@ -658,8 +658,8 @@ interface RetrofitService {
         @Field("fileData2") fileData2: String,
         @Field("scanned_str") scanned_str: String,
         @Field("network_type") network_type: String,
+        @Field("remark") remark: String,
         @Field("retry_day") retry_day: String = "",
-        @Field("remark") remark: String = "",
         @Field("fail_reason") fail_reason: String = "",
         @Field("rcv_type") rcv_type: String = "SC",
         @Field("stat") stat: String = BarcodeType.PICKUP_DONE,
@@ -695,6 +695,31 @@ interface RetrofitService {
         @Field("officeCd") officeCd: String = Preferences.officeCode,
         @Field("device_id") device_id: String = Preferences.deviceUUID,
         @Field("disk_size") disk_size: Long = MemoryStatus.availableInternalMemorySize,
+        @Field("app_id") app_id: String = DataUtil.appID,
+        @Field("nation_cd") nation_cd: String = Preferences.userNation
+    ): APIModel
+
+    @POST("SetPickupUploadData")
+    @FormUrlEncoded
+    suspend fun pickupUploadData(
+        @Field("network_type") network_type: String,
+        @Field("no_songjang") no_songjang: String,
+        @Field("fileData") fileData: String,
+        @Field("fileData2") fileData2: String,
+        @Field("lat") lat: Double,
+        @Field("lon") lon: Double,
+        @Field("disk_size") disk_size: Long = MemoryStatus.availableInternalMemorySize,
+        @Field("device_id") device_id: String = Preferences.deviceUUID,
+        @Field("chg_id") chg_id: String = Preferences.userId,
+        @Field("officeCd") officeCd: String = Preferences.officeCode,
+        @Field("opId") opId: String = Preferences.userId,
+        @Field("stat") stat: String = BarcodeType.PICKUP_DONE,
+        @Field("deliv_msg") deliv_msg: String = "(by Qdrive RealTime-Upload)",
+        @Field("remark") remark: String = "",
+        @Field("rcv_type") rcv_type: String = "RC",
+        @Field("real_qty") real_qty: String = "1",
+        @Field("fail_reason") fail_reason: String = "",
+        @Field("retry_day") retry_day: String = "",
         @Field("app_id") app_id: String = DataUtil.appID,
         @Field("nation_cd") nation_cd: String = Preferences.userNation
     ): APIModel

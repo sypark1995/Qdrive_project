@@ -2,6 +2,7 @@ package com.giosis.util.qdrive.singapore.list.pickup
 
 import android.app.Activity
 import android.app.AlertDialog
+import android.content.ContentValues
 import android.content.DialogInterface
 import android.content.Intent
 import android.database.Cursor
@@ -9,16 +10,20 @@ import android.os.Bundle
 import android.util.Log
 import android.view.View
 import android.widget.Toast
+import androidx.lifecycle.lifecycleScope
 import com.giosis.util.qdrive.singapore.MemoryStatus
 import com.giosis.util.qdrive.singapore.R
 import com.giosis.util.qdrive.singapore.database.DatabaseHelper
 import com.giosis.util.qdrive.singapore.gps.GPSTrackerManager
 import com.giosis.util.qdrive.singapore.gps.LocationModel
 import com.giosis.util.qdrive.singapore.list.BarcodeData
-import com.giosis.util.qdrive.singapore.database.DatabaseHelper.Companion.getInstance
+import com.giosis.util.qdrive.singapore.server.ImageUpload
+import com.giosis.util.qdrive.singapore.server.RetrofitClient
 import com.giosis.util.qdrive.singapore.util.*
 import kotlinx.android.synthetic.main.activity_pickup_done.*
 import kotlinx.android.synthetic.main.top_title.*
+import kotlinx.coroutines.launch
+import java.text.SimpleDateFormat
 import java.util.*
 
 /**
@@ -39,7 +44,7 @@ class CnRPickupDoneActivity : CommonActivity() {
     private var mStrWaybillNo: String = ""
     private var mType = BarcodeType.PICKUP_CNR
 
-    private var pickupNoList: ArrayList<BarcodeData>? = null
+    private var pickupNoList = ArrayList<BarcodeData>()
 
     var gpsTrackerManager: GPSTrackerManager? = null
     var gpsEnable = false
@@ -95,7 +100,7 @@ class CnRPickupDoneActivity : CommonActivity() {
             if (strReqQty.equals("1")) {
 
                 val cs: Cursor =
-                    getInstance()["SELECT * FROM " + DatabaseHelper.DB_TABLE_INTEGRATION_LIST + " WHERE invoice_no='" + barcode + "'"]
+                    DatabaseHelper.getInstance()["SELECT * FROM " + DatabaseHelper.DB_TABLE_INTEGRATION_LIST + " WHERE invoice_no='" + barcode + "'"]
 
                 if (cs.moveToFirst()) {
 
@@ -238,26 +243,91 @@ class CnRPickupDoneActivity : CommonActivity() {
                 return
             }
 
-            DataUtil.logEvent("button_click", tag, "SetPickupUploadData")
+            if (!NetworkUtil.isNetworkAvailable(this@CnRPickupDoneActivity)) {
+                DisplayUtil.AlertDialog(
+                    this@CnRPickupDoneActivity,
+                    resources.getString(R.string.msg_network_connect_error_saved)
+                )
+                return
+            }
 
-            CnRPickupUploadHelper.Builder(
-                this@CnRPickupDoneActivity,
-                Preferences.userId,
-                Preferences.officeCode,
-                Preferences.deviceUUID,
-                pickupNoList,
-                sign_view_sign_p_applicant_signature,
-                sign_view_sign_p_collector_signature,
-                MemoryStatus.availableInternalMemorySize,
-                locationModel
-            ).setOnServerEventListener(object : OnServerEventListener {
-                override fun onPostResult() {
-                    setResult(Activity.RESULT_OK)
-                    finish()
+            DataUtil.logEvent("button_click", tag, "SetPickupUploadData")
+            lifecycleScope.launch {
+                val bitmap1 = QDataUtil.getBitmapString(
+                    this@CnRPickupDoneActivity,
+                    sign_view_sign_p_applicant_signature,
+                    ImageUpload.QXPOP,
+                    "qdriver/sign",
+                    pickupNoList[0].barcode!!
+                )
+
+                val bitmap2 = QDataUtil.getBitmapString(
+                    this@CnRPickupDoneActivity,
+                    sign_view_sign_p_collector_signature,
+                    ImageUpload.QXPOP,
+                    "qdriver/sign",
+                    pickupNoList[0].barcode!!
+                )
+
+                if (bitmap1 == "" || bitmap2 == "") {
+                    resultDialog(resources.getString(R.string.msg_upload_fail_image))
+                    return@launch
                 }
 
-                override fun onPostFailList() {}
-            }).build().execute()
+
+
+                for ((index,item) in pickupNoList.withIndex()) {
+                    val dateFormat = SimpleDateFormat("yyyy-MM-dd HH:mm:ss")
+                    val date = Date()
+
+                    val contentVal = ContentValues()
+                    contentVal.put("stat", BarcodeType.PICKUP_DONE)
+                    contentVal.put("real_qty", "1")
+                    contentVal.put("chg_dt", dateFormat.format(date))
+                    contentVal.put("fail_reason", "")
+                    contentVal.put("retry_dt", "")
+                    contentVal.put("driver_memo", "")
+                    contentVal.put("reg_id", Preferences.userId)
+
+                    //todo_sypark 디비 업데이트시 Preferences.userId 가지고 들어감
+                    DatabaseHelper.getInstance().update(
+                        DatabaseHelper.DB_TABLE_INTEGRATION_LIST,
+                        contentVal,
+                        "invoice_no=? COLLATE NOCASE " + "and reg_id = ?",
+                        arrayOf(item.barcode!!, Preferences.userId)
+                    )
+
+                    try {
+                        val response = RetrofitClient.instanceDynamic().pickupUploadData(
+                            NetworkUtil.getNetworkType(this@CnRPickupDoneActivity),
+                            item.barcode!!,
+                            bitmap1,
+                            bitmap2,
+                            latitude,
+                            longitude
+                        )
+
+                        if (response.resultCode == 0) {
+                            val contentVal2 = ContentValues()
+                            contentVal2.put("punchOut_stat", "S")
+
+                            DatabaseHelper.getInstance().update(
+                                DatabaseHelper.DB_TABLE_INTEGRATION_LIST,
+                                contentVal2,
+                                "invoice_no=? COLLATE NOCASE " + "and reg_id = ?",
+                                arrayOf(item.barcode!!, Preferences.userId)
+                            )
+
+                            if (index == pickupNoList.size -1) {
+                                resultDialog("" +response.resultMsg)
+                            }
+                        }
+                    } catch (e: java.lang.Exception) {
+                        resultDialog("SetPickupUploadData api error $e")
+                        break
+                    }
+                }
+            }
 
         } catch (e: Exception) {
 
@@ -284,6 +354,22 @@ class CnRPickupDoneActivity : CommonActivity() {
             }
             .setNegativeButton(R.string.button_cancel) { dialog: DialogInterface, _: Int -> dialog.dismiss() }
             .show()
+    }
+
+    private fun resultDialog(msg: String) {
+        if (!isFinishing) {
+            AlertDialog.Builder(this@CnRPickupDoneActivity)
+                .setCancelable(false)
+                .setTitle(resources.getString(R.string.text_upload_result))
+                .setMessage(msg)
+                .setPositiveButton(resources.getString(R.string.button_ok)) { dialog, _ ->
+
+                    dialog.dismiss()
+
+                    setResult(Activity.RESULT_OK)
+                    finish()
+                }.show()
+        }
     }
 
 }
