@@ -288,8 +288,14 @@ public class DeliveryDoneActivity extends CommonActivity implements Camera2APIs.
                         + parcel.getZip_code() + " - " + parcel.getState() + " - " + parcel.getCity() + " - " + parcel.getStreet());
             }
 
-            String[] routeSplit = parcel.getRoute().split(" ");
-            routeNumber = routeSplit[0] + " " + routeSplit[1];
+            if (parcel.getRoute().contains("7E") || parcel.getRoute().contains("FL")) {
+                try {
+                    String[] routeSplit = parcel.getRoute().split(" ");
+                    routeNumber = routeSplit[0] + " " + routeSplit[1];
+                } catch (Exception e) {
+                    routeNumber = null;
+                }
+            }
 
         } else if (getIntent().hasExtra("data")) {
             // in Capture (bulk)
