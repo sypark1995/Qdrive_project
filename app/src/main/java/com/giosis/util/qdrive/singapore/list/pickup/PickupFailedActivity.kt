@@ -97,6 +97,8 @@ class PickupFailedActivity : CommonActivity(), Camera2APIs.Camera2Interface,
         window.addFlags(WindowManager.LayoutParams.FLAG_TURN_SCREEN_ON)     // 화면 ON
         setContentView(binding.root)
 
+        FirebaseEvent.createEvent(this, TAG)
+
         val pickupType = intent.getStringExtra("type")  // P, CNR
 
         binding.layoutTopTitle.textTopTitle.text = resources.getString(R.string.text_visit_log)
@@ -482,7 +484,7 @@ class PickupFailedActivity : CommonActivity(), Camera2APIs.Camera2Interface,
                 return
             }
 
-            DataUtil.logEvent("button_click", TAG, "SetPickupUploadData")
+            FirebaseEvent.clickEvent(this, TAG, "SetPickupUploadData")
 
             progressBar.visibility = View.VISIBLE
             lifecycleScope.launch {

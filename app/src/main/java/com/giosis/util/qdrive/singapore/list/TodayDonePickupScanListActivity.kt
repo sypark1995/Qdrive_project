@@ -12,6 +12,7 @@ import com.giosis.util.qdrive.singapore.data.PickupPackingListResult
 import com.giosis.util.qdrive.singapore.databinding.ActivityPickupScanListBinding
 import com.giosis.util.qdrive.singapore.util.BarcodeType
 import com.giosis.util.qdrive.singapore.util.CommonActivity
+import com.giosis.util.qdrive.singapore.util.FirebaseEvent
 import com.google.gson.Gson
 import com.google.gson.reflect.TypeToken
 import io.reactivex.rxjava3.android.schedulers.AndroidSchedulers
@@ -35,6 +36,8 @@ class TodayDonePickupScanListActivity : CommonActivity() {
     public override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(binding.root)
+
+        FirebaseEvent.createEvent(this, TAG)
 
         pickupNo = intent.getStringExtra("pickup_no").toString()
         applicant = intent.getStringExtra("applicant").toString()

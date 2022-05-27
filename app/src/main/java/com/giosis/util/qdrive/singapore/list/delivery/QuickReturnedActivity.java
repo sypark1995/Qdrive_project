@@ -27,6 +27,7 @@ import com.giosis.util.qdrive.singapore.list.SigningView;
 import com.giosis.util.qdrive.singapore.util.CommonActivity;
 import com.giosis.util.qdrive.singapore.util.DataUtil;
 import com.giosis.util.qdrive.singapore.database.DatabaseHelper;
+import com.giosis.util.qdrive.singapore.util.FirebaseEvent;
 import com.giosis.util.qdrive.singapore.util.NetworkUtil;
 import com.giosis.util.qdrive.singapore.util.OnServerEventListener;
 import com.giosis.util.qdrive.singapore.util.PermissionActivity;
@@ -82,6 +83,8 @@ public class QuickReturnedActivity extends CommonActivity {
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_quick_returned);
+
+        FirebaseEvent.INSTANCE.createEvent(this, TAG);
 
         //
         layout_top_back = findViewById(R.id.layout_top_back);
@@ -255,7 +258,7 @@ public class QuickReturnedActivity extends CommonActivity {
                 return;
             }
 
-            DataUtil.logEvent("button_click", TAG, "setDeliveryRTNDPTypeUploadData");
+            FirebaseEvent.INSTANCE.clickEvent(this, TAG, "setDeliveryRTNDPTypeUploadData");
 
             new QuickReturnedUploadHelper.Builder(this, opID, officeCode, deviceID,
                     mStrWaybillNo, mReceiveType, sign_view_sign_d_r_signature, driverMemo,

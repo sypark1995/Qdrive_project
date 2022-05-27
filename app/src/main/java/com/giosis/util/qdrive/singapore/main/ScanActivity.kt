@@ -8,10 +8,7 @@ import com.bumptech.glide.util.Util
 import com.giosis.util.qdrive.singapore.R
 import com.giosis.util.qdrive.singapore.barcodescanner.CaptureActivity1
 import com.giosis.util.qdrive.singapore.databinding.ActivityScanBinding
-import com.giosis.util.qdrive.singapore.util.BarcodeType
-import com.giosis.util.qdrive.singapore.util.Common
-import com.giosis.util.qdrive.singapore.util.CommonActivity
-import com.giosis.util.qdrive.singapore.util.Preferences
+import com.giosis.util.qdrive.singapore.util.*
 
 
 class ScanActivity : CommonActivity() {
@@ -24,6 +21,8 @@ class ScanActivity : CommonActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(binding.root)
+
+        FirebaseEvent.createEvent(this, TAG)
 
         binding.layoutTopTitle.textTopTitle.setText(R.string.text_title_delivery_scan)
 

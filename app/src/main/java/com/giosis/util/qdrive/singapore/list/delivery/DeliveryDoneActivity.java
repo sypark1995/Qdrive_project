@@ -49,6 +49,7 @@ import com.giosis.util.qdrive.singapore.util.Camera2APIs;
 import com.giosis.util.qdrive.singapore.util.CommonActivity;
 import com.giosis.util.qdrive.singapore.util.DataUtil;
 import com.giosis.util.qdrive.singapore.util.DisplayUtil;
+import com.giosis.util.qdrive.singapore.util.FirebaseEvent;
 import com.giosis.util.qdrive.singapore.util.NetworkUtil;
 import com.giosis.util.qdrive.singapore.util.OnServerEventListener;
 import com.giosis.util.qdrive.singapore.util.PermissionActivity;
@@ -208,6 +209,8 @@ public class DeliveryDoneActivity extends CommonActivity implements Camera2APIs.
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_delivered);
+
+        FirebaseEvent.INSTANCE.createEvent(this, TAG);
 
         layout_top_back = findViewById(R.id.layout_top_back);
         text_top_title = findViewById(R.id.text_top_title);
@@ -747,12 +750,13 @@ public class DeliveryDoneActivity extends CommonActivity implements Camera2APIs.
             }
 
             //서버에 올리기전 용량체크  내장메모리가 100Kbyte 안남은경우
-            if (MemoryStatus.getAvailableInternalMemorySize() != MemoryStatus.ERROR && MemoryStatus.getAvailableInternalMemorySize() < MemoryStatus.PRESENT_BYTE) {
+            if (MemoryStatus.getAvailableInternalMemorySize() != MemoryStatus.ERROR
+                    && MemoryStatus.getAvailableInternalMemorySize() < MemoryStatus.PRESENT_BYTE) {
                 AlertShow(getResources().getString(R.string.msg_disk_size_error));
                 return;
             }
 
-            DataUtil.logEvent("button_click", TAG, "SetDeliveryUploadData");
+            FirebaseEvent.INSTANCE.clickEvent(this, TAG, "SetDeliveryUploadData");
 
             new DeliveryDoneUploadHelper.Builder(this, opID, officeCode, deviceID,
                     barcodeList, mReceiveType, driverMemo,
@@ -821,7 +825,8 @@ public class DeliveryDoneActivity extends CommonActivity implements Camera2APIs.
 
             String driverMemo = edit_sign_d_memo.getText().toString();
 
-            DataUtil.logEvent("button_click", TAG + "_OUTLET", "SetOutletDeliveryUploadData");
+            FirebaseEvent.INSTANCE.clickEvent(this, TAG, "SetOutletDeliveryUploadData");
+
             // 2019.02 - stat : D3 로..   서버에서 outlet stat 변경
             new OutletDeliveryDoneHelper.Builder(this, opID, officeCode, deviceID,
                     barcodeList, outletInfo.getRoute().substring(0, 2), mReceiveType, sign_view_sign_d_signature, driverMemo,
@@ -833,8 +838,7 @@ public class DeliveryDoneActivity extends CommonActivity implements Camera2APIs.
                     }).build().execute();
         } catch (Exception e) {
 
-            Log.e("Exception", "saveOutletDeliveryDone   Exception ; " + e.toString());
-            Toast.makeText(this, getResources().getString(R.string.text_error) + " - " + e.toString(), Toast.LENGTH_SHORT).show();
+            Toast.makeText(this, getResources().getString(R.string.text_error) + " - " + e, Toast.LENGTH_SHORT).show();
         }
     }
 

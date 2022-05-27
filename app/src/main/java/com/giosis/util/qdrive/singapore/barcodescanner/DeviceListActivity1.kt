@@ -16,12 +16,13 @@ import android.widget.ArrayAdapter
 import android.widget.TextView
 import com.giosis.util.qdrive.singapore.R
 import com.giosis.util.qdrive.singapore.databinding.DialogDeviceList1Binding
+import com.giosis.util.qdrive.singapore.util.FirebaseEvent
 
 // TODO_kjyoo 이건 왜 Activity를 상속받 ??
 class DeviceListActivity1 : Activity() {
 
     companion object {
-        private const val TAG = "DeviceListActivity"
+        private const val TAG = "DeviceListActivity1"
 
         // Return Intent extra
         var EXTRA_DEVICE_ADDRESS = "device_address"
@@ -43,6 +44,8 @@ class DeviceListActivity1 : Activity() {
         super.onCreate(savedInstanceState)
         requestWindowFeature(Window.FEATURE_INDETERMINATE_PROGRESS)
         setContentView(binding.root)
+
+        FirebaseEvent.createEvent(this, TAG)
 
         // Set result CANCELED incase the user backs out
         setResult(RESULT_CANCELED)
@@ -144,7 +147,8 @@ class DeviceListActivity1 : Activity() {
                 // When discovery finds a device
 
                 // Get the BluetoothDevice object from the Intent
-                val device = intent.getParcelableExtra<BluetoothDevice>(BluetoothDevice.EXTRA_DEVICE)
+                val device =
+                    intent.getParcelableExtra<BluetoothDevice>(BluetoothDevice.EXTRA_DEVICE)
                 // If it's already paired, skip it, because it's been listed already
                 if (device!!.bondState != BluetoothDevice.BOND_BONDED) {
                     Log.e("krm0219", "mReceiver  device name : " + device.name)

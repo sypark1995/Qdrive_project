@@ -27,7 +27,7 @@ import java.util.*
 
 
 class PickupZeroQtyActivity : CommonActivity() {
-    val tag = "PickupZeroQtyActivity"
+    val TAG = "PickupZeroQtyActivity"
 
     private val binding by lazy {
         ActivityPickupStartToScanBinding.inflate(layoutInflater)
@@ -60,13 +60,14 @@ class PickupZeroQtyActivity : CommonActivity() {
         super.onCreate(savedInstanceState)
         setContentView(binding.root)
 
+        FirebaseEvent.createEvent(this, TAG)
+
         binding.layoutTopTitle.textTopTitle.text = resources.getString(R.string.text_zero_qty)
         binding.textPickupNo.text = pickupNo
         binding.textApplicant.text = intent.getStringExtra("applicant")
         binding.imgStartScanCheck.setBackgroundResource(R.drawable.qdrive_btn_icon_check_off)
         binding.imgZeroQtyCheck.setBackgroundResource(R.drawable.qdrive_btn_icon_check_on)
         binding.textTotalQty.text = "0"
-
 
         binding.editMemo.addTextChangedListener(object : TextWatcher {
             override fun afterTextChanged(p0: Editable?) {
@@ -150,7 +151,6 @@ class PickupZeroQtyActivity : CommonActivity() {
     private fun serverUpload() {
 
         try {
-
             if (!NetworkUtil.isNetworkAvailable(this@PickupZeroQtyActivity)) {
                 DisplayUtil.AlertDialog(
                     this@PickupZeroQtyActivity,
@@ -163,8 +163,6 @@ class PickupZeroQtyActivity : CommonActivity() {
                 latitude = it.latitude
                 longitude = it.longitude
             }
-            Log.e(tag, "  Location $latitude / $longitude")
-
 
             if (!binding.signApplicantSignature.isTouch) {
                 Toast.makeText(
@@ -204,7 +202,8 @@ class PickupZeroQtyActivity : CommonActivity() {
                 return
             }
 
-            DataUtil.logEvent("button_click", tag, "SetPickupUploadData")
+
+            FirebaseEvent.clickEvent(this, TAG, "SetPickupUploadData")
 
             progressBar.visibility = View.VISIBLE
 
@@ -262,7 +261,6 @@ class PickupZeroQtyActivity : CommonActivity() {
 //                    }).build().execute()
         } catch (e: Exception) {
 
-            Log.e("Exception", "$tag   serverUpload  Exception : $e")
             Toast.makeText(
                 this@PickupZeroQtyActivity,
                 resources.getString(R.string.text_error) + " - " + e.toString(),

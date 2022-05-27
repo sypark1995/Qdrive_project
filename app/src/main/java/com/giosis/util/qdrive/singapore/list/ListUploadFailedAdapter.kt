@@ -22,10 +22,8 @@ import com.giosis.util.qdrive.singapore.UploadData
 import com.giosis.util.qdrive.singapore.database.DatabaseHelper
 import com.giosis.util.qdrive.singapore.gps.GPSTrackerManager
 import com.giosis.util.qdrive.singapore.main.DeviceDataUploadHelper
-import com.giosis.util.qdrive.singapore.util.BarcodeType
-import com.giosis.util.qdrive.singapore.util.DataUtil
-import com.giosis.util.qdrive.singapore.util.OnServerEventListener
-import com.giosis.util.qdrive.singapore.util.Preferences
+import com.giosis.util.qdrive.singapore.util.*
+import com.google.firebase.ktx.Firebase
 import java.io.File
 import java.util.*
 
@@ -271,8 +269,8 @@ class ListUploadFailedAdapter :
                         Environment.getExternalStorageDirectory().toString() + deliverySign
                     var filePath = "$dirPath/${data.shipping}.png"
                     var imgFile = File(filePath)
+
                     if (imgFile.exists()) {
-                        DataUtil.FirebaseSelectEvents("DELIVERY_DONE", "original")
                         myBitmap = BitmapFactory.decodeFile(imgFile.absolutePath)
                         textListItemChildRequester.text =
                             textListItemChildRequester.context.resources.getString(R.string.text_receiver)
@@ -284,7 +282,6 @@ class ListUploadFailedAdapter :
                         filePath = dirPath + "/" + data.shipping + "_1.png"
                         imgFile = File(filePath)
                         if (imgFile.exists()) {
-                            DataUtil.FirebaseSelectEvents("DELIVERY_DONE", "original")
                             myBitmap = BitmapFactory.decodeFile(imgFile.absolutePath)
                             textListItemChildRequester.text =
                                 textListItemChildRequester.context.resources.getString(R.string.text_receiver)
@@ -303,13 +300,16 @@ class ListUploadFailedAdapter :
                     val filePath2 = "$dirPath2/${data.shipping}.png"
                     val imgFile = File(filePath)
                     val imgFile2 = File(filePath2)
+
                     layoutListItemChildDriver.visibility = View.VISIBLE
+
                     if (imgFile.exists()) {
                         myBitmap = BitmapFactory.decodeFile(imgFile.absolutePath)
                         textListItemChildRequester.text =
                             textListItemChildRequester.context.resources.getString(R.string.text_requestor)
                         imgListItemChildRequesterSign.setImageBitmap(myBitmap)
                     }
+
                     if (imgFile2.exists()) {
                         val myBitmap2 = BitmapFactory.decodeFile(imgFile2.absolutePath)
                         imgListItemChildDriverSign.setImageBitmap(myBitmap2)
@@ -405,17 +405,16 @@ class ListUploadFailedAdapter :
                 if (gpsEnable && gpsTrackerManager != null) {
                     latitude = gpsTrackerManager!!.latitude
                     longitude = gpsTrackerManager!!.longitude
-                    Log.e(
-                        "Location",
-                        "$TAG btn_list_item_upload  GPSTrackerManager : $latitude  $longitude  "
-                    )
                 }
+
                 if (songjanglist.size > 0) {
-                    DataUtil.logEvent(
-                        "button_click",
+
+                    FirebaseEvent.clickEvent(
+                        v.context,
                         TAG,
                         "SetDeliveryUploadData / SetPickupUploadData"
                     )
+
                     DeviceDataUploadHelper.Builder(
                         v.context,
                         Preferences.userId,
@@ -438,6 +437,7 @@ class ListUploadFailedAdapter :
 
                         override fun onPostFailList() {}
                     }).build().execute()
+
                 } else {
                     AlertDialog.Builder(v.context)
                         .setMessage(v.context.resources.getString(R.string.text_data_error))

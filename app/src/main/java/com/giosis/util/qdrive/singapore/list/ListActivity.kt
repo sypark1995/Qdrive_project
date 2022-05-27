@@ -15,10 +15,7 @@ import com.giosis.util.qdrive.singapore.R
 import com.giosis.util.qdrive.singapore.bluetooth.BluetoothClass
 import com.giosis.util.qdrive.singapore.bluetooth.BluetoothListener
 import com.giosis.util.qdrive.singapore.main.MainActivity
-import com.giosis.util.qdrive.singapore.util.CommonActivity
-import com.giosis.util.qdrive.singapore.util.DataUtil
-import com.giosis.util.qdrive.singapore.util.ListFragmentFactoryImpl
-import com.giosis.util.qdrive.singapore.util.Preferences
+import com.giosis.util.qdrive.singapore.util.*
 import kotlinx.android.synthetic.main.activity_list.*
 import kotlinx.android.synthetic.main.top_title.*
 
@@ -59,6 +56,8 @@ class ListActivity : CommonActivity(), ListInProgressFragment.OnInProgressFragme
                     or WindowManager.LayoutParams.FLAG_SHOW_WHEN_LOCKED
                     or WindowManager.LayoutParams.FLAG_TURN_SCREEN_ON
         )
+
+        FirebaseEvent.createEvent(this, TAG)
 
         text_top_title.text = resources.getString(R.string.navi_list)
 

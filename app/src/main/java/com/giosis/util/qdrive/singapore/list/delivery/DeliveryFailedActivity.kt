@@ -76,7 +76,7 @@ class DeliveryFailedActivity : CommonActivity(), Camera2APIs.Camera2Interface,
         window.addFlags(WindowManager.LayoutParams.FLAG_TURN_SCREEN_ON)     // 화면 ON
         setContentView(binding.root)
 
-
+        FirebaseEvent.createEvent(this, tag)
 
         binding.layoutTopTitle.textTopTitle.text = resources.getString(R.string.text_visit_log)
         trackingNo = intent.getStringExtra("trackingNo").toString()
@@ -385,7 +385,9 @@ class DeliveryFailedActivity : CommonActivity(), Camera2APIs.Camera2Interface,
                 return
             }
 
-            if (MemoryStatus.availableInternalMemorySize != MemoryStatus.ERROR.toLong() && MemoryStatus.availableInternalMemorySize < MemoryStatus.PRESENT_BYTE) {
+            if (MemoryStatus.availableInternalMemorySize != MemoryStatus.ERROR.toLong()
+                && MemoryStatus.availableInternalMemorySize < MemoryStatus.PRESENT_BYTE
+            ) {
                 DisplayUtil.AlertDialog(
                     this@DeliveryFailedActivity,
                     resources.getString(R.string.msg_disk_size_error)
@@ -393,7 +395,8 @@ class DeliveryFailedActivity : CommonActivity(), Camera2APIs.Camera2Interface,
                 return
             }
 
-            DataUtil.logEvent("button_click", tag, "SetDeliveryUploadData")
+            FirebaseEvent.clickEvent(this, tag, "DeliveryFailedUploadHelper ")
+
             DeliveryFailedUploadHelper.Builder(
                 this@DeliveryFailedActivity,
                 Preferences.userId,

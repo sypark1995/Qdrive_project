@@ -297,7 +297,7 @@ public class OutletPickupDoneHelper {
 
                     bitmapString = "";
                 }
-                Log.e("krm0219", "Outlet Pickup  DATA > " + opID + " " + bitmapString + " " + pickup_no + " " + outlet_type);
+                Log.e(TAG, "Outlet Pickup  DATA > " + opID + " " + bitmapString + " " + pickup_no + " " + outlet_type);
 
                 JSONObject job = new JSONObject();
                 job.accumulate("rcv_type", "SC");

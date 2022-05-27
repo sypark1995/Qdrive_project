@@ -1,5 +1,6 @@
 package com.giosis.util.qdrive.singapore.barcodescanner
 
+
 import android.annotation.SuppressLint
 import android.app.AlertDialog
 import android.bluetooth.BluetoothAdapter
@@ -245,6 +246,8 @@ class CaptureActivity1 : CommonActivity(), TorchListener, OnTouchListener, TextW
         )
         setContentView(binding.root)
 
+        FirebaseEvent.createEvent(this, TAG)
+
         if (title.isNotEmpty()) {
             binding.layoutTopTitle.textTopTitle.text = title
         } else {
@@ -337,7 +340,6 @@ class CaptureActivity1 : CommonActivity(), TorchListener, OnTouchListener, TextW
                 if (!exist) {
                     Log.e("Barcode", "Camera   Barcode  $barcode")
                     scannedBarcode.add(barcode)
-                    DataUtil.logEvent("capture", TAG, "Camera")
                     checkValidation(barcode, false, "Camera")
                 }
             }
@@ -409,8 +411,9 @@ class CaptureActivity1 : CommonActivity(), TorchListener, OnTouchListener, TextW
         try {
             binding.editTrackingNumber.requestFocus()
         } catch (e: Exception) {
-            Log.e("Exception", "$TAG  requestFocus Exception : $e")
+            //
         }
+
         progressBar.setCancelable(false)
 
         beepManager.updatePrefs()
@@ -445,12 +448,7 @@ class CaptureActivity1 : CommonActivity(), TorchListener, OnTouchListener, TextW
                 }
 
                 if (gpsEnable && gpsTrackerManager != null) {
-
                     gpsTrackerManager!!.gpsTrackerStart()
-                    Log.e(
-                        "Location",
-                        "$TAG GPSTrackerManager onResume : ${gpsTrackerManager!!.latitude}  ${gpsTrackerManager!!.longitude}"
-                    )
                 } else {
                     DataUtil.enableLocationSettings(this@CaptureActivity1)
                 }
@@ -458,9 +456,13 @@ class CaptureActivity1 : CommonActivity(), TorchListener, OnTouchListener, TextW
         }
 
         // Scanned List
-        if (mScanType == BarcodeType.CONFIRM_MY_DELIVERY_ORDER || mScanType == BarcodeType.CHANGE_DELIVERY_DRIVER ||
-            mScanType == BarcodeType.PICKUP_CNR || mScanType == BarcodeType.PICKUP_SCAN_ALL || mScanType == BarcodeType.PICKUP_ADD_SCAN ||
-            mScanType == BarcodeType.PICKUP_TAKE_BACK || mScanType == BarcodeType.OUTLET_PICKUP_SCAN
+        if (mScanType == BarcodeType.CONFIRM_MY_DELIVERY_ORDER
+            || mScanType == BarcodeType.CHANGE_DELIVERY_DRIVER
+            || mScanType == BarcodeType.PICKUP_CNR
+            || mScanType == BarcodeType.PICKUP_SCAN_ALL
+            || mScanType == BarcodeType.PICKUP_ADD_SCAN
+            || mScanType == BarcodeType.PICKUP_TAKE_BACK
+            || mScanType == BarcodeType.OUTLET_PICKUP_SCAN
         ) {
             try {
 
@@ -624,10 +626,6 @@ class CaptureActivity1 : CommonActivity(), TorchListener, OnTouchListener, TextW
                     scannedBarcode.add(tempScanNo)
                 }
 
-                Log.i(
-                    TAG,
-                    "  onKey  KEYCODE_ENTER : " + tempScanNo + " / " + isDuplicate + "  //  " + event.action
-                )
                 if (mScanType == BarcodeType.CONFIRM_MY_DELIVERY_ORDER || mScanType == BarcodeType.CHANGE_DELIVERY_DRIVER ||
                     mScanType == BarcodeType.PICKUP_CNR || mScanType == BarcodeType.PICKUP_SCAN_ALL || mScanType == BarcodeType.PICKUP_ADD_SCAN ||
                     mScanType == BarcodeType.PICKUP_TAKE_BACK || mScanType == BarcodeType.OUTLET_PICKUP_SCAN
@@ -637,7 +635,6 @@ class CaptureActivity1 : CommonActivity(), TorchListener, OnTouchListener, TextW
                     }
                 }
 
-                DataUtil.logEvent("capture", TAG, "Scanner")
                 checkValidation(tempScanNo, isDuplicate, "onKey KEYCODE_ENTER")
             }
             return true
@@ -666,7 +663,6 @@ class CaptureActivity1 : CommonActivity(), TorchListener, OnTouchListener, TextW
 
             Log.i(TAG, "  onBluetoothBarcodeAdd > $tempScanNo / $isDuplicate")
 
-            DataUtil.logEvent("capture", TAG, "Bluetooth")
             checkValidation(tempScanNo, isDuplicate, "onBluetoothBarcodeAdd")
         }
     }
@@ -690,7 +686,7 @@ class CaptureActivity1 : CommonActivity(), TorchListener, OnTouchListener, TextW
             }
 
             Log.i(TAG, "  onAddButtonClick > $tempScanNo / $isDuplicate")
-            DataUtil.logEvent("capture", TAG, "EditText")
+
             checkValidation(tempScanNo, isDuplicate, "onAddButtonClick")
         }
     }
@@ -1234,7 +1230,8 @@ class CaptureActivity1 : CommonActivity(), TorchListener, OnTouchListener, TextW
         }
 
         if (mScanType == BarcodeType.CONFIRM_MY_DELIVERY_ORDER) {
-            DataUtil.logEvent("button_click", TAG, "SetShippingStatDpc3out")
+            FirebaseEvent.clickEvent(this, TAG, "SetShippingStatDpc3out api call")
+
             progressBar.visibility = View.VISIBLE
 
             var stringBuilder = StringBuilder()
@@ -1305,7 +1302,8 @@ class CaptureActivity1 : CommonActivity(), TorchListener, OnTouchListener, TextW
 //                        }
 //                    }.build().execute()
         } else if (mScanType == BarcodeType.CHANGE_DELIVERY_DRIVER) {
-            DataUtil.logEvent("button_click", TAG, "SetChangeDeliveryDriver")
+            FirebaseEvent.clickEvent(this, TAG, "SetChangeDeliveryDriver api call")
+
             progressBar.visibility = View.VISIBLE
 
             var latitude = 0.0
@@ -1314,10 +1312,6 @@ class CaptureActivity1 : CommonActivity(), TorchListener, OnTouchListener, TextW
                 latitude = it.latitude
                 longitude = it.longitude
             }
-            Log.e(
-                "Location",
-                "$TAG saveServerUpdateButtonClickGPSTrackerManager : $latitude  $longitude"
-            )
 
             var stringBuilder = StringBuilder()
             for (item in changeDriverObjectArrayList) {
@@ -1337,8 +1331,7 @@ class CaptureActivity1 : CommonActivity(), TorchListener, OnTouchListener, TextW
                 network,
                 latitude.toString(),
                 longitude.toString()
-            )
-                .subscribeOn(Schedulers.io())
+            ).subscribeOn(Schedulers.io())
                 .observeOn(AndroidSchedulers.mainThread())
                 .subscribe({
 
@@ -1352,6 +1345,7 @@ class CaptureActivity1 : CommonActivity(), TorchListener, OnTouchListener, TextW
                             object :
                                 TypeToken<ArrayList<DriverAssignResult.QSignDeliveryList>>() {}.type
                         )
+
                         for (item in list) {
                             if (!TextUtils.isEmpty(item.partnerRefNo.trim())) {
 
@@ -1835,7 +1829,7 @@ class CaptureActivity1 : CommonActivity(), TorchListener, OnTouchListener, TextW
         const val DEVICE_NAME = "device_name"
         const val TOAST = "toast"
 
-        private const val TAG = "CaptureActivity"
+        private const val TAG = "CaptureActivity1"
         private const val bluetoothTAG = "Capture_Bluetooth"
 
         private const val PERMISSION_REQUEST_CODE = 1000
@@ -1852,6 +1846,7 @@ class CaptureActivity1 : CommonActivity(), TorchListener, OnTouchListener, TextW
      * 운송장번호 규칙이 맞는지 체크
      * 10문자 안넘으면 false, 맨앞두글자가 KR,SG,QX,JP,CN이 아닐경우 false, 5,6번째가 숫자가 아닐경우 false, 영문숫자조합
       SELF_COLLECTION */
+
         fun isInvoiceCodeRule(invoiceNo: String?): Boolean {
 
             if (invoiceNo!!.length < 10) return false
@@ -1947,6 +1942,7 @@ class CaptureActivity1 : CommonActivity(), TorchListener, OnTouchListener, TextW
     public override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
         super.onActivityResult(requestCode, resultCode, data)
         Log.e(TAG, "onActivityResult $requestCode / $resultCode")
+
         when (requestCode) {
 
             PERMISSION_REQUEST_CODE -> {
@@ -1972,6 +1968,7 @@ class CaptureActivity1 : CommonActivity(), TorchListener, OnTouchListener, TextW
             finish()
             return
         }
+
         KTSyncData.mKScan = KScan(this, bluetoothHandler)
         for (i in 0..9) {
             KTSyncData.SerialNumber[i] = '0'.toByte()

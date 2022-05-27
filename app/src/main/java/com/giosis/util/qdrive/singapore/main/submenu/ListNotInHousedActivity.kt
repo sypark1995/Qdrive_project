@@ -9,6 +9,7 @@ import com.giosis.util.qdrive.singapore.data.NotInHousedResult
 import com.giosis.util.qdrive.singapore.databinding.ActivityNotInHousedBinding
 import com.giosis.util.qdrive.singapore.server.RetrofitClient
 import com.giosis.util.qdrive.singapore.util.CommonActivity
+import com.giosis.util.qdrive.singapore.util.FirebaseEvent
 import com.giosis.util.qdrive.singapore.util.NetworkUtil
 import com.google.gson.Gson
 import com.google.gson.reflect.TypeToken
@@ -30,6 +31,7 @@ class ListNotInHousedActivity : CommonActivity() {
         super.onCreate(savedInstanceState)
         setContentView(binding.root)
 
+        FirebaseEvent.createEvent(this, tag)
 
         binding.layoutTopTitle.textTopTitle.setText(R.string.navi_sub_not_in_housed)
         binding.layoutTopTitle.layoutTopBack.setOnClickListener { finish() }

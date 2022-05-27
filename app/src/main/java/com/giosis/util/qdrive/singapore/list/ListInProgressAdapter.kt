@@ -31,6 +31,7 @@ import com.giosis.util.qdrive.singapore.list.pickup.PickupZeroQtyActivity
 import com.giosis.util.qdrive.singapore.message.CustomerMessageListDetailActivity
 import com.giosis.util.qdrive.singapore.util.BarcodeType
 import com.giosis.util.qdrive.singapore.util.DataUtil
+import com.giosis.util.qdrive.singapore.util.FirebaseEvent
 import com.giosis.util.qdrive.singapore.util.Preferences
 import java.util.*
 import kotlin.collections.ArrayList
@@ -545,12 +546,9 @@ class ListInProgressAdapter(bluetoothListener: BluetoothListener) :
                 layoutQuickButtons.visibility = View.GONE
 
                 //tracking_no 에 따라서 layout 선택하기
-                val isNotCNR = isPickupNotCNR(data.shipping)
+                val isCNR = isPickupCNR(data.shipping)
 
-                //TEST.  CNR
-                /* isNotCNR = true;*/
-
-                if (isNotCNR) { // true 이면 cnr      // C&R  주문건
+                if (isCNR) { // true 이면 cnr      // C&R  주문건
                     layoutPickupButtons.visibility = View.GONE
                     layoutCnrButtons.visibility = View.VISIBLE
                     layoutOutletPickup.visibility = View.GONE
@@ -559,6 +557,7 @@ class ListInProgressAdapter(bluetoothListener: BluetoothListener) :
                     layoutPickupButtons.visibility = View.GONE
                     layoutCnrButtons.visibility = View.GONE
                     layoutOutletPickup.visibility = View.VISIBLE
+
                     layoutTelephone.visibility = View.GONE
                     layoutMobile.visibility = View.GONE
                     imgSms.visibility = View.GONE
@@ -575,35 +574,33 @@ class ListInProgressAdapter(bluetoothListener: BluetoothListener) :
                     // Trip
                     if (data.isPrimaryKey) {
                         layoutButtons2.visibility = View.VISIBLE
+
+                        btnDetailButton.setOnClickListener { v: View ->
+                            val tripDataArrayList =
+                                data.tripSubDataArrayList
+                            val dialog = PickupTripDetailDialog(
+                                v.context,
+                                tripDataArrayList!!, bluetoothListener
+                            )
+                            dialog.show()
+                            val window = dialog.window
+                            window!!.setBackgroundDrawable(ColorDrawable(Color.TRANSPARENT))
+                            window.setLayout(
+                                LinearLayout.LayoutParams.MATCH_PARENT,
+                                LinearLayout.LayoutParams.WRAP_CONTENT
+                            )
+                        }
+
                     } else {
                         layoutButtons2.visibility = View.GONE
                     }
+
                 } else {
                     layoutButtons2.visibility = View.GONE
                 }
 
             }
 
-            if (Preferences.userNation == "SG") {
-                btnDetailButton.visibility = View.VISIBLE
-                btnDetailButton.setOnClickListener { v: View ->
-                    val tripDataArrayList =
-                        data.tripSubDataArrayList
-                    val dialog = PickupTripDetailDialog(
-                        v.context,
-                        tripDataArrayList!!, bluetoothListener
-                    )
-                    dialog.show()
-                    val window = dialog.window
-                    window!!.setBackgroundDrawable(ColorDrawable(Color.TRANSPARENT))
-                    window.setLayout(
-                        LinearLayout.LayoutParams.MATCH_PARENT,
-                        LinearLayout.LayoutParams.WRAP_CONTENT
-                    )
-                }
-            } else {
-                btnDetailButton.visibility = View.GONE
-            }
 
             textTelephoneNumber.setOnClickListener { v: View ->
                 val callUri = Uri.parse("tel:" + data.childItems.tel)
@@ -794,14 +791,14 @@ class ListInProgressAdapter(bluetoothListener: BluetoothListener) :
             }
 
             btnChildCnrPrint.setOnClickListener {
-                DataUtil.logEvent("button_click", "ListActivity", "Print_CNR")
+                FirebaseEvent.clickEvent(it.context, TAG, "btnChildCnrPrint clickevent")
                 bluetoothListener.isConnectPortablePrint(data.shipping)
             }
         }
     }
 
     //eylee pickup C&R number check
-    private fun isPickupNotCNR(trackingNo: String): Boolean {
+    private fun isPickupCNR(trackingNo: String): Boolean {
         var isCNR = false
         if (trackingNo != "") {
             val scanNoFirst = trackingNo.substring(0, 1).uppercase(Locale.getDefault())

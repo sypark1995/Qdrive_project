@@ -36,6 +36,7 @@ import com.giosis.util.qdrive.singapore.util.CommonActivity;
 import com.giosis.util.qdrive.singapore.util.DataUtil;
 import com.giosis.util.qdrive.singapore.database.DatabaseHelper;
 import com.giosis.util.qdrive.singapore.util.DisplayUtil;
+import com.giosis.util.qdrive.singapore.util.FirebaseEvent;
 import com.giosis.util.qdrive.singapore.util.NetworkUtil;
 import com.giosis.util.qdrive.singapore.util.OnServerEventListener;
 import com.giosis.util.qdrive.singapore.util.PermissionActivity;
@@ -98,6 +99,7 @@ public class QuickReturnFailedActivity extends CommonActivity implements Camera2
                 | WindowManager.LayoutParams.FLAG_TURN_SCREEN_ON);
         setContentView(R.layout.activity_quick_returned_visit_log);
 
+        FirebaseEvent.INSTANCE.createEvent(this, TAG);
 
         layout_top_back = findViewById(R.id.layout_top_back);
         text_top_title = findViewById(R.id.text_top_title);
@@ -310,7 +312,7 @@ public class QuickReturnFailedActivity extends CommonActivity implements Camera2
                 return;
             }
 
-            DataUtil.logEvent("button_click", TAG, "setDeliveryRTNDPTypeUploadData");
+            FirebaseEvent.INSTANCE.clickEvent(this, TAG, "setDeliveryRTNDPTypeUploadData");
 
             new QuickReturnFailedUploadHelper.Builder(this, opID, officeCode, deviceID,
                     mStrWaybillNo, driverMemo, img_sign_d_r_f_visit_log,

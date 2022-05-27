@@ -19,6 +19,7 @@ import android.widget.Toast;
 import com.giosis.util.qdrive.singapore.R;
 import com.giosis.util.qdrive.singapore.data.StatisticsResult;
 import com.giosis.util.qdrive.singapore.util.CommonActivity;
+import com.giosis.util.qdrive.singapore.util.FirebaseEvent;
 import com.giosis.util.qdrive.singapore.util.Preferences;
 
 import java.text.SimpleDateFormat;
@@ -332,6 +333,8 @@ public class StatisticsActivity extends CommonActivity {
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_statistics);
+
+        FirebaseEvent.INSTANCE.createEvent(this, TAG);
 
         layout_top_back = findViewById(R.id.layout_top_back);
         text_top_title = findViewById(R.id.text_top_title);

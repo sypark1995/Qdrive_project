@@ -90,35 +90,6 @@ public class DataUtil {
         }
     }
 
-    // 2019.04 FA(Firebase Analytics)
-    public static FirebaseAnalytics mFirebaseAnalytics;
-
-    public static void logEvent(String event, String activity, String method) {
-
-        try {
-
-            Bundle params = new Bundle();
-            params.putString("Activity", activity);
-            params.putString("method", method);
-            mFirebaseAnalytics.logEvent(event, params);
-        } catch (Exception ignored) {
-        }
-    }
-
-    public static void FirebaseSelectEvents(String type, String id) {
-
-        try {
-
-            Bundle params = new Bundle();
-            params.putString(FirebaseAnalytics.Param.CONTENT_TYPE, type);
-            params.putString(FirebaseAnalytics.Param.ITEM_ID, id);
-            mFirebaseAnalytics.logEvent(FirebaseAnalytics.Event.SELECT_CONTENT, params);
-        } catch (Exception e) {
-
-            Log.e("Firebase", "FirebaseSelectEvents error : " + e.toString());
-        }
-    }
-
 
     public static void enableLocationSettings(Context context) {
 

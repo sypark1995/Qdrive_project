@@ -29,6 +29,7 @@ import com.giosis.util.qdrive.singapore.util.CommonActivity;
 import com.giosis.util.qdrive.singapore.util.DataUtil;
 import com.giosis.util.qdrive.singapore.database.DatabaseHelper;
 import com.giosis.util.qdrive.singapore.util.DisplayUtil;
+import com.giosis.util.qdrive.singapore.util.FirebaseEvent;
 import com.giosis.util.qdrive.singapore.util.Preferences;
 import com.google.gson.Gson;
 
@@ -48,7 +49,6 @@ import javax.net.ssl.X509TrustManager;
 /**
  * LIST > In-Progress > Outlet Pickup Done (Step 1)
  */
-
 
 // TODO_kjyoo
 public class OutletPickupStep1Activity extends CommonActivity {
@@ -72,10 +72,8 @@ public class OutletPickupStep1Activity extends CommonActivity {
     TextView text_sign_p_outlet_vendor_code;
     ImageView img_sign_p_outlet_qrcode;
     LinearLayout layout_sign_p_outlet_qrcode_error;
-    Button btn_sign_p_outlet_reload;
 
     ListView list_sign_p_outlet_tracking_no;
-    Button btn_sign_p_outlet_next;
 
 
     //
@@ -92,69 +90,13 @@ public class OutletPickupStep1Activity extends CommonActivity {
     OutletPickupDoneTrackingNoAdapter outletPickupDoneTrackingNoAdapter;
 
     ProgressDialog progressDialog = null;
-    View.OnClickListener clickListener = new View.OnClickListener() {
-        @Override
-        public void onClick(View view) {
-
-            int id = view.getId();
-            if (id == R.id.layout_top_back) {
-
-                finish();
-            } else if (id == R.id.btn_sign_p_outlet_reload) {
-
-                progressDialog = new ProgressDialog(OutletPickupStep1Activity.this);
-
-                if (mRoute.contains("7E")) {
-
-                    layout_sign_p_outlet_7e_info.setVisibility(View.VISIBLE);
-
-                    OutletPickupDoneAsyncTask outletPickupDoneAsyncTask = new OutletPickupDoneAsyncTask(getString(R.string.text_outlet_7e), mPickupNo);
-                    outletPickupDoneAsyncTask.execute();
-                } else if (mRoute.contains("FL")) {
-
-
-                    layout_sign_p_outlet_7e_info.setVisibility(View.GONE);
-
-                    OutletPickupDoneAsyncTask outletPickupDoneAsyncTask = new OutletPickupDoneAsyncTask(getString(R.string.text_fl), mPickupNo);
-                    outletPickupDoneAsyncTask.execute();
-                }
-            } else if (id == R.id.btn_sign_p_outlet_next) {
-
-                if (showQRCode) {        // QR Code Show
-
-                    if (0 < result.getResultObject().getTrackingNoList().size()) {
-
-                        // TODO_kjyoo  CaptureActivity.class 사용하는지 확인 필요...
-                        Intent intent = new Intent(OutletPickupStep1Activity.this, CaptureActivity.class);
-                        intent.putExtra("title", mTitle);
-                        intent.putExtra("type", BarcodeType.OUTLET_PICKUP_SCAN);
-                        intent.putExtra("pickup_no", mPickupNo);
-                        intent.putExtra("applicant", mApplicant);
-                        intent.putExtra("qty", mQty);
-                        intent.putExtra("tracking_data", result);
-                        intent.putExtra("route", mRoute);
-                        startActivity(intent);
-                    } else {
-
-                        Toast.makeText(OutletPickupStep1Activity.this, "Not Exist Tracking No.", Toast.LENGTH_SHORT).show();
-                    }
-                } else {                // QR Code Not Show... > 진행 불가능
-
-                    if (mRoute.contains("7E")) {
-
-                    } else if (mRoute.contains("FL")) {
-
-                        Toast.makeText(OutletPickupStep1Activity.this, "Reload the QR code", Toast.LENGTH_SHORT).show();
-                    }
-                }
-            }
-        }
-    };
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_outlet_pickup_step1);
+
+        FirebaseEvent.INSTANCE.createEvent(this, TAG);
 
         layout_top_back = findViewById(R.id.layout_top_back);
         text_top_title = findViewById(R.id.text_top_title);
@@ -174,14 +116,57 @@ public class OutletPickupStep1Activity extends CommonActivity {
         text_sign_p_outlet_vendor_code = findViewById(R.id.text_sign_p_outlet_vendor_code);
         img_sign_p_outlet_qrcode = findViewById(R.id.img_sign_p_outlet_qrcode);
         layout_sign_p_outlet_qrcode_error = findViewById(R.id.layout_sign_p_outlet_qrcode_error);
-        btn_sign_p_outlet_reload = findViewById(R.id.btn_sign_p_outlet_reload);
 
         list_sign_p_outlet_tracking_no = findViewById(R.id.list_sign_p_outlet_tracking_no);
-        btn_sign_p_outlet_next = findViewById(R.id.btn_sign_p_outlet_next);
 
-        layout_top_back.setOnClickListener(clickListener);
-        btn_sign_p_outlet_reload.setOnClickListener(clickListener);
-        btn_sign_p_outlet_next.setOnClickListener(clickListener);
+        layout_top_back.setOnClickListener(v -> finish());
+
+        findViewById(R.id.btn_sign_p_outlet_reload).setOnClickListener(v -> {
+            progressDialog = new ProgressDialog(OutletPickupStep1Activity.this);
+
+            if (mRoute.contains("7E")) {
+                layout_sign_p_outlet_7e_info.setVisibility(View.VISIBLE);
+
+                OutletPickupDoneAsyncTask outletPickupDoneAsyncTask = new OutletPickupDoneAsyncTask(getString(R.string.text_outlet_7e), mPickupNo);
+                outletPickupDoneAsyncTask.execute();
+            } else if (mRoute.contains("FL")) {
+
+                layout_sign_p_outlet_7e_info.setVisibility(View.GONE);
+
+                OutletPickupDoneAsyncTask outletPickupDoneAsyncTask = new OutletPickupDoneAsyncTask(getString(R.string.text_fl), mPickupNo);
+                outletPickupDoneAsyncTask.execute();
+            }
+        });
+
+        findViewById(R.id.btn_sign_p_outlet_next).setOnClickListener(v -> {
+
+            if (showQRCode) {        // QR Code Show
+
+                if (0 < result.getResultObject().getTrackingNoList().size()) {
+
+                    // TODO_kjyoo  CaptureActivity.class 사용하는지 확인 필요...
+                    Intent intent = new Intent(OutletPickupStep1Activity.this, CaptureActivity.class);
+                    intent.putExtra("title", mTitle);
+                    intent.putExtra("type", BarcodeType.OUTLET_PICKUP_SCAN);
+                    intent.putExtra("pickup_no", mPickupNo);
+                    intent.putExtra("applicant", mApplicant);
+                    intent.putExtra("qty", mQty);
+                    intent.putExtra("tracking_data", result);
+                    intent.putExtra("route", mRoute);
+                    startActivity(intent);
+
+                } else {
+                    Toast.makeText(OutletPickupStep1Activity.this, "Not Exist Tracking No.", Toast.LENGTH_SHORT).show();
+                }
+            } else {                // QR Code Not Show... > 진행 불가능
+
+                if (mRoute.contains("7E")) {
+
+                } else if (mRoute.contains("FL")) {
+                    Toast.makeText(OutletPickupStep1Activity.this, "Reload the QR code", Toast.LENGTH_SHORT).show();
+                }
+            }
+        });
 
 
         //
@@ -192,14 +177,12 @@ public class OutletPickupStep1Activity extends CommonActivity {
 
         OutletInfo outletInfo = getOutletInfo(mPickupNo);
 
-       /* // TEST
-        outletInfo.route = "7E";
-        outletInfo.zip_code = "123";
-        outletInfo.address = "address";*/
-
+//        // TEST
+//        outletInfo.setRoute("7E");
+//        outletInfo.setZip_code("123");
+//        outletInfo.setAddress("address");
 
         mRoute = outletInfo.getRoute().substring(0, 2);
-        Log.e(TAG, TAG + " Data : " + mRoute + " / " + mPickupNo);
 
         text_top_title.setText(mTitle);
         if (mRoute.equals("FL")) {
@@ -275,7 +258,6 @@ public class OutletPickupStep1Activity extends CommonActivity {
             }
         } catch (Exception e) {
 
-            Log.e(TAG, "  onResume Exception : " + e.toString() + "  ::  PickupNo : " + mPickupNo);
             progressDialog = new ProgressDialog(OutletPickupStep1Activity.this);
 
             if (mRoute.contains("7E")) {
@@ -342,14 +324,11 @@ public class OutletPickupStep1Activity extends CommonActivity {
                 job.accumulate("pickupNo", pickup_no);
                 job.accumulate("app_id", DataUtil.appID);
                 job.accumulate("nation_cd", Preferences.INSTANCE.getUserNation());
-                Log.e("Server", TAG + " data : " + outlet_type + " / " + pickup_no);
-
 
                 String methodName = "GetCollectionPickupNoList";
                 String jsonString = Custom_JsonParser.requestServerDataReturnJSON(methodName, job);
 
                 result = new Gson().fromJson(jsonString, OutletPickupDoneResult.class);
-
 
                 if (result != null && outlet_type.equals("7E")) {
 

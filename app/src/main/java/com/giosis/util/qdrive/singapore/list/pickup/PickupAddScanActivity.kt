@@ -50,6 +50,8 @@ class PickupAddScanActivity : CommonActivity() {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_pickup_done)
 
+        FirebaseEvent.createEvent(this, tag)
+
         pickupNo = intent.getStringExtra("pickupNo").toString()
         scannedList = intent.getStringExtra("scannedList").toString()
         scannedQty = intent.getStringExtra("scannedQty").toString()
@@ -178,7 +180,7 @@ class PickupAddScanActivity : CommonActivity() {
                 return
             }
 
-            DataUtil.logEvent("button_click", tag, "SetPickupUploadData_AddScan")
+            FirebaseEvent.clickEvent(this, tag, "SetPickupUploadData ")
 
             progressBar.visibility = View.VISIBLE
 

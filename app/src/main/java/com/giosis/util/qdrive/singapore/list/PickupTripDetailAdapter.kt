@@ -1,6 +1,5 @@
 package com.giosis.util.qdrive.singapore.list
 
-import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -9,6 +8,7 @@ import androidx.recyclerview.widget.RecyclerView
 import com.giosis.util.qdrive.singapore.bluetooth.BluetoothListener
 import com.giosis.util.qdrive.singapore.databinding.ItemTripDetailBinding
 import com.giosis.util.qdrive.singapore.util.DataUtil
+import com.giosis.util.qdrive.singapore.util.FirebaseEvent
 
 class PickupTripDetailAdapter(
     private val list: ArrayList<RowItem>,
@@ -43,9 +43,11 @@ class PickupTripDetailAdapter(
             holder.binding.textAddress.text = item.address
 
             holder.binding.layoutCnrPrint.setOnClickListener {
-
-                Log.e("List", "Pickup Trip Clicked >> ${item.shipping}")
-                DataUtil.logEvent("button_click", "ListActivity", "Print_CNR");
+                FirebaseEvent.clickEvent(
+                    it.context,
+                    "PickupTripDetailAdapter",
+                    "layoutCnrPrint click"
+                )
                 listener.isConnectPortablePrint(item.shipping)
             }
         }

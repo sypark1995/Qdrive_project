@@ -39,6 +39,7 @@ import java.util.Date;
  * CnR Done
  */
 
+@Deprecated // TODO_sypark ver 3.9.0 부터 사용 안함 추후 삭제
 public class CnRPickupUploadHelper {
     String TAG = "CnRlPickupUploadHelper";
 

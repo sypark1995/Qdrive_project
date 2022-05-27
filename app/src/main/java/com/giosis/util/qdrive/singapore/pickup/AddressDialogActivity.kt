@@ -10,6 +10,7 @@ import com.giosis.util.qdrive.singapore.BR
 import com.giosis.util.qdrive.singapore.R
 import com.giosis.util.qdrive.singapore.ViewModelActivity
 import com.giosis.util.qdrive.singapore.databinding.ActivityAddressDialogBinding
+import com.giosis.util.qdrive.singapore.util.FirebaseEvent
 import kotlinx.android.synthetic.main.activity_address_dialog.*
 import org.greenrobot.eventbus.EventBus
 import org.greenrobot.eventbus.Subscribe
@@ -18,6 +19,8 @@ import org.greenrobot.eventbus.ThreadMode
 
 class AddressDialogActivity :
     ViewModelActivity<ActivityAddressDialogBinding, AddressDialogViewModel>() {
+
+    val TAG = "AddressDialogActivity"
 
     override fun getLayoutId(): Int {
         return R.layout.activity_address_dialog
@@ -38,6 +41,8 @@ class AddressDialogActivity :
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
+
+        FirebaseEvent.createEvent(this, TAG)
 
         btn_search_address_close.setOnClickListener {
             setResult(Activity.RESULT_CANCELED)
