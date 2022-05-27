@@ -14,7 +14,6 @@ import android.widget.Toast
 import androidx.lifecycle.lifecycleScope
 import com.giosis.util.qdrive.singapore.MemoryStatus
 import com.giosis.util.qdrive.singapore.R
-import com.giosis.util.qdrive.singapore.barcodescanner.StdResult
 import com.giosis.util.qdrive.singapore.database.DatabaseHelper
 import com.giosis.util.qdrive.singapore.databinding.ActivityPickupStartToScanBinding
 import com.giosis.util.qdrive.singapore.gps.GPSTrackerManager
@@ -313,11 +312,9 @@ class PickupDoneActivity : CommonActivity() {
                             binding.textTotalQty.text.toString(),
                             bitmap1,
                             bitmap2,
-                            binding.editMemo.text.toString().trim { it <= ' ' },
-                            "",
                             mStrWaybillNo,
                             NetworkUtil.getNetworkType(this@PickupDoneActivity),
-                            ""
+                            binding.editMemo.text.toString().trim { it <= ' ' }
                         )
 
                     if (response.resultCode == 0) {
