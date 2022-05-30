@@ -7,7 +7,9 @@
     android:hardwareAccelerated="false"
     android:orientation="vertical">
 
-    <include layout="@layout/top_title" />
+    <include
+        android:id="@+id/app_bar"
+        layout="@layout/top_title" />
 
     <ScrollView
         android:layout_width="match_parent"
@@ -193,53 +195,79 @@
                             android:gravity="center_vertical"
                             android:orientation="horizontal">
 
-                            <ImageView
-                                android:id="@+id/img_sign_d_receiver_self"
-                                android:layout_width="18dp"
-                                android:layout_height="18dp"
-                                android:layout_marginEnd="5dp"
-                                android:background="@drawable/qdrive_btn_icon_check_on" />
-
-                            <TextView
-                                android:id="@+id/text_sign_d_receiver_self"
+                            <LinearLayout
+                                android:id="@+id/receiver_self_layout"
                                 android:layout_width="wrap_content"
                                 android:layout_height="wrap_content"
                                 android:layout_marginEnd="13dp"
-                                android:text="@string/text_self"
-                                android:textColor="@color/color_303030"
-                                android:textSize="@dimen/text_size_24px" />
+                                android:orientation="horizontal">
 
-                            <ImageView
-                                android:id="@+id/img_sign_d_receiver_substitute"
-                                android:layout_width="18dp"
-                                android:layout_height="18dp"
-                                android:layout_marginEnd="5dp"
-                                android:background="@drawable/qdrive_btn_icon_check_off" />
+                                <ImageView
+                                    android:id="@+id/img_sign_d_receiver_self"
+                                    android:layout_width="18dp"
+                                    android:layout_height="18dp"
+                                    android:layout_marginEnd="5dp"
+                                    android:background="@drawable/qdrive_btn_icon_check_on" />
 
-                            <TextView
-                                android:id="@+id/text_sign_d_receiver_substitute"
+                                <TextView
+                                    android:id="@+id/text_sign_d_receiver_self"
+                                    android:layout_width="wrap_content"
+                                    android:layout_height="wrap_content"
+                                    android:layout_gravity="center"
+                                    android:text="@string/text_self"
+                                    android:textColor="@color/color_303030"
+                                    android:textSize="@dimen/text_size_24px" />
+                            </LinearLayout>
+
+                            <LinearLayout
+                                android:id="@+id/receiver_substitute_layout"
                                 android:layout_width="wrap_content"
                                 android:layout_height="wrap_content"
                                 android:layout_marginEnd="13dp"
-                                android:text="@string/text_substitute"
-                                android:textColor="@color/color_303030"
-                                android:textSize="@dimen/text_size_24px" />
+                                android:orientation="horizontal">
 
-                            <ImageView
-                                android:id="@+id/img_sign_d_receiver_other"
-                                android:layout_width="18dp"
-                                android:layout_height="18dp"
-                                android:layout_marginEnd="5dp"
-                                android:background="@drawable/qdrive_btn_icon_check_off" />
+                                <ImageView
+                                    android:id="@+id/img_sign_d_receiver_substitute"
+                                    android:layout_width="18dp"
+                                    android:layout_height="18dp"
+                                    android:layout_marginEnd="5dp"
+                                    android:background="@drawable/qdrive_btn_icon_check_off" />
 
-                            <TextView
-                                android:id="@+id/text_sign_d_receiver_other"
+                                <TextView
+                                    android:id="@+id/text_sign_d_receiver_substitute"
+                                    android:layout_width="wrap_content"
+                                    android:layout_height="wrap_content"
+                                    android:layout_gravity="center"
+                                    android:text="@string/text_substitute"
+                                    android:textColor="@color/color_303030"
+                                    android:textSize="@dimen/text_size_24px" />
+                            </LinearLayout>
+
+                            <LinearLayout
+                                android:id="@+id/receiver_other_layout"
                                 android:layout_width="wrap_content"
                                 android:layout_height="wrap_content"
-                                android:text="@string/text_other"
-                                android:textColor="@color/color_303030"
-                                android:textSize="@dimen/text_size_24px" />
+                                android:orientation="horizontal">
+
+                                <ImageView
+                                    android:id="@+id/img_sign_d_receiver_other"
+                                    android:layout_width="18dp"
+                                    android:layout_height="18dp"
+                                    android:layout_marginEnd="5dp"
+                                    android:background="@drawable/qdrive_btn_icon_check_off" />
+
+                                <TextView
+                                    android:id="@+id/text_sign_d_receiver_other"
+                                    android:layout_width="wrap_content"
+                                    android:layout_height="wrap_content"
+                                    android:layout_gravity="center"
+                                    android:text="@string/text_other"
+                                    android:textColor="@color/color_303030"
+                                    android:textSize="@dimen/text_size_24px" />
+                            </LinearLayout>
+
                         </LinearLayout>
+
                     </RelativeLayout>
 
                     <View
@@ -292,13 +320,13 @@
                 android:layout_width="match_parent"
                 android:layout_height="match_parent"
                 android:background="@color/white"
-                tools:listitem="@layout/outlet_qrcode_item"
                 android:divider="@null"
                 android:dividerHeight="0dp"
                 android:paddingStart="20dp"
                 android:paddingEnd="20dp"
                 android:scrollbars="none"
-                android:visibility="visible" />
+                android:visibility="visible"
+                tools:listitem="@layout/outlet_qrcode_item" />
 
             <LinearLayout
                 android:id="@+id/layout_sign_d_sign_memo"
@@ -380,7 +408,7 @@
             <LinearLayout
                 android:id="@+id/layout_sign_d_visit_log"
                 android:layout_width="match_parent"
-                android:layout_height="wrap_content"
+                android:layout_height="300dp"
                 android:orientation="vertical">
 
                 <LinearLayout
@@ -457,19 +485,19 @@
                         <ImageView
                             android:id="@+id/img_sign_d_preview_bg"
                             android:layout_width="match_parent"
-                            android:layout_height="wrap_content"
+                            android:layout_height="match_parent"
                             android:background="@drawable/capture_bg" />
                     </RelativeLayout>
                 </LinearLayout>
-
-                <ImageView
-                    android:id="@+id/img_sign_d_visit_log"
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:layout_gravity="center"
-                    android:layout_marginTop="35dp"
-                    tools:background="@drawable/qdrive_img_default" />
             </LinearLayout>
+
+            <ImageView
+                android:id="@+id/img_sign_d_visit_log"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_gravity="center"
+                android:layout_marginTop="35dp"
+                tools:background="@drawable/qdrive_img_default" />
 
             <Button
                 android:id="@+id/btn_sign_d_save"
@@ -487,4 +515,5 @@
         </LinearLayout>
     </ScrollView>
 </LinearLayout>
+
 

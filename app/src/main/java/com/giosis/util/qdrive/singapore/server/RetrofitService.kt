@@ -3,6 +3,7 @@ package com.giosis.util.qdrive.singapore.server
 import android.os.Build
 import com.giosis.util.qdrive.singapore.MemoryStatus
 import com.giosis.util.qdrive.singapore.data.ImageResult
+import com.giosis.util.qdrive.singapore.list.delivery.QRCodeResult
 import com.giosis.util.qdrive.singapore.util.BarcodeType
 import com.giosis.util.qdrive.singapore.util.DataUtil
 import com.giosis.util.qdrive.singapore.util.Preferences
@@ -723,6 +724,16 @@ interface RetrofitService {
         @Field("app_id") app_id: String = DataUtil.appID,
         @Field("nation_cd") nation_cd: String = Preferences.userNation
     ): APIModel
+
+    @POST("QRCodeForQStationDelivery")
+    @FormUrlEncoded
+    suspend fun qrCodeForQStationDelivery(
+        @Field("qstation_type") qstation_type: String,
+        @Field("tracking_id") tracking_id: String,
+        @Field("app_id") app_id: String = DataUtil.appID,
+        @Field("nation_cd") nation_cd: String = Preferences.userNation
+    ): QRCodeResult
+
 }
 
 

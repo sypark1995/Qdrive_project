@@ -21,10 +21,7 @@ import com.giosis.util.qdrive.singapore.R
 import com.giosis.util.qdrive.singapore.barcodescanner.CaptureActivity1
 import com.giosis.util.qdrive.singapore.bluetooth.BluetoothListener
 import com.giosis.util.qdrive.singapore.database.DatabaseHelper
-import com.giosis.util.qdrive.singapore.list.delivery.DeliveryDoneActivity
-import com.giosis.util.qdrive.singapore.list.delivery.DeliveryFailedActivity
-import com.giosis.util.qdrive.singapore.list.delivery.QuickReturnFailedActivity
-import com.giosis.util.qdrive.singapore.list.delivery.QuickReturnedActivity
+import com.giosis.util.qdrive.singapore.list.delivery.*
 import com.giosis.util.qdrive.singapore.list.pickup.OutletPickupStep1Activity
 import com.giosis.util.qdrive.singapore.list.pickup.PickupFailedActivity
 import com.giosis.util.qdrive.singapore.list.pickup.PickupZeroQtyActivity
@@ -687,7 +684,7 @@ class ListInProgressAdapter(bluetoothListener: BluetoothListener) :
             }
 
             btnDelivered.setOnClickListener { v: View ->
-                val intent = Intent(v.context, DeliveryDoneActivity::class.java)
+                val intent = Intent(v.context, DeliveryDoneActivity2::class.java)
                 intent.putExtra("parcel", data)
                 v.context.startActivity(intent)
             }
