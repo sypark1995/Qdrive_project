@@ -25,16 +25,16 @@ import javax.net.ssl.TrustManager
 import javax.net.ssl.X509TrustManager
 
 class OutletTrackingNoAdapter2(
-    var trackingNoList: ArrayList<OutletDeliveryDoneListItem>?,
+    var trackingNoList: ArrayList<OutletDeliveryItem>?,
     var route: String
 ) : BaseAdapter() {
     var TAG = "OutletTrackingNoAdapter"
 
     private fun resetListItem() {
-        val qrcodeListItem = ArrayList<OutletDeliveryDoneListItem>()
+        val qrcodeListItem = ArrayList<OutletDeliveryItem>()
         for (i in trackingNoList!!.indices) {
             if (i == 0) {
-                val item = OutletDeliveryDoneListItem()
+                val item = OutletDeliveryItem()
                 item.trackingNo = "1"
                 item.jobID = trackingNoList!![0].jobID
                 item.vendorCode = trackingNoList!![0].vendorCode
@@ -43,7 +43,7 @@ class OutletTrackingNoAdapter2(
             }
             if (i + 1 < trackingNoList!!.size) {
                 if (trackingNoList!![i].jobID != trackingNoList!![i + 1].jobID) {
-                    val item = OutletDeliveryDoneListItem()
+                    val item = OutletDeliveryItem()
                     item.trackingNo = "1"
                     item.jobID = trackingNoList!![i + 1].jobID
                     item.vendorCode = trackingNoList!![i + 1].vendorCode
@@ -169,8 +169,8 @@ class OutletTrackingNoAdapter2(
 
     // Federated Locker - Tracking No Sort
     internal inner class CompareTrackingNoAsc :
-        Comparator<OutletDeliveryDoneListItem> {
-        override fun compare(o1: OutletDeliveryDoneListItem, o2: OutletDeliveryDoneListItem): Int {
+        Comparator<OutletDeliveryItem> {
+        override fun compare(o1: OutletDeliveryItem, o2: OutletDeliveryItem): Int {
             return o1.trackingNo!!.compareTo(o2.trackingNo!!)
         }
     }
@@ -185,8 +185,8 @@ class OutletTrackingNoAdapter2(
 
     // 리스트 정렬. 1순위 Job ID / 2순위 Tracking No
     internal inner class CompareNameAsc :
-        Comparator<OutletDeliveryDoneListItem> {
-        override fun compare(o1: OutletDeliveryDoneListItem, o2: OutletDeliveryDoneListItem): Int {
+        Comparator<OutletDeliveryItem> {
+        override fun compare(o1: OutletDeliveryItem, o2: OutletDeliveryItem): Int {
             return if (o1.jobID == o2.jobID) {
                 o1.trackingNo!!.compareTo(o2.trackingNo!!)
             } else {

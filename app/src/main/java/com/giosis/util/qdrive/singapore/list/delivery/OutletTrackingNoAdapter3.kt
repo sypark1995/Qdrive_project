@@ -12,21 +12,21 @@ import kotlin.collections.ArrayList
 import kotlin.collections.HashMap
 
 class OutletTrackingNoAdapter3(
-    var trackingNoList: ArrayList<OutletDeliveryDoneListItem>,
+    var trackingNoList: ArrayList<OutletDeliveryItem>,
 ) : RecyclerView.Adapter<RecyclerView.ViewHolder>() {
 
     init {
-        val hashMap = HashMap<String, OutletDeliveryDoneListItem>()
+        val hashMap = HashMap<String, OutletDeliveryItem>()
 
         // 같은 jobID 1개만 처리 .
         for (item in trackingNoList) {
-            if (item.jobID.isNullOrEmpty()) {
+            if (!item.jobID.isNullOrEmpty()) {
                 if (!hashMap.contains(item.jobID)) {
                     hashMap[item.jobID!!] = item
                 }
             }
         }
-        val dataList = hashMap.values as ArrayList
+        val dataList = ArrayList(hashMap.values)
 
         trackingNoList.clear()
         trackingNoList.addAll(dataList)
@@ -69,12 +69,12 @@ class OutletTrackingNoAdapter3(
                 } else {
                     binding.layoutSignDOutletQrcodeLoad.visibility = View.VISIBLE
                     binding.layoutSignDOutletQrcodeReload.visibility = View.GONE
+
                     Glide.with(itemView)
                         .load(data.qrCode)
                         .into(binding.imgSignDOutletQrcode)
                 }
             }
-
         }
     }
 
@@ -87,9 +87,8 @@ class OutletTrackingNoAdapter3(
     }
 
     // 리스트 정렬. 1순위 Job ID / 2순위 Tracking No
-    class CompareNameAsc :
-        Comparator<OutletDeliveryDoneListItem> {
-        override fun compare(o1: OutletDeliveryDoneListItem, o2: OutletDeliveryDoneListItem): Int {
+    class CompareNameAsc : Comparator<OutletDeliveryItem> {
+        override fun compare(o1: OutletDeliveryItem, o2: OutletDeliveryItem): Int {
             return if (o1.jobID == o2.jobID) {
                 o1.trackingNo!!.compareTo(o2.trackingNo!!)
             } else {

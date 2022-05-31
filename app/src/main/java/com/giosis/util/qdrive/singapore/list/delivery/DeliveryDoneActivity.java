@@ -147,7 +147,7 @@ public class DeliveryDoneActivity extends CommonActivity implements Camera2APIs.
     String jobID;
     String vendorCode;
     boolean showQRCode = false;
-    ArrayList<OutletDeliveryDoneListItem> outletDeliveryDoneListItemArrayList;
+    ArrayList<OutletDeliveryItem> outletDelivery;
     OutletTrackingNoAdapter outletTrackingNoAdapter;
 
 
@@ -248,7 +248,7 @@ public class DeliveryDoneActivity extends CommonActivity implements Camera2APIs.
         text_sign_d_outlet_address = findViewById(R.id.text_sign_d_outlet_address);
         layout_sign_d_outlet_operation_hour = findViewById(R.id.layout_sign_d_outlet_operation_hour);
         text_sign_d_outlet_operation_time = findViewById(R.id.text_sign_d_outlet_operation_time);
-        list_sign_d_outlet_list = findViewById(R.id.list_sign_d_outlet_list);
+        list_sign_d_outlet_list = findViewById(R.id.outlet_recycler);
 
         //
         layout_top_back.setOnClickListener(clickListener);
@@ -419,7 +419,7 @@ public class DeliveryDoneActivity extends CommonActivity implements Camera2APIs.
                 list_sign_d_outlet_list.setVisibility(View.VISIBLE);
 
 
-                outletDeliveryDoneListItemArrayList = new ArrayList<>();
+                outletDelivery = new ArrayList<>();
 
                 DatabaseHelper dbHelper = DatabaseHelper.getInstance();
 
@@ -435,10 +435,10 @@ public class DeliveryDoneActivity extends CommonActivity implements Camera2APIs.
 
                                 String receiver_name = cs.getString(cs.getColumnIndex("rcv_nm"));
 
-                                OutletDeliveryDoneListItem outletDeliveryDoneListItem = new OutletDeliveryDoneListItem();
-                                outletDeliveryDoneListItem.setTrackingNo(barcodeList.get(i).getBarcode());
-                                outletDeliveryDoneListItem.setReceiverName(receiver_name);
-                                outletDeliveryDoneListItemArrayList.add(outletDeliveryDoneListItem);
+                                OutletDeliveryItem outletDeliveryItem = new OutletDeliveryItem();
+                                outletDeliveryItem.setTrackingNo(barcodeList.get(i).getBarcode());
+                                outletDeliveryItem.setReceiverName(receiver_name);
+                                outletDelivery.add(outletDeliveryItem);
                             } while (cs.moveToNext());
                         }
                     }
@@ -461,16 +461,16 @@ public class DeliveryDoneActivity extends CommonActivity implements Camera2APIs.
                             barcodeData.setState(mType);
                             barcodeList.add(barcodeData);
 
-                            OutletDeliveryDoneListItem outletDeliveryDoneListItem = new OutletDeliveryDoneListItem();
-                            outletDeliveryDoneListItem.setTrackingNo(invoice_no);
-                            outletDeliveryDoneListItem.setReceiverName(receiver_name);
-                            outletDeliveryDoneListItemArrayList.add(outletDeliveryDoneListItem);
+                            OutletDeliveryItem outletDeliveryItem = new OutletDeliveryItem();
+                            outletDeliveryItem.setTrackingNo(invoice_no);
+                            outletDeliveryItem.setReceiverName(receiver_name);
+                            outletDelivery.add(outletDeliveryItem);
                         } while (cs.moveToNext());
                     }
 
-                    if (outletDeliveryDoneListItemArrayList.size() > 1) {
+                    if (outletDelivery.size() > 1) {
 
-                        String qtyFormat = String.format(getResources().getString(R.string.text_total_qty_count), outletDeliveryDoneListItemArrayList.size());
+                        String qtyFormat = String.format(getResources().getString(R.string.text_total_qty_count), outletDelivery.size());
                         text_sign_d_tracking_no_title.setText(R.string.text_parcel_qty1);
                         text_sign_d_tracking_no.setText(qtyFormat);
                         layout_sign_d_sender.setVisibility(View.GONE);
@@ -492,7 +492,7 @@ public class DeliveryDoneActivity extends CommonActivity implements Camera2APIs.
                     } else {
 
                         closeCamera();
-                        QRCodeAsyncTask qrCodeAsyncTask = new QRCodeAsyncTask(getString(R.string.text_outlet_7e), outletDeliveryDoneListItemArrayList);
+                        QRCodeAsyncTask qrCodeAsyncTask = new QRCodeAsyncTask(getString(R.string.text_outlet_7e), outletDelivery);
                         qrCodeAsyncTask.execute();
                     }
                 } else {
@@ -502,7 +502,7 @@ public class DeliveryDoneActivity extends CommonActivity implements Camera2APIs.
                     layout_sign_d_sign_memo.setVisibility(View.GONE);
                     layout_sign_d_visit_log.setVisibility(View.GONE);
 
-                    outletTrackingNoAdapter = new OutletTrackingNoAdapter(DeliveryDoneActivity.this, outletDeliveryDoneListItemArrayList, "FL");
+                    outletTrackingNoAdapter = new OutletTrackingNoAdapter(DeliveryDoneActivity.this, outletDelivery, "FL");
                     list_sign_d_outlet_list.setAdapter(outletTrackingNoAdapter);
                     setListViewHeightBasedOnChildren(list_sign_d_outlet_list);
                 }
@@ -927,16 +927,16 @@ public class DeliveryDoneActivity extends CommonActivity implements Camera2APIs.
     public class QRCodeAsyncTask extends AsyncTask<Void, Void, String> {
 
         String outlet_type;
-        ArrayList<OutletDeliveryDoneListItem> outletDeliveryDoneListItemArrayList;
+        ArrayList<OutletDeliveryItem> outletDelivery;
         ArrayList<QRCodeResult> qrCodeResultArrayList;
         String imgUrl;
 
         ProgressDialog progressDialog = new ProgressDialog(DeliveryDoneActivity.this);
 
-        public QRCodeAsyncTask(String outletType, ArrayList<OutletDeliveryDoneListItem> outletDeliveryDoneListItemArrayList) {
+        public QRCodeAsyncTask(String outletType, ArrayList<OutletDeliveryItem> outletDelivery) {
 
             this.outlet_type = outletType;
-            this.outletDeliveryDoneListItemArrayList = outletDeliveryDoneListItemArrayList;
+            this.outletDelivery = outletDelivery;
             qrCodeResultArrayList = new ArrayList<>();
         }
 
@@ -955,9 +955,9 @@ public class DeliveryDoneActivity extends CommonActivity implements Camera2APIs.
 
             try {
 
-                for (int i = 0; i < outletDeliveryDoneListItemArrayList.size(); i++) {
+                for (int i = 0; i < outletDelivery.size(); i++) {
 
-                    QRCodeResult result = getQRCodeData(outletDeliveryDoneListItemArrayList.get(i).getTrackingNo());
+                    QRCodeResult result = getQRCodeData(outletDelivery.get(i).getTrackingNo());
 
                     if (result != null) {
 
@@ -974,16 +974,16 @@ public class DeliveryDoneActivity extends CommonActivity implements Camera2APIs.
 
                             return null;
                         } else {
-                            outletDeliveryDoneListItemArrayList.get(i).setJobID(jobID);
+                            outletDelivery.get(i).setJobID(jobID);
                         }
 
                         vendorCode = jsonObject.getString("V");
-                        outletDeliveryDoneListItemArrayList.get(i).setVendorCode(vendorCode);
+                        outletDelivery.get(i).setVendorCode(vendorCode);
 
                         imgUrl = DataUtil.qrcode_url + result.getQrcode_data();
                         // https://dp.image-gmkt.com/qr.bar?scale=7&version=4&code={"Q":"D","J":"CR20190313001","V":"QT","S":"472","C":1}
                         Log.e(TAG, "QR Code URL > " + imgUrl);
-                        outletDeliveryDoneListItemArrayList.get(i).setQrCode(imgUrl);
+                        outletDelivery.get(i).setQrCode(imgUrl);
                     }
                 }
 
@@ -1006,7 +1006,7 @@ public class DeliveryDoneActivity extends CommonActivity implements Camera2APIs.
 
                 showQRCode = true;
 
-                outletTrackingNoAdapter = new OutletTrackingNoAdapter(DeliveryDoneActivity.this, outletDeliveryDoneListItemArrayList, "7E");
+                outletTrackingNoAdapter = new OutletTrackingNoAdapter(DeliveryDoneActivity.this, outletDelivery, "7E");
                 list_sign_d_outlet_list.setAdapter(outletTrackingNoAdapter);
                 setListViewHeightBasedOnChildren(list_sign_d_outlet_list);
 

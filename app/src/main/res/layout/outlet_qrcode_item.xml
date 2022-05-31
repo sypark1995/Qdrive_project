@@ -98,6 +98,7 @@
             </LinearLayout>
         </LinearLayout>
 
+
         <ImageView
             android:id="@+id/img_sign_d_outlet_qrcode"
             android:layout_width="80dp"
@@ -106,6 +107,7 @@
             android:layout_centerInParent="true"
             android:layout_gravity="center"
             tools:src="@drawable/qdrive_btn_icon_seven" />
+
     </RelativeLayout>
 
     <LinearLayout

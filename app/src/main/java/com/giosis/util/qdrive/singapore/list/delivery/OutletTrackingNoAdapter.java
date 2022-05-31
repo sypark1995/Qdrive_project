@@ -39,10 +39,10 @@ public class OutletTrackingNoAdapter extends BaseAdapter {
     String TAG = "OutletTrackingNoAdapter";
 
     Context context;
-    ArrayList<OutletDeliveryDoneListItem> trackingNoList;
+    ArrayList<OutletDeliveryItem> trackingNoList;
     String route;
 
-    public OutletTrackingNoAdapter(Context context, ArrayList<OutletDeliveryDoneListItem> list, String route) {
+    public OutletTrackingNoAdapter(Context context, ArrayList<OutletDeliveryItem> list, String route) {
 
         this.context = context;
         this.trackingNoList = list;
@@ -51,7 +51,7 @@ public class OutletTrackingNoAdapter extends BaseAdapter {
         if (route.contains("7E")) {
 
             Collections.sort(trackingNoList, new CompareNameAsc());
-//            resetListItem();
+            resetListItem();
         } else if (route.contains("FL")) {
 
             Collections.sort(trackingNoList, new CompareTrackingNoAsc());
@@ -60,13 +60,13 @@ public class OutletTrackingNoAdapter extends BaseAdapter {
 
     public void resetListItem() {
 
-        ArrayList<OutletDeliveryDoneListItem> qrcodeListItem = new ArrayList<>();
+        ArrayList<OutletDeliveryItem> qrcodeListItem = new ArrayList<>();
 
         for (int i = 0; i < trackingNoList.size(); i++) {
 
             if (i == 0) {
 
-                OutletDeliveryDoneListItem item = new OutletDeliveryDoneListItem();
+                OutletDeliveryItem item = new OutletDeliveryItem();
                 item.setTrackingNo("1");
                 item.setJobID(trackingNoList.get(0).getJobID());
                 item.setVendorCode(trackingNoList.get(0).getVendorCode());
@@ -79,7 +79,7 @@ public class OutletTrackingNoAdapter extends BaseAdapter {
 
                 if (!trackingNoList.get(i).getJobID().equals(trackingNoList.get(i + 1).getJobID())) {
 
-                    OutletDeliveryDoneListItem item = new OutletDeliveryDoneListItem();
+                    OutletDeliveryItem item = new OutletDeliveryItem();
                     item.setTrackingNo("1");
                     item.setJobID(trackingNoList.get(i + 1).getJobID());
                     item.setVendorCode(trackingNoList.get(i + 1).getVendorCode());
@@ -121,7 +121,7 @@ public class OutletTrackingNoAdapter extends BaseAdapter {
     @Override
     public View getView(int position, View convertView, ViewGroup viewGroup) {
         Log.e(">?>>>>",trackingNoList.size() + "");
-        final OutletDeliveryDoneListItem item = trackingNoList.get(position);
+        final OutletDeliveryItem item = trackingNoList.get(position);
         View view = null;
 
         if (convertView == null) {
@@ -163,10 +163,10 @@ public class OutletTrackingNoAdapter extends BaseAdapter {
     }
 
     // Federated Locker - Tracking No Sort
-    class CompareTrackingNoAsc implements Comparator<OutletDeliveryDoneListItem> {
+    class CompareTrackingNoAsc implements Comparator<OutletDeliveryItem> {
 
         @Override
-        public int compare(OutletDeliveryDoneListItem o1, OutletDeliveryDoneListItem o2) {
+        public int compare(OutletDeliveryItem o1, OutletDeliveryItem o2) {
 
             return o1.getTrackingNo().compareTo(o2.getTrackingNo());
         }
@@ -179,10 +179,10 @@ public class OutletTrackingNoAdapter extends BaseAdapter {
 
 
     // 리스트 정렬. 1순위 Job ID / 2순위 Tracking No
-    class CompareNameAsc implements Comparator<OutletDeliveryDoneListItem> {
+    class CompareNameAsc implements Comparator<OutletDeliveryItem> {
 
         @Override
-        public int compare(OutletDeliveryDoneListItem o1, OutletDeliveryDoneListItem o2) {
+        public int compare(OutletDeliveryItem o1, OutletDeliveryItem o2) {
 
             if (o1.getJobID().equals(o2.getJobID())) {
 

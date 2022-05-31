@@ -728,8 +728,8 @@ interface RetrofitService {
     @POST("QRCodeForQStationDelivery")
     @FormUrlEncoded
     suspend fun qrCodeForQStationDelivery(
-        @Field("qstation_type") qstation_type: String,
         @Field("tracking_id") tracking_id: String,
+        @Field("qstation_type") qstation_type: String = "7E",
         @Field("app_id") app_id: String = DataUtil.appID,
         @Field("nation_cd") nation_cd: String = Preferences.userNation
     ): QRCodeResult
@@ -756,7 +756,7 @@ interface RetrofitService {
         @Field("del_channel") del_channel: String = "QR",
         @Field("stat_chg_gubun") stat_chg_gubun: String = "D",
         @Field("app_id") app_id: String = DataUtil.appID,
-        @Field("nation_cd") nation_cd: String  = Preferences.userNation
+        @Field("nation_cd") nation_cd: String = Preferences.userNation
     ): APIModel
 
     @POST("SetDeliveryUploadData")
