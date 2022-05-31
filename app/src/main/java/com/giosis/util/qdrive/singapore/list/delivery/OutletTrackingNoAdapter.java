@@ -51,7 +51,7 @@ public class OutletTrackingNoAdapter extends BaseAdapter {
         if (route.contains("7E")) {
 
             Collections.sort(trackingNoList, new CompareNameAsc());
-            resetListItem();
+//            resetListItem();
         } else if (route.contains("FL")) {
 
             Collections.sort(trackingNoList, new CompareTrackingNoAsc());
@@ -120,7 +120,7 @@ public class OutletTrackingNoAdapter extends BaseAdapter {
 
     @Override
     public View getView(int position, View convertView, ViewGroup viewGroup) {
-
+        Log.e(">?>>>>",trackingNoList.size() + "");
         final OutletDeliveryDoneListItem item = trackingNoList.get(position);
         View view = null;
 
@@ -128,7 +128,6 @@ public class OutletTrackingNoAdapter extends BaseAdapter {
 
             LayoutInflater inflater = (LayoutInflater) context.getSystemService(Context.LAYOUT_INFLATER_SERVICE);
 
-            if (item.getTrackingNo().equals("1")) {
 
                 view = inflater.inflate(R.layout.outlet_qrcode_item, null);
 
@@ -156,37 +155,8 @@ public class OutletTrackingNoAdapter extends BaseAdapter {
 
                 QRCodeAsyncTask qrCodeAsyncTask = new QRCodeAsyncTask(layout_sign_d_outlet_qrcode_load, layout_sign_d_outlet_qrcode_reload, img_sign_d_outlet_qrcode, item.getQrCode());
                 qrCodeAsyncTask.execute();
-            } else {
 
-                view = inflater.inflate(R.layout.item_outlet_tracking_no, null);
 
-                RelativeLayout layout_sign_d_outlet_item_tracking_no = view.findViewById(R.id.layout_sign_d_outlet_item_tracking_no);
-                TextView text_sign_d_outlet_item_tracking_no = view.findViewById(R.id.text_sign_d_outlet_item_tracking_no);
-                TextView text_sign_d_outlet_item_receiver = view.findViewById(R.id.text_sign_d_outlet_item_receiver);
-
-                text_sign_d_outlet_item_tracking_no.setText(item.getTrackingNo());
-                text_sign_d_outlet_item_receiver.setText(item.getReceiverName());
-
-                if (route.contains("FL")) {
-
-                    if (trackingNoList.size() == 1) {
-
-                        layout_sign_d_outlet_item_tracking_no.setPadding(0, dpTopx(view.getContext(), 20), 0, dpTopx(view.getContext(), 20));
-                    } else {
-
-                        if (position == 0) {
-
-                            layout_sign_d_outlet_item_tracking_no.setPadding(0, dpTopx(view.getContext(), 20), 0, dpTopx(view.getContext(), 7));
-                        } else if (position == trackingNoList.size() - 1) {
-
-                            layout_sign_d_outlet_item_tracking_no.setPadding(0, dpTopx(view.getContext(), 7), 0, dpTopx(view.getContext(), 20));
-                        } else {
-
-                            layout_sign_d_outlet_item_tracking_no.setPadding(0, dpTopx(view.getContext(), 7), 0, dpTopx(view.getContext(), 7));
-                        }
-                    }
-                }
-            }
         }
 
         return view;

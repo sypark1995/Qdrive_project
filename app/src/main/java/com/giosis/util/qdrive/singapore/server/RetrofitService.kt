@@ -734,6 +734,54 @@ interface RetrofitService {
         @Field("nation_cd") nation_cd: String = Preferences.userNation
     ): QRCodeResult
 
+    @POST("SetOutletDeliveryUploadData")
+    @FormUrlEncoded
+    suspend fun outletDeliveryUploadData(
+        @Field("rcv_type") rcv_type: String,
+        @Field("fileData") fileData: String,
+        @Field("network_type") network_type: String,
+        @Field("no_songjang") no_songjang: String,
+        @Field("remark") remark: String,
+        @Field("lat") lat: Double,
+        @Field("lon") lon: Double,
+        @Field("outlet_company") outlet_company: String,
+        @Field("disk_size") disk_size: Long = MemoryStatus.availableInternalMemorySize,
+        @Field("device_id") device_id: String = Preferences.deviceUUID,
+        @Field("officeCd") officeCd: String = Preferences.officeCode,
+        @Field("opId") opId: String = Preferences.userId,
+        @Field("deliv_msg") deliv_msg: String = "(by Qdrive RealTime-Upload)",
+        @Field("chg_id") chg_id: String = Preferences.userId,
+        @Field("stat") stat: String = BarcodeType.DELIVERY_START,
+        @Field("stat_reason") stat_reason: String = "",
+        @Field("del_channel") del_channel: String = "QR",
+        @Field("stat_chg_gubun") stat_chg_gubun: String = "D",
+        @Field("app_id") app_id: String = DataUtil.appID,
+        @Field("nation_cd") nation_cd: String  = Preferences.userNation
+    ): APIModel
+
+    @POST("SetDeliveryUploadData")
+    @FormUrlEncoded
+    suspend fun setDeliveryUploadData(
+        @Field("rcv_type") rcv_type: String,
+        @Field("network_type") network_type: String,
+        @Field("no_songjang") no_songjang: String,
+        @Field("fileData") fileData: String,
+        @Field("delivery_photo_url") delivery_photo_url: String,
+        @Field("remark") remark: String,
+        @Field("lat") lat: Double,
+        @Field("lon") lon: Double,
+        @Field("officeCd") officeCd: String = Preferences.officeCode,
+        @Field("opId") opId: String = Preferences.userId,
+        @Field("deliv_msg") deliv_msg: String = "(by Qdrive RealTime-Upload)",
+        @Field("stat") stat: String = BarcodeType.DELIVERY_DONE,
+        @Field("chg_id") chg_id: String = Preferences.userId,
+        @Field("device_id") device_id: String = Preferences.deviceUUID,
+        @Field("disk_size") disk_size: Long = MemoryStatus.availableInternalMemorySize,
+        @Field("stat_reason") stat_reason: String = "",
+        @Field("del_channel") del_channel: String = "QR",
+        @Field("app_id") app_id: String = DataUtil.appID,
+        @Field("nation_cd") nation_cd: String = Preferences.userNation
+    ): APIModel
 }
 
 

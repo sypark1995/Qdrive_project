@@ -1,7 +1,9 @@
 package com.giosis.util.qdrive.singapore.list.delivery
 
 import android.annotation.SuppressLint
+import android.app.Activity
 import android.app.AlertDialog
+import android.content.ContentValues
 import android.content.DialogInterface
 import android.content.Intent
 import android.graphics.SurfaceTexture
@@ -19,23 +21,26 @@ import android.widget.ImageView
 import android.widget.ListView
 import android.widget.Toast
 import androidx.lifecycle.lifecycleScope
+import androidx.recyclerview.widget.RecyclerView
 import com.giosis.util.qdrive.singapore.MemoryStatus
 import com.giosis.util.qdrive.singapore.MemoryStatus.availableInternalMemorySize
 import com.giosis.util.qdrive.singapore.R
 import com.giosis.util.qdrive.singapore.database.DatabaseHelper
-import com.giosis.util.qdrive.singapore.database.DatabaseHelper.Companion.getInstance
 import com.giosis.util.qdrive.singapore.databinding.ActivityDeliveredBinding
 import com.giosis.util.qdrive.singapore.gps.GPSTrackerManager
 import com.giosis.util.qdrive.singapore.gps.LocationModel
 import com.giosis.util.qdrive.singapore.list.BarcodeData
 import com.giosis.util.qdrive.singapore.list.OutletInfo
 import com.giosis.util.qdrive.singapore.list.RowItem
+import com.giosis.util.qdrive.singapore.server.ImageUpload
 import com.giosis.util.qdrive.singapore.server.RetrofitClient
 import com.giosis.util.qdrive.singapore.util.*
 import com.giosis.util.qdrive.singapore.util.Camera2APIs.Camera2Interface
 import com.giosis.util.qdrive.singapore.util.Preferences.userNation
+import com.giosis.util.qdrive.singapore.util.dialog.ProgressDialog
+import com.google.gson.Gson
 import kotlinx.coroutines.launch
-import org.json.JSONObject
+import java.text.SimpleDateFormat
 import java.util.*
 
 /***************
@@ -49,13 +54,16 @@ class DeliveryDoneActivity2 : CommonActivity(), Camera2Interface,
     //
     var mReceiveType = "RC"
     var routeNumber: String? = null
-    var barcodeList: ArrayList<BarcodeData>? = null
+    var barcodeList = ArrayList<BarcodeData>()
     var senderName: String? = null
     var receiverName: String? = null
     var highAmountYn: String? = "N"
 
     // Camera & Gallery
-    var camera2 = Camera2APIs(this)
+    val camera2 by lazy {
+        Camera2APIs(this)
+    }
+
     var cameraId: String? = null
     var isClickedPhoto = false
     var isGalleryActivate = false
@@ -73,7 +81,9 @@ class DeliveryDoneActivity2 : CommonActivity(), Camera2Interface,
     var outletDeliveryDoneListItemArrayList: ArrayList<OutletDeliveryDoneListItem>? = null
     var outletTrackingNoAdapter: OutletTrackingNoAdapter? = null
     var isPermissionTrue = false
-
+    private val progressBar by lazy {
+        ProgressDialog(this@DeliveryDoneActivity2)
+    }
     val binding by lazy {
         ActivityDeliveredBinding.inflate(layoutInflater)
     }
@@ -128,7 +138,7 @@ class DeliveryDoneActivity2 : CommonActivity(), Camera2Interface,
         }
 
         binding.layoutSignDGallery.setOnClickListener {
-            imageFromAlbum
+            getImageFromAlbum()
         }
 
         binding.btnSignDSave.setOnClickListener {
@@ -136,7 +146,6 @@ class DeliveryDoneActivity2 : CommonActivity(), Camera2Interface,
         }
 
         //
-        camera2 = Camera2APIs(this)
         barcodeList = ArrayList()
         if (intent.hasExtra("parcel")) {
             // in List (단건)
@@ -144,7 +153,7 @@ class DeliveryDoneActivity2 : CommonActivity(), Camera2Interface,
             val songData = BarcodeData()
             songData.barcode = parcel!!.shipping.uppercase(Locale.getDefault())
             songData.state = BarcodeType.TYPE_DELIVERY
-            barcodeList!!.add(songData)
+            barcodeList.add(songData)
             highAmountYn = parcel.high_amount_yn
             if (userNation != "SG") {
                 locationModel.setParcelLocation(
@@ -157,8 +166,16 @@ class DeliveryDoneActivity2 : CommonActivity(), Camera2Interface,
                             + parcel.zip_code + " - " + parcel.state + " - " + parcel.city + " - " + parcel.street
                 )
             }
-            val routeSplit = parcel.route.split(" ").toTypedArray()
-            routeNumber = routeSplit[0] + " " + routeSplit[1]
+            if (parcel.route.contains("7E") || parcel.route.contains("FL")) {
+                routeNumber = try {
+                    val routeSplit = parcel.route.split(" ").toTypedArray()
+                    routeSplit[0] + " " + routeSplit[1]
+                } catch (e: Exception) {
+                    null
+                }
+            }
+
+
         } else if (intent.hasExtra("data")) {
             // in Capture (bulk)
             val list = intent.getSerializableExtra("data") as ArrayList<BarcodeData>?
@@ -167,11 +184,11 @@ class DeliveryDoneActivity2 : CommonActivity(), Camera2Interface,
                 val songData = BarcodeData()
                 songData.barcode = trackingNo
                 songData.state = BarcodeType.TYPE_DELIVERY
-                barcodeList!!.add(songData)
+                barcodeList.add(songData)
 
                 // 위, 경도 & high amount
                 val cs =
-                    getInstance()["SELECT * FROM " + DatabaseHelper.DB_TABLE_INTEGRATION_LIST + " WHERE invoice_no='" + trackingNo + "'"]
+                    DatabaseHelper.getInstance()["SELECT * FROM " + DatabaseHelper.DB_TABLE_INTEGRATION_LIST + " WHERE invoice_no='" + trackingNo + "'"]
                 if (cs.moveToFirst()) {
                     try {
                         val value = cs.getString(cs.getColumnIndex("high_amount_yn"))
@@ -181,7 +198,7 @@ class DeliveryDoneActivity2 : CommonActivity(), Camera2Interface,
                     } catch (ignore: Exception) {
                     }
                     if (userNation != "SG") {
-                        if (barcodeList!!.size == 1) {
+                        if (barcodeList.size == 1) {
                             val parcelLat = cs.getDouble(cs.getColumnIndex("lat"))
                             val parcelLng = cs.getDouble(cs.getColumnIndex("lng"))
                             val zipCode = cs.getString(cs.getColumnIndex("zip_code"))
@@ -202,27 +219,27 @@ class DeliveryDoneActivity2 : CommonActivity(), Camera2Interface,
             }
         }
         val barcodeMsg = StringBuilder()
-        for (i in barcodeList!!.indices) {
-            barcodeMsg.append(barcodeList!![i].barcode).append("  ")
+        for (i in barcodeList.indices) {
+            barcodeMsg.append(barcodeList[i].barcode).append("  ")
         }
         binding.textSignDTrackingNoTitle.setText(R.string.text_tracking_no)
 
-        if (barcodeList!!.size == 1) {
+        if (barcodeList.size == 1) {
             binding.textSignDTrackingNo.text = barcodeMsg.toString().trim { it <= ' ' }
             binding.textSignDTrackingNoMore.visibility = View.GONE
         } else {
             // 다수건
             val qtyFormat = String.format(
                 resources.getString(R.string.text_total_qty_count),
-                barcodeList!!.size
+                barcodeList.size
             )
             binding.textSignDTrackingNo.text = qtyFormat
             binding.textSignDTrackingNoMore.visibility = View.VISIBLE
             binding.textSignDTrackingNoMore.text = barcodeMsg.toString()
             binding.layoutSignDSender.visibility = View.GONE
         }
-        getDeliveryInfo(barcodeList!![0].barcode)
-        outletInfo = getOutletInfo(barcodeList!![0].barcode)
+        getDeliveryInfo(barcodeList[0].barcode)
+        outletInfo = getOutletInfo(barcodeList[0].barcode)
 
         binding.appBar.textTopTitle.setText(R.string.text_delivered)
         binding.textSignDReceiver.text = receiverName
@@ -288,17 +305,17 @@ class DeliveryDoneActivity2 : CommonActivity(), Camera2Interface,
 
 
                 outletDeliveryDoneListItemArrayList = ArrayList()
-                val dbHelper = getInstance()
+                val dbHelper = DatabaseHelper.getInstance()
                 if (routeNumber == null) {      // SCAN > Delivery Done
-                    for (i in barcodeList!!.indices) {
+                    for (i in barcodeList.indices) {
                         val cs =
                             dbHelper["SELECT rcv_nm FROM " + DatabaseHelper.DB_TABLE_INTEGRATION_LIST
-                                    + " WHERE punchOut_stat = 'N' and chg_dt is null and type = 'D' and reg_id='" + Preferences.userId + "' and invoice_no='" + barcodeList!![i].barcode + "'"]
+                                    + " WHERE punchOut_stat = 'N' and chg_dt is null and type = 'D' and reg_id='" + Preferences.userId + "' and invoice_no='" + barcodeList[i].barcode + "'"]
                         if (cs.moveToFirst()) {
                             do {
                                 val receiver_name = cs.getString(cs.getColumnIndex("rcv_nm"))
                                 val outletDeliveryDoneListItem = OutletDeliveryDoneListItem()
-                                outletDeliveryDoneListItem.trackingNo = barcodeList!![i].barcode
+                                outletDeliveryDoneListItem.trackingNo = barcodeList[i].barcode
                                 outletDeliveryDoneListItem.receiverName = receiver_name
                                 outletDeliveryDoneListItemArrayList!!.add(outletDeliveryDoneListItem)
                             } while (cs.moveToNext())
@@ -317,7 +334,7 @@ class DeliveryDoneActivity2 : CommonActivity(), Camera2Interface,
                             barcodeData = BarcodeData()
                             barcodeData.barcode = invoiceNo
                             barcodeData.state = BarcodeType.TYPE_DELIVERY
-                            barcodeList!!.add(barcodeData)
+                            barcodeList.add(barcodeData)
                             val outletDeliveryDoneListItem = OutletDeliveryDoneListItem()
                             outletDeliveryDoneListItem.trackingNo = invoiceNo
                             outletDeliveryDoneListItem.receiverName = receiver_name
@@ -335,11 +352,12 @@ class DeliveryDoneActivity2 : CommonActivity(), Camera2Interface,
                     }
                 }
                 if (outletInfo!!.route!!.substring(0, 2).contains("7E")) {
+                    Log.e(">>>>>>>>>>>", "7E !!!!!!!!")
                     binding.appBar.textTopTitle.setText(R.string.text_title_7e_store_delivery)
 
                     binding.textSignDOutletAddressTitle.setText(R.string.text_7e_store_address)
                     binding.layoutSignDSignMemo.visibility = View.VISIBLE
-                    binding.layoutSignDVisitLog.visibility = View.VISIBLE
+                    binding.layoutSignDVisitLog.visibility = View.GONE
 
                     if (!NetworkUtil.isNetworkAvailable(this)) {
                         alertShow(resources.getString(R.string.msg_network_connect_error))
@@ -350,7 +368,7 @@ class DeliveryDoneActivity2 : CommonActivity(), Camera2Interface,
                         lifecycleScope.launch {
 
 
-                            var resultCode = "-1"
+                            var resultCode = -1
                             try {
                                 for (item in outletDeliveryDoneListItemArrayList!!) {
                                     val response =
@@ -358,43 +376,39 @@ class DeliveryDoneActivity2 : CommonActivity(), Camera2Interface,
                                             getString(R.string.text_outlet_7e),
                                             item.trackingNo!!
                                         )
+                                    if (response.result_code == "0" && response.qrcode_data != null) {
+                                        val result =
+                                            Gson().fromJson(
+                                                response.qrcode_data,
+                                                QRCodeData::class.java
+                                            )
 
-                                    if (response.qrcode_data != null) {
-                                        val jsonObject = JSONObject(response.qrcode_data)
+                                        if (result.q == "D" && !(result.jobID.isNullOrEmpty())) {
 
-                                        val type = jsonObject.getString("Q")
-                                        if (type != "D") {
-                                            resultCode = "-1"
-                                            break
-                                        }
+                                            item.jobID = result.jobID
+                                            item.vendorCode = result.vendorCode
+                                            item.qrCode = DataUtil.qrcode_url + response.qrcode_data
 
-                                        val jobID = jsonObject.getString("J")
-                                        if (jobID.equals("", ignoreCase = true)) {
-                                            resultCode = "-1"
-                                            break
                                         } else {
-                                            item.jobID = jobID
+                                            resultCode = response.result_code!!.toInt()
+                                            break
                                         }
-
-                                        item.vendorCode = jsonObject.getString("V")
-
-                                        item.qrCode = DataUtil.qrcode_url + response.qrcode_data
                                     }
 
-                                    resultCode = response.result_code!!
+                                    resultCode = response.result_code!!.toInt()
                                 }
 
                             } catch (e: java.lang.Exception) {
-                                resultCode = "-1"
+                                resultCode = -1
                             }
 
-                            if (resultCode.toInt() == 0) {
+                            if (resultCode == 0) {
                                 showQRCode = true
                                 outletTrackingNoAdapter = OutletTrackingNoAdapter(
                                     this@DeliveryDoneActivity2,
-                                    outletDeliveryDoneListItemArrayList, "7E"
+                                    outletDeliveryDoneListItemArrayList!!, "7E"
                                 )
-                                binding.listSignDOutletList.adapter = outletTrackingNoAdapter
+                                binding.listSignDOutletList.adapter = outletTrackingNoAdapter!!
                                 setListViewHeightBasedOnChildren(binding.listSignDOutletList)
                                 if (binding.textureSignDPreview.isAvailable) {
                                     openCamera("Outlet")
@@ -410,6 +424,7 @@ class DeliveryDoneActivity2 : CommonActivity(), Camera2Interface,
                                     Toast.LENGTH_LONG
                                 ).show()
                             }
+
                         }
                     }
                 } else {
@@ -418,16 +433,13 @@ class DeliveryDoneActivity2 : CommonActivity(), Camera2Interface,
                     binding.layoutSignDSignMemo.visibility = View.GONE
                     binding.layoutSignDVisitLog.visibility = View.GONE
 
-
-
-
                     outletTrackingNoAdapter = OutletTrackingNoAdapter(
-                        this@DeliveryDoneActivity2,
-                        outletDeliveryDoneListItemArrayList,
+                        this,
+                        outletDeliveryDoneListItemArrayList!!,
                         "FL"
                     )
                     binding.listSignDOutletList.adapter = outletTrackingNoAdapter
-                    setListViewHeightBasedOnChildren(binding.listSignDOutletList)
+//                    setListViewHeightBasedOnChildren(binding.listSignDOutletList)
 
                 }
             } else {
@@ -564,7 +576,7 @@ class DeliveryDoneActivity2 : CommonActivity(), Camera2Interface,
 
     private fun getDeliveryInfo(barcodeNo: String?) {
         val cursor =
-            getInstance()["SELECT rcv_nm, sender_nm FROM " + DatabaseHelper.DB_TABLE_INTEGRATION_LIST + " WHERE invoice_no='" + barcodeNo + "' COLLATE NOCASE"]
+            DatabaseHelper.getInstance()["SELECT rcv_nm, sender_nm FROM " + DatabaseHelper.DB_TABLE_INTEGRATION_LIST + " WHERE invoice_no='" + barcodeNo + "' COLLATE NOCASE"]
         if (cursor.moveToFirst()) {
             receiverName = cursor.getString(cursor.getColumnIndexOrThrow("rcv_nm"))
             senderName = cursor.getString(cursor.getColumnIndexOrThrow("sender_nm"))
@@ -584,7 +596,7 @@ class DeliveryDoneActivity2 : CommonActivity(), Camera2Interface,
 
     private fun getOutletInfo(barcodeNo: String?): OutletInfo {
         val cursor =
-            getInstance()["SELECT route, zip_code, address FROM " + DatabaseHelper.DB_TABLE_INTEGRATION_LIST + " WHERE invoice_no='" + barcodeNo + "' COLLATE NOCASE"]
+            DatabaseHelper.getInstance()["SELECT route, zip_code, address FROM " + DatabaseHelper.DB_TABLE_INTEGRATION_LIST + " WHERE invoice_no='" + barcodeNo + "' COLLATE NOCASE"]
         val outletInfo = OutletInfo()
         if (cursor.moveToFirst()) {
             outletInfo.route = cursor.getString(cursor.getColumnIndexOrThrow("route"))
@@ -631,8 +643,9 @@ class DeliveryDoneActivity2 : CommonActivity(), Camera2Interface,
                 }
             } else {
                 if (!hasSignImage && !hasVisitImage) {
-                    val msg = """${resources.getString(R.string.msg_signature_require)} or
-${resources.getString(R.string.msg_visit_photo_require)}"""
+                    val msg = "${resources.getString(R.string.msg_signature_require)} or${
+                        resources.getString(R.string.msg_visit_photo_require)
+                    }"
                     Toast.makeText(this.applicationContext, msg, Toast.LENGTH_SHORT).show()
                     return
                 }
@@ -645,30 +658,71 @@ ${resources.getString(R.string.msg_visit_photo_require)}"""
             }
             FirebaseEvent.clickEvent(this, TAG, "SetDeliveryUploadData")
 
-            DeliveryDoneUploadHelper.Builder(
-                this,
-                Preferences.userId,
-                Preferences.officeCode,
-                Preferences.deviceUUID,
-                barcodeList,
-                mReceiveType,
-                driverMemo,
-                binding.signViewSignDSignature,
-                hasSignImage,
-                binding.imgSignDVisitLog,
-                hasVisitImage,
-                availableInternalMemorySize,
-                locationModel
-            )
+            progressBar.visibility = View.VISIBLE
+            lifecycleScope.launch {
 
-                .setOnServerUploadEventListener(object : OnServerEventListener {
-                    override fun onPostResult() {
-                        setResult(RESULT_OK)
-                        finish()
+
+                var resultMsg = ""
+                try {
+                    for (item in barcodeList) {
+
+                        val bitmapString = QDataUtil.getBitmapString(
+                            this@DeliveryDoneActivity2,
+                            binding.signViewSignDSignature,
+                            ImageUpload.QXPOD,
+                            "qdriver/sign",
+                            item.barcode!!
+                        )
+
+                        val bitmapString2 = QDataUtil.getBitmapString(
+                            this@DeliveryDoneActivity2,
+                            binding.imgSignDVisitLog,
+                            ImageUpload.QXPOD,
+                            "qdriver/delivery",
+                            item.barcode!!
+                        )
+
+                        if (bitmapString.isEmpty() && bitmapString2.isEmpty()) {
+                            resultDialog(resources.getString(R.string.msg_upload_fail_image))
+                            return@launch
+                        }
+
+                        val response = RetrofitClient.instanceDynamic().setDeliveryUploadData(
+                            mReceiveType,
+                            NetworkUtil.getNetworkType(this@DeliveryDoneActivity2),
+                            item.barcode!!,
+                            bitmapString,
+                            bitmapString2,
+                            driverMemo,
+                            latitude,
+                            longitude
+                            )
+                        if (response.resultCode == 0) {
+                            val contentVal2 = ContentValues()
+                            contentVal2.put("punchOut_stat", "S")
+
+                            DatabaseHelper.getInstance().update(
+                                DatabaseHelper.DB_TABLE_INTEGRATION_LIST,
+                                contentVal2,
+                                "invoice_no=? COLLATE NOCASE " + "and reg_id = ?",
+                                arrayOf(item.barcode, Preferences.userId)
+                            )
+                        } else {
+                            DatabaseHelper.getInstance().delete(
+                                DatabaseHelper.DB_TABLE_INTEGRATION_LIST,
+                                "invoice_no= '" + item.barcode + "' COLLATE NOCASE"
+                            )
+                        }
+                        resultMsg = response.resultMsg!!
                     }
 
-                    override fun onPostFailList() {}
-                }).build().execute()
+                } catch (e: Exception) {
+                    resultMsg = e.toString()
+                }
+                progressBar.visibility = View.GONE
+                resultDialog(resultMsg)
+            }
+
         } catch (e: Exception) {
             Log.e("Exception", "saveServerUploadSign  Exception : $e")
             Toast.makeText(
@@ -721,25 +775,84 @@ ${resources.getString(R.string.msg_visit_photo_require)}"""
             val driverMemo = binding.editSignDMemo.text.toString()
 
             FirebaseEvent.clickEvent(this, TAG + "_OUTLET", "SetOutletDeliveryUploadData")
-            // 2019.02 - stat : D3 로..   서버에서 outlet stat 변경
-            OutletDeliveryDoneHelper.Builder(
-                this,
-                Preferences.userId,
-                Preferences.officeCode,
-                Preferences.deviceUUID,
-                barcodeList,
-                outletInfo!!.route!!.substring(0, 2),
-                mReceiveType,
-                binding.signViewSignDSignature,
-                driverMemo,
-                availableInternalMemorySize,
-                latitude,
-                longitude
-            )
-                .setOnOutletDataUploadEventListener {
-                    setResult(RESULT_OK)
-                    finish()
-                }.build().execute()
+
+            lifecycleScope.launch {
+                progressBar.visibility = View.VISIBLE
+                var bitmap1 = ""
+
+                if (outletInfo!!.route!!.substring(0, 2) != "FL") {
+                    bitmap1 = QDataUtil.getBitmapString(
+                        this@DeliveryDoneActivity2,
+                        binding.signViewSignDSignature,
+                        ImageUpload.QXPOD,
+                        "qdriver/sign",
+                        barcodeList[0].barcode!!
+                    )
+
+                    if (bitmap1 == "") {
+                        resultDialog(resources.getString(R.string.msg_upload_fail_image))
+                        return@launch
+                    }
+                }
+                Log.e("!!@$!@#!@",bitmap1)
+                var resultMsg = ""
+
+                for (item in barcodeList) {
+                    val dateFormat = SimpleDateFormat("yyyy-MM-dd HH:mm:ss")
+                    val date = Date()
+
+                    val contentVal = ContentValues()
+                    contentVal.put("stat", BarcodeType.DELIVERY_START)
+                    contentVal.put("rcv_type", mReceiveType)
+                    contentVal.put("driver_memo", driverMemo)
+                    contentVal.put("chg_dt", dateFormat.format(date))
+                    contentVal.put("fail_reason", "")
+
+                    DatabaseHelper.getInstance().update(
+                        DatabaseHelper.DB_TABLE_INTEGRATION_LIST,
+                        contentVal,
+                        "invoice_no=? COLLATE NOCASE " + "and reg_id = ?",
+                        arrayOf(item.barcode, Preferences.userId)
+                    )
+
+                    try {
+                        val response = RetrofitClient.instanceDynamic().outletDeliveryUploadData(
+                            mReceiveType,
+                            bitmap1,
+                            NetworkUtil.getNetworkType(this@DeliveryDoneActivity2),
+                            item.barcode!!,
+                            driverMemo,
+                            latitude,
+                            longitude,
+                            outletInfo!!.route!!.substring(0, 2)
+                        )
+
+                        if (response.resultCode == 0) {
+                            val contentVal2 = ContentValues()
+                            contentVal2.put("punchOut_stat", "S")
+
+                            DatabaseHelper.getInstance().update(
+                                DatabaseHelper.DB_TABLE_INTEGRATION_LIST,
+                                contentVal2,
+                                "invoice_no=? COLLATE NOCASE " + "and reg_id = ?",
+                                arrayOf(item.barcode, Preferences.userId)
+                            )
+                        } else {    //todo_sypark resultcode -25 확인
+                            DatabaseHelper.getInstance().delete(
+                                DatabaseHelper.DB_TABLE_INTEGRATION_LIST,
+                                "invoice_no= '" + item.barcode + "' COLLATE NOCASE"
+                            )
+                        }
+                        resultMsg = response.resultMsg!!
+                    } catch (e: java.lang.Exception) {
+                        resultMsg = resources.getString(R.string.msg_upload_fail_15)
+                    }
+                }
+
+                progressBar.visibility = View.GONE
+                resultDialog(resultMsg)
+
+            }
         } catch (e: Exception) {
             Log.e("Exception", "saveOutletDeliveryDone   Exception ; $e")
             Toast.makeText(
@@ -751,23 +864,22 @@ ${resources.getString(R.string.msg_visit_photo_require)}"""
     }
 
     // Gallery
-    private val imageFromAlbum: Unit
-        get() {
-            try {
-                if (!isGalleryActivate) {
-                    val intent = Intent()
-                    intent.type = "image/*"
-                    intent.action = Intent.ACTION_GET_CONTENT
-                    isGalleryActivate = true
-                    startActivityForResult(
-                        Intent.createChooser(intent, "Select Picture"),
-                        RESULT_LOAD_IMAGE
-                    )
-                }
-            } catch (ex: Exception) {
-                isGalleryActivate = false
+    private fun getImageFromAlbum() {
+        try {
+            if (!isGalleryActivate) {
+                val intent = Intent()
+                intent.type = "image/*"
+                intent.action = Intent.ACTION_GET_CONTENT
+                isGalleryActivate = true
+                startActivityForResult(
+                    Intent.createChooser(intent, "Select Picture"),
+                    RESULT_LOAD_IMAGE
+                )
             }
+        } catch (ex: java.lang.Exception) {
+            isGalleryActivate = false
         }
+    }
 
     // CAMERA
     private fun openCamera(it: String) {
@@ -847,6 +959,21 @@ ${resources.getString(R.string.msg_visit_photo_require)}"""
             params.height = totalHeight
             listView.layoutParams = params
             listView.requestLayout()
+        }
+    }
+
+    private fun resultDialog(msg: String) {
+        if (!isFinishing) {
+            AlertDialog.Builder(this@DeliveryDoneActivity2)
+                .setCancelable(false)
+                .setTitle(resources.getString(R.string.text_upload_result))
+                .setMessage(msg)
+                .setPositiveButton(resources.getString(R.string.button_ok)) { dialog, _ ->
+                    dialog.dismiss()
+
+                    setResult(Activity.RESULT_OK)
+                    finish()
+                }.show()
         }
     }
 }

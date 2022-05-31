@@ -12,3 +12,15 @@ class QRCodeResult {
     @SerializedName("ResultObject")
     var qrcode_data: String? = null
 }
+
+class QRCodeData {
+    @SerializedName("Q")
+    var q: String? = null
+
+    @SerializedName("J")
+    var jobID: String? = null
+
+    @SerializedName("V")
+    var vendorCode: String? = null
+
+}

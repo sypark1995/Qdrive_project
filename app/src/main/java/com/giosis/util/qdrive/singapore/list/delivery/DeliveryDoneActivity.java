@@ -66,6 +66,7 @@ import java.util.ArrayList;
  * LIST, In Progress > 'Delivered'  // SCAN > Delivery Done
  * 2020.06 사진 추가
  */
+@Deprecated
 public class DeliveryDoneActivity extends CommonActivity implements Camera2APIs.Camera2Interface, TextureView.SurfaceTextureListener {
     String TAG = "DeliveryDoneActivity";
 

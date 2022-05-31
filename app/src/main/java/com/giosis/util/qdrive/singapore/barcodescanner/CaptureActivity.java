@@ -51,9 +51,11 @@ import com.giosis.util.qdrive.singapore.barcodescanner.bluetooth.KScan;
 import com.giosis.util.qdrive.singapore.barcodescanner.bluetooth.KTSyncData;
 import com.giosis.util.qdrive.singapore.barcodescanner.helper.ChangeDriverHelper;
 import com.giosis.util.qdrive.singapore.barcodescanner.helper.ConfirmMyOrderHelper;
+import com.giosis.util.qdrive.singapore.data.CnRPickupResult;
+import com.giosis.util.qdrive.singapore.database.DatabaseHelper;
 import com.giosis.util.qdrive.singapore.gps.GPSTrackerManager;
 import com.giosis.util.qdrive.singapore.list.BarcodeData;
-import com.giosis.util.qdrive.singapore.list.delivery.DeliveryDoneActivity;
+import com.giosis.util.qdrive.singapore.list.delivery.DeliveryDoneActivity2;
 import com.giosis.util.qdrive.singapore.list.pickup.CnRPickupDoneActivity;
 import com.giosis.util.qdrive.singapore.list.pickup.OutletPickupDoneResult;
 import com.giosis.util.qdrive.singapore.list.pickup.OutletPickupStep3Activity;
@@ -63,11 +65,9 @@ import com.giosis.util.qdrive.singapore.list.pickup.PickupTakeBackActivity;
 import com.giosis.util.qdrive.singapore.main.DriverAssignResult;
 import com.giosis.util.qdrive.singapore.main.submenu.SelfCollectionDoneActivity;
 import com.giosis.util.qdrive.singapore.server.RetrofitClient;
-import com.giosis.util.qdrive.singapore.data.CnRPickupResult;
 import com.giosis.util.qdrive.singapore.util.BarcodeType;
 import com.giosis.util.qdrive.singapore.util.CommonActivity;
 import com.giosis.util.qdrive.singapore.util.DataUtil;
-import com.giosis.util.qdrive.singapore.database.DatabaseHelper;
 import com.giosis.util.qdrive.singapore.util.FirebaseEvent;
 import com.giosis.util.qdrive.singapore.util.GeoCodeUtil;
 import com.giosis.util.qdrive.singapore.util.NetworkUtil;
@@ -1938,7 +1938,7 @@ public final class CaptureActivity extends CommonActivity implements DecoratedBa
 
         if (0 < deliveryBarcodeList.size()) {
 
-            Intent intent = new Intent(this, DeliveryDoneActivity.class);
+            Intent intent = new Intent(this, DeliveryDoneActivity2.class);
             intent.putExtra("data", deliveryBarcodeList);
             this.startActivityForResult(intent, REQUEST_DELIVERY_DONE);
         } else {

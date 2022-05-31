@@ -17,7 +17,8 @@ import android.util.Log
 import android.view.*
 import android.view.View.OnTouchListener
 import android.view.inputmethod.InputMethodManager
-import android.widget.*
+import android.widget.EditText
+import android.widget.Toast
 import androidx.activity.result.ActivityResultLauncher
 import androidx.activity.result.contract.ActivityResultContracts
 import androidx.core.content.ContextCompat
@@ -34,13 +35,13 @@ import com.giosis.util.qdrive.singapore.database.DatabaseHelper.Companion.getIns
 import com.giosis.util.qdrive.singapore.databinding.ActivityCaptureBinding
 import com.giosis.util.qdrive.singapore.gps.GPSTrackerManager
 import com.giosis.util.qdrive.singapore.list.BarcodeData
-import com.giosis.util.qdrive.singapore.list.delivery.DeliveryDoneActivity
+import com.giosis.util.qdrive.singapore.list.delivery.DeliveryDoneActivity2
+import com.giosis.util.qdrive.singapore.list.pickup.*
 import com.giosis.util.qdrive.singapore.main.DriverAssignResult
 import com.giosis.util.qdrive.singapore.main.submenu.SelfCollectionDoneActivity
 import com.giosis.util.qdrive.singapore.server.RetrofitClient
-import com.giosis.util.qdrive.singapore.list.pickup.*
-import com.giosis.util.qdrive.singapore.util.dialog.ProgressDialog
 import com.giosis.util.qdrive.singapore.util.*
+import com.giosis.util.qdrive.singapore.util.dialog.ProgressDialog
 import com.google.gson.Gson
 import com.google.gson.reflect.TypeToken
 import com.google.zxing.ResultPoint
@@ -1461,7 +1462,7 @@ class CaptureActivity1 : CommonActivity(), TorchListener, OnTouchListener, TextW
 
         if (0 < deliveryBarcodeList.size) {
 
-            val intent = Intent(this, DeliveryDoneActivity::class.java)
+            val intent = Intent(this, DeliveryDoneActivity2::class.java)
             intent.putExtra("data", deliveryBarcodeList)
             finishLauncher.launch(intent)
         } else {

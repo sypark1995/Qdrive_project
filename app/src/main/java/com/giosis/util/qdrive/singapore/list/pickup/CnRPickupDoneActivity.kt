@@ -241,32 +241,31 @@ class CnRPickupDoneActivity : CommonActivity() {
             lifecycleScope.launch {
                 progressBar.visibility = View.VISIBLE
 
-                val bitmap1 = QDataUtil.getBitmapString(
-                    this@CnRPickupDoneActivity,
-                    sign_view_sign_p_applicant_signature,
-                    ImageUpload.QXPOP,
-                    "qdriver/sign",
-                    pickupNoList[0].barcode!!
-                )
-
-                val bitmap2 = QDataUtil.getBitmapString(
-                    this@CnRPickupDoneActivity,
-                    sign_view_sign_p_collector_signature,
-                    ImageUpload.QXPOP,
-                    "qdriver/sign",
-                    pickupNoList[0].barcode!!
-                )
-
-                if (bitmap1 == "" || bitmap2 == "") {
-                    resultDialog(resources.getString(R.string.msg_upload_fail_image))
-                    return@launch
-                }
-
                 var resultMsg = ""
 
-
-
                 for (item in pickupNoList) {
+
+                    val bitmap1 = QDataUtil.getBitmapString(
+                        this@CnRPickupDoneActivity,
+                        sign_view_sign_p_applicant_signature,
+                        ImageUpload.QXPOP,
+                        "qdriver/sign",
+                        item.barcode!!
+                    )
+
+                    val bitmap2 = QDataUtil.getBitmapString(
+                        this@CnRPickupDoneActivity,
+                        sign_view_sign_p_collector_signature,
+                        ImageUpload.QXPOP,
+                        "qdriver/sign",
+                        item.barcode!!
+                    )
+
+                    if (bitmap1 == "" || bitmap2 == "") {
+                        resultDialog(resources.getString(R.string.msg_upload_fail_image))
+                        return@launch
+                    }
+
                     val dateFormat = SimpleDateFormat("yyyy-MM-dd HH:mm:ss")
                     val date = Date()
 

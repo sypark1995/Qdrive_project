@@ -29,15 +29,15 @@ import android.widget.Toast;
 
 import com.giosis.util.qdrive.singapore.R;
 import com.giosis.util.qdrive.singapore.barcodescanner.StdResult;
+import com.giosis.util.qdrive.singapore.database.DatabaseHelper;
 import com.giosis.util.qdrive.singapore.list.ChildItem;
 import com.giosis.util.qdrive.singapore.list.RowItem;
-import com.giosis.util.qdrive.singapore.list.delivery.DeliveryDoneActivity;
+import com.giosis.util.qdrive.singapore.list.delivery.DeliveryDoneActivity2;
 import com.giosis.util.qdrive.singapore.list.pickup.OutletPickupStep1Activity;
 import com.giosis.util.qdrive.singapore.message.CustomerMessageListDetailActivity;
 import com.giosis.util.qdrive.singapore.server.Custom_JsonParser;
 import com.giosis.util.qdrive.singapore.util.BarcodeType;
 import com.giosis.util.qdrive.singapore.util.DataUtil;
-import com.giosis.util.qdrive.singapore.database.DatabaseHelper;
 import com.giosis.util.qdrive.singapore.util.NetworkUtil;
 import com.giosis.util.qdrive.singapore.util.Preferences;
 
@@ -387,7 +387,7 @@ public class OutletOrderStatusAdapter extends BaseExpandableListAdapter {
 
             if (type.equals(BarcodeType.TYPE_DELIVERY)) {
 
-                Intent intent = new Intent(v.getContext(), DeliveryDoneActivity.class);
+                Intent intent = new Intent(v.getContext(), DeliveryDoneActivity2.class);
                 intent.putExtra("parcel", rowItem.get(groupPosition));
                 ((Activity) v.getContext()).startActivityForResult(intent, 1);
 
