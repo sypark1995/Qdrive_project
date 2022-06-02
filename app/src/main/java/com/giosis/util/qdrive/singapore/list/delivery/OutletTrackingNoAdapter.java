@@ -120,7 +120,6 @@ public class OutletTrackingNoAdapter extends BaseAdapter {
 
     @Override
     public View getView(int position, View convertView, ViewGroup viewGroup) {
-        Log.e(">?>>>>",trackingNoList.size() + "");
         final OutletDeliveryItem item = trackingNoList.get(position);
         View view = null;
 
