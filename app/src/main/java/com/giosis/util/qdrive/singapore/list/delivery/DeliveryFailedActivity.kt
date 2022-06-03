@@ -1,7 +1,9 @@
 package com.giosis.util.qdrive.singapore.list.delivery
 
 
+import android.app.Activity
 import android.app.AlertDialog
+import android.content.ContentValues
 import android.content.Intent
 import android.graphics.SurfaceTexture
 import android.hardware.camera2.CameraDevice
@@ -22,12 +24,19 @@ import android.widget.ArrayAdapter
 import android.widget.ImageView
 import android.widget.Toast
 import androidx.activity.result.contract.ActivityResultContracts
+import androidx.lifecycle.lifecycleScope
 import com.giosis.util.qdrive.singapore.MemoryStatus
 import com.giosis.util.qdrive.singapore.R
-import com.giosis.util.qdrive.singapore.gps.GPSTrackerManager
 import com.giosis.util.qdrive.singapore.data.FailedCodeData
+import com.giosis.util.qdrive.singapore.database.DatabaseHelper
 import com.giosis.util.qdrive.singapore.databinding.ActivityDeliveryVisitLogBinding
+import com.giosis.util.qdrive.singapore.gps.GPSTrackerManager
+import com.giosis.util.qdrive.singapore.server.ImageUpload
+import com.giosis.util.qdrive.singapore.server.RetrofitClient
 import com.giosis.util.qdrive.singapore.util.*
+import com.giosis.util.qdrive.singapore.util.dialog.ProgressDialog
+import kotlinx.coroutines.launch
+import java.text.SimpleDateFormat
 import java.util.*
 
 
@@ -38,6 +47,10 @@ class DeliveryFailedActivity : CommonActivity(), Camera2APIs.Camera2Interface,
 
     private val binding by lazy {
         ActivityDeliveryVisitLogBinding.inflate(layoutInflater)
+    }
+
+    private val progressBar by lazy {
+        ProgressDialog(this@DeliveryFailedActivity)
     }
 
     lateinit var trackingNo: String
@@ -396,28 +409,129 @@ class DeliveryFailedActivity : CommonActivity(), Camera2APIs.Camera2Interface,
             }
 
             FirebaseEvent.clickEvent(this, tag, "DeliveryFailedUploadHelper ")
+            progressBar.visibility = View.VISIBLE
 
-            DeliveryFailedUploadHelper.Builder(
-                this@DeliveryFailedActivity,
-                Preferences.userId,
-                Preferences.officeCode,
-                Preferences.deviceUUID,
-                trackingNo,
-                binding.imgVisitLog,
-                failedCode,
-                driverMemo,
-                "RC",
-                MemoryStatus.availableInternalMemorySize,
-                latitude,
-                longitude
-            ).setOnServerEventListener(object : OnServerEventListener {
-                override fun onPostResult() {
-                    finish()
+            lifecycleScope.launch {
+                val bitmapString = QDataUtil.getBitmapString(
+                    this@DeliveryFailedActivity,
+                    binding.imgVisitLog,
+                    ImageUpload.QXPOD,
+                    "qdriver/sign",
+                    trackingNo
+                )
+
+                if (bitmapString == "") {
+                    resultDialog(resources.getString(R.string.msg_upload_fail_image))
+                    return@launch
                 }
 
-                override fun onPostFailList() {
+                val dateFormat = SimpleDateFormat("yyyy-MM-dd HH:mm:ss")
+                val date = Date()
+
+                val contentVal = ContentValues()
+                contentVal.put("stat", BarcodeType.DELIVERY_FAIL)
+                contentVal.put("chg_dt", dateFormat.format(date))
+                contentVal.put("fail_reason", failedCode)
+                contentVal.put("driver_memo", driverMemo)
+
+                DatabaseHelper.getInstance().update(
+                    DatabaseHelper.DB_TABLE_INTEGRATION_LIST,
+                    contentVal,
+                    "invoice_no=? COLLATE NOCASE and reg_id = ?",
+                    arrayOf(trackingNo, Preferences.userId)
+                )
+
+                try {
+                    val response = RetrofitClient.instanceDynamic().setDeliveryUploadData(
+                        BarcodeType.DELIVERY_FAIL,
+                        "RC",
+                        NetworkUtil.getNetworkType(this@DeliveryFailedActivity),
+                        trackingNo,
+                        bitmapString,
+                        "",
+                        driverMemo,
+                        latitude,
+                        longitude,
+                        "QDRIVE",
+                        failedCode
+                    )
+
+                    when (response.resultCode) {
+                        0 -> {
+                            val contentVal2 = ContentValues()
+                            contentVal2.put("punchOut_stat", "S")
+
+                            DatabaseHelper.getInstance().update(
+                                DatabaseHelper.DB_TABLE_INTEGRATION_LIST,
+                                contentVal2,
+                                "invoice_no=? COLLATE NOCASE and reg_id = ?",
+                                arrayOf(trackingNo, Preferences.userId)
+                            )
+
+                            resultDialog(
+                                String.format(
+                                    resources.getString(R.string.text_upload_success_count),
+                                    1
+                                )
+                            )
+                        }
+
+                        -25 -> {
+                            DatabaseHelper.getInstance().delete(
+                                DatabaseHelper.DB_TABLE_INTEGRATION_LIST,
+                                "invoice_no= '" + trackingNo + "' COLLATE NOCASE"
+                            )
+
+                            resultDialog(
+                                String.format(
+                                    resources.getString(R.string.text_upload_fail_count1),
+                                    1,
+                                    response.resultMsg
+                                )
+                            )
+                        }
+
+                        else -> {
+                            val dateFormat = SimpleDateFormat("yyyy-MM-dd HH:mm:ss")
+                            val date = Date()
+
+                            val contentVal = ContentValues()
+                            contentVal.put("stat", BarcodeType.DELIVERY_FAIL)
+                            contentVal.put("chg_dt", dateFormat.format(date))
+                            contentVal.put("real_qty", "0") // 업로드시 값 Parse 시 에러나서 0 넘김
+
+                            contentVal.put("fail_reason", failedCode)
+                            contentVal.put("driver_memo", driverMemo)
+                            contentVal.put("retry_dt", "")
+                            contentVal.put("rev_type", "VL")
+                            contentVal.put("punchOut_stat", "S")
+
+                            DatabaseHelper.getInstance().update(
+                                DatabaseHelper.DB_TABLE_INTEGRATION_LIST,
+                                contentVal,
+                                "invoice_no=? COLLATE NOCASE and punchOut_stat <> 'S' " + "and reg_id = ?",
+                                arrayOf(trackingNo, Preferences.userId)
+                            )
+
+                            resultDialog(
+                                String.format(
+                                    resources.getString(R.string.text_upload_fail_count1),
+                                    1,
+                                    response.resultMsg
+                                )
+                            )
+                        }
+                    }
+
+                    progressBar.visibility = View.GONE
+
+                } catch (e: Exception) {
+                    progressBar.visibility = View.GONE
+
+                    resultDialog(resources.getString(R.string.msg_upload_fail_15))
                 }
-            }).build().execute()
+
+            }
 
         } catch (e: Exception) {
 
@@ -455,6 +569,21 @@ class DeliveryFailedActivity : CommonActivity(), Camera2APIs.Camera2Interface,
 
                 isPermissionTrue = true
             }
+        }
+    }
+
+    private fun resultDialog(msg: String) {
+        if (!isFinishing) {
+            AlertDialog.Builder(this)
+                .setCancelable(false)
+                .setTitle(resources.getString(R.string.text_upload_result))
+                .setMessage(msg)
+                .setPositiveButton(resources.getString(R.string.button_ok)) { dialog, _ ->
+                    dialog.dismiss()
+
+                    setResult(Activity.RESULT_OK)
+                    finish()
+                }.show()
         }
     }
 }

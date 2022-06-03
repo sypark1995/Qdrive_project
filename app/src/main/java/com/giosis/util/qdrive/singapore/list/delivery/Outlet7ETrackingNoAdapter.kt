@@ -2,16 +2,13 @@ package com.giosis.util.qdrive.singapore.list.delivery
 
 import android.annotation.SuppressLint
 import android.view.LayoutInflater
-import android.view.View
 import android.view.ViewGroup
 import androidx.recyclerview.widget.RecyclerView
 import com.bumptech.glide.Glide
 import com.giosis.util.qdrive.singapore.databinding.OutletQrcodeItemBinding
 import java.util.*
-import kotlin.collections.ArrayList
-import kotlin.collections.HashMap
 
-class OutletTrackingNoAdapter3(
+class Outlet7ETrackingNoAdapter(
     var trackingNoList: ArrayList<OutletDeliveryItem>,
 ) : RecyclerView.Adapter<RecyclerView.ViewHolder>() {
 
@@ -49,6 +46,10 @@ class OutletTrackingNoAdapter3(
         fun bind(position: Int) {
             val data = trackingNoList[position]
 
+            Glide.with(itemView)
+                .load(data.qrCode)
+                .into(binding.imgSignDOutletQrcode)
+
             binding.textSignDOutletQrcodeDate.text =
                 data.jobID!!.substring(2, 6) +
                         "-" + data.jobID!!.substring(6, 8) +
@@ -57,24 +58,6 @@ class OutletTrackingNoAdapter3(
             binding.textSignDOutletQrcodeJobId.text = data.jobID!!
             binding.textSignDOutletQrcodeVendorCode.text = data.vendorCode!!
 
-            Glide.with(itemView)
-                .load(data.qrCode)
-                .into(binding.imgSignDOutletQrcode)
-
-            binding.btnSignDOutletReload.setOnClickListener {
-
-                if (data.qrCode == null) {
-                    binding.layoutSignDOutletQrcodeLoad.visibility = View.GONE
-                    binding.layoutSignDOutletQrcodeReload.visibility = View.VISIBLE
-                } else {
-                    binding.layoutSignDOutletQrcodeLoad.visibility = View.VISIBLE
-                    binding.layoutSignDOutletQrcodeReload.visibility = View.GONE
-
-                    Glide.with(itemView)
-                        .load(data.qrCode)
-                        .into(binding.imgSignDOutletQrcode)
-                }
-            }
         }
     }
 

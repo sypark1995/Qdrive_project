@@ -79,6 +79,7 @@ class DeliveryDoneActivity2 : CommonActivity(), Camera2Interface,
     var showQRCode = false
     var outletDeliveryDoneList = ArrayList<OutletDeliveryItem>()
     var isPermissionTrue = false
+
     private val progressBar by lazy {
         ProgressDialog(this@DeliveryDoneActivity2)
     }
@@ -333,6 +334,8 @@ class DeliveryDoneActivity2 : CommonActivity(), Camera2Interface,
                     }
                 }
 
+                progressBar.visibility = View.VISIBLE
+
                 if (outletInfo!!.route!!.substring(0, 2).contains("7E")) {
 
                     binding.appBar.textTopTitle.setText(R.string.text_title_7e_store_delivery)
@@ -381,11 +384,14 @@ class DeliveryDoneActivity2 : CommonActivity(), Camera2Interface,
                                 resultCode = -1
                             }
 
+                            progressBar.visibility = View.GONE
+
                             if (resultCode == 0) {
+
                                 showQRCode = true
 
                                 val adapter =
-                                    OutletTrackingNoAdapter3(outletDeliveryDoneList)
+                                    Outlet7ETrackingNoAdapter(outletDeliveryDoneList)
 
                                 binding.outletRecycler.adapter = adapter
 
@@ -407,19 +413,15 @@ class DeliveryDoneActivity2 : CommonActivity(), Camera2Interface,
                         }
                     }
                 } else {
+                    progressBar.visibility = View.GONE
+
                     binding.appBar.textTopTitle.setText(R.string.text_title_fl_delivery)
                     binding.textSignDOutletAddressTitle.setText(R.string.text_federated_locker_address)
                     binding.layoutSignDSignMemo.visibility = View.GONE
                     binding.layoutSignDVisitLog.visibility = View.GONE
 
-                    // TODO_sypark 새로 만들기
-//                    outletTrackingNoAdapter = OutletTrackingNoAdapter(
-//                        this,
-//                        outletDeliveryDoneList!!,
-//                        "FL"
-//                    )
-//                    binding.listSignDOutletList.adapter = outletTrackingNoAdapter
-//                    setListViewHeightBasedOnChildren(binding.listSignDOutletList)
+                    val adapter = OutletFLTrackingNoAdapter(outletDeliveryDoneList)
+                    binding.outletRecycler.adapter = adapter
 
                 }
             } else {
@@ -669,6 +671,7 @@ class DeliveryDoneActivity2 : CommonActivity(), Camera2Interface,
                         }
 
                         val response = RetrofitClient.instanceDynamic().setDeliveryUploadData(
+                            BarcodeType.DELIVERY_DONE,
                             mReceiveType,
                             NetworkUtil.getNetworkType(this@DeliveryDoneActivity2),
                             item,
@@ -676,7 +679,9 @@ class DeliveryDoneActivity2 : CommonActivity(), Camera2Interface,
                             bitmapString2,
                             driverMemo,
                             latitude,
-                            longitude
+                            longitude,
+                            "QR",
+                            ""
                         )
                         if (response.resultCode == 0) {
                             val contentVal2 = ContentValues()
@@ -705,6 +710,8 @@ class DeliveryDoneActivity2 : CommonActivity(), Camera2Interface,
             }
 
         } catch (e: Exception) {
+            progressBar.visibility = View.GONE
+
             Log.e("Exception", "saveServerUploadSign  Exception : $e")
             Toast.makeText(
                 this,
@@ -837,6 +844,8 @@ class DeliveryDoneActivity2 : CommonActivity(), Camera2Interface,
             }
 
         } catch (e: Exception) {
+            progressBar.visibility = View.GONE
+
             Log.e("Exception", "saveOutletDeliveryDone   Exception ; $e")
             Toast.makeText(
                 this,
@@ -927,22 +936,6 @@ class DeliveryDoneActivity2 : CommonActivity(), Camera2Interface,
             PermissionChecker.ACCESS_FINE_LOCATION,
             PermissionChecker.CAMERA
         )
-
-//        fun setListViewHeightBasedOnChildren(listView: ListView?) {
-//            val listAdapter = listView!!.adapter ?: return
-//            var totalHeight = 0
-//            val desiredWidth =
-//                View.MeasureSpec.makeMeasureSpec(listView.width, View.MeasureSpec.AT_MOST)
-//            for (i in 0 until listAdapter.count) {
-//                val listItem = listAdapter.getView(i, null, listView)
-//                listItem.measure(desiredWidth, View.MeasureSpec.UNSPECIFIED)
-//                totalHeight += listItem.measuredHeight
-//            }
-//            val params = listView.layoutParams
-//            params.height = totalHeight
-//            listView.layoutParams = params
-//            listView.requestLayout()
-//        }
     }
 
     private fun resultDialog(msg: String) {
