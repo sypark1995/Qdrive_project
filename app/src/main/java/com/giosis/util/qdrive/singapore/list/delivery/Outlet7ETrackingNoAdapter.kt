@@ -1,12 +1,23 @@
 package com.giosis.util.qdrive.singapore.list.delivery
 
 import android.annotation.SuppressLint
+import android.graphics.drawable.Drawable
 import android.view.LayoutInflater
 import android.view.ViewGroup
+import androidx.lifecycle.lifecycleScope
 import androidx.recyclerview.widget.RecyclerView
 import com.bumptech.glide.Glide
+import com.bumptech.glide.load.DataSource
+import com.bumptech.glide.load.engine.GlideException
+import com.bumptech.glide.request.RequestListener
+import com.bumptech.glide.request.target.Target
+import com.giosis.util.qdrive.singapore.R
 import com.giosis.util.qdrive.singapore.databinding.OutletQrcodeItemBinding
+import com.giosis.util.qdrive.singapore.server.RetrofitClient
+import com.google.gson.Gson
+import kotlinx.coroutines.launch
 import java.util.*
+
 
 class Outlet7ETrackingNoAdapter(
     var trackingNoList: ArrayList<OutletDeliveryItem>,
@@ -42,13 +53,61 @@ class Outlet7ETrackingNoAdapter(
     inner class ViewHolder(private val binding: OutletQrcodeItemBinding) :
         RecyclerView.ViewHolder(binding.root) {
 
-        @SuppressLint("SetTextI18n")
+        @SuppressLint("SetTextI18n", "UseCompatLoadingForDrawables")
         fun bind(position: Int) {
             val data = trackingNoList[position]
 
             Glide.with(itemView)
                 .load(data.qrCode)
-                .into(binding.imgSignDOutletQrcode)
+                .error(R.drawable.qdrive_btn_icon_failed)
+                .listener(object : RequestListener<Drawable> {
+                    override fun onLoadFailed(
+                        e: GlideException?,
+                        model: Any?,
+                        target: Target<Drawable>?,
+                        isFirstResource: Boolean
+                    ): Boolean {
+                        (itemView.context as DeliveryDoneActivity2).lifecycleScope.launch {
+                            try {
+                                val response = RetrofitClient.instanceDynamic().qrCodeForQStationDelivery(data.trackingNo!!)
+
+                                if (response.result_code == "0" && response.qrcode_data != null) {
+                                    val result = Gson().fromJson(
+                                        response.qrcode_data,
+                                        QRCodeData::class.java
+                                    )
+
+                                    binding.textSignDOutletQrcodeDate.text = result.jobID!!.substring(2, 6) +
+                                            "-" + result.jobID!!.substring(6, 8) +
+                                            "-" + result.jobID!!.substring(8, 10)
+
+                                    binding.textSignDOutletQrcodeJobId.text = result.jobID!!
+
+                                    binding.textSignDOutletQrcodeVendorCode.text = result.vendorCode!!
+
+                                    Glide.with(itemView)
+                                        .load(response.result_code)
+                                        .error(R.drawable.qdrive_btn_icon_failed)
+                                        .into(binding.imgSignDOutletQrcode)
+
+                                }
+                            } catch (e: Exception) {
+                            }
+                        }
+
+                        return false
+                    }
+
+                    override fun onResourceReady(
+                        resource: Drawable?,
+                        model: Any?,
+                        target: Target<Drawable>?,
+                        dataSource: DataSource?,
+                        isFirstResource: Boolean
+                    ): Boolean {
+                        return false
+                    }
+                }).into(binding.imgSignDOutletQrcode)
 
             binding.textSignDOutletQrcodeDate.text =
                 data.jobID!!.substring(2, 6) +
