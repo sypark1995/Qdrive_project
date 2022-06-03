@@ -10,12 +10,10 @@
     android:paddingBottom="10dp">
 
     <RelativeLayout
-        android:id="@+id/layout_sign_d_outlet_qrcode_load"
         android:layout_width="match_parent"
         android:layout_height="100dp"
         android:background="@drawable/border_round_5_e5e5e5"
-        android:padding="10dp"
-        android:visibility="visible">
+        android:padding="10dp">
 
         <LinearLayout
             android:layout_width="match_parent"
@@ -23,7 +21,7 @@
             android:layout_centerVertical="true"
             android:layout_marginStart="5dp"
             android:layout_marginEnd="15dp"
-            android:layout_toStartOf="@id/img_sign_d_outlet_qrcode"
+            android:layout_toStartOf="@id/qr_img"
             android:orientation="vertical">
 
             <LinearLayout
@@ -39,7 +37,7 @@
                     android:textSize="@dimen/text_size_30px" />
 
                 <TextView
-                    android:id="@+id/text_sign_d_outlet_qrcode_date"
+                    android:id="@+id/text_qrcode_date"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:layout_marginStart="10dp"
@@ -63,7 +61,7 @@
                     android:textSize="@dimen/text_size_30px" />
 
                 <TextView
-                    android:id="@+id/text_sign_d_outlet_qrcode_job_id"
+                    android:id="@+id/text_job_id"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:layout_marginStart="10dp"
@@ -87,7 +85,7 @@
                     android:textSize="@dimen/text_size_30px" />
 
                 <TextView
-                    android:id="@+id/text_sign_d_outlet_qrcode_vendor_code"
+                    android:id="@+id/text_vendor_code"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:layout_marginStart="10dp"
@@ -98,9 +96,8 @@
             </LinearLayout>
         </LinearLayout>
 
-
         <ImageView
-            android:id="@+id/img_sign_d_outlet_qrcode"
+            android:id="@+id/qr_img"
             android:layout_width="80dp"
             android:layout_height="80dp"
             android:layout_alignParentEnd="true"
@@ -110,34 +107,4 @@
 
     </RelativeLayout>
 
-    <LinearLayout
-        android:id="@+id/layout_sign_d_outlet_qrcode_reload"
-        android:layout_width="match_parent"
-        android:layout_height="100dp"
-        android:layout_centerInParent="true"
-        android:background="@drawable/border_round_5_e5e5e5"
-        android:gravity="center"
-        android:orientation="vertical"
-        android:padding="10dp"
-        android:visibility="gone">
-
-        <TextView
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:lineSpacingMultiplier="1.2"
-            android:text="@string/msg_qrcode_loading_error"
-            android:textColor="@color/color_303030"
-            android:textSize="@dimen/text_size_30px" />
-
-        <Button
-            android:id="@+id/btn_sign_d_outlet_reload"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_marginTop="10dp"
-            android:background="@drawable/border_round_30_cccccc"
-            android:text="@string/button_reload"
-            android:textAllCaps="false"
-            android:textColor="@color/color_303030"
-            android:textSize="@dimen/text_size_28px" />
-    </LinearLayout>
 </RelativeLayout>

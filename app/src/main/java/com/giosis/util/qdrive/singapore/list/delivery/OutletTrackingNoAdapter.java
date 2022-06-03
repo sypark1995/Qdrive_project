@@ -125,36 +125,35 @@ public class OutletTrackingNoAdapter extends BaseAdapter {
 
         if (convertView == null) {
 
-            LayoutInflater inflater = (LayoutInflater) context.getSystemService(Context.LAYOUT_INFLATER_SERVICE);
-
-
-                view = inflater.inflate(R.layout.outlet_qrcode_item, null);
-
-                final RelativeLayout layout_sign_d_outlet_qrcode_load = view.findViewById(R.id.layout_sign_d_outlet_qrcode_load);
-                TextView text_sign_d_outlet_qrcode_date = view.findViewById(R.id.text_sign_d_outlet_qrcode_date);
-                TextView text_sign_d_outlet_qrcode_job_id = view.findViewById(R.id.text_sign_d_outlet_qrcode_job_id);
-                TextView text_sign_d_outlet_qrcode_vendor_code = view.findViewById(R.id.text_sign_d_outlet_qrcode_vendor_code);
-                final ImageView img_sign_d_outlet_qrcode = view.findViewById(R.id.img_sign_d_outlet_qrcode);
-
-                final LinearLayout layout_sign_d_outlet_qrcode_reload = view.findViewById(R.id.layout_sign_d_outlet_qrcode_reload);
-                Button btn_sign_d_outlet_reload = view.findViewById(R.id.btn_sign_d_outlet_reload);
-
-                btn_sign_d_outlet_reload.setOnClickListener(new View.OnClickListener() {
-                    @Override
-                    public void onClick(View v) {
-
-                        QRCodeAsyncTask qrCodeAsyncTask = new QRCodeAsyncTask(layout_sign_d_outlet_qrcode_load, layout_sign_d_outlet_qrcode_reload, img_sign_d_outlet_qrcode, item.getQrCode());
-                        qrCodeAsyncTask.execute();
-                    }
-                });
-
-                text_sign_d_outlet_qrcode_date.setText(item.getJobID().substring(2, 6) + "-" + item.getJobID().substring(6, 8) + "-" + item.getJobID().substring(8, 10));
-                text_sign_d_outlet_qrcode_job_id.setText(item.getJobID());
-                text_sign_d_outlet_qrcode_vendor_code.setText(item.getVendorCode());
-
-                QRCodeAsyncTask qrCodeAsyncTask = new QRCodeAsyncTask(layout_sign_d_outlet_qrcode_load, layout_sign_d_outlet_qrcode_reload, img_sign_d_outlet_qrcode, item.getQrCode());
-                qrCodeAsyncTask.execute();
-
+//            LayoutInflater inflater = (LayoutInflater) context.getSystemService(Context.LAYOUT_INFLATER_SERVICE);
+//
+//
+//                view = inflater.inflate(R.layout.outlet_qrcode_item, null);
+//
+//                final RelativeLayout layout_sign_d_outlet_qrcode_load = view.findViewById(R.id.layout_sign_d_outlet_qrcode_load);
+//                TextView text_sign_d_outlet_qrcode_date = view.findViewById(R.id.text_qrcode_date);
+//                TextView text_sign_d_outlet_qrcode_job_id = view.findViewById(R.id.text_job_id);
+//                TextView text_sign_d_outlet_qrcode_vendor_code = view.findViewById(R.id.text_vendor_code);
+//                final ImageView img_sign_d_outlet_qrcode = view.findViewById(R.id.qr_img);
+//
+//                final LinearLayout layout_sign_d_outlet_qrcode_reload = view.findViewById(R.id.layout_sign_d_outlet_qrcode_reload);
+//                Button btn_sign_d_outlet_reload = view.findViewById(R.id.btn_sign_d_outlet_reload);
+//
+//                btn_sign_d_outlet_reload.setOnClickListener(new View.OnClickListener() {
+//                    @Override
+//                    public void onClick(View v) {
+//
+//                        QRCodeAsyncTask qrCodeAsyncTask = new QRCodeAsyncTask(layout_sign_d_outlet_qrcode_load, layout_sign_d_outlet_qrcode_reload, img_sign_d_outlet_qrcode, item.getQrCode());
+//                        qrCodeAsyncTask.execute();
+//                    }
+//                });
+//
+//                text_sign_d_outlet_qrcode_date.setText(item.getJobID().substring(2, 6) + "-" + item.getJobID().substring(6, 8) + "-" + item.getJobID().substring(8, 10));
+//                text_sign_d_outlet_qrcode_job_id.setText(item.getJobID());
+//                text_sign_d_outlet_qrcode_vendor_code.setText(item.getVendorCode());
+//
+//                QRCodeAsyncTask qrCodeAsyncTask = new QRCodeAsyncTask(layout_sign_d_outlet_qrcode_load, layout_sign_d_outlet_qrcode_reload, img_sign_d_outlet_qrcode, item.getQrCode());
+//                qrCodeAsyncTask.execute();
 
         }
 

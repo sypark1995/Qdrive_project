@@ -57,6 +57,15 @@ class Outlet7ETrackingNoAdapter(
         fun bind(position: Int) {
             val data = trackingNoList[position]
 
+            itemView.setOnClickListener {
+                if (binding.qrImg.tag == false) {
+                    Glide.with(itemView)
+                        .load(data.qrCode)
+                        .error(R.drawable.qdrive_btn_icon_failed)
+                        .into(binding.qrImg)
+                }
+            }
+
             Glide.with(itemView)
                 .load(data.qrCode)
                 .error(R.drawable.qdrive_btn_icon_failed)
@@ -67,34 +76,7 @@ class Outlet7ETrackingNoAdapter(
                         target: Target<Drawable>?,
                         isFirstResource: Boolean
                     ): Boolean {
-                        (itemView.context as DeliveryDoneActivity2).lifecycleScope.launch {
-                            try {
-                                val response = RetrofitClient.instanceDynamic().qrCodeForQStationDelivery(data.trackingNo!!)
-
-                                if (response.result_code == "0" && response.qrcode_data != null) {
-                                    val result = Gson().fromJson(
-                                        response.qrcode_data,
-                                        QRCodeData::class.java
-                                    )
-
-                                    binding.textSignDOutletQrcodeDate.text = result.jobID!!.substring(2, 6) +
-                                            "-" + result.jobID!!.substring(6, 8) +
-                                            "-" + result.jobID!!.substring(8, 10)
-
-                                    binding.textSignDOutletQrcodeJobId.text = result.jobID!!
-
-                                    binding.textSignDOutletQrcodeVendorCode.text = result.vendorCode!!
-
-                                    Glide.with(itemView)
-                                        .load(response.result_code)
-                                        .error(R.drawable.qdrive_btn_icon_failed)
-                                        .into(binding.imgSignDOutletQrcode)
-
-                                }
-                            } catch (e: Exception) {
-                            }
-                        }
-
+                        binding.qrImg.tag = false
                         return false
                     }
 
@@ -105,17 +87,19 @@ class Outlet7ETrackingNoAdapter(
                         dataSource: DataSource?,
                         isFirstResource: Boolean
                     ): Boolean {
+                        binding.qrImg.tag = true
                         return false
                     }
-                }).into(binding.imgSignDOutletQrcode)
+                })
+                .into(binding.qrImg)
 
-            binding.textSignDOutletQrcodeDate.text =
+            binding.textQrcodeDate.text =
                 data.jobID!!.substring(2, 6) +
                         "-" + data.jobID!!.substring(6, 8) +
                         "-" + data.jobID!!.substring(8, 10)
 
-            binding.textSignDOutletQrcodeJobId.text = data.jobID!!
-            binding.textSignDOutletQrcodeVendorCode.text = data.vendorCode!!
+            binding.textJobId.text = data.jobID!!
+            binding.textVendorCode.text = data.vendorCode!!
 
         }
     }
@@ -138,5 +122,4 @@ class Outlet7ETrackingNoAdapter(
             }
         }
     }
-
 }
