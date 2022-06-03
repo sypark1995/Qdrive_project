@@ -168,20 +168,13 @@ class DeliveryDoneActivity2 : CommonActivity(), Camera2Interface,
 
                 barcodeList.add(trackingNo)
 
-                // 위, 경도 & high amount
-                val cs =
-                    DatabaseHelper.getInstance()["SELECT * FROM " + DatabaseHelper.DB_TABLE_INTEGRATION_LIST + " WHERE invoice_no='" + trackingNo + "'"]
-
-                if (cs.moveToFirst()) {
-                    try {
-                        val value = cs.getString(cs.getColumnIndex("high_amount_yn"))
-                        if (value.equals("Y", ignoreCase = true)) {
-                            highAmountYn = value
-                        }
-                    } catch (ignore: Exception) {
-                    }
+                val highAmountYCount =
+                    DatabaseHelper.getInstance()["SELECT * FROM " + DatabaseHelper.DB_TABLE_INTEGRATION_LIST + " WHERE high_amount_yn = 'Y' AND invoice_no = '" + trackingNo + "'"].count
+                if (highAmountYCount > 0) {
+                    highAmountYn = "Y"
                 }
             }
+
         }
 
         val barcodeMsg = TextUtils.join(",", barcodeList)
