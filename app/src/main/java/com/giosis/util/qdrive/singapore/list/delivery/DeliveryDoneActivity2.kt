@@ -72,12 +72,10 @@ class DeliveryDoneActivity2 : CommonActivity(), Camera2Interface,
     var gpsEnable = false
     var latitude = 0.0
     var longitude = 0.0
-    var locationModel = LocationModel()
 
     // Outlet
     var outletInfo: OutletInfo? = null
     var showQRCode = false
-    var outletDeliveryDoneList = ArrayList<OutletDeliveryItem>()
     var isPermissionTrue = false
 
     private val progressBar by lazy {
@@ -152,13 +150,6 @@ class DeliveryDoneActivity2 : CommonActivity(), Camera2Interface,
 
             highAmountYn = parcel.high_amount_yn
 
-            if (Preferences.userNation != "SG") {
-                locationModel.setParcelLocation(
-                    parcel.lat, parcel.lng,
-                    parcel.zip_code!!, parcel.state, parcel.city, parcel.street
-                )
-            }
-
             if (parcel.route.contains("7E") || parcel.route.contains("FL")) {
                 routeNumber = try {
                     val routeSplit = parcel.route.split(" ").toTypedArray()
@@ -188,25 +179,6 @@ class DeliveryDoneActivity2 : CommonActivity(), Camera2Interface,
                             highAmountYn = value
                         }
                     } catch (ignore: Exception) {
-                    }
-
-                    if (Preferences.userNation != "SG") {
-                        if (barcodeList.size == 1) {
-                            val parcelLat = cs.getDouble(cs.getColumnIndex("lat"))
-                            val parcelLng = cs.getDouble(cs.getColumnIndex("lng"))
-                            val zipCode = cs.getString(cs.getColumnIndex("zip_code"))
-                            val state = cs.getString(cs.getColumnIndex("state"))
-                            val city = cs.getString(cs.getColumnIndex("city"))
-                            val street = cs.getString(cs.getColumnIndex("street"))
-                            locationModel.setParcelLocation(
-                                parcelLat,
-                                parcelLng,
-                                zipCode,
-                                state,
-                                city,
-                                street
-                            )
-                        }
                     }
                 }
             }
@@ -280,7 +252,7 @@ class DeliveryDoneActivity2 : CommonActivity(), Camera2Interface,
                 binding.layoutSignDReceiver.visibility = View.GONE
                 binding.outletRecycler.visibility = View.VISIBLE
 
-                outletDeliveryDoneList.clear()
+                val outletList = ArrayList<OutletDeliveryItem>()
 
                 val dbHelper = DatabaseHelper.getInstance()
                 if (routeNumber == null) {      // SCAN > Delivery Done
@@ -297,7 +269,7 @@ class DeliveryDoneActivity2 : CommonActivity(), Camera2Interface,
                                     this.receiverName = receiver
                                 }
 
-                                outletDeliveryDoneList.add(item)
+                                outletList.add(item)
 
                             } while (cs.moveToNext())
                         }
@@ -318,15 +290,15 @@ class DeliveryDoneActivity2 : CommonActivity(), Camera2Interface,
                                 this.receiverName = receiver
                             }
 
-                            outletDeliveryDoneList.add(item)
+                            outletList.add(item)
 
                         } while (cs.moveToNext())
                     }
 
-                    if (outletDeliveryDoneList.size > 1) {
+                    if (outletList.size > 1) {
                         val qtyFormat = String.format(
                             resources.getString(R.string.text_total_qty_count),
-                            outletDeliveryDoneList.size
+                            outletList.size
                         )
                         binding.textSignDTrackingNoTitle.setText(R.string.text_parcel_qty1)
                         binding.textSignDTrackingNo.text = qtyFormat
@@ -334,7 +306,7 @@ class DeliveryDoneActivity2 : CommonActivity(), Camera2Interface,
                     }
                 }
 
-                progressBar.visibility = View.VISIBLE
+
 
                 if (outletInfo!!.route!!.substring(0, 2).contains("7E")) {
 
@@ -342,96 +314,82 @@ class DeliveryDoneActivity2 : CommonActivity(), Camera2Interface,
                     binding.textSignDOutletAddressTitle.setText(R.string.text_7e_store_address)
                     binding.layoutSignDSignMemo.visibility = View.VISIBLE
                     binding.layoutSignDVisitLog.visibility = View.GONE
+                    progressBar.visibility = View.VISIBLE
 
-                    if (!NetworkUtil.isNetworkAvailable(this)) {
-                        alertShow(resources.getString(R.string.msg_network_connect_error))
-                        return
-                    } else {
-                        closeCamera()
+                    lifecycleScope.launch {
 
-                        lifecycleScope.launch {
+                        var resultCode = -1
+                        try {
+                            for (item in outletList) {
+                                val response =
+                                    RetrofitClient.instanceDynamic().qrCodeForQStationDelivery(
+                                        item.trackingNo!!
+                                    )
 
-                            var resultCode = -1
-                            try {
-                                for (item in outletDeliveryDoneList) {
-                                    val response =
-                                        RetrofitClient.instanceDynamic().qrCodeForQStationDelivery(
-                                            item.trackingNo!!
-                                        )
+                                if (response.result_code == "0" && response.qrcode_data != null) {
+                                    val result = Gson().fromJson(
+                                        response.qrcode_data,
+                                        QRCodeData::class.java
+                                    )
 
-                                    if (response.result_code == "0" && response.qrcode_data != null) {
-                                        val result = Gson().fromJson(
-                                            response.qrcode_data,
-                                            QRCodeData::class.java
-                                        )
+                                    if (result.q == "D" && !(result.jobID.isNullOrEmpty())) {
 
-                                        if (result.q == "D" && !(result.jobID.isNullOrEmpty())) {
+                                        item.jobID = result.jobID
+                                        item.vendorCode = result.vendorCode
+                                        item.qrCode = DataUtil.qrcode_url + response.qrcode_data
 
-                                            item.jobID = result.jobID
-                                            item.vendorCode = result.vendorCode
-                                            item.qrCode = DataUtil.qrcode_url + response.qrcode_data
-
-                                        } else {
-                                            resultCode = response.result_code!!.toInt()
-                                            break
-                                        }
+                                    } else {
+                                        resultCode = response.result_code!!.toInt()
+                                        break
                                     }
-
-                                    resultCode = response.result_code!!.toInt()
                                 }
 
-                            } catch (e: java.lang.Exception) {
-                                resultCode = -1
+                                resultCode = response.result_code!!.toInt()
                             }
 
-                            progressBar.visibility = View.GONE
+                        } catch (e: java.lang.Exception) {
+                            resultCode = -1
+                        }
 
-                            if (resultCode == 0) {
+                        progressBar.visibility = View.GONE
 
-                                showQRCode = true
+                        if (resultCode == 0) {
 
-                                val adapter =
-                                    Outlet7ETrackingNoAdapter(outletDeliveryDoneList)
+                            showQRCode = true
 
-                                binding.outletRecycler.adapter = adapter
+                            val adapter = Outlet7ETrackingNoAdapter(outletList)
+                            binding.outletRecycler.adapter = adapter
 
-//                                setListViewHeightBasedOnChildren(binding.outletRecycler)
-                                if (binding.textureSignDPreview.isAvailable) {
-                                    openCamera("Outlet")
-                                } else {
-                                    binding.textureSignDPreview.surfaceTextureListener =
-                                        this@DeliveryDoneActivity2
-                                }
-                            } else {
-                                showQRCode = false
-                                Toast.makeText(
-                                    this@DeliveryDoneActivity2,
-                                    resources.getString(R.string.msg_outlet_qrcode_data_error),
-                                    Toast.LENGTH_LONG
-                                ).show()
-                            }
+                        } else {
+                            showQRCode = false
+                            Toast.makeText(
+                                this@DeliveryDoneActivity2,
+                                resources.getString(R.string.msg_outlet_qrcode_data_error),
+                                Toast.LENGTH_LONG
+                            ).show()
                         }
                     }
+
                 } else {
-                    progressBar.visibility = View.GONE
 
                     binding.appBar.textTopTitle.setText(R.string.text_title_fl_delivery)
                     binding.textSignDOutletAddressTitle.setText(R.string.text_federated_locker_address)
                     binding.layoutSignDSignMemo.visibility = View.GONE
                     binding.layoutSignDVisitLog.visibility = View.GONE
 
-                    val adapter = OutletFLTrackingNoAdapter(outletDeliveryDoneList)
+                    val adapter = OutletFLTrackingNoAdapter(outletList)
                     binding.outletRecycler.adapter = adapter
 
                 }
+
             } else {
+
                 binding.layoutSignDOutletAddress.visibility = View.GONE
                 binding.layoutSignDOutletOperationHour.visibility = View.GONE
                 binding.layoutSignDReceiver.visibility = View.VISIBLE
                 binding.outletRecycler.visibility = View.GONE
                 binding.layoutSignDSignMemo.visibility = View.VISIBLE
                 binding.layoutSignDVisitLog.visibility = View.VISIBLE
-
 
             }
         } else {
@@ -600,15 +558,12 @@ class DeliveryDoneActivity2 : CommonActivity(), Camera2Interface,
                 alertShow(resources.getString(R.string.msg_network_connect_error))
                 return
             }
+
             if (gpsTrackerManager != null) {
                 latitude = gpsTrackerManager!!.latitude
                 longitude = gpsTrackerManager!!.longitude
-                Log.e(
-                    "Location",
-                    "$TAG saveServerUploadSign  GPSTrackerManager : $latitude  $longitude  "
-                )
-                locationModel.setDriverLocation(latitude, longitude)
             }
+
             val driverMemo = binding.editSignDMemo.text.toString()
 
             // NOTIFICATION. 2020.06  visit log 추가
@@ -643,7 +598,6 @@ class DeliveryDoneActivity2 : CommonActivity(), Camera2Interface,
 
             progressBar.visibility = View.VISIBLE
             lifecycleScope.launch {
-
 
                 var resultMsg = ""
                 try {
