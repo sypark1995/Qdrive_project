@@ -2,6 +2,7 @@ package com.giosis.util.qdrive.singapore.list.delivery
 
 import android.annotation.SuppressLint
 import android.graphics.drawable.Drawable
+import android.util.Log
 import android.view.LayoutInflater
 import android.view.ViewGroup
 import androidx.lifecycle.lifecycleScope
@@ -15,6 +16,8 @@ import com.giosis.util.qdrive.singapore.R
 import com.giosis.util.qdrive.singapore.databinding.OutletQrcodeItemBinding
 import com.giosis.util.qdrive.singapore.server.RetrofitClient
 import com.google.gson.Gson
+import io.reactivex.rxjava3.android.schedulers.AndroidSchedulers
+import io.reactivex.rxjava3.schedulers.Schedulers
 import kotlinx.coroutines.launch
 import java.util.*
 
@@ -77,6 +80,14 @@ class Outlet7ETrackingNoAdapter(
                         isFirstResource: Boolean
                     ): Boolean {
                         binding.qrImg.tag = false
+                        RetrofitClient.instanceDynamic().requestWriteLog(
+                            "1",
+                            "Glide error image",
+                            "glide up load error in RetrofitClient",
+                            ""
+                        ).subscribeOn(Schedulers.io())
+                            .observeOn(AndroidSchedulers.mainThread())
+                            .subscribe({},{})
                         return false
                     }
 
