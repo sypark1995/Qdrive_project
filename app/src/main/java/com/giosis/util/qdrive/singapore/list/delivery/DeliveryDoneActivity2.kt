@@ -31,6 +31,7 @@ import com.giosis.util.qdrive.singapore.gps.LocationModel
 import com.giosis.util.qdrive.singapore.list.BarcodeData
 import com.giosis.util.qdrive.singapore.list.OutletInfo
 import com.giosis.util.qdrive.singapore.list.RowItem
+import com.giosis.util.qdrive.singapore.listener.setOnSingleClickListener
 import com.giosis.util.qdrive.singapore.server.ImageUpload
 import com.giosis.util.qdrive.singapore.server.RetrofitClient
 import com.giosis.util.qdrive.singapore.util.*
@@ -65,7 +66,6 @@ class DeliveryDoneActivity2 : CommonActivity(), Camera2Interface,
 
     var cameraId: String? = null
     var isClickedPhoto = false
-    var isGalleryActivate = false
 
     // GPS
     var gpsTrackerManager: GPSTrackerManager? = null
@@ -134,7 +134,7 @@ class DeliveryDoneActivity2 : CommonActivity(), Camera2Interface,
             }
         }
 
-        binding.layoutSignDGallery.setOnClickListener {
+        binding.layoutSignDGallery.setOnSingleClickListener {
             getImageFromAlbum()
         }
 
@@ -433,7 +433,7 @@ class DeliveryDoneActivity2 : CommonActivity(), Camera2Interface,
 
     override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
         super.onActivityResult(requestCode, resultCode, data)
-        isGalleryActivate = false
+
         if (requestCode == RESULT_LOAD_IMAGE && resultCode == RESULT_OK && data != null) {
             try {
                 val selectedImageUri = data.data
@@ -812,18 +812,14 @@ class DeliveryDoneActivity2 : CommonActivity(), Camera2Interface,
     // Gallery
     private fun getImageFromAlbum() {
         try {
-            if (!isGalleryActivate) {
-                val intent = Intent()
-                intent.type = "image/*"
-                intent.action = Intent.ACTION_GET_CONTENT
-                isGalleryActivate = true
-                startActivityForResult(
-                    Intent.createChooser(intent, "Select Picture"),
-                    RESULT_LOAD_IMAGE
-                )
-            }
+            val intent = Intent()
+            intent.type = "image/*"
+            intent.action = Intent.ACTION_GET_CONTENT
+            startActivityForResult(
+                Intent.createChooser(intent, "Select Picture"),
+                RESULT_LOAD_IMAGE
+            )
         } catch (ex: java.lang.Exception) {
-            isGalleryActivate = false
         }
     }
 
