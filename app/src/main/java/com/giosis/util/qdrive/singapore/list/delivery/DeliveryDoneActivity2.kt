@@ -56,7 +56,6 @@ class DeliveryDoneActivity2 : CommonActivity(), Camera2Interface,
     var barcodeList = ArrayList<String>()// 바코드 리스트만 가지고 있으면 된다..
     var senderName: String? = null
     var receiverName: String? = null
-//    var highAmountYn: String? = "N"
 
     // Camera & Gallery
     val camera2 by lazy {
@@ -147,8 +146,6 @@ class DeliveryDoneActivity2 : CommonActivity(), Camera2Interface,
 
             barcodeList.add(parcel.shipping.uppercase(Locale.getDefault()))
 
-//            highAmountYn = parcel.high_amount_yn
-
             if (parcel.route.contains("7E") || parcel.route.contains("FL")) {
                 routeNumber = try {
                     val routeSplit = parcel.route.split(" ").toTypedArray()
@@ -167,22 +164,6 @@ class DeliveryDoneActivity2 : CommonActivity(), Camera2Interface,
 
                 barcodeList.add(trackingNo)
             }
-
-//            val reformatBarcodeList = ArrayList<String>()
-//
-//            for (item in barcodeList) {
-//                reformatBarcodeList.add("'$item'")
-//            }
-//
-//            val highAmountCount =
-//                DatabaseHelper.getInstance()["SELECT * FROM " + DatabaseHelper.DB_TABLE_INTEGRATION_LIST + " WHERE high_amount_yn = 'Y' AND invoice_no IN (" + TextUtils.join(
-//                    ",",
-//                    reformatBarcodeList
-//                ) + ")"].count
-//
-//            if (highAmountCount > 0) {
-//                highAmountYn = "Y"
-//            }
         }
 
         val barcodeMsg = TextUtils.join(",", barcodeList)
@@ -575,29 +556,19 @@ class DeliveryDoneActivity2 : CommonActivity(), Camera2Interface,
 
             //   Log.e(TAG, TAG + "  has DATA : " + hasSignImage + " / " + hasVisitImage);
 
-            val amountYN = if (intent.hasExtra("parcel")) {
-                (intent.getSerializableExtra("parcel") as RowItem).high_amount_yn
-            } else {
-                val reformatBarcodeList = ArrayList<String>()
+            val reformatBarcodeList = ArrayList<String>()
 
-                for (item in barcodeList) {
-                    reformatBarcodeList.add("'$item'")
-                }
-
-                val highAmountCount =
-                    DatabaseHelper.getInstance()["SELECT * FROM " + DatabaseHelper.DB_TABLE_INTEGRATION_LIST + " WHERE high_amount_yn = 'Y' AND invoice_no IN (" + TextUtils.join(
-                        ",",
-                        reformatBarcodeList
-                    ) + ")"].count
-
-                if (highAmountCount > 0) {
-                    "Y"
-                } else {
-                    "N"
-                }
+            for (item in barcodeList) {
+                reformatBarcodeList.add("'$item'")
             }
 
-            if (amountYN == "Y") {
+            val highAmountCount =
+                DatabaseHelper.getInstance()["SELECT * FROM " + DatabaseHelper.DB_TABLE_INTEGRATION_LIST + " WHERE high_amount_yn = 'Y' AND invoice_no IN (" + TextUtils.join(
+                    ",",
+                    reformatBarcodeList
+                ) + ")"].count
+
+            if (highAmountCount > 0) {
                 if (!hasSignImage || !hasVisitImage) {
                     val msg = resources.getString(R.string.msg_high_amount_sign_photo)
                     Toast.makeText(this.applicationContext, msg, Toast.LENGTH_SHORT).show()
