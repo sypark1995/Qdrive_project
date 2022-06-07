@@ -619,6 +619,19 @@ class DeliveryDoneActivity2 : CommonActivity(), Camera2Interface,
                             return@launch
                         }
 
+                        val dateFormat = SimpleDateFormat("yyyy-MM-dd HH:mm:ss")
+                        val date = Date()
+
+                        val contentVal = ContentValues()
+                        contentVal.put("stat", BarcodeType.DELIVERY_DONE)
+                        contentVal.put("rcv_type", mReceiveType)
+                        contentVal.put("driver_memo", driverMemo)
+                        contentVal.put("chg_dt", dateFormat.format(date))
+                        contentVal.put("fail_reason", "")
+
+                        DatabaseHelper.getInstance().update(DatabaseHelper.DB_TABLE_INTEGRATION_LIST, contentVal,
+                            "invoice_no=? COLLATE NOCASE " + "and reg_id = ?", arrayOf(item, Preferences.userId))
+
                         val response = RetrofitClient.instanceDynamic().setDeliveryUploadData(
                             BarcodeType.DELIVERY_DONE,
                             mReceiveType,
