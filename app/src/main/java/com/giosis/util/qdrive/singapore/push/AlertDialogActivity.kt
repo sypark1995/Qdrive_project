@@ -91,7 +91,7 @@ class AlertDialogActivity : Activity() {
                     || actionKey == PushData.FL_TAKEBACK
                     || actionKey == PushData.LZD_PICK
                 ) {
-                    if (activityName!!.contains("com.giosis.util.qdrive.singapore.CaptureActivity1")) {
+                    if (activityName!!.contains("CaptureActivity")) {
                         finish()
                     } else {
                         if (actionValue!!.isEmpty()) {
