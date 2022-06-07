@@ -129,14 +129,18 @@ class CnRPickupDoneActivity : CommonActivity() {
             }
         }
 
-        val barcodeMsg = TextUtils.join(",", pickupNoList)
+        val invoiceList = ArrayList<String>()
+
+        for (item in pickupNoList) {
+            invoiceList.add(item.barcode!!)
+        }
 
         val qtyFormat =
-            String.format(resources.getString(R.string.text_total_qty_count), pickupNoList.size)
+            String.format(resources.getString(R.string.text_total_qty_count), invoiceList.size)
 
         text_sign_p_tracking_no.text = qtyFormat
         text_sign_p_tracking_no_more.visibility = View.VISIBLE
-        text_sign_p_tracking_no_more.text = barcodeMsg
+        text_sign_p_tracking_no_more.text = TextUtils.join(",", invoiceList)
 
         text_top_title.text = resources.getString(R.string.text_cnr_pickup_done)
         text_sign_p_requester.text = strReqQty
