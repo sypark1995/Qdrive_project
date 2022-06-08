@@ -35,7 +35,6 @@ import com.giosis.util.qdrive.singapore.server.ImageUpload
 import com.giosis.util.qdrive.singapore.server.RetrofitClient
 import com.giosis.util.qdrive.singapore.util.*
 import com.giosis.util.qdrive.singapore.util.Camera2APIs.Camera2Interface
-import com.giosis.util.qdrive.singapore.util.Preferences
 import com.giosis.util.qdrive.singapore.util.dialog.ProgressDialog
 import com.google.gson.Gson
 import kotlinx.coroutines.launch
@@ -48,9 +47,22 @@ import java.util.*
  */
 class DeliveryDoneActivity2 : CommonActivity(), Camera2Interface,
     SurfaceTextureListener {
+
+    companion object {
+        private const val RESULT_LOAD_IMAGE = 3
+        private const val PERMISSION_REQUEST_CODE = 1000
+        private val PERMISSIONS = arrayOf(
+            PermissionChecker.READ_EXTERNAL_STORAGE,
+            PermissionChecker.WRITE_EXTERNAL_STORAGE,
+            PermissionChecker.ACCESS_COARSE_LOCATION,
+            PermissionChecker.ACCESS_FINE_LOCATION,
+            PermissionChecker.CAMERA
+        )
+    }
+
     var TAG = "DeliveryDoneActivity"
 
-    //
+
     var mReceiveType = "RC"
     var routeNumber: String? = null
     var barcodeList = ArrayList<String>()// 바코드 리스트만 가지고 있으면 된다..
@@ -530,10 +542,6 @@ class DeliveryDoneActivity2 : CommonActivity(), Camera2Interface,
         return outletInfo
     }
 
-    /*
-     * 실시간 Upload 처리
-     * add by jmkang 2014-01-22
-     */
     private fun saveServerUploadSign() {
         try {
             if (!NetworkUtil.isNetworkAvailable(this)) {
@@ -548,13 +556,9 @@ class DeliveryDoneActivity2 : CommonActivity(), Camera2Interface,
 
             val driverMemo = binding.editSignDMemo.text.toString()
 
-            // NOTIFICATION. 2020.06  visit log 추가
             // 사인 or 사진 둘 중 하나는 있어야 함
             val hasSignImage = binding.signViewSignDSignature.isTouch
-
             val hasVisitImage = camera2.hasImage(binding.imgSignDVisitLog)
-
-            //   Log.e(TAG, TAG + "  has DATA : " + hasSignImage + " / " + hasVisitImage);
 
             val reformatBarcodeList = ArrayList<String>()
 
@@ -563,10 +567,9 @@ class DeliveryDoneActivity2 : CommonActivity(), Camera2Interface,
             }
 
             val highAmountCount =
-                DatabaseHelper.getInstance()["SELECT * FROM " + DatabaseHelper.DB_TABLE_INTEGRATION_LIST + " WHERE high_amount_yn = 'Y' AND invoice_no IN (" + TextUtils.join(
-                    ",",
-                    reformatBarcodeList
-                ) + ")"].count
+                DatabaseHelper.getInstance()["SELECT * FROM " + DatabaseHelper.DB_TABLE_INTEGRATION_LIST
+                        + " WHERE high_amount_yn = 'Y' AND invoice_no IN ("
+                        + TextUtils.join(",", reformatBarcodeList) + ")"].count
 
             if (highAmountCount > 0) {
                 if (!hasSignImage || !hasVisitImage) {
@@ -585,34 +588,56 @@ class DeliveryDoneActivity2 : CommonActivity(), Camera2Interface,
             }
 
             //서버에 올리기전 용량체크  내장메모리가 100Kbyte 안남은경우
-            if (availableInternalMemorySize != MemoryStatus.ERROR.toLong() && availableInternalMemorySize < MemoryStatus.PRESENT_BYTE) {
+            if (availableInternalMemorySize != MemoryStatus.ERROR.toLong()
+                && availableInternalMemorySize < MemoryStatus.PRESENT_BYTE
+            ) {
                 alertShow(resources.getString(R.string.msg_disk_size_error))
                 return
             }
+
             FirebaseEvent.clickEvent(this, TAG, "SetDeliveryUploadData")
 
             progressBar.visibility = View.VISIBLE
+
             lifecycleScope.launch {
 
                 var resultMsg = ""
                 try {
                     for (item in barcodeList) {
 
-                        val bitmapString = QDataUtil.getBitmapString(
-                            this@DeliveryDoneActivity2,
-                            binding.signViewSignDSignature,
-                            ImageUpload.QXPOD,
-                            "qdriver/sign",
-                            item
-                        )
+                        var bitmapString = ""
+                        if (binding.signViewSignDSignature.isTouch) {
+                            DataUtil.captureSign(
+                                "/Qdrive",
+                                item,
+                                binding.signViewSignDSignature
+                            )
 
-                        val bitmapString2 = QDataUtil.getBitmapString(
-                            this@DeliveryDoneActivity2,
-                            binding.imgSignDVisitLog,
-                            ImageUpload.QXPOD,
-                            "qdriver/delivery",
-                            item
-                        )
+                            bitmapString = QDataUtil.getBitmapString(
+                                this@DeliveryDoneActivity2,
+                                binding.signViewSignDSignature,
+                                ImageUpload.QXPOD,
+                                "qdriver/sign",
+                                item
+                            )
+                        }
+
+                        var bitmapString2 = ""
+                        if (camera2.hasImage(binding.imgSignDVisitLog)) {
+                            DataUtil.captureSign(
+                                "/Qdrive",
+                                item + "_1",
+                                binding.imgSignDVisitLog
+                            )
+
+                            bitmapString2 = QDataUtil.getBitmapString(
+                                this@DeliveryDoneActivity2,
+                                binding.imgSignDVisitLog,
+                                ImageUpload.QXPOD,
+                                "qdriver/delivery",
+                                item
+                            )
+                        }
 
                         if (bitmapString.isEmpty() && bitmapString2.isEmpty()) {
                             resultDialog(resources.getString(R.string.msg_upload_fail_image))
@@ -629,8 +654,12 @@ class DeliveryDoneActivity2 : CommonActivity(), Camera2Interface,
                         contentVal.put("chg_dt", dateFormat.format(date))
                         contentVal.put("fail_reason", "")
 
-                        DatabaseHelper.getInstance().update(DatabaseHelper.DB_TABLE_INTEGRATION_LIST, contentVal,
-                            "invoice_no=? COLLATE NOCASE " + "and reg_id = ?", arrayOf(item, Preferences.userId))
+                        DatabaseHelper.getInstance().update(
+                            DatabaseHelper.DB_TABLE_INTEGRATION_LIST,
+                            contentVal,
+                            "invoice_no=? COLLATE NOCASE " + "and reg_id = ?",
+                            arrayOf(item, Preferences.userId)
+                        )
 
                         val response = RetrofitClient.instanceDynamic().setDeliveryUploadData(
                             BarcodeType.DELIVERY_DONE,
@@ -645,6 +674,7 @@ class DeliveryDoneActivity2 : CommonActivity(), Camera2Interface,
                             "QR",
                             ""
                         )
+
                         if (response.resultCode == 0) {
                             val contentVal2 = ContentValues()
                             contentVal2.put("punchOut_stat", "S")
@@ -655,10 +685,17 @@ class DeliveryDoneActivity2 : CommonActivity(), Camera2Interface,
                                 "invoice_no=? COLLATE NOCASE " + "and reg_id = ?",
                                 arrayOf(item, Preferences.userId)
                             )
+                            // TODO_sypark -25 ㄱㅏ 무엇인지 알아보기..........
+//                            if (resultCode == -25) {
+//
+//                                dbHelper.delete(
+//                                    DatabaseHelper.DB_TABLE_INTEGRATION_LIST,
+//                                    "invoice_no= '$assignNo' COLLATE NOCASE"
+//                                )
                         } else {
                             DatabaseHelper.getInstance().delete(
                                 DatabaseHelper.DB_TABLE_INTEGRATION_LIST,
-                                "invoice_no= '" + item + "' COLLATE NOCASE"
+                                "invoice_no= '$item' COLLATE NOCASE"
                             )
                         }
                         resultMsg = response.resultMsg!!
@@ -667,6 +704,7 @@ class DeliveryDoneActivity2 : CommonActivity(), Camera2Interface,
                 } catch (e: Exception) {
                     resultMsg = e.toString()
                 }
+
                 progressBar.visibility = View.GONE
                 resultDialog(resultMsg)
             }
@@ -674,7 +712,6 @@ class DeliveryDoneActivity2 : CommonActivity(), Camera2Interface,
         } catch (e: Exception) {
             progressBar.visibility = View.GONE
 
-            Log.e("Exception", "saveServerUploadSign  Exception : $e")
             Toast.makeText(
                 this,
                 resources.getString(R.string.text_error) + " - " + e.toString(),
@@ -717,7 +754,9 @@ class DeliveryDoneActivity2 : CommonActivity(), Camera2Interface,
                 }
             }
 
-            if (availableInternalMemorySize != MemoryStatus.ERROR.toLong() && availableInternalMemorySize < MemoryStatus.PRESENT_BYTE) {
+            if (availableInternalMemorySize != MemoryStatus.ERROR.toLong()
+                && availableInternalMemorySize < MemoryStatus.PRESENT_BYTE
+            ) {
                 alertShow(resources.getString(R.string.msg_disk_size_error))
                 return
             }
@@ -735,6 +774,8 @@ class DeliveryDoneActivity2 : CommonActivity(), Camera2Interface,
                     var bitmap1 = ""
 
                     if (outletInfo!!.route!!.substring(0, 2) == "7E") {
+                        DataUtil.captureSign("/Qdrive", item, binding.signViewSignDSignature)
+
                         bitmap1 = QDataUtil.getBitmapString(
                             this@DeliveryDoneActivity2,
                             binding.signViewSignDSignature,
@@ -883,18 +924,6 @@ class DeliveryDoneActivity2 : CommonActivity(), Camera2Interface,
     }
 
     override fun onSurfaceTextureUpdated(surface: SurfaceTexture) {}
-
-    companion object {
-        private const val RESULT_LOAD_IMAGE = 3
-        private const val PERMISSION_REQUEST_CODE = 1000
-        private val PERMISSIONS = arrayOf(
-            PermissionChecker.READ_EXTERNAL_STORAGE,
-            PermissionChecker.WRITE_EXTERNAL_STORAGE,
-            PermissionChecker.ACCESS_COARSE_LOCATION,
-            PermissionChecker.ACCESS_FINE_LOCATION,
-            PermissionChecker.CAMERA
-        )
-    }
 
     private fun resultDialog(msg: String) {
         if (!isFinishing) {
