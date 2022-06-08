@@ -66,8 +66,6 @@ class DeliveryDoneActivity2 : CommonActivity(), Camera2Interface,
     var mReceiveType = "RC"
     var routeNumber: String? = null
     var barcodeList = ArrayList<String>()// 바코드 리스트만 가지고 있으면 된다..
-    var senderName: String? = null
-    var receiverName: String? = null
 
     // Camera & Gallery
     val camera2 by lazy {
@@ -84,7 +82,7 @@ class DeliveryDoneActivity2 : CommonActivity(), Camera2Interface,
     var longitude = 0.0
 
     // Outlet
-    var outletInfo: OutletInfo? = null
+    var outletInfo = OutletInfo()
     var showQRCode = false
     var isPermissionTrue = false
 
@@ -99,6 +97,8 @@ class DeliveryDoneActivity2 : CommonActivity(), Camera2Interface,
     public override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(binding.root)
+
+        binding.appBar.textTopTitle.setText(R.string.text_delivered)
 
         binding.appBar.layoutTopBack.setOnClickListener {
             cancelSigning()
@@ -197,29 +197,24 @@ class DeliveryDoneActivity2 : CommonActivity(), Camera2Interface,
         }
 
         getDeliveryInfo(barcodeList[0])
-        outletInfo = getOutletInfo(barcodeList[0])
-
-        binding.appBar.textTopTitle.setText(R.string.text_delivered)
-        binding.textSignDReceiver.text = receiverName
-        binding.textSignDSender.text = senderName
 
         DisplayUtil.setPreviewCamera(binding.imgSignDPreviewBg)
 
         // NOTIFICATION.  Outlet Delivery
-        if (outletInfo!!.route != null) {
-            if (outletInfo!!.route!!.substring(0, 2).contains("7E")
-                || outletInfo!!.route!!.substring(0, 2).contains("FL")
+        if (outletInfo.route != null) {
+            if (outletInfo.route!!.substring(0, 2).contains("7E")
+                || outletInfo.route!!.substring(0, 2).contains("FL")
             ) {
                 binding.layoutSignDOutletAddress.visibility = View.VISIBLE
                 binding.textSignDOutletAddress.text =
-                    "(" + outletInfo!!.zip_code + ") " + outletInfo!!.address
+                    "(" + outletInfo.zip_code + ") " + outletInfo.address
 
                 try {
 
-                    Log.e(TAG, "Operation Address : " + outletInfo!!.address)
+                    Log.e(TAG, "Operation Address : " + outletInfo.address)
                     // ex: CLEMENTI MRT STATION 3150 COMMONWEALTH AVENUE WEST #02-01 (Operation hours: 24 hours)
 
-                    val splitAddress = outletInfo!!.address!!.split(":")
+                    val splitAddress = outletInfo.address!!.split(":")
                     Log.e(
                         TAG,
                         "hours =>>> ${splitAddress[1].subSequence(0, splitAddress[1].length - 1)}"
@@ -233,11 +228,11 @@ class DeliveryDoneActivity2 : CommonActivity(), Camera2Interface,
                         binding.textSignDOutletOperationTime.text = operationHour
                     }
 
-                    val splitAddress2 = outletInfo!!.address!!.split("(")
+                    val splitAddress2 = outletInfo.address!!.split("(")
                     Log.e(TAG, "address ==>>> ${splitAddress2[0].trim()}")
 
                     binding.textSignDOutletAddress.text =
-                        "(" + outletInfo!!.zip_code + ") " + splitAddress2[0].trim()
+                        "(" + outletInfo.zip_code + ") " + splitAddress2[0].trim()
                 } catch (e: Exception) {
 
                 }
@@ -248,12 +243,12 @@ class DeliveryDoneActivity2 : CommonActivity(), Camera2Interface,
 
                 val outletList = ArrayList<OutletDeliveryItem>()
 
-                val dbHelper = DatabaseHelper.getInstance()
-                if (routeNumber == null) {      // SCAN > Delivery Done
+                if (routeNumber == null) {
                     for (i in barcodeList.indices) {
                         val cs =
-                            dbHelper["SELECT rcv_nm FROM " + DatabaseHelper.DB_TABLE_INTEGRATION_LIST
+                            DatabaseHelper.getInstance()["SELECT rcv_nm FROM " + DatabaseHelper.DB_TABLE_INTEGRATION_LIST
                                     + " WHERE punchOut_stat = 'N' and chg_dt is null and type = 'D' and reg_id='" + Preferences.userId + "' and invoice_no='" + barcodeList[i] + "'"]
+
                         if (cs.moveToFirst()) {
                             do {
                                 val receiver = cs.getString(cs.getColumnIndex("rcv_nm"))
@@ -268,10 +263,10 @@ class DeliveryDoneActivity2 : CommonActivity(), Camera2Interface,
                             } while (cs.moveToNext())
                         }
                     }
-                } else {    // LIST > In Progress
+                } else {
 
                     val cs =
-                        dbHelper["SELECT invoice_no, rcv_nm FROM " + DatabaseHelper.DB_TABLE_INTEGRATION_LIST
+                        DatabaseHelper.getInstance()["SELECT invoice_no, rcv_nm FROM " + DatabaseHelper.DB_TABLE_INTEGRATION_LIST
                                 + " WHERE punchOut_stat = 'N' and chg_dt is null and type = 'D' and reg_id='" + Preferences.userId + "' and route LIKE '%" + routeNumber + "%'"]
 
                     if (cs.moveToFirst()) {
@@ -300,9 +295,7 @@ class DeliveryDoneActivity2 : CommonActivity(), Camera2Interface,
                     }
                 }
 
-
-
-                if (outletInfo!!.route!!.substring(0, 2).contains("7E")) {
+                if (outletInfo.route!!.substring(0, 2).contains("7E")) {
 
                     binding.appBar.textTopTitle.setText(R.string.text_title_7e_store_delivery)
                     binding.textSignDOutletAddressTitle.setText(R.string.text_7e_store_address)
@@ -395,7 +388,6 @@ class DeliveryDoneActivity2 : CommonActivity(), Camera2Interface,
             binding.layoutSignDVisitLog.visibility = View.VISIBLE
         }
 
-
         // Memo 입력제한
         binding.editSignDMemo.addTextChangedListener(object : TextWatcher {
             override fun beforeTextChanged(charSequence: CharSequence, i: Int, i1: Int, i2: Int) {}
@@ -412,7 +404,6 @@ class DeliveryDoneActivity2 : CommonActivity(), Camera2Interface,
 
             override fun afterTextChanged(editable: Editable) {}
         })
-
 
         // 권한 여부 체크 (없으면 true, 있으면 false)
         val checker = PermissionChecker(this)
@@ -467,7 +458,7 @@ class DeliveryDoneActivity2 : CommonActivity(), Camera2Interface,
         super.onResume()
         if (isPermissionTrue) {
             // Camera
-            if (!outletInfo!!.route!!.substring(0, 2).contains("7E")) {
+            if (!outletInfo.route!!.substring(0, 2).contains("7E")) {
 
                 // When the screen is turned off and turned back on, the SurfaceTexture is already available.
                 if (binding.textureSignDPreview.isAvailable) {
@@ -492,7 +483,7 @@ class DeliveryDoneActivity2 : CommonActivity(), Camera2Interface,
     }
 
     private fun confirmSigning() {
-        if (outletInfo!!.route!!.contains("7E")) {
+        if (outletInfo.route!!.contains("7E")) {
             if (showQRCode) {        // QR Code Show
                 saveOutletDeliveryDone()
             } else {                // QR Code Not Show... > 진행 불가능
@@ -502,7 +493,7 @@ class DeliveryDoneActivity2 : CommonActivity(), Camera2Interface,
                     Toast.LENGTH_SHORT
                 ).show()
             }
-        } else if (outletInfo!!.route!!.contains("FL")) {
+        } else if (outletInfo.route!!.contains("FL")) {
             saveOutletDeliveryDone()
         } else {
             saveServerUploadSign()
@@ -511,11 +502,24 @@ class DeliveryDoneActivity2 : CommonActivity(), Camera2Interface,
 
     private fun getDeliveryInfo(barcodeNo: String?) {
         val cursor =
-            DatabaseHelper.getInstance()["SELECT rcv_nm, sender_nm FROM " + DatabaseHelper.DB_TABLE_INTEGRATION_LIST + " WHERE invoice_no='" + barcodeNo + "' COLLATE NOCASE"]
+            DatabaseHelper.getInstance()["SELECT rcv_nm, sender_nm, route, zip_code, address FROM " + DatabaseHelper.DB_TABLE_INTEGRATION_LIST + " WHERE invoice_no='" + barcodeNo + "' COLLATE NOCASE"]
+
         if (cursor.moveToFirst()) {
-            receiverName = cursor.getString(cursor.getColumnIndexOrThrow("rcv_nm"))
-            senderName = cursor.getString(cursor.getColumnIndexOrThrow("sender_nm"))
+            try {
+                binding.textSignDSender.text =
+                    cursor.getString(cursor.getColumnIndexOrThrow("sender_nm"))
+
+                binding.textSignDReceiver.text =
+                    cursor.getString(cursor.getColumnIndexOrThrow("rcv_nm"))
+
+                outletInfo.route = cursor.getString(cursor.getColumnIndexOrThrow("route"))
+                outletInfo.zip_code = cursor.getString(cursor.getColumnIndexOrThrow("zip_code"))
+                outletInfo.address = cursor.getString(cursor.getColumnIndexOrThrow("address"))
+            } catch (e: Exception) {
+
+            }
         }
+
         cursor.close()
     }
 
@@ -529,18 +533,6 @@ class DeliveryDoneActivity2 : CommonActivity(), Camera2Interface,
             .setNegativeButton(R.string.button_cancel) { dialog, _ -> dialog.dismiss() }.show()
     }
 
-    private fun getOutletInfo(barcodeNo: String?): OutletInfo {
-        val cursor =
-            DatabaseHelper.getInstance()["SELECT route, zip_code, address FROM " + DatabaseHelper.DB_TABLE_INTEGRATION_LIST + " WHERE invoice_no='" + barcodeNo + "' COLLATE NOCASE"]
-        val outletInfo = OutletInfo()
-        if (cursor.moveToFirst()) {
-            outletInfo.route = cursor.getString(cursor.getColumnIndexOrThrow("route"))
-            outletInfo.zip_code = cursor.getString(cursor.getColumnIndexOrThrow("zip_code"))
-            outletInfo.address = cursor.getString(cursor.getColumnIndexOrThrow("address"))
-        }
-        cursor.close()
-        return outletInfo
-    }
 
     private fun saveServerUploadSign() {
         try {
@@ -743,7 +735,7 @@ class DeliveryDoneActivity2 : CommonActivity(), Camera2Interface,
                 longitude = gpsTrackerManager!!.longitude
             }
 
-            if (outletInfo!!.route!!.substring(0, 2).contains("7E")) {
+            if (outletInfo.route!!.substring(0, 2).contains("7E")) {
                 if (!binding.signViewSignDSignature.isTouch) {
                     Toast.makeText(
                         this,
@@ -773,7 +765,7 @@ class DeliveryDoneActivity2 : CommonActivity(), Camera2Interface,
                 for (item in barcodeList) {
                     var bitmap1 = ""
 
-                    if (outletInfo!!.route!!.substring(0, 2) == "7E") {
+                    if (outletInfo.route!!.substring(0, 2) == "7E") {
                         DataUtil.captureSign("/Qdrive", item, binding.signViewSignDSignature)
 
                         bitmap1 = QDataUtil.getBitmapString(
@@ -816,7 +808,7 @@ class DeliveryDoneActivity2 : CommonActivity(), Camera2Interface,
                             driverMemo,
                             latitude,
                             longitude,
-                            outletInfo!!.route!!.substring(0, 2)
+                            outletInfo.route!!.substring(0, 2)
                         )
 
                         if (response.resultCode == 0) {
