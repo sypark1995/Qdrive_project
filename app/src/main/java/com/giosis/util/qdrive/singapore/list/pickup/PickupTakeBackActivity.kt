@@ -1,10 +1,10 @@
 package com.giosis.util.qdrive.singapore.list.pickup
 
+
 import android.app.Activity
 import android.app.AlertDialog
 import android.content.Intent
 import android.os.Bundle
-import android.util.Log
 import android.widget.Toast
 import com.giosis.util.qdrive.singapore.MemoryStatus
 import com.giosis.util.qdrive.singapore.R
@@ -12,6 +12,7 @@ import com.giosis.util.qdrive.singapore.gps.GPSTrackerManager
 import com.giosis.util.qdrive.singapore.util.*
 import kotlinx.android.synthetic.main.activity_pickup_take_back.*
 import kotlinx.android.synthetic.main.top_title.*
+
 
 class PickupTakeBackActivity : CommonActivity() {
     val TAG = "PickupTakeBackActivity"

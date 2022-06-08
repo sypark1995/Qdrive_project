@@ -34,7 +34,7 @@ import javax.net.ssl.SSLContext;
 import javax.net.ssl.TrustManager;
 import javax.net.ssl.X509TrustManager;
 
-
+@Deprecated
 public class OutletTrackingNoAdapter extends BaseAdapter {
     String TAG = "OutletTrackingNoAdapter";
 
