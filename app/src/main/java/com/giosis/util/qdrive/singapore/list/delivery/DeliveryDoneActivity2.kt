@@ -677,14 +677,7 @@ class DeliveryDoneActivity2 : CommonActivity(), Camera2Interface,
                                 "invoice_no=? COLLATE NOCASE " + "and reg_id = ?",
                                 arrayOf(item, Preferences.userId)
                             )
-                            // TODO_sypark -25 ㄱㅏ 무엇인지 알아보기..........
-//                            if (resultCode == -25) {
-//
-//                                dbHelper.delete(
-//                                    DatabaseHelper.DB_TABLE_INTEGRATION_LIST,
-//                                    "invoice_no= '$assignNo' COLLATE NOCASE"
-//                                )
-                        } else {
+                        } else if (response.resultCode == -25) {    // A 드라이버 한테 화물이 할당되어 있는데 B 드라이버 (나) 가 처리할려고 하는 경우
                             DatabaseHelper.getInstance().delete(
                                 DatabaseHelper.DB_TABLE_INTEGRATION_LIST,
                                 "invoice_no= '$item' COLLATE NOCASE"
@@ -821,8 +814,7 @@ class DeliveryDoneActivity2 : CommonActivity(), Camera2Interface,
                                 "invoice_no=? COLLATE NOCASE " + "and reg_id = ?",
                                 arrayOf(item, Preferences.userId)
                             )
-                        } else {
-                            //todo_sypark resultcode -25 확인
+                        } else if (response.resultCode == -25) {    // A 드라이버 한테 화물이 할당되어 있는데 B 드라이버 (나) 가 처리할려고 하는 경우
                             DatabaseHelper.getInstance().delete(
                                 DatabaseHelper.DB_TABLE_INTEGRATION_LIST,
                                 "invoice_no= '$item' COLLATE NOCASE"
