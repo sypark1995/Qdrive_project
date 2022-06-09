@@ -1156,8 +1156,6 @@ public final class CaptureActivity extends CommonActivity implements DecoratedBa
 
             case PERMISSION_REQUEST_CODE: {
                 if (resultCode == PermissionActivity.PERMISSIONS_GRANTED) {
-                    Log.e("eylee", TAG + "   onActivityResult  PERMISSIONS_GRANTED");
-
                     isPermissionTrue = true;
                 }
             }

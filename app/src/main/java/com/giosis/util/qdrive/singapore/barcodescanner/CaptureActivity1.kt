@@ -1821,15 +1821,19 @@ class CaptureActivity1 : CommonActivity(), TorchListener, OnTouchListener, TextW
         if (updateCount < 1) { // 실패일때만 보여준다.
 
             val vibrator = getSystemService(VIBRATOR_SERVICE) as Vibrator
-            if (Build.VERSION.SDK_INT > Build.VERSION_CODES.N_MR1)
+
+            if (Build.VERSION.SDK_INT > Build.VERSION_CODES.N_MR1) {
+
                 vibrator.vibrate(
                     VibrationEffect.createOneShot(
                         200L,
                         VibrationEffect.DEFAULT_AMPLITUDE
                     )
                 )
-            else
+
+            } else {
                 vibrator.vibrate(200L)
+            }
 
             val toast = Toast.makeText(this@CaptureActivity1, message, Toast.LENGTH_LONG)
             toast.setGravity(Gravity.CENTER, 0, 10)

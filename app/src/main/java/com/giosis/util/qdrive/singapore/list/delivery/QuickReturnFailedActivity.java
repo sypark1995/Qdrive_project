@@ -237,7 +237,6 @@ public class QuickReturnFailedActivity extends CommonActivity implements Camera2
                 img_sign_d_r_f_visit_log.setScaleType(ImageView.ScaleType.CENTER_INSIDE);
                 onResume();
             } catch (Exception e) {
-                Log.e("eylee", e.toString());
                 e.printStackTrace();
             }
         } else if (resultCode == PermissionActivity.PERMISSIONS_GRANTED) {
@@ -375,7 +374,6 @@ public class QuickReturnFailedActivity extends CommonActivity implements Camera2
             }
         } catch (Exception ex) {
             isGalleryActivate = false;
-            Log.i("eylee", ex.toString());
         }
     }
 
