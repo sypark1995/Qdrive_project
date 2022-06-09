@@ -677,7 +677,8 @@ class DeliveryDoneActivity2 : CommonActivity(), Camera2Interface,
                                 "invoice_no=? COLLATE NOCASE " + "and reg_id = ?",
                                 arrayOf(item, Preferences.userId)
                             )
-                        } else if (response.resultCode == -25) {    // A 드라이버 한테 화물이 할당되어 있는데 B 드라이버 (나) 가 처리할려고 하는 경우
+                        } else if (response.resultCode == -25) {
+                            // A 드라이버 한테 화물이 할당되어 있는데 B 드라이버 (나) 가 처리할려고 하는 경우
                             DatabaseHelper.getInstance().delete(
                                 DatabaseHelper.DB_TABLE_INTEGRATION_LIST,
                                 "invoice_no= '$item' COLLATE NOCASE"
@@ -814,7 +815,8 @@ class DeliveryDoneActivity2 : CommonActivity(), Camera2Interface,
                                 "invoice_no=? COLLATE NOCASE " + "and reg_id = ?",
                                 arrayOf(item, Preferences.userId)
                             )
-                        } else if (response.resultCode == -25) {    // A 드라이버 한테 화물이 할당되어 있는데 B 드라이버 (나) 가 처리할려고 하는 경우
+                        } else if (response.resultCode == -25) {
+                            // A 드라이버 한테 화물이 할당되어 있는데 B 드라이버 (나) 가 처리할려고 하는 경우
                             DatabaseHelper.getInstance().delete(
                                 DatabaseHelper.DB_TABLE_INTEGRATION_LIST,
                                 "invoice_no= '$item' COLLATE NOCASE"

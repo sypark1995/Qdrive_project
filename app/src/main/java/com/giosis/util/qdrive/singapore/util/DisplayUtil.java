@@ -32,24 +32,6 @@ public class DisplayUtil {
         return (int) (pixel / DEFAULT_HDIP_DENSITY_SCALE * scale);
     }
 
-    /**
-     * 현재 디스플레이 화면에 비례한 DP단위를 픽셀 크기로 반환합니다.
-     *
-     * @param DP 픽셀
-     * @return 변환된 값 (pixel)
-     */
-    public static int PixelFromDP(Context context, int DP) {
-        float scale = context.getResources().getDisplayMetrics().density;
-
-        return (int) (DP / scale * DEFAULT_HDIP_DENSITY_SCALE);
-    }
-
-    public static int dpTopx(Context context, float dp) {
-
-        return (int) TypedValue.applyDimension(TypedValue.COMPLEX_UNIT_DIP, dp, context.getResources().getDisplayMetrics());
-    }
-
-
     public static void dismissProgressDialog(ProgressDialog progressDialog) {
         if (progressDialog != null) {
             if (progressDialog.isShowing()) {
