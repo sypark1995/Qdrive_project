@@ -714,11 +714,6 @@ class CaptureActivity1 : CommonActivity(), TorchListener, OnTouchListener, TextW
                             )
 
                             if (result != null) {
-                                val tempNo = result.trackingNo +
-                                        "  |  " + result.status +
-                                        "  |  " + result.currentDriver
-
-
                                 addScannedBarcode(
                                     result.trackingNo,
                                     result.status,
