@@ -59,6 +59,53 @@ import java.util.regex.Pattern
 class CaptureActivity1 : CommonActivity(), TorchListener, OnTouchListener, TextWatcher,
     View.OnKeyListener {
 
+    companion object {
+
+        private const val TAG = "CaptureActivity1"
+        private const val bluetoothTAG = "Capture_Bluetooth"
+
+        private const val PERMISSION_REQUEST_CODE = 1000
+        private val PERMISSIONS = arrayOf(
+            PermissionChecker.ACCESS_FINE_LOCATION,
+            PermissionChecker.ACCESS_COARSE_LOCATION,
+            PermissionChecker.READ_EXTERNAL_STORAGE,
+            PermissionChecker.WRITE_EXTERNAL_STORAGE,
+            PermissionChecker.CAMERA
+        )
+
+        /*
+         * Qxpress송장번호 규칙(범용)
+         * 운송장번호 규칙이 맞는지 체크
+         * 10문자 안넘으면 false, 맨앞두글자가 KR,SG,QX,JP,CN이 아닐경우 false, 5,6번째가 숫자가 아닐경우 false, 영문숫자조합
+          SELF_COLLECTION */
+
+        fun isInvoiceCodeRule(invoiceNo: String?): Boolean {
+
+            if (invoiceNo!!.length < 10) return false
+
+            val bln = Pattern.matches("^[a-zA-Z0-9]*$", invoiceNo)
+            if (!bln) {
+                return false
+            }
+
+            if (10 <= invoiceNo.length) {    // self collection c2c 아닐 때
+
+                val subInvoice = invoiceNo.substring(4, 6)
+                return isStringDouble(subInvoice)
+            }
+            return true
+        }
+
+        private fun isStringDouble(s: String): Boolean {
+            return try {
+                s.toDouble()
+                true
+            } catch (e: NumberFormatException) {
+                false
+            }
+        }
+    }
+
     private val binding by lazy {
         ActivityCaptureBinding.inflate(layoutInflater)
     }
@@ -87,7 +134,6 @@ class CaptureActivity1 : CommonActivity(), TorchListener, OnTouchListener, TextW
     }
     private var resultData: OutletPickupDoneResult.OutletPickupDoneItem? = null
 
-
     //
     var scannedBarcode = ArrayList<String>()    // Duplicate
     private val cameraManager: CaptureManager by lazy {
@@ -97,29 +143,30 @@ class CaptureActivity1 : CommonActivity(), TorchListener, OnTouchListener, TextW
     private val mBluetoothAdapter: BluetoothAdapter? by lazy {
         BluetoothAdapter.getDefaultAdapter()
     }
+
     private var mIsScanDeviceListActivityRun = false
     private var connectedDeviceName: String? = null
+
     private val mUpdateTimeTask = Runnable {
-        if (KTSyncData.AutoConnect && KTSyncData.bIsRunning) KTSyncData.mChatService.connect(
-            connectedDevice
-        )
+        if (KTSyncData.AutoConnect && KTSyncData.bIsRunning) {
+            KTSyncData.mChatService.connect(connectedDevice)
+        }
     }
 
     //
     private val deleteDrawable by lazy {
         ContextCompat.getDrawable(this, R.drawable.btn_delete)
     }
-    private var scannedCount = 0
 
     val adapter: ScannedBarcodeAdapter by lazy {
         ScannedBarcodeAdapter(scanBarcodeArrayList, mScanType)
     }
-    private var scanBarcodeArrayList: ArrayList<BarcodeData>? = null
+    private var scanBarcodeArrayList = ArrayList<BarcodeData>()
     private var changeDriverResult: ChangeDriverResult.Data? = null
     private val changeDriverObjectArrayList = ArrayList<ChangeDriverResult.Data?>()
 
     // resume 시 recreate 할 data list
-    private val barcodeList: ArrayList<String> = ArrayList()
+    private val barcodeList = ArrayList<String>()
 
 
     //2016-09-03 pickup cnr Requester
@@ -145,7 +192,6 @@ class CaptureActivity1 : CommonActivity(), TorchListener, OnTouchListener, TextW
     var gpsTrackerManager: GPSTrackerManager? = null
     var gpsEnable = false
     var isPermissionTrue = false
-
 
     var clickListener = View.OnClickListener { v ->
 
@@ -227,11 +273,23 @@ class CaptureActivity1 : CommonActivity(), TorchListener, OnTouchListener, TextW
             }
             R.id.btn_confirm -> {
                 when (mScanType) {
-                    BarcodeType.CONFIRM_MY_DELIVERY_ORDER, BarcodeType.CHANGE_DELIVERY_DRIVER -> onUpdateButtonClick()
-                    BarcodeType.PICKUP_CNR, BarcodeType.PICKUP_SCAN_ALL,
-                    BarcodeType.PICKUP_ADD_SCAN, BarcodeType.PICKUP_TAKE_BACK, BarcodeType.OUTLET_PICKUP_SCAN -> onNextButtonClick()
-                    BarcodeType.DELIVERY_DONE -> onConfirmButtonClick()
-                    BarcodeType.SELF_COLLECTION -> onCaptureConfirmButtonClick()
+                    BarcodeType.CONFIRM_MY_DELIVERY_ORDER,
+                    BarcodeType.CHANGE_DELIVERY_DRIVER -> {
+                        onUpdateButtonClick()
+                    }
+                    BarcodeType.PICKUP_CNR,
+                    BarcodeType.PICKUP_SCAN_ALL,
+                    BarcodeType.PICKUP_ADD_SCAN,
+                    BarcodeType.PICKUP_TAKE_BACK,
+                    BarcodeType.OUTLET_PICKUP_SCAN -> {
+                        onNextButtonClick()
+                    }
+                    BarcodeType.DELIVERY_DONE -> {
+                        onConfirmButtonClick()
+                    }
+                    BarcodeType.SELF_COLLECTION -> {
+                        onCaptureConfirmButtonClick()
+                    }
                 }
             }
         }
@@ -259,7 +317,6 @@ class CaptureActivity1 : CommonActivity(), TorchListener, OnTouchListener, TextW
         binding.layoutScanner.isSelected = false
         binding.layoutBluetooth.isSelected = false
 
-        scanBarcodeArrayList = ArrayList()
         binding.recyclerScannedBarcode.adapter = adapter
 
         if (mScanType == BarcodeType.OUTLET_PICKUP_SCAN) {
@@ -277,24 +334,22 @@ class CaptureActivity1 : CommonActivity(), TorchListener, OnTouchListener, TextW
                 val data = BarcodeData()
                 data.state = "FAIL"
                 data.barcode = listItem[i].trackingNo
-                scanBarcodeArrayList!!.add(i, data)
+                scanBarcodeArrayList.add(i, data)
                 i++
             }
 
             // TEST_
 //                for(index in listItem.indices) {
-//
 //                    val data = BarcodeData()
 //                    data.state = "FAIL"
 //                    data.barcode = listItem[index].trackingNo
-//                    scanBarcodeArrayList!!.add(index, data)
+//                    scanBarcodeArrayList.add(index, data)
 //                }
         }
 
-        if (0 < scanBarcodeArrayList!!.size) {
-            binding.recyclerScannedBarcode.scrollToPosition(scanBarcodeArrayList!!.size - 1)
+        if (scanBarcodeArrayList.isNotEmpty()) {
+            binding.recyclerScannedBarcode.scrollToPosition(scanBarcodeArrayList.size - 1)
         }
-
 
         binding.layoutTopTitle.layoutTopBack.setOnClickListener(clickListener)
         binding.layoutCamera.setOnClickListener(clickListener)
@@ -374,20 +429,31 @@ class CaptureActivity1 : CommonActivity(), TorchListener, OnTouchListener, TextW
         binding.layoutScannedCount.visibility = View.VISIBLE
         when (scanType) {
 
-            BarcodeType.CONFIRM_MY_DELIVERY_ORDER -> binding.btnConfirm.text =
-                resources.getString(R.string.button_update) //onUpdateButtonClick
-            BarcodeType.CHANGE_DELIVERY_DRIVER -> binding.btnConfirm.text =
-                resources.getString(R.string.button_done) //onUpdateButtonClick
-            BarcodeType.DELIVERY_DONE -> {
-                binding.layoutScannedCount.visibility = View.GONE
-                binding.btnConfirm.text =
-                    resources.getString(R.string.button_confirm) //onConfirmButtonClick
+            BarcodeType.CONFIRM_MY_DELIVERY_ORDER -> {
+                //onUpdateButtonClick
+                binding.btnConfirm.text = resources.getString(R.string.button_update)
             }
-            BarcodeType.PICKUP_CNR, BarcodeType.PICKUP_SCAN_ALL, BarcodeType.PICKUP_ADD_SCAN,
-            BarcodeType.PICKUP_TAKE_BACK, BarcodeType.OUTLET_PICKUP_SCAN -> binding.btnConfirm.text =
-                resources.getString(R.string.button_next) //onNextButtonClick
-            BarcodeType.SELF_COLLECTION -> binding.btnConfirm.text =
-                resources.getString(R.string.button_confirm) // onCaptureConfirmButtonClick
+            BarcodeType.CHANGE_DELIVERY_DRIVER -> {
+                //onUpdateButtonClick
+                binding.btnConfirm.text = resources.getString(R.string.button_done)
+            }
+            BarcodeType.DELIVERY_DONE -> {
+                //onConfirmButtonClick
+                binding.layoutScannedCount.visibility = View.GONE
+                binding.btnConfirm.text = resources.getString(R.string.button_confirm)
+            }
+            BarcodeType.PICKUP_CNR,
+            BarcodeType.PICKUP_SCAN_ALL,
+            BarcodeType.PICKUP_ADD_SCAN,
+            BarcodeType.PICKUP_TAKE_BACK,
+            BarcodeType.OUTLET_PICKUP_SCAN -> {
+                //onNextButtonClick
+                binding.btnConfirm.text = resources.getString(R.string.button_next)
+            }
+            BarcodeType.SELF_COLLECTION -> {
+                // onCaptureConfirmButtonClick
+                binding.btnConfirm.text = resources.getString(R.string.button_confirm)
+            }
         }
     }
 
@@ -401,6 +467,7 @@ class CaptureActivity1 : CommonActivity(), TorchListener, OnTouchListener, TextW
                 resources.getString(R.string.msg_qdrive_auto_logout),
                 Toast.LENGTH_SHORT
             ).show()
+
             try {
                 val intent = Intent(this@CaptureActivity1, LoginActivity::class.java)
                 intent.flags = Intent.FLAG_ACTIVITY_CLEAR_TOP or Intent.FLAG_ACTIVITY_SINGLE_TOP
@@ -424,7 +491,6 @@ class CaptureActivity1 : CommonActivity(), TorchListener, OnTouchListener, TextW
         // Bluetooth
         if (KTSyncData.bIsRunning) return
         if (KTSyncData.mChatService != null) {
-
             if (KTSyncData.mChatService.state == BluetoothChatService.STATE_NONE) {
                 KTSyncData.mChatService.start()
             }
@@ -466,13 +532,10 @@ class CaptureActivity1 : CommonActivity(), TorchListener, OnTouchListener, TextW
             || mScanType == BarcodeType.OUTLET_PICKUP_SCAN
         ) {
             try {
-
-                scanBarcodeArrayList!!.clear()
+                scanBarcodeArrayList.clear()
                 adapter.notifyDataSetChanged()
 
                 if (mScanType == BarcodeType.OUTLET_PICKUP_SCAN) {
-
-                    scannedCount = 0
 
                     if (resultData != null) {
                         val listItem = resultData!!.trackingNoList
@@ -486,31 +549,29 @@ class CaptureActivity1 : CommonActivity(), TorchListener, OnTouchListener, TextW
 
                             if (isScanned) {
                                 data.state = "SUCCESS"
-                                scannedCount++
                                 scannedBarcode.add(trackingNo)
                             } else {
                                 data.state = "FAIL"
                             }
-                            scanBarcodeArrayList!!.add(i, data)
+                            scanBarcodeArrayList.add(i, data)
                         }
                     }
 
-                    binding.textScannedCount.text = scannedCount.toString()
+                    binding.textScannedCount.text = scanBarcodeArrayList.size.toString()
                     adapter.notifyDataSetChanged()
                     binding.recyclerScannedBarcode.smoothScrollToPosition(0)
                 } else {
 
-                    if (0 < barcodeList.size) {
+                    if (barcodeList.isNotEmpty()) {
                         for (i in barcodeList.indices) {
                             val data = BarcodeData()
                             data.state = "SUCCESS"
                             data.barcode = barcodeList[i]
-                            scanBarcodeArrayList!!.add(0, data)
+                            scanBarcodeArrayList.add(0, data)
                             scannedBarcode.add(barcodeList[i])
                         }
 
-                        scannedCount = scanBarcodeArrayList!!.size
-                        binding.textScannedCount.text = scannedCount.toString()
+                        binding.textScannedCount.text = scanBarcodeArrayList.size.toString()
                         adapter.notifyDataSetChanged()
                         binding.recyclerScannedBarcode.smoothScrollToPosition(0)
                     }
@@ -522,19 +583,19 @@ class CaptureActivity1 : CommonActivity(), TorchListener, OnTouchListener, TextW
                     resources.getString(R.string.text_data_error),
                     Toast.LENGTH_SHORT
                 ).show()
-                scanBarcodeArrayList!!.clear()
+                scanBarcodeArrayList.clear()
                 adapter.notifyDataSetChanged()
                 barcodeList.clear()
             }
         } else if (mScanType == BarcodeType.SELF_COLLECTION) {
 
-            scanBarcodeArrayList!!.clear()
+            scanBarcodeArrayList.clear()
             adapter.notifyDataSetChanged()
         }
     }
 
     private fun warningDialog(msg: String) {
-        if (!this@CaptureActivity1.isFinishing) {
+        if (!isFinishing) {
             val builder = AlertDialog.Builder(this@CaptureActivity1)
             builder.setTitle(resources.getString(R.string.text_warning))
             builder.setMessage(msg)
@@ -547,7 +608,7 @@ class CaptureActivity1 : CommonActivity(), TorchListener, OnTouchListener, TextW
     }
 
     private fun resultDialog(title: String, msg: String?) {
-        if (!this@CaptureActivity1.isFinishing) {
+        if (!isFinishing) {
             val builder = AlertDialog.Builder(this@CaptureActivity1)
             builder.setCancelable(false)
             builder.setTitle(title)
@@ -562,18 +623,14 @@ class CaptureActivity1 : CommonActivity(), TorchListener, OnTouchListener, TextW
 
     @SuppressLint("ClickableViewAccessibility")
     override fun onTouch(v: View, event: MotionEvent): Boolean {
-        if (mScanType == BarcodeType.PICKUP_CNR || mScanType == BarcodeType.PICKUP_SCAN_ALL || mScanType == BarcodeType.PICKUP_ADD_SCAN ||
-            mScanType == BarcodeType.OUTLET_PICKUP_SCAN || mScanType == BarcodeType.PICKUP_TAKE_BACK
+        if (mScanType == BarcodeType.PICKUP_CNR
+            || mScanType == BarcodeType.PICKUP_SCAN_ALL
+            || mScanType == BarcodeType.PICKUP_ADD_SCAN
+            || mScanType == BarcodeType.OUTLET_PICKUP_SCAN
+            || mScanType == BarcodeType.PICKUP_TAKE_BACK
         ) {
-
-            if (Preferences.userId == "karam.kim") {
-                inputMethodManager.showSoftInput(
-                    binding.editTrackingNumber,
-                    InputMethodManager.SHOW_IMPLICIT
-                )
-            }
+            //
         } else {
-
             inputMethodManager.showSoftInput(
                 binding.editTrackingNumber,
                 InputMethodManager.SHOW_IMPLICIT
@@ -593,6 +650,7 @@ class CaptureActivity1 : CommonActivity(), TorchListener, OnTouchListener, TextW
     }
 
     override fun beforeTextChanged(s: CharSequence, start: Int, count: Int, after: Int) {}
+
     override fun onTextChanged(s: CharSequence, start: Int, before: Int, count: Int) {
 
         val inputText = binding.editTrackingNumber.text
@@ -627,9 +685,13 @@ class CaptureActivity1 : CommonActivity(), TorchListener, OnTouchListener, TextW
                     scannedBarcode.add(tempScanNo)
                 }
 
-                if (mScanType == BarcodeType.CONFIRM_MY_DELIVERY_ORDER || mScanType == BarcodeType.CHANGE_DELIVERY_DRIVER ||
-                    mScanType == BarcodeType.PICKUP_CNR || mScanType == BarcodeType.PICKUP_SCAN_ALL || mScanType == BarcodeType.PICKUP_ADD_SCAN ||
-                    mScanType == BarcodeType.PICKUP_TAKE_BACK || mScanType == BarcodeType.OUTLET_PICKUP_SCAN
+                if (mScanType == BarcodeType.CONFIRM_MY_DELIVERY_ORDER
+                    || mScanType == BarcodeType.CHANGE_DELIVERY_DRIVER
+                    || mScanType == BarcodeType.PICKUP_CNR
+                    || mScanType == BarcodeType.PICKUP_SCAN_ALL
+                    || mScanType == BarcodeType.PICKUP_ADD_SCAN
+                    || mScanType == BarcodeType.PICKUP_TAKE_BACK
+                    || mScanType == BarcodeType.OUTLET_PICKUP_SCAN
                 ) {
                     if (event.action != KeyEvent.ACTION_DOWN) {
                         return true
@@ -724,16 +786,17 @@ class CaptureActivity1 : CommonActivity(), TorchListener, OnTouchListener, TextW
         when (mScanType) {
             BarcodeType.CONFIRM_MY_DELIVERY_ORDER -> {
 
-                var type = "STD"
-                if (Preferences.outletDriver == "Y")
-                    type = "OL"
+                val type = if (Preferences.outletDriver == "Y") {
+                    "OL"
+                } else {
+                    "STD"
+                }
 
                 RetrofitClient.instanceDynamic().requestValidationCheckDpc3Out(strBarcodeNo, type)
                     .subscribeOn(Schedulers.io())
                     .observeOn(AndroidSchedulers.mainThread())
                     .subscribe({
 
-                        Log.e("Server", "requestValidationCheckDpc3Out  result  " + it.resultCode)
                         if (it.resultCode < 0) {
 
                             beepManagerError.playBeepSoundAndVibrate()
@@ -771,10 +834,6 @@ class CaptureActivity1 : CommonActivity(), TorchListener, OnTouchListener, TextW
                     .observeOn(AndroidSchedulers.mainThread())
                     .subscribe({
 
-                        Log.e(
-                            "Server",
-                            "requestValidationCheckChangeDriver  result  " + it.resultCode
-                        )
                         if (it.resultCode < 0) {
 
                             beepManagerError.playBeepSoundAndVibrate()
@@ -810,7 +869,7 @@ class CaptureActivity1 : CommonActivity(), TorchListener, OnTouchListener, TextW
             }
 
             BarcodeType.PICKUP_CNR -> {
-                // Edit.  2020.03  배포 (기존 CNR 중복 허용됨 > 중복 허용X 수정)    by krm0219
+                // Edit.  2020.03  배포 (기존 CNR 중복 허용됨 > 중복 허용X 수정)
                 RetrofitClient.instanceDynamic().requestValidationCheckCnR(strBarcodeNo)
                     .subscribeOn(Schedulers.io())
                     .observeOn(AndroidSchedulers.mainThread())
@@ -836,10 +895,6 @@ class CaptureActivity1 : CommonActivity(), TorchListener, OnTouchListener, TextW
                                 Gson().fromJson(it.resultObject, CnRPickupResult::class.java)
                             val isDBDuplicate =
                                 checkDBDuplicate(cnRPickupData.contrNo, cnRPickupData.invoiceNo)
-                            Log.e(
-                                TAG,
-                                "  DB Duplicate  > " + isDBDuplicate + " / " + cnRPickupData.invoiceNo
-                            )
 
                             if (isDBDuplicate) {
                                 getCnrRequester(cnRPickupData.invoiceNo)
@@ -1005,7 +1060,7 @@ class CaptureActivity1 : CommonActivity(), TorchListener, OnTouchListener, TextW
             }
 
             BarcodeType.SELF_COLLECTION -> {
-                // 2016-09-20 eylee
+
                 if (!isInvoiceCodeRule(strBarcodeNo)) {
 
                     beepManagerError.playBeepSoundAndVibrate()
@@ -1022,7 +1077,7 @@ class CaptureActivity1 : CommonActivity(), TorchListener, OnTouchListener, TextW
                 beepManager.playBeepSoundAndVibrate()
 
                 //2016-09-12 eylee nq 끼리만 self collector 가능하게 수정하기
-                if (scanBarcodeArrayList!!.isNotEmpty()) {
+                if (scanBarcodeArrayList.isNotEmpty()) {
                     val tempIsNonQ10QFSOrder = isNonQ10QFSOrder
                     val tempValidation = isNonQ10QFSOrderForSelfCollection(strBarcodeNo)
 
@@ -1056,34 +1111,40 @@ class CaptureActivity1 : CommonActivity(), TorchListener, OnTouchListener, TextW
     private fun addScannedBarcode(barcodeNo: String, where: String) {
         Log.e(TAG, "  addScannedBarcode  > $where // $barcodeNo")
 
-        scannedCount++
-        binding.textScannedCount.text = scannedCount.toString()
-
         val data = BarcodeData()
-        data.barcode = barcodeNo.toUpperCase(Locale.ROOT)
+        data.barcode = barcodeNo.uppercase()
         data.state = "NONE"
 
         if (mScanType == BarcodeType.CHANGE_DELIVERY_DRIVER) {
-            data.barcode =
-                changeDriverResult!!.trackingNo + "  |  " + changeDriverResult!!.status + "  |  " + changeDriverResult!!.currentDriver
+            data.barcode = changeDriverResult!!.trackingNo + "  |  " +
+                    changeDriverResult!!.status + "  |  " + changeDriverResult!!.currentDriver
         }
 
         when (mScanType) {
-            BarcodeType.CONFIRM_MY_DELIVERY_ORDER, BarcodeType.CHANGE_DELIVERY_DRIVER, BarcodeType.PICKUP_CNR, BarcodeType.PICKUP_SCAN_ALL,
-            BarcodeType.PICKUP_ADD_SCAN, BarcodeType.PICKUP_TAKE_BACK -> {
+            BarcodeType.CHANGE_DELIVERY_DRIVER,
+            BarcodeType.CONFIRM_MY_DELIVERY_ORDER,
+            BarcodeType.PICKUP_CNR,
+            BarcodeType.PICKUP_SCAN_ALL,
+            BarcodeType.PICKUP_ADD_SCAN,
+            BarcodeType.PICKUP_TAKE_BACK -> {
+
                 // 스캔 시 최근 스캔한 바코드가 제일 위로 셋팅됨.
                 data.state = "SUCCESS"
                 if (mScanType == BarcodeType.CHANGE_DELIVERY_DRIVER) {
-                    barcodeList.add(changeDriverResult!!.trackingNo + "  |  " + changeDriverResult!!.status + "  |  " + changeDriverResult!!.currentDriver)
+                    barcodeList.add(
+                        changeDriverResult!!.trackingNo + "  |  " +
+                                changeDriverResult!!.status + "  |  " + changeDriverResult!!.currentDriver
+                    )
                     changeDriverObjectArrayList.add(changeDriverResult)
                 } else {
                     barcodeList.add(barcodeNo)
                 }
 
-                scanBarcodeArrayList!!.add(0, data)
+                scanBarcodeArrayList.add(0, data)
                 adapter.notifyDataSetChanged()
                 binding.recyclerScannedBarcode.smoothScrollToPosition(0)
             }
+
             BarcodeType.OUTLET_PICKUP_SCAN -> {
 
                 val listItem = resultData!!.trackingNoList
@@ -1094,7 +1155,6 @@ class CaptureActivity1 : CommonActivity(), TorchListener, OnTouchListener, TextW
 
                     val trackingNo = listItem[i].trackingNo
                     if (trackingNo.equals(barcodeNo, ignoreCase = true)) {
-                        Log.e("krm0219", "Compare : $trackingNo vs $barcodeNo")
                         position = i
                         data.state = "SUCCESS"
                         listItem[i].isScanned = true
@@ -1104,18 +1164,15 @@ class CaptureActivity1 : CommonActivity(), TorchListener, OnTouchListener, TextW
 
                 if (0 <= position) {
 
-                    Log.e("krm0219", " Position : $position")
                     barcodeList.add(barcodeNo)
-                    scanBarcodeArrayList!![position] = data
+                    scanBarcodeArrayList[position] = data
                     adapter.notifyDataSetChanged()
                     binding.recyclerScannedBarcode.smoothScrollToPosition(0)
                 } else {
 
-                    scannedCount--
-                    binding.textScannedCount.text = scannedCount.toString()
                     adapter.notifyDataSetChanged()
 
-                    if (!this@CaptureActivity1.isFinishing) {
+                    if (!isFinishing) {
                         val alertDialog = AlertDialog.Builder(this@CaptureActivity1)
                         alertDialog.setTitle(resources.getString(R.string.text_warning))
                         alertDialog.setMessage(resources.getString(R.string.msg_no_outlet_parcels))
@@ -1127,13 +1184,19 @@ class CaptureActivity1 : CommonActivity(), TorchListener, OnTouchListener, TextW
             else -> {
                 //스캔 시 최근 스캔한 바코드가 아래로 추가됨.
                 // maybe.. DELIVERY DONE, SELF COLLECTION
-                scanBarcodeArrayList!!.add(data)
+                scanBarcodeArrayList.add(data)
                 adapter.notifyDataSetChanged()
             }
         }
-        if (mScanType != BarcodeType.CONFIRM_MY_DELIVERY_ORDER && mScanType != BarcodeType.CHANGE_DELIVERY_DRIVER && mScanType != BarcodeType.PICKUP_CNR) {
+
+        if (mScanType != BarcodeType.CONFIRM_MY_DELIVERY_ORDER
+            && mScanType != BarcodeType.CHANGE_DELIVERY_DRIVER
+            && mScanType != BarcodeType.PICKUP_CNR
+        ) {
             updateInvoiceNO(mScanType, barcodeNo)
         }
+
+        binding.textScannedCount.text = scanBarcodeArrayList.size.toString()
 
         binding.editTrackingNumber.setText("")
         inputMethodManager.hideSoftInputFromWindow(binding.editTrackingNumber.windowToken, 0)
@@ -1142,9 +1205,9 @@ class CaptureActivity1 : CommonActivity(), TorchListener, OnTouchListener, TextW
 
     private fun checkDBDuplicate(contrNo: String, invoiceNo: String): Boolean {
         val selectQuery = ("SELECT  partner_ref_no, invoice_no, stat, rcv_nm, sender_nm "
-                + " FROM " + DatabaseHelper.DB_TABLE_INTEGRATION_LIST + " WHERE invoice_no= '" + invoiceNo + "'" + " and contr_no= '" + contrNo + "'")
+                + " FROM " + DatabaseHelper.DB_TABLE_INTEGRATION_LIST + " WHERE invoice_no= '"
+                + invoiceNo + "'" + " and contr_no= '" + contrNo + "'")
         val cs = getInstance()[selectQuery]
-        Log.e(TAG, "DATA >>>>> " + contrNo + " / " + invoiceNo + " ==== " + cs.count)
         return 0 < cs.count
     }
 
@@ -1211,7 +1274,7 @@ class CaptureActivity1 : CommonActivity(), TorchListener, OnTouchListener, TextW
     // NOTIFICATION.  Confirm my delivery order / Change Delivery Driver
     fun onUpdateButtonClick() {
 
-        if (scanBarcodeArrayList == null || scanBarcodeArrayList!!.size < 1) {
+        if (scanBarcodeArrayList.isEmpty()) {
             val toast = Toast.makeText(
                 this@CaptureActivity1,
                 R.string.msg_tracking_number_manually,
@@ -1221,11 +1284,15 @@ class CaptureActivity1 : CommonActivity(), TorchListener, OnTouchListener, TextW
             toast.show()
             return
         }
+
         if (!NetworkUtil.isNetworkAvailable(this@CaptureActivity1)) {
             warningDialog(resources.getString(R.string.msg_network_connect_error))
             return
         }
-        if (MemoryStatus.availableInternalMemorySize != MemoryStatus.ERROR.toLong() && MemoryStatus.availableInternalMemorySize < MemoryStatus.PRESENT_BYTE) {
+
+        if (MemoryStatus.availableInternalMemorySize != MemoryStatus.ERROR.toLong()
+            && MemoryStatus.availableInternalMemorySize < MemoryStatus.PRESENT_BYTE
+        ) {
             warningDialog(resources.getString(R.string.msg_disk_size_error))
             return
         }
@@ -1236,7 +1303,7 @@ class CaptureActivity1 : CommonActivity(), TorchListener, OnTouchListener, TextW
             progressBar.visibility = View.VISIBLE
 
             var stringBuilder = StringBuilder()
-            for (item in scanBarcodeArrayList!!) {
+            for (item in scanBarcodeArrayList) {
                 if (!TextUtils.isEmpty(item.barcode)) {
                     if (stringBuilder.isEmpty()) {
                         stringBuilder = stringBuilder.append(item.barcode)
@@ -1252,7 +1319,7 @@ class CaptureActivity1 : CommonActivity(), TorchListener, OnTouchListener, TextW
                 .subscribe({
 
                     progressBar.visibility = View.GONE
-                    if (it != null && it.resultCode == 0) {
+                    if (it.resultCode == 0) {
 
                         onResetButtonClick()
 
@@ -1337,7 +1404,8 @@ class CaptureActivity1 : CommonActivity(), TorchListener, OnTouchListener, TextW
                 .subscribe({
 
                     progressBar.visibility = View.GONE
-                    if (it != null && it.resultCode == 0) {
+
+                    if (it.resultCode == 0) {
 
                         onResetButtonClick()
 
@@ -1409,7 +1477,7 @@ class CaptureActivity1 : CommonActivity(), TorchListener, OnTouchListener, TextW
 
     // NOTIFICATION.  Scan - Delivery Done
     private fun onConfirmButtonClick() {
-        if (scanBarcodeArrayList == null || scanBarcodeArrayList!!.size < 1) {
+        if (scanBarcodeArrayList.isEmpty()) {
             val toast = Toast.makeText(
                 this@CaptureActivity1,
                 R.string.msg_tracking_number_manually,
@@ -1420,25 +1488,22 @@ class CaptureActivity1 : CommonActivity(), TorchListener, OnTouchListener, TextW
             return
         }
 
-        var name: String
         var receiverName = ""
         var diffReceiverName = false
         val deliveryBarcodeList = ArrayList<BarcodeData>()
 
-        for (i in scanBarcodeArrayList!!.indices) {
-
-            val barcodeData = scanBarcodeArrayList!![i]
+        for (barcodeData in scanBarcodeArrayList) {
 
             if (barcodeData.state == "SUCCESS") {
-
-                name = getDeliveryReceiver(barcodeData.barcode)
+                val name = getDeliveryReceiver(barcodeData.barcode)
                 try {
                     // 수취인성명이 틀린경우
-                    if (receiverName != "") {
+                    if (receiverName.isNotEmpty()) {
                         if (receiverName.toUpperCase(Locale.ROOT) != name.toUpperCase(Locale.ROOT)) {
                             diffReceiverName = true
                         }
                     }
+
                 } catch (e: Exception) {
                     diffReceiverName = true
                 }
@@ -1460,11 +1525,12 @@ class CaptureActivity1 : CommonActivity(), TorchListener, OnTouchListener, TextW
             return
         }
 
-        if (0 < deliveryBarcodeList.size) {
+        if (deliveryBarcodeList.isNotEmpty()) {
 
             val intent = Intent(this, DeliveryDoneActivity2::class.java)
             intent.putExtra("data", deliveryBarcodeList)
             finishLauncher.launch(intent)
+
         } else {
             val toast = Toast.makeText(
                 this@CaptureActivity1,
@@ -1499,7 +1565,7 @@ class CaptureActivity1 : CommonActivity(), TorchListener, OnTouchListener, TextW
             }
         } else {
 
-            if (scanBarcodeArrayList == null || scanBarcodeArrayList!!.size < 1) {
+            if (scanBarcodeArrayList.isEmpty()) {
                 val toast = Toast.makeText(
                     this@CaptureActivity1,
                     R.string.msg_tracking_number_manually,
@@ -1511,10 +1577,10 @@ class CaptureActivity1 : CommonActivity(), TorchListener, OnTouchListener, TextW
             }
         }
 
-        val scannedQty = scanBarcodeArrayList!!.size.toString()
+        val scannedQty = scanBarcodeArrayList.size.toString()
         var scannedList = StringBuilder()
 
-        for (item in scanBarcodeArrayList!!) {
+        for (item in scanBarcodeArrayList) {
             if (!TextUtils.isEmpty(item.barcode)) {
                 if (scannedList.isEmpty()) {
                     scannedList = scannedList.append(item.barcode)
@@ -1607,12 +1673,12 @@ class CaptureActivity1 : CommonActivity(), TorchListener, OnTouchListener, TextW
     // NOTIFICATION.  Reset
     private fun onResetButtonClick() {
 
-        if (scanBarcodeArrayList != null && scanBarcodeArrayList!!.isNotEmpty()) {
+        if (scanBarcodeArrayList.isNotEmpty()) {
 
-            scannedCount = 0
-            binding.textScannedCount.text = scannedCount.toString()
-            scanBarcodeArrayList!!.clear()
+            scanBarcodeArrayList.clear()
             adapter.notifyDataSetChanged()
+
+            binding.textScannedCount.text = "0"
 
             if (mScanType == BarcodeType.OUTLET_PICKUP_SCAN) {
 
@@ -1621,7 +1687,7 @@ class CaptureActivity1 : CommonActivity(), TorchListener, OnTouchListener, TextW
                     val data = BarcodeData()
                     data.barcode = listItem[i].trackingNo
                     data.state = "FAIL"
-                    scanBarcodeArrayList!!.add(i, data)
+                    scanBarcodeArrayList.add(i, data)
                 }
                 adapter.notifyDataSetChanged()
             }
@@ -1631,9 +1697,13 @@ class CaptureActivity1 : CommonActivity(), TorchListener, OnTouchListener, TextW
             scannedBarcode.clear()
         }
 
-        if (mScanType == BarcodeType.CONFIRM_MY_DELIVERY_ORDER || mScanType == BarcodeType.CHANGE_DELIVERY_DRIVER ||
-            mScanType == BarcodeType.PICKUP_CNR || mScanType == BarcodeType.PICKUP_SCAN_ALL || mScanType == BarcodeType.PICKUP_ADD_SCAN ||
-            mScanType == BarcodeType.OUTLET_PICKUP_SCAN || mScanType == BarcodeType.PICKUP_TAKE_BACK
+        if (mScanType == BarcodeType.CONFIRM_MY_DELIVERY_ORDER
+            || mScanType == BarcodeType.CHANGE_DELIVERY_DRIVER
+            || mScanType == BarcodeType.PICKUP_CNR
+            || mScanType == BarcodeType.PICKUP_SCAN_ALL
+            || mScanType == BarcodeType.PICKUP_ADD_SCAN
+            || mScanType == BarcodeType.OUTLET_PICKUP_SCAN
+            || mScanType == BarcodeType.PICKUP_TAKE_BACK
         ) {
             barcodeList.clear()
         }
@@ -1705,8 +1775,13 @@ class CaptureActivity1 : CommonActivity(), TorchListener, OnTouchListener, TextW
      */
     private fun updateInvoiceNO(scanType: String?, invoiceNo: String) {
         var updateCount = 0
-        if (scanType == BarcodeType.PICKUP_SCAN_ALL || scanType == BarcodeType.PICKUP_ADD_SCAN || scanType == BarcodeType.PICKUP_TAKE_BACK || scanType == BarcodeType.OUTLET_PICKUP_SCAN) {
+        if (scanType == BarcodeType.PICKUP_SCAN_ALL
+            || scanType == BarcodeType.PICKUP_ADD_SCAN
+            || scanType == BarcodeType.PICKUP_TAKE_BACK
+            || scanType == BarcodeType.OUTLET_PICKUP_SCAN
+        ) {
             updateCount = 1
+
         } else if (mScanType == BarcodeType.DELIVERY_DONE) {
             // 복수건 배달완료 시점에서는 아무것도 안함 사인전 jmkang 2013-05-08
             val contentVal = ContentValues()
@@ -1725,7 +1800,7 @@ class CaptureActivity1 : CommonActivity(), TorchListener, OnTouchListener, TextW
 
         var message = String.format(" [ %s ] ", title)
         val result: String
-        val inputBarcode = scanBarcodeArrayList!![scanBarcodeArrayList!!.size - 1].barcode
+        val inputBarcode = scanBarcodeArrayList[scanBarcodeArrayList.size - 1].barcode
         if (updateCount < 1) {
             message += resources.getString(R.string.text_not_assigned)
             result = "FAIL"
@@ -1738,7 +1813,7 @@ class CaptureActivity1 : CommonActivity(), TorchListener, OnTouchListener, TextW
             val data = BarcodeData()
             data.barcode = inputBarcode
             data.state = result
-            scanBarcodeArrayList!![scanBarcodeArrayList!!.size - 1] = data
+            scanBarcodeArrayList[scanBarcodeArrayList.size - 1] = data
             adapter.notifyDataSetChanged()
         }
 
@@ -1768,14 +1843,15 @@ class CaptureActivity1 : CommonActivity(), TorchListener, OnTouchListener, TextW
      * modified : 2016-09-09 eylee self-collection 복수 건 처리 add
      */
     private fun onCaptureConfirmButtonClick() {
-        if (scanBarcodeArrayList == null || scanBarcodeArrayList!!.size < 1) {
+        if (scanBarcodeArrayList.isEmpty()) {
             val toast =
                 Toast.makeText(this, R.string.msg_tracking_number_manually, Toast.LENGTH_SHORT)
             toast.setGravity(Gravity.CENTER_HORIZONTAL, 0, 0)
             toast.show()
             return
         }
-        if (!isInvoiceCodeRule(scanBarcodeArrayList!![0].barcode)) {
+
+        if (!isInvoiceCodeRule(scanBarcodeArrayList[0].barcode)) {
             val toast = Toast.makeText(
                 this@CaptureActivity1,
                 resources.getString(R.string.msg_invalid_scan),
@@ -1789,17 +1865,18 @@ class CaptureActivity1 : CommonActivity(), TorchListener, OnTouchListener, TextW
         // SELF_COLLECTION            //복수건 가져다가 self-collection by 2016-09-09
         // 넘기는 데이터 재정의 스캔성공된 것들만 보낸다.
         val newBarcodeNoList = ArrayList<BarcodeData>()
-        for (i in scanBarcodeArrayList!!.indices) {
-            val barcodeListData = scanBarcodeArrayList!![i]
-            if (barcodeListData.state == "FAIL") {
+
+        for (data in scanBarcodeArrayList) {
+            if (data.state == "FAIL") {
                 val toast = Toast.makeText(this, R.string.msg_invalid_scan, Toast.LENGTH_SHORT)
                 toast.setGravity(Gravity.CENTER_HORIZONTAL, 0, 0)
                 toast.show()
                 return
             } else {
-                newBarcodeNoList.add(barcodeListData)
+                newBarcodeNoList.add(data)
             }
         }
+
         if (0 < newBarcodeNoList.size) {
             val intent = Intent(this, SelfCollectionDoneActivity::class.java)
             intent.putExtra("title", title)
@@ -1816,64 +1893,6 @@ class CaptureActivity1 : CommonActivity(), TorchListener, OnTouchListener, TextW
 
     override fun onTorchOn() {}
     override fun onTorchOff() {}
-
-    companion object {
-
-        const val MESSAGE_EXIT = 0
-        const val MESSAGE_STATE_CHANGE = 1
-        const val MESSAGE_READ = 2
-        const val MESSAGE_DEVICE_NAME = 4
-        const val MESSAGE_TOAST = 5
-        const val MESSAGE_DISPLAY = 6
-        const val MESSAGE_SEND = 7
-        const val MESSAGE_SETTING = 255
-        const val DEVICE_NAME = "device_name"
-        const val TOAST = "toast"
-
-        private const val TAG = "CaptureActivity1"
-        private const val bluetoothTAG = "Capture_Bluetooth"
-
-        private const val PERMISSION_REQUEST_CODE = 1000
-        private val PERMISSIONS = arrayOf(
-            PermissionChecker.ACCESS_FINE_LOCATION,
-            PermissionChecker.ACCESS_COARSE_LOCATION,
-            PermissionChecker.READ_EXTERNAL_STORAGE,
-            PermissionChecker.WRITE_EXTERNAL_STORAGE,
-            PermissionChecker.CAMERA
-        )
-
-        /*
-     * Qxpress송장번호 규칙(범용)
-     * 운송장번호 규칙이 맞는지 체크
-     * 10문자 안넘으면 false, 맨앞두글자가 KR,SG,QX,JP,CN이 아닐경우 false, 5,6번째가 숫자가 아닐경우 false, 영문숫자조합
-      SELF_COLLECTION */
-
-        fun isInvoiceCodeRule(invoiceNo: String?): Boolean {
-
-            if (invoiceNo!!.length < 10) return false
-
-            val bln = Pattern.matches("^[a-zA-Z0-9]*$", invoiceNo)
-            if (!bln) {
-                return false
-            }
-
-            if (10 <= invoiceNo.length) {    // self collection c2c 아닐 때
-
-                val subInvoice = invoiceNo.substring(4, 6)
-                return isStringDouble(subInvoice)
-            }
-            return true
-        }
-
-        private fun isStringDouble(s: String): Boolean {
-            return try {
-                s.toDouble()
-                true
-            } catch (e: NumberFormatException) {
-                false
-            }
-        }
-    }
 
 
     private val bluetoothLauncher: ActivityResultLauncher<Intent> = registerForActivityResult(
@@ -1945,18 +1964,15 @@ class CaptureActivity1 : CommonActivity(), TorchListener, OnTouchListener, TextW
         Log.e(TAG, "onActivityResult $requestCode / $resultCode")
 
         when (requestCode) {
-
             PERMISSION_REQUEST_CODE -> {
                 if (resultCode == PermissionActivity.PERMISSIONS_GRANTED) {
-                    Log.e("eylee", "$TAG   onActivityResult  PERMISSIONS_GRANTED")
+                    Log.e(TAG, "onActivityResult  PERMISSIONS_GRANTED")
                     isPermissionTrue = true
                 }
             }
         }
     }
 
-
-    //
     private fun initBluetoothDevice() {
 
         // If the adapter is null, then Bluetooth is not supported          // Bluetooth 지원하지 않음
@@ -2061,11 +2077,13 @@ class CaptureActivity1 : CommonActivity(), TorchListener, OnTouchListener, TextW
                         Toast.LENGTH_SHORT
                     ).show()
                 }
-                BluetoothChatService.MESSAGE_TOAST -> Toast.makeText(
-                    this@CaptureActivity1,
-                    msg.data.getString(BluetoothChatService.TOAST),
-                    Toast.LENGTH_SHORT
-                ).show()
+                BluetoothChatService.MESSAGE_TOAST -> {
+                    Toast.makeText(
+                        this@CaptureActivity1,
+                        msg.data.getString(BluetoothChatService.TOAST),
+                        Toast.LENGTH_SHORT
+                    ).show()
+                }
                 KScan.MESSAGE_DISPLAY -> {
                     val displayBuf = msg.obj as ByteArray
                     val displayMessage = String(displayBuf, 0, msg.arg1)
