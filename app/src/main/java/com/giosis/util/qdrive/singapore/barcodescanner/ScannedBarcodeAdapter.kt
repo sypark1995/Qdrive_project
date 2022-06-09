@@ -27,44 +27,45 @@ class ScannedBarcodeAdapter(var items: ArrayList<BarcodeData>, private var scanT
 
     override fun onBindViewHolder(holder: ViewHolder, position: Int) {
 
-        val barcodeNumber = items[position].barcode
-        val barcodeState = items[position].state
+        val data = items[position]
 
-        if (barcodeNumber != null) {
+        if (scanType == CaptureType.CHANGE_DELIVERY_DRIVER) {
+            holder.binding.textBarcode.text =
+                "${data.barcode}  |  ${data.status}  |  ${data.currentDriver}"
+        } else {
+            holder.binding.textBarcode.text = data.barcode
+        }
 
-            holder.binding.textBarcode.text = barcodeNumber
+        if (data.state == "SUCCESS") {
 
-            if (barcodeState == "SUCCESS") {
+            holder.binding.layoutItem.setBackgroundResource(R.drawable.bg_round_10_cccccc)
+            holder.binding.imgBarcode.setBackgroundResource(R.drawable.qdrive_btn_icon_barcode)
+            holder.binding.btnState.visibility = View.VISIBLE
+            holder.binding.btnState.setBackgroundResource(R.drawable.qdrive_btn_icon_big_on)
 
-                holder.binding.layoutItem.setBackgroundResource(R.drawable.bg_round_10_cccccc)
-                holder.binding.imgBarcode.setBackgroundResource(R.drawable.qdrive_btn_icon_barcode)
+            holder.binding.textBarcode.setTextSize(TypedValue.COMPLEX_UNIT_SP, 18f)
+            holder.binding.textBarcode.setTextColor(Color.parseColor("#303030"))
+
+            if (scanType == CaptureType.CHANGE_DELIVERY_DRIVER) {
+                holder.binding.textBarcode.setTextSize(TypedValue.COMPLEX_UNIT_SP, 12f)
+                holder.binding.btnState.visibility = View.GONE
+
+            } else if (scanType == CaptureType.OUTLET_PICKUP_SCAN) {
+                holder.binding.layoutItem.setBackgroundResource(R.drawable.bg_round_5_ffcc00)
+            }
+
+        } else if (data.state == "FAIL") {
+
+            holder.binding.layoutItem.setBackgroundResource(R.drawable.bg_round_10_dedede)
+            holder.binding.imgBarcode.setBackgroundResource(R.drawable.qdrive_btn_icon_barcode_off)
+            holder.binding.btnState.setBackgroundResource(R.drawable.qdrive_btn_icon_big_off)
+
+            holder.binding.textBarcode.setTextColor(Color.parseColor(("#909090")))
+
+            if (scanType == CaptureType.OUTLET_PICKUP_SCAN) {
+                holder.binding.btnState.visibility = View.INVISIBLE
+            } else {
                 holder.binding.btnState.visibility = View.VISIBLE
-                holder.binding.btnState.setBackgroundResource(R.drawable.qdrive_btn_icon_big_on)
-
-                holder.binding.textBarcode.setTextSize(TypedValue.COMPLEX_UNIT_SP, 18f)
-                holder.binding.textBarcode.setTextColor(Color.parseColor("#303030"))
-
-                if (scanType == CaptureType.CHANGE_DELIVERY_DRIVER) {
-                    holder.binding.textBarcode.setTextSize(TypedValue.COMPLEX_UNIT_SP, 12f)
-                    holder.binding.btnState.visibility = View.GONE
-
-                } else if (scanType == CaptureType.OUTLET_PICKUP_SCAN) {
-                    holder.binding.layoutItem.setBackgroundResource(R.drawable.bg_round_5_ffcc00)
-                }
-
-            } else if (barcodeState == "FAIL") {
-
-                holder.binding.layoutItem.setBackgroundResource(R.drawable.bg_round_10_dedede)
-                holder.binding.imgBarcode.setBackgroundResource(R.drawable.qdrive_btn_icon_barcode_off)
-                holder.binding.btnState.setBackgroundResource(R.drawable.qdrive_btn_icon_big_off)
-
-                holder.binding.textBarcode.setTextColor(Color.parseColor(("#909090")))
-
-                if (scanType == CaptureType.OUTLET_PICKUP_SCAN) {
-                    holder.binding.btnState.visibility = View.INVISIBLE
-                } else {
-                    holder.binding.btnState.visibility = View.VISIBLE
-                }
             }
         }
     }

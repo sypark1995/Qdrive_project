@@ -133,11 +133,6 @@ class CaptureActivity1 : CommonActivity(), TorchListener, OnTouchListener, TextW
     }
     private var resultData: OutletPickupDoneResult.OutletPickupDoneItem? = null
 
-
-    // TODO_kjyoo 이상함
-    // resume 시 recreate 할 data list
-    private val barcodeList = ArrayList<String>()
-
     private val cameraManager: CaptureManager by lazy {
         CaptureManager(this, binding.barcodeScanner)
     }
@@ -164,8 +159,6 @@ class CaptureActivity1 : CommonActivity(), TorchListener, OnTouchListener, TextW
         ScannedBarcodeAdapter(scanBarcodeArrayList, mScanType)
     }
     private var scanBarcodeArrayList = ArrayList<BarcodeData>()
-    private val changeDriverObjectArrayList = ArrayList<ChangeDriverResult.Data?>()
-
 
     //2016-09-03 pickup cnr Requester
     private var pickupCNRRequester: String? = null
@@ -485,7 +478,6 @@ class CaptureActivity1 : CommonActivity(), TorchListener, OnTouchListener, TextW
         }
         KTSyncData.mKScan.mHandler = bluetoothHandler
 
-
         if (isPermissionTrue) {
 
             // Camera
@@ -507,74 +499,6 @@ class CaptureActivity1 : CommonActivity(), TorchListener, OnTouchListener, TextW
             }
         }
 
-        // Scanned List
-        if (mScanType == CaptureType.CONFIRM_MY_DELIVERY_ORDER
-            || mScanType == CaptureType.CHANGE_DELIVERY_DRIVER
-            || mScanType == CaptureType.PICKUP_CNR
-            || mScanType == CaptureType.PICKUP_SCAN_ALL
-            || mScanType == CaptureType.PICKUP_ADD_SCAN
-            || mScanType == CaptureType.PICKUP_TAKE_BACK
-            || mScanType == CaptureType.OUTLET_PICKUP_SCAN
-        ) {
-            try {
-                scanBarcodeArrayList.clear()
-                adapter.notifyDataSetChanged()
-
-                if (mScanType == CaptureType.OUTLET_PICKUP_SCAN) {
-
-                    if (resultData != null) {
-                        val listItem = resultData!!.trackingNoList
-                        for (i in listItem.indices) {
-
-                            val trackingNo = listItem[i].trackingNo
-                            val isScanned = listItem[i].isScanned
-
-                            val data = BarcodeData()
-                            data.barcode = trackingNo
-
-                            if (isScanned) {
-                                data.state = "SUCCESS"
-                            } else {
-                                data.state = "FAIL"
-                            }
-                            scanBarcodeArrayList.add(i, data)
-                        }
-                    }
-
-                    binding.textScannedCount.text = scanBarcodeArrayList.size.toString()
-                    adapter.notifyDataSetChanged()
-                    binding.recyclerScannedBarcode.smoothScrollToPosition(0)
-                } else {
-
-                    if (barcodeList.isNotEmpty()) {
-                        for (i in barcodeList.indices) {
-                            val data = BarcodeData()
-                            data.state = "SUCCESS"
-                            data.barcode = barcodeList[i]
-                            scanBarcodeArrayList.add(0, data)
-                        }
-
-                        binding.textScannedCount.text = scanBarcodeArrayList.size.toString()
-                        adapter.notifyDataSetChanged()
-                        binding.recyclerScannedBarcode.smoothScrollToPosition(0)
-                    }
-                }
-            } catch (e: Exception) {
-
-                Toast.makeText(
-                    this@CaptureActivity1,
-                    resources.getString(R.string.text_data_error),
-                    Toast.LENGTH_SHORT
-                ).show()
-                scanBarcodeArrayList.clear()
-                adapter.notifyDataSetChanged()
-                barcodeList.clear()
-            }
-        } else if (mScanType == CaptureType.SELF_COLLECTION) {
-
-            scanBarcodeArrayList.clear()
-            adapter.notifyDataSetChanged()
-        }
     }
 
     private fun warningDialog(msg: String) {
@@ -687,6 +611,9 @@ class CaptureActivity1 : CommonActivity(), TorchListener, OnTouchListener, TextW
         }
     }
 
+    // 중복해서 들어가는것 확인용....
+    var checkedBarcodeList = ArrayList<String>()
+
     // Add Barcode  (Validation Check / Add List)
     // NOTIFICATION.  Barcode Validation Check
     private fun checkValidation(barcode: String) {
@@ -696,13 +623,7 @@ class CaptureActivity1 : CommonActivity(), TorchListener, OnTouchListener, TextW
             return
         }
 
-        var isDuplicate = false
-        for (data in scanBarcodeArrayList) {
-            if (data.barcode == barcode.uppercase()) {
-                isDuplicate = true
-                break
-            }
-        }
+        val isDuplicate = checkedBarcodeList.contains(barcode.uppercase())
 
         if (isDuplicate) {
             beepManagerDuple.playBeepSoundAndVibrate()
@@ -717,7 +638,8 @@ class CaptureActivity1 : CommonActivity(), TorchListener, OnTouchListener, TextW
             binding.editTrackingNumber.setText("")
             inputMethodManager.hideSoftInputFromWindow(binding.editTrackingNumber.windowToken, 0)
             return
-
+        } else {
+            checkedBarcodeList.add(barcode.uppercase())
         }
 
         val strBarcodeNo = barcode.replace("\\r\\n|\\r|\\n".toRegex(), "")
@@ -786,19 +708,23 @@ class CaptureActivity1 : CommonActivity(), TorchListener, OnTouchListener, TextW
 
                             beepManager.playBeepSoundAndVibrate()
 
-                            val changeDriverResult = Gson().fromJson(
+                            val result = Gson().fromJson(
                                 it.resultObject,
                                 ChangeDriverResult.Data::class.java
                             )
 
-                            if (changeDriverResult != null) {
-                                val tempNo = changeDriverResult.trackingNo +
-                                        "  |  " + changeDriverResult.status +
-                                        "  |  " + changeDriverResult.currentDriver
+                            if (result != null) {
+                                val tempNo = result.trackingNo +
+                                        "  |  " + result.status +
+                                        "  |  " + result.currentDriver
 
-                                changeDriverObjectArrayList.add(changeDriverResult)
 
-                                addScannedBarcode(tempNo)
+                                addScannedBarcode(
+                                    result.trackingNo,
+                                    result.status,
+                                    result.currentDriver,
+                                    result.contrNo
+                                )
                             }
 
                         }
@@ -1045,13 +971,23 @@ class CaptureActivity1 : CommonActivity(), TorchListener, OnTouchListener, TextW
         }
     }
 
+
     // NOTIFICATION.  Add Barcode List
-    private fun addScannedBarcode(barcodeNo: String) {
+    private fun addScannedBarcode(
+        barcodeNo: String,
+        status: String = "",
+        currentDriver: String = "",
+        contrNo: String = ""
+    ) {
         Log.e(TAG, "  addScannedBarcode   // $barcodeNo")
 
         val data = BarcodeData()
         data.barcode = barcodeNo.uppercase()
         data.state = "NONE"
+
+        data.status = status
+        data.currentDriver = currentDriver
+        data.contrNo = contrNo
 
         when (mScanType) {
             CaptureType.CHANGE_DELIVERY_DRIVER,
@@ -1064,7 +1000,6 @@ class CaptureActivity1 : CommonActivity(), TorchListener, OnTouchListener, TextW
                 // 스캔 시 최근 스캔한 바코드가 제일 위로 셋팅됨.
                 data.state = "SUCCESS"
 
-                barcodeList.add(barcodeNo)
                 scanBarcodeArrayList.add(0, data)
 
                 adapter.notifyDataSetChanged()
@@ -1090,7 +1025,6 @@ class CaptureActivity1 : CommonActivity(), TorchListener, OnTouchListener, TextW
 
                 if (0 <= position) {
 
-                    barcodeList.add(barcodeNo)
                     scanBarcodeArrayList[position] = data
                     adapter.notifyDataSetChanged()
                     binding.recyclerScannedBarcode.smoothScrollToPosition(0)
@@ -1296,8 +1230,8 @@ class CaptureActivity1 : CommonActivity(), TorchListener, OnTouchListener, TextW
             }
 
             var stringBuilder = StringBuilder()
-            for (item in changeDriverObjectArrayList) {
-                if (!TextUtils.isEmpty(item!!.contrNo)) {
+            for (item in scanBarcodeArrayList) {
+                if (!TextUtils.isEmpty(item.contrNo)) {
                     if (stringBuilder.isEmpty()) {
                         stringBuilder = stringBuilder.append(item.contrNo)
                     } else {
@@ -1481,8 +1415,6 @@ class CaptureActivity1 : CommonActivity(), TorchListener, OnTouchListener, TextW
             }
         }
 
-        barcodeList.clear()
-
         when (mScanType) {
             CaptureType.PICKUP_CNR -> {
                 val intent = Intent(this, CnRPickupDoneActivity::class.java)
@@ -1584,16 +1516,9 @@ class CaptureActivity1 : CommonActivity(), TorchListener, OnTouchListener, TextW
             }
         }
 
-        if (mScanType == CaptureType.CONFIRM_MY_DELIVERY_ORDER
-            || mScanType == CaptureType.CHANGE_DELIVERY_DRIVER
-            || mScanType == CaptureType.PICKUP_CNR
-            || mScanType == CaptureType.PICKUP_SCAN_ALL
-            || mScanType == CaptureType.PICKUP_ADD_SCAN
-            || mScanType == CaptureType.OUTLET_PICKUP_SCAN
-            || mScanType == CaptureType.PICKUP_TAKE_BACK
-        ) {
-            barcodeList.clear()
-        }
+        checkedBarcodeList.clear()
+
+
     }
 
     private fun getDeliveryReceiver(barcodeNo: String?): String {
