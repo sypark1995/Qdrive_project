@@ -40,7 +40,7 @@ class PickupDoneActivity : CommonActivity() {
         )
     }
 
-    var tag = "PickupDoneActivity"
+    var TAG = "PickupDoneActivity"
 
     private val binding by lazy {
         ActivityPickupStartToScanBinding.inflate(layoutInflater)
@@ -64,7 +64,7 @@ class PickupDoneActivity : CommonActivity() {
         super.onCreate(savedInstanceState)
         setContentView(binding.root)
 
-        FirebaseEvent.createEvent(this, tag)
+        FirebaseEvent.createEvent(this, TAG)
 
         pickupNo = intent.getStringExtra("pickupNo").toString()
         val applicant = intent.getStringExtra("applicant")
@@ -255,7 +255,7 @@ class PickupDoneActivity : CommonActivity() {
 
             progressBar.visibility = View.VISIBLE
 
-            FirebaseEvent.clickEvent(this, tag, "SetPickupUploadData_ScanAll ")
+            FirebaseEvent.clickEvent(this, TAG, "SetPickupUploadData_ScanAll ")
 
             lifecycleScope.launch {
 

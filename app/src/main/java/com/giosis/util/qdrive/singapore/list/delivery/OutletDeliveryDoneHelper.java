@@ -30,6 +30,7 @@ import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Date;
 
+@Deprecated
 public class OutletDeliveryDoneHelper {
     String TAG = "OutletDeliveryDoneHelper";
 
