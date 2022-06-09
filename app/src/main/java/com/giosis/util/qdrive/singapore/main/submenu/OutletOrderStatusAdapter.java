@@ -36,7 +36,7 @@ import com.giosis.util.qdrive.singapore.list.delivery.DeliveryDoneActivity2;
 import com.giosis.util.qdrive.singapore.list.pickup.OutletPickupStep1Activity;
 import com.giosis.util.qdrive.singapore.message.CustomerMessageListDetailActivity;
 import com.giosis.util.qdrive.singapore.server.Custom_JsonParser;
-import com.giosis.util.qdrive.singapore.util.BarcodeType;
+import com.giosis.util.qdrive.singapore.util.StatueType;
 import com.giosis.util.qdrive.singapore.util.DataUtil;
 import com.giosis.util.qdrive.singapore.util.NetworkUtil;
 import com.giosis.util.qdrive.singapore.util.Preferences;
@@ -146,7 +146,7 @@ public class OutletOrderStatusAdapter extends BaseExpandableListAdapter {
             text_list_item_store_name.setText(row_pos.getOutlet_store_name());
         }
 
-        if (row_pos.getType().equals(BarcodeType.TYPE_PICKUP)) {
+        if (row_pos.getType().equals(StatueType.TYPE_PICKUP)) {
             text_list_item_tracking_no.setTextColor(context.getResources().getColor(R.color.color_363BE7));
             text_list_item_outlet_order_type.setText(R.string.text_retrieve);
 
@@ -290,7 +290,7 @@ public class OutletOrderStatusAdapter extends BaseExpandableListAdapter {
         }
 
         //
-        if (rowItem.get(groupPosition).getType().equals(BarcodeType.TYPE_DELIVERY)) {
+        if (rowItem.get(groupPosition).getType().equals(StatueType.TYPE_DELIVERY)) {
             btn_list_item_child.setText(R.string.button_delivered);
 
         } else {            // Pickup
@@ -385,13 +385,13 @@ public class OutletOrderStatusAdapter extends BaseExpandableListAdapter {
 
         btn_list_item_child.setOnClickListener(v -> {
 
-            if (type.equals(BarcodeType.TYPE_DELIVERY)) {
+            if (type.equals(StatueType.TYPE_DELIVERY)) {
 
                 Intent intent = new Intent(v.getContext(), DeliveryDoneActivity2.class);
                 intent.putExtra("parcel", rowItem.get(groupPosition));
                 ((Activity) v.getContext()).startActivityForResult(intent, 1);
 
-            } else if (type.equals(BarcodeType.TYPE_PICKUP)) {
+            } else if (type.equals(StatueType.TYPE_PICKUP)) {
                 Intent intent = new Intent(context, OutletPickupStep1Activity.class);
                 intent.putExtra("title", "Qsuttle : Pickup Done");
                 intent.putExtra("pickup_no", tracking_no);

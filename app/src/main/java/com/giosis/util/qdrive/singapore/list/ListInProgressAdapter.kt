@@ -19,6 +19,7 @@ import android.widget.*
 import androidx.recyclerview.widget.RecyclerView
 import com.giosis.util.qdrive.singapore.R
 import com.giosis.util.qdrive.singapore.barcodescanner.CaptureActivity1
+import com.giosis.util.qdrive.singapore.barcodescanner.CaptureType
 import com.giosis.util.qdrive.singapore.bluetooth.BluetoothListener
 import com.giosis.util.qdrive.singapore.database.DatabaseHelper
 import com.giosis.util.qdrive.singapore.list.delivery.*
@@ -26,7 +27,7 @@ import com.giosis.util.qdrive.singapore.list.pickup.OutletPickupStep1Activity
 import com.giosis.util.qdrive.singapore.list.pickup.PickupFailedActivity
 import com.giosis.util.qdrive.singapore.list.pickup.PickupZeroQtyActivity
 import com.giosis.util.qdrive.singapore.message.CustomerMessageListDetailActivity
-import com.giosis.util.qdrive.singapore.util.BarcodeType
+import com.giosis.util.qdrive.singapore.util.StatueType
 import com.giosis.util.qdrive.singapore.util.DataUtil
 import com.giosis.util.qdrive.singapore.util.FirebaseEvent
 import com.giosis.util.qdrive.singapore.util.Preferences
@@ -192,20 +193,20 @@ class ListInProgressAdapter(bluetoothListener: BluetoothListener) :
             textReceiptName.text = data.name
 
             //픽업
-            if (data.type == BarcodeType.TYPE_PICKUP) {
+            if (data.type == StatueType.TYPE_PICKUP) {
                 textTrackingNo.setTextColor(Color.parseColor("#363BE7"))
                 imgSecureDelivery.visibility = View.GONE
                 textEconomy.visibility = View.GONE
                 textHighAmount.visibility = View.GONE
 
                 when (data.stat) {
-                    BarcodeType.PICKUP_REASSIGN -> {
+                    StatueType.PICKUP_REASSIGN -> {
                         textPickupState.visibility = View.VISIBLE
                         textPickupState.text =
                             itemView.context.resources.getString(R.string.text_pickup_reassigned)
                     }
 
-                    BarcodeType.PICKUP_FAIL -> {
+                    StatueType.PICKUP_FAIL -> {
                         textPickupState.visibility = View.VISIBLE
                         textPickupState.text =
                             itemView.context.resources.getString(R.string.text_pickup_failed)
@@ -247,7 +248,7 @@ class ListInProgressAdapter(bluetoothListener: BluetoothListener) :
                     imgSecureDelivery.visibility = View.GONE
                 }
 
-                if (data.stat == BarcodeType.DELIVERY_FAIL) {
+                if (data.stat == StatueType.DELIVERY_FAIL) {
                     textPickupState.visibility = View.VISIBLE
                     textPickupState.text =
                         itemView.context.resources.getString(R.string.text_failed)
@@ -313,10 +314,10 @@ class ListInProgressAdapter(bluetoothListener: BluetoothListener) :
 
             //  Outlet
             if (data.outlet_company == "7E" || data.outlet_company == "FL") {
-                if (data.type == BarcodeType.TYPE_PICKUP) {
+                if (data.type == StatueType.TYPE_PICKUP) {
                     textPickupState.text =
                         itemView.context.resources.getString(R.string.text_retrieve)
-                } else if (data.type == BarcodeType.TYPE_DELIVERY) {
+                } else if (data.type == StatueType.TYPE_DELIVERY) {
                     textPickupState.text =
                         itemView.context.resources.getString(R.string.text_delivery)
                 }
@@ -440,12 +441,12 @@ class ListInProgressAdapter(bluetoothListener: BluetoothListener) :
             if (data.childItems.statReason != null && data.childItems.statReason!!.isNotEmpty()) {
 
                 when (data.childItems.stat) {
-                    BarcodeType.DELIVERY_FAIL -> {
+                    StatueType.DELIVERY_FAIL -> {
                         layoutFailed.visibility = View.VISIBLE
                         textFailedReason.text =
                             DataUtil.getDeliveryFailedMsg(data.childItems.statReason)
                     }
-                    BarcodeType.PICKUP_FAIL -> {
+                    StatueType.PICKUP_FAIL -> {
                         layoutFailed.visibility = View.VISIBLE
                         textFailedReason.text =
                             DataUtil.getPickupFailedMsg(data.childItems.statReason)
@@ -459,7 +460,7 @@ class ListInProgressAdapter(bluetoothListener: BluetoothListener) :
                 layoutFailed.visibility = View.GONE
             }
 
-            if (data.type == BarcodeType.TYPE_DELIVERY) {
+            if (data.type == StatueType.TYPE_DELIVERY) {
                 textParcelAmountTitle.text =
                     textParcelAmountTitle.context.resources.getString(R.string.text_parcel_amount)
 
@@ -696,7 +697,7 @@ class ListInProgressAdapter(bluetoothListener: BluetoothListener) :
                     "title",
                     v.context.resources.getString(R.string.text_start_to_scan)
                 )
-                intent.putExtra("type", BarcodeType.PICKUP_SCAN_ALL)
+                intent.putExtra("type", CaptureType.PICKUP_SCAN_ALL)
                 intent.putExtra("pickup_no", data.shipping)
                 intent.putExtra("applicant", data.name)
                 v.context.startActivity(intent)
@@ -718,7 +719,7 @@ class ListInProgressAdapter(bluetoothListener: BluetoothListener) :
 
             btnPickupVisitLog.setOnClickListener {
                 val intent = Intent(it.context, PickupFailedActivity::class.java)
-                intent.putExtra("type", BarcodeType.TYPE_PICKUP)
+                intent.putExtra("type", StatueType.TYPE_PICKUP)
                 intent.putExtra("reqQty", data.qty)
                 intent.putExtra("applicant", data.name)
                 intent.putExtra("pickupNo", data.shipping)
@@ -770,7 +771,7 @@ class ListInProgressAdapter(bluetoothListener: BluetoothListener) :
 
             btnCnrFailed.setOnClickListener { v: View ->
                 val intent = Intent(v.context, PickupFailedActivity::class.java)
-                intent.putExtra("type", BarcodeType.TYPE_CNR)
+                intent.putExtra("type", StatueType.TYPE_CNR)
                 intent.putExtra("reqQty", data.qty)
                 intent.putExtra("applicant", data.name)
                 intent.putExtra("pickupNo", data.shipping)

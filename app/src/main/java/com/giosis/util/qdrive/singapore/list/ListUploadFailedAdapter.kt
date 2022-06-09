@@ -11,7 +11,6 @@ import android.net.Uri
 import android.os.Environment
 import android.text.SpannableString
 import android.text.style.UnderlineSpan
-import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -23,7 +22,6 @@ import com.giosis.util.qdrive.singapore.database.DatabaseHelper
 import com.giosis.util.qdrive.singapore.gps.GPSTrackerManager
 import com.giosis.util.qdrive.singapore.main.DeviceDataUploadHelper
 import com.giosis.util.qdrive.singapore.util.*
-import com.google.firebase.ktx.Firebase
 import java.io.File
 import java.util.*
 
@@ -142,15 +140,15 @@ class ListUploadFailedAdapter :
             var status = ""
 
             when (data.stat) {
-                BarcodeType.DELIVERY_FAIL -> status =
+                StatueType.DELIVERY_FAIL -> status =
                     textListItemUploadFailedState.context.resources.getString(R.string.text_d_failed)
-                BarcodeType.DELIVERY_DONE -> status =
+                StatueType.DELIVERY_DONE -> status =
                     textListItemUploadFailedState.context.resources.getString(R.string.text_delivered)
-                BarcodeType.PICKUP_FAIL -> status =
+                StatueType.PICKUP_FAIL -> status =
                     textListItemUploadFailedState.context.resources.getString(R.string.text_p_failed)
-                BarcodeType.PICKUP_CANCEL -> status =
+                StatueType.PICKUP_CANCEL -> status =
                     textListItemUploadFailedState.context.resources.getString(R.string.text_p_cancelled)
-                BarcodeType.PICKUP_DONE -> status =
+                StatueType.PICKUP_DONE -> status =
                     textListItemUploadFailedState.context.resources.getString(R.string.text_p_done)
             }
 
@@ -231,12 +229,12 @@ class ListUploadFailedAdapter :
             ) {
                 layoutListItemChildFailedReason.visibility = View.VISIBLE
                 when (data.items?.get(0)?.stat) {
-                    BarcodeType.DELIVERY_FAIL -> {
+                    StatueType.DELIVERY_FAIL -> {
                         val reasonText =
                             DataUtil.getDeliveryFailedMsg(data.items?.get(0)?.statReason)
                         textListItemChildFailedReason.text = reasonText
                     }
-                    BarcodeType.PICKUP_FAIL -> {
+                    StatueType.PICKUP_FAIL -> {
                         val reasonText = DataUtil.getPickupFailedMsg(data.items?.get(0)?.statReason)
                         textListItemChildFailedReason.text = reasonText
                     }
@@ -246,7 +244,7 @@ class ListUploadFailedAdapter :
             }
 
             // 메모
-            if (data.items?.get(0)?.stat != BarcodeType.PICKUP_DONE) {
+            if (data.items?.get(0)?.stat != StatueType.PICKUP_DONE) {
                 if (data.items?.get(0)?.statMsg!!.isNotEmpty()) {
                     layoutListItemChildMemo.visibility = View.VISIBLE
                     textListItemChildMemo.text = data.items?.get(0)?.statMsg
@@ -263,7 +261,7 @@ class ListUploadFailedAdapter :
             val myBitmap: Bitmap
 
             when (data.items?.get(0)?.stat) {
-                BarcodeType.DELIVERY_DONE -> {
+                StatueType.DELIVERY_DONE -> {
                     // Delivery   sign 1개
                     var dirPath =
                         Environment.getExternalStorageDirectory().toString() + deliverySign
@@ -290,7 +288,7 @@ class ListUploadFailedAdapter :
                         }
                     }
                 }
-                BarcodeType.PICKUP_DONE, BarcodeType.PICKUP_CANCEL -> {
+                StatueType.PICKUP_DONE, StatueType.PICKUP_CANCEL -> {
                     val dirPath =
                         Environment.getExternalStorageDirectory().toString() + "/" + pickupSign
                     val dirPath2 =

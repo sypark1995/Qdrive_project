@@ -273,21 +273,21 @@ class CaptureActivity1 : CommonActivity(), TorchListener, OnTouchListener, TextW
             }
             R.id.btn_confirm -> {
                 when (mScanType) {
-                    BarcodeType.CONFIRM_MY_DELIVERY_ORDER,
-                    BarcodeType.CHANGE_DELIVERY_DRIVER -> {
+                    CaptureType.CONFIRM_MY_DELIVERY_ORDER,
+                    CaptureType.CHANGE_DELIVERY_DRIVER -> {
                         onUpdateButtonClick()
                     }
-                    BarcodeType.PICKUP_CNR,
-                    BarcodeType.PICKUP_SCAN_ALL,
-                    BarcodeType.PICKUP_ADD_SCAN,
-                    BarcodeType.PICKUP_TAKE_BACK,
-                    BarcodeType.OUTLET_PICKUP_SCAN -> {
+                    CaptureType.PICKUP_CNR,
+                    CaptureType.PICKUP_SCAN_ALL,
+                    CaptureType.PICKUP_ADD_SCAN,
+                    CaptureType.PICKUP_TAKE_BACK,
+                    CaptureType.OUTLET_PICKUP_SCAN -> {
                         onNextButtonClick()
                     }
-                    BarcodeType.DELIVERY_DONE -> {
+                    CaptureType.DELIVERY_DONE -> {
                         onConfirmButtonClick()
                     }
-                    BarcodeType.SELF_COLLECTION -> {
+                    CaptureType.SELF_COLLECTION -> {
                         onCaptureConfirmButtonClick()
                     }
                 }
@@ -319,7 +319,7 @@ class CaptureActivity1 : CommonActivity(), TorchListener, OnTouchListener, TextW
 
         binding.recyclerScannedBarcode.adapter = adapter
 
-        if (mScanType == BarcodeType.OUTLET_PICKUP_SCAN) {
+        if (mScanType == CaptureType.OUTLET_PICKUP_SCAN) {
 
             resultData =
                 intent.getSerializableExtra("tracking_data") as OutletPickupDoneResult.OutletPickupDoneItem
@@ -416,28 +416,28 @@ class CaptureActivity1 : CommonActivity(), TorchListener, OnTouchListener, TextW
         binding.layoutScannedCount.visibility = View.VISIBLE
         when (scanType) {
 
-            BarcodeType.CONFIRM_MY_DELIVERY_ORDER -> {
+            CaptureType.CONFIRM_MY_DELIVERY_ORDER -> {
                 //onUpdateButtonClick
                 binding.btnConfirm.text = resources.getString(R.string.button_update)
             }
-            BarcodeType.CHANGE_DELIVERY_DRIVER -> {
+            CaptureType.CHANGE_DELIVERY_DRIVER -> {
                 //onUpdateButtonClick
                 binding.btnConfirm.text = resources.getString(R.string.button_done)
             }
-            BarcodeType.DELIVERY_DONE -> {
+            CaptureType.DELIVERY_DONE -> {
                 //onConfirmButtonClick
                 binding.layoutScannedCount.visibility = View.GONE
                 binding.btnConfirm.text = resources.getString(R.string.button_confirm)
             }
-            BarcodeType.PICKUP_CNR,
-            BarcodeType.PICKUP_SCAN_ALL,
-            BarcodeType.PICKUP_ADD_SCAN,
-            BarcodeType.PICKUP_TAKE_BACK,
-            BarcodeType.OUTLET_PICKUP_SCAN -> {
+            CaptureType.PICKUP_CNR,
+            CaptureType.PICKUP_SCAN_ALL,
+            CaptureType.PICKUP_ADD_SCAN,
+            CaptureType.PICKUP_TAKE_BACK,
+            CaptureType.OUTLET_PICKUP_SCAN -> {
                 //onNextButtonClick
                 binding.btnConfirm.text = resources.getString(R.string.button_next)
             }
-            BarcodeType.SELF_COLLECTION -> {
+            CaptureType.SELF_COLLECTION -> {
                 // onCaptureConfirmButtonClick
                 binding.btnConfirm.text = resources.getString(R.string.button_confirm)
             }
@@ -494,7 +494,7 @@ class CaptureActivity1 : CommonActivity(), TorchListener, OnTouchListener, TextW
             cameraManager.onResume()
 
             // Location
-            if (mScanType == BarcodeType.CHANGE_DELIVERY_DRIVER) {
+            if (mScanType == CaptureType.CHANGE_DELIVERY_DRIVER) {
 
                 gpsTrackerManager = GPSTrackerManager(this@CaptureActivity1)
                 gpsTrackerManager?.let {
@@ -510,19 +510,19 @@ class CaptureActivity1 : CommonActivity(), TorchListener, OnTouchListener, TextW
         }
 
         // Scanned List
-        if (mScanType == BarcodeType.CONFIRM_MY_DELIVERY_ORDER
-            || mScanType == BarcodeType.CHANGE_DELIVERY_DRIVER
-            || mScanType == BarcodeType.PICKUP_CNR
-            || mScanType == BarcodeType.PICKUP_SCAN_ALL
-            || mScanType == BarcodeType.PICKUP_ADD_SCAN
-            || mScanType == BarcodeType.PICKUP_TAKE_BACK
-            || mScanType == BarcodeType.OUTLET_PICKUP_SCAN
+        if (mScanType == CaptureType.CONFIRM_MY_DELIVERY_ORDER
+            || mScanType == CaptureType.CHANGE_DELIVERY_DRIVER
+            || mScanType == CaptureType.PICKUP_CNR
+            || mScanType == CaptureType.PICKUP_SCAN_ALL
+            || mScanType == CaptureType.PICKUP_ADD_SCAN
+            || mScanType == CaptureType.PICKUP_TAKE_BACK
+            || mScanType == CaptureType.OUTLET_PICKUP_SCAN
         ) {
             try {
                 scanBarcodeArrayList.clear()
                 adapter.notifyDataSetChanged()
 
-                if (mScanType == BarcodeType.OUTLET_PICKUP_SCAN) {
+                if (mScanType == CaptureType.OUTLET_PICKUP_SCAN) {
 
                     if (resultData != null) {
                         val listItem = resultData!!.trackingNoList
@@ -574,7 +574,7 @@ class CaptureActivity1 : CommonActivity(), TorchListener, OnTouchListener, TextW
                 adapter.notifyDataSetChanged()
                 barcodeList.clear()
             }
-        } else if (mScanType == BarcodeType.SELF_COLLECTION) {
+        } else if (mScanType == CaptureType.SELF_COLLECTION) {
 
             scanBarcodeArrayList.clear()
             adapter.notifyDataSetChanged()
@@ -610,11 +610,11 @@ class CaptureActivity1 : CommonActivity(), TorchListener, OnTouchListener, TextW
 
     @SuppressLint("ClickableViewAccessibility")
     override fun onTouch(v: View, event: MotionEvent): Boolean {
-        if (mScanType == BarcodeType.PICKUP_CNR
-            || mScanType == BarcodeType.PICKUP_SCAN_ALL
-            || mScanType == BarcodeType.PICKUP_ADD_SCAN
-            || mScanType == BarcodeType.OUTLET_PICKUP_SCAN
-            || mScanType == BarcodeType.PICKUP_TAKE_BACK
+        if (mScanType == CaptureType.PICKUP_CNR
+            || mScanType == CaptureType.PICKUP_SCAN_ALL
+            || mScanType == CaptureType.PICKUP_ADD_SCAN
+            || mScanType == CaptureType.OUTLET_PICKUP_SCAN
+            || mScanType == CaptureType.PICKUP_TAKE_BACK
         ) {
             //
         } else {
@@ -724,7 +724,7 @@ class CaptureActivity1 : CommonActivity(), TorchListener, OnTouchListener, TextW
         val strBarcodeNo = barcode.replace("\\r\\n|\\r|\\n".toRegex(), "")
 
         when (mScanType) {
-            BarcodeType.CONFIRM_MY_DELIVERY_ORDER -> {
+            CaptureType.CONFIRM_MY_DELIVERY_ORDER -> {
 
                 val type = if (Preferences.outletDriver == "Y") {
                     "OL"
@@ -765,7 +765,7 @@ class CaptureActivity1 : CommonActivity(), TorchListener, OnTouchListener, TextW
                     }
             }
 
-            BarcodeType.CHANGE_DELIVERY_DRIVER -> {
+            CaptureType.CHANGE_DELIVERY_DRIVER -> {
 
                 RetrofitClient.instanceDynamic().requestValidationCheckChangeDriver(strBarcodeNo)
                     .subscribeOn(Schedulers.io())
@@ -814,7 +814,7 @@ class CaptureActivity1 : CommonActivity(), TorchListener, OnTouchListener, TextW
                     }
             }
 
-            BarcodeType.PICKUP_CNR -> {
+            CaptureType.PICKUP_CNR -> {
                 // Edit.  2020.03  배포 (기존 CNR 중복 허용됨 > 중복 허용X 수정)
                 RetrofitClient.instanceDynamic().requestValidationCheckCnR(strBarcodeNo)
                     .subscribeOn(Schedulers.io())
@@ -861,7 +861,7 @@ class CaptureActivity1 : CommonActivity(), TorchListener, OnTouchListener, TextW
                     }
             }
 
-            BarcodeType.PICKUP_SCAN_ALL -> {
+            CaptureType.PICKUP_SCAN_ALL -> {
 
                 RetrofitClient.instanceDynamic()
                     .requestValidationCheckPickup(pickupNo, strBarcodeNo)
@@ -897,7 +897,7 @@ class CaptureActivity1 : CommonActivity(), TorchListener, OnTouchListener, TextW
                     }
             }
 
-            BarcodeType.PICKUP_ADD_SCAN -> {
+            CaptureType.PICKUP_ADD_SCAN -> {
 
                 RetrofitClient.instanceDynamic()
                     .requestValidationCheckPickup(pickupNo, strBarcodeNo)
@@ -933,7 +933,7 @@ class CaptureActivity1 : CommonActivity(), TorchListener, OnTouchListener, TextW
                     }
             }
 
-            BarcodeType.PICKUP_TAKE_BACK -> {
+            CaptureType.PICKUP_TAKE_BACK -> {
 
                 RetrofitClient.instanceDynamic()
                     .requestValidationCheckTakeBack(pickupNo, strBarcodeNo)
@@ -969,7 +969,7 @@ class CaptureActivity1 : CommonActivity(), TorchListener, OnTouchListener, TextW
                     }
             }
 
-            BarcodeType.OUTLET_PICKUP_SCAN -> {
+            CaptureType.OUTLET_PICKUP_SCAN -> {
 
                 RetrofitClient.instanceDynamic()
                     .requestValidationCheckPickup(pickupNo, strBarcodeNo, route)
@@ -1005,7 +1005,7 @@ class CaptureActivity1 : CommonActivity(), TorchListener, OnTouchListener, TextW
                     }
             }
 
-            BarcodeType.SELF_COLLECTION -> {
+            CaptureType.SELF_COLLECTION -> {
 
                 if (!isInvoiceCodeRule(strBarcodeNo)) {
 
@@ -1062,12 +1062,12 @@ class CaptureActivity1 : CommonActivity(), TorchListener, OnTouchListener, TextW
         data.state = "NONE"
 
         when (mScanType) {
-            BarcodeType.CHANGE_DELIVERY_DRIVER,
-            BarcodeType.CONFIRM_MY_DELIVERY_ORDER,
-            BarcodeType.PICKUP_CNR,
-            BarcodeType.PICKUP_SCAN_ALL,
-            BarcodeType.PICKUP_ADD_SCAN,
-            BarcodeType.PICKUP_TAKE_BACK -> {
+            CaptureType.CHANGE_DELIVERY_DRIVER,
+            CaptureType.CONFIRM_MY_DELIVERY_ORDER,
+            CaptureType.PICKUP_CNR,
+            CaptureType.PICKUP_SCAN_ALL,
+            CaptureType.PICKUP_ADD_SCAN,
+            CaptureType.PICKUP_TAKE_BACK -> {
 
                 // 스캔 시 최근 스캔한 바코드가 제일 위로 셋팅됨.
                 data.state = "SUCCESS"
@@ -1079,7 +1079,7 @@ class CaptureActivity1 : CommonActivity(), TorchListener, OnTouchListener, TextW
                 binding.recyclerScannedBarcode.smoothScrollToPosition(0)
             }
 
-            BarcodeType.OUTLET_PICKUP_SCAN -> {
+            CaptureType.OUTLET_PICKUP_SCAN -> {
 
                 val listItem = resultData!!.trackingNoList
                 var position = -400
@@ -1124,9 +1124,9 @@ class CaptureActivity1 : CommonActivity(), TorchListener, OnTouchListener, TextW
             }
         }
 
-        if (mScanType != BarcodeType.CONFIRM_MY_DELIVERY_ORDER
-            && mScanType != BarcodeType.CHANGE_DELIVERY_DRIVER
-            && mScanType != BarcodeType.PICKUP_CNR
+        if (mScanType != CaptureType.CONFIRM_MY_DELIVERY_ORDER
+            && mScanType != CaptureType.CHANGE_DELIVERY_DRIVER
+            && mScanType != CaptureType.PICKUP_CNR
         ) {
             updateInvoiceNO( barcodeNo)
         }
@@ -1181,7 +1181,7 @@ class CaptureActivity1 : CommonActivity(), TorchListener, OnTouchListener, TextW
             contentVal.put("zip_code", data.zipCode)
             contentVal.put("address", data.address)
             contentVal.put("route", data.route)
-            contentVal.put("type", BarcodeType.TYPE_PICKUP)
+            contentVal.put("type", StatueType.TYPE_PICKUP)
             contentVal.put("desired_date", data.pickupHopeDay)
             contentVal.put("req_qty", data.qty)
             contentVal.put("req_nm", data.reqName)
@@ -1233,7 +1233,7 @@ class CaptureActivity1 : CommonActivity(), TorchListener, OnTouchListener, TextW
             return
         }
 
-        if (mScanType == BarcodeType.CONFIRM_MY_DELIVERY_ORDER) {
+        if (mScanType == CaptureType.CONFIRM_MY_DELIVERY_ORDER) {
             FirebaseEvent.clickEvent(this, TAG, "SetShippingStatDpc3out api call")
 
             progressBar.visibility = View.VISIBLE
@@ -1307,7 +1307,7 @@ class CaptureActivity1 : CommonActivity(), TorchListener, OnTouchListener, TextW
 //                            builder.show()
 //                        }
 //                    }.build().execute()
-        } else if (mScanType == BarcodeType.CHANGE_DELIVERY_DRIVER) {
+        } else if (mScanType == CaptureType.CHANGE_DELIVERY_DRIVER) {
             FirebaseEvent.clickEvent(this, TAG, "SetChangeDeliveryDriver api call")
 
             progressBar.visibility = View.VISIBLE
@@ -1477,7 +1477,7 @@ class CaptureActivity1 : CommonActivity(), TorchListener, OnTouchListener, TextW
     // NOTIFICATION.  Pickup (CnR / Scan All / Add Scan / Take Back / Outlet)
     private fun onNextButtonClick() {
 
-        if (mScanType == BarcodeType.OUTLET_PICKUP_SCAN) {
+        if (mScanType == CaptureType.OUTLET_PICKUP_SCAN) {
             var isScanned = false
             for (i in resultData!!.trackingNoList.indices) {
                 if (resultData!!.trackingNoList[i].isScanned) {
@@ -1525,7 +1525,7 @@ class CaptureActivity1 : CommonActivity(), TorchListener, OnTouchListener, TextW
         barcodeList.clear()
 
         when (mScanType) {
-            BarcodeType.PICKUP_CNR -> {
+            CaptureType.PICKUP_CNR -> {
                 val intent = Intent(this, CnRPickupDoneActivity::class.java)
                 intent.putExtra("senderName", pickupCNRRequester)
                 intent.putExtra("scannedList", scannedList.toString())
@@ -1533,7 +1533,7 @@ class CaptureActivity1 : CommonActivity(), TorchListener, OnTouchListener, TextW
                 resetFinishLauncher.launch(intent)
             }
 
-            BarcodeType.PICKUP_SCAN_ALL -> {
+            CaptureType.PICKUP_SCAN_ALL -> {
                 val intent = Intent(this, PickupDoneActivity::class.java)
                 intent.putExtra("pickupNo", pickupNo)
                 intent.putExtra("applicant", applicant)
@@ -1543,7 +1543,7 @@ class CaptureActivity1 : CommonActivity(), TorchListener, OnTouchListener, TextW
                 finish()
             }
 
-            BarcodeType.PICKUP_ADD_SCAN -> {
+            CaptureType.PICKUP_ADD_SCAN -> {
                 val intent = Intent(this, PickupAddScanActivity::class.java)
                 intent.putExtra("pickupNo", pickupNo)
                 intent.putExtra("applicant", applicant)
@@ -1552,7 +1552,7 @@ class CaptureActivity1 : CommonActivity(), TorchListener, OnTouchListener, TextW
                 resetResultFinishLauncher.launch(intent)
             }
 
-            BarcodeType.PICKUP_TAKE_BACK -> {
+            CaptureType.PICKUP_TAKE_BACK -> {
                 val intent = Intent(this, PickupTakeBackActivity::class.java)
                 intent.putExtra("pickupNo", pickupNo)
                 intent.putExtra("applicant", applicant)
@@ -1562,7 +1562,7 @@ class CaptureActivity1 : CommonActivity(), TorchListener, OnTouchListener, TextW
                 resetResultFinishLauncher.launch(intent)
             }
 
-            BarcodeType.OUTLET_PICKUP_SCAN -> {
+            CaptureType.OUTLET_PICKUP_SCAN -> {
 
                 var outletScannedQty = 0
 
@@ -1612,7 +1612,7 @@ class CaptureActivity1 : CommonActivity(), TorchListener, OnTouchListener, TextW
 
             binding.textScannedCount.text = "0"
 
-            if (mScanType == BarcodeType.OUTLET_PICKUP_SCAN) {
+            if (mScanType == CaptureType.OUTLET_PICKUP_SCAN) {
 
                 val listItem = resultData!!.trackingNoList
                 for (i in listItem.indices) {
@@ -1629,13 +1629,13 @@ class CaptureActivity1 : CommonActivity(), TorchListener, OnTouchListener, TextW
             scannedBarcode.clear()
         }
 
-        if (mScanType == BarcodeType.CONFIRM_MY_DELIVERY_ORDER
-            || mScanType == BarcodeType.CHANGE_DELIVERY_DRIVER
-            || mScanType == BarcodeType.PICKUP_CNR
-            || mScanType == BarcodeType.PICKUP_SCAN_ALL
-            || mScanType == BarcodeType.PICKUP_ADD_SCAN
-            || mScanType == BarcodeType.OUTLET_PICKUP_SCAN
-            || mScanType == BarcodeType.PICKUP_TAKE_BACK
+        if (mScanType == CaptureType.CONFIRM_MY_DELIVERY_ORDER
+            || mScanType == CaptureType.CHANGE_DELIVERY_DRIVER
+            || mScanType == CaptureType.PICKUP_CNR
+            || mScanType == CaptureType.PICKUP_SCAN_ALL
+            || mScanType == CaptureType.PICKUP_ADD_SCAN
+            || mScanType == CaptureType.OUTLET_PICKUP_SCAN
+            || mScanType == CaptureType.PICKUP_TAKE_BACK
         ) {
             barcodeList.clear()
         }
@@ -1707,14 +1707,14 @@ class CaptureActivity1 : CommonActivity(), TorchListener, OnTouchListener, TextW
      */
     private fun updateInvoiceNO( invoiceNo: String) {
         var updateCount = 0
-        if (mScanType == BarcodeType.PICKUP_SCAN_ALL
-            || mScanType == BarcodeType.PICKUP_ADD_SCAN
-            || mScanType == BarcodeType.PICKUP_TAKE_BACK
-            || mScanType == BarcodeType.OUTLET_PICKUP_SCAN
+        if (mScanType == CaptureType.PICKUP_SCAN_ALL
+            || mScanType == CaptureType.PICKUP_ADD_SCAN
+            || mScanType == CaptureType.PICKUP_TAKE_BACK
+            || mScanType == CaptureType.OUTLET_PICKUP_SCAN
         ) {
             updateCount = 1
 
-        } else if (mScanType == BarcodeType.DELIVERY_DONE) {
+        } else if (mScanType == CaptureType.DELIVERY_DONE) {
             // 복수건 배달완료 시점에서는 아무것도 안함 사인전 jmkang 2013-05-08
             val contentVal = ContentValues()
             contentVal.put("reg_id", Preferences.userId) // 해당 배송번호를 가지고 자신의아이디만 없데이트
@@ -1724,7 +1724,7 @@ class CaptureActivity1 : CommonActivity(), TorchListener, OnTouchListener, TextW
                 "invoice_no=? COLLATE NOCASE " + "and punchOut_stat <> 'S' " + "and reg_id = ?",
                 arrayOf(invoiceNo, Preferences.userId)
             )
-        } else if (mScanType == BarcodeType.SELF_COLLECTION) {
+        } else if (mScanType == CaptureType.SELF_COLLECTION) {
             if (isInvoiceCodeRule(invoiceNo)) {
                 updateCount = 1
             }
@@ -1742,7 +1742,7 @@ class CaptureActivity1 : CommonActivity(), TorchListener, OnTouchListener, TextW
             result = "SUCCESS"
         }
 
-        if (mScanType != BarcodeType.OUTLET_PICKUP_SCAN) {
+        if (mScanType != CaptureType.OUTLET_PICKUP_SCAN) {
             val data = BarcodeData()
             data.barcode = inputBarcode
             data.state = result

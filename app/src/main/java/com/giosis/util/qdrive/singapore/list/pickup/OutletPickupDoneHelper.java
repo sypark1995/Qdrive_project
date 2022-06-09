@@ -16,7 +16,7 @@ import com.giosis.util.qdrive.singapore.list.SigningView;
 import com.giosis.util.qdrive.singapore.list.delivery.OnOutletDataUploadEventListener;
 import com.giosis.util.qdrive.singapore.server.Custom_JsonParser;
 import com.giosis.util.qdrive.singapore.server.ImageUpload;
-import com.giosis.util.qdrive.singapore.util.BarcodeType;
+import com.giosis.util.qdrive.singapore.util.StatueType;
 import com.giosis.util.qdrive.singapore.util.DataUtil;
 import com.giosis.util.qdrive.singapore.database.DatabaseHelper;
 import com.giosis.util.qdrive.singapore.util.DisplayUtil;
@@ -257,7 +257,7 @@ public class OutletPickupDoneHelper {
             String changeDataString = dateFormat.format(date);
 
             ContentValues contentVal = new ContentValues();
-            contentVal.put("stat", BarcodeType.PICKUP_DONE);
+            contentVal.put("stat", StatueType.PICKUP_DONE);
             contentVal.put("real_qty", scannedQty);
             contentVal.put("fail_reason", "");
             contentVal.put("driver_memo", driverMemo);
@@ -301,7 +301,7 @@ public class OutletPickupDoneHelper {
 
                 JSONObject job = new JSONObject();
                 job.accumulate("rcv_type", "SC");
-                job.accumulate("stat", BarcodeType.PICKUP_DONE);
+                job.accumulate("stat", StatueType.PICKUP_DONE);
                 job.accumulate("chg_id", opID);
                 job.accumulate("fileData", bitmapString);
                 job.accumulate("fileData2", bitmapString);

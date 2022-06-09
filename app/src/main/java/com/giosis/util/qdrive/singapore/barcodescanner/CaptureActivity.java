@@ -65,7 +65,7 @@ import com.giosis.util.qdrive.singapore.list.pickup.PickupTakeBackActivity;
 import com.giosis.util.qdrive.singapore.main.DriverAssignResult;
 import com.giosis.util.qdrive.singapore.main.submenu.SelfCollectionDoneActivity;
 import com.giosis.util.qdrive.singapore.server.RetrofitClient;
-import com.giosis.util.qdrive.singapore.util.BarcodeType;
+import com.giosis.util.qdrive.singapore.util.StatueType;
 import com.giosis.util.qdrive.singapore.util.CommonActivity;
 import com.giosis.util.qdrive.singapore.util.DataUtil;
 import com.giosis.util.qdrive.singapore.util.FirebaseEvent;
@@ -285,24 +285,24 @@ public final class CaptureActivity extends CommonActivity implements DecoratedBa
             } else if (id == R.id.btn_capture_barcode_confirm) {
 
                 switch (mScanType) {
-                    case BarcodeType.CONFIRM_MY_DELIVERY_ORDER:
-                    case BarcodeType.CHANGE_DELIVERY_DRIVER:
+                    case CaptureType.CONFIRM_MY_DELIVERY_ORDER:
+                    case CaptureType.CHANGE_DELIVERY_DRIVER:
 
                         onUpdateButtonClick();
                         break;
-                    case BarcodeType.PICKUP_CNR:
-                    case BarcodeType.PICKUP_SCAN_ALL:
-                    case BarcodeType.PICKUP_ADD_SCAN:
-                    case BarcodeType.PICKUP_TAKE_BACK:
-                    case BarcodeType.OUTLET_PICKUP_SCAN:
+                    case CaptureType.PICKUP_CNR:
+                    case CaptureType.PICKUP_SCAN_ALL:
+                    case CaptureType.PICKUP_ADD_SCAN:
+                    case CaptureType.PICKUP_TAKE_BACK:
+                    case CaptureType.OUTLET_PICKUP_SCAN:
 
                         onNextButtonClick();
                         break;
-                    case BarcodeType.DELIVERY_DONE:
+                    case CaptureType.DELIVERY_DONE:
 
                         onConfirmButtonClick();
                         break;
-                    case BarcodeType.SELF_COLLECTION:
+                    case CaptureType.SELF_COLLECTION:
 
                         onCaptureConfirmButtonClick();
                         break;
@@ -525,21 +525,21 @@ public final class CaptureActivity extends CommonActivity implements DecoratedBa
 
         // eylee 2015.10.06
         switch (mScanType) {
-            case BarcodeType.PICKUP_SCAN_ALL:
-            case BarcodeType.PICKUP_ADD_SCAN: {
+            case CaptureType.PICKUP_SCAN_ALL:
+            case CaptureType.PICKUP_ADD_SCAN: {
 
                 pickupNo = getIntent().getStringExtra("pickup_no");
                 pickupApplicantName = getIntent().getStringExtra("applicant");
             }
             break;
-            case BarcodeType.PICKUP_TAKE_BACK: {
+            case CaptureType.PICKUP_TAKE_BACK: {
 
                 pickupNo = getIntent().getStringExtra("pickup_no");
                 pickupApplicantName = getIntent().getStringExtra("applicant");
                 mQty = getIntent().getStringExtra("qty");
             }
             break;
-            case BarcodeType.OUTLET_PICKUP_SCAN: {
+            case CaptureType.OUTLET_PICKUP_SCAN: {
 
                 pickupNo = getIntent().getStringExtra("pickup_no");
                 pickupApplicantName = getIntent().getStringExtra("applicant");
@@ -691,29 +691,29 @@ public final class CaptureActivity extends CommonActivity implements DecoratedBa
         layout_capture_scan_count.setVisibility(View.VISIBLE);
 
         switch (scanType) {
-            case BarcodeType.CONFIRM_MY_DELIVERY_ORDER:
+            case CaptureType.CONFIRM_MY_DELIVERY_ORDER:
 
                 btn_capture_barcode_confirm.setText(getResources().getString(R.string.button_update));      //onUpdateButtonClick
                 break;
-            case BarcodeType.CHANGE_DELIVERY_DRIVER:
+            case CaptureType.CHANGE_DELIVERY_DRIVER:
 
                 btn_capture_barcode_confirm.setText(getResources().getString(R.string.button_done));         //onUpdateButtonClick
                 break;
-            case BarcodeType.DELIVERY_DONE: {
+            case CaptureType.DELIVERY_DONE: {
 
                 layout_capture_scan_count.setVisibility(View.GONE);
                 btn_capture_barcode_confirm.setText(getResources().getString(R.string.button_confirm));         //onConfirmButtonClick
             }
             break;
-            case BarcodeType.PICKUP_CNR:
-            case BarcodeType.PICKUP_SCAN_ALL:
-            case BarcodeType.PICKUP_ADD_SCAN:
-            case BarcodeType.PICKUP_TAKE_BACK:
-            case BarcodeType.OUTLET_PICKUP_SCAN:
+            case CaptureType.PICKUP_CNR:
+            case CaptureType.PICKUP_SCAN_ALL:
+            case CaptureType.PICKUP_ADD_SCAN:
+            case CaptureType.PICKUP_TAKE_BACK:
+            case CaptureType.OUTLET_PICKUP_SCAN:
 
                 btn_capture_barcode_confirm.setText(getResources().getString(R.string.button_next));            //onNextButtonClick
                 break;
-            case BarcodeType.SELF_COLLECTION:
+            case CaptureType.SELF_COLLECTION:
 
                 btn_capture_barcode_confirm.setText(getResources().getString(R.string.button_confirm));         // onCaptureConfirmButtonClick
                 break;
@@ -790,7 +790,7 @@ public final class CaptureActivity extends CommonActivity implements DecoratedBa
             cameraManager.onResume();
 
             // Location
-            if (mScanType.equals(BarcodeType.CHANGE_DELIVERY_DRIVER)) {
+            if (mScanType.equals(CaptureType.CHANGE_DELIVERY_DRIVER)) {
 
                 gpsTrackerManager = new GPSTrackerManager(CaptureActivity.this);
                 gpsEnable = gpsTrackerManager.enableGPSSetting();
@@ -810,25 +810,25 @@ public final class CaptureActivity extends CommonActivity implements DecoratedBa
 
 
         // Scanned List
-        if (mScanType.equals(BarcodeType.CONFIRM_MY_DELIVERY_ORDER)
-                || mScanType.equals(BarcodeType.CHANGE_DELIVERY_DRIVER)
-                || mScanType.equals(BarcodeType.PICKUP_CNR)
-                || mScanType.equals(BarcodeType.PICKUP_SCAN_ALL)
-                || mScanType.equals(BarcodeType.PICKUP_ADD_SCAN)
-                || mScanType.equals(BarcodeType.PICKUP_TAKE_BACK)
-                || mScanType.equals(BarcodeType.OUTLET_PICKUP_SCAN)) {
+        if (mScanType.equals(CaptureType.CONFIRM_MY_DELIVERY_ORDER)
+                || mScanType.equals(CaptureType.CHANGE_DELIVERY_DRIVER)
+                || mScanType.equals(CaptureType.PICKUP_CNR)
+                || mScanType.equals(CaptureType.PICKUP_SCAN_ALL)
+                || mScanType.equals(CaptureType.PICKUP_ADD_SCAN)
+                || mScanType.equals(CaptureType.PICKUP_TAKE_BACK)
+                || mScanType.equals(CaptureType.OUTLET_PICKUP_SCAN)) {
 
             try {
 
                 scanBarcodeArrayList.clear();
                 adapter.notifyDataSetChanged();
 
-                if (mScanType.equals(BarcodeType.CONFIRM_MY_DELIVERY_ORDER)
-                        || mScanType.equals(BarcodeType.CHANGE_DELIVERY_DRIVER)
-                        || mScanType.equals(BarcodeType.PICKUP_CNR)
-                        || mScanType.equals(BarcodeType.PICKUP_SCAN_ALL)
-                        || mScanType.equals(BarcodeType.PICKUP_ADD_SCAN)
-                        || mScanType.equals(BarcodeType.PICKUP_TAKE_BACK)) {
+                if (mScanType.equals(CaptureType.CONFIRM_MY_DELIVERY_ORDER)
+                        || mScanType.equals(CaptureType.CHANGE_DELIVERY_DRIVER)
+                        || mScanType.equals(CaptureType.PICKUP_CNR)
+                        || mScanType.equals(CaptureType.PICKUP_SCAN_ALL)
+                        || mScanType.equals(CaptureType.PICKUP_ADD_SCAN)
+                        || mScanType.equals(CaptureType.PICKUP_TAKE_BACK)) {
 
                     if (barcodeList != null && 0 < barcodeList.size()) {
                         for (int i = 0; i < barcodeList.size(); i++) {
@@ -847,7 +847,7 @@ public final class CaptureActivity extends CommonActivity implements DecoratedBa
                         adapter.notifyDataSetChanged();
                         recycler_scanned_barcode.smoothScrollToPosition(0);
                     }
-                } else if (mScanType.equals(BarcodeType.OUTLET_PICKUP_SCAN)) {
+                } else if (mScanType.equals(CaptureType.OUTLET_PICKUP_SCAN)) {
 
                     mScanCount = 0;
 
@@ -893,7 +893,7 @@ public final class CaptureActivity extends CommonActivity implements DecoratedBa
                 adapter.notifyDataSetChanged();
                 removeBarcodeListInstance();
             }
-        } else if (mScanType.equals(BarcodeType.SELF_COLLECTION)) {
+        } else if (mScanType.equals(CaptureType.SELF_COLLECTION)) {
 
             text_top_title.setText(getResources().getString(R.string.text_title_scan_barcode));
             btn_capture_barcode_confirm.setText(getResources().getString(R.string.button_next));
@@ -914,9 +914,9 @@ public final class CaptureActivity extends CommonActivity implements DecoratedBa
     @Override
     public boolean onTouch(View v, MotionEvent event) {
 
-        if (mScanType.equals(BarcodeType.PICKUP_CNR)
-                || mScanType.equals(BarcodeType.PICKUP_SCAN_ALL) || mScanType.equals(BarcodeType.PICKUP_ADD_SCAN)
-                || mScanType.equals(BarcodeType.OUTLET_PICKUP_SCAN) || mScanType.equals(BarcodeType.PICKUP_TAKE_BACK)) {
+        if (mScanType.equals(CaptureType.PICKUP_CNR)
+                || mScanType.equals(CaptureType.PICKUP_SCAN_ALL) || mScanType.equals(CaptureType.PICKUP_ADD_SCAN)
+                || mScanType.equals(CaptureType.OUTLET_PICKUP_SCAN) || mScanType.equals(CaptureType.PICKUP_TAKE_BACK)) {
 
             // TEST.
             if (opID.equals("karam.kim")) {
@@ -1017,10 +1017,10 @@ public final class CaptureActivity extends CommonActivity implements DecoratedBa
                 }
                 Log.i(TAG, "  onKey  KEYCODE_ENTER : " + tempStrScanNo + " / " + isDuplicate + "  //  " + event.getAction());
 
-                if (mScanType.equals(BarcodeType.CONFIRM_MY_DELIVERY_ORDER) || mScanType.equals(BarcodeType.CHANGE_DELIVERY_DRIVER) ||
-                        mScanType.equals(BarcodeType.PICKUP_CNR)
-                        || mScanType.equals(BarcodeType.PICKUP_SCAN_ALL) || mScanType.equals(BarcodeType.PICKUP_ADD_SCAN)
-                        || mScanType.equals(BarcodeType.PICKUP_TAKE_BACK) || mScanType.equals(BarcodeType.OUTLET_PICKUP_SCAN)) {
+                if (mScanType.equals(CaptureType.CONFIRM_MY_DELIVERY_ORDER) || mScanType.equals(CaptureType.CHANGE_DELIVERY_DRIVER) ||
+                        mScanType.equals(CaptureType.PICKUP_CNR)
+                        || mScanType.equals(CaptureType.PICKUP_SCAN_ALL) || mScanType.equals(CaptureType.PICKUP_ADD_SCAN)
+                        || mScanType.equals(CaptureType.PICKUP_TAKE_BACK) || mScanType.equals(CaptureType.OUTLET_PICKUP_SCAN)) {
 
 
                     if (event.getAction() != KeyEvent.ACTION_DOWN) {
@@ -1176,23 +1176,23 @@ public final class CaptureActivity extends CommonActivity implements DecoratedBa
         data.setBarcode(barcodeNo.toUpperCase());
         data.setState("NONE");
 
-        if (mScanType.equals(BarcodeType.CHANGE_DELIVERY_DRIVER)) {
+        if (mScanType.equals(CaptureType.CHANGE_DELIVERY_DRIVER)) {
 
             data.setBarcode(changeDriverResult.getTrackingNo() + "  |  " + changeDriverResult.getStatus() + "  |  " + changeDriverResult.getCurrentDriver());
         }
 
 
         switch (mScanType) {
-            case BarcodeType.CONFIRM_MY_DELIVERY_ORDER:
-            case BarcodeType.CHANGE_DELIVERY_DRIVER:
-            case BarcodeType.PICKUP_CNR:
-            case BarcodeType.PICKUP_SCAN_ALL:
-            case BarcodeType.PICKUP_ADD_SCAN:
-            case BarcodeType.PICKUP_TAKE_BACK:
+            case CaptureType.CONFIRM_MY_DELIVERY_ORDER:
+            case CaptureType.CHANGE_DELIVERY_DRIVER:
+            case CaptureType.PICKUP_CNR:
+            case CaptureType.PICKUP_SCAN_ALL:
+            case CaptureType.PICKUP_ADD_SCAN:
+            case CaptureType.PICKUP_TAKE_BACK:
                 // 스캔 시 최근 스캔한 바코드가 제일 위로 셋팅됨.
                 data.setState("SUCCESS");
 
-                if (mScanType.equals(BarcodeType.CHANGE_DELIVERY_DRIVER)) {
+                if (mScanType.equals(CaptureType.CHANGE_DELIVERY_DRIVER)) {
 
                     barcodeList.add(changeDriverResult.getTrackingNo() + "  |  " + changeDriverResult.getStatus() + "  |  " + changeDriverResult.getCurrentDriver());
                     changeDriverObjectArrayList.add(changeDriverResult);
@@ -1206,7 +1206,7 @@ public final class CaptureActivity extends CommonActivity implements DecoratedBa
                 recycler_scanned_barcode.smoothScrollToPosition(0);
 
                 break;
-            case BarcodeType.OUTLET_PICKUP_SCAN:
+            case CaptureType.OUTLET_PICKUP_SCAN:
 
                 ArrayList<OutletPickupDoneResult.OutletPickupDoneItem.OutletPickupDoneTrackingNoItem> listItem = resultData.getResultObject().getTrackingNoList();
                 int position = -400;
@@ -1257,8 +1257,8 @@ public final class CaptureActivity extends CommonActivity implements DecoratedBa
                 break;
         }
 
-        if (!mScanType.equals(BarcodeType.CONFIRM_MY_DELIVERY_ORDER) && !mScanType.equals(BarcodeType.CHANGE_DELIVERY_DRIVER)
-                && !mScanType.equals(BarcodeType.PICKUP_CNR)) {
+        if (!mScanType.equals(CaptureType.CONFIRM_MY_DELIVERY_ORDER) && !mScanType.equals(CaptureType.CHANGE_DELIVERY_DRIVER)
+                && !mScanType.equals(CaptureType.PICKUP_CNR)) {
 
             updateInvoiceNO(mScanType, barcodeNo);
         }
@@ -1296,7 +1296,7 @@ public final class CaptureActivity extends CommonActivity implements DecoratedBa
 
 
         switch (mScanType) {
-            case BarcodeType.CONFIRM_MY_DELIVERY_ORDER: {
+            case CaptureType.CONFIRM_MY_DELIVERY_ORDER: {
 
                 final String scanNo = strBarcodeNo;
                 String type = "STD";
@@ -1340,7 +1340,7 @@ public final class CaptureActivity extends CommonActivity implements DecoratedBa
                         }, it -> Toast.makeText(CaptureActivity.this, getResources().getString(R.string.msg_error_check_again), Toast.LENGTH_SHORT).show());
                 break;
             }
-            case BarcodeType.CHANGE_DELIVERY_DRIVER: {
+            case CaptureType.CHANGE_DELIVERY_DRIVER: {
 
                 final String scanNo = strBarcodeNo;
 
@@ -1382,7 +1382,7 @@ public final class CaptureActivity extends CommonActivity implements DecoratedBa
                         }, it -> Toast.makeText(CaptureActivity.this, getResources().getString(R.string.msg_error_check_again), Toast.LENGTH_SHORT).show());
                 break;
             }
-            case BarcodeType.PICKUP_CNR: {  //2016-09-21 add type validation
+            case CaptureType.PICKUP_CNR: {  //2016-09-21 add type validation
 
                 // 2016-09-01 eylee 여기서 유효성 검사해서 네트워크 타기
                 // 유효성 검사에 통과하면 여기서 소리 추가하면서 addBarcode
@@ -1443,7 +1443,7 @@ public final class CaptureActivity extends CommonActivity implements DecoratedBa
                         }, it -> Toast.makeText(CaptureActivity.this, getResources().getString(R.string.msg_error_check_again), Toast.LENGTH_SHORT).show());
             }
             break;
-            case BarcodeType.PICKUP_SCAN_ALL: {
+            case CaptureType.PICKUP_SCAN_ALL: {
 
                 final String scanNo = strBarcodeNo;
 
@@ -1481,7 +1481,7 @@ public final class CaptureActivity extends CommonActivity implements DecoratedBa
                         }, it -> Toast.makeText(CaptureActivity.this, getResources().getString(R.string.msg_error_check_again), Toast.LENGTH_SHORT).show());
                 break;
             }
-            case BarcodeType.PICKUP_ADD_SCAN: {
+            case CaptureType.PICKUP_ADD_SCAN: {
 
                 final String scanNo = strBarcodeNo;
 
@@ -1519,7 +1519,7 @@ public final class CaptureActivity extends CommonActivity implements DecoratedBa
                         }, it -> Toast.makeText(CaptureActivity.this, getResources().getString(R.string.msg_error_check_again), Toast.LENGTH_SHORT).show());
                 break;
             }
-            case BarcodeType.PICKUP_TAKE_BACK: {
+            case CaptureType.PICKUP_TAKE_BACK: {
 
                 final String scanNo = strBarcodeNo;
 
@@ -1557,7 +1557,7 @@ public final class CaptureActivity extends CommonActivity implements DecoratedBa
                         }, it -> Toast.makeText(CaptureActivity.this, getResources().getString(R.string.msg_error_check_again), Toast.LENGTH_SHORT).show());
                 break;
             }
-            case BarcodeType.OUTLET_PICKUP_SCAN: {
+            case CaptureType.OUTLET_PICKUP_SCAN: {
 
                 final String scanNo = strBarcodeNo;
 
@@ -1611,7 +1611,7 @@ public final class CaptureActivity extends CommonActivity implements DecoratedBa
 
                 break;
             }
-            case BarcodeType.SELF_COLLECTION: {     // 2016-09-20 eylee
+            case CaptureType.SELF_COLLECTION: {     // 2016-09-20 eylee
 
                 if (!isInvoiceCodeRule(strBarcodeNo)) {
 
@@ -1702,7 +1702,7 @@ public final class CaptureActivity extends CommonActivity implements DecoratedBa
             contentVal.put("zip_code", data.getZipCode());
             contentVal.put("address", data.getAddress());
             contentVal.put("route", data.getRoute());
-            contentVal.put("type", BarcodeType.TYPE_PICKUP);
+            contentVal.put("type", StatueType.TYPE_PICKUP);
             contentVal.put("desired_date", data.getPickupHopeDay());
             contentVal.put("req_qty", data.getQty());
             contentVal.put("req_nm", data.getReqName());
@@ -1754,7 +1754,7 @@ public final class CaptureActivity extends CommonActivity implements DecoratedBa
         }
 
 
-        if (mScanType.equals(BarcodeType.CONFIRM_MY_DELIVERY_ORDER)) {
+        if (mScanType.equals(CaptureType.CONFIRM_MY_DELIVERY_ORDER)) {
 
             FirebaseEvent.INSTANCE.clickEvent(this, TAG, "SetShippingStatDpc3out");
 
@@ -1783,7 +1783,7 @@ public final class CaptureActivity extends CommonActivity implements DecoratedBa
                             builder.show();
                         }
                     }).build().execute();
-        } else if (mScanType.equals(BarcodeType.CHANGE_DELIVERY_DRIVER)) {
+        } else if (mScanType.equals(CaptureType.CHANGE_DELIVERY_DRIVER)) {
 
             FirebaseEvent.INSTANCE.clickEvent(this, TAG, "SetChangeDeliveryDriver");
 
@@ -1851,7 +1851,7 @@ public final class CaptureActivity extends CommonActivity implements DecoratedBa
         contentVal.put("address", assignInfo.getAddress());
         contentVal.put("rcv_request", assignInfo.getDelMemo());
         contentVal.put("delivery_dt", assignInfo.getDeliveryFirstDate());
-        contentVal.put("type", BarcodeType.TYPE_DELIVERY);
+        contentVal.put("type", StatueType.TYPE_DELIVERY);
         contentVal.put("route", assignInfo.getRoute());
         contentVal.put("reg_id", opId);
         contentVal.put("reg_dt", regDataString);
@@ -1951,7 +1951,7 @@ public final class CaptureActivity extends CommonActivity implements DecoratedBa
     // NOTIFICATION.  Pickup (CnR / Scan All / Add Scan / Take Back / Outlet)
     public void onNextButtonClick() {
 
-        if (mScanType.equals(BarcodeType.OUTLET_PICKUP_SCAN)) {
+        if (mScanType.equals(CaptureType.OUTLET_PICKUP_SCAN)) {
 
             boolean isScanned = false;
 
@@ -1995,7 +1995,7 @@ public final class CaptureActivity extends CommonActivity implements DecoratedBa
 
         removeBarcodeListInstance();
         switch (mScanType) {
-            case BarcodeType.PICKUP_CNR: {
+            case CaptureType.PICKUP_CNR: {
 
                 Intent intent = new Intent(this, CnRPickupDoneActivity.class);
                 intent.putExtra("senderName", pickupCNRRequester);
@@ -2004,7 +2004,7 @@ public final class CaptureActivity extends CommonActivity implements DecoratedBa
                 this.startActivityForResult(intent, REQUEST_PICKUP_CNR);
                 break;
             }
-            case BarcodeType.PICKUP_SCAN_ALL: {
+            case CaptureType.PICKUP_SCAN_ALL: {
 
                 Intent intent = new Intent(this, PickupDoneActivity.class);
                 intent.putExtra("pickupNo", pickupNo);
@@ -2015,7 +2015,7 @@ public final class CaptureActivity extends CommonActivity implements DecoratedBa
                 finish();
                 break;
             }
-            case BarcodeType.PICKUP_ADD_SCAN: {
+            case CaptureType.PICKUP_ADD_SCAN: {
 
                 Intent intent = new Intent(this, PickupAddScanActivity.class);
                 intent.putExtra("pickupNo", pickupNo);
@@ -2025,7 +2025,7 @@ public final class CaptureActivity extends CommonActivity implements DecoratedBa
                 this.startActivityForResult(intent, REQUEST_PICKUP_ADD_SCAN);
                 break;
             }
-            case BarcodeType.PICKUP_TAKE_BACK: {
+            case CaptureType.PICKUP_TAKE_BACK: {
 
                 Intent intent = new Intent(this, PickupTakeBackActivity.class);
                 intent.putExtra("pickupNo", pickupNo);
@@ -2036,7 +2036,7 @@ public final class CaptureActivity extends CommonActivity implements DecoratedBa
                 this.startActivityForResult(intent, REQUEST_PICKUP_TAKE_BACK);
                 break;
             }
-            case BarcodeType.OUTLET_PICKUP_SCAN: {
+            case CaptureType.OUTLET_PICKUP_SCAN: {
 
                 int scanned_qty = 0;
                 for (int i = 0; i < resultData.getResultObject().getTrackingNoList().size(); i++) {
@@ -2087,7 +2087,7 @@ public final class CaptureActivity extends CommonActivity implements DecoratedBa
             scanBarcodeArrayList.clear();
             adapter.notifyDataSetChanged();
 
-            if (mScanType.equals(BarcodeType.OUTLET_PICKUP_SCAN)) {
+            if (mScanType.equals(CaptureType.OUTLET_PICKUP_SCAN)) {
 
                 ArrayList<OutletPickupDoneResult.OutletPickupDoneItem.OutletPickupDoneTrackingNoItem> listItem = resultData.getResultObject().getTrackingNoList();
 
@@ -2107,10 +2107,10 @@ public final class CaptureActivity extends CommonActivity implements DecoratedBa
             scannedBarcode.clear();
         }
 
-        if (mScanType.equals(BarcodeType.CONFIRM_MY_DELIVERY_ORDER) || mScanType.equals(BarcodeType.CHANGE_DELIVERY_DRIVER)
-                || mScanType.equals(BarcodeType.PICKUP_CNR)
-                || mScanType.equals(BarcodeType.PICKUP_SCAN_ALL) || mScanType.equals(BarcodeType.PICKUP_ADD_SCAN)
-                || mScanType.equals(BarcodeType.OUTLET_PICKUP_SCAN) || mScanType.equals(BarcodeType.PICKUP_TAKE_BACK)) {
+        if (mScanType.equals(CaptureType.CONFIRM_MY_DELIVERY_ORDER) || mScanType.equals(CaptureType.CHANGE_DELIVERY_DRIVER)
+                || mScanType.equals(CaptureType.PICKUP_CNR)
+                || mScanType.equals(CaptureType.PICKUP_SCAN_ALL) || mScanType.equals(CaptureType.PICKUP_ADD_SCAN)
+                || mScanType.equals(CaptureType.OUTLET_PICKUP_SCAN) || mScanType.equals(CaptureType.PICKUP_TAKE_BACK)) {
 
             removeBarcodeListInstance();
         }
@@ -2200,18 +2200,18 @@ public final class CaptureActivity extends CommonActivity implements DecoratedBa
 
         int updateCount = 0;
 
-        if (scanType.equals(BarcodeType.PICKUP_SCAN_ALL) || scanType.equals(BarcodeType.PICKUP_ADD_SCAN)
-                || scanType.equals(BarcodeType.PICKUP_TAKE_BACK) || scanType.equals(BarcodeType.OUTLET_PICKUP_SCAN)) {
+        if (scanType.equals(CaptureType.PICKUP_SCAN_ALL) || scanType.equals(CaptureType.PICKUP_ADD_SCAN)
+                || scanType.equals(CaptureType.PICKUP_TAKE_BACK) || scanType.equals(CaptureType.OUTLET_PICKUP_SCAN)) {
 
             updateCount = 1;
-        } else if (mScanType.equals(BarcodeType.DELIVERY_DONE)) {
+        } else if (mScanType.equals(CaptureType.DELIVERY_DONE)) {
             // 복수건 배달완료 시점에서는 아무것도 안함 사인전 jmkang 2013-05-08
 
             ContentValues contentVal = new ContentValues();
             contentVal.put("reg_id", opID); // 해당 배송번호를 가지고 자신의아이디만 없데이트
             updateCount = DatabaseHelper.getInstance().update(DatabaseHelper.DB_TABLE_INTEGRATION_LIST, contentVal,
                     "invoice_no=? COLLATE NOCASE " + "and punchOut_stat <> 'S' " + "and reg_id = ?", new String[]{invoiceNo, opID});
-        } else if (mScanType.equals(BarcodeType.SELF_COLLECTION)) {
+        } else if (mScanType.equals(CaptureType.SELF_COLLECTION)) {
 
             if (isInvoiceCodeRule(invoiceNo)) {
                 updateCount = 1;
@@ -2233,7 +2233,7 @@ public final class CaptureActivity extends CommonActivity implements DecoratedBa
             result = "SUCCESS";
         }
 
-        if (!mScanType.equals(BarcodeType.OUTLET_PICKUP_SCAN)) {
+        if (!mScanType.equals(CaptureType.OUTLET_PICKUP_SCAN)) {
 
             BarcodeData data = new BarcodeData();
             data.setBarcode(inputBarcode);

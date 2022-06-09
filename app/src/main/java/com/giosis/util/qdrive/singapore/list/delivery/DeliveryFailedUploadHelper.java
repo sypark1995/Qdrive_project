@@ -13,7 +13,7 @@ import com.giosis.util.qdrive.singapore.R;
 import com.giosis.util.qdrive.singapore.barcodescanner.StdResult;
 import com.giosis.util.qdrive.singapore.server.Custom_JsonParser;
 import com.giosis.util.qdrive.singapore.server.ImageUpload;
-import com.giosis.util.qdrive.singapore.util.BarcodeType;
+import com.giosis.util.qdrive.singapore.util.StatueType;
 import com.giosis.util.qdrive.singapore.util.DataUtil;
 import com.giosis.util.qdrive.singapore.database.DatabaseHelper;
 import com.giosis.util.qdrive.singapore.util.DisplayUtil;
@@ -218,7 +218,7 @@ public class DeliveryFailedUploadHelper {
             Date date = new Date();
 
             ContentValues contentVal = new ContentValues();
-            contentVal.put("stat", BarcodeType.DELIVERY_FAIL);
+            contentVal.put("stat", StatueType.DELIVERY_FAIL);
             contentVal.put("chg_dt", dateFormat.format(date));
             contentVal.put("fail_reason", failedCode);
             contentVal.put("driver_memo", driverMemo);
@@ -260,7 +260,7 @@ public class DeliveryFailedUploadHelper {
 
                 JSONObject job = new JSONObject();
                 job.accumulate("rcv_type", receiveType);
-                job.accumulate("stat", BarcodeType.DELIVERY_FAIL);
+                job.accumulate("stat", StatueType.DELIVERY_FAIL);
                 job.accumulate("chg_id", opID);
                 job.accumulate("deliv_msg", "(by Qdrive RealTime-Upload)");
                 job.accumulate("opId", opID);
@@ -329,7 +329,7 @@ public class DeliveryFailedUploadHelper {
         Date date = new Date();
 
         ContentValues contentVal = new ContentValues();
-        contentVal.put("stat", BarcodeType.DELIVERY_FAIL);
+        contentVal.put("stat", StatueType.DELIVERY_FAIL);
         contentVal.put("chg_dt", dateFormat.format(date));
         contentVal.put("real_qty", "0");        // 업로드시 값 Parse 시 에러나서 0 넘김
         contentVal.put("fail_reason", failedCode);

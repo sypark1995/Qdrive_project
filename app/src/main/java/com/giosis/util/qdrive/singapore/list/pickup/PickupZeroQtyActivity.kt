@@ -279,7 +279,7 @@ class PickupZeroQtyActivity : CommonActivity() {
 
             val dateFormat = SimpleDateFormat("yyyy-MM-dd HH:mm:ss")
             val contentVal = ContentValues()
-            contentVal.put("stat", BarcodeType.PICKUP_DONE)
+            contentVal.put("stat", StatueType.PICKUP_DONE)
             contentVal.put("real_qty", "0")
             contentVal.put("rcv_type", "ZQ")
             contentVal.put("chg_dt", dateFormat.format(Date()))
@@ -311,7 +311,7 @@ class PickupZeroQtyActivity : CommonActivity() {
             try {
                 val model = RetrofitClient.instanceDynamic().requestSetPickupUploadData(
                     "ZQ",
-                    BarcodeType.PICKUP_DONE,
+                    StatueType.PICKUP_DONE,
                     NetworkUtil.getNetworkType(this@PickupZeroQtyActivity),
                     pickupNo,
                     bitmapString1,

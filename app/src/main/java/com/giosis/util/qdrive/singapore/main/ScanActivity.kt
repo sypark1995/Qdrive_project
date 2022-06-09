@@ -4,9 +4,9 @@ package com.giosis.util.qdrive.singapore.main
 import android.content.Intent
 import android.os.Bundle
 import android.view.View
-import com.bumptech.glide.util.Util
 import com.giosis.util.qdrive.singapore.R
 import com.giosis.util.qdrive.singapore.barcodescanner.CaptureActivity1
+import com.giosis.util.qdrive.singapore.barcodescanner.CaptureType
 import com.giosis.util.qdrive.singapore.databinding.ActivityScanBinding
 import com.giosis.util.qdrive.singapore.util.*
 
@@ -61,7 +61,7 @@ class ScanActivity : CommonActivity() {
         binding.layoutConfirmMyDeliveryOrder.setOnClickListener {
             val intent = Intent(this@ScanActivity, CaptureActivity1::class.java)
             intent.putExtra("title", resources.getString(R.string.text_title_driver_assign))
-            intent.putExtra("type", BarcodeType.CONFIRM_MY_DELIVERY_ORDER)
+            intent.putExtra("type", CaptureType.CONFIRM_MY_DELIVERY_ORDER)
             startActivity(intent)
         }
 
@@ -69,7 +69,7 @@ class ScanActivity : CommonActivity() {
 
             val intent = Intent(this@ScanActivity, CaptureActivity1::class.java)
             intent.putExtra("title", resources.getString(R.string.text_delivered))
-            intent.putExtra("type", BarcodeType.DELIVERY_DONE)
+            intent.putExtra("type", CaptureType.DELIVERY_DONE)
             startActivity(intent)
         }
 
@@ -77,7 +77,7 @@ class ScanActivity : CommonActivity() {
 
             val intent = Intent(this@ScanActivity, CaptureActivity1::class.java)
             intent.putExtra("title", resources.getString(R.string.text_title_scan_pickup_cnr))
-            intent.putExtra("type", BarcodeType.PICKUP_CNR)
+            intent.putExtra("type", CaptureType.PICKUP_CNR)
             startActivity(intent)
         }
 
@@ -85,7 +85,7 @@ class ScanActivity : CommonActivity() {
 
             val intent = Intent(this@ScanActivity, CaptureActivity1::class.java)
             intent.putExtra("title", resources.getString(R.string.navi_sub_self))
-            intent.putExtra("type", BarcodeType.SELF_COLLECTION)
+            intent.putExtra("type", CaptureType.SELF_COLLECTION)
             startActivity(intent)
         }
     }

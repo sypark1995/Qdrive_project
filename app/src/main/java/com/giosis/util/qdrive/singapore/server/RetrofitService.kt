@@ -4,7 +4,7 @@ import android.os.Build
 import com.giosis.util.qdrive.singapore.MemoryStatus
 import com.giosis.util.qdrive.singapore.data.ImageResult
 import com.giosis.util.qdrive.singapore.list.delivery.QRCodeResult
-import com.giosis.util.qdrive.singapore.util.BarcodeType
+import com.giosis.util.qdrive.singapore.util.StatueType
 import com.giosis.util.qdrive.singapore.util.DataUtil
 import com.giosis.util.qdrive.singapore.util.Preferences
 import io.reactivex.rxjava3.core.Single
@@ -663,7 +663,7 @@ interface RetrofitService {
         @Field("retry_day") retry_day: String = "",
         @Field("fail_reason") fail_reason: String = "",
         @Field("rcv_type") rcv_type: String = "SC",
-        @Field("stat") stat: String = BarcodeType.PICKUP_DONE,
+        @Field("stat") stat: String = StatueType.PICKUP_DONE,
         @Field("chg_id") chg_id: String = Preferences.userId,
         @Field("deliv_msg") deliv_msg: String = "(by Qdrive RealTime-Upload)",
         @Field("opId") opId: String = Preferences.userId,
@@ -687,7 +687,7 @@ interface RetrofitService {
         @Field("real_qty") real_qty: String,
         @Field("fail_reason") fail_reason: String = "",
         @Field("retry_day") retry_day: String = "",
-        @Field("stat") stat: String = BarcodeType.PICKUP_DONE,
+        @Field("stat") stat: String = StatueType.PICKUP_DONE,
         @Field("rcv_type") rcv_type: String = "RC",
         @Field("remark") remark: String = "",
         @Field("chg_id") chg_id: String = Preferences.userId,
@@ -714,7 +714,7 @@ interface RetrofitService {
         @Field("chg_id") chg_id: String = Preferences.userId,
         @Field("officeCd") officeCd: String = Preferences.officeCode,
         @Field("opId") opId: String = Preferences.userId,
-        @Field("stat") stat: String = BarcodeType.PICKUP_DONE,
+        @Field("stat") stat: String = StatueType.PICKUP_DONE,
         @Field("deliv_msg") deliv_msg: String = "(by Qdrive RealTime-Upload)",
         @Field("remark") remark: String = "",
         @Field("rcv_type") rcv_type: String = "RC",
@@ -751,7 +751,7 @@ interface RetrofitService {
         @Field("opId") opId: String = Preferences.userId,
         @Field("deliv_msg") deliv_msg: String = "(by Qdrive RealTime-Upload)",
         @Field("chg_id") chg_id: String = Preferences.userId,
-        @Field("stat") stat: String = BarcodeType.DELIVERY_START,
+        @Field("stat") stat: String = StatueType.DELIVERY_START,
         @Field("stat_reason") stat_reason: String = "",
         @Field("del_channel") del_channel: String = "QR",
         @Field("stat_chg_gubun") stat_chg_gubun: String = "D",

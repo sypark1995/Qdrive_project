@@ -13,7 +13,7 @@ import com.giosis.util.qdrive.singapore.list.BarcodeData;
 import com.giosis.util.qdrive.singapore.list.SigningView;
 import com.giosis.util.qdrive.singapore.server.Custom_JsonParser;
 import com.giosis.util.qdrive.singapore.server.ImageUpload;
-import com.giosis.util.qdrive.singapore.util.BarcodeType;
+import com.giosis.util.qdrive.singapore.util.StatueType;
 import com.giosis.util.qdrive.singapore.util.DataUtil;
 import com.giosis.util.qdrive.singapore.util.DisplayUtil;
 import com.giosis.util.qdrive.singapore.util.NetworkUtil;
@@ -296,7 +296,7 @@ public class SelfCollectionDoneHelper {
 
                 JSONObject job = new JSONObject();
                 job.accumulate("rcv_type", receiveType);
-                job.accumulate("stat", BarcodeType.DELIVERY_DONE);
+                job.accumulate("stat", StatueType.DELIVERY_DONE);
                 job.accumulate("chg_id", opID);
                 job.accumulate("deliv_msg", "(by Qdrive Self-Collector)");  //내부관리용 드라이버 메세지
                 job.accumulate("opId", "SELF");  // 프로시져(up_gmkt_set_self_collector_data) 에서 del_driver_id 로 사용됨

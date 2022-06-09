@@ -10,7 +10,6 @@ import android.os.Bundle;
 import android.util.Log;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.Button;
 import android.widget.FrameLayout;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
@@ -22,9 +21,10 @@ import android.widget.Toast;
 
 import com.giosis.util.qdrive.singapore.R;
 import com.giosis.util.qdrive.singapore.barcodescanner.CaptureActivity;
+import com.giosis.util.qdrive.singapore.barcodescanner.CaptureType;
 import com.giosis.util.qdrive.singapore.list.OutletInfo;
 import com.giosis.util.qdrive.singapore.server.Custom_JsonParser;
-import com.giosis.util.qdrive.singapore.util.BarcodeType;
+import com.giosis.util.qdrive.singapore.util.StatueType;
 import com.giosis.util.qdrive.singapore.util.CommonActivity;
 import com.giosis.util.qdrive.singapore.util.DataUtil;
 import com.giosis.util.qdrive.singapore.database.DatabaseHelper;
@@ -147,7 +147,7 @@ public class OutletPickupStep1Activity extends CommonActivity {
                     // TODO_kjyoo  CaptureActivity.class 사용하는지 확인 필요...
                     Intent intent = new Intent(OutletPickupStep1Activity.this, CaptureActivity.class);
                     intent.putExtra("title", mTitle);
-                    intent.putExtra("type", BarcodeType.OUTLET_PICKUP_SCAN);
+                    intent.putExtra("type", CaptureType.OUTLET_PICKUP_SCAN);
                     intent.putExtra("pickup_no", mPickupNo);
                     intent.putExtra("applicant", mApplicant);
                     intent.putExtra("qty", mQty);

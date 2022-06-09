@@ -12,7 +12,7 @@ import com.giosis.util.qdrive.singapore.barcodescanner.StdResult;
 import com.giosis.util.qdrive.singapore.list.SigningView;
 import com.giosis.util.qdrive.singapore.server.Custom_JsonParser;
 import com.giosis.util.qdrive.singapore.server.ImageUpload;
-import com.giosis.util.qdrive.singapore.util.BarcodeType;
+import com.giosis.util.qdrive.singapore.util.StatueType;
 import com.giosis.util.qdrive.singapore.util.DataUtil;
 import com.giosis.util.qdrive.singapore.util.DisplayUtil;
 import com.giosis.util.qdrive.singapore.util.NetworkUtil;
@@ -266,7 +266,7 @@ public class PickupAddScanUploadHelper {
 
                 JSONObject job = new JSONObject();
                 job.accumulate("rcv_type", "RC");
-                job.accumulate("stat", BarcodeType.PICKUP_DONE);
+                job.accumulate("stat", StatueType.PICKUP_DONE);
                 job.accumulate("chg_id", opID);
                 job.accumulate("deliv_msg", "(by Qdrive RealTime-Upload)");
                 job.accumulate("opId", opID);

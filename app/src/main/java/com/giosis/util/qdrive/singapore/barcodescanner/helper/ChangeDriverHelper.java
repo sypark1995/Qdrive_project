@@ -13,7 +13,7 @@ import com.giosis.util.qdrive.singapore.barcodescanner.ChangeDriverResult;
 import com.giosis.util.qdrive.singapore.barcodescanner.StdResult;
 import com.giosis.util.qdrive.singapore.main.DriverAssignResult;
 import com.giosis.util.qdrive.singapore.server.Custom_JsonParser;
-import com.giosis.util.qdrive.singapore.util.BarcodeType;
+import com.giosis.util.qdrive.singapore.util.StatueType;
 import com.giosis.util.qdrive.singapore.util.DataUtil;
 import com.giosis.util.qdrive.singapore.database.DatabaseHelper;
 import com.giosis.util.qdrive.singapore.util.DisplayUtil;
@@ -78,7 +78,7 @@ public class ChangeDriverHelper {
         contentVal.put("address", assignInfo.getAddress());
         contentVal.put("rcv_request", assignInfo.getDelMemo());
         contentVal.put("delivery_dt", assignInfo.getDeliveryFirstDate());
-        contentVal.put("type", BarcodeType.TYPE_DELIVERY);
+        contentVal.put("type", StatueType.TYPE_DELIVERY);
         contentVal.put("route", assignInfo.getRoute());
         contentVal.put("reg_id", opId);
         contentVal.put("reg_dt", regDataString);

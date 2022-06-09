@@ -106,10 +106,10 @@ class PickupFailedActivity : CommonActivity(), Camera2APIs.Camera2Interface,
         binding.textApplicant.text = intent.getStringExtra("applicant")
         binding.textRequestedQty.text = intent.getStringExtra("reqQty")
 
-        if (pickupType == BarcodeType.TYPE_PICKUP) {
+        if (pickupType == StatueType.TYPE_PICKUP) {
             binding.textApplicantTitle.text = resources.getString(R.string.text_applicant)
             rcvType = "VL"
-        } else if (pickupType == BarcodeType.TYPE_CNR) {
+        } else if (pickupType == StatueType.TYPE_CNR) {
             binding.textApplicantTitle.text = resources.getString(R.string.text_requestor)
             rcvType = "RC"
         }

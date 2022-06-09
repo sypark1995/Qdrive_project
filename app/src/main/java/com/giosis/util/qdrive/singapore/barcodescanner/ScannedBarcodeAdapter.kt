@@ -10,7 +10,6 @@ import androidx.recyclerview.widget.RecyclerView
 import com.giosis.util.qdrive.singapore.R
 import com.giosis.util.qdrive.singapore.databinding.ItemCaptureScannedBinding
 import com.giosis.util.qdrive.singapore.list.BarcodeData
-import com.giosis.util.qdrive.singapore.util.BarcodeType
 import java.util.*
 
 
@@ -45,11 +44,11 @@ class ScannedBarcodeAdapter(var items: ArrayList<BarcodeData>, private var scanT
                 holder.binding.textBarcode.setTextSize(TypedValue.COMPLEX_UNIT_SP, 18f)
                 holder.binding.textBarcode.setTextColor(Color.parseColor("#303030"))
 
-                if (scanType == BarcodeType.CHANGE_DELIVERY_DRIVER) {
+                if (scanType == CaptureType.CHANGE_DELIVERY_DRIVER) {
                     holder.binding.textBarcode.setTextSize(TypedValue.COMPLEX_UNIT_SP, 12f)
                     holder.binding.btnState.visibility = View.GONE
 
-                } else if (scanType == BarcodeType.OUTLET_PICKUP_SCAN) {
+                } else if (scanType == CaptureType.OUTLET_PICKUP_SCAN) {
                     holder.binding.layoutItem.setBackgroundResource(R.drawable.bg_round_5_ffcc00)
                 }
 
@@ -61,7 +60,7 @@ class ScannedBarcodeAdapter(var items: ArrayList<BarcodeData>, private var scanT
 
                 holder.binding.textBarcode.setTextColor(Color.parseColor(("#909090")))
 
-                if (scanType == BarcodeType.OUTLET_PICKUP_SCAN) {
+                if (scanType == CaptureType.OUTLET_PICKUP_SCAN) {
                     holder.binding.btnState.visibility = View.INVISIBLE
                 } else {
                     holder.binding.btnState.visibility = View.VISIBLE

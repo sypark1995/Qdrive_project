@@ -17,7 +17,6 @@ import com.giosis.util.qdrive.singapore.R
 import com.giosis.util.qdrive.singapore.database.DatabaseHelper
 import com.giosis.util.qdrive.singapore.gps.GPSTrackerManager
 import com.giosis.util.qdrive.singapore.gps.LocationModel
-import com.giosis.util.qdrive.singapore.list.BarcodeData
 import com.giosis.util.qdrive.singapore.server.ImageUpload
 import com.giosis.util.qdrive.singapore.server.RetrofitClient
 import com.giosis.util.qdrive.singapore.util.*
@@ -48,9 +47,8 @@ class CnRPickupDoneActivity : CommonActivity() {
     }
 
     private var mStrWaybillNo: String = ""
-    private var mType = BarcodeType.PICKUP_CNR
 
-    private var pickupNoList = ArrayList<BarcodeData>()
+    private var pickupNoList = ArrayList<String>()
 
     var gpsTrackerManager: GPSTrackerManager? = null
     var gpsEnable = false
@@ -90,17 +88,13 @@ class CnRPickupDoneActivity : CommonActivity() {
         text_sign_p_requester_title.setText(R.string.text_parcel_qty1)
         text_sign_p_request_qty_title.setText(R.string.text_applicant)
 
-        var pickupBarcodeData: BarcodeData
-
         val mWaybillList = mStrWaybillNo.split(",".toRegex()).toTypedArray()
 
         for (s in mWaybillList) {
 
             val barcode = s.trim()
-            pickupBarcodeData = BarcodeData()
-            pickupBarcodeData.barcode = barcode
-            pickupBarcodeData.state = mType
-            pickupNoList.add(pickupBarcodeData)
+
+            pickupNoList.add(barcode)
 
             // 위, 경도
             if (strReqQty.equals("1")) {
@@ -129,18 +123,12 @@ class CnRPickupDoneActivity : CommonActivity() {
             }
         }
 
-        val invoiceList = ArrayList<String>()
-
-        for (item in pickupNoList) {
-            invoiceList.add(item.barcode!!)
-        }
-
         val qtyFormat =
-            String.format(resources.getString(R.string.text_total_qty_count), invoiceList.size)
+            String.format(resources.getString(R.string.text_total_qty_count), pickupNoList.size)
 
         text_sign_p_tracking_no.text = qtyFormat
         text_sign_p_tracking_no_more.visibility = View.VISIBLE
-        text_sign_p_tracking_no_more.text = TextUtils.join(",", invoiceList)
+        text_sign_p_tracking_no_more.text = TextUtils.join(",", pickupNoList)
 
         text_top_title.text = resources.getString(R.string.text_cnr_pickup_done)
         text_sign_p_requester.text = strReqQty
@@ -254,7 +242,7 @@ class CnRPickupDoneActivity : CommonActivity() {
                         sign_view_sign_p_applicant_signature,
                         ImageUpload.QXPOP,
                         "qdriver/sign",
-                        item.barcode!!
+                        item
                     )
 
                     val bitmap2 = QDataUtil.getBitmapString(
@@ -262,7 +250,7 @@ class CnRPickupDoneActivity : CommonActivity() {
                         sign_view_sign_p_collector_signature,
                         ImageUpload.QXPOP,
                         "qdriver/sign",
-                        item.barcode!!
+                        item
                     )
 
                     if (bitmap1 == "" || bitmap2 == "") {
@@ -274,7 +262,7 @@ class CnRPickupDoneActivity : CommonActivity() {
                     val date = Date()
 
                     val contentVal = ContentValues()
-                    contentVal.put("stat", BarcodeType.PICKUP_DONE)
+                    contentVal.put("stat", StatueType.PICKUP_DONE)
                     contentVal.put("real_qty", "1")
                     contentVal.put("chg_dt", dateFormat.format(date))
                     contentVal.put("fail_reason", "")
@@ -287,13 +275,13 @@ class CnRPickupDoneActivity : CommonActivity() {
                         DatabaseHelper.DB_TABLE_INTEGRATION_LIST,
                         contentVal,
                         "invoice_no=? COLLATE NOCASE " + "and reg_id = ?",
-                        arrayOf(item.barcode!!, Preferences.userId)
+                        arrayOf(item, Preferences.userId)
                     )
 
                     try {
                         val response = RetrofitClient.instanceDynamic().pickupUploadData(
                             NetworkUtil.getNetworkType(this@CnRPickupDoneActivity),
-                            item.barcode!!,
+                            item,
                             bitmap1,
                             bitmap2,
                             latitude,
@@ -308,7 +296,7 @@ class CnRPickupDoneActivity : CommonActivity() {
                                 DatabaseHelper.DB_TABLE_INTEGRATION_LIST,
                                 contentVal2,
                                 "invoice_no=? COLLATE NOCASE " + "and reg_id = ?",
-                                arrayOf(item.barcode!!, Preferences.userId)
+                                arrayOf(item, Preferences.userId)
                             )
                         }
 

@@ -221,7 +221,7 @@ object MainActivityServer {
             put("zip_code", data.zipCode)
             put("address", data.address)
             put("route", data.route)
-            put("type", BarcodeType.TYPE_PICKUP)
+            put("type", StatueType.TYPE_PICKUP)
             put("desired_date", data.pickupHopeDay)
             put("req_qty", data.qty)
             put("req_nm", data.reqName)
@@ -272,7 +272,7 @@ object MainActivityServer {
             put("address", data.address)
             put("rcv_request", data.del_memo)
             put("delivery_dt", data.delivery_first_date)
-            put("type", BarcodeType.TYPE_DELIVERY)
+            put("type", StatueType.TYPE_DELIVERY)
             put("route", data.route)
             put("reg_id", Preferences.userId)
             put("reg_dt", regDataString)
@@ -522,9 +522,9 @@ object MainActivityServer {
 
             for (item in songjangList) {
                 if (item.noSongjang.isNotEmpty()) {
-                    if (item.type == BarcodeType.TYPE_DELIVERY) {
+                    if (item.type == StatueType.TYPE_DELIVERY) {
 
-                    } else if (item.type == BarcodeType.TYPE_PICKUP) {
+                    } else if (item.type == StatueType.TYPE_PICKUP) {
 
                         var fileData = ""
                         var fileData2 = ""

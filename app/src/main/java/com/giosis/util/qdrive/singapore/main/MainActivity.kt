@@ -23,6 +23,7 @@ import androidx.core.content.ContextCompat
 import androidx.lifecycle.lifecycleScope
 import com.giosis.util.qdrive.singapore.*
 import com.giosis.util.qdrive.singapore.barcodescanner.CaptureActivity1
+import com.giosis.util.qdrive.singapore.barcodescanner.CaptureType
 import com.giosis.util.qdrive.singapore.database.DatabaseHelper
 import com.giosis.util.qdrive.singapore.databinding.ActivityMainBinding
 import com.giosis.util.qdrive.singapore.gps.FusedProviderService
@@ -233,7 +234,7 @@ class MainActivity : CommonActivity() {
         binding.mainView.btnHomeConfirmMyDeliveryOrder.setOnClickListener {
             val intent = Intent(this, CaptureActivity1::class.java)
             intent.putExtra("title", resources.getString(R.string.text_title_driver_assign))
-            intent.putExtra("type", BarcodeType.CONFIRM_MY_DELIVERY_ORDER)
+            intent.putExtra("type", CaptureType.CONFIRM_MY_DELIVERY_ORDER)
             startActivity(intent)
         }
 
@@ -250,7 +251,7 @@ class MainActivity : CommonActivity() {
                     "title",
                     resources.getString(R.string.button_change_delivery_driver)
                 )
-                intent.putExtra("type", BarcodeType.CHANGE_DELIVERY_DRIVER)
+                intent.putExtra("type", CaptureType.CHANGE_DELIVERY_DRIVER)
                 startActivity(intent)
             } else {
                 DataUtil.enableLocationSettings(this)

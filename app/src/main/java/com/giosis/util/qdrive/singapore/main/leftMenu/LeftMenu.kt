@@ -2,13 +2,13 @@ package com.giosis.util.qdrive.singapore.main.leftMenu
 
 import com.giosis.util.qdrive.singapore.R
 import com.giosis.util.qdrive.singapore.barcodescanner.CaptureActivity1
+import com.giosis.util.qdrive.singapore.barcodescanner.CaptureType
 import com.giosis.util.qdrive.singapore.list.ListActivity
 import com.giosis.util.qdrive.singapore.main.submenu.ListNotInHousedActivity
 import com.giosis.util.qdrive.singapore.main.submenu.OutletOrderStatusActivity
 import com.giosis.util.qdrive.singapore.main.submenu.StatisticsActivity
 import com.giosis.util.qdrive.singapore.pickup.CreatePickupOrderActivity
 import com.giosis.util.qdrive.singapore.setting.SettingActivity
-import com.giosis.util.qdrive.singapore.util.BarcodeType
 
 
 object LeftMenu {
@@ -18,7 +18,7 @@ object LeftMenu {
         className = CaptureActivity1::class.java,
         extras = {
             putInt("title_resource", R.string.text_title_driver_assign)
-            putString("type", BarcodeType.CONFIRM_MY_DELIVERY_ORDER)
+            putString("type", CaptureType.CONFIRM_MY_DELIVERY_ORDER)
         }
     )
 
@@ -27,7 +27,7 @@ object LeftMenu {
         className = CaptureActivity1::class.java,
         extras = {
             putInt("title_resource", R.string.text_title_driver_assign)
-            putString("type", BarcodeType.CONFIRM_MY_DELIVERY_ORDER)
+            putString("type", CaptureType.CONFIRM_MY_DELIVERY_ORDER)
         }
     )
 
@@ -36,7 +36,7 @@ object LeftMenu {
         className = CaptureActivity1::class.java,
         extras = {
             putInt("title_resource", R.string.text_delivered)
-            putString("type", BarcodeType.DELIVERY_DONE)
+            putString("type", CaptureType.DELIVERY_DONE)
         }
     )
 
@@ -45,7 +45,7 @@ object LeftMenu {
         className = CaptureActivity1::class.java,
         extras = {
             putInt("title_resource", R.string.text_delivered)
-            putString("type", BarcodeType.PICKUP_CNR)
+            putString("type", CaptureType.PICKUP_CNR)
         }
     )
 
@@ -54,7 +54,7 @@ object LeftMenu {
         className = CaptureActivity1::class.java,
         extras = {
             putInt("title_resource", R.string.navi_sub_self)
-            putString("type", BarcodeType.SELF_COLLECTION)
+            putString("type", CaptureType.SELF_COLLECTION)
         }
     )
 

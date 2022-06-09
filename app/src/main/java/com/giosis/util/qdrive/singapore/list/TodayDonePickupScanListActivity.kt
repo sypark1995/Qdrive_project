@@ -7,10 +7,10 @@ import androidx.activity.result.ActivityResultLauncher
 import androidx.activity.result.contract.ActivityResultContracts
 import com.giosis.util.qdrive.singapore.R
 import com.giosis.util.qdrive.singapore.barcodescanner.CaptureActivity1
+import com.giosis.util.qdrive.singapore.barcodescanner.CaptureType
 import com.giosis.util.qdrive.singapore.server.RetrofitClient
 import com.giosis.util.qdrive.singapore.data.PickupPackingListResult
 import com.giosis.util.qdrive.singapore.databinding.ActivityPickupScanListBinding
-import com.giosis.util.qdrive.singapore.util.BarcodeType
 import com.giosis.util.qdrive.singapore.util.CommonActivity
 import com.giosis.util.qdrive.singapore.util.FirebaseEvent
 import com.google.gson.Gson
@@ -104,7 +104,7 @@ class TodayDonePickupScanListActivity : CommonActivity() {
 
         val intent = Intent(this@TodayDonePickupScanListActivity, CaptureActivity1::class.java)
         intent.putExtra("title", "ADD Scan List")
-        intent.putExtra("type", BarcodeType.PICKUP_ADD_SCAN)
+        intent.putExtra("type", CaptureType.PICKUP_ADD_SCAN)
         intent.putExtra("pickup_no", pickupNo)
         intent.putExtra("applicant", applicant)
         resultLauncher.launch(intent)
@@ -114,7 +114,7 @@ class TodayDonePickupScanListActivity : CommonActivity() {
 
         val intent = Intent(this@TodayDonePickupScanListActivity, CaptureActivity1::class.java)
         intent.putExtra("title", "Take Back List")
-        intent.putExtra("type", BarcodeType.PICKUP_TAKE_BACK)
+        intent.putExtra("type", CaptureType.PICKUP_TAKE_BACK)
         intent.putExtra("pickup_no", pickupNo)
         intent.putExtra("applicant", applicant)
         intent.putExtra("qty", scannedQty)

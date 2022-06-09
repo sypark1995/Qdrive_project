@@ -263,7 +263,7 @@ class PickupDoneActivity : CommonActivity() {
                 DataUtil.captureSign("/QdriveCollector", pickupNo, binding.signCollectorSignature)
 
                 val contentVal = ContentValues()
-                contentVal.put("stat", BarcodeType.PICKUP_DONE)
+                contentVal.put("stat", StatueType.PICKUP_DONE)
                 contentVal.put("real_qty", binding.textTotalQty.text.toString())
                 contentVal.put("fail_reason", "")
                 contentVal.put("driver_memo", binding.editMemo.text.toString().trim { it <= ' ' })
@@ -336,7 +336,7 @@ class PickupDoneActivity : CommonActivity() {
 
                             if (cursor.moveToFirst()) {
                                 val contentVal3 = ContentValues()
-                                contentVal3.put("stat", BarcodeType.PICKUP_DONE)
+                                contentVal3.put("stat", StatueType.PICKUP_DONE)
                                 contentVal3.put("real_qty", "1")
                                 contentVal3.put("chg_dt", dateFormat.format(date))
                                 contentVal3.put("fail_reason", "")

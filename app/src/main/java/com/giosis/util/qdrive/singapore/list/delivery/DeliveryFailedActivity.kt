@@ -429,7 +429,7 @@ class DeliveryFailedActivity : CommonActivity(), Camera2APIs.Camera2Interface,
                 val date = Date()
 
                 val contentVal = ContentValues()
-                contentVal.put("stat", BarcodeType.DELIVERY_FAIL)
+                contentVal.put("stat", StatueType.DELIVERY_FAIL)
                 contentVal.put("chg_dt", dateFormat.format(date))
                 contentVal.put("fail_reason", failedCode)
                 contentVal.put("driver_memo", driverMemo)
@@ -443,7 +443,7 @@ class DeliveryFailedActivity : CommonActivity(), Camera2APIs.Camera2Interface,
 
                 try {
                     val response = RetrofitClient.instanceDynamic().setDeliveryUploadData(
-                        BarcodeType.DELIVERY_FAIL,
+                        StatueType.DELIVERY_FAIL,
                         "RC",
                         NetworkUtil.getNetworkType(this@DeliveryFailedActivity),
                         trackingNo,
@@ -496,7 +496,7 @@ class DeliveryFailedActivity : CommonActivity(), Camera2APIs.Camera2Interface,
                             val date = Date()
 
                             val contentVal = ContentValues()
-                            contentVal.put("stat", BarcodeType.DELIVERY_FAIL)
+                            contentVal.put("stat", StatueType.DELIVERY_FAIL)
                             contentVal.put("chg_dt", dateFormat.format(date))
                             contentVal.put("real_qty", "0") // 업로드시 값 Parse 시 에러나서 0 넘김
 

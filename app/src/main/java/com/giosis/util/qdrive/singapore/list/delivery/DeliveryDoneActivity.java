@@ -44,7 +44,7 @@ import com.giosis.util.qdrive.singapore.list.OutletInfo;
 import com.giosis.util.qdrive.singapore.list.RowItem;
 import com.giosis.util.qdrive.singapore.list.SigningView;
 import com.giosis.util.qdrive.singapore.server.Custom_JsonParser;
-import com.giosis.util.qdrive.singapore.util.BarcodeType;
+import com.giosis.util.qdrive.singapore.util.StatueType;
 import com.giosis.util.qdrive.singapore.util.Camera2APIs;
 import com.giosis.util.qdrive.singapore.util.CommonActivity;
 import com.giosis.util.qdrive.singapore.util.DataUtil;
@@ -116,7 +116,7 @@ public class DeliveryDoneActivity extends CommonActivity implements Camera2APIs.
 
     String mStrWaybillNo = "";
     String mReceiveType = "RC";
-    String mType = BarcodeType.TYPE_DELIVERY;
+    String mType = StatueType.TYPE_DELIVERY;
     String routeNumber = null;
 
     ArrayList<BarcodeData> barcodeList;
@@ -280,7 +280,7 @@ public class DeliveryDoneActivity extends CommonActivity implements Camera2APIs.
             BarcodeData songData;
             songData = new BarcodeData();
             songData.setBarcode(parcel.getShipping().toUpperCase());
-            songData.setState(BarcodeType.TYPE_DELIVERY);
+            songData.setState(StatueType.TYPE_DELIVERY);
             barcodeList.add(songData);
 
             highAmountYn = parcel.getHigh_amount_yn();
@@ -312,7 +312,7 @@ public class DeliveryDoneActivity extends CommonActivity implements Camera2APIs.
                 BarcodeData songData;
                 songData = new BarcodeData();
                 songData.setBarcode(trackingNo);
-                songData.setState(BarcodeType.TYPE_DELIVERY);
+                songData.setState(StatueType.TYPE_DELIVERY);
                 barcodeList.add(songData);
 
                 // 위, 경도 & high amount

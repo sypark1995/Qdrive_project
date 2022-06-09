@@ -12,7 +12,7 @@ import com.giosis.util.qdrive.singapore.list.RowItem;
 import com.giosis.util.qdrive.singapore.main.DriverAssignResult;
 import com.giosis.util.qdrive.singapore.main.PickupAssignResult;
 import com.giosis.util.qdrive.singapore.server.Custom_JsonParser;
-import com.giosis.util.qdrive.singapore.util.BarcodeType;
+import com.giosis.util.qdrive.singapore.util.StatueType;
 import com.giosis.util.qdrive.singapore.util.DataUtil;
 import com.giosis.util.qdrive.singapore.database.DatabaseHelper;
 import com.giosis.util.qdrive.singapore.util.DisplayUtil;
@@ -311,7 +311,7 @@ public class OutletStatusDownloadHelper {
             }
 
             /*  R3, R4의 경우 */
-            if (data.getStat().equals(BarcodeType.DELIVERY_FAIL)) {
+            if (data.getStat().equals(StatueType.DELIVERY_FAIL)) {
 
                 rowItem.setType("P");
             }
@@ -421,7 +421,7 @@ public class OutletStatusDownloadHelper {
         contentVal.put("address", data.getAddress());
         contentVal.put("rcv_request", data.getDelMemo());
         contentVal.put("delivery_dt", data.getDeliveryFirstDate());
-        contentVal.put("type", BarcodeType.TYPE_DELIVERY);
+        contentVal.put("type", StatueType.TYPE_DELIVERY);
         contentVal.put("route", data.getRoute());
         contentVal.put("reg_id", opID);
         contentVal.put("reg_dt", regDataString);
@@ -468,7 +468,7 @@ public class OutletStatusDownloadHelper {
         contentVal.put("zip_code", data.getZipCode());
         contentVal.put("address", data.getAddress());
         contentVal.put("route", data.getRoute());
-        contentVal.put("type", BarcodeType.TYPE_PICKUP);
+        contentVal.put("type", StatueType.TYPE_PICKUP);
         contentVal.put("desired_date", data.getPickupHopeDay());
         contentVal.put("req_qty", data.getQty());
         contentVal.put("req_nm", data.getReqName());

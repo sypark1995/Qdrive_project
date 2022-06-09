@@ -15,7 +15,7 @@ import com.giosis.util.qdrive.singapore.R;
 import com.giosis.util.qdrive.singapore.barcodescanner.StdResult;
 import com.giosis.util.qdrive.singapore.server.Custom_JsonParser;
 import com.giosis.util.qdrive.singapore.server.ImageUpload;
-import com.giosis.util.qdrive.singapore.util.BarcodeType;
+import com.giosis.util.qdrive.singapore.util.StatueType;
 import com.giosis.util.qdrive.singapore.util.DataUtil;
 import com.giosis.util.qdrive.singapore.database.DatabaseHelper;
 import com.giosis.util.qdrive.singapore.util.DisplayUtil;
@@ -255,7 +255,7 @@ public class QuickReturnFailedUploadHelper {
                 JSONObject job = new JSONObject();
 
                 job.accumulate("rcv_type", "RC");
-                job.accumulate("stat", BarcodeType.RETURN_FAIL);
+                job.accumulate("stat", StatueType.RETURN_FAIL);
                 job.accumulate("chg_id", opID);
                 job.accumulate("deliv_msg", "(by Qdrive RealTime-Upload)"); // 내부관리자용 메세지
                 job.accumulate("opId", opID);
@@ -320,7 +320,7 @@ public class QuickReturnFailedUploadHelper {
         Date date = new Date();
 
         ContentValues contentVal = new ContentValues();
-        contentVal.put("stat", BarcodeType.RETURN_FAIL);
+        contentVal.put("stat", StatueType.RETURN_FAIL);
         contentVal.put("chg_dt", dateFormat.format(date));
         contentVal.put("real_qty", "0");
         contentVal.put("driver_memo", driverMemo);

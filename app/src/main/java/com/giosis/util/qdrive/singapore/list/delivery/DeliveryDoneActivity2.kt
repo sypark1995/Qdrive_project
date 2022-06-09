@@ -640,7 +640,7 @@ class DeliveryDoneActivity2 : CommonActivity(), Camera2Interface,
                         val date = Date()
 
                         val contentVal = ContentValues()
-                        contentVal.put("stat", BarcodeType.DELIVERY_DONE)
+                        contentVal.put("stat", StatueType.DELIVERY_DONE)
                         contentVal.put("rcv_type", mReceiveType)
                         contentVal.put("driver_memo", driverMemo)
                         contentVal.put("chg_dt", dateFormat.format(date))
@@ -654,7 +654,7 @@ class DeliveryDoneActivity2 : CommonActivity(), Camera2Interface,
                         )
 
                         val response = RetrofitClient.instanceDynamic().setDeliveryUploadData(
-                            BarcodeType.DELIVERY_DONE,
+                            StatueType.DELIVERY_DONE,
                             mReceiveType,
                             NetworkUtil.getNetworkType(this@DeliveryDoneActivity2),
                             item,
@@ -780,7 +780,7 @@ class DeliveryDoneActivity2 : CommonActivity(), Camera2Interface,
                     val date = Date()
 
                     val contentVal = ContentValues()
-                    contentVal.put("stat", BarcodeType.DELIVERY_START)
+                    contentVal.put("stat", StatueType.DELIVERY_START)
                     contentVal.put("rcv_type", mReceiveType)
                     contentVal.put("driver_memo", driverMemo)
                     contentVal.put("chg_dt", dateFormat.format(date))

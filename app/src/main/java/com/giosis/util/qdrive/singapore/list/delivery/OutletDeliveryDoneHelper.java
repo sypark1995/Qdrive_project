@@ -17,7 +17,7 @@ import com.giosis.util.qdrive.singapore.list.BarcodeData;
 import com.giosis.util.qdrive.singapore.list.SigningView;
 import com.giosis.util.qdrive.singapore.server.Custom_JsonParser;
 import com.giosis.util.qdrive.singapore.server.ImageUpload;
-import com.giosis.util.qdrive.singapore.util.BarcodeType;
+import com.giosis.util.qdrive.singapore.util.StatueType;
 import com.giosis.util.qdrive.singapore.util.DataUtil;
 import com.giosis.util.qdrive.singapore.database.DatabaseHelper;
 import com.giosis.util.qdrive.singapore.util.DisplayUtil;
@@ -276,7 +276,7 @@ public class OutletDeliveryDoneHelper {
             Date date = new Date();
 
             ContentValues contentVal = new ContentValues();
-            contentVal.put("stat", BarcodeType.DELIVERY_START);
+            contentVal.put("stat", StatueType.DELIVERY_START);
             contentVal.put("rcv_type", receiveType);
             contentVal.put("driver_memo", driverMemo);
             contentVal.put("chg_dt", dateFormat.format(date));
@@ -319,7 +319,7 @@ public class OutletDeliveryDoneHelper {
 
                 JSONObject job = new JSONObject();
                 job.accumulate("rcv_type", receiveType);
-                job.accumulate("stat", BarcodeType.DELIVERY_START);
+                job.accumulate("stat", StatueType.DELIVERY_START);
                 job.accumulate("chg_id", opID);
                 job.accumulate("fileData", bitmapString);
                 job.accumulate("deliv_msg", "(by Qdrive RealTime-Upload)");     // 내부관리자용 메세지
