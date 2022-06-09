@@ -1283,22 +1283,6 @@ class CaptureActivity1 : CommonActivity(), TorchListener, OnTouchListener, TextW
                     )
                 }
 
-//            ConfirmMyOrderHelper.Builder(this, Preferences.userId, Preferences.officeCode, Preferences.deviceUUID, scanBarcodeArrayList)
-//                    .setOnDriverAssignEventListener { stdResult: DriverAssignResult? ->
-//                        val msg: String = if (stdResult != null) {
-//                            if (stdResult.resultCode == 0) onResetButtonClick()
-//                            stdResult.resultMsg
-//                        } else {
-//                            resources.getString(R.string.text_fail_update)
-//                        }
-//                        if (!this@CaptureActivity1.isFinishing) {
-//                            val builder = AlertDialog.Builder(this@CaptureActivity1)
-//                            builder.setTitle(resources.getString(R.string.text_driver_assign_result))
-//                            builder.setMessage(msg)
-//                            builder.setPositiveButton(resources.getString(R.string.button_ok)) { dialog: DialogInterface, id: Int -> dialog.cancel() }
-//                            builder.show()
-//                        }
-//                    }.build().execute()
         } else if (mScanType == CaptureType.CHANGE_DELIVERY_DRIVER) {
             FirebaseEvent.clickEvent(this, TAG, "SetChangeDeliveryDriver api call")
 
@@ -1379,23 +1363,6 @@ class CaptureActivity1 : CommonActivity(), TorchListener, OnTouchListener, TextW
                         resources.getString(R.string.text_fail_update)
                     )
                 }
-
-//            ChangeDriverHelper.Builder(this, Preferences.userId, Preferences.officeCode, Preferences.deviceUUID, changeDriverObjectArrayList, latitude, longitude)
-//                    .setOnChangeDelDriverEventListener { stdResult: DriverAssignResult? ->
-//                        val msg: String = if (stdResult != null) {
-//                            if (stdResult.resultCode == 0) onResetButtonClick()
-//                            stdResult.resultMsg
-//                        } else {
-//                            resources.getString(R.string.text_fail_update)
-//                        }
-//                        if (!this@CaptureActivity1.isFinishing) {
-//                            val builder = AlertDialog.Builder(this@CaptureActivity1)
-//                            builder.setTitle(resources.getString(R.string.text_driver_assign_result))
-//                            builder.setMessage(msg)
-//                            builder.setPositiveButton(resources.getString(R.string.button_ok)) { dialog: DialogInterface, id: Int -> dialog.cancel() }
-//                            builder.show()
-//                        }
-//                    }.build().execute()
         }
     }
 
