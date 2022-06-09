@@ -133,8 +133,6 @@ class CaptureActivity1 : CommonActivity(), TorchListener, OnTouchListener, TextW
     }
     private var resultData: OutletPickupDoneResult.OutletPickupDoneItem? = null
 
-    // TODO_kjyoo 이상함
-    var scannedBarcode = ArrayList<String>()    // Duplicate
 
     // TODO_kjyoo 이상함
     // resume 시 recreate 할 data list
@@ -536,7 +534,6 @@ class CaptureActivity1 : CommonActivity(), TorchListener, OnTouchListener, TextW
 
                             if (isScanned) {
                                 data.state = "SUCCESS"
-                                scannedBarcode.add(trackingNo)
                             } else {
                                 data.state = "FAIL"
                             }
@@ -555,7 +552,6 @@ class CaptureActivity1 : CommonActivity(), TorchListener, OnTouchListener, TextW
                             data.state = "SUCCESS"
                             data.barcode = barcodeList[i]
                             scanBarcodeArrayList.add(0, data)
-                            scannedBarcode.add(barcodeList[i])
                         }
 
                         binding.textScannedCount.text = scanBarcodeArrayList.size.toString()
@@ -700,7 +696,13 @@ class CaptureActivity1 : CommonActivity(), TorchListener, OnTouchListener, TextW
             return
         }
 
-        val isDuplicate = scannedBarcode.contains(barcode.uppercase())
+        var isDuplicate = false
+        for (data in scanBarcodeArrayList) {
+            if (data.barcode == barcode.uppercase()) {
+                isDuplicate = true
+                break
+            }
+        }
 
         if (isDuplicate) {
             beepManagerDuple.playBeepSoundAndVibrate()
@@ -715,9 +717,6 @@ class CaptureActivity1 : CommonActivity(), TorchListener, OnTouchListener, TextW
             binding.editTrackingNumber.setText("")
             inputMethodManager.hideSoftInputFromWindow(binding.editTrackingNumber.windowToken, 0)
             return
-        } else {
-
-            scannedBarcode.add(barcode.uppercase())
 
         }
 
@@ -745,7 +744,6 @@ class CaptureActivity1 : CommonActivity(), TorchListener, OnTouchListener, TextW
                                 binding.editTrackingNumber.windowToken,
                                 0
                             )
-                            scannedBarcode.remove(strBarcodeNo)
                             resultDialog(
                                 resources.getString(R.string.text_scanned_failed),
                                 it.resultMsg
@@ -780,7 +778,6 @@ class CaptureActivity1 : CommonActivity(), TorchListener, OnTouchListener, TextW
                                 binding.editTrackingNumber.windowToken,
                                 0
                             )
-                            scannedBarcode.remove(barcode)
                             resultDialog(
                                 resources.getString(R.string.text_scanned_failed),
                                 it.resultMsg
@@ -830,7 +827,6 @@ class CaptureActivity1 : CommonActivity(), TorchListener, OnTouchListener, TextW
                                 binding.editTrackingNumber.windowToken,
                                 0
                             )
-                            scannedBarcode.remove(barcode)
                             resultDialog(
                                 resources.getString(R.string.text_scanned_failed),
                                 it.resultMsg
@@ -878,7 +874,6 @@ class CaptureActivity1 : CommonActivity(), TorchListener, OnTouchListener, TextW
                                 binding.editTrackingNumber.windowToken,
                                 0
                             )
-                            scannedBarcode.remove(strBarcodeNo)
                             resultDialog(
                                 resources.getString(R.string.text_scanned_failed),
                                 it.resultMsg
@@ -914,7 +909,6 @@ class CaptureActivity1 : CommonActivity(), TorchListener, OnTouchListener, TextW
                                 binding.editTrackingNumber.windowToken,
                                 0
                             )
-                            scannedBarcode.remove(strBarcodeNo)
                             resultDialog(
                                 resources.getString(R.string.text_scanned_failed),
                                 it.resultMsg
@@ -950,7 +944,6 @@ class CaptureActivity1 : CommonActivity(), TorchListener, OnTouchListener, TextW
                                 binding.editTrackingNumber.windowToken,
                                 0
                             )
-                            scannedBarcode.remove(strBarcodeNo)
                             resultDialog(
                                 resources.getString(R.string.text_scanned_failed),
                                 it.resultMsg
@@ -986,7 +979,6 @@ class CaptureActivity1 : CommonActivity(), TorchListener, OnTouchListener, TextW
                                 binding.editTrackingNumber.windowToken,
                                 0
                             )
-                            scannedBarcode.remove(strBarcodeNo)
                             resultDialog(
                                 resources.getString(R.string.text_scanned_failed),
                                 it.resultMsg
@@ -1128,7 +1120,7 @@ class CaptureActivity1 : CommonActivity(), TorchListener, OnTouchListener, TextW
             && mScanType != CaptureType.CHANGE_DELIVERY_DRIVER
             && mScanType != CaptureType.PICKUP_CNR
         ) {
-            updateInvoiceNO( barcodeNo)
+            updateInvoiceNO(barcodeNo)
         }
 
         binding.textScannedCount.text = scanBarcodeArrayList.size.toString()
@@ -1625,10 +1617,6 @@ class CaptureActivity1 : CommonActivity(), TorchListener, OnTouchListener, TextW
             }
         }
 
-        if (scannedBarcode.isNotEmpty()) {
-            scannedBarcode.clear()
-        }
-
         if (mScanType == CaptureType.CONFIRM_MY_DELIVERY_ORDER
             || mScanType == CaptureType.CHANGE_DELIVERY_DRIVER
             || mScanType == CaptureType.PICKUP_CNR
@@ -1705,7 +1693,7 @@ class CaptureActivity1 : CommonActivity(), TorchListener, OnTouchListener, TextW
      * , chg_dt = datetime('now') where invoice_no = @invoice_no COLLATE NOCASE
      * and punchOut_stat <> 'S' and reg_id = localStorage.getItem('opId')
      */
-    private fun updateInvoiceNO( invoiceNo: String) {
+    private fun updateInvoiceNO(invoiceNo: String) {
         var updateCount = 0
         if (mScanType == CaptureType.PICKUP_SCAN_ALL
             || mScanType == CaptureType.PICKUP_ADD_SCAN
