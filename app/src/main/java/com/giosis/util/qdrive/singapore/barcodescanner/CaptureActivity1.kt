@@ -162,7 +162,6 @@ class CaptureActivity1 : CommonActivity(), TorchListener, OnTouchListener, TextW
         ScannedBarcodeAdapter(scanBarcodeArrayList, mScanType)
     }
     private var scanBarcodeArrayList = ArrayList<BarcodeData>()
-    private var changeDriverResult: ChangeDriverResult.Data? = null
     private val changeDriverObjectArrayList = ArrayList<ChangeDriverResult.Data?>()
 
     // resume 시 recreate 할 data list
@@ -850,14 +849,25 @@ class CaptureActivity1 : CommonActivity(), TorchListener, OnTouchListener, TextW
                         } else {
 
                             beepManager.playBeepSoundAndVibrate()
-                            changeDriverResult = Gson().fromJson(
+
+                            val changeDriverResult = Gson().fromJson(
                                 it.resultObject,
                                 ChangeDriverResult.Data::class.java
                             )
-                            addScannedBarcode(
-                                strBarcodeNo,
-                                "checkValidation - CHANGE_DELIVERY_DRIVER"
-                            )
+
+                            if (changeDriverResult != null) {
+                                val tempNo = changeDriverResult.trackingNo +
+                                        "  |  " + changeDriverResult.status +
+                                        "  |  " + changeDriverResult.currentDriver
+
+                                changeDriverObjectArrayList.add(changeDriverResult)
+
+                                addScannedBarcode(
+                                    tempNo,
+                                    "checkValidation - CHANGE_DELIVERY_DRIVER"
+                                )
+                            }
+
                         }
                     }) {
                         Toast.makeText(
@@ -1115,11 +1125,6 @@ class CaptureActivity1 : CommonActivity(), TorchListener, OnTouchListener, TextW
         data.barcode = barcodeNo.uppercase()
         data.state = "NONE"
 
-        if (mScanType == BarcodeType.CHANGE_DELIVERY_DRIVER) {
-            data.barcode = changeDriverResult!!.trackingNo + "  |  " +
-                    changeDriverResult!!.status + "  |  " + changeDriverResult!!.currentDriver
-        }
-
         when (mScanType) {
             BarcodeType.CHANGE_DELIVERY_DRIVER,
             BarcodeType.CONFIRM_MY_DELIVERY_ORDER,
@@ -1130,17 +1135,10 @@ class CaptureActivity1 : CommonActivity(), TorchListener, OnTouchListener, TextW
 
                 // 스캔 시 최근 스캔한 바코드가 제일 위로 셋팅됨.
                 data.state = "SUCCESS"
-                if (mScanType == BarcodeType.CHANGE_DELIVERY_DRIVER) {
-                    barcodeList.add(
-                        changeDriverResult!!.trackingNo + "  |  " +
-                                changeDriverResult!!.status + "  |  " + changeDriverResult!!.currentDriver
-                    )
-                    changeDriverObjectArrayList.add(changeDriverResult)
-                } else {
-                    barcodeList.add(barcodeNo)
-                }
 
+                barcodeList.add(barcodeNo)
                 scanBarcodeArrayList.add(0, data)
+
                 adapter.notifyDataSetChanged()
                 binding.recyclerScannedBarcode.smoothScrollToPosition(0)
             }
@@ -1328,11 +1326,13 @@ class CaptureActivity1 : CommonActivity(), TorchListener, OnTouchListener, TextW
                             object :
                                 TypeToken<ArrayList<DriverAssignResult.QSignDeliveryList>>() {}.type
                         )
+
                         for (item in list) {
                             if (!TextUtils.isEmpty(item.partnerRefNo.trim())) {
                                 DataUtil.insertDriverAssignInfo(item)
                             }
                         }
+
                         resultDialog(
                             resources.getString(R.string.text_driver_assign_result),
                             it.resultMsg
