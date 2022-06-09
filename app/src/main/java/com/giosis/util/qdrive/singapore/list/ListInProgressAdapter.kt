@@ -186,17 +186,7 @@ class ListInProgressAdapter(bluetoothListener: BluetoothListener) :
                 }
             }
 
-            // 참조 픽업번호가 있으면 해당 번호로 표시, 없으면 기존 픽업번호 (Ref. Pickup No)
-            if (data.type == "P") {        // Pickup
-                if (data.ref_pickup_no != "") {
-                    textTrackingNo.text = data.ref_pickup_no
-                } else {
-                    textTrackingNo.text = data.shipping
-                }
-            } else {        // Delivery
-                textTrackingNo.text = data.shipping
-            }
-
+            textTrackingNo.text = data.shipping
             textAddress.text = data.address
             menuIcon.tag = data.shipping
             textReceiptName.text = data.name
