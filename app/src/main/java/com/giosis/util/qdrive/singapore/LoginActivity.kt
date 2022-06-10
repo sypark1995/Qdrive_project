@@ -34,8 +34,6 @@ import com.giosis.util.qdrive.singapore.util.Common
 import com.google.firebase.crashlytics.FirebaseCrashlytics
 import com.google.gson.Gson
 import com.google.gson.reflect.TypeToken
-import io.reactivex.rxjava3.android.schedulers.AndroidSchedulers
-import io.reactivex.rxjava3.schedulers.Schedulers
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
@@ -134,6 +132,7 @@ class LoginActivity : CommonActivity() {
             for ((index, item) in nationList.withIndex()) {
                 if (nationCode == item.nation_cd) {
                     binding.textLoginNation.text = item.nation_nm
+
                     Glide.with(this@LoginActivity)
                         .load(item.nation_img_url)
                         .into(binding.imgLoginNation)
@@ -187,195 +186,25 @@ class LoginActivity : CommonActivity() {
 
         // Login
         binding.btnLoginSign.setOnClickListener {
-
-            hideKeyboard()
-            if (nationList.size == 0) {
-                lifecycleScope.launch {
-                    getNationList()
-                }
-                return@setOnClickListener
-            }
-
-            val userNationCode = nationList[spinnerPosition].nation_cd
-
-            val userID = binding.editLoginId.text.toString().trim()
-            val userPW = binding.editLoginPassword.text.toString().trim()
-            val deviceUUID = getDeviceUUID()
-
-            // DB 파일 생성여부
-            // todo_sypark  없으면 만들도록 . ...
-            val dbFile = File(DatabaseHelper.getInstance().dbPath)
-
-            // 위치 정보
-            var latitude = 0.0
-            var longitude = 0.0
-            gpsTrackerManager?.let {
-                latitude = it.latitude
-                longitude = it.longitude
-            }
-
-            when {
-                userID.isEmpty() -> {
-                    showDialog(resources.getString(R.string.msg_please_input_id))
-                    return@setOnClickListener
-                }
-                userPW.isEmpty() -> {
-                    showDialog(resources.getString(R.string.msg_please_input_password))
-                    return@setOnClickListener
-                }
-                !dbFile.exists() -> {
-                    showDialog(resources.getString(R.string.msg_db_problem))
-                }
-
-                else -> {
-                    Preferences.userNation = userNationCode
-                    Preferences.userId = userID
-                    Preferences.userPw = userPW
-                    Preferences.deviceUUID = deviceUUID
-
-                    progressBar.visibility = View.VISIBLE
-
-                    val chanel = if (userNationCode == Common.SG) {
-                        Common.QDRIVE
-                    } else {
-                        Common.QDRIVE_V2
-                    }
-
-                    RetrofitClient.instanceDynamic().requestServerLogin(
-                        userID, userPW, chanel, "", deviceUUID, "",
-                        latitude.toString(), longitude.toString(), "QDRIVE", userNationCode
-                    ).subscribeOn(Schedulers.io())
-                        .observeOn(AndroidSchedulers.mainThread())
-                        .subscribe({
-
-                            if (it.resultCode != 0) {        // Login Failed
-
-                                progressBar.visibility = View.GONE
-                                Preferences.userPw = ""
-                                binding.editLoginPassword.setText("")
-
-                                when {
-                                    it.resultCode == -10 && !BuildConfig.DEBUG -> {
-                                        showDialog(resources.getString(R.string.msg_account_deactivated))
-                                    }
-                                    it.resultMsg != "" -> {
-                                        showDialog(it.resultMsg)
-                                    }
-                                    else -> {
-                                        showDialog(resources.getString(R.string.msg_not_valid_info))
-                                    }
-                                }
-                            } else {        // Login Success
-
-                                progressBar.visibility = View.GONE
-
-                                val loginData =
-                                    Gson().fromJson(it.resultObject, LoginInfo::class.java)
-
-                                lifecycleScope.launch {
-                                    try {
-                                        val response = RetrofitClient.instanceDynamic()
-                                            .requestAppVersionCheck()
-
-                                        if (response.resultCode == -10 && !BuildConfig.DEBUG) {
-                                            val msg = java.lang.String.format(
-                                                resources.getString(R.string.msg_update_version),
-                                                getVersion(),
-                                                loginData.version
-                                            )
-                                            goGooglePlay(msg)
-                                        } else {
-                                            Preferences.userId = loginData.opId!!
-                                            Preferences.userPw = userPW
-                                            Preferences.deviceUUID = deviceUUID
-
-                                            if (!loginData.opNm.isNullOrEmpty()) {
-                                                Preferences.userName = loginData.opNm!!
-                                            }
-
-                                            if (!loginData.epEmail.isNullOrEmpty()) {
-                                                Preferences.userEmail = loginData.epEmail!!
-                                            }
-
-                                            if (!loginData.officeCode.isNullOrEmpty()) {
-                                                Preferences.officeCode = loginData.officeCode!!
-                                            }
-
-                                            if (!loginData.officeName.isNullOrEmpty()) {
-                                                Preferences.officeName = loginData.officeName!!
-                                            }
-
-                                            if (!loginData.pickupDriverYN.isNullOrEmpty()) {
-                                                Preferences.pickupDriver =
-                                                    loginData.pickupDriverYN!!
-                                            }
-
-                                            if (!loginData.shuttle_driver_yn.isNullOrEmpty()) {
-                                                Preferences.outletDriver =
-                                                    loginData.shuttle_driver_yn!!
-                                            }
-
-                                            if (!loginData.locker_driver_status.isNullOrEmpty()) {
-                                                Preferences.lockerStatus =
-                                                    loginData.locker_driver_status!!
-                                            }
-
-                                            if (!loginData.defaultYn.isNullOrEmpty()) {
-                                                Preferences.default = loginData.defaultYn!!
-                                            }
-
-                                            if (!loginData.authNo.isNullOrEmpty()) {
-                                                Preferences.authNo = loginData.authNo!!
-                                            }
-
-                                            if (loginData.smsYn == "Y" && loginData.deviceYn == "Y") {
-
-                                                FirebaseCrashlytics.getInstance().setCustomKey(
-                                                    "ID",
-                                                    Preferences.userId
-                                                )
-
-                                                val intent = Intent(
-                                                    this@LoginActivity,
-                                                    MainActivity::class.java
-                                                )
-
-                                                startActivity(intent)
-                                                finish()
-                                            } else {
-                                                goSMSVerification(resources.getString(R.string.msg_go_sms_verification))
-                                            }
-                                        }
-                                    } catch (e: java.lang.Exception) {
-                                        Log.e(tag, e.toString())
-                                    }
-                                }
-                            }
-                        }, {
-
-                            Log.e(RetrofitClient.errorTag, it.toString())
-                            progressBar.visibility = View.GONE
-                            showDialog(it.toString())
-                        })
-                }
-            }
+            loginBtnClick()
         }
-
 
         // permission
         val checker = PermissionChecker(this)
 
         if (checker.lacksPermissions(*PERMISSIONS)) {
-
             isPermissionTrue = false
-            PermissionActivity.startActivityForResult(this, PERMISSION_REQUEST_CODE, *PERMISSIONS)
+            PermissionActivity.startActivityForResult(
+                this,
+                PERMISSION_REQUEST_CODE,
+                *PERMISSIONS
+            )
             overridePendingTransition(0, 0)
-        } else {
 
+        } else {
             isPermissionTrue = true
         }
     }
-
 
     override fun onResume() {
         super.onResume()
@@ -395,12 +224,8 @@ class LoginActivity : CommonActivity() {
             val gpsEnable = gpsTrackerManager?.enableGPSSetting()
 
             if (gpsEnable == true) {
-
                 gpsTrackerManager?.gpsTrackerStart()
-                Log.e(
-                    tag,
-                    " onResume  Location  :  ${gpsTrackerManager?.latitude} / ${gpsTrackerManager?.longitude}"
-                )
+
             } else {
                 if (!this@LoginActivity.isFinishing) {
                     AlertDialog.Builder(this)
@@ -419,6 +244,159 @@ class LoginActivity : CommonActivity() {
         }
     }
 
+    private fun loginBtnClick() {
+        hideKeyboard()
+
+        if (nationList.size == 0) {
+            lifecycleScope.launch {
+                getNationList()
+            }
+            return
+        }
+
+        val userNationCode = nationList[spinnerPosition].nation_cd
+
+        val userID = binding.editLoginId.text.toString().trim()
+        val userPW = binding.editLoginPassword.text.toString().trim()
+        val deviceUUID = getDeviceUUID()
+
+        // DB 파일 생성여부
+        // todo_sypark  없으면 만들도록 . ...
+        val dbFile = File(DatabaseHelper.getInstance().dbPath)
+        if (!dbFile.exists()) {
+            showDialog(resources.getString(R.string.msg_db_problem))
+        }
+
+        // 위치 정보
+        var latitude = 0.0
+        var longitude = 0.0
+        gpsTrackerManager?.let {
+            latitude = it.latitude
+            longitude = it.longitude
+        }
+
+        if (userID.isEmpty()) {
+            showDialog(resources.getString(R.string.msg_please_input_id))
+            return
+        }
+
+        if (userPW.isEmpty()) {
+            showDialog(resources.getString(R.string.msg_please_input_password))
+            return
+        }
+
+        Preferences.userNation = userNationCode
+        Preferences.userId = userID
+        Preferences.userPw = userPW
+        Preferences.deviceUUID = deviceUUID
+
+        progressBar.visibility = View.VISIBLE
+
+        val chanel = if (userNationCode == Common.SG) {
+            Common.QDRIVE
+        } else {
+            Common.QDRIVE_V2
+        }
+
+        lifecycleScope.launch {
+            try {
+                val result = RetrofitClient.instanceDynamic().requestServerLogin(
+                    userID, userPW, chanel, deviceUUID,
+                    latitude.toString(), longitude.toString(), userNationCode
+                )
+
+                progressBar.visibility = View.GONE
+
+                if (result.resultCode != 0) {
+                    // Login Failed
+                    Preferences.userPw = ""
+                    binding.editLoginPassword.setText("")
+
+                    when {
+                        result.resultCode == -10 && !BuildConfig.DEBUG -> {
+                            showDialog(resources.getString(R.string.msg_account_deactivated))
+                        }
+                        result.resultMsg != "" -> {
+                            showDialog(result.resultMsg)
+                        }
+                        else -> {
+                            showDialog(resources.getString(R.string.msg_not_valid_info))
+                        }
+                    }
+                } else {
+
+                    val loginData =
+                        Gson().fromJson(result.resultObject, LoginInfo::class.java)
+
+                    val response = RetrofitClient.instanceDynamic().requestAppVersionCheck()
+
+                    if (response.resultCode == -10 && !BuildConfig.DEBUG) {
+                        val msg = java.lang.String.format(
+                            resources.getString(R.string.msg_update_version),
+                            getVersion(),
+                            loginData.version
+                        )
+                        goGooglePlay(msg)
+
+                    } else {
+                        Preferences.userId = loginData.opId!!
+                        Preferences.userPw = userPW
+                        Preferences.deviceUUID = deviceUUID
+
+                        if (!loginData.opNm.isNullOrEmpty()) {
+                            Preferences.userName = loginData.opNm!!
+                        }
+
+                        if (!loginData.epEmail.isNullOrEmpty()) {
+                            Preferences.userEmail = loginData.epEmail!!
+                        }
+
+                        if (!loginData.officeCode.isNullOrEmpty()) {
+                            Preferences.officeCode = loginData.officeCode!!
+                        }
+
+                        if (!loginData.officeName.isNullOrEmpty()) {
+                            Preferences.officeName = loginData.officeName!!
+                        }
+
+                        if (!loginData.pickupDriverYN.isNullOrEmpty()) {
+                            Preferences.pickupDriver = loginData.pickupDriverYN!!
+                        }
+
+                        if (!loginData.shuttle_driver_yn.isNullOrEmpty()) {
+                            Preferences.outletDriver = loginData.shuttle_driver_yn!!
+                        }
+
+                        if (!loginData.locker_driver_status.isNullOrEmpty()) {
+                            Preferences.lockerStatus = loginData.locker_driver_status!!
+                        }
+
+                        if (!loginData.defaultYn.isNullOrEmpty()) {
+                            Preferences.default = loginData.defaultYn!!
+                        }
+
+                        if (!loginData.authNo.isNullOrEmpty()) {
+                            Preferences.authNo = loginData.authNo!!
+                        }
+
+                        if (loginData.smsYn == "Y" && loginData.deviceYn == "Y") {
+
+                            FirebaseCrashlytics.getInstance().setCustomKey("ID", Preferences.userId)
+
+                            val intent = Intent(this@LoginActivity, MainActivity::class.java)
+
+                            startActivity(intent)
+                            finish()
+                        } else {
+                            goSMSVerification(resources.getString(R.string.msg_go_sms_verification))
+                        }
+                    }
+                }
+
+            } catch (e: Exception) {
+            }
+        }
+    }
 
     @SuppressLint("HardwareIds")
     private fun getDeviceUUID(): String {
@@ -427,15 +405,15 @@ class LoginActivity : CommonActivity() {
 
     private fun getVersion(): String {
         return try {
-            val packageInfo =
-                applicationContext.packageManager.getPackageInfo(applicationContext.packageName, 0)
-            packageInfo.versionName
+            applicationContext.packageManager
+                .getPackageInfo(applicationContext.packageName, 0)
+                .versionName
         } catch (e: Exception) {
             ""
         }
     }
 
-    fun showDialog(msg: String?) {
+    private fun showDialog(msg: String?) {
         val alertBuilder = AlertDialog.Builder(this)
         alertBuilder.setTitle(resources.getString(R.string.text_alert))
         alertBuilder.setMessage(msg)
