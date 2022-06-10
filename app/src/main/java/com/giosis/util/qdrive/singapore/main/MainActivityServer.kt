@@ -378,38 +378,15 @@ object MainActivityServer {
     }
 
     fun setDestroyUserInfo(context: Context) {
-        Log.e(TAG, "setDestroyUserInfo start ")
         CoroutineScope(Dispatchers.IO).launch {
-            Log.e(TAG, "requestSetAppUserInfo2 start ")
             try {
                 val dateFormat = SimpleDateFormat("yyyy-MM-dd HH:mm:ss")
                 val date = dateFormat.format(Date())
 
-                val response = RetrofitClient.instanceDynamic().requestSetAppUserInfo2(
+                RetrofitClient.instanceDynamic().requestSetAppUserInfo2(
                     "killapp", NetworkUtil.getNetworkType(context), "", date,
                 )
 
-                Log.e(TAG, "requestSetAppUserInfo2 called ${response.resultCode}")
-
-                if (response.resultCode < 0) {
-                    withContext(Dispatchers.Main) {
-                        AlertDialog.Builder(context)
-                            .setTitle(context.getResources().getString(R.string.text_upload_result))
-                            .setMessage(response.resultMsg)
-                            .setCancelable(true)
-                            .setPositiveButton(
-                                context.getResources().getString(R.string.button_ok)
-                            ) { dialog1: DialogInterface?, which: Int ->
-                                if (dialog1 != null) {
-                                    if (!(context as Activity).isFinishing) {
-                                        dialog1.dismiss()
-                                    }
-                                }
-                            }
-                            .create()
-                            .show()
-                    }
-                }
             } catch (e: java.lang.Exception) {
 
             }
@@ -440,8 +417,6 @@ object MainActivityServer {
                 val response = RetrofitClient.instanceDynamic().requestSetDriverPerformanceLog(
                     channel, latitude.toString(), longitude.toString(), accuracy.toString()
                 )
-
-                Log.e(TAG, "requestSetDriverPerformanceLog called ${response.resultCode}")
 
                 if (response.resultCode < 0) {
 

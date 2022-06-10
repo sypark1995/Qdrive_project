@@ -69,14 +69,9 @@ class FusedProviderWorker(private val context: Context, private val reference: S
 
         fusedLocationProviderClient.lastLocation.addOnSuccessListener { location: Location? ->
             if (location != null) {
-
                 latitude = location.latitude
                 longitude = location.longitude
                 accuracy = location.accuracy.toDouble()
-                Log.e(
-                    "Location",
-                    TAG + " startLocationUpdates  getLastLocation : " + location.latitude + "  /  " + location.longitude
-                )
             }
         }
 
@@ -99,23 +94,18 @@ class FusedProviderWorker(private val context: Context, private val reference: S
 
             for (location in locationResult.locations) {
                 if (location != null) {
-
                     latitude = location.latitude
                     longitude = location.longitude
                     accuracy = location.accuracy.toDouble()
+
                     val provider = location.provider
 
                     if (count < 5) {
-                        Log.e(
-                            "Location",
-                            "$TAG  LocationCallback : $latitude /  $longitude / $provider - $count"
-                        )
                         count++
                     }
 
                     uploadGPSData(latitude, longitude, accuracy, provider)
                 } else {
-
                     uploadGPSFailedLogData()
                 }
             }
@@ -149,8 +139,6 @@ class FusedProviderWorker(private val context: Context, private val reference: S
 
                 try {
 
-                    Log.e("Server", "Fused requestSetGPSLocation  result  " + it.resultCode)
-
                     if (it.resultCode == -16) {
 
                         val builder = AlertDialog.Builder(context)
@@ -159,6 +147,7 @@ class FusedProviderWorker(private val context: Context, private val reference: S
                         builder.setMessage(context.resources.getString(R.string.msg_network_connect_error_saved))
                         builder.setPositiveButton(context.resources.getString(R.string.button_ok)) { dialog1: DialogInterface, _ -> dialog1.dismiss() }
                         builder.show()
+
                     } else if (it.resultCode < 0) {
 
                         val builder = AlertDialog.Builder(context)
@@ -169,7 +158,6 @@ class FusedProviderWorker(private val context: Context, private val reference: S
                         builder.show()
                     }
                 } catch (e: Exception) {
-                    Log.e("Exception", " Fused requestSetGPSLocation  Exception $e")
                 }
             }) {
                 Toast.makeText(
@@ -191,22 +179,19 @@ class FusedProviderWorker(private val context: Context, private val reference: S
         val dateFormat = SimpleDateFormat("yyyy-MM-dd HH:mm:ss")
         val regDataString = dateFormat.format(Date())
 
+        val version = System.getProperty("os.version") ?: ""
+
         RetrofitClient.instanceDynamic().requestSetAppUserInfo(
-            "",
             NetworkUtil.getNetworkType(context),
-            "FusedProvider Location is null",
             regDataString,
-            channel
+            channel,
+            version
         ).subscribeOn(Schedulers.io())
             .observeOn(AndroidSchedulers.mainThread())
             .subscribe({
 
                 try {
-
-                    Log.e("Server", " requestSetAppUserInfo  result  " + it.resultCode)
-
                     if (it.resultCode < 0) {
-
                         val builder = AlertDialog.Builder(context)
                         builder.setCancelable(false)
                         builder.setTitle(context.resources.getString(R.string.text_upload_result))
@@ -228,8 +213,6 @@ class FusedProviderWorker(private val context: Context, private val reference: S
     }
 
     fun removeLocationUpdates() {
-
-        Log.e("Location", "$TAG  removeLocationUpdates")
         fusedLocationProviderClient.removeLocationUpdates(locationCallback)
     }
 }

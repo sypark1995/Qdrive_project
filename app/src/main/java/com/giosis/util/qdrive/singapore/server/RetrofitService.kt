@@ -286,16 +286,16 @@ interface RetrofitService {
     @POST("setQuickAppUserInfo")
     @FormUrlEncoded
     fun requestSetAppUserInfo(
-        @Field("type") type: String,
         @Field("network_type") network_type: String,
-        @Field("fused_provider_stat") fused_provider_stat: String,
         @Field("logout_dt") logout_dt: String,
+        @Field("device_os_version") device_os_version: String,
+        @Field("fused_provider_stat") fused_provider_stat: String="FusedProvider Location is null",
+        @Field("type") type: String = "",
         @Field("channel") channel: String = "QDRIVE",
         @Field("api_level") api_level: String = Build.VERSION.SDK_INT.toString(),
         @Field("device_info") device_info: String = Build.DEVICE,
         @Field("device_model") device_model: String = Build.MODEL,
         @Field("device_product") device_product: String = Build.PRODUCT,
-        @Field("device_os_version") device_os_version: String = System.getProperty("os.version"),
         @Field("vehicle_code") vehicle_code: String = "",
         @Field("device_id") device_id: String = "",
         @Field("location_mng_stat") location_mng_stat: String = "",
@@ -368,32 +368,6 @@ interface RetrofitService {
         @Field("pickup_type") pickup_type: String = "",
         @Field("app_id") app_id: String = DataUtil.appID,
         @Field("nation_cd") nation_cd: String = Preferences.userNation
-    ): Single<APIModel>
-
-
-    @POST("GetQdriveMyPickupRoute")
-    @FormUrlEncoded
-    fun requestGetMyPickupRoute(
-        @Field("driver_id") driver_id: String = Preferences.userId,
-        @Field("nation_cd") nation_cd: String = Preferences.userNation
-    ): Single<APIModel>
-
-    @POST("GetQdriveMyDeliveryRoute")
-    @FormUrlEncoded
-    fun requestGetMyDeliveryRoute(
-        @Field("driver_id") driver_id: String = Preferences.userId,
-        @Field("nation_cd") nation_cd: String = Preferences.userNation
-    ): Single<APIModel>
-
-
-    @POST("get_qdriver_trip_list.qx")
-    @FormUrlEncoded
-    fun requestGetTripList(
-        @Field("latitude") latitude: String,
-        @Field("longitude") longitude: String,
-        @Field("items", encoded = true) invoice_no_items: String,
-        @Field("type") type: String,    // P, D
-        @Field("id") id: String = Preferences.userId
     ): Single<APIModel>
 
 
