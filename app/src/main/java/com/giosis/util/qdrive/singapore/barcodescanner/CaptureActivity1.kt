@@ -30,6 +30,7 @@ import com.giosis.util.qdrive.singapore.barcodescanner.bluetooth.BluetoothChatSe
 import com.giosis.util.qdrive.singapore.barcodescanner.bluetooth.KScan
 import com.giosis.util.qdrive.singapore.barcodescanner.bluetooth.KTSyncData
 import com.giosis.util.qdrive.singapore.data.CaptureData
+import com.giosis.util.qdrive.singapore.data.ChangeDriverData
 import com.giosis.util.qdrive.singapore.data.CnRPickupResult
 import com.giosis.util.qdrive.singapore.database.DatabaseHelper
 import com.giosis.util.qdrive.singapore.databinding.ActivityCaptureBinding
@@ -710,15 +711,15 @@ class CaptureActivity1 : CommonActivity(), TorchListener, OnTouchListener, TextW
 
                             val result = Gson().fromJson(
                                 it.resultObject,
-                                ChangeDriverResult.Data::class.java
+                                ChangeDriverData::class.java
                             )
 
                             if (result != null) {
                                 addScannedBarcode(
-                                    result.trackingNo,
+                                    result.tracking_no,
                                     result.status,
-                                    result.currentDriver,
-                                    result.contrNo
+                                    result.del_driver_id,
+                                    result.contr_no
                                 )
                             }
 
