@@ -17,18 +17,18 @@ interface RetrofitService {
 
     @POST("LoginQDRIVE")
     @FormUrlEncoded
-    fun requestServerLogin(
+    suspend fun requestServerLogin(
         @Field("login_id") login_id: String,
         @Field("password") password: String,
         @Field("chanel") chanel: String,
-        @Field("ip") ip: String,
         @Field("referer") referer: String,
-        @Field("vehicle") vehicle: String,
         @Field("latitude") latitude: String,
         @Field("longitude") longitude: String,
-        @Field("app_id") app_id: String,
-        @Field("nation_cd") nation_cd: String
-    ): Single<APIModel>
+        @Field("nation_cd") nation_cd: String,
+        @Field("ip") ip: String = "",
+        @Field("vehicle") vehicle: String = "",
+        @Field("app_id") app_id: String = "QDRIVE"
+    ): APIModel
 
 
     @POST("changePassword")
