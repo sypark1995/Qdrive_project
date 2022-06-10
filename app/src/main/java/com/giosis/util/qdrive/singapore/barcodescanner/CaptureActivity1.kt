@@ -29,6 +29,7 @@ import com.giosis.util.qdrive.singapore.R
 import com.giosis.util.qdrive.singapore.barcodescanner.bluetooth.BluetoothChatService
 import com.giosis.util.qdrive.singapore.barcodescanner.bluetooth.KScan
 import com.giosis.util.qdrive.singapore.barcodescanner.bluetooth.KTSyncData
+import com.giosis.util.qdrive.singapore.data.CaptureData
 import com.giosis.util.qdrive.singapore.data.CnRPickupResult
 import com.giosis.util.qdrive.singapore.database.DatabaseHelper
 import com.giosis.util.qdrive.singapore.databinding.ActivityCaptureBinding
@@ -36,7 +37,6 @@ import com.giosis.util.qdrive.singapore.gps.GPSTrackerManager
 import com.giosis.util.qdrive.singapore.list.BarcodeData
 import com.giosis.util.qdrive.singapore.list.delivery.DeliveryDoneActivity2
 import com.giosis.util.qdrive.singapore.list.pickup.*
-import com.giosis.util.qdrive.singapore.main.DriverAssignResult
 import com.giosis.util.qdrive.singapore.main.submenu.SelfCollectionDoneActivity
 import com.giosis.util.qdrive.singapore.server.RetrofitClient
 import com.giosis.util.qdrive.singapore.util.*
@@ -1180,14 +1180,14 @@ class CaptureActivity1 : CommonActivity(), TorchListener, OnTouchListener, TextW
 
                         onResetButtonClick()
 
-                        val list: ArrayList<DriverAssignResult.QSignDeliveryList> = Gson().fromJson(
+                        val list: ArrayList<CaptureData> = Gson().fromJson(
                             it.resultObject,
                             object :
-                                TypeToken<ArrayList<DriverAssignResult.QSignDeliveryList>>() {}.type
+                                TypeToken<ArrayList<CaptureData>>() {}.type
                         )
 
                         for (item in list) {
-                            if (!TextUtils.isEmpty(item.partnerRefNo.trim())) {
+                            if (!TextUtils.isEmpty(item.partner_ref_no.trim())) {
                                 DataUtil.insertDriverAssignInfo(item)
                             }
                         }
@@ -1251,22 +1251,19 @@ class CaptureActivity1 : CommonActivity(), TorchListener, OnTouchListener, TextW
                     if (it.resultCode == 0) {
 
                         onResetButtonClick()
-
-                        val list: ArrayList<DriverAssignResult.QSignDeliveryList> = Gson().fromJson(
+                        val list: ArrayList<CaptureData> = Gson().fromJson(
                             it.resultObject,
                             object :
-                                TypeToken<ArrayList<DriverAssignResult.QSignDeliveryList>>() {}.type
+                                TypeToken<ArrayList<CaptureData>>() {}.type
                         )
-
                         for (item in list) {
-                            if (!TextUtils.isEmpty(item.partnerRefNo.trim())) {
-
+                            if (!TextUtils.isEmpty(item.partner_ref_no)) {
                                 val successInsert = DataUtil.insertDriverAssignInfo(item)
 
                                 if (successInsert) {
 
                                     RetrofitClient.instanceDynamic()
-                                        .requestSetQdriverMessageChangeQdriver(item.invoiceNo)
+                                        .requestSetQdriverMessageChangeQdriver(item.invoice_no)
                                         .subscribeOn(Schedulers.io())
                                         .observeOn(AndroidSchedulers.mainThread())
                                         .subscribe({
@@ -1275,6 +1272,7 @@ class CaptureActivity1 : CommonActivity(), TorchListener, OnTouchListener, TextW
                                 }
                             }
                         }
+
                         resultDialog(
                             resources.getString(R.string.text_driver_assign_result),
                             it.resultMsg

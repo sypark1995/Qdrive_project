@@ -1,6 +1,5 @@
 package com.giosis.util.qdrive.singapore.util;
 
-import android.annotation.SuppressLint;
 import android.app.AlertDialog;
 import android.content.ClipData;
 import android.content.ClipboardManager;
@@ -16,12 +15,12 @@ import android.util.Log;
 import android.view.View;
 
 import com.giosis.util.qdrive.singapore.R;
+import com.giosis.util.qdrive.singapore.data.CaptureData;
+import com.giosis.util.qdrive.singapore.data.FailedCodeData;
 import com.giosis.util.qdrive.singapore.database.DatabaseHelper;
 import com.giosis.util.qdrive.singapore.gps.GPSTrackerManager;
-import com.giosis.util.qdrive.singapore.main.DriverAssignResult;
 import com.giosis.util.qdrive.singapore.server.ImageUpload;
 import com.giosis.util.qdrive.singapore.server.RetrofitClient;
-import com.giosis.util.qdrive.singapore.data.FailedCodeData;
 import com.google.gson.Gson;
 import com.google.gson.reflect.TypeToken;
 
@@ -318,62 +317,52 @@ public class DataUtil {
         DatabaseHelper.getInstance().delete(DatabaseHelper.DB_TABLE_INTEGRATION_LIST, "contr_no='" + contr_no + "' COLLATE NOCASE");
     }
 
-    @SuppressLint("SimpleDateFormat")
-    public static boolean insertDriverAssignInfo(DriverAssignResult.QSignDeliveryList assignInfo) {
-
+    public static boolean insertDriverAssignInfo(CaptureData data) {
         SimpleDateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
         dateFormat.setTimeZone(TimeZone.getTimeZone("GMT"));
         String regDataString = dateFormat.format(new Date());
 
-        // eylee 2015.08.26 add non q10 - contr_no 로 sqlite 체크 후 있다면 삭제하는 로직 add start
-        String contr_no = assignInfo.getContrNo();
+        String contr_no = data.getContr_no();
         int cnt = getContrNoCount(contr_no);
-        if (0 < cnt) {
+        if (cnt > 0) {
             deleteContrNo(contr_no);
         }
 
-        // eylee 2015.08.26 add end
         //성공 시 통합리스트 테이블 저장
         ContentValues contentVal = new ContentValues();
-        contentVal.put("contr_no", assignInfo.getContrNo());
-        contentVal.put("partner_ref_no", assignInfo.getPartnerRefNo());
-        contentVal.put("invoice_no", assignInfo.getInvoiceNo());
-        contentVal.put("stat", assignInfo.getStat());
-        contentVal.put("rcv_nm", assignInfo.getRcvName());
-        contentVal.put("sender_nm", assignInfo.getSenderName());
-        contentVal.put("tel_no", assignInfo.getTelNo());
-        contentVal.put("hp_no", assignInfo.getHpNo());
-        contentVal.put("zip_code", assignInfo.getZipCode());
-        contentVal.put("address", assignInfo.getAddress());
-        contentVal.put("rcv_request", assignInfo.getDelMemo());
-        contentVal.put("delivery_dt", assignInfo.getDeliveryFirstDate());
+        contentVal.put("contr_no", data.getContr_no());
+        contentVal.put("partner_ref_no", data.getPartner_ref_no());
+        contentVal.put("invoice_no", data.getInvoice_no());
+        contentVal.put("stat", data.getStat());
+        contentVal.put("rcv_nm", data.getRcv_nm());
+        contentVal.put("sender_nm", data.getSender_nm());
+        contentVal.put("tel_no", data.getTel_no());
+        contentVal.put("hp_no", data.getHp_no());
+        contentVal.put("zip_code", data.getZip_code());
+        contentVal.put("address", data.getAddress());
+        contentVal.put("rcv_request", data.getDel_memo());
+        contentVal.put("delivery_dt", data.getDelivery_first_date());
         contentVal.put("type", StatueType.TYPE_DELIVERY);
-        contentVal.put("route", assignInfo.getRoute());
+        contentVal.put("route", data.getRoute());
         contentVal.put("reg_id", Preferences.INSTANCE.getUserId());
         contentVal.put("reg_dt", regDataString);
         contentVal.put("punchOut_stat", "N");
-        contentVal.put("driver_memo", assignInfo.getDriverMemo());
-        contentVal.put("fail_reason", assignInfo.getFailReason());
-        contentVal.put("secret_no_type", assignInfo.getSecretNoType());
-        contentVal.put("secret_no", assignInfo.getSecretNo());
-        contentVal.put("secure_delivery_yn", assignInfo.getSecureDeliveryYN());
-        contentVal.put("parcel_amount", assignInfo.getParcelAmount());
-        contentVal.put("currency", assignInfo.getCurrency());
-        contentVal.put("order_type_etc", assignInfo.getOrder_type_etc());
-
-        // 2020.06 위, 경도 저장
-        String[] latLng = GeoCodeUtil.getLatLng(assignInfo.getLat_lng());
+        contentVal.put("driver_memo", data.getDriver_memo());
+        contentVal.put("fail_reason", data.getFail_reason());
+        contentVal.put("secret_no_type", data.getSecret_no_type());
+        contentVal.put("secret_no", data.getSecret_no());
+        contentVal.put("secure_delivery_yn", data.getSecure_delivery_yn());
+        contentVal.put("parcel_amount", data.getParcel_amount());
+        contentVal.put("currency", data.getCurrency());
+        contentVal.put("order_type_etc", data.getOrder_type_etc());
+        String[] latLng = GeoCodeUtil.getLatLng(data.getLat_lng());
         contentVal.put("lat", latLng[0]);
         contentVal.put("lng", latLng[1]);
-
-        // 2021.04  High Value
-        contentVal.put("high_amount_yn", assignInfo.getHigh_amount_yn());
-        // 2021.09 Economy
-        contentVal.put("order_type", assignInfo.getOrder_type());
-
-        contentVal.put("state", assignInfo.getState());
-        contentVal.put("city", assignInfo.getCity());
-        contentVal.put("street", assignInfo.getStreet());
+        contentVal.put("high_amount_yn", data.getHigh_amount_yn());
+        contentVal.put("order_type", data.getOrder_type());
+        contentVal.put("state", data.getReceive_state());
+        contentVal.put("city", data.getReceive_city());
+        contentVal.put("street", data.getReceive_street());
 
         long insertCount = DatabaseHelper.getInstance().insert(DatabaseHelper.DB_TABLE_INTEGRATION_LIST, contentVal);
         return insertCount >= 0;
