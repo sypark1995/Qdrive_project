@@ -613,7 +613,7 @@ class CaptureActivity1 : CommonActivity(), TorchListener, OnTouchListener, TextW
         }
     }
 
-    // 중복해서 들어가는것 확인용....
+    // 중복해서 들어가는것 확인용....( barcode , 중복 소리 났는지 )
     var checkedBarcodeList = HashMap<String, Boolean>()
 
     // Add Barcode  (Validation Check / Add List)
