@@ -344,7 +344,7 @@ class DeliveryDoneActivity2 : CommonActivity(), Camera2Interface,
 
                             showQRCode = true
 
-                            val adapter = Outlet7ETrackingNoAdapter(outletList)
+                            val adapter = Outlet7ETrackingNoAdapter(outletList,"7E")
                             binding.outletRecycler.adapter = adapter
 
                         } else {
@@ -364,7 +364,7 @@ class DeliveryDoneActivity2 : CommonActivity(), Camera2Interface,
                     binding.layoutSignDSignMemo.visibility = View.GONE
                     binding.layoutSignDVisitLog.visibility = View.GONE
 
-                    val adapter = OutletFLTrackingNoAdapter(outletList)
+                    val adapter = Outlet7ETrackingNoAdapter(outletList,"FL")
                     binding.outletRecycler.adapter = adapter
 
                 }
