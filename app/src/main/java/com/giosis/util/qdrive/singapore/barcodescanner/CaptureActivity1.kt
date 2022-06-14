@@ -614,15 +614,16 @@ class CaptureActivity1 : CommonActivity(), TorchListener, OnTouchListener, TextW
     }
 
     // 중복해서 들어가는것 확인용....( barcode , 중복 소리 났는지 )
-    var checkedBarcodeList = HashMap<String, Boolean>()
+    var checkedBarcodeList = HashMap<String, String>()
 
     // Add Barcode  (Validation Check / Add List)
     // NOTIFICATION.  Barcode Validation Check
     private fun checkValidation(barcode: String) {
-        val isDuplicate = checkedBarcodeList.contains(barcode.uppercase())
+        val isDuplicate = checkedBarcodeList[barcode.uppercase()]
 
-        if (isDuplicate) {
-            if (checkedBarcodeList[barcode.uppercase()] == false) {
+        if (isDuplicate != null) {
+            if (checkedBarcodeList[barcode.uppercase()] == "N") {
+                checkedBarcodeList[barcode.uppercase()] = "Y"
                 beepManagerDuple.playBeepSoundAndVibrate()
                 val toast = Toast.makeText(
                     this@CaptureActivity1,
@@ -637,13 +638,11 @@ class CaptureActivity1 : CommonActivity(), TorchListener, OnTouchListener, TextW
                     binding.editTrackingNumber.windowToken,
                     0
                 )
-                return
-            } else {
-                checkedBarcodeList[barcode.uppercase()] = true
             }
+            return
 
         } else {
-            checkedBarcodeList[barcode.uppercase()] = false
+            checkedBarcodeList[barcode.uppercase()] = "N"
         }
 
         if (!NetworkUtil.isNetworkAvailable(this@CaptureActivity1)) {
