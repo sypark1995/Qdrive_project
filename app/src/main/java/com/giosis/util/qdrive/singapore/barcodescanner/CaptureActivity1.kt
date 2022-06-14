@@ -54,6 +54,7 @@ import io.reactivex.rxjava3.schedulers.Schedulers
 import java.text.SimpleDateFormat
 import java.util.*
 import java.util.regex.Pattern
+import kotlin.collections.HashMap
 
 
 class CaptureActivity1 : CommonActivity(), TorchListener, OnTouchListener, TextWatcher,
@@ -613,34 +614,41 @@ class CaptureActivity1 : CommonActivity(), TorchListener, OnTouchListener, TextW
     }
 
     // 중복해서 들어가는것 확인용....
-    var checkedBarcodeList = ArrayList<String>()
+    var checkedBarcodeList = HashMap<String, Boolean>()
 
     // Add Barcode  (Validation Check / Add List)
     // NOTIFICATION.  Barcode Validation Check
     private fun checkValidation(barcode: String) {
+        val isDuplicate = checkedBarcodeList.contains(barcode.uppercase())
+
+        if (isDuplicate) {
+            if (checkedBarcodeList[barcode.uppercase()] == false) {
+                beepManagerDuple.playBeepSoundAndVibrate()
+                val toast = Toast.makeText(
+                    this@CaptureActivity1,
+                    R.string.msg_tracking_number_already_entered,
+                    Toast.LENGTH_SHORT
+                )
+                toast.setGravity(Gravity.CENTER, 0, 20)
+                toast.show()
+
+                binding.editTrackingNumber.setText("")
+                inputMethodManager.hideSoftInputFromWindow(
+                    binding.editTrackingNumber.windowToken,
+                    0
+                )
+                return
+            } else {
+                checkedBarcodeList[barcode.uppercase()] = true
+            }
+
+        } else {
+            checkedBarcodeList[barcode.uppercase()] = false
+        }
 
         if (!NetworkUtil.isNetworkAvailable(this@CaptureActivity1)) {
             warningDialog(resources.getString(R.string.msg_network_connect_error))
             return
-        }
-
-        val isDuplicate = checkedBarcodeList.contains(barcode.uppercase())
-
-        if (isDuplicate) {
-            beepManagerDuple.playBeepSoundAndVibrate()
-            val toast = Toast.makeText(
-                this@CaptureActivity1,
-                R.string.msg_tracking_number_already_entered,
-                Toast.LENGTH_SHORT
-            )
-            toast.setGravity(Gravity.CENTER, 0, 20)
-            toast.show()
-
-            binding.editTrackingNumber.setText("")
-            inputMethodManager.hideSoftInputFromWindow(binding.editTrackingNumber.windowToken, 0)
-            return
-        } else {
-            checkedBarcodeList.add(barcode.uppercase())
         }
 
         val strBarcodeNo = barcode.replace("\\r\\n|\\r|\\n".toRegex(), "")
