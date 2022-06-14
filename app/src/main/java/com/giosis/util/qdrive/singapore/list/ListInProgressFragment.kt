@@ -450,20 +450,21 @@ class ListInProgressFragment(var bluetoothListener: BluetoothListener) : Fragmen
                         }
                     }
 
-                    // Outlet 정보 추가
-                    rowItem.outlet_company = routeType
-
-                    if (1 < routeSplit.size) {
-                        val sb = StringBuilder()
-                        for (j in 2 until routeSplit.size) {
-                            sb.append(routeSplit[j])
-                            sb.append(" ")
-                        }
-                        rowItem.outlet_company = routeSplit[0]
-                        rowItem.outlet_store_code = routeSplit[1]
-                        rowItem.outlet_store_name = sb.toString().trim { it <= ' ' }
-                    }
                 }
+                // Outlet 정보 추가
+                rowItem.outlet_company = routeType
+
+                if (1 < routeSplit.size) {
+                    val sb = StringBuilder()
+                    for (j in 2 until routeSplit.size) {
+                        sb.append(routeSplit[j])
+                        sb.append(" ")
+                    }
+                    rowItem.outlet_company = routeSplit[0]
+                    rowItem.outlet_store_code = routeSplit[1]
+                    rowItem.outlet_store_name = sb.toString().trim { it <= ' ' }
+                }
+
 
                 if (isAdded) {
                     rowItem.outlet_qty++
