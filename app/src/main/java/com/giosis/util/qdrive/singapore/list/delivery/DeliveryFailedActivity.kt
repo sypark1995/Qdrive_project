@@ -408,7 +408,7 @@ class DeliveryFailedActivity : CommonActivity(), Camera2APIs.Camera2Interface,
                 return
             }
 
-            FirebaseEvent.clickEvent(this, tag, "DeliveryFailedUploadHelper ")
+            FirebaseEvent.clickEvent(this, tag, "serverUpload ")
             progressBar.visibility = View.VISIBLE
 
             lifecycleScope.launch {
