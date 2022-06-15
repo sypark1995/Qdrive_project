@@ -185,13 +185,18 @@ class CaptureActivity1 : CommonActivity(), TorchListener, OnTouchListener, TextW
 
     var clickListener = View.OnClickListener { v ->
 
+        try {
+            binding.editTrackingNumber.requestFocus()
+        } catch (e: Exception) {
+            //
+        }
+
         when (v.id) {
             R.id.layout_top_back -> {
                 onResetButtonClick()
                 finish()
             }
             R.id.layout_camera -> {
-                Pm85ScanManager.getInstance().stopScan()
 
                 binding.layoutCamera.isSelected = true
                 binding.textCamera.isSelected = true
@@ -225,13 +230,8 @@ class CaptureActivity1 : CommonActivity(), TorchListener, OnTouchListener, TextW
                 // bluetooth
                 if (KTSyncData.mChatService != null) KTSyncData.mChatService.stop()
                 KTSyncData.bIsRunning = false
-
-                Pm85ScanManager.getInstance().registScan(this)
-                Pm85ScanManager.getInstance().startScan()
-                Pm85ScanManager.getInstance().addScanListener(pm85ScanListener)
             }
             R.id.layout_bluetooth -> {
-                Pm85ScanManager.getInstance().stopScan()
 
                 binding.layoutCamera.isSelected = false
                 binding.textCamera.isSelected = false
@@ -290,32 +290,6 @@ class CaptureActivity1 : CommonActivity(), TorchListener, OnTouchListener, TextW
             }
         }
     }
-
-    var pm85ScanListener: Pm85ScanManager.ScanResultListener =
-        object : Pm85ScanManager.ScanResultListener {
-            override fun scanReceive(result: String) {
-                val arrResults = ArrayList<String>()
-                arrResults.add(result)
-                if (arrResults.size > 0) {
-                    var resultString = Gson().toJson(arrResults)
-                    Log.e(TAG, "script onAppScan $resultString")
-                    resultString = resultString.replace("[\"", "")
-                    resultString = resultString.replace("\"]", "")
-
-                    if (resultString.endsWith("\\n")) {
-                        resultString = resultString.replace("\\n", "")
-                    }
-
-                    if (resultString.endsWith("\n")) {
-                        resultString = resultString.replace("\n", "")
-                    }
-
-                    if (resultString != "READ_FAIL") {
-                        checkValidation(resultString.toString().trim().uppercase())
-                    }
-                }
-            }
-        }
 
     public override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -512,9 +486,7 @@ class CaptureActivity1 : CommonActivity(), TorchListener, OnTouchListener, TextW
         if (isPermissionTrue) {
 
             // Camera
-            if (binding.layoutScannerMode.visibility == View.GONE) {
-                cameraManager.onResume()
-            }
+            cameraManager.onResume()
 
             // Location
             if (mScanType == CaptureType.CHANGE_DELIVERY_DRIVER) {
@@ -618,7 +590,7 @@ class CaptureActivity1 : CommonActivity(), TorchListener, OnTouchListener, TextW
             }
 
         }
-        return true
+        return false
     }
 
     // Bluetooth
@@ -656,9 +628,7 @@ class CaptureActivity1 : CommonActivity(), TorchListener, OnTouchListener, TextW
             if (checkedBarcodeList[barcode.uppercase()] == "N") {
                 checkedBarcodeList[barcode.uppercase()] = "Y"
 
-                if (binding.layoutScannerMode.visibility == View.GONE) {
-                    beepManagerDuple.playBeepSoundAndVibrate()
-                }
+                beepManagerDuple.playBeepSoundAndVibrate()
 
                 val toast = Toast.makeText(
                     this@CaptureActivity1,
@@ -808,9 +778,7 @@ class CaptureActivity1 : CommonActivity(), TorchListener, OnTouchListener, TextW
                                 insertCnRData(cnRPickupData)
                             }
 
-                            if (binding.layoutScannerMode.visibility == View.GONE) {
-                                beepManager.playBeepSoundAndVibrate()
-                            }
+                            beepManager.playBeepSoundAndVibrate()
                             pickupCNRRequester = cnRPickupData.reqName
                             addScannedBarcode(strBarcodeNo)
                         }
@@ -1004,10 +972,7 @@ class CaptureActivity1 : CommonActivity(), TorchListener, OnTouchListener, TextW
                 addScannedBarcode(strBarcodeNo)
             }
             else -> {
-                if (binding.layoutScannerMode.visibility == View.GONE) {
-                    beepManager.playBeepSoundAndVibrate()
-                }
-
+                beepManager.playBeepSoundAndVibrate()
                 addScannedBarcode(strBarcodeNo)
             }
         }
@@ -1602,12 +1567,6 @@ class CaptureActivity1 : CommonActivity(), TorchListener, OnTouchListener, TextW
         beepManagerError.destroy()
         beepManagerDuple.destroy()
 
-        Pm85ScanManager.getInstance().stopScan()
-
-        if (Pm85ScanManager.getInstance().isConnected) {
-            Pm85ScanManager.getInstance().unregistScan(this)
-            Pm85ScanManager.getInstance().removeScanListener(pm85ScanListener)
-        }
 
         // Stop the Bluetooth chat services
         if (KTSyncData.mChatService != null) KTSyncData.mChatService.stop()

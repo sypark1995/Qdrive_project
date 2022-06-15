@@ -535,6 +535,11 @@ class DeliveryDoneActivity2 : CommonActivity(), Camera2Interface,
 
 
     private fun saveServerUploadSign() {
+        val progressDialog = android.app.ProgressDialog(this)
+        progressDialog.setProgressStyle(android.app.ProgressDialog.STYLE_HORIZONTAL)
+        progressDialog.setMessage(resources.getString(R.string.text_downloading))
+        progressDialog.setCancelable(false)
+
         try {
             if (!NetworkUtil.isNetworkAvailable(this)) {
                 alertShow(resources.getString(R.string.msg_network_connect_error))
@@ -589,14 +594,17 @@ class DeliveryDoneActivity2 : CommonActivity(), Camera2Interface,
 
             FirebaseEvent.clickEvent(this, TAG, "SetDeliveryUploadData")
 
-            progressBar.visibility = View.VISIBLE
+
+            progressDialog.show()
+            progressDialog.max = barcodeList.size
 
             lifecycleScope.launch {
 
                 var resultMsg = ""
                 try {
-                    for (item in barcodeList) {
+                    for ((index,item) in barcodeList.withIndex()) {
 
+                        progressDialog.progress = index
                         var bitmapString = ""
                         if (binding.signViewSignDSignature.isTouch) {
                             DataUtil.captureSign(
@@ -691,12 +699,12 @@ class DeliveryDoneActivity2 : CommonActivity(), Camera2Interface,
                     resultMsg = e.toString()
                 }
 
-                progressBar.visibility = View.GONE
+                progressDialog.hide()
                 resultDialog(resultMsg)
             }
 
         } catch (e: Exception) {
-            progressBar.visibility = View.GONE
+            progressDialog.hide()
 
             Toast.makeText(
                 this,
