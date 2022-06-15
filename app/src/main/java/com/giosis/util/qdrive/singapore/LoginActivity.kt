@@ -234,58 +234,60 @@ class LoginActivity : CommonActivity() {
     private fun loginBtnClick() {
         hideKeyboard()
 
-        if (nationList.size == 0) {
-            lifecycleScope.launch {
+        lifecycleScope.launch {
+
+            progressBar.visibility = View.VISIBLE
+
+            if (nationList.size == 0) {
                 getNationList()
             }
-            return
-        }
 
-        val userNationCode = nationList[spinnerPosition].nation_cd
+            val userNationCode = try {
+                nationList[spinnerPosition].nation_cd
+            } catch (e: Exception) {
+                "SG"
+            }
 
-        val userID = binding.editLoginId.text.toString().trim()
-        val userPW = binding.editLoginPassword.text.toString().trim()
-        val deviceUUID = getDeviceUUID()
+            val userID = binding.editLoginId.text.toString().trim()
+            val userPW = binding.editLoginPassword.text.toString().trim()
+            val deviceUUID = getDeviceUUID()
 
-        // DB 파일 생성여부
-        // todo_sypark  없으면 만들도록 . ...
-        val dbFile = File(DatabaseHelper.getInstance().dbPath)
-        if (!dbFile.exists()) {
-            showDialog(resources.getString(R.string.msg_db_problem))
-        }
+            // DB 파일 생성여부
+            // todo_sypark  없으면 만들도록 . ...
+            val dbFile = File(DatabaseHelper.getInstance().dbPath)
+            if (!dbFile.exists()) {
+                showDialog(resources.getString(R.string.msg_db_problem))
+            }
 
-        // 위치 정보
-        var latitude = 0.0
-        var longitude = 0.0
-        gpsTrackerManager?.let {
-            latitude = it.latitude
-            longitude = it.longitude
-        }
+            // 위치 정보
+            var latitude = 0.0
+            var longitude = 0.0
+            gpsTrackerManager?.let {
+                latitude = it.latitude
+                longitude = it.longitude
+            }
 
-        if (userID.isEmpty()) {
-            showDialog(resources.getString(R.string.msg_please_input_id))
-            return
-        }
+            if (userID.isEmpty()) {
+                showDialog(resources.getString(R.string.msg_please_input_id))
+                return@launch
+            }
 
-        if (userPW.isEmpty()) {
-            showDialog(resources.getString(R.string.msg_please_input_password))
-            return
-        }
+            if (userPW.isEmpty()) {
+                showDialog(resources.getString(R.string.msg_please_input_password))
+                return@launch
+            }
 
-        Preferences.userNation = userNationCode
-        Preferences.userId = userID
-        Preferences.userPw = userPW
-        Preferences.deviceUUID = deviceUUID
+            Preferences.userNation = userNationCode
+            Preferences.userId = userID
+            Preferences.userPw = userPW
+            Preferences.deviceUUID = deviceUUID
 
-        progressBar.visibility = View.VISIBLE
+            val chanel = if (userNationCode == Common.SG) {
+                Common.QDRIVE
+            } else {
+                Common.QDRIVE_V2
+            }
 
-        val chanel = if (userNationCode == Common.SG) {
-            Common.QDRIVE
-        } else {
-            Common.QDRIVE_V2
-        }
-
-        lifecycleScope.launch {
             try {
                 val result = RetrofitClient.instanceDynamic().requestServerLogin(
                     userID, userPW, chanel, deviceUUID,

@@ -13,6 +13,16 @@ import device.sdk.ScanManager
 
 class Pm85ScanManager {
 
+    companion object {
+        @Volatile
+        private var instance: Pm85ScanManager? = null
+
+        @JvmStatic
+        fun getInstance(): Pm85ScanManager = instance ?: synchronized(this) {
+            instance ?: Pm85ScanManager().also { instance = it }
+        }
+    }
+
     var scanManager: ScanManager? = null
     var decodeResult: DecodeResult = DecodeResult()
     var scanResultReceiver: ScanResultReceiver = ScanResultReceiver()
@@ -45,7 +55,6 @@ class Pm85ScanManager {
     }
 
     fun startScan() {
-
         scanManager = ScanManager()
         scanManager!!.aRegisterDecodeStateCallback(stateCallback)
         scanManager!!.aDecodeSetResultType(ScanConst.ResultType.DCD_RESULT_USERMSG)
@@ -62,10 +71,8 @@ class Pm85ScanManager {
     class ScanResultReceiver : BroadcastReceiver() {
         override fun onReceive(context: Context?, intent: Intent?) {
             try {
-                if (TextUtils.equals(
-                        ScanConst.INTENT_USERMSG,
-                        intent?.action
-                    ) && getInstance().scanManager != null
+                if (TextUtils.equals(ScanConst.INTENT_USERMSG, intent?.action) &&
+                    getInstance().scanManager != null
                 ) {
                     getInstance().scanManager!!.aDecodeGetResult(getInstance().decodeResult.recycle())
                     if (getInstance().getLastScanListener() != null) {
@@ -100,14 +107,4 @@ class Pm85ScanManager {
         }
     }
 
-    companion object {
-        @Volatile
-        private var instance: Pm85ScanManager? = null
-        val PM85 = "Pm85"
-
-        @JvmStatic
-        fun getInstance(): Pm85ScanManager = instance ?: synchronized(this) {
-            instance ?: Pm85ScanManager().also { instance = it }
-        }
-    }
 }

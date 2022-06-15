@@ -1592,6 +1592,10 @@ class CaptureActivity1 : CommonActivity(), TorchListener, OnTouchListener, TextW
         beepManagerError.destroy()
         beepManagerDuple.destroy()
 
+        Pm85ScanManager.getInstance().stopScan()
+        Pm85ScanManager.getInstance().unregistScan(this)
+        Pm85ScanManager.getInstance().removeScanListener(pm85ScanListener)
+
         // Stop the Bluetooth chat services
         if (KTSyncData.mChatService != null) KTSyncData.mChatService.stop()
         KTSyncData.mChatService = null
