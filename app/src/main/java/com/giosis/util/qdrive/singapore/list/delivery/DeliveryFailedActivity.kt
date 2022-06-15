@@ -112,13 +112,13 @@ class DeliveryFailedActivity : CommonActivity(), Camera2APIs.Camera2Interface,
                 }
 
                 override fun onItemSelected(
-                    parentView: AdapterView<*>,
+                    parentView: AdapterView<*>?,
                     arg1: View?,
                     position: Int,
                     arg3: Long
                 ) {
 
-                    val reason = parentView.getItemAtPosition(position).toString()
+                    val reason = parentView?.getItemAtPosition(position).toString()
 
                     if (reason.toUpperCase()
                             .contains(resources.getString(R.string.text_other).toUpperCase())

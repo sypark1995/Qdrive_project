@@ -14,6 +14,7 @@ import android.text.TextUtils;
 import android.util.Log;
 import android.view.View;
 
+import com.giosis.util.qdrive.singapore.BuildConfig;
 import com.giosis.util.qdrive.singapore.R;
 import com.giosis.util.qdrive.singapore.data.CaptureData;
 import com.giosis.util.qdrive.singapore.data.FailedCodeData;
@@ -90,17 +91,19 @@ public class DataUtil {
 
     public static void enableLocationSettings(Context context) {
 
-        new AlertDialog.Builder(context)
-                .setCancelable(false)
-                .setTitle(context.getResources().getString(R.string.text_location_setting))
-                .setMessage(context.getResources().getString(R.string.msg_location_off))
-                .setPositiveButton(context.getResources().getString(R.string.button_ok), (dialog, which) -> {
+        if (!BuildConfig.DEBUG) {
+            new AlertDialog.Builder(context)
+                    .setCancelable(false)
+                    .setTitle(context.getResources().getString(R.string.text_location_setting))
+                    .setMessage(context.getResources().getString(R.string.msg_location_off))
+                    .setPositiveButton(context.getResources().getString(R.string.button_ok), (dialog, which) -> {
 
-                    Intent intent = new Intent(Settings.ACTION_LOCATION_SOURCE_SETTINGS);
-                    intent.addCategory(Intent.CATEGORY_DEFAULT);
-                    context.startActivity(intent);
+                        Intent intent = new Intent(Settings.ACTION_LOCATION_SOURCE_SETTINGS);
+                        intent.addCategory(Intent.CATEGORY_DEFAULT);
+                        context.startActivity(intent);
 
-                }).show();
+                    }).show();
+        }
     }
 
 

@@ -5,6 +5,7 @@ import android.content.Intent
 import android.os.Bundle
 import android.view.View
 import com.giosis.util.qdrive.singapore.R
+import com.giosis.util.qdrive.singapore.barcodescanner.CaptureActivity
 import com.giosis.util.qdrive.singapore.barcodescanner.CaptureActivity1
 import com.giosis.util.qdrive.singapore.barcodescanner.CaptureType
 import com.giosis.util.qdrive.singapore.databinding.ActivityScanBinding

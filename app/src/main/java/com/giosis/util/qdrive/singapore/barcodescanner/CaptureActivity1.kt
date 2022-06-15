@@ -22,10 +22,7 @@ import android.widget.Toast
 import androidx.activity.result.ActivityResultLauncher
 import androidx.activity.result.contract.ActivityResultContracts
 import androidx.core.content.ContextCompat
-import com.giosis.util.qdrive.singapore.BuildConfig
-import com.giosis.util.qdrive.singapore.LoginActivity
-import com.giosis.util.qdrive.singapore.MemoryStatus
-import com.giosis.util.qdrive.singapore.R
+import com.giosis.util.qdrive.singapore.*
 import com.giosis.util.qdrive.singapore.barcodescanner.bluetooth.BluetoothChatService
 import com.giosis.util.qdrive.singapore.barcodescanner.bluetooth.KScan
 import com.giosis.util.qdrive.singapore.barcodescanner.bluetooth.KTSyncData
@@ -194,6 +191,7 @@ class CaptureActivity1 : CommonActivity(), TorchListener, OnTouchListener, TextW
                 finish()
             }
             R.id.layout_camera -> {
+                Pm85ScanManager.getInstance().stopScan()
 
                 binding.layoutCamera.isSelected = true
                 binding.textCamera.isSelected = true
@@ -227,8 +225,13 @@ class CaptureActivity1 : CommonActivity(), TorchListener, OnTouchListener, TextW
                 // bluetooth
                 if (KTSyncData.mChatService != null) KTSyncData.mChatService.stop()
                 KTSyncData.bIsRunning = false
+
+                Pm85ScanManager.getInstance().registScan(this)
+                Pm85ScanManager.getInstance().startScan()
+                Pm85ScanManager.getInstance().addScanListener(pm85ScanListener)
             }
             R.id.layout_bluetooth -> {
+                Pm85ScanManager.getInstance().stopScan()
 
                 binding.layoutCamera.isSelected = false
                 binding.textCamera.isSelected = false
@@ -287,6 +290,32 @@ class CaptureActivity1 : CommonActivity(), TorchListener, OnTouchListener, TextW
             }
         }
     }
+
+    var pm85ScanListener: Pm85ScanManager.ScanResultListener =
+        object : Pm85ScanManager.ScanResultListener {
+            override fun scanReceive(result: String) {
+                val arrResults = ArrayList<String>()
+                arrResults.add(result)
+                if (arrResults.size > 0) {
+                    var resultString = Gson().toJson(arrResults)
+                    Log.e(TAG, "script onAppScan $resultString")
+                    resultString = resultString.replace("[\"", "")
+                    resultString = resultString.replace("\"]", "")
+
+                    if (resultString.endsWith("\\n")) {
+                        resultString = resultString.replace("\\n", "")
+                    }
+
+                    if (resultString.endsWith("\n")) {
+                        resultString = resultString.replace("\n", "")
+                    }
+
+                    if (resultString != "READ_FAIL") {
+                        checkValidation(resultString.toString().trim().uppercase())
+                    }
+                }
+            }
+        }
 
     public override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -578,7 +607,6 @@ class CaptureActivity1 : CommonActivity(), TorchListener, OnTouchListener, TextW
     override fun onKey(v: View, keyCode: Int, event: KeyEvent): Boolean {
         if (event.action == KeyEvent.ACTION_UP) {
             if (keyCode == KeyEvent.KEYCODE_NUMPAD_ENTER || keyCode == KeyEvent.KEYCODE_ENTER) {
-
                 val tempScanNo = binding.editTrackingNumber.text.toString().trim()
 
                 if (tempScanNo.isNotEmpty()) {
@@ -586,6 +614,7 @@ class CaptureActivity1 : CommonActivity(), TorchListener, OnTouchListener, TextW
                 }
                 return true
             }
+
         }
         return true
     }
