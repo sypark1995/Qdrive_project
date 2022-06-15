@@ -301,7 +301,18 @@ class CaptureActivity1 : CommonActivity(), TorchListener, OnTouchListener, TextW
                     Log.e(TAG, "script onAppScan $resultString")
                     resultString = resultString.replace("[\"", "")
                     resultString = resultString.replace("\"]", "")
-                    checkValidation(resultString)
+
+                    if (resultString.endsWith("\\n")) {
+                        resultString = resultString.replace("\\n", "")
+                    }
+
+                    if (resultString.endsWith("\n")) {
+                        resultString = resultString.replace("\n", "")
+                    }
+
+                    if (resultString != "READ_FAIL") {
+                        checkValidation(resultString.toString().trim().uppercase())
+                    }
                 }
             }
         }
