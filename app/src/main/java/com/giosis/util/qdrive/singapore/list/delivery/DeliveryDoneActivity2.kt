@@ -301,13 +301,20 @@ class DeliveryDoneActivity2 : CommonActivity(), Camera2Interface,
                     binding.textSignDOutletAddressTitle.setText(R.string.text_7e_store_address)
                     binding.layoutSignDSignMemo.visibility = View.VISIBLE
                     binding.layoutSignDVisitLog.visibility = View.GONE
-                    progressBar.visibility = View.VISIBLE
+
+                    val progressDialog = android.app.ProgressDialog(this)
+                    progressDialog.setProgressStyle(android.app.ProgressDialog.STYLE_HORIZONTAL)
+                    progressDialog.setMessage(resources.getString(R.string.text_downloading))
+                    progressDialog.setCancelable(false)
+                    progressDialog.show()
+                    progressDialog.max = outletList.size
 
                     lifecycleScope.launch {
 
                         var resultCode = -1
                         try {
-                            for (item in outletList) {
+                            for ((index,item) in outletList.withIndex()) {
+                                progressDialog.progress = index
                                 val response =
                                     RetrofitClient.instanceDynamic().qrCodeForQStationDelivery(
                                         item.trackingNo!!
@@ -338,7 +345,7 @@ class DeliveryDoneActivity2 : CommonActivity(), Camera2Interface,
                             resultCode = -1
                         }
 
-                        progressBar.visibility = View.GONE
+                        progressDialog.hide()
 
                         if (resultCode == 0) {
 
@@ -726,6 +733,11 @@ class DeliveryDoneActivity2 : CommonActivity(), Camera2Interface,
     }
 
     private fun saveOutletDeliveryDone() {
+        val progressDialog = android.app.ProgressDialog(this)
+        progressDialog.setProgressStyle(android.app.ProgressDialog.STYLE_HORIZONTAL)
+        progressDialog.setMessage(resources.getString(R.string.text_downloading))
+        progressDialog.setCancelable(false)
+
         try {
             if (!NetworkUtil.isNetworkAvailable(this)) {
                 alertShow(resources.getString(R.string.msg_network_connect_error))
@@ -759,12 +771,15 @@ class DeliveryDoneActivity2 : CommonActivity(), Camera2Interface,
 
             FirebaseEvent.clickEvent(this, TAG + "_OUTLET", "SetOutletDeliveryUploadData")
 
+            progressDialog.show()
+            progressDialog.max = barcodeList.size
+
             lifecycleScope.launch {
-                progressBar.visibility = View.VISIBLE
 
                 var resultMsg = ""
 
-                for (item in barcodeList) {
+                for ((index,item) in barcodeList.withIndex()) {
+                    progressDialog.progress = index
                     var bitmap1 = ""
 
                     if (outletInfo.route!!.substring(0, 2) == "7E") {
@@ -836,12 +851,12 @@ class DeliveryDoneActivity2 : CommonActivity(), Camera2Interface,
                     }
                 }
 
-                progressBar.visibility = View.GONE
+                progressDialog.hide()
                 resultDialog(resultMsg)
             }
 
         } catch (e: Exception) {
-            progressBar.visibility = View.GONE
+            progressDialog.hide()
 
             Log.e("Exception", "saveOutletDeliveryDone   Exception ; $e")
             Toast.makeText(
