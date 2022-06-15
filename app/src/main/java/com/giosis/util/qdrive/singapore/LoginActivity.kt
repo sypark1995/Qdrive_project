@@ -23,14 +23,13 @@ import androidx.lifecycle.lifecycleScope
 import com.bumptech.glide.Glide
 import com.giosis.util.qdrive.singapore.data.LoginInfo
 import com.giosis.util.qdrive.singapore.database.DatabaseHelper
+import com.giosis.util.qdrive.singapore.databinding.ActivityLoginBinding
 import com.giosis.util.qdrive.singapore.gps.GPSTrackerManager
 import com.giosis.util.qdrive.singapore.main.MainActivity
 import com.giosis.util.qdrive.singapore.main.SMSVerificationActivity
 import com.giosis.util.qdrive.singapore.server.RetrofitClient
 import com.giosis.util.qdrive.singapore.setting.DeveloperModeActivity
-import com.giosis.util.qdrive.singapore.databinding.ActivityLoginBinding
 import com.giosis.util.qdrive.singapore.util.*
-import com.giosis.util.qdrive.singapore.util.Common
 import com.google.firebase.crashlytics.FirebaseCrashlytics
 import com.google.gson.Gson
 import com.google.gson.reflect.TypeToken
@@ -227,19 +226,7 @@ class LoginActivity : CommonActivity() {
                 gpsTrackerManager?.gpsTrackerStart()
 
             } else {
-                if (!this@LoginActivity.isFinishing) {
-                    AlertDialog.Builder(this)
-                        .setCancelable(false)
-                        .setTitle(resources.getString(R.string.text_location_setting))
-                        .setMessage(resources.getString(R.string.msg_location_off))
-                        .setPositiveButton(
-                            resources.getString(R.string.button_ok)
-                        ) { dialog, which ->
-                            val intent = Intent(Settings.ACTION_LOCATION_SOURCE_SETTINGS)
-                            intent.addCategory(Intent.CATEGORY_DEFAULT)
-                            startActivity(intent)
-                        }.show()
-                }
+                DataUtil.enableLocationSettings(this@LoginActivity)
             }
         }
     }
