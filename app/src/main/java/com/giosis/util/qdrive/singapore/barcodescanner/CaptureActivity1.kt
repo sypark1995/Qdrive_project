@@ -512,7 +512,9 @@ class CaptureActivity1 : CommonActivity(), TorchListener, OnTouchListener, TextW
         if (isPermissionTrue) {
 
             // Camera
-            cameraManager.onResume()
+            if (binding.layoutScannerMode.visibility == View.GONE) {
+                cameraManager.onResume()
+            }
 
             // Location
             if (mScanType == CaptureType.CHANGE_DELIVERY_DRIVER) {
@@ -653,7 +655,11 @@ class CaptureActivity1 : CommonActivity(), TorchListener, OnTouchListener, TextW
         if (isDuplicate != null) {
             if (checkedBarcodeList[barcode.uppercase()] == "N") {
                 checkedBarcodeList[barcode.uppercase()] = "Y"
-                beepManagerDuple.playBeepSoundAndVibrate()
+
+                if (binding.layoutScannerMode.visibility == View.GONE) {
+                    beepManagerDuple.playBeepSoundAndVibrate()
+                }
+
                 val toast = Toast.makeText(
                     this@CaptureActivity1,
                     R.string.msg_tracking_number_already_entered,
@@ -802,7 +808,9 @@ class CaptureActivity1 : CommonActivity(), TorchListener, OnTouchListener, TextW
                                 insertCnRData(cnRPickupData)
                             }
 
-                            beepManager.playBeepSoundAndVibrate()
+                            if (binding.layoutScannerMode.visibility == View.GONE) {
+                                beepManager.playBeepSoundAndVibrate()
+                            }
                             pickupCNRRequester = cnRPickupData.reqName
                             addScannedBarcode(strBarcodeNo)
                         }
@@ -996,8 +1004,10 @@ class CaptureActivity1 : CommonActivity(), TorchListener, OnTouchListener, TextW
                 addScannedBarcode(strBarcodeNo)
             }
             else -> {
+                if (binding.layoutScannerMode.visibility == View.GONE) {
+                    beepManager.playBeepSoundAndVibrate()
+                }
 
-                beepManager.playBeepSoundAndVibrate()
                 addScannedBarcode(strBarcodeNo)
             }
         }
