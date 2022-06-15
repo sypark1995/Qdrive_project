@@ -222,7 +222,7 @@ class PickupFailedActivity : CommonActivity(), Camera2APIs.Camera2Interface,
             }
 
             override fun onItemSelected(
-                parentView: AdapterView<*>,
+                parentView: AdapterView<*>?,
                 arg1: View?,
                 position: Int,
                 arg3: Long
