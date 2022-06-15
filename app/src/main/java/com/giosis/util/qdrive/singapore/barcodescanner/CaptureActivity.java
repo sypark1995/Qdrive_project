@@ -49,8 +49,6 @@ import com.giosis.util.qdrive.singapore.barcodescanner.bluetooth.BluetoothChatSe
 import com.giosis.util.qdrive.singapore.barcodescanner.bluetooth.DeviceListActivity;
 import com.giosis.util.qdrive.singapore.barcodescanner.bluetooth.KScan;
 import com.giosis.util.qdrive.singapore.barcodescanner.bluetooth.KTSyncData;
-import com.giosis.util.qdrive.singapore.barcodescanner.helper.ChangeDriverHelper;
-import com.giosis.util.qdrive.singapore.barcodescanner.helper.ConfirmMyOrderHelper;
 import com.giosis.util.qdrive.singapore.data.CnRPickupResult;
 import com.giosis.util.qdrive.singapore.database.DatabaseHelper;
 import com.giosis.util.qdrive.singapore.gps.GPSTrackerManager;
@@ -287,8 +285,6 @@ public final class CaptureActivity extends CommonActivity implements DecoratedBa
                 switch (mScanType) {
                     case CaptureType.CONFIRM_MY_DELIVERY_ORDER:
                     case CaptureType.CHANGE_DELIVERY_DRIVER:
-
-                        onUpdateButtonClick();
                         break;
                     case CaptureType.PICKUP_CNR:
                     case CaptureType.PICKUP_SCAN_ALL:
@@ -1728,97 +1724,6 @@ public final class CaptureActivity extends CommonActivity implements DecoratedBa
         }
 
         return data.getReqName();
-    }
-
-
-    // 하단 버튼 클릭 이벤트
-    // NOTIFICATION.  Confirm my delivery order / Change Delivery Driver
-    public void onUpdateButtonClick() {
-
-        if (scanBarcodeArrayList == null || scanBarcodeArrayList.size() < 1) {
-
-            Toast toast = Toast.makeText(CaptureActivity.this, R.string.msg_tracking_number_manually, Toast.LENGTH_SHORT);
-            toast.setGravity(Gravity.CENTER_HORIZONTAL, 0, 0);
-            toast.show();
-            return;
-        }
-
-        if (!NetworkUtil.isNetworkAvailable(CaptureActivity.this)) {
-            AlertShow(getResources().getString(R.string.msg_network_connect_error));
-            return;
-        }
-
-        if (MemoryStatus.getAvailableInternalMemorySize() != MemoryStatus.ERROR && MemoryStatus.getAvailableInternalMemorySize() < MemoryStatus.PRESENT_BYTE) {
-            AlertShow(getResources().getString(R.string.msg_disk_size_error));
-            return;
-        }
-
-
-        if (mScanType.equals(CaptureType.CONFIRM_MY_DELIVERY_ORDER)) {
-
-            FirebaseEvent.INSTANCE.clickEvent(this, TAG, "SetShippingStatDpc3out");
-
-            new ConfirmMyOrderHelper.Builder(this, opID, officeCode, deviceID, scanBarcodeArrayList)
-                    .setOnDriverAssignEventListener(stdResult -> {
-
-                        String msg;
-
-                        if (stdResult != null) {
-                            if (stdResult.getResultCode() == 0)
-                                onResetButtonClick();
-
-                            msg = stdResult.getResultMsg();
-                        } else {
-
-                            msg = getResources().getString(R.string.text_fail_update);
-                        }
-
-
-                        if (!CaptureActivity.this.isFinishing()) {
-
-                            AlertDialog.Builder builder = new AlertDialog.Builder(CaptureActivity.this);
-                            builder.setTitle(getResources().getString(R.string.text_driver_assign_result));
-                            builder.setMessage(msg);
-                            builder.setPositiveButton(getResources().getString(R.string.button_ok), (dialog, id) -> dialog.cancel());
-                            builder.show();
-                        }
-                    }).build().execute();
-        } else if (mScanType.equals(CaptureType.CHANGE_DELIVERY_DRIVER)) {
-
-            FirebaseEvent.INSTANCE.clickEvent(this, TAG, "SetChangeDeliveryDriver");
-
-            if (gpsEnable && gpsTrackerManager != null) {
-
-                latitude = gpsTrackerManager.getLatitude();
-                longitude = gpsTrackerManager.getLongitude();
-                Log.e("Location", TAG + " onUpdateButtonClick GPSTrackerManager : " + latitude + "  " + longitude + "  ");
-            }
-
-            new ChangeDriverHelper.Builder(this, opID, officeCode, deviceID, changeDriverObjectArrayList, latitude, longitude)
-                    .setOnChangeDelDriverEventListener(stdResult -> {
-
-                        String msg;
-
-                        if (stdResult != null) {
-
-                            if (stdResult.getResultCode() == 0)
-                                onResetButtonClick();
-
-                            msg = stdResult.getResultMsg();
-                        } else {
-
-                            msg = getResources().getString(R.string.text_fail_update);
-                        }
-
-                        if (!CaptureActivity.this.isFinishing()) {
-                            AlertDialog.Builder builder = new AlertDialog.Builder(CaptureActivity.this);
-                            builder.setTitle(getResources().getString(R.string.text_driver_assign_result));
-                            builder.setMessage(msg);
-                            builder.setPositiveButton(getResources().getString(R.string.button_ok), (dialog, id) -> dialog.cancel());
-                            builder.show();
-                        }
-                    }).build().execute();
-        }
     }
 
     private boolean insertDriverAssignInfo(DriverAssignResult.QSignDeliveryList assignInfo) {
