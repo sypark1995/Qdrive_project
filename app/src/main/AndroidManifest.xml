@@ -172,12 +172,6 @@
             android:theme="@style/Theme.AppCompat.Transparent" />
 
         <activity
-            android:name="com.giosis.util.qdrive.singapore.list.delivery.DeliveryDoneActivity"
-            android:configChanges="orientation|keyboardHidden"
-            android:screenOrientation="portrait"
-            android:windowSoftInputMode="stateAlwaysHidden|adjustPan" />
-
-        <activity
             android:name="com.giosis.util.qdrive.singapore.list.delivery.DeliveryDoneActivity2"
             android:configChanges="orientation|keyboardHidden"
             android:screenOrientation="portrait"
