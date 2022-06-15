@@ -228,7 +228,7 @@ class PickupFailedActivity : CommonActivity(), Camera2APIs.Camera2Interface,
                 arg3: Long
             ) {
 
-                val reason = parentView.getItemAtPosition(position).toString()
+                val reason = parentView?.getItemAtPosition(position).toString()
 
                 if (reason.toUpperCase(Locale.ROOT)
                         .contains(resources.getString(R.string.text_other).toUpperCase(Locale.ROOT))
