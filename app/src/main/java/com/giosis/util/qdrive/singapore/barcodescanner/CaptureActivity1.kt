@@ -51,7 +51,6 @@ import io.reactivex.rxjava3.schedulers.Schedulers
 import java.text.SimpleDateFormat
 import java.util.*
 import java.util.regex.Pattern
-import kotlin.collections.HashMap
 
 
 class CaptureActivity1 : CommonActivity(), TorchListener, OnTouchListener, TextWatcher,
@@ -579,17 +578,42 @@ class CaptureActivity1 : CommonActivity(), TorchListener, OnTouchListener, TextW
 
     // Scanner
     override fun onKey(v: View, keyCode: Int, event: KeyEvent): Boolean {
-        if (event.action == KeyEvent.ACTION_UP) {
-            if (keyCode == KeyEvent.KEYCODE_NUMPAD_ENTER || keyCode == KeyEvent.KEYCODE_ENTER) {
-                val tempScanNo = binding.editTrackingNumber.text.toString().trim()
+//        if (event.action == KeyEvent.ACTION_UP) {
+//            if (keyCode == KeyEvent.KEYCODE_NUMPAD_ENTER || keyCode == KeyEvent.KEYCODE_ENTER) {
+//                val tempScanNo = binding.editTrackingNumber.text.toString().trim()
+//
+//                if (tempScanNo.isNotEmpty()) {
+//                    checkValidation(tempScanNo.uppercase())
+//                }
+//                return true
+//            }
+//
+//        }
+//        return false
 
-                if (tempScanNo.isNotEmpty()) {
-                    checkValidation(tempScanNo.uppercase())
+        if (keyCode == KeyEvent.KEYCODE_NUMPAD_ENTER || keyCode == KeyEvent.KEYCODE_ENTER) {
+            val tempScanNo = binding.editTrackingNumber.text.toString().trim()
+
+            if (tempScanNo != "") {
+
+                if (mScanType == CaptureType.CONFIRM_MY_DELIVERY_ORDER
+                    || mScanType == CaptureType.CHANGE_DELIVERY_DRIVER
+                    || mScanType == CaptureType.PICKUP_CNR
+                    || mScanType == CaptureType.PICKUP_SCAN_ALL
+                    || mScanType == CaptureType.PICKUP_ADD_SCAN
+                    || mScanType == CaptureType.PICKUP_TAKE_BACK
+                    || mScanType == CaptureType.OUTLET_PICKUP_SCAN
+                ) {
+                    if (event.action != KeyEvent.ACTION_DOWN) {
+                        return true
+                    }
                 }
-                return true
-            }
 
+                checkValidation(tempScanNo)
+            }
+            return true
         }
+
         return false
     }
 
