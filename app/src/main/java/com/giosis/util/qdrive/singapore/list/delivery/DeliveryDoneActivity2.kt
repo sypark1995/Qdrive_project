@@ -614,7 +614,7 @@ class DeliveryDoneActivity2 : CommonActivity(), Camera2Interface,
                         progressDialog.progress = index
                         var bitmapString = ""
                         if (binding.signViewSignDSignature.isTouch) {
-                            DataUtil.captureSign(
+                            DataUtil.capture(
                                 "/Qdrive",
                                 item,
                                 binding.signViewSignDSignature
@@ -631,7 +631,7 @@ class DeliveryDoneActivity2 : CommonActivity(), Camera2Interface,
 
                         var bitmapString2 = ""
                         if (camera2.hasImage(binding.imgSignDVisitLog)) {
-                            DataUtil.captureSign(
+                            DataUtil.capture(
                                 "/Qdrive",
                                 item + "_1",
                                 binding.imgSignDVisitLog
@@ -783,7 +783,7 @@ class DeliveryDoneActivity2 : CommonActivity(), Camera2Interface,
                     var bitmap1 = ""
 
                     if (outletInfo.route!!.substring(0, 2) == "7E") {
-                        DataUtil.captureSign("/Qdrive", item, binding.signViewSignDSignature)
+                        DataUtil.capture("/Qdrive", item, binding.signViewSignDSignature)
 
                         bitmap1 = QDataUtil.getBitmapString(
                             this@DeliveryDoneActivity2,

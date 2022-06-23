@@ -8,6 +8,7 @@ import android.content.Context;
 import android.content.Intent;
 import android.database.Cursor;
 import android.graphics.Bitmap;
+import android.graphics.Canvas;
 import android.os.Environment;
 import android.provider.Settings;
 import android.text.TextUtils;
@@ -62,6 +63,33 @@ public class DataUtil {
         ClipboardManager clipboardManager = (ClipboardManager) context.getSystemService(context.CLIPBOARD_SERVICE);
         ClipData clipData = ClipData.newPlainText("label", data);
         clipboardManager.setPrimaryClip(clipData);
+    }
+
+    public static void capture(String dirName, String fileName, View view) {
+        Bitmap bitmap = Bitmap.createBitmap(view.getWidth(), view.getHeight(), Bitmap.Config.ARGB_8888);
+
+        Canvas canvas = new Canvas(bitmap);
+
+        view.draw(canvas);
+
+        String dirPath = view.getContext().getExternalFilesDir(null).getAbsolutePath() + dirName;
+
+        File saveDir = new File(dirPath);
+        if (!saveDir.exists()) {
+            saveDir.mkdir();
+        }
+
+        String filePath = dirPath + "/" + fileName + ".png";
+
+        try {
+
+            FileOutputStream fos = new FileOutputStream(filePath);
+            bitmap.compress(Bitmap.CompressFormat.PNG, 100, fos);
+            fos.close();
+        } catch (Exception e) {
+
+            e.printStackTrace();
+        }
     }
 
     public static void captureSign(String dirName, String fileName, View targetView) {

@@ -300,8 +300,8 @@ public class CnRPickupUploadHelper {
 
         private StdResult requestPickupUpload(String assignNo) {
 
-            DataUtil.captureSign("/QdrivePickup", assignNo, signingView);
-            DataUtil.captureSign("/QdriveCollector", assignNo, collectorSigningView);
+            DataUtil.capture("/QdrivePickup", assignNo, signingView);
+            DataUtil.capture("/QdriveCollector", assignNo, collectorSigningView);
 
 
             SimpleDateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");

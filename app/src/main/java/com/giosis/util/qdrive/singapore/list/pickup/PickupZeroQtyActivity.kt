@@ -274,8 +274,8 @@ class PickupZeroQtyActivity : CommonActivity() {
         withContext(Dispatchers.IO) {
             val stdResult = StdResult()
 
-            DataUtil.captureSign("/QdrivePickup", pickupNo, binding.signApplicantSignature)
-            DataUtil.captureSign("/QdriveCollector", pickupNo, binding.signCollectorSignature)
+            DataUtil.capture("/QdrivePickup", pickupNo, binding.signApplicantSignature)
+            DataUtil.capture("/QdriveCollector", pickupNo, binding.signCollectorSignature)
 
             val dateFormat = SimpleDateFormat("yyyy-MM-dd HH:mm:ss")
             val contentVal = ContentValues()

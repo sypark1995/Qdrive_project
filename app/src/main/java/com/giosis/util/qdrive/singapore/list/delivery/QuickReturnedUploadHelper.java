@@ -221,7 +221,7 @@ public class QuickReturnedUploadHelper {
 
         private StdResult requestReturnUpload(String assignNo) {
 
-            DataUtil.captureSign("/Qdrive", assignNo, signingView);
+            DataUtil.capture("/Qdrive", assignNo, signingView);
 
 
             SimpleDateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");

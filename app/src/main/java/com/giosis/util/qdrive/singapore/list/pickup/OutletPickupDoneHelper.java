@@ -247,8 +247,8 @@ public class OutletPickupDoneHelper {
 
             if (!outlet_type.equals("FL")) {
 
-                DataUtil.captureSign("/QdrivePickup", pickup_no, signingView);
-                DataUtil.captureSign("/QdriveCollector", pickup_no, signingView);
+                DataUtil.capture("/QdrivePickup", pickup_no, signingView);
+                DataUtil.capture("/QdriveCollector", pickup_no, signingView);
             }
 
 

@@ -241,8 +241,8 @@ public class PickupAddScanUploadHelper {
 
             for (String scannedItem : scannedItems) {
 
-                DataUtil.captureSign("/QdrivePickup", scannedItem, signingView);
-                DataUtil.captureSign("/QdriveCollector", scannedItem, collectorSigningView);
+                DataUtil.capture("/QdrivePickup", scannedItem, signingView);
+                DataUtil.capture("/QdriveCollector", scannedItem, collectorSigningView);
             }
 
 

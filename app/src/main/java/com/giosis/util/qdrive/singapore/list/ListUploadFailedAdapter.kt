@@ -264,7 +264,7 @@ class ListUploadFailedAdapter :
                 StatueType.DELIVERY_DONE -> {
                     // Delivery   sign 1개
                     var dirPath =
-                        Environment.getExternalStorageDirectory().toString() + deliverySign
+                        itemView.context.getExternalFilesDir(null)!!.absolutePath + deliverySign
                     var filePath = "$dirPath/${data.shipping}.png"
                     var imgFile = File(filePath)
 
@@ -276,7 +276,7 @@ class ListUploadFailedAdapter :
                         layoutListItemChildDriver.visibility = View.GONE
                     } else {
                         dirPath =
-                            Environment.getExternalStorageDirectory().toString() + deliverySign
+                            itemView.context.getExternalFilesDir(null)!!.absolutePath + deliverySign
                         filePath = dirPath + "/" + data.shipping + "_1.png"
                         imgFile = File(filePath)
                         if (imgFile.exists()) {
@@ -290,10 +290,9 @@ class ListUploadFailedAdapter :
                 }
                 StatueType.PICKUP_DONE, StatueType.PICKUP_CANCEL -> {
                     val dirPath =
-                        Environment.getExternalStorageDirectory().toString() + "/" + pickupSign
+                        itemView.context.getExternalFilesDir(null)!!.absolutePath + "/" + pickupSign
                     val dirPath2 =
-                        Environment.getExternalStorageDirectory()
-                            .toString() + "/" + pickupDriverSign
+                        itemView.context.getExternalFilesDir(null)!!.absolutePath + "/" + pickupDriverSign
                     val filePath = "$dirPath/${data.shipping}.png"
                     val filePath2 = "$dirPath2/${data.shipping}.png"
                     val imgFile = File(filePath)
