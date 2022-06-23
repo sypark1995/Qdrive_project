@@ -5,6 +5,7 @@ import android.app.AlertDialog
 import android.content.Intent
 import android.os.Bundle
 import android.util.Log
+import androidx.core.content.ContextCompat
 import androidx.recyclerview.widget.DividerItemDecoration
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.giosis.util.qdrive.singapore.R
@@ -47,7 +48,7 @@ class LanguageSettingActivity : CommonActivity() {
 
         // RecyclerView 구분선 색상 지정
         val dividerItemDecoration = DividerItemDecoration(this, LinearLayoutManager.VERTICAL)
-        dividerItemDecoration.setDrawable(resources.getDrawable(R.drawable.bg_rect_ebebeb))
+        dividerItemDecoration.setDrawable(ContextCompat.getDrawable(this,R.drawable.bg_rect_ebebeb)!!)
         recycler_language.addItemDecoration(dividerItemDecoration)
 
         layout_top_back.setOnClickListener {

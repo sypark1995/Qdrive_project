@@ -39,11 +39,11 @@ import android.widget.Toast;
 import android.widget.ToggleButton;
 
 import androidx.annotation.NonNull;
+import androidx.core.content.ContextCompat;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.giosis.util.qdrive.singapore.BuildConfig;
 import com.giosis.util.qdrive.singapore.LoginActivity;
-import com.giosis.util.qdrive.singapore.MemoryStatus;
 import com.giosis.util.qdrive.singapore.R;
 import com.giosis.util.qdrive.singapore.barcodescanner.bluetooth.BluetoothChatService;
 import com.giosis.util.qdrive.singapore.barcodescanner.bluetooth.DeviceListActivity;
@@ -63,7 +63,6 @@ import com.giosis.util.qdrive.singapore.list.pickup.PickupTakeBackActivity;
 import com.giosis.util.qdrive.singapore.main.DriverAssignResult;
 import com.giosis.util.qdrive.singapore.main.submenu.SelfCollectionDoneActivity;
 import com.giosis.util.qdrive.singapore.server.RetrofitClient;
-import com.giosis.util.qdrive.singapore.util.StatueType;
 import com.giosis.util.qdrive.singapore.util.CommonActivity;
 import com.giosis.util.qdrive.singapore.util.DataUtil;
 import com.giosis.util.qdrive.singapore.util.FirebaseEvent;
@@ -72,6 +71,7 @@ import com.giosis.util.qdrive.singapore.util.NetworkUtil;
 import com.giosis.util.qdrive.singapore.util.PermissionActivity;
 import com.giosis.util.qdrive.singapore.util.PermissionChecker;
 import com.giosis.util.qdrive.singapore.util.Preferences;
+import com.giosis.util.qdrive.singapore.util.StatueType;
 import com.google.gson.Gson;
 import com.google.zxing.ResultPoint;
 import com.journeyapps.barcodescanner.BarcodeCallback;
@@ -494,7 +494,7 @@ public final class CaptureActivity extends CommonActivity implements DecoratedBa
         edit_capture_type_number.setLongClickable(false);
         edit_capture_type_number.setTextIsSelectable(false);
 
-        editTextDelButtonDrawable = getResources().getDrawable(R.drawable.btn_delete);
+        editTextDelButtonDrawable = ContextCompat.getDrawable(this, R.drawable.btn_delete);
         editTextDelButtonDrawable.setBounds(0, 0, editTextDelButtonDrawable.getIntrinsicWidth(), editTextDelButtonDrawable.getIntrinsicHeight());
 
 

@@ -10,6 +10,7 @@ import android.text.style.UnderlineSpan
 import android.util.Log
 import android.view.View
 import android.widget.AdapterView
+import androidx.core.content.ContextCompat
 import androidx.lifecycle.ViewModelProvider
 import com.giosis.util.qdrive.singapore.ActivityRequestCode
 import com.giosis.util.qdrive.singapore.BR
@@ -81,18 +82,32 @@ class CreatePickupOrderActivity :
 
                     edit_seller_id.setText("")
                     edit_seller_id.isEnabled = true
-                    edit_seller_id.background = resources.getDrawable(R.drawable.border_e6e6e6)
-                    layout_seller_id_search.background =
-                        resources.getDrawable(R.drawable.back_round_3_border_4fb648)
 
+                    edit_seller_id.background = ContextCompat.getDrawable(
+                        this@CreatePickupOrderActivity,
+                        R.drawable.border_e6e6e6
+                    )
+
+                    layout_seller_id_search.background =
+                        ContextCompat.getDrawable(
+                            this@CreatePickupOrderActivity,
+                            R.drawable.back_round_3_border_4fb648
+                        )
                 } else {
 
                     edit_seller_id.setText(Preferences.userId)
                     edit_seller_id.isEnabled = false
                     edit_seller_id.background =
-                        resources.getDrawable(R.drawable.back_1_e1e1e1_desable)
+                        ContextCompat.getDrawable(
+                            this@CreatePickupOrderActivity,
+                            R.drawable.back_1_e1e1e1_desable
+                        )
+
                     layout_seller_id_search.background =
-                        resources.getDrawable(R.drawable.back_round_3_border_4fb648_disable)
+                        ContextCompat.getDrawable(
+                            this@CreatePickupOrderActivity,
+                            R.drawable.back_round_3_border_4fb648_disable
+                        )
                 }
 
                 mViewModel.orderType.value = position
@@ -120,9 +135,19 @@ class CreatePickupOrderActivity :
 
         mViewModel.visiblePickupLayout.observe(this) {
             if (it) {
-                pickup_image.setImageDrawable(resources.getDrawable(R.drawable.icon_round_arrow_up))
+                pickup_image.setImageDrawable(
+                    ContextCompat.getDrawable(
+                        this@CreatePickupOrderActivity,
+                        R.drawable.icon_round_arrow_up
+                    )
+                )
             } else {
-                pickup_image.setImageDrawable(resources.getDrawable(R.drawable.icon_round_arrow_down))
+                pickup_image.setImageDrawable(
+                    ContextCompat.getDrawable(
+                        this@CreatePickupOrderActivity,
+                        R.drawable.icon_round_arrow_down
+                    )
+                )
             }
         }
 
