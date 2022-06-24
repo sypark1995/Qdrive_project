@@ -1,7 +1,6 @@
 package com.giosis.util.qdrive.singapore.list
 
 import android.annotation.SuppressLint
-import android.app.Activity
 import android.app.AlertDialog
 import android.content.Context
 import android.content.DialogInterface
@@ -17,13 +16,15 @@ import android.widget.*
 import androidx.recyclerview.widget.RecyclerView
 import com.giosis.util.qdrive.singapore.R
 import com.giosis.util.qdrive.singapore.bluetooth.BluetoothListener
-import com.giosis.util.qdrive.singapore.util.DataUtil
 import com.giosis.util.qdrive.singapore.util.FirebaseEvent
 import com.giosis.util.qdrive.singapore.util.NetworkUtil
 import java.util.*
 import kotlin.collections.ArrayList
 
-class ListTodayDoneAdapter(bluetoothListener: BluetoothListener) :
+class ListTodayDoneAdapter(
+    bluetoothListener: BluetoothListener,
+    private val itemClickListener: OnItemClickListener
+) :
     RecyclerView.Adapter<RecyclerView.ViewHolder>() {
     val TAG = "ListTodayDoneAdapter3"
     var rowItem = ArrayList<RowItem>()
@@ -41,7 +42,7 @@ class ListTodayDoneAdapter(bluetoothListener: BluetoothListener) :
     }
 
     override fun onBindViewHolder(holder: RecyclerView.ViewHolder, position: Int) {
-        (holder as ViewHolder).bind(position)
+        (holder as ViewHolder).bind(position, itemClickListener)
     }
 
     inner class ViewHolder(view: View) : RecyclerView.ViewHolder(view) {
@@ -49,7 +50,8 @@ class ListTodayDoneAdapter(bluetoothListener: BluetoothListener) :
             view.findViewById(R.id.layout_list_item_card_view) // background change
         private val imgListItemUpIcon: ImageView =
             view.findViewById(R.id.img_list_item_up_icon)
-        private val layoutChildUploadDone: RelativeLayout = view.findViewById(R.id.layout_child_upload_done)
+        private val layoutChildUploadDone: RelativeLayout =
+            view.findViewById(R.id.layout_child_upload_done)
         private val textListItemDDay: TextView = view.findViewById(R.id.text_list_item_d_day)
         private val imgListItemSecureDelivery: ImageView =
             view.findViewById(R.id.img_list_item_secure_delivery)
@@ -82,7 +84,7 @@ class ListTodayDoneAdapter(bluetoothListener: BluetoothListener) :
             view.findViewById(R.id.text_list_item_driver_memo)
 
         @SuppressLint("NotifyDataSetChanged")
-        fun bind(position: Int) {
+        fun bind(position: Int, clickListener: OnItemClickListener) {
             val data = rowItem[position]
             textListItemDDay.text = data.delay
 
@@ -226,41 +228,22 @@ class ListTodayDoneAdapter(bluetoothListener: BluetoothListener) :
                 }
             }
 
-            btnListItemChildDoneAddScan.setOnClickListener { v: View ->
-                val intent = Intent(
-                    v.context,
-                    TodayDonePickupScanListActivity::class.java
-                )
-                intent.putExtra("pickup_no", data.shipping)
-                intent.putExtra("applicant", data.name)
-                intent.putExtra("button_type", "Add Scan")
-                (v.context as Activity).startActivityForResult(
-                    intent,
-                    ListTodayDoneFragment.REQUEST_ADD_SCAN
-                )
+            btnListItemChildDoneAddScan.setOnClickListener {
+                clickListener.addScanClicked(data)
             }
 
             btnListItemChildDonePrintLabel.setOnClickListener {
-                FirebaseEvent.clickEvent(it.context,TAG,"btnListItemChildDonePrintLabel click")
+                FirebaseEvent.clickEvent(it.context, TAG, "btnListItemChildDonePrintLabel click")
                 bluetoothListener.isConnectPortablePrint(data.shipping)
             }
 
-            // 2019.02 - Take Back
-            btnListItemChildDoneTakeBack.setOnClickListener { v: View ->
-                val intent = Intent(
-                    v.context,
-                    TodayDonePickupScanListActivity::class.java
-                )
-                intent.putExtra("pickup_no", data.shipping)
-                intent.putExtra("applicant", data.name)
-                intent.putExtra("button_type", "Take Back")
-                (v.context as Activity).startActivityForResult(
-                    intent,
-                    ListTodayDoneFragment.REQUEST_TAKE_BACK
-                )
+            btnListItemChildDoneTakeBack.setOnClickListener {
+                clickListener.takeBackClicked(data)
             }
+
         }
     }
+
     override fun getItemCount(): Int {
         return rowItem.size
     }
@@ -277,7 +260,8 @@ class ListTodayDoneAdapter(bluetoothListener: BluetoothListener) :
             val newList = ArrayList<RowItem>()
             for (rowItem in originalRowItem) {
                 //이름 or 송장번호 조회
-                if (rowItem.name.uppercase(Locale.getDefault()).contains(query) || rowItem.shipping.uppercase(
+                if (rowItem.name.uppercase(Locale.getDefault())
+                        .contains(query) || rowItem.shipping.uppercase(
                         Locale.getDefault()
                     )
                         .contains(query)
@@ -317,5 +301,10 @@ class ListTodayDoneAdapter(bluetoothListener: BluetoothListener) :
         originalRowItem = ArrayList()
         originalRowItem.addAll(rowItem)
         this.bluetoothListener = bluetoothListener
+    }
+
+    interface OnItemClickListener {
+        fun addScanClicked(data: RowItem)
+        fun takeBackClicked(data: RowItem)
     }
 }
