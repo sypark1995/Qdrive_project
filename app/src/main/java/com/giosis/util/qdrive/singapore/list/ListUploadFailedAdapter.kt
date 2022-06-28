@@ -25,9 +25,12 @@ import com.giosis.util.qdrive.singapore.util.*
 import java.io.File
 import java.util.*
 
-class ListUploadFailedAdapter :
+class ListUploadFailedAdapter(private val itemClickListener: OnItemClickListener) :
     RecyclerView.Adapter<RecyclerView.ViewHolder>() {
 
+    interface OnItemClickListener {
+        fun itemMenuIconClick(view: View)
+    }
     private val TAG = "UploadFailedAdapter"
     private var gpsTrackerManager: GPSTrackerManager? = null
     private var gpsEnable = false
@@ -51,7 +54,7 @@ class ListUploadFailedAdapter :
     }
 
     override fun onBindViewHolder(holder: RecyclerView.ViewHolder, position: Int) {
-        (holder as ViewHolder).bind(position)
+        (holder as ViewHolder).bind(position,itemClickListener)
     }
 
     inner class ViewHolder(view: View) : RecyclerView.ViewHolder(view) {
@@ -121,7 +124,7 @@ class ListUploadFailedAdapter :
             view.findViewById(R.id.btn_list_item_child_upload)
 
         @SuppressLint("NotifyDataSetChanged")
-        fun bind(position: Int) {
+        fun bind(position: Int,listener: OnItemClickListener) {
             val data = rowItem[position]
             layoutListItemCardView.setOnClickListener {
                 data.isClicked = !data.isClicked
@@ -174,6 +177,9 @@ class ListUploadFailedAdapter :
             }
 
             layoutListItemMenuIcon.tag = data.shipping // 퀵메뉴 아이콘에 shipping no
+            layoutListItemMenuIcon.setOnClickListener {
+                listener.itemMenuIconClick(it)
+            }
             layoutListItemMenuIcon.setOnClickListener { view ->
                 val popup =
                     PopupMenu(view.context, layoutListItemMenuIcon)

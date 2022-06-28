@@ -6,6 +6,8 @@ import android.app.SearchManager
 import android.content.Context
 import android.content.Intent
 import android.graphics.Color
+import android.graphics.drawable.ColorDrawable
+import android.net.Uri
 import android.os.Bundle
 import android.util.Log
 import android.util.TypedValue
@@ -214,6 +216,53 @@ class ListInProgressFragment(var bluetoothListener: BluetoothListener) : Fragmen
         adapter.setOnItemClickListener(object : ListInProgressAdapter.OnItemClickListener {
             override fun selectItem(v: View, selectedPos: Int, height: Int) {
                 exlistCardList!!.smoothSnapToPosition(selectedPos)
+            }
+
+            override fun detailClicked(data: RowItem) {
+                val tripDataArrayList =
+                    data.tripSubDataArrayList
+                val dialog = PickupTripDetailDialog(
+                    requireActivity(),
+                    tripDataArrayList!!, bluetoothListener
+                )
+                dialog.show()
+                val window = dialog.window
+                window!!.setBackgroundDrawable(ColorDrawable(Color.TRANSPARENT))
+                window.setLayout(
+                    LinearLayout.LayoutParams.MATCH_PARENT,
+                    LinearLayout.LayoutParams.WRAP_CONTENT
+                )
+            }
+
+            override fun telephoneNumberClicked(data: RowItem) {
+                val callUri = Uri.parse("tel:" + data.childItems.tel)
+                val intent = Intent(Intent.ACTION_DIAL, callUri)
+                startActivity(intent)
+            }
+
+            override fun mobileNumberClicked(data: RowItem) {
+                val callUri = Uri.parse("tel:" + data.childItems.hp)
+                val intent = Intent(Intent.ACTION_DIAL, callUri)
+                startActivity(intent)
+            }
+
+            override fun imgSmsClicked(data: RowItem) {
+                try {
+                    val smsBody = String.format(
+                        requireActivity().resources.getString(R.string.msg_delivery_start_sms),
+                        data.name
+                    )
+                    val smsUri = Uri.parse("sms:" + data.childItems.hp)
+                    val intent = Intent(Intent.ACTION_SENDTO, smsUri)
+                    intent.putExtra("sms_body", smsBody)
+                    startActivity(intent)
+                } catch (e: Exception) {
+                    Toast.makeText(
+                        requireActivity(),
+                        requireActivity().resources.getString(R.string.msg_send_sms_error),
+                        Toast.LENGTH_SHORT
+                    ).show()
+                }
             }
         })
     }

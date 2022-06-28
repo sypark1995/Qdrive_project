@@ -158,44 +158,49 @@ class ListTodayDoneAdapter(
             textListItemQty.visibility = View.GONE
             layoutListItemRequest.visibility = View.GONE
 
-            //우측 메뉴 아이콘 클릭 이벤트  Quick Menu
-            layoutListItemMenuIcon.setOnClickListener { v: View ->
-                val popup =
-                    PopupMenu(v.context, layoutListItemMenuIcon)
-                popup.menuInflater.inflate(R.menu.quickmenu_pickup, popup.menu)
-                popup.show()
-                popup.setOnMenuItemClickListener { item: MenuItem ->
-                    val itemId = item.itemId
-                    if (itemId == R.id.menu_one) {
-                        val mapAddress = data.address
-                        val splitIndex = mapAddress.indexOf(")")
-                        val splitAddress = mapAddress.substring(splitIndex + 1)
-                        if (splitAddress != "") {
-                            val uri =
-                                Uri.parse("http://maps.google.co.in/maps?q=" + splitAddress.trim { it <= ' ' })
-                            val intent = Intent(Intent.ACTION_VIEW, uri)
-                            v.context.startActivity(intent)
-                        }
-                    } else if (itemId == R.id.menu_up) {
-                        if (adapterPosition > 0) {
-                            val upItem = rowItem.removeAt(adapterPosition)
-                            rowItem.add(adapterPosition - 1, upItem)
-                            originalRowItem.clear()
-                            originalRowItem.addAll(rowItem)
-                            notifyDataSetChanged()
-                        }
-                    } else if (itemId == R.id.menu_down) {
-                        if (adapterPosition < rowItem.size - 1) {
-                            val downItem = rowItem.removeAt(adapterPosition)
-                            rowItem.add(adapterPosition + 1, downItem)
-                            originalRowItem.clear()
-                            originalRowItem.addAll(rowItem)
-                            notifyDataSetChanged()
-                        }
-                    }
-                    true
-                }
+            layoutListItemMenuIcon.setOnClickListener {
+                clickListener.itemMenuIconClicked(itemView, data)
             }
+
+            // todo_sypark menu_up,menu_down 빼도 되지 않을까 싶음....
+            //우측 메뉴 아이콘 클릭 이벤트  Quick Menu
+//            layoutListItemMenuIcon.setOnClickListener { v: View ->
+//                val popup =
+//                    PopupMenu(v.context, layoutListItemMenuIcon)
+//                popup.menuInflater.inflate(R.menu.quickmenu_pickup, popup.menu)
+//                popup.show()
+//                popup.setOnMenuItemClickListener { item: MenuItem ->
+//                    val itemId = item.itemId
+//                    if (itemId == R.id.menu_one) {
+//                        val mapAddress = data.address
+//                        val splitIndex = mapAddress.indexOf(")")
+//                        val splitAddress = mapAddress.substring(splitIndex + 1)
+//                        if (splitAddress != "") {
+//                            val uri =
+//                                Uri.parse("http://maps.google.co.in/maps?q=" + splitAddress.trim { it <= ' ' })
+//                            val intent = Intent(Intent.ACTION_VIEW, uri)
+//                            v.context.startActivity(intent)
+//                        }
+//                    } else if (itemId == R.id.menu_up) {
+//                        if (adapterPosition > 0) {
+//                            val upItem = rowItem.removeAt(adapterPosition)
+//                            rowItem.add(adapterPosition - 1, upItem)
+//                            originalRowItem.clear()
+//                            originalRowItem.addAll(rowItem)
+//                            notifyDataSetChanged()
+//                        }
+//                    } else if (itemId == R.id.menu_down) {
+//                        if (adapterPosition < rowItem.size - 1) {
+//                            val downItem = rowItem.removeAt(adapterPosition)
+//                            rowItem.add(adapterPosition + 1, downItem)
+//                            originalRowItem.clear()
+//                            originalRowItem.addAll(rowItem)
+//                            notifyDataSetChanged()
+//                        }
+//                    }
+//                    true
+//                }
+//            }
 
             val layoutListItemChildDonePickup =
                 itemView.findViewById<LinearLayout>(R.id.layout_list_item_child_done_pickup)
@@ -258,17 +263,13 @@ class ListTodayDoneAdapter(
             rowItem.addAll(originalRowItem)
         } else {
             val newList = ArrayList<RowItem>()
-            for (rowItem in originalRowItem) {
-                //이름 or 송장번호 조회
-                if (rowItem.name.uppercase(Locale.getDefault())
-                        .contains(query) || rowItem.shipping.uppercase(
-                        Locale.getDefault()
-                    )
-                        .contains(query)
-                ) {
-                    newList.add(rowItem)
+            newList.addAll(
+                originalRowItem.filter {
+                    it.name.uppercase(
+                        Locale.getDefault()).contains(query) || it.shipping.uppercase(Locale.getDefault()
+                    ).contains(query)
                 }
-            }
+            )
             if (newList.size > 0) {
                 rowItem.addAll(newList)
             }
@@ -306,5 +307,6 @@ class ListTodayDoneAdapter(
     interface OnItemClickListener {
         fun addScanClicked(data: RowItem)
         fun takeBackClicked(data: RowItem)
+        fun itemMenuIconClicked(view: View, data: RowItem)
     }
 }

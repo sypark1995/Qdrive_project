@@ -5,6 +5,7 @@ import android.app.SearchManager
 import android.content.Context
 import android.content.Intent
 import android.graphics.Color
+import android.net.Uri
 import android.os.Bundle
 import android.util.Log
 import android.util.TypedValue
@@ -28,7 +29,7 @@ import java.util.*
  * In-Progress Tab Fragment
  */
 class ListUploadFailedFragment : Fragment(), SearchView.OnQueryTextListener,
-    SearchView.OnCloseListener {
+    SearchView.OnCloseListener,ListUploadFailedAdapter.OnItemClickListener {
 
     var TAG = "ListUploadFailedFragment"
     private var gpsTrackerManager: GPSTrackerManager? = null
@@ -41,9 +42,8 @@ class ListUploadFailedFragment : Fragment(), SearchView.OnQueryTextListener,
     private var exListCardList: RecyclerView? = null
     var mFailedCountCallback: OnFailedCountListener? = null
     private var orderby = "zip_code desc"
-    private val adapter by lazy {
-        ListUploadFailedAdapter()
-    }
+    private lateinit var adapter : ListUploadFailedAdapter
+
     private var rowItems = ArrayList<RowItemNotUpload>()
 
 //    리스트 카운트를 갱신하기 위한 인터페이스
@@ -161,6 +161,7 @@ class ListUploadFailedFragment : Fragment(), SearchView.OnQueryTextListener,
             }
         }
         rowItems = ArrayList()
+        adapter = ListUploadFailedAdapter(this)
         adapter.rowItem = rowItems
         exListCardList!!.adapter = adapter
     }
@@ -276,4 +277,24 @@ class ListUploadFailedFragment : Fragment(), SearchView.OnQueryTextListener,
             PermissionChecker.ACCESS_COARSE_LOCATION
         )
     }
+
+    override fun itemMenuIconClick(view: View) {
+        val popup =
+            PopupMenu(view.context, view)
+        popup.menuInflater.inflate(R.menu.quickmenu_failed, popup.menu)
+        popup.setOnMenuItemClickListener {
+            val cs3 =
+                DatabaseHelper.getInstance()["SELECT address FROM " + DatabaseHelper.DB_TABLE_INTEGRATION_LIST + " WHERE invoice_no='" + view.tag
+                    .toString() + "' LIMIT 1"]
+            cs3.moveToFirst()
+            val address = cs3.getString(cs3.getColumnIndex("address"))
+            val uri =
+                Uri.parse("http://maps.google.co.in/maps?q=$address")
+            val intent = Intent(Intent.ACTION_VIEW, uri)
+            view.context.startActivity(intent)
+            true
+        }
+        popup.show()
+    }
+
 }

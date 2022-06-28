@@ -5,10 +5,12 @@ import android.app.SearchManager
 import android.content.Context
 import android.content.Intent
 import android.graphics.Color
+import android.net.Uri
 import android.os.Bundle
 import android.util.Log
 import android.util.TypedValue
 import android.view.LayoutInflater
+import android.view.MenuItem
 import android.view.View
 import android.view.ViewGroup
 import android.view.inputmethod.InputMethodManager
@@ -248,5 +250,27 @@ class ListTodayDoneFragment(var bluetoothListener: BluetoothListener) : Fragment
         intent.putExtra("applicant", data.name)
         intent.putExtra("button_type", "Take Back")
         resultLauncher.launch(intent)
+    }
+
+    override fun itemMenuIconClicked(view: View, data: RowItem) {
+        val popup =
+            PopupMenu(activity, view)
+        popup.menuInflater.inflate(R.menu.quickmenu_pickup, popup.menu)
+        popup.show()
+        popup.setOnMenuItemClickListener { item: MenuItem ->
+            val itemId = item.itemId
+            if (itemId == R.id.menu_one) {
+                val mapAddress = data.address
+                val splitIndex = mapAddress.indexOf(")")
+                val splitAddress = mapAddress.substring(splitIndex + 1)
+                if (splitAddress != "") {
+                    val uri =
+                        Uri.parse("http://maps.google.co.in/maps?q=" + splitAddress.trim { it <= ' ' })
+                    val intent = Intent(Intent.ACTION_VIEW, uri)
+                    startActivity(intent)
+                }
+            }
+            true
+        }
     }
 }

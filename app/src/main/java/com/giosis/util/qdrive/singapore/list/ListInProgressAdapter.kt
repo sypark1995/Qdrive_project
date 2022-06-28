@@ -58,6 +58,10 @@ class ListInProgressAdapter(bluetoothListener: BluetoothListener) :
 
     interface OnItemClickListener {
         fun selectItem(v: View, selectedPos: Int, height: Int)
+        fun detailClicked(data: RowItem)
+        fun telephoneNumberClicked(data: RowItem)
+        fun mobileNumberClicked(data: RowItem)
+        fun imgSmsClicked(data: RowItem)
     }
 
     fun setOnItemClickListener(listener: OnItemClickListener) {
@@ -563,20 +567,8 @@ class ListInProgressAdapter(bluetoothListener: BluetoothListener) :
                     if (data.isPrimaryKey) {
                         layoutButtons2.visibility = View.VISIBLE
 
-                        btnDetailButton.setOnClickListener { v: View ->
-                            val tripDataArrayList =
-                                data.tripSubDataArrayList
-                            val dialog = PickupTripDetailDialog(
-                                v.context,
-                                tripDataArrayList!!, bluetoothListener
-                            )
-                            dialog.show()
-                            val window = dialog.window
-                            window!!.setBackgroundDrawable(ColorDrawable(Color.TRANSPARENT))
-                            window.setLayout(
-                                LinearLayout.LayoutParams.MATCH_PARENT,
-                                LinearLayout.LayoutParams.WRAP_CONTENT
-                            )
+                        btnDetailButton.setOnClickListener {
+                            listener?.detailClicked(data)
                         }
 
                     } else {
@@ -591,34 +583,15 @@ class ListInProgressAdapter(bluetoothListener: BluetoothListener) :
 
 
             textTelephoneNumber.setOnClickListener { v: View ->
-                val callUri = Uri.parse("tel:" + data.childItems.tel)
-                val intent = Intent(Intent.ACTION_DIAL, callUri)
-                v.context.startActivity(intent)
+                listener?.telephoneNumberClicked(data)
             }
 
             textMobileNumber.setOnClickListener { v: View ->
-                val callUri = Uri.parse("tel:" + data.childItems.hp)
-                val intent = Intent(Intent.ACTION_DIAL, callUri)
-                v.context.startActivity(intent)
+                listener?.mobileNumberClicked(data)
             }
 
             imgSms.setOnClickListener { v: View ->
-                try {
-                    val smsBody = String.format(
-                        v.context.resources.getString(R.string.msg_delivery_start_sms),
-                        data.name
-                    )
-                    val smsUri = Uri.parse("sms:" + data.childItems.hp)
-                    val intent = Intent(Intent.ACTION_SENDTO, smsUri)
-                    intent.putExtra("sms_body", smsBody)
-                    v.context.startActivity(intent)
-                } catch (e: Exception) {
-                    Toast.makeText(
-                        v.context,
-                        v.context.resources.getString(R.string.msg_send_sms_error),
-                        Toast.LENGTH_SHORT
-                    ).show()
-                }
+                listener?.imgSmsClicked(data)
             }
 
             imgLive10.setOnClickListener { v: View ->

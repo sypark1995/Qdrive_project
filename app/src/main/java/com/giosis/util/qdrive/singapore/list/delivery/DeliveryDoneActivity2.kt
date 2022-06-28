@@ -20,6 +20,8 @@ import android.view.TextureView.SurfaceTextureListener
 import android.view.View
 import android.widget.ImageView
 import android.widget.Toast
+import androidx.activity.result.ActivityResultLauncher
+import androidx.activity.result.contract.ActivityResultContracts
 import androidx.lifecycle.lifecycleScope
 import com.giosis.util.qdrive.singapore.MemoryStatus
 import com.giosis.util.qdrive.singapore.MemoryStatus.availableInternalMemorySize
@@ -426,20 +428,7 @@ class DeliveryDoneActivity2 : CommonActivity(), Camera2Interface,
     override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
         super.onActivityResult(requestCode, resultCode, data)
 
-        if (requestCode == RESULT_LOAD_IMAGE && resultCode == RESULT_OK && data != null) {
-            try {
-                val selectedImageUri = data.data
-                val selectedImage =
-                    MediaStore.Images.Media.getBitmap(contentResolver, selectedImageUri)
-                val resizeBitmap = camera2.getResizeBitmap(selectedImage)
-                binding.imgSignDVisitLog.setImageBitmap(resizeBitmap)
-                binding.imgSignDVisitLog.scaleType = ImageView.ScaleType.CENTER_INSIDE
-
-                onResume()
-            } catch (e: Exception) {
-                e.printStackTrace()
-            }
-        } else if (requestCode == PERMISSION_REQUEST_CODE) {   // permission
+        if (requestCode == PERMISSION_REQUEST_CODE) {   // permission
             if (resultCode == PermissionActivity.PERMISSIONS_GRANTED) {
                 Log.e("Permission", "$TAG   onActivityResult  PERMISSIONS_GRANTED")
                 isPermissionTrue = true
@@ -873,9 +862,8 @@ class DeliveryDoneActivity2 : CommonActivity(), Camera2Interface,
             val intent = Intent()
             intent.type = "image/*"
             intent.action = Intent.ACTION_GET_CONTENT
-            startActivityForResult(
-                Intent.createChooser(intent, "Select Picture"),
-                RESULT_LOAD_IMAGE
+            resultLauncher.launch(
+                Intent.createChooser(intent,"Select Picture")
             )
         } catch (ex: java.lang.Exception) {
         }
@@ -896,7 +884,24 @@ class DeliveryDoneActivity2 : CommonActivity(), Camera2Interface,
             ).show()
         }
     }
+    private val resultLauncher: ActivityResultLauncher<Intent> = registerForActivityResult(
+        ActivityResultContracts.StartActivityForResult()
+    ) {
+        if (it.resultCode == Activity.RESULT_OK) {
+            try {
+                val selectedImageUri = it.data!!.data
+                val selectedImage =
+                    MediaStore.Images.Media.getBitmap(contentResolver, selectedImageUri)
+                val resizeBitmap = camera2.getResizeBitmap(selectedImage)
+                binding.imgSignDVisitLog.setImageBitmap(resizeBitmap)
+                binding.imgSignDVisitLog.scaleType = ImageView.ScaleType.CENTER_INSIDE
 
+                onResume()
+            } catch (e: Exception) {
+                e.printStackTrace()
+            }
+        }
+    }
     private fun closeCamera() {
         camera2.closeCamera()
     }
