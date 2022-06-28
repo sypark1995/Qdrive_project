@@ -8,7 +8,6 @@ import android.graphics.Bitmap
 import android.graphics.BitmapFactory
 import android.graphics.Color
 import android.net.Uri
-import android.os.Environment
 import android.text.SpannableString
 import android.text.style.UnderlineSpan
 import android.view.LayoutInflater
@@ -30,7 +29,12 @@ class ListUploadFailedAdapter(private val itemClickListener: OnItemClickListener
 
     interface OnItemClickListener {
         fun itemMenuIconClick(view: View)
+        fun telePhoneNumberClicked(data: RowItemNotUpload)
+        fun mobileNumberClicked(data: RowItemNotUpload)
+        fun smsClicked(data: RowItemNotUpload)
+        fun live10Clicked(data: RowItemNotUpload)
     }
+
     private val TAG = "UploadFailedAdapter"
     private var gpsTrackerManager: GPSTrackerManager? = null
     private var gpsEnable = false
@@ -54,7 +58,7 @@ class ListUploadFailedAdapter(private val itemClickListener: OnItemClickListener
     }
 
     override fun onBindViewHolder(holder: RecyclerView.ViewHolder, position: Int) {
-        (holder as ViewHolder).bind(position,itemClickListener)
+        (holder as ViewHolder).bind(position, itemClickListener)
     }
 
     inner class ViewHolder(view: View) : RecyclerView.ViewHolder(view) {
@@ -124,7 +128,7 @@ class ListUploadFailedAdapter(private val itemClickListener: OnItemClickListener
             view.findViewById(R.id.btn_list_item_child_upload)
 
         @SuppressLint("NotifyDataSetChanged")
-        fun bind(position: Int,listener: OnItemClickListener) {
+        fun bind(position: Int, listener: OnItemClickListener) {
             val data = rowItem[position]
             layoutListItemCardView.setOnClickListener {
                 data.isClicked = !data.isClicked
@@ -179,24 +183,6 @@ class ListUploadFailedAdapter(private val itemClickListener: OnItemClickListener
             layoutListItemMenuIcon.tag = data.shipping // 퀵메뉴 아이콘에 shipping no
             layoutListItemMenuIcon.setOnClickListener {
                 listener.itemMenuIconClick(it)
-            }
-            layoutListItemMenuIcon.setOnClickListener { view ->
-                val popup =
-                    PopupMenu(view.context, layoutListItemMenuIcon)
-                popup.menuInflater.inflate(R.menu.quickmenu_failed, popup.menu)
-                popup.setOnMenuItemClickListener {
-                    val cs3 =
-                        DatabaseHelper.getInstance()["SELECT address FROM " + DatabaseHelper.DB_TABLE_INTEGRATION_LIST + " WHERE invoice_no='" + layoutListItemMenuIcon.tag
-                            .toString() + "' LIMIT 1"]
-                    cs3.moveToFirst()
-                    val address = cs3.getString(cs3.getColumnIndex("address"))
-                    val uri =
-                        Uri.parse("http://maps.google.co.in/maps?q=$address")
-                    val intent = Intent(Intent.ACTION_VIEW, uri)
-                    view.context.startActivity(intent)
-                    true
-                }
-                popup.show()
             }
 
             if (data.items?.get(0)?.secretNoType == "T") {     // Qtalk 안심번호 타입 T - Qnumber 사용
@@ -324,53 +310,20 @@ class ListUploadFailedAdapter(private val itemClickListener: OnItemClickListener
                 }
             }
 
-            textListItemChildTelephoneNumber.setOnClickListener { v: View ->
-                val callUri = Uri.parse("tel:" + data.items?.get(0)?.tel)
-                val intent = Intent(Intent.ACTION_DIAL, callUri)
-                v.context.startActivity(intent)
+            textListItemChildTelephoneNumber.setOnClickListener {
+                listener.telePhoneNumberClicked(data)
             }
 
-            textListItemChildMobileNumber.setOnClickListener { v: View ->
-                val callUri = Uri.parse("tel:" + data.items?.get(0)?.hp)
-                val intent = Intent(Intent.ACTION_DIAL, callUri)
-                v.context.startActivity(intent)
+            textListItemChildMobileNumber.setOnClickListener {
+                listener.mobileNumberClicked(data)
             }
 
-            imgListItemChildSms.setOnClickListener { v: View ->
-                val smsBody = String.format(
-                    v.context.resources.getString(R.string.msg_delivery_start_sms), data.name
-                )
-                val smsUri = Uri.parse("sms:" + data.items?.get(0)?.hp)
-                val intent = Intent(Intent.ACTION_SENDTO, smsUri)
-                intent.putExtra("sms_body", smsBody)
-                v.context.startActivity(intent)
+            imgListItemChildSms.setOnClickListener {
+                listener.smsClicked(data)
             }
 
-            imgListItemChildLive10.setOnClickListener { v: View ->
-                val alert =
-                    AlertDialog.Builder(v.context)
-                val msg = String.format(
-                    v.context.resources.getString(R.string.msg_delivery_start_sms), data.name
-                )
-                alert.setTitle(v.context.resources.getString(R.string.text_qpost_message))
-                val input = EditText(v.context)
-                input.setText(msg)
-                alert.setView(input)
-                alert.setPositiveButton(
-                    v.context.resources.getString(R.string.button_send)
-                ) { _: DialogInterface?, _: Int ->
-                    val value = input.text.toString()
-                    // Qtalk sms 전송
-                    val intent = Intent()
-                    intent.action = Intent.ACTION_VIEW
-                    intent.data =
-                        Uri.parse("qtalk://link?qnumber=" + data.items?.get(0)?.secretNo + "&msg=" + value + "&link=&execurl=")
-                    v.context.startActivity(intent)
-                }
-                alert.setNegativeButton(
-                    v.context.resources.getString(R.string.button_cancel)
-                ) { _: DialogInterface?, _: Int -> }
-                alert.show()
+            imgListItemChildLive10.setOnClickListener {
+                listener.live10Clicked(data)
             }
 
             btnListItemChildUpload.setOnClickListener { v: View ->
@@ -471,15 +424,13 @@ class ListUploadFailedAdapter(private val itemClickListener: OnItemClickListener
             rowItem.addAll(originalRowItem)
         } else {
             val newList = ArrayList<RowItemNotUpload>()
-            for (rowItem in originalRowItem) {
-                //이름 or 송장번호 조회
-                if (rowItem.name.uppercase(Locale.getDefault())
-                        .contains(query) || rowItem.shipping.uppercase(Locale.getDefault())
+            newList.addAll(
+                originalRowItem.filter {
+                    it.name.uppercase(Locale.getDefault())
+                        .contains(query) || it.shipping.uppercase(Locale.getDefault())
                         .contains(query)
-                ) {
-                    newList.add(rowItem)
                 }
-            }
+            )
             if (newList.size > 0) {
                 rowItem.addAll(newList)
             }

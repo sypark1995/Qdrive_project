@@ -2,8 +2,11 @@ package com.giosis.util.qdrive.singapore.list
 
 import android.annotation.SuppressLint
 import android.app.Activity
+import android.app.AlertDialog
 import android.app.SearchManager
+import android.content.ContentValues
 import android.content.Context
+import android.content.DialogInterface
 import android.content.Intent
 import android.graphics.Color
 import android.graphics.drawable.ColorDrawable
@@ -21,9 +24,19 @@ import androidx.fragment.app.Fragment
 import androidx.recyclerview.widget.LinearSmoothScroller
 import androidx.recyclerview.widget.RecyclerView
 import com.giosis.util.qdrive.singapore.R
+import com.giosis.util.qdrive.singapore.barcodescanner.CaptureActivity1
+import com.giosis.util.qdrive.singapore.barcodescanner.CaptureType
 import com.giosis.util.qdrive.singapore.bluetooth.BluetoothListener
 import com.giosis.util.qdrive.singapore.database.DatabaseHelper
+import com.giosis.util.qdrive.singapore.list.delivery.DeliveryDoneActivity2
+import com.giosis.util.qdrive.singapore.list.delivery.DeliveryFailedActivity
+import com.giosis.util.qdrive.singapore.list.delivery.QuickReturnFailedActivity
+import com.giosis.util.qdrive.singapore.list.delivery.QuickReturnedActivity
+import com.giosis.util.qdrive.singapore.list.pickup.OutletPickupStep1Activity
+import com.giosis.util.qdrive.singapore.list.pickup.PickupFailedActivity
+import com.giosis.util.qdrive.singapore.list.pickup.PickupZeroQtyActivity
 import com.giosis.util.qdrive.singapore.main.PickupAssignResult
+import com.giosis.util.qdrive.singapore.message.CustomerMessageListDetailActivity
 import com.giosis.util.qdrive.singapore.server.RetrofitClient
 import com.giosis.util.qdrive.singapore.util.*
 import com.google.gson.Gson
@@ -263,6 +276,163 @@ class ListInProgressFragment(var bluetoothListener: BluetoothListener) : Fragmen
                         Toast.LENGTH_SHORT
                     ).show()
                 }
+            }
+
+            override fun live10Clicked(data: RowItem) {
+                val pQlpsCustNo = data.custNo
+                val pDeliveryType = data.type //P,D
+                val pOrderType = data.route // RPC, C2C, GIO
+                val pTrackingNo = data.shipping
+                val pSellerId = data.partnerID
+                val sendLive10Message = SendLive10Message(requireContext())
+                sendLive10Message.dialogSelectOption(
+                    requireContext(),
+                    pQlpsCustNo!!, pDeliveryType, pOrderType, pTrackingNo, pSellerId!!
+                )
+            }
+
+            override fun qPostClicked(data: RowItem) {
+                val intent = Intent(
+                    requireContext(),
+                    CustomerMessageListDetailActivity::class.java
+                )
+                intent.putExtra("tracking_no", data.shipping)
+                startActivity(intent)
+            }
+
+            @SuppressLint("NotifyDataSetChanged")
+            override fun driverMemoClicked(data: RowItem) {
+                val alert = AlertDialog.Builder(requireContext())
+                val msg = data.selfMemo
+                val shipping = data.shipping
+                alert.setTitle(resources.getString(R.string.text_driver_memo1))
+                alert.setMessage(shipping)
+
+                // Set an EditText view to get user input
+                val input = EditText(requireContext())
+                input.setText(msg)
+                input.setTextColor(Color.BLACK)
+                alert.setView(input)
+                alert.setPositiveButton(
+                    resources.getString(R.string.button_ok)
+                ) { _: DialogInterface?, _: Int ->
+                    val selfMemo = input.text.toString()
+                    val contentVal = ContentValues()
+                    contentVal.put("self_memo", selfMemo)
+                    DatabaseHelper.getInstance().update(
+                        DatabaseHelper.DB_TABLE_INTEGRATION_LIST, contentVal,
+                        "invoice_no= ? COLLATE NOCASE ", arrayOf(data.shipping)
+                    )
+                    data.selfMemo = selfMemo
+                    adapter.notifyDataSetChanged()
+                }
+                    .setNegativeButton(
+                        resources.getString(R.string.button_cancel)
+                    ) { _: DialogInterface?, _: Int -> }
+                alert.show()
+            }
+
+            override fun deliveredClicked(data: RowItem) {
+                val intent = Intent(requireContext(), DeliveryDoneActivity2::class.java)
+                intent.putExtra("parcel", data)
+                startActivity(intent)
+            }
+
+            override fun deliveryFailedClicked(data: RowItem) {
+                val intent = Intent(
+                    requireContext(),
+                    DeliveryFailedActivity::class.java
+                )
+                intent.putExtra("trackingNo", data.shipping)
+                intent.putExtra("receiverName", data.name)
+                intent.putExtra("senderName", data.sender)
+                startActivity(intent)
+            }
+
+            override fun pickupScanClicked(data: RowItem) {
+                val intent = Intent(requireContext(), CaptureActivity1::class.java)
+                intent.putExtra(
+                    "title",
+                    resources.getString(R.string.text_start_to_scan)
+                )
+                intent.putExtra("type", CaptureType.PICKUP_SCAN_ALL)
+                intent.putExtra("pickup_no", data.shipping)
+                intent.putExtra("applicant", data.name)
+                startActivity(intent)
+            }
+
+            override fun pickupZeroQtyClicked(data: RowItem) {
+                val intent = Intent(
+                    requireContext(),
+                    PickupZeroQtyActivity::class.java
+                )
+                intent.putExtra(
+                    "title",
+                    resources.getString(R.string.text_zero_qty)
+                )
+                intent.putExtra("pickupNo", data.shipping)
+                intent.putExtra("applicant", data.name)
+                startActivity(intent)
+            }
+
+            override fun pickupVisitLogClicked(data: RowItem) {
+                val intent = Intent(requireContext(), PickupFailedActivity::class.java)
+                intent.putExtra("type", StatueType.TYPE_PICKUP)
+                intent.putExtra("reqQty", data.qty)
+                intent.putExtra("applicant", data.name)
+                intent.putExtra("pickupNo", data.shipping)
+                startActivity(intent)
+            }
+
+            override fun outletPickupScanClicked(data: RowItem) {
+                val intent = Intent(
+                    requireContext(),
+                    OutletPickupStep1Activity::class.java
+                )
+                intent.putExtra(
+                    "title",
+                    resources.getString(R.string.text_outlet_pickup_done)
+                )
+                intent.putExtra("pickup_no", data.shipping)
+                intent.putExtra("applicant", data.name)
+                intent.putExtra("qty", data.qty)
+                intent.putExtra("route", data.route)
+                startActivity(intent)
+            }
+
+            override fun quickDeliveredClicked(data: RowItem) {
+                val intent = Intent(
+                    requireContext(),
+                    QuickReturnedActivity::class.java
+                )
+                intent.putExtra(
+                    "title",
+                    resources.getString(R.string.text_signature)
+                )
+                intent.putExtra("waybillNo", data.shipping)
+                startActivity(intent)
+            }
+
+            override fun quickFailedClicked(data: RowItem) {
+                val intent = Intent(
+                    requireContext(),
+                    QuickReturnFailedActivity::class.java
+                )
+                intent.putExtra(
+                    "title",
+                    resources.getString(R.string.text_visit_log)
+                )
+                intent.putExtra("waybillNo", data.shipping)
+                startActivity(intent)
+            }
+
+            override fun cnrFailedClicked(data: RowItem) {
+                val intent = Intent(requireContext(), PickupFailedActivity::class.java)
+                intent.putExtra("type", StatueType.TYPE_CNR)
+                intent.putExtra("reqQty", data.qty)
+                intent.putExtra("applicant", data.name)
+                intent.putExtra("pickupNo", data.shipping)
+                startActivity(intent)
             }
         })
     }

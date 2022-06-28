@@ -1,8 +1,11 @@
 package com.giosis.util.qdrive.singapore.list
 
+import android.annotation.SuppressLint
 import android.app.Activity
+import android.app.AlertDialog
 import android.app.SearchManager
 import android.content.Context
+import android.content.DialogInterface
 import android.content.Intent
 import android.graphics.Color
 import android.net.Uri
@@ -16,20 +19,19 @@ import android.widget.*
 import androidx.fragment.app.Fragment
 import androidx.recyclerview.widget.RecyclerView
 import com.giosis.util.qdrive.singapore.R
+import com.giosis.util.qdrive.singapore.UploadData
 import com.giosis.util.qdrive.singapore.database.DatabaseHelper
-import com.giosis.util.qdrive.singapore.database.DatabaseHelper.Companion.getInstance
 import com.giosis.util.qdrive.singapore.gps.GPSTrackerManager
-import com.giosis.util.qdrive.singapore.util.DataUtil
-import com.giosis.util.qdrive.singapore.util.PermissionActivity
-import com.giosis.util.qdrive.singapore.util.PermissionChecker
-import com.giosis.util.qdrive.singapore.util.Preferences
+import com.giosis.util.qdrive.singapore.main.DeviceDataUploadHelper
+import com.giosis.util.qdrive.singapore.util.*
 import java.util.*
+import kotlin.collections.ArrayList
 
 /**
  * In-Progress Tab Fragment
  */
 class ListUploadFailedFragment : Fragment(), SearchView.OnQueryTextListener,
-    SearchView.OnCloseListener,ListUploadFailedAdapter.OnItemClickListener {
+    SearchView.OnCloseListener, ListUploadFailedAdapter.OnItemClickListener {
 
     var TAG = "ListUploadFailedFragment"
     private var gpsTrackerManager: GPSTrackerManager? = null
@@ -42,11 +44,11 @@ class ListUploadFailedFragment : Fragment(), SearchView.OnQueryTextListener,
     private var exListCardList: RecyclerView? = null
     var mFailedCountCallback: OnFailedCountListener? = null
     private var orderby = "zip_code desc"
-    private lateinit var adapter : ListUploadFailedAdapter
+    private lateinit var adapter: ListUploadFailedAdapter
 
     private var rowItems = ArrayList<RowItemNotUpload>()
 
-//    리스트 카운트를 갱신하기 위한 인터페이스
+    //    리스트 카운트를 갱신하기 위한 인터페이스
     interface OnFailedCountListener {
         fun onFailedCountRefresh(count: Int)
     }
@@ -137,7 +139,7 @@ class ListUploadFailedFragment : Fragment(), SearchView.OnQueryTextListener,
             "rcv_nm desc"
         )
         val adapterSpinner: ArrayAdapter<String> = ArrayAdapter(
-            requireActivity(),android.R.layout.simple_spinner_dropdown_item,
+            requireActivity(), android.R.layout.simple_spinner_dropdown_item,
         )
         adapterSpinner.addAll(spinnerList)
 
@@ -170,7 +172,7 @@ class ListUploadFailedFragment : Fragment(), SearchView.OnQueryTextListener,
         super.onResume()
 
         val cs2 =
-            getInstance()["SELECT * FROM " + DatabaseHelper.DB_TABLE_INTEGRATION_LIST + " WHERE punchOut_stat <> 'S' and chg_dt is not null and reg_id='" + Preferences.userId + "' order by " + orderby]
+            DatabaseHelper.getInstance()["SELECT * FROM " + DatabaseHelper.DB_TABLE_INTEGRATION_LIST + " WHERE punchOut_stat <> 'S' and chg_dt is not null and reg_id='" + Preferences.userId + "' order by " + orderby]
 
         rowItems = ArrayList()
         var childItems: ArrayList<ChildItemNotUpload>
@@ -295,6 +297,55 @@ class ListUploadFailedFragment : Fragment(), SearchView.OnQueryTextListener,
             true
         }
         popup.show()
+    }
+
+    override fun telePhoneNumberClicked(data: RowItemNotUpload) {
+        val callUri = Uri.parse("tel:" + data.items?.get(0)?.tel)
+        val intent = Intent(Intent.ACTION_DIAL, callUri)
+        startActivity(intent)
+    }
+
+    override fun mobileNumberClicked(data: RowItemNotUpload) {
+        val callUri = Uri.parse("tel:" + data.items?.get(0)?.hp)
+        val intent = Intent(Intent.ACTION_DIAL, callUri)
+        startActivity(intent)
+    }
+
+    override fun smsClicked(data: RowItemNotUpload) {
+        val smsBody = String.format(
+            resources.getString(R.string.msg_delivery_start_sms), data.name
+        )
+        val smsUri = Uri.parse("sms:" + data.items?.get(0)?.hp)
+        val intent = Intent(Intent.ACTION_SENDTO, smsUri)
+        intent.putExtra("sms_body", smsBody)
+        startActivity(intent)
+    }
+
+    override fun live10Clicked(data: RowItemNotUpload) {
+        val alert =
+            AlertDialog.Builder(requireContext())
+        val msg = String.format(
+            resources.getString(R.string.msg_delivery_start_sms), data.name
+        )
+        alert.setTitle(resources.getString(R.string.text_qpost_message))
+        val input = EditText(requireContext())
+        input.setText(msg)
+        alert.setView(input)
+        alert.setPositiveButton(
+            resources.getString(R.string.button_send)
+        ) { _: DialogInterface?, _: Int ->
+            val value = input.text.toString()
+            // Qtalk sms 전송
+            val intent = Intent()
+            intent.action = Intent.ACTION_VIEW
+            intent.data =
+                Uri.parse("qtalk://link?qnumber=" + data.items?.get(0)?.secretNo + "&msg=" + value + "&link=&execurl=")
+            startActivity(intent)
+        }
+        alert.setNegativeButton(
+            resources.getString(R.string.button_cancel)
+        ) { _: DialogInterface?, _: Int -> }
+        alert.show()
     }
 
 }
