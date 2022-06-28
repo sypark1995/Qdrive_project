@@ -1,6 +1,5 @@
 package com.giosis.util.qdrive.singapore.list
 
-import android.annotation.SuppressLint
 import android.app.Activity
 import android.app.AlertDialog
 import android.app.SearchManager
@@ -19,13 +18,12 @@ import android.widget.*
 import androidx.fragment.app.Fragment
 import androidx.recyclerview.widget.RecyclerView
 import com.giosis.util.qdrive.singapore.R
-import com.giosis.util.qdrive.singapore.UploadData
 import com.giosis.util.qdrive.singapore.database.DatabaseHelper
 import com.giosis.util.qdrive.singapore.gps.GPSTrackerManager
-import com.giosis.util.qdrive.singapore.main.DeviceDataUploadHelper
-import com.giosis.util.qdrive.singapore.util.*
-import java.util.*
-import kotlin.collections.ArrayList
+import com.giosis.util.qdrive.singapore.util.DataUtil
+import com.giosis.util.qdrive.singapore.util.PermissionActivity
+import com.giosis.util.qdrive.singapore.util.PermissionChecker
+import com.giosis.util.qdrive.singapore.util.Preferences
 
 /**
  * In-Progress Tab Fragment

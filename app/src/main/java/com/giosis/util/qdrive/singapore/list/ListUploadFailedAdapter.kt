@@ -3,11 +3,9 @@ package com.giosis.util.qdrive.singapore.list
 import android.annotation.SuppressLint
 import android.app.AlertDialog
 import android.content.DialogInterface
-import android.content.Intent
 import android.graphics.Bitmap
 import android.graphics.BitmapFactory
 import android.graphics.Color
-import android.net.Uri
 import android.text.SpannableString
 import android.text.style.UnderlineSpan
 import android.view.LayoutInflater
