@@ -274,10 +274,6 @@
             android:windowSoftInputMode="adjustNothing" />
 
         <activity
-            android:name="com.giosis.util.qdrive.singapore.barcodescanner.bluetooth.DeviceListActivity"
-            android:theme="@android:style/Theme.Dialog" />
-
-        <activity
             android:name="com.giosis.util.qdrive.singapore.barcodescanner.CaptureActivity1"
             android:configChanges="orientation|keyboardHidden"
             android:screenOrientation="portrait"

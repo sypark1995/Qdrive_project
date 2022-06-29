@@ -516,7 +516,6 @@ class LoginActivity : CommonActivity() {
                 val proc = runTime.exec(cmd)
                 proc.waitFor()
 
-
                 proc.exitValue().toString()
             } catch (e: Exception) {
                 e.toString()
@@ -529,7 +528,7 @@ class LoginActivity : CommonActivity() {
             }
 
             FirebaseCrashlytics.getInstance().setCustomKey(
-                "PING",
+                "PING qxapi",
                 returnString
             )
 
