@@ -10,6 +10,7 @@ import android.net.Uri
 import android.os.Build
 import android.os.Bundle
 import android.provider.Settings
+import android.telephony.TelephonyManager
 import android.util.Log
 import android.view.View
 import android.view.ViewGroup
@@ -33,10 +34,17 @@ import com.giosis.util.qdrive.singapore.util.*
 import com.google.firebase.crashlytics.FirebaseCrashlytics
 import com.google.gson.Gson
 import com.google.gson.reflect.TypeToken
+import io.reactivex.rxjava3.android.schedulers.AndroidSchedulers
+import io.reactivex.rxjava3.schedulers.Schedulers
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
 import java.io.File
+import java.net.HttpURLConnection
+import java.net.URL
+import java.text.SimpleDateFormat
+import java.util.*
+import kotlin.collections.ArrayList
 
 
 class LoginActivity : CommonActivity() {
@@ -71,8 +79,6 @@ class LoginActivity : CommonActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(binding.root)
-
-        pingCheck()
 
         QDataUtil.setCustomUserAgent(this@LoginActivity)
         // Image Shake Animation
@@ -289,6 +295,8 @@ class LoginActivity : CommonActivity() {
             }
 
             try {
+                pingCheck()
+
                 val result = RetrofitClient.instanceDynamic().requestServerLogin(
                     userID, userPW, chanel, deviceUUID,
                     latitude.toString(), longitude.toString(), userNationCode
@@ -383,6 +391,12 @@ class LoginActivity : CommonActivity() {
                 }
 
             } catch (e: Exception) {
+                RetrofitClient.instanceDynamic().requestWriteLog("1", "LOGIN", "DNS error in RetrofitClient",
+                    "RetrofitClient Exception $e"
+                )
+                    .subscribeOn(Schedulers.io())
+                    .observeOn(AndroidSchedulers.mainThread())
+                    .subscribe({ }) {}
             }
         }
     }
@@ -476,35 +490,6 @@ class LoginActivity : CommonActivity() {
         }
     }
 
-    private fun pingCheck() {
-
-        CoroutineScope(Dispatchers.IO).launch {
-            val result: String = try {
-                val runTime = Runtime.getRuntime()
-                val cmd = "ping -c 1 -W 10 8.8.8.8"
-
-                val proc = runTime.exec(cmd)
-                proc.waitFor()
-
-                proc.exitValue().toString()
-            } catch (e: Exception) {
-                e.toString()
-            }
-
-            val returnString = when (result) {
-                "0" -> "Ping Success"
-                "1" -> "Ping Fail"
-                "2" -> "Ping Error"
-                else -> result
-            }
-
-            FirebaseCrashlytics.getInstance().setCustomKey(
-                "GOOGLE PING(8.8.8.8)",
-                returnString
-            )
-        }
-    }
-
     override fun onDestroy() {
         super.onDestroy()
         gpsTrackerManager?.stopFusedProviderService()
@@ -518,6 +503,102 @@ class LoginActivity : CommonActivity() {
 
             isPermissionTrue = true
             Log.e("permission", "$tag   Permission granted")
+        }
+    }
+
+    private fun pingCheck() {
+
+        CoroutineScope(Dispatchers.IO).launch {
+            val result: String = try {
+                val runTime = Runtime.getRuntime()
+                val cmd = "ping -c 1 -W 10 qxapi.qxpress.net"
+
+                val proc = runTime.exec(cmd)
+                proc.waitFor()
+
+
+                proc.exitValue().toString()
+            } catch (e: Exception) {
+                e.toString()
+            }
+            val returnString = when (result) {
+                "0" -> "Ping Success"
+                "1" -> "Ping Fail"
+                "2" -> "Ping Error"
+                else -> result
+            }
+
+            FirebaseCrashlytics.getInstance().setCustomKey(
+                "PING",
+                returnString
+            )
+
+            if (result != "0") {
+                urlConnectionCheck()
+                nowTimeCheck()
+                telephonyInfo()
+            }
+        }
+    }
+
+    private fun urlConnectionCheck() {
+        lifecycleScope.launch(Dispatchers.IO) {
+            val url = URL("https://www.qoo10.com")
+            val urlConnection: HttpURLConnection = url.openConnection() as HttpURLConnection
+            try {
+                Log.e("url", urlConnection.responseCode.toString())
+                FirebaseCrashlytics.getInstance().setCustomKey(
+                    "qoo10 url connection",
+                    urlConnection.responseCode
+                )
+            } catch (e: java.lang.Exception) {
+                FirebaseCrashlytics.getInstance().setCustomKey(
+                    "qoo10 url connection",
+                    "error / $e"
+                )
+            }
+
+            val url1 = URL("https://www.daum.net")
+            val urlConnection1: HttpURLConnection = url1.openConnection() as HttpURLConnection
+            try {
+                Log.e("url1", urlConnection1.responseCode.toString())
+                FirebaseCrashlytics.getInstance().setCustomKey(
+                    "daum url connection",
+                    urlConnection1.responseCode
+                )
+            } catch (e: java.lang.Exception) {
+                FirebaseCrashlytics.getInstance().setCustomKey(
+                    "daum url connection",
+                    "error / $e"
+                )
+            }
+        }
+    }
+
+    private fun nowTimeCheck() {
+        val dateFormat = SimpleDateFormat("yyyy-MM-dd HH:mm:ss")
+        val regDataString = dateFormat.format(Date())
+        FirebaseCrashlytics.getInstance().setCustomKey(
+            "now Time",
+            regDataString
+        )
+    }
+
+    private fun telephonyInfo() {
+        val tm = getSystemService(Context.TELEPHONY_SERVICE) as TelephonyManager
+
+        FirebaseCrashlytics.getInstance().setCustomKey(
+            "TelephonyManager",
+            tm.simOperatorName
+        )
+
+        if (Build.VERSION.SDK_INT > Build.VERSION_CODES.P) {
+            if (tm.signalStrength != null) {
+                FirebaseCrashlytics.getInstance().setCustomKey(
+                    "level (0~4)",
+                    tm.signalStrength!!.level
+                )
+            }
         }
     }
 
