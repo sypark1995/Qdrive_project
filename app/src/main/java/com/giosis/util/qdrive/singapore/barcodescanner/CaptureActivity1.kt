@@ -246,6 +246,7 @@ class CaptureActivity1 : CommonActivity(), TorchListener, OnTouchListener, TextW
             binding.layoutTopTitle.textTopTitle.text = resources.getString(titleResource)
         }
 
+        binding.textVersion.text = applicationContext.packageManager.getPackageInfo(applicationContext.packageName, 0).versionName + " / "
         binding.layoutCamera.isSelected = true
         binding.layoutScanner.isSelected = false
 
@@ -497,42 +498,17 @@ class CaptureActivity1 : CommonActivity(), TorchListener, OnTouchListener, TextW
 
     // Scanner
     override fun onKey(v: View, keyCode: Int, event: KeyEvent): Boolean {
-//        if (event.action == KeyEvent.ACTION_UP) {
-//            if (keyCode == KeyEvent.KEYCODE_NUMPAD_ENTER || keyCode == KeyEvent.KEYCODE_ENTER) {
-//                val tempScanNo = binding.editTrackingNumber.text.toString().trim()
-//
-//                if (tempScanNo.isNotEmpty()) {
-//                    checkValidation(tempScanNo.uppercase())
-//                }
-//                return true
-//            }
-//
-//        }
-//        return false
+        if (event.action == KeyEvent.ACTION_UP) {
+            if (keyCode == KeyEvent.KEYCODE_NUMPAD_ENTER || keyCode == KeyEvent.KEYCODE_ENTER) {
+                val tempScanNo = binding.editTrackingNumber.text.toString().trim()
 
-        if (keyCode == KeyEvent.KEYCODE_NUMPAD_ENTER || keyCode == KeyEvent.KEYCODE_ENTER) {
-            val tempScanNo = binding.editTrackingNumber.text.toString().trim()
-
-            if (tempScanNo != "") {
-
-                if (mScanType == CaptureType.CONFIRM_MY_DELIVERY_ORDER
-                    || mScanType == CaptureType.CHANGE_DELIVERY_DRIVER
-                    || mScanType == CaptureType.PICKUP_CNR
-                    || mScanType == CaptureType.PICKUP_SCAN_ALL
-                    || mScanType == CaptureType.PICKUP_ADD_SCAN
-                    || mScanType == CaptureType.PICKUP_TAKE_BACK
-                    || mScanType == CaptureType.OUTLET_PICKUP_SCAN
-                ) {
-                    if (event.action != KeyEvent.ACTION_DOWN) {
-                        return true
-                    }
+                if (tempScanNo.isNotEmpty()) {
+                    checkValidation(tempScanNo.uppercase())
                 }
-
-                checkValidation(tempScanNo)
+                return true
             }
-            return true
-        }
 
+        }
         return false
     }
 

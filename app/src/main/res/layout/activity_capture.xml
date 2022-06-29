@@ -165,6 +165,16 @@
             android:paddingBottom="5dp">
 
             <TextView
+                android:id="@+id/text_version"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_toStartOf="@id/text_scan"
+                android:text=""
+                android:textColor="@color/color_8f8f8f"
+                android:textSize="@dimen/text_size_32px"/>
+
+            <TextView
+                android:id="@+id/text_scan"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_toStartOf="@id/text_scanned_count"
