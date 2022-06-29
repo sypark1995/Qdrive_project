@@ -82,7 +82,7 @@ class LoginActivity : CommonActivity() {
                 R.anim.shake_animation
             )
         )
-
+      ///
         binding.imgLoginTopLogo.setOnClickListener {
             binding.imgLoginTopBg.startAnimation(
                 AnimationUtils.loadAnimation(
