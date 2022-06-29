@@ -246,7 +246,6 @@ class CaptureActivity1 : CommonActivity(), TorchListener, OnTouchListener, TextW
             binding.layoutTopTitle.textTopTitle.text = resources.getString(titleResource)
         }
 
-        binding.textVersion.text = applicationContext.packageManager.getPackageInfo(applicationContext.packageName, 0).versionName + " / "
         binding.layoutCamera.isSelected = true
         binding.layoutScanner.isSelected = false
 
