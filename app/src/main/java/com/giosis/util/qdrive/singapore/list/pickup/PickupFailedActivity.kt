@@ -541,7 +541,7 @@ class PickupFailedActivity : CommonActivity(), Camera2APIs.Camera2Interface,
         withContext(Dispatchers.IO) {
             val stdResult = StdResult()
 
-            DataUtil.captureSign("/QdrivePickup", pickupNo, binding.imgVisitLog)
+            DataUtil.capture("/QdrivePickup", pickupNo, binding.imgVisitLog)
 
             val dateFormat = SimpleDateFormat("yyyy-MM-dd HH:mm:ss")
             val contentVal = ContentValues()

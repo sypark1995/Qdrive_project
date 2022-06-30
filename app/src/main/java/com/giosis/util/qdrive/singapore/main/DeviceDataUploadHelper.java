@@ -276,7 +276,7 @@ public class DeviceDataUploadHelper {
                     // 2020.11  - sign, picture 업로드
                     if (uploadData.getStat().equals(StatueType.DELIVERY_DONE)) {
 
-                        String dirPath = Environment.getExternalStorageDirectory().toString() + "/Qdrive";
+                        String dirPath = context.getExternalFilesDir(null).getAbsolutePath() + "/Qdrive";
                         String filePath = dirPath + "/" + uploadData.getNoSongjang() + ".png";
                         File imgFile = new File(filePath);
                         if (imgFile.exists()) {
@@ -284,7 +284,7 @@ public class DeviceDataUploadHelper {
                             bitmapString = DataUtil.bitmapToString(context, myBitmap, ImageUpload.QXPOD, "qdriver/sign", uploadData.getNoSongjang());
                         }
 
-                        dirPath = Environment.getExternalStorageDirectory().toString() + "/Qdrive";
+                        dirPath = context.getExternalFilesDir(null).getAbsolutePath() + "/Qdrive";
                         filePath = dirPath + "/" + uploadData.getNoSongjang() + "_1.png";
                         imgFile = new File(filePath);
                         if (imgFile.exists()) {
@@ -302,7 +302,7 @@ public class DeviceDataUploadHelper {
                         }
                     } else if (uploadData.getStat().equals(StatueType.DELIVERY_FAIL)) {
 
-                        String dirPath = Environment.getExternalStorageDirectory().toString() + "/QdriveFailed";
+                        String dirPath = context.getExternalFilesDir(null).getAbsolutePath() + "/QdriveFailed";
                         String filePath = dirPath + "/" + uploadData.getNoSongjang() + ".png";
                         File imgFile = new File(filePath);
 
@@ -348,8 +348,8 @@ public class DeviceDataUploadHelper {
 
                     if (!uploadData.getStat().equals(StatueType.PICKUP_FAIL)) {
 
-                        String dirPath = Environment.getExternalStorageDirectory().toString() + "/QdrivePickup";
-                        String dirPath2 = Environment.getExternalStorageDirectory().toString() + "/QdriveCollector";
+                        String dirPath = context.getExternalFilesDir(null).getAbsolutePath() + "/QdrivePickup";
+                        String dirPath2 = context.getExternalFilesDir(null).getAbsolutePath() + "/QdriveCollector";
                         String filePath = dirPath + "/" + uploadData.getNoSongjang() + ".png";
                         String filePath2 = dirPath2 + "/" + uploadData.getNoSongjang() + ".png";
                         File imgFile = new File(filePath);
@@ -386,7 +386,7 @@ public class DeviceDataUploadHelper {
                         }
                     } else if (uploadData.getStat().equals(StatueType.PICKUP_FAIL)) {
 
-                        String dirPath = Environment.getExternalStorageDirectory().toString() + "/QdrivePickup";
+                        String dirPath = context.getExternalFilesDir(null).getAbsolutePath() + "/QdrivePickup";
                         String filePath = dirPath + "/" + uploadData.getNoSongjang() + ".png";
                         File imgFile = new File(filePath);
 

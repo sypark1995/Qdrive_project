@@ -20,6 +20,8 @@ import android.view.TextureView.SurfaceTextureListener
 import android.view.View
 import android.widget.ImageView
 import android.widget.Toast
+import androidx.activity.result.ActivityResultLauncher
+import androidx.activity.result.contract.ActivityResultContracts
 import androidx.lifecycle.lifecycleScope
 import com.giosis.util.qdrive.singapore.MemoryStatus
 import com.giosis.util.qdrive.singapore.MemoryStatus.availableInternalMemorySize
@@ -301,13 +303,20 @@ class DeliveryDoneActivity2 : CommonActivity(), Camera2Interface,
                     binding.textSignDOutletAddressTitle.setText(R.string.text_7e_store_address)
                     binding.layoutSignDSignMemo.visibility = View.VISIBLE
                     binding.layoutSignDVisitLog.visibility = View.GONE
-                    progressBar.visibility = View.VISIBLE
+
+                    val progressDialog = android.app.ProgressDialog(this)
+                    progressDialog.setProgressStyle(android.app.ProgressDialog.STYLE_HORIZONTAL)
+                    progressDialog.setMessage(resources.getString(R.string.text_downloading))
+                    progressDialog.setCancelable(false)
+                    progressDialog.show()
+                    progressDialog.max = outletList.size
 
                     lifecycleScope.launch {
 
                         var resultCode = -1
                         try {
-                            for (item in outletList) {
+                            for ((index,item) in outletList.withIndex()) {
+                                progressDialog.progress = index
                                 val response =
                                     RetrofitClient.instanceDynamic().qrCodeForQStationDelivery(
                                         item.trackingNo!!
@@ -338,7 +347,7 @@ class DeliveryDoneActivity2 : CommonActivity(), Camera2Interface,
                             resultCode = -1
                         }
 
-                        progressBar.visibility = View.GONE
+                        progressDialog.hide()
 
                         if (resultCode == 0) {
 
@@ -419,20 +428,7 @@ class DeliveryDoneActivity2 : CommonActivity(), Camera2Interface,
     override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
         super.onActivityResult(requestCode, resultCode, data)
 
-        if (requestCode == RESULT_LOAD_IMAGE && resultCode == RESULT_OK && data != null) {
-            try {
-                val selectedImageUri = data.data
-                val selectedImage =
-                    MediaStore.Images.Media.getBitmap(contentResolver, selectedImageUri)
-                val resizeBitmap = camera2.getResizeBitmap(selectedImage)
-                binding.imgSignDVisitLog.setImageBitmap(resizeBitmap)
-                binding.imgSignDVisitLog.scaleType = ImageView.ScaleType.CENTER_INSIDE
-
-                onResume()
-            } catch (e: Exception) {
-                e.printStackTrace()
-            }
-        } else if (requestCode == PERMISSION_REQUEST_CODE) {   // permission
+        if (requestCode == PERMISSION_REQUEST_CODE) {   // permission
             if (resultCode == PermissionActivity.PERMISSIONS_GRANTED) {
                 Log.e("Permission", "$TAG   onActivityResult  PERMISSIONS_GRANTED")
                 isPermissionTrue = true
@@ -535,6 +531,11 @@ class DeliveryDoneActivity2 : CommonActivity(), Camera2Interface,
 
 
     private fun saveServerUploadSign() {
+        val progressDialog = android.app.ProgressDialog(this)
+        progressDialog.setProgressStyle(android.app.ProgressDialog.STYLE_HORIZONTAL)
+        progressDialog.setMessage(resources.getString(R.string.text_downloading))
+        progressDialog.setCancelable(false)
+
         try {
             if (!NetworkUtil.isNetworkAvailable(this)) {
                 alertShow(resources.getString(R.string.msg_network_connect_error))
@@ -589,17 +590,20 @@ class DeliveryDoneActivity2 : CommonActivity(), Camera2Interface,
 
             FirebaseEvent.clickEvent(this, TAG, "SetDeliveryUploadData")
 
-            progressBar.visibility = View.VISIBLE
+
+            progressDialog.show()
+            progressDialog.max = barcodeList.size
 
             lifecycleScope.launch {
 
                 var resultMsg = ""
                 try {
-                    for (item in barcodeList) {
+                    for ((index,item) in barcodeList.withIndex()) {
 
+                        progressDialog.progress = index
                         var bitmapString = ""
                         if (binding.signViewSignDSignature.isTouch) {
-                            DataUtil.captureSign(
+                            DataUtil.capture(
                                 "/Qdrive",
                                 item,
                                 binding.signViewSignDSignature
@@ -616,7 +620,7 @@ class DeliveryDoneActivity2 : CommonActivity(), Camera2Interface,
 
                         var bitmapString2 = ""
                         if (camera2.hasImage(binding.imgSignDVisitLog)) {
-                            DataUtil.captureSign(
+                            DataUtil.capture(
                                 "/Qdrive",
                                 item + "_1",
                                 binding.imgSignDVisitLog
@@ -691,12 +695,12 @@ class DeliveryDoneActivity2 : CommonActivity(), Camera2Interface,
                     resultMsg = e.toString()
                 }
 
-                progressBar.visibility = View.GONE
+                progressDialog.hide()
                 resultDialog(resultMsg)
             }
 
         } catch (e: Exception) {
-            progressBar.visibility = View.GONE
+            progressDialog.hide()
 
             Toast.makeText(
                 this,
@@ -718,6 +722,11 @@ class DeliveryDoneActivity2 : CommonActivity(), Camera2Interface,
     }
 
     private fun saveOutletDeliveryDone() {
+        val progressDialog = android.app.ProgressDialog(this)
+        progressDialog.setProgressStyle(android.app.ProgressDialog.STYLE_HORIZONTAL)
+        progressDialog.setMessage(resources.getString(R.string.text_downloading))
+        progressDialog.setCancelable(false)
+
         try {
             if (!NetworkUtil.isNetworkAvailable(this)) {
                 alertShow(resources.getString(R.string.msg_network_connect_error))
@@ -751,16 +760,19 @@ class DeliveryDoneActivity2 : CommonActivity(), Camera2Interface,
 
             FirebaseEvent.clickEvent(this, TAG + "_OUTLET", "SetOutletDeliveryUploadData")
 
+            progressDialog.show()
+            progressDialog.max = barcodeList.size
+
             lifecycleScope.launch {
-                progressBar.visibility = View.VISIBLE
 
                 var resultMsg = ""
 
-                for (item in barcodeList) {
+                for ((index,item) in barcodeList.withIndex()) {
+                    progressDialog.progress = index
                     var bitmap1 = ""
 
                     if (outletInfo.route!!.substring(0, 2) == "7E") {
-                        DataUtil.captureSign("/Qdrive", item, binding.signViewSignDSignature)
+                        DataUtil.capture("/Qdrive", item, binding.signViewSignDSignature)
 
                         bitmap1 = QDataUtil.getBitmapString(
                             this@DeliveryDoneActivity2,
@@ -828,12 +840,12 @@ class DeliveryDoneActivity2 : CommonActivity(), Camera2Interface,
                     }
                 }
 
-                progressBar.visibility = View.GONE
+                progressDialog.hide()
                 resultDialog(resultMsg)
             }
 
         } catch (e: Exception) {
-            progressBar.visibility = View.GONE
+            progressDialog.hide()
 
             Log.e("Exception", "saveOutletDeliveryDone   Exception ; $e")
             Toast.makeText(
@@ -850,9 +862,8 @@ class DeliveryDoneActivity2 : CommonActivity(), Camera2Interface,
             val intent = Intent()
             intent.type = "image/*"
             intent.action = Intent.ACTION_GET_CONTENT
-            startActivityForResult(
-                Intent.createChooser(intent, "Select Picture"),
-                RESULT_LOAD_IMAGE
+            resultLauncher.launch(
+                Intent.createChooser(intent,"Select Picture")
             )
         } catch (ex: java.lang.Exception) {
         }
@@ -873,7 +884,24 @@ class DeliveryDoneActivity2 : CommonActivity(), Camera2Interface,
             ).show()
         }
     }
+    private val resultLauncher: ActivityResultLauncher<Intent> = registerForActivityResult(
+        ActivityResultContracts.StartActivityForResult()
+    ) {
+        if (it.resultCode == Activity.RESULT_OK) {
+            try {
+                val selectedImageUri = it.data!!.data
+                val selectedImage =
+                    MediaStore.Images.Media.getBitmap(contentResolver, selectedImageUri)
+                val resizeBitmap = camera2.getResizeBitmap(selectedImage)
+                binding.imgSignDVisitLog.setImageBitmap(resizeBitmap)
+                binding.imgSignDVisitLog.scaleType = ImageView.ScaleType.CENTER_INSIDE
 
+                onResume()
+            } catch (e: Exception) {
+                e.printStackTrace()
+            }
+        }
+    }
     private fun closeCamera() {
         camera2.closeCamera()
     }

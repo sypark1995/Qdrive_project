@@ -1,12 +1,8 @@
 package com.giosis.util.qdrive.singapore.list
 
 import android.annotation.SuppressLint
-import android.app.AlertDialog
-import android.content.ContentValues
-import android.content.DialogInterface
 import android.content.Intent
 import android.graphics.Color
-import android.graphics.drawable.ColorDrawable
 import android.net.Uri
 import android.text.SpannableString
 import android.text.style.UnderlineSpan
@@ -18,21 +14,13 @@ import android.view.ViewGroup
 import android.widget.*
 import androidx.recyclerview.widget.RecyclerView
 import com.giosis.util.qdrive.singapore.R
-import com.giosis.util.qdrive.singapore.barcodescanner.CaptureActivity1
-import com.giosis.util.qdrive.singapore.barcodescanner.CaptureType
 import com.giosis.util.qdrive.singapore.bluetooth.BluetoothListener
 import com.giosis.util.qdrive.singapore.database.DatabaseHelper
-import com.giosis.util.qdrive.singapore.list.delivery.*
-import com.giosis.util.qdrive.singapore.list.pickup.OutletPickupStep1Activity
-import com.giosis.util.qdrive.singapore.list.pickup.PickupFailedActivity
-import com.giosis.util.qdrive.singapore.list.pickup.PickupZeroQtyActivity
-import com.giosis.util.qdrive.singapore.message.CustomerMessageListDetailActivity
-import com.giosis.util.qdrive.singapore.util.StatueType
 import com.giosis.util.qdrive.singapore.util.DataUtil
 import com.giosis.util.qdrive.singapore.util.FirebaseEvent
 import com.giosis.util.qdrive.singapore.util.Preferences
+import com.giosis.util.qdrive.singapore.util.StatueType
 import java.util.*
-import kotlin.collections.ArrayList
 
 class ListInProgressAdapter(bluetoothListener: BluetoothListener) :
     RecyclerView.Adapter<RecyclerView.ViewHolder>() {
@@ -58,6 +46,22 @@ class ListInProgressAdapter(bluetoothListener: BluetoothListener) :
 
     interface OnItemClickListener {
         fun selectItem(v: View, selectedPos: Int, height: Int)
+        fun detailClicked(data: RowItem)
+        fun telephoneNumberClicked(data: RowItem)
+        fun mobileNumberClicked(data: RowItem)
+        fun imgSmsClicked(data: RowItem)
+        fun live10Clicked(data: RowItem)
+        fun qPostClicked(data: RowItem)
+        fun driverMemoClicked(data: RowItem)
+        fun deliveredClicked(data: RowItem)
+        fun deliveryFailedClicked(data: RowItem)
+        fun pickupScanClicked(data: RowItem)
+        fun pickupZeroQtyClicked(data: RowItem)
+        fun pickupVisitLogClicked(data: RowItem)
+        fun outletPickupScanClicked(data: RowItem)
+        fun quickDeliveredClicked(data: RowItem)
+        fun quickFailedClicked(data: RowItem)
+        fun cnrFailedClicked(data: RowItem)
     }
 
     fun setOnItemClickListener(listener: OnItemClickListener) {
@@ -563,20 +567,8 @@ class ListInProgressAdapter(bluetoothListener: BluetoothListener) :
                     if (data.isPrimaryKey) {
                         layoutButtons2.visibility = View.VISIBLE
 
-                        btnDetailButton.setOnClickListener { v: View ->
-                            val tripDataArrayList =
-                                data.tripSubDataArrayList
-                            val dialog = PickupTripDetailDialog(
-                                v.context,
-                                tripDataArrayList!!, bluetoothListener
-                            )
-                            dialog.show()
-                            val window = dialog.window
-                            window!!.setBackgroundDrawable(ColorDrawable(Color.TRANSPARENT))
-                            window.setLayout(
-                                LinearLayout.LayoutParams.MATCH_PARENT,
-                                LinearLayout.LayoutParams.WRAP_CONTENT
-                            )
+                        btnDetailButton.setOnClickListener {
+                            listener?.detailClicked(data)
                         }
 
                     } else {
@@ -590,192 +582,55 @@ class ListInProgressAdapter(bluetoothListener: BluetoothListener) :
             }
 
 
-            textTelephoneNumber.setOnClickListener { v: View ->
-                val callUri = Uri.parse("tel:" + data.childItems.tel)
-                val intent = Intent(Intent.ACTION_DIAL, callUri)
-                v.context.startActivity(intent)
+            textTelephoneNumber.setOnClickListener {
+                listener?.telephoneNumberClicked(data)
             }
 
-            textMobileNumber.setOnClickListener { v: View ->
-                val callUri = Uri.parse("tel:" + data.childItems.hp)
-                val intent = Intent(Intent.ACTION_DIAL, callUri)
-                v.context.startActivity(intent)
+            textMobileNumber.setOnClickListener {
+                listener?.mobileNumberClicked(data)
             }
 
-            imgSms.setOnClickListener { v: View ->
-                try {
-                    val smsBody = String.format(
-                        v.context.resources.getString(R.string.msg_delivery_start_sms),
-                        data.name
-                    )
-                    val smsUri = Uri.parse("sms:" + data.childItems.hp)
-                    val intent = Intent(Intent.ACTION_SENDTO, smsUri)
-                    intent.putExtra("sms_body", smsBody)
-                    v.context.startActivity(intent)
-                } catch (e: Exception) {
-                    Toast.makeText(
-                        v.context,
-                        v.context.resources.getString(R.string.msg_send_sms_error),
-                        Toast.LENGTH_SHORT
-                    ).show()
-                }
+            imgSms.setOnClickListener {
+                listener?.imgSmsClicked(data)
             }
 
-            imgLive10.setOnClickListener { v: View ->
-                val pQlpsCustNo = data.custNo
-                val pDeliveryType = data.type //P,D
-                val pOrderType = data.route // RPC, C2C, GIO
-                val pTrackingNo = data.shipping
-                val pSellerId = data.partnerID
-                val sendLive10Message = SendLive10Message(v.context)
-                sendLive10Message.dialogSelectOption(
-                    v.context,
-                    pQlpsCustNo!!, pDeliveryType, pOrderType, pTrackingNo, pSellerId!!
-                )
+            imgLive10.setOnClickListener {
+                listener?.live10Clicked(data)
             }
 
-            imgQpost.setOnClickListener { view: View ->
-                val intent = Intent(
-                    view.context,
-                    CustomerMessageListDetailActivity::class.java
-                )
-                intent.putExtra("tracking_no", data.shipping)
-                view.context.startActivity(intent)
+            imgQpost.setOnClickListener {
+                listener?.qPostClicked(data)
             }
-
-            imgDriverMemo.setOnClickListener { v: View ->
-                val alert = AlertDialog.Builder(v.context)
-                val msg = data.selfMemo
-                val shipping = data.shipping
-                alert.setTitle(v.context.resources.getString(R.string.text_driver_memo1))
-                alert.setMessage(shipping)
-
-                // Set an EditText view to get user input
-                val input = EditText(v.context)
-                input.setText(msg)
-                input.setTextColor(Color.BLACK)
-                alert.setView(input)
-                alert.setPositiveButton(
-                    v.context.resources.getString(R.string.button_ok)
-                ) { _: DialogInterface?, _: Int ->
-                    val selfMemo = input.text.toString()
-                    val contentVal = ContentValues()
-                    contentVal.put("self_memo", selfMemo)
-                    DatabaseHelper.getInstance().update(
-                        DatabaseHelper.DB_TABLE_INTEGRATION_LIST, contentVal,
-                        "invoice_no= ? COLLATE NOCASE ", arrayOf(data.shipping)
-                    )
-                    data.selfMemo = selfMemo
-                    notifyDataSetChanged()
-                }
-                    .setNegativeButton(
-                        v.context.resources.getString(R.string.button_cancel)
-                    ) { _: DialogInterface?, _: Int -> }
-                alert.show()
+            imgDriverMemo.setOnClickListener {
+                listener?.driverMemoClicked(data)
             }
-
-            btnDelivered.setOnClickListener { v: View ->
-                val intent = Intent(v.context, DeliveryDoneActivity2::class.java)
-                intent.putExtra("parcel", data)
-                v.context.startActivity(intent)
+            btnDelivered.setOnClickListener {
+                listener?.deliveredClicked(data)
             }
-
-            btnDeliveryFailed.setOnClickListener { v: View ->
-                val intent = Intent(
-                    v.context,
-                    DeliveryFailedActivity::class.java
-                )
-                intent.putExtra("trackingNo", data.shipping)
-                intent.putExtra("receiverName", data.name)
-                intent.putExtra("senderName", data.sender)
-                v.context.startActivity(intent)
+            btnDeliveryFailed.setOnClickListener {
+                listener?.deliveryFailedClicked(data)
             }
-
-            btnPickupScan.setOnClickListener { v: View ->
-                val intent = Intent(v.context, CaptureActivity1::class.java)
-                intent.putExtra(
-                    "title",
-                    v.context.resources.getString(R.string.text_start_to_scan)
-                )
-                intent.putExtra("type", CaptureType.PICKUP_SCAN_ALL)
-                intent.putExtra("pickup_no", data.shipping)
-                intent.putExtra("applicant", data.name)
-                v.context.startActivity(intent)
+            btnPickupScan.setOnClickListener {
+                listener?.pickupScanClicked(data)
             }
-
-            btnPickupZeroQty.setOnClickListener { v: View ->
-                val intent = Intent(
-                    v.context,
-                    PickupZeroQtyActivity::class.java
-                )
-                intent.putExtra(
-                    "title",
-                    v.context.resources.getString(R.string.text_zero_qty)
-                )
-                intent.putExtra("pickupNo", data.shipping)
-                intent.putExtra("applicant", data.name)
-                v.context.startActivity(intent)
+            btnPickupZeroQty.setOnClickListener {
+                listener?.pickupZeroQtyClicked(data)
             }
-
             btnPickupVisitLog.setOnClickListener {
-                val intent = Intent(it.context, PickupFailedActivity::class.java)
-                intent.putExtra("type", StatueType.TYPE_PICKUP)
-                intent.putExtra("reqQty", data.qty)
-                intent.putExtra("applicant", data.name)
-                intent.putExtra("pickupNo", data.shipping)
-                it.context.startActivity(intent)
+                listener?.pickupVisitLogClicked(data)
             }
-
             // NOTIFICATION.  Outlet Pickup Done
             btnOutletPickupScan.setOnClickListener {
-                val intent = Intent(
-                    it.context,
-                    OutletPickupStep1Activity::class.java
-                )
-                intent.putExtra(
-                    "title",
-                    it.context.resources.getString(R.string.text_outlet_pickup_done)
-                )
-                intent.putExtra("pickup_no", data.shipping)
-                intent.putExtra("applicant", data.name)
-                intent.putExtra("qty", data.qty)
-                intent.putExtra("route", data.route)
-                it.context.startActivity(intent)
+                listener?.outletPickupScanClicked(data)
             }
-
             btnQuickDelivered.setOnClickListener {
-                val intent = Intent(
-                    it.context,
-                    QuickReturnedActivity::class.java
-                )
-                intent.putExtra(
-                    "title",
-                    it.context.resources.getString(R.string.text_signature)
-                )
-                intent.putExtra("waybillNo", data.shipping)
-                it.context.startActivity(intent)
+                listener?.quickDeliveredClicked(data)
             }
-
-            btnQuickFailed.setOnClickListener { v: View ->
-                val intent = Intent(
-                    v.context,
-                    QuickReturnFailedActivity::class.java
-                )
-                intent.putExtra(
-                    "title",
-                    v.context.resources.getString(R.string.text_visit_log)
-                )
-                intent.putExtra("waybillNo", data.shipping)
-                v.context.startActivity(intent)
+            btnQuickFailed.setOnClickListener {
+                listener?.quickFailedClicked(data)
             }
-
-            btnCnrFailed.setOnClickListener { v: View ->
-                val intent = Intent(v.context, PickupFailedActivity::class.java)
-                intent.putExtra("type", StatueType.TYPE_CNR)
-                intent.putExtra("reqQty", data.qty)
-                intent.putExtra("applicant", data.name)
-                intent.putExtra("pickupNo", data.shipping)
-                v.context.startActivity(intent)
+            btnCnrFailed.setOnClickListener {
+                listener?.cnrFailedClicked(data)
             }
 
             btnChildCnrPrint.setOnClickListener {

@@ -273,8 +273,8 @@ public class PickupDoneUploadHelper {
 
         private StdResult requestPickupUpload(String pickup_no) {
 
-            DataUtil.captureSign("/QdrivePickup", pickup_no, signingView);
-            DataUtil.captureSign("/QdriveCollector", pickup_no, collectorSigningView);
+            DataUtil.capture("/QdrivePickup", pickup_no, signingView);
+            DataUtil.capture("/QdriveCollector", pickup_no, collectorSigningView);
 
 
             SimpleDateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");

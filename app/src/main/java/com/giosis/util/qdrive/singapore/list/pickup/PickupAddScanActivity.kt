@@ -190,13 +190,13 @@ class PickupAddScanActivity : CommonActivity() {
                     val scannedItems: Array<String> = scannedList.split(",").toTypedArray()
 
                     for (item in scannedItems) {
-                        DataUtil.captureSign(
+                        DataUtil.capture(
                             "/QdrivePickup",
                             item,
                             sign_view_sign_p_applicant_signature
                         )
 
-                        DataUtil.captureSign(
+                        DataUtil.capture(
                             "/QdriveCollector",
                             item,
                             sign_view_sign_p_collector_signature

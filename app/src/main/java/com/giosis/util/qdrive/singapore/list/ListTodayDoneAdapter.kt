@@ -1,29 +1,26 @@
 package com.giosis.util.qdrive.singapore.list
 
 import android.annotation.SuppressLint
-import android.app.Activity
 import android.app.AlertDialog
 import android.content.Context
 import android.content.DialogInterface
-import android.content.Intent
 import android.graphics.Color
-import android.net.Uri
 import android.util.Log
 import android.view.LayoutInflater
-import android.view.MenuItem
 import android.view.View
 import android.view.ViewGroup
 import android.widget.*
 import androidx.recyclerview.widget.RecyclerView
 import com.giosis.util.qdrive.singapore.R
 import com.giosis.util.qdrive.singapore.bluetooth.BluetoothListener
-import com.giosis.util.qdrive.singapore.util.DataUtil
 import com.giosis.util.qdrive.singapore.util.FirebaseEvent
 import com.giosis.util.qdrive.singapore.util.NetworkUtil
 import java.util.*
-import kotlin.collections.ArrayList
 
-class ListTodayDoneAdapter(bluetoothListener: BluetoothListener) :
+class ListTodayDoneAdapter(
+    bluetoothListener: BluetoothListener,
+    private val itemClickListener: OnItemClickListener
+) :
     RecyclerView.Adapter<RecyclerView.ViewHolder>() {
     val TAG = "ListTodayDoneAdapter3"
     var rowItem = ArrayList<RowItem>()
@@ -41,7 +38,7 @@ class ListTodayDoneAdapter(bluetoothListener: BluetoothListener) :
     }
 
     override fun onBindViewHolder(holder: RecyclerView.ViewHolder, position: Int) {
-        (holder as ViewHolder).bind(position)
+        (holder as ViewHolder).bind(position, itemClickListener)
     }
 
     inner class ViewHolder(view: View) : RecyclerView.ViewHolder(view) {
@@ -49,7 +46,8 @@ class ListTodayDoneAdapter(bluetoothListener: BluetoothListener) :
             view.findViewById(R.id.layout_list_item_card_view) // background change
         private val imgListItemUpIcon: ImageView =
             view.findViewById(R.id.img_list_item_up_icon)
-        private val layoutChildUploadDone: RelativeLayout = view.findViewById(R.id.layout_child_upload_done)
+        private val layoutChildUploadDone: RelativeLayout =
+            view.findViewById(R.id.layout_child_upload_done)
         private val textListItemDDay: TextView = view.findViewById(R.id.text_list_item_d_day)
         private val imgListItemSecureDelivery: ImageView =
             view.findViewById(R.id.img_list_item_secure_delivery)
@@ -82,7 +80,7 @@ class ListTodayDoneAdapter(bluetoothListener: BluetoothListener) :
             view.findViewById(R.id.text_list_item_driver_memo)
 
         @SuppressLint("NotifyDataSetChanged")
-        fun bind(position: Int) {
+        fun bind(position: Int, clickListener: OnItemClickListener) {
             val data = rowItem[position]
             textListItemDDay.text = data.delay
 
@@ -156,44 +154,49 @@ class ListTodayDoneAdapter(bluetoothListener: BluetoothListener) :
             textListItemQty.visibility = View.GONE
             layoutListItemRequest.visibility = View.GONE
 
-            //우측 메뉴 아이콘 클릭 이벤트  Quick Menu
-            layoutListItemMenuIcon.setOnClickListener { v: View ->
-                val popup =
-                    PopupMenu(v.context, layoutListItemMenuIcon)
-                popup.menuInflater.inflate(R.menu.quickmenu_pickup, popup.menu)
-                popup.show()
-                popup.setOnMenuItemClickListener { item: MenuItem ->
-                    val itemId = item.itemId
-                    if (itemId == R.id.menu_one) {
-                        val mapAddress = data.address
-                        val splitIndex = mapAddress.indexOf(")")
-                        val splitAddress = mapAddress.substring(splitIndex + 1)
-                        if (splitAddress != "") {
-                            val uri =
-                                Uri.parse("http://maps.google.co.in/maps?q=" + splitAddress.trim { it <= ' ' })
-                            val intent = Intent(Intent.ACTION_VIEW, uri)
-                            v.context.startActivity(intent)
-                        }
-                    } else if (itemId == R.id.menu_up) {
-                        if (adapterPosition > 0) {
-                            val upItem = rowItem.removeAt(adapterPosition)
-                            rowItem.add(adapterPosition - 1, upItem)
-                            originalRowItem.clear()
-                            originalRowItem.addAll(rowItem)
-                            notifyDataSetChanged()
-                        }
-                    } else if (itemId == R.id.menu_down) {
-                        if (adapterPosition < rowItem.size - 1) {
-                            val downItem = rowItem.removeAt(adapterPosition)
-                            rowItem.add(adapterPosition + 1, downItem)
-                            originalRowItem.clear()
-                            originalRowItem.addAll(rowItem)
-                            notifyDataSetChanged()
-                        }
-                    }
-                    true
-                }
+            layoutListItemMenuIcon.setOnClickListener {
+                clickListener.itemMenuIconClicked(itemView, data)
             }
+
+            // todo_sypark menu_up,menu_down 빼도 되지 않을까 싶음....
+            //우측 메뉴 아이콘 클릭 이벤트  Quick Menu
+//            layoutListItemMenuIcon.setOnClickListener { v: View ->
+//                val popup =
+//                    PopupMenu(v.context, layoutListItemMenuIcon)
+//                popup.menuInflater.inflate(R.menu.quickmenu_pickup, popup.menu)
+//                popup.show()
+//                popup.setOnMenuItemClickListener { item: MenuItem ->
+//                    val itemId = item.itemId
+//                    if (itemId == R.id.menu_one) {
+//                        val mapAddress = data.address
+//                        val splitIndex = mapAddress.indexOf(")")
+//                        val splitAddress = mapAddress.substring(splitIndex + 1)
+//                        if (splitAddress != "") {
+//                            val uri =
+//                                Uri.parse("http://maps.google.co.in/maps?q=" + splitAddress.trim { it <= ' ' })
+//                            val intent = Intent(Intent.ACTION_VIEW, uri)
+//                            v.context.startActivity(intent)
+//                        }
+//                    } else if (itemId == R.id.menu_up) {
+//                        if (adapterPosition > 0) {
+//                            val upItem = rowItem.removeAt(adapterPosition)
+//                            rowItem.add(adapterPosition - 1, upItem)
+//                            originalRowItem.clear()
+//                            originalRowItem.addAll(rowItem)
+//                            notifyDataSetChanged()
+//                        }
+//                    } else if (itemId == R.id.menu_down) {
+//                        if (adapterPosition < rowItem.size - 1) {
+//                            val downItem = rowItem.removeAt(adapterPosition)
+//                            rowItem.add(adapterPosition + 1, downItem)
+//                            originalRowItem.clear()
+//                            originalRowItem.addAll(rowItem)
+//                            notifyDataSetChanged()
+//                        }
+//                    }
+//                    true
+//                }
+//            }
 
             val layoutListItemChildDonePickup =
                 itemView.findViewById<LinearLayout>(R.id.layout_list_item_child_done_pickup)
@@ -226,41 +229,22 @@ class ListTodayDoneAdapter(bluetoothListener: BluetoothListener) :
                 }
             }
 
-            btnListItemChildDoneAddScan.setOnClickListener { v: View ->
-                val intent = Intent(
-                    v.context,
-                    TodayDonePickupScanListActivity::class.java
-                )
-                intent.putExtra("pickup_no", data.shipping)
-                intent.putExtra("applicant", data.name)
-                intent.putExtra("button_type", "Add Scan")
-                (v.context as Activity).startActivityForResult(
-                    intent,
-                    ListTodayDoneFragment.REQUEST_ADD_SCAN
-                )
+            btnListItemChildDoneAddScan.setOnClickListener {
+                clickListener.addScanClicked(data)
             }
 
             btnListItemChildDonePrintLabel.setOnClickListener {
-                FirebaseEvent.clickEvent(it.context,TAG,"btnListItemChildDonePrintLabel click")
+                FirebaseEvent.clickEvent(it.context, TAG, "btnListItemChildDonePrintLabel click")
                 bluetoothListener.isConnectPortablePrint(data.shipping)
             }
 
-            // 2019.02 - Take Back
-            btnListItemChildDoneTakeBack.setOnClickListener { v: View ->
-                val intent = Intent(
-                    v.context,
-                    TodayDonePickupScanListActivity::class.java
-                )
-                intent.putExtra("pickup_no", data.shipping)
-                intent.putExtra("applicant", data.name)
-                intent.putExtra("button_type", "Take Back")
-                (v.context as Activity).startActivityForResult(
-                    intent,
-                    ListTodayDoneFragment.REQUEST_TAKE_BACK
-                )
+            btnListItemChildDoneTakeBack.setOnClickListener {
+                clickListener.takeBackClicked(data)
             }
+
         }
     }
+
     override fun getItemCount(): Int {
         return rowItem.size
     }
@@ -275,16 +259,13 @@ class ListTodayDoneAdapter(bluetoothListener: BluetoothListener) :
             rowItem.addAll(originalRowItem)
         } else {
             val newList = ArrayList<RowItem>()
-            for (rowItem in originalRowItem) {
-                //이름 or 송장번호 조회
-                if (rowItem.name.uppercase(Locale.getDefault()).contains(query) || rowItem.shipping.uppercase(
-                        Locale.getDefault()
-                    )
-                        .contains(query)
-                ) {
-                    newList.add(rowItem)
+            newList.addAll(
+                originalRowItem.filter {
+                    it.name.uppercase(
+                        Locale.getDefault()).contains(query) || it.shipping.uppercase(Locale.getDefault()
+                    ).contains(query)
                 }
-            }
+            )
             if (newList.size > 0) {
                 rowItem.addAll(newList)
             }
@@ -317,5 +298,11 @@ class ListTodayDoneAdapter(bluetoothListener: BluetoothListener) :
         originalRowItem = ArrayList()
         originalRowItem.addAll(rowItem)
         this.bluetoothListener = bluetoothListener
+    }
+
+    interface OnItemClickListener {
+        fun addScanClicked(data: RowItem)
+        fun takeBackClicked(data: RowItem)
+        fun itemMenuIconClicked(view: View, data: RowItem)
     }
 }

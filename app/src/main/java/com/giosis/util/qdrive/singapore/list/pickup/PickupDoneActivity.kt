@@ -259,8 +259,8 @@ class PickupDoneActivity : CommonActivity() {
 
             lifecycleScope.launch {
 
-                DataUtil.captureSign("/QdrivePickup", pickupNo, binding.signApplicantSignature)
-                DataUtil.captureSign("/QdriveCollector", pickupNo, binding.signCollectorSignature)
+                DataUtil.capture("/QdrivePickup", pickupNo, binding.signApplicantSignature)
+                DataUtil.capture("/QdriveCollector", pickupNo, binding.signCollectorSignature)
 
                 val contentVal = ContentValues()
                 contentVal.put("stat", StatueType.PICKUP_DONE)

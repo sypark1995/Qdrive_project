@@ -3,13 +3,10 @@ package com.giosis.util.qdrive.singapore.barcodescanner
 
 import android.annotation.SuppressLint
 import android.app.AlertDialog
-import android.bluetooth.BluetoothAdapter
-import android.bluetooth.BluetoothDevice
 import android.content.ContentValues
 import android.content.DialogInterface
 import android.content.Intent
 import android.os.*
-import android.preference.PreferenceManager
 import android.text.Editable
 import android.text.TextUtils
 import android.text.TextWatcher
@@ -23,9 +20,6 @@ import androidx.activity.result.ActivityResultLauncher
 import androidx.activity.result.contract.ActivityResultContracts
 import androidx.core.content.ContextCompat
 import com.giosis.util.qdrive.singapore.*
-import com.giosis.util.qdrive.singapore.barcodescanner.bluetooth.BluetoothChatService
-import com.giosis.util.qdrive.singapore.barcodescanner.bluetooth.KScan
-import com.giosis.util.qdrive.singapore.barcodescanner.bluetooth.KTSyncData
 import com.giosis.util.qdrive.singapore.data.CaptureData
 import com.giosis.util.qdrive.singapore.data.ChangeDriverData
 import com.giosis.util.qdrive.singapore.data.CnRPickupResult
@@ -51,7 +45,6 @@ import io.reactivex.rxjava3.schedulers.Schedulers
 import java.text.SimpleDateFormat
 import java.util.*
 import java.util.regex.Pattern
-import kotlin.collections.HashMap
 
 
 class CaptureActivity1 : CommonActivity(), TorchListener, OnTouchListener, TextWatcher,
@@ -60,7 +53,6 @@ class CaptureActivity1 : CommonActivity(), TorchListener, OnTouchListener, TextW
     companion object {
 
         private const val TAG = "CaptureActivity1"
-        private const val bluetoothTAG = "Capture_Bluetooth"
 
         private const val PERMISSION_REQUEST_CODE = 1000
         private val PERMISSIONS = arrayOf(
@@ -135,19 +127,6 @@ class CaptureActivity1 : CommonActivity(), TorchListener, OnTouchListener, TextW
     private val cameraManager: CaptureManager by lazy {
         CaptureManager(this, binding.barcodeScanner)
     }
-    private var connectedDevice: BluetoothDevice? = null
-    private val mBluetoothAdapter: BluetoothAdapter? by lazy {
-        BluetoothAdapter.getDefaultAdapter()
-    }
-
-    private var mIsScanDeviceListActivityRun = false
-    private var connectedDeviceName: String? = null
-
-    private val mUpdateTimeTask = Runnable {
-        if (KTSyncData.AutoConnect && KTSyncData.bIsRunning) {
-            KTSyncData.mChatService.connect(connectedDevice)
-        }
-    }
 
     //
     private val deleteDrawable by lazy {
@@ -185,27 +164,26 @@ class CaptureActivity1 : CommonActivity(), TorchListener, OnTouchListener, TextW
 
     var clickListener = View.OnClickListener { v ->
 
+        try {
+            binding.editTrackingNumber.requestFocus()
+        } catch (e: Exception) {
+            //
+        }
+
         when (v.id) {
             R.id.layout_top_back -> {
                 onResetButtonClick()
                 finish()
             }
             R.id.layout_camera -> {
-                Pm85ScanManager.getInstance().stopScan()
 
                 binding.layoutCamera.isSelected = true
                 binding.textCamera.isSelected = true
                 binding.layoutScanner.isSelected = false
                 binding.textScanner.isSelected = false
-                binding.layoutBluetooth.isSelected = false
-                binding.textBluetooth.isSelected = false
 
                 binding.layoutScannerMode.visibility = View.GONE
-                binding.layoutBluetoothMode.visibility = View.GONE
 
-                // bluetooth
-                if (KTSyncData.mChatService != null) KTSyncData.mChatService.stop()
-                KTSyncData.bIsRunning = false
                 onResume()
             }
             R.id.layout_scanner -> {
@@ -214,52 +192,11 @@ class CaptureActivity1 : CommonActivity(), TorchListener, OnTouchListener, TextW
                 binding.textCamera.isSelected = false
                 binding.layoutScanner.isSelected = true
                 binding.textScanner.isSelected = true
-                binding.layoutBluetooth.isSelected = false
-                binding.textBluetooth.isSelected = false
 
                 binding.layoutScannerMode.visibility = View.VISIBLE
-                binding.layoutBluetoothMode.visibility = View.GONE
 
                 // Camera
                 cameraManager.onPause()
-                // bluetooth
-                if (KTSyncData.mChatService != null) KTSyncData.mChatService.stop()
-                KTSyncData.bIsRunning = false
-
-                Pm85ScanManager.getInstance().registScan(this)
-                Pm85ScanManager.getInstance().startScan()
-                Pm85ScanManager.getInstance().addScanListener(pm85ScanListener)
-            }
-            R.id.layout_bluetooth -> {
-                Pm85ScanManager.getInstance().stopScan()
-
-                binding.layoutCamera.isSelected = false
-                binding.textCamera.isSelected = false
-                binding.layoutScanner.isSelected = false
-                binding.textScanner.isSelected = false
-                binding.layoutBluetooth.isSelected = true
-                binding.textBluetooth.isSelected = true
-
-                binding.layoutScannerMode.visibility = View.GONE
-                binding.layoutBluetoothMode.visibility = View.VISIBLE
-
-                // Camera
-                cameraManager.onPause()
-
-                // Bluetooth 지원 && 비활성화 상태
-                if (mBluetoothAdapter != null) {
-                    if (!mBluetoothAdapter!!.isEnabled) {
-                        val intent = Intent(BluetoothAdapter.ACTION_REQUEST_ENABLE)
-                        bluetoothLauncher.launch(intent)
-                    }
-                }
-                KTSyncData.bIsRunning = true
-            }
-            R.id.btn_bluetooth_device_find -> {
-                mIsScanDeviceListActivityRun = true
-
-                val intent = Intent(this@CaptureActivity1, DeviceListActivity1::class.java)
-                deviceLauncher.launch(intent)
             }
             R.id.btn_add -> {
                 onAddButtonClick()
@@ -291,32 +228,6 @@ class CaptureActivity1 : CommonActivity(), TorchListener, OnTouchListener, TextW
         }
     }
 
-    var pm85ScanListener: Pm85ScanManager.ScanResultListener =
-        object : Pm85ScanManager.ScanResultListener {
-            override fun scanReceive(result: String) {
-                val arrResults = ArrayList<String>()
-                arrResults.add(result)
-                if (arrResults.size > 0) {
-                    var resultString = Gson().toJson(arrResults)
-                    Log.e(TAG, "script onAppScan $resultString")
-                    resultString = resultString.replace("[\"", "")
-                    resultString = resultString.replace("\"]", "")
-
-                    if (resultString.endsWith("\\n")) {
-                        resultString = resultString.replace("\\n", "")
-                    }
-
-                    if (resultString.endsWith("\n")) {
-                        resultString = resultString.replace("\n", "")
-                    }
-
-                    if (resultString != "READ_FAIL") {
-                        checkValidation(resultString.toString().trim().uppercase())
-                    }
-                }
-            }
-        }
-
     public override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         window.addFlags(
@@ -337,7 +248,6 @@ class CaptureActivity1 : CommonActivity(), TorchListener, OnTouchListener, TextW
 
         binding.layoutCamera.isSelected = true
         binding.layoutScanner.isSelected = false
-        binding.layoutBluetooth.isSelected = false
 
         binding.recyclerScannedBarcode.adapter = adapter
 
@@ -376,9 +286,6 @@ class CaptureActivity1 : CommonActivity(), TorchListener, OnTouchListener, TextW
         binding.layoutTopTitle.layoutTopBack.setOnClickListener(clickListener)
         binding.layoutCamera.setOnClickListener(clickListener)
         binding.layoutScanner.setOnClickListener(clickListener)
-        binding.layoutBluetooth.setOnClickListener(clickListener)
-        binding.btnBluetoothDeviceFind.setOnClickListener(clickListener)
-        binding.editTrackingNumber.setOnClickListener(clickListener)
         binding.btnAdd.setOnClickListener(clickListener)
         binding.btnReset.setOnClickListener(clickListener)
         binding.btnConfirm.setOnClickListener(clickListener)
@@ -395,8 +302,6 @@ class CaptureActivity1 : CommonActivity(), TorchListener, OnTouchListener, TextW
             deleteDrawable!!.intrinsicHeight
         )
 
-        // 블루투스 초기화
-        initBluetoothDevice()
         // 초기화
         initManualScanViews(mScanType)
 
@@ -497,18 +402,6 @@ class CaptureActivity1 : CommonActivity(), TorchListener, OnTouchListener, TextW
         beepManagerError.updatePrefs()
         beepManagerDuple.updatePrefs()
 
-        // Bluetooth
-        if (KTSyncData.bIsRunning) return
-        if (KTSyncData.mChatService != null) {
-            if (KTSyncData.mChatService.state == BluetoothChatService.STATE_NONE) {
-                KTSyncData.mChatService.start()
-            }
-        }
-        if (KTSyncData.bIsConnected && KTSyncData.LockUnlock) {
-            KTSyncData.mKScan.LockUnlockScanButton(true)
-        }
-        KTSyncData.mKScan.mHandler = bluetoothHandler
-
         if (isPermissionTrue) {
 
             // Camera
@@ -529,7 +422,6 @@ class CaptureActivity1 : CommonActivity(), TorchListener, OnTouchListener, TextW
                 }
             }
         }
-
     }
 
     private fun warningDialog(msg: String) {
@@ -616,20 +508,7 @@ class CaptureActivity1 : CommonActivity(), TorchListener, OnTouchListener, TextW
             }
 
         }
-        return true
-    }
-
-    // Bluetooth
-    private fun onBluetoothBarcodeAdd(strBarcodeNo: String) {
-
-        // bluetooth "\n"이 포함되어서 다른번호로 인식 > trim 으로 공백 없애기
-        val tempScanNo = strBarcodeNo.trim()
-
-        if (tempScanNo.isNotEmpty()) {
-            Log.i(TAG, "  onBluetoothBarcodeAdd > $tempScanNo ")
-
-            checkValidation(tempScanNo.uppercase())
-        }
+        return false
     }
 
     // EditText
@@ -653,7 +532,9 @@ class CaptureActivity1 : CommonActivity(), TorchListener, OnTouchListener, TextW
         if (isDuplicate != null) {
             if (checkedBarcodeList[barcode.uppercase()] == "N") {
                 checkedBarcodeList[barcode.uppercase()] = "Y"
+
                 beepManagerDuple.playBeepSoundAndVibrate()
+
                 val toast = Toast.makeText(
                     this@CaptureActivity1,
                     R.string.msg_tracking_number_already_entered,
@@ -996,7 +877,6 @@ class CaptureActivity1 : CommonActivity(), TorchListener, OnTouchListener, TextW
                 addScannedBarcode(strBarcodeNo)
             }
             else -> {
-
                 beepManager.playBeepSoundAndVibrate()
                 addScannedBarcode(strBarcodeNo)
             }
@@ -1571,9 +1451,7 @@ class CaptureActivity1 : CommonActivity(), TorchListener, OnTouchListener, TextW
     public override fun onPause() {
         super.onPause()
         cameraManager.onPause()
-        if (mIsScanDeviceListActivityRun || KTSyncData.bIsRunning) {
-            mIsScanDeviceListActivityRun = false
-        }
+
     }
 
     override fun onSaveInstanceState(outState: Bundle) {
@@ -1592,10 +1470,6 @@ class CaptureActivity1 : CommonActivity(), TorchListener, OnTouchListener, TextW
         beepManagerError.destroy()
         beepManagerDuple.destroy()
 
-        // Stop the Bluetooth chat services
-        if (KTSyncData.mChatService != null) KTSyncData.mChatService.stop()
-        KTSyncData.mChatService = null
-        KTSyncData.bIsRunning = false
     }
 
     //2016-09-12 eylee  self-collection nq 인지 아닌지 판단하는
@@ -1742,35 +1616,6 @@ class CaptureActivity1 : CommonActivity(), TorchListener, OnTouchListener, TextW
     override fun onTorchOff() {}
 
 
-    private val bluetoothLauncher: ActivityResultLauncher<Intent> = registerForActivityResult(
-        ActivityResultContracts.StartActivityForResult()
-    ) {
-        Log.e(TAG, "bluetoothLauncher ${it.resultCode} ")
-
-        if (it.resultCode == RESULT_OK) {
-            setupChat()
-        } else {
-            Toast.makeText(
-                this@CaptureActivity1,
-                R.string.msg_bluetooth_enabled,
-                Toast.LENGTH_SHORT
-            ).show()
-            finish()
-        }
-    }
-
-    private val deviceLauncher: ActivityResultLauncher<Intent> = registerForActivityResult(
-        ActivityResultContracts.StartActivityForResult()
-    ) {
-        //  Bluetooth Device 연결
-        if (it.resultCode == RESULT_OK) {
-
-            val address = it.data?.extras?.getString(DeviceListActivity1.EXTRA_DEVICE_ADDRESS)
-            connectedDevice = mBluetoothAdapter!!.getRemoteDevice(address)
-            KTSyncData.mChatService.connect(connectedDevice)
-        }
-    }
-
     private val finishLauncher: ActivityResultLauncher<Intent> = registerForActivityResult(
         ActivityResultContracts.StartActivityForResult()
     ) {
@@ -1815,131 +1660,6 @@ class CaptureActivity1 : CommonActivity(), TorchListener, OnTouchListener, TextW
                 if (resultCode == PermissionActivity.PERMISSIONS_GRANTED) {
                     Log.e(TAG, "onActivityResult  PERMISSIONS_GRANTED")
                     isPermissionTrue = true
-                }
-            }
-        }
-    }
-
-    private fun initBluetoothDevice() {
-
-        // If the adapter is null, then Bluetooth is not supported          // Bluetooth 지원하지 않음
-        if (mBluetoothAdapter == null && !BuildConfig.DEBUG) {
-            Toast.makeText(
-                this@CaptureActivity1,
-                resources.getString(R.string.msg_bluetooth_not_supported),
-                Toast.LENGTH_LONG
-            ).show()
-            finish()
-            return
-        }
-
-        KTSyncData.mKScan = KScan(this, bluetoothHandler)
-        for (i in 0..9) {
-            KTSyncData.SerialNumber[i] = '0'.toByte()
-            KTSyncData.FWVersion[i] = '0'.toByte()
-        }
-
-        var temp: ByteArray
-        val preferenceManager = PreferenceManager.getDefaultSharedPreferences(this)
-        temp = preferenceManager.getString("Data Delimiter", "4")!!.toByteArray()
-        KTSyncData.DataDelimiter = temp[0] - '0'.toByte()
-        temp = preferenceManager.getString("Record Delimiter", "1")!!.toByteArray()
-        KTSyncData.RecordDelimiter = temp[0] - '0'.toByte()
-    }
-
-    public override fun onStart() {
-        super.onStart()
-        if (mBluetoothAdapter != null && mBluetoothAdapter!!.isEnabled) {
-            if (KTSyncData.mChatService == null) setupChat()
-        }
-    }
-
-    private fun setupChat() {
-        // Initialize the BluetoothChatService to perform bluetooth connections
-        KTSyncData.mChatService = BluetoothChatService(this, bluetoothHandler)
-    }
-
-    // Bluetooth
-    @SuppressLint("HandlerLeak")
-    private val bluetoothHandler: Handler = object : Handler(Looper.getMainLooper()) {
-        @SuppressLint("SetTextI18n")
-        override fun handleMessage(msg: Message) {
-            Log.i(bluetoothTAG, "handleMessage " + msg.what)
-            when (msg.what) {
-                BluetoothChatService.MESSAGE_STATE_CHANGE -> {
-                    Log.i(bluetoothTAG, "MESSAGE_STATE_CHANGE: " + msg.arg1)
-                    when (msg.arg1) {
-                        BluetoothChatService.STATE_CONNECTED -> {
-                            binding.textBluetoothConnectState.text =
-                                resources.getString(R.string.text_connected)
-                            binding.textBluetoothDeviceName.visibility = View.VISIBLE
-                            binding.textBluetoothDeviceName.text = "($connectedDeviceName)"
-                            binding.btnBluetoothDeviceFind.visibility = View.GONE
-                            removeCallbacks(mUpdateTimeTask)
-                            KTSyncData.mKScan.DeviceConnected(true)
-                        }
-                        BluetoothChatService.STATE_CONNECTING -> {
-                            binding.textBluetoothConnectState.text =
-                                resources.getString(R.string.text_connecting)
-                            binding.textBluetoothDeviceName.visibility = View.GONE
-                            binding.btnBluetoothDeviceFind.visibility = View.GONE
-                        }
-                        BluetoothChatService.STATE_LISTEN, BluetoothChatService.STATE_NONE -> {
-                            binding.textBluetoothConnectState.text =
-                                resources.getString(R.string.text_disconnected)
-                            binding.textBluetoothDeviceName.visibility = View.GONE
-                            binding.btnBluetoothDeviceFind.visibility = View.VISIBLE
-                        }
-                        BluetoothChatService.STATE_LOST -> {
-                            binding.textBluetoothConnectState.text =
-                                resources.getString(R.string.text_disconnected)
-                            binding.textBluetoothDeviceName.visibility = View.GONE
-                            binding.btnBluetoothDeviceFind.visibility = View.VISIBLE
-                            KTSyncData.bIsConnected = false
-                            postDelayed(mUpdateTimeTask, 2000)
-                        }
-                        BluetoothChatService.STATE_FAILED -> {
-                            binding.textBluetoothConnectState.text =
-                                resources.getString(R.string.text_disconnected)
-                            binding.textBluetoothDeviceName.visibility = View.GONE
-                            binding.btnBluetoothDeviceFind.visibility = View.VISIBLE
-                            postDelayed(mUpdateTimeTask, 5000)
-                        }
-                    }
-                }
-                BluetoothChatService.MESSAGE_READ -> {
-                    val readBuf = msg.obj as ByteArray
-                    var i = 0
-                    while (i < msg.arg1) {
-                        KTSyncData.mKScan.HandleInputData(readBuf[i])
-                        i++
-                    }
-                }
-                BluetoothChatService.MESSAGE_DEVICE_NAME -> {
-                    // save the connected device's name
-                    connectedDeviceName = msg.data.getString(BluetoothChatService.DEVICE_NAME)
-                    Toast.makeText(
-                        this@CaptureActivity1,
-                        resources.getString(R.string.text_connected_to) + connectedDeviceName,
-                        Toast.LENGTH_SHORT
-                    ).show()
-                }
-                BluetoothChatService.MESSAGE_TOAST -> {
-                    Toast.makeText(
-                        this@CaptureActivity1,
-                        msg.data.getString(BluetoothChatService.TOAST),
-                        Toast.LENGTH_SHORT
-                    ).show()
-                }
-                KScan.MESSAGE_DISPLAY -> {
-                    val displayBuf = msg.obj as ByteArray
-                    val displayMessage = String(displayBuf, 0, msg.arg1)
-                    onBluetoothBarcodeAdd(displayMessage)
-                    KTSyncData.bIsSyncFinished = true
-                }
-                KScan.MESSAGE_SEND -> {
-                    val sendBuf = msg.obj as ByteArray
-                    KTSyncData.mChatService.write(sendBuf)
                 }
             }
         }

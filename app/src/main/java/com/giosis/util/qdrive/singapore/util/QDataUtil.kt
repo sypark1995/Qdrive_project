@@ -3,6 +3,8 @@ package com.giosis.util.qdrive.singapore.util
 import android.content.Context
 import android.content.pm.PackageManager
 import android.content.res.Configuration
+import android.graphics.Bitmap
+import android.graphics.Canvas
 import android.os.Build
 import android.provider.Settings
 import android.telephony.TelephonyManager
@@ -154,12 +156,14 @@ object QDataUtil {
         trackingNo: String
     ): String =
         withContext(Dispatchers.Default) {
+            val bitmap = Bitmap.createBitmap(view.width,view.height,Bitmap.Config.ARGB_8888)
 
-            view.buildDrawingCache()
-            val viewBitmap = view.drawingCache
+            val canvas = Canvas(bitmap)
+            view.draw(canvas)
+
             return@withContext DataUtil.bitmapToString(
                 context,
-                viewBitmap,
+                bitmap,
                 basePath,
                 path,
                 trackingNo

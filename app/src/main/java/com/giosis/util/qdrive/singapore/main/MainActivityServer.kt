@@ -7,10 +7,13 @@ import android.content.ContentValues
 import android.content.Context
 import android.content.DialogInterface
 import android.database.Cursor
+import android.os.Build
 import android.os.Bundle
+import android.telephony.TelephonyManager
 import android.util.Log
 import android.view.View
 import androidx.lifecycle.lifecycleScope
+import com.giosis.util.qdrive.singapore.MyApplication.Companion.context
 import com.giosis.util.qdrive.singapore.R
 import com.giosis.util.qdrive.singapore.UploadData
 import com.giosis.util.qdrive.singapore.data.QSignDeliveryList
@@ -25,8 +28,12 @@ import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
 import com.google.firebase.crashlytics.FirebaseCrashlytics
+import io.reactivex.rxjava3.android.schedulers.AndroidSchedulers
+import io.reactivex.rxjava3.schedulers.Schedulers
 import kotlinx.android.synthetic.main.activity_main.*
 import kotlinx.android.synthetic.main.activity_main_home.view.*
+import java.net.HttpURLConnection
+import java.net.URL
 import java.text.SimpleDateFormat
 import java.util.*
 
@@ -57,12 +64,6 @@ object MainActivityServer {
         var deliveryList = ArrayList<QSignDeliveryList>()
         var outletDeliveryList = ArrayList<QSignDeliveryList>()
         var errorMsg = ""
-
-        try {
-            pingCheck()
-        } catch (e: Exception) {
-
-        }
 
         try {
             val response =
@@ -100,6 +101,14 @@ object MainActivityServer {
 
         if (Preferences.userNation == "SG") {
             try {
+
+                FirebaseCrashlytics.getInstance().setCustomKey("network Type", network)
+                try {
+                    pingCheck()
+                } catch (e: Exception) {
+
+                }
+
                 val response =
                     RetrofitClient.instanceCoroutine().requestGetDeliveryOutlet(network)
 
@@ -117,6 +126,13 @@ object MainActivityServer {
                 }
 
             } catch (e: java.lang.Exception) {
+                RetrofitClient.instanceDynamic().requestWriteLog(
+                    "1", "DOWNLOAD", "DNS error in RetrofitClient",
+                    "RetrofitClient Exception $e"
+                )
+                    .subscribeOn(Schedulers.io())
+                    .observeOn(AndroidSchedulers.mainThread())
+                    .subscribe({ }) {}
                 e.printStackTrace()
             }
         }
@@ -578,7 +594,7 @@ object MainActivityServer {
         CoroutineScope(Dispatchers.IO).launch {
             val result: String = try {
                 val runTime = Runtime.getRuntime()
-                val cmd = "ping -c 1 -W 10 211.115.104.21"
+                val cmd = "ping -c 1 -W 10 qxapi.qxpress.net"
 
                 val proc = runTime.exec(cmd)
                 proc.waitFor()
@@ -600,6 +616,75 @@ object MainActivityServer {
                 "PING",
                 returnString
             )
+
+            if (result != "0") {
+                urlConnectionCheck()
+                nowTimeCheck()
+                telephonyInfo()
+            }
+        }
+    }
+
+    private fun urlConnectionCheck() {
+        CoroutineScope(Dispatchers.IO).launch {
+            runCatching {
+                val url = URL("https://www.qoo10.com")
+                val urlConnection: HttpURLConnection = url.openConnection() as HttpURLConnection
+                try {
+                    Log.e("url", urlConnection.responseCode.toString())
+                    FirebaseCrashlytics.getInstance().setCustomKey(
+                        "qoo10 url connection",
+                        urlConnection.responseCode
+                    )
+                } catch (e: java.lang.Exception) {
+                    FirebaseCrashlytics.getInstance().setCustomKey(
+                        "qoo10 url connection",
+                        "error / $e"
+                    )
+                }
+
+                val url1 = URL("https://www.daum.net")
+                val urlConnection1: HttpURLConnection = url1.openConnection() as HttpURLConnection
+                try {
+                    Log.e("url1", urlConnection1.responseCode.toString())
+                    FirebaseCrashlytics.getInstance().setCustomKey(
+                        "daum url connection",
+                        urlConnection1.responseCode
+                    )
+                } catch (e: java.lang.Exception) {
+                    FirebaseCrashlytics.getInstance().setCustomKey(
+                        "daum url connection",
+                        "error / $e"
+                    )
+                }
+            }
+        }
+    }
+
+    private fun nowTimeCheck() {
+        val dateFormat = SimpleDateFormat("yyyy-MM-dd HH:mm:ss")
+        val regDataString = dateFormat.format(Date())
+        FirebaseCrashlytics.getInstance().setCustomKey(
+            "now Time",
+            regDataString
+        )
+    }
+
+    private fun telephonyInfo() {
+        val tm = context.getSystemService(Context.TELEPHONY_SERVICE) as TelephonyManager
+
+        FirebaseCrashlytics.getInstance().setCustomKey(
+            "TelephonyManager",
+            tm.simOperatorName
+        )
+
+        if (Build.VERSION.SDK_INT > Build.VERSION_CODES.P) {
+            if (tm.signalStrength != null) {
+                FirebaseCrashlytics.getInstance().setCustomKey(
+                    "level (0~4)",
+                    tm.signalStrength!!.level
+                )
+            }
         }
     }
 

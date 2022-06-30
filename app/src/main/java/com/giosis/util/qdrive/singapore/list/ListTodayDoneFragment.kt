@@ -5,14 +5,18 @@ import android.app.SearchManager
 import android.content.Context
 import android.content.Intent
 import android.graphics.Color
+import android.net.Uri
 import android.os.Bundle
 import android.util.Log
 import android.util.TypedValue
 import android.view.LayoutInflater
+import android.view.MenuItem
 import android.view.View
 import android.view.ViewGroup
 import android.view.inputmethod.InputMethodManager
 import android.widget.*
+import androidx.activity.result.ActivityResultLauncher
+import androidx.activity.result.contract.ActivityResultContracts
 import androidx.fragment.app.Fragment
 import androidx.recyclerview.widget.RecyclerView
 import com.giosis.util.qdrive.singapore.R
@@ -27,7 +31,8 @@ import io.reactivex.rxjava3.android.schedulers.AndroidSchedulers
 import io.reactivex.rxjava3.schedulers.Schedulers
 
 class ListTodayDoneFragment(var bluetoothListener: BluetoothListener) : Fragment(),
-    SearchView.OnQueryTextListener, SearchView.OnCloseListener {
+    SearchView.OnQueryTextListener, SearchView.OnCloseListener,
+    ListTodayDoneAdapter.OnItemClickListener {
 
     var TAG = "ListTodayDoneFragment"
     private var searchViewList: SearchView? = null
@@ -36,9 +41,7 @@ class ListTodayDoneFragment(var bluetoothListener: BluetoothListener) : Fragment
     private var exlistCardList: RecyclerView? = null
     private var mCountCallback: OnTodayDoneCountListener? = null
     private var rowItems = ArrayList<RowItem>()
-    private val adapter by lazy {
-        ListTodayDoneAdapter(bluetoothListener)
-    }
+    private lateinit var adapter: ListTodayDoneAdapter
 
     //리스트 카운트를 갱신하기 위한 인터페이스
     interface OnTodayDoneCountListener {
@@ -94,6 +97,7 @@ class ListTodayDoneFragment(var bluetoothListener: BluetoothListener) : Fragment
         )
         editListSearchView.setHintTextColor(Color.parseColor("#8F8F8F"))
         layoutListSort!!.visibility = View.GONE
+        adapter = ListTodayDoneAdapter(bluetoothListener, this)
     }
 
     override fun onResume() {
@@ -164,6 +168,7 @@ class ListTodayDoneFragment(var bluetoothListener: BluetoothListener) : Fragment
                                 rowItem.childItems = child
                                 rowItems.add(rowItem)
                             }
+
                             adapter.rowItem = rowItems
                             exlistCardList!!.adapter = adapter
 
@@ -184,10 +189,10 @@ class ListTodayDoneFragment(var bluetoothListener: BluetoothListener) : Fragment
         }
     }
 
-    override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
-        super.onActivityResult(requestCode, resultCode, data)
-        Log.e(TAG, "  onActivityResult > $resultCode / $requestCode")
-        if (requestCode == REQUEST_ADD_SCAN || requestCode == REQUEST_TAKE_BACK) {
+    private val resultLauncher: ActivityResultLauncher<Intent> = registerForActivityResult(
+        ActivityResultContracts.StartActivityForResult()
+    ) {
+        if (it.resultCode == Activity.RESULT_OK) {
             onResume()
         }
     }
@@ -225,8 +230,47 @@ class ListTodayDoneFragment(var bluetoothListener: BluetoothListener) : Fragment
         bluetoothListener.clearBluetoothAdapter()
     }
 
-    companion object {
-        const val REQUEST_ADD_SCAN = 30
-        const val REQUEST_TAKE_BACK = 31
+    override fun addScanClicked(data: RowItem) {
+        val intent = Intent(
+            activity,
+            TodayDonePickupScanListActivity::class.java
+        )
+        intent.putExtra("pickup_no", data.shipping)
+        intent.putExtra("applicant", data.name)
+        intent.putExtra("button_type", "Add Scan")
+        resultLauncher.launch(intent)
+    }
+
+    override fun takeBackClicked(data: RowItem) {
+        val intent = Intent(
+            activity,
+            TodayDonePickupScanListActivity::class.java
+        )
+        intent.putExtra("pickup_no", data.shipping)
+        intent.putExtra("applicant", data.name)
+        intent.putExtra("button_type", "Take Back")
+        resultLauncher.launch(intent)
+    }
+
+    override fun itemMenuIconClicked(view: View, data: RowItem) {
+        val popup =
+            PopupMenu(activity, view)
+        popup.menuInflater.inflate(R.menu.quickmenu_pickup, popup.menu)
+        popup.show()
+        popup.setOnMenuItemClickListener { item: MenuItem ->
+            val itemId = item.itemId
+            if (itemId == R.id.menu_one) {
+                val mapAddress = data.address
+                val splitIndex = mapAddress.indexOf(")")
+                val splitAddress = mapAddress.substring(splitIndex + 1)
+                if (splitAddress != "") {
+                    val uri =
+                        Uri.parse("http://maps.google.co.in/maps?q=" + splitAddress.trim { it <= ' ' })
+                    val intent = Intent(Intent.ACTION_VIEW, uri)
+                    startActivity(intent)
+                }
+            }
+            true
+        }
     }
 }

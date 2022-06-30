@@ -34,7 +34,10 @@ class PrinterSettingActivity : CommonActivity() {
 
     companion object {
         private const val PERMISSION_REQUEST_CODE = 1000
-        private val PERMISSIONS = arrayOf(PermissionChecker.ACCESS_FINE_LOCATION, PermissionChecker.ACCESS_COARSE_LOCATION)
+        private val PERMISSIONS = arrayOf(
+            PermissionChecker.ACCESS_FINE_LOCATION,
+            PermissionChecker.ACCESS_COARSE_LOCATION
+        )
     }
 
     // connect
@@ -64,7 +67,10 @@ class PrinterSettingActivity : CommonActivity() {
 
         val color = resources.getColor(R.color.color_4fb648)
         progress_available_devices.isIndeterminate = true
-        progress_available_devices.indeterminateDrawable.setColorFilter(color, PorterDuff.Mode.MULTIPLY)
+        progress_available_devices.indeterminateDrawable.setColorFilter(
+            color,
+            PorterDuff.Mode.MULTIPLY
+        )
 
         /* if (Build.VERSION_CODES.Q <= Build.VERSION.SDK_INT) {
             BluetoothDeviceData.availableProgress.getIndeterminateDrawable().setColorFilter(new BlendModeColorFilter(color, BlendMode.SRC_ATOP);
@@ -96,7 +102,11 @@ class PrinterSettingActivity : CommonActivity() {
 
         // Bluetooth 지원하지 않음
         if (mBluetoothAdapter == null) {
-            Toast.makeText(this, resources.getString(R.string.msg_bluetooth_not_supported), Toast.LENGTH_SHORT).show()
+            Toast.makeText(
+                this,
+                resources.getString(R.string.msg_bluetooth_not_supported),
+                Toast.LENGTH_SHORT
+            ).show()
         } else {
 
             // Bluetooth 지원 && 비활성화 상태
@@ -117,7 +127,8 @@ class PrinterSettingActivity : CommonActivity() {
 
             if (intent != null) {
                 val action = intent.action
-                val device = intent.getParcelableExtra<BluetoothDevice>(BluetoothDevice.EXTRA_DEVICE)
+                val device =
+                    intent.getParcelableExtra<BluetoothDevice>(BluetoothDevice.EXTRA_DEVICE)
 
                 if (action != null && action != BluetoothDevice.ACTION_FOUND) {
                     Log.e("print", "$TAG  onReceive action : $action")
@@ -133,8 +144,11 @@ class PrinterSettingActivity : CommonActivity() {
 
                                 // NOTIFICATION.  2019.11 - Print 기계만 선택되도록 'Major' 추가   (Q80 프린트의 경우 IMAGING, UNCATEGORIZED 두가지로 검색됨)
                                 if (device.bluetoothClass.majorDeviceClass == BluetoothClass.Device.Major.IMAGING) {
-                                    Log.e("print", TAG + "  ACTION_FOUND Not Pairing  " + device.name + "  " + device.address +
-                                            " / " + device.bluetoothClass.deviceClass + " / " + device.bluetoothClass.majorDeviceClass)
+                                    Log.e(
+                                        "print",
+                                        TAG + "  ACTION_FOUND Not Pairing  " + device.name + "  " + device.address +
+                                                " / " + device.bluetoothClass.deviceClass + " / " + device.bluetoothClass.majorDeviceClass
+                                    )
 
                                     // 동일한 주소가 이미 리스트에 들어 있는지 확인! 한번만 리스트에 넣기 위한 코드
                                     var deviceExist = false
@@ -146,7 +160,14 @@ class PrinterSettingActivity : CommonActivity() {
                                     }
 
                                     if (!deviceExist) {
-                                        newDeviceItems.add(PrinterDeviceItem(device.name, device.address, false, false))
+                                        newDeviceItems.add(
+                                            PrinterDeviceItem(
+                                                device.name,
+                                                device.address,
+                                                false,
+                                                false
+                                            )
+                                        )
                                         printerAvailableAdapter.notifyDataSetChanged()
                                     }
 
@@ -180,9 +201,12 @@ class PrinterSettingActivity : CommonActivity() {
                                 i++
                             }
 
-                            Log.e("print", TAG + "  ACTION_FOUND Pairing  " + pairedPosition + " / " + connectedPosition + " / "
-                                    + device.name + " / " + device.address +
-                                    " / " + device.bluetoothClass.deviceClass + " / " + device.bluetoothClass.majorDeviceClass)
+                            Log.e(
+                                "print",
+                                TAG + "  ACTION_FOUND Pairing  " + pairedPosition + " / " + connectedPosition + " / "
+                                        + device.name + " / " + device.address +
+                                        " / " + device.bluetoothClass.deviceClass + " / " + device.bluetoothClass.majorDeviceClass
+                            )
 
                             if (0 <= pairedPosition) {
                                 pairedItems[pairedPosition].isFound = true
@@ -228,8 +252,12 @@ class PrinterSettingActivity : CommonActivity() {
                         // [Connected Device] 연결이 끊어졌을 때 (전원 OFF)
                         if (socket != null) {
 
-                            Toast.makeText(context, device!!.name + " " + resources.getString(R.string.msg_is_disconnected), Toast.LENGTH_SHORT)
-                                    .show()
+                            Toast.makeText(
+                                context,
+                                device!!.name + " " + resources.getString(R.string.msg_is_disconnected),
+                                Toast.LENGTH_SHORT
+                            )
+                                .show()
 
                             try {
                                 socket!!.close()
@@ -239,7 +267,14 @@ class PrinterSettingActivity : CommonActivity() {
                                 nullConnectedDevice()
 
                                 // [Paired Devices] 추가
-                                pairedItems.add(PrinterDeviceItem(device.name, device.address, false, false))
+                                pairedItems.add(
+                                    PrinterDeviceItem(
+                                        device.name,
+                                        device.address,
+                                        false,
+                                        false
+                                    )
+                                )
                                 printerPairedAdapter.notifyDataSetChanged()
                                 notnullPairedDevices()
                             } catch (e: Exception) {
@@ -247,7 +282,11 @@ class PrinterSettingActivity : CommonActivity() {
                             }
                         } else if (BluetoothDeviceData.connectedPrinterAddress != null) {
                             // [Connected Device] 연결이 끊어졌을 때 ('Disconnect')
-                            Toast.makeText(context, device!!.name + " " + resources.getString(R.string.msg_is_disconnected), Toast.LENGTH_SHORT).show()
+                            Toast.makeText(
+                                context,
+                                device!!.name + " " + resources.getString(R.string.msg_is_disconnected),
+                                Toast.LENGTH_SHORT
+                            ).show()
                             Log.e("print", "$TAG  Disconnect Button click")
                             BluetoothDeviceData.connectedPrinterAddress = null
 
@@ -256,14 +295,25 @@ class PrinterSettingActivity : CommonActivity() {
                             nullConnectedDevice()
 
                             // [Paired Devices] 추가
-                            pairedItems.add(PrinterDeviceItem(device.name, device.address, true, false))
+                            pairedItems.add(
+                                PrinterDeviceItem(
+                                    device.name,
+                                    device.address,
+                                    true,
+                                    false
+                                )
+                            )
                             printerPairedAdapter.notifyDataSetChanged()
                             notnullPairedDevices()
                         }
                     }
                     BluetoothDevice.ACTION_PAIRING_REQUEST -> {
                         // 기기 Pairing 요구
-                        Toast.makeText(context, resources.getString(R.string.msg_pairing_requested), Toast.LENGTH_SHORT).show()
+                        Toast.makeText(
+                            context,
+                            resources.getString(R.string.msg_pairing_requested),
+                            Toast.LENGTH_SHORT
+                        ).show()
                     }
                     BluetoothDevice.ACTION_BOND_STATE_CHANGED -> {
                         // 기기 Pairing 상태 변화
@@ -271,11 +321,13 @@ class PrinterSettingActivity : CommonActivity() {
                         val bundle = Bundle()
                         bundle.putString(BluetoothDeviceData.DEVICE_ID, device.address)
                         if (device.bondState == BluetoothDevice.BOND_BONDED) {
-                            val message = bluetoothDeviceHandler.obtainMessage(BluetoothDeviceData.CONN_STATE_PAIRED)
+                            val message =
+                                bluetoothDeviceHandler.obtainMessage(BluetoothDeviceData.CONN_STATE_PAIRED)
                             message.data = bundle
                             bluetoothDeviceHandler.sendMessage(message)
                         } else if (device.bondState == BluetoothDevice.BOND_NONE) {
-                            val message = bluetoothDeviceHandler.obtainMessage(BluetoothDeviceData.CONN_STATE_UNPAIRED)
+                            val message =
+                                bluetoothDeviceHandler.obtainMessage(BluetoothDeviceData.CONN_STATE_UNPAIRED)
                             message.data = bundle
                             bluetoothDeviceHandler.sendMessage(message)
                         }
@@ -295,7 +347,11 @@ class PrinterSettingActivity : CommonActivity() {
                             BluetoothDeviceData.CONN_STATE_CONNECTED -> {
                                 // 'Connect'
                                 Log.e("print", "$TAG  CONN_STATE_CONNECTED  Connect : $deviceName")
-                                Toast.makeText(context, deviceName + " " + resources.getString(R.string.msg_is_connected), Toast.LENGTH_SHORT).show()
+                                Toast.makeText(
+                                    context,
+                                    deviceName + " " + resources.getString(R.string.msg_is_connected),
+                                    Toast.LENGTH_SHORT
+                                ).show()
 
                                 // [Paired Devices] 에서 삭제
                                 if (0 < pairedItems.size) {
@@ -321,7 +377,14 @@ class PrinterSettingActivity : CommonActivity() {
                                 }
 
                                 // [Connected Device] 추가
-                                connectedItem.add(PrinterDeviceItem(deviceName!!, deviceAddress!!, true, true))
+                                connectedItem.add(
+                                    PrinterDeviceItem(
+                                        deviceName!!,
+                                        deviceAddress!!,
+                                        true,
+                                        true
+                                    )
+                                )
                                 printerConnectedAdapter.notifyDataSetChanged()
                                 BluetoothDeviceData.connectedPrinterAddress = deviceAddress
                                 notnullConnectedDevice()
@@ -329,8 +392,15 @@ class PrinterSettingActivity : CommonActivity() {
 
                             BluetoothDeviceData.CONN_STATE_DISCONNECT -> {
                                 // 'Disconnect'
-                                Log.e("print", "$TAG  CONN_STATE_CONNECTED  Disconnect : $deviceName")
-                                Toast.makeText(context, deviceName + " " + resources.getString(R.string.msg_is_disconnecting), Toast.LENGTH_LONG).show()
+                                Log.e(
+                                    "print",
+                                    "$TAG  CONN_STATE_CONNECTED  Disconnect : $deviceName"
+                                )
+                                Toast.makeText(
+                                    context,
+                                    deviceName + " " + resources.getString(R.string.msg_is_disconnecting),
+                                    Toast.LENGTH_LONG
+                                ).show()
                             }
                             else -> {
                             }
@@ -354,7 +424,11 @@ class PrinterSettingActivity : CommonActivity() {
 
                 if (mBluetoothAdapter != null) {
                     val device = mBluetoothAdapter!!.getRemoteDevice(macAddress)
-                    Toast.makeText(this, device.name + "  " + resources.getString(R.string.msg_is_paired), Toast.LENGTH_SHORT).show()
+                    Toast.makeText(
+                        this,
+                        device.name + "  " + resources.getString(R.string.msg_is_paired),
+                        Toast.LENGTH_SHORT
+                    ).show()
                     pairedItems.add(PrinterDeviceItem(device.name, device.address, true, false))
                     printerPairedAdapter.notifyDataSetChanged()
 
@@ -384,7 +458,11 @@ class PrinterSettingActivity : CommonActivity() {
                     } catch (e: Exception) {
                         deviceName = device.name
                     }
-                    Toast.makeText(this, deviceName + "  " + resources.getString(R.string.msg_is_unpaired), Toast.LENGTH_SHORT).show()
+                    Toast.makeText(
+                        this,
+                        deviceName + "  " + resources.getString(R.string.msg_is_unpaired),
+                        Toast.LENGTH_SHORT
+                    ).show()
                 }
 
                 var position = -1
@@ -473,10 +551,18 @@ class PrinterSettingActivity : CommonActivity() {
 
                 //  [Connected Device] 가 있을 때
                 if (socket != null) {
-                    Toast.makeText(this@PrinterSettingActivity, resources.getString(R.string.msg_only_one_device_connected), Toast.LENGTH_SHORT).show()
+                    Toast.makeText(
+                        this@PrinterSettingActivity,
+                        resources.getString(R.string.msg_only_one_device_connected),
+                        Toast.LENGTH_SHORT
+                    ).show()
 
                 } else if (BluetoothDeviceData.connectedPrinterAddress != null) {
-                    Toast.makeText(this@PrinterSettingActivity, resources.getString(R.string.msg_disconnecting_old_device), Toast.LENGTH_SHORT).show()
+                    Toast.makeText(
+                        this@PrinterSettingActivity,
+                        resources.getString(R.string.msg_disconnecting_old_device),
+                        Toast.LENGTH_SHORT
+                    ).show()
 
                 } else {
 
@@ -547,11 +633,14 @@ class PrinterSettingActivity : CommonActivity() {
     private val deviceList: Unit
         private get() {
             val pairedDevices = mBluetoothAdapter!!.bondedDevices
-            Log.e("print", TAG + "  getDeviceList  " + BluetoothDeviceData.connectedPrinterAddress + " / " + pairedDevices.size)
+            Log.e(
+                "print",
+                TAG + "  getDeviceList  " + BluetoothDeviceData.connectedPrinterAddress + " / " + pairedDevices.size
+            )
             if (0 < pairedDevices.size) {
                 for (device in pairedDevices) {
 
-                    var deviceName = device.name
+                    var deviceName: String? = device.name
                     val deviceAddress = device.address
 
                     try {
@@ -570,10 +659,22 @@ class PrinterSettingActivity : CommonActivity() {
 
                     if (BluetoothDeviceData.connectedPrinterAddress != null && BluetoothDeviceData.connectedPrinterAddress == deviceAddress) {
 
-                        Log.e("print", TAG + "  connected Device : " + device.name + " / " + device.address)
+                        Log.e(
+                            "print",
+                            TAG + "  connected Device : " + device.name + " / " + device.address
+                        )
 
                         if (socket != null) {
-                            connectedItem.add(PrinterDeviceItem(deviceName!!, deviceAddress, true, true))
+                            if (deviceName != null) {
+                                connectedItem.add(
+                                    PrinterDeviceItem(
+                                        deviceName,
+                                        deviceAddress,
+                                        true,
+                                        true
+                                    )
+                                )
+                            }
 
                         } else {
                             try {
@@ -592,13 +693,29 @@ class PrinterSettingActivity : CommonActivity() {
                                 sendBroadcast(intent)
 
                             } catch (e: Exception) {
-                                Toast.makeText(this, "Connect Error.\nException : $e", Toast.LENGTH_SHORT).show()
+                                Toast.makeText(
+                                    this,
+                                    "Connect Error.\nException : $e",
+                                    Toast.LENGTH_SHORT
+                                ).show()
                             }
                         }
                     } else {
-                        Log.e("print", TAG + "  paired Device : " + device.name + " / " + device.address)
-                        pairedItems.add(PrinterDeviceItem(deviceName!!, deviceAddress, false, false))
+                        Log.e(
+                            "print",
+                            TAG + "  paired Device : " + device.name + " / " + device.address
+                        )
 
+                        if (deviceName != null) {
+                            pairedItems.add(
+                                PrinterDeviceItem(
+                                    deviceName!!,
+                                    deviceAddress,
+                                    false,
+                                    false
+                                )
+                            )
+                        }
                     }
                 }
 
@@ -654,16 +771,28 @@ class PrinterSettingActivity : CommonActivity() {
             if (resultCode == RESULT_OK) {
 
                 // k. 블루투스 승인 요청 'YES'
-                Toast.makeText(this, resources.getString(R.string.msg_bluetooth_enabled), Toast.LENGTH_SHORT).show()
+                Toast.makeText(
+                    this,
+                    resources.getString(R.string.msg_bluetooth_enabled),
+                    Toast.LENGTH_SHORT
+                ).show()
                 checkBluetoothState()
             } else {
 
                 // k. 블루투스 승인 요청 'NO'
-                Toast.makeText(this, resources.getString(R.string.msg_bluetooth_not_enabled), Toast.LENGTH_SHORT).show()
+                Toast.makeText(
+                    this,
+                    resources.getString(R.string.msg_bluetooth_not_enabled),
+                    Toast.LENGTH_SHORT
+                ).show()
             }
         } else if (requestCode == BluetoothDeviceData.REQUEST_RENAME_PAIR_DEVICE) {
             if (resultCode == RESULT_OK) {
-                Toast.makeText(this, resources.getString(R.string.msg_bluetooth_device_rename), Toast.LENGTH_SHORT).show()
+                Toast.makeText(
+                    this,
+                    resources.getString(R.string.msg_bluetooth_device_rename),
+                    Toast.LENGTH_SHORT
+                ).show()
             }
         } else if (requestCode == PERMISSION_REQUEST_CODE) {   // permission
             if (resultCode == PermissionActivity.PERMISSIONS_GRANTED) {

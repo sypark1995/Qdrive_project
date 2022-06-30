@@ -4,20 +4,14 @@ package com.giosis.util.qdrive.singapore.barcodescanner;
 import android.annotation.SuppressLint;
 import android.app.Activity;
 import android.app.AlertDialog;
-import android.bluetooth.BluetoothAdapter;
-import android.bluetooth.BluetoothDevice;
 import android.content.ContentValues;
 import android.content.Context;
 import android.content.Intent;
-import android.content.SharedPreferences;
 import android.database.Cursor;
 import android.graphics.Typeface;
 import android.graphics.drawable.Drawable;
 import android.os.Bundle;
-import android.os.Handler;
-import android.os.Message;
 import android.os.Vibrator;
-import android.preference.PreferenceManager;
 import android.text.Editable;
 import android.text.TextWatcher;
 import android.util.Log;
@@ -39,16 +33,11 @@ import android.widget.Toast;
 import android.widget.ToggleButton;
 
 import androidx.annotation.NonNull;
+import androidx.core.content.ContextCompat;
 import androidx.recyclerview.widget.RecyclerView;
 
-import com.giosis.util.qdrive.singapore.BuildConfig;
 import com.giosis.util.qdrive.singapore.LoginActivity;
-import com.giosis.util.qdrive.singapore.MemoryStatus;
 import com.giosis.util.qdrive.singapore.R;
-import com.giosis.util.qdrive.singapore.barcodescanner.bluetooth.BluetoothChatService;
-import com.giosis.util.qdrive.singapore.barcodescanner.bluetooth.DeviceListActivity;
-import com.giosis.util.qdrive.singapore.barcodescanner.bluetooth.KScan;
-import com.giosis.util.qdrive.singapore.barcodescanner.bluetooth.KTSyncData;
 import com.giosis.util.qdrive.singapore.data.CnRPickupResult;
 import com.giosis.util.qdrive.singapore.database.DatabaseHelper;
 import com.giosis.util.qdrive.singapore.gps.GPSTrackerManager;
@@ -63,7 +52,6 @@ import com.giosis.util.qdrive.singapore.list.pickup.PickupTakeBackActivity;
 import com.giosis.util.qdrive.singapore.main.DriverAssignResult;
 import com.giosis.util.qdrive.singapore.main.submenu.SelfCollectionDoneActivity;
 import com.giosis.util.qdrive.singapore.server.RetrofitClient;
-import com.giosis.util.qdrive.singapore.util.StatueType;
 import com.giosis.util.qdrive.singapore.util.CommonActivity;
 import com.giosis.util.qdrive.singapore.util.DataUtil;
 import com.giosis.util.qdrive.singapore.util.FirebaseEvent;
@@ -72,6 +60,7 @@ import com.giosis.util.qdrive.singapore.util.NetworkUtil;
 import com.giosis.util.qdrive.singapore.util.PermissionActivity;
 import com.giosis.util.qdrive.singapore.util.PermissionChecker;
 import com.giosis.util.qdrive.singapore.util.Preferences;
+import com.giosis.util.qdrive.singapore.util.StatueType;
 import com.google.gson.Gson;
 import com.google.zxing.ResultPoint;
 import com.journeyapps.barcodescanner.BarcodeCallback;
@@ -94,29 +83,12 @@ public final class CaptureActivity extends CommonActivity implements DecoratedBa
         TextWatcher, OnKeyListener {
 
     private static final String TAG = "CaptureActivity";
-    private static final String bluetoothTAG = "Capture_Bluetooth";
 
-    private static final int REQUEST_CONNECT_DEVICE = 1;
-    private static final int REQUEST_ENABLE_BT = 2;
     private static final int REQUEST_DELIVERY_DONE = 10;
     private static final int REQUEST_PICKUP_CNR = 11;
     private static final int REQUEST_PICKUP_ADD_SCAN = 12;
     private static final int REQUEST_PICKUP_TAKE_BACK = 13;
     private static final int REQUEST_SELF_COLLECTION = 20;
-
-
-    // Message types sent from the BluetoothChatService Handler
-    public static final int MESSAGE_EXIT = 0;
-    public static final int MESSAGE_STATE_CHANGE = 1;
-    public static final int MESSAGE_READ = 2;
-    public static final int MESSAGE_DEVICE_NAME = 4;
-    public static final int MESSAGE_TOAST = 5;
-    public static final int MESSAGE_DISPLAY = 6;
-    public static final int MESSAGE_SEND = 7;
-    public static final int MESSAGE_SETTING = 255;
-    public static final String DEVICE_NAME = "device_name";
-    public static final String TOAST = "toast";
-
 
     // View
     FrameLayout layout_top_back;
@@ -126,16 +98,9 @@ public final class CaptureActivity extends CommonActivity implements DecoratedBa
     TextView text_capture_camera;
     LinearLayout layout_capture_scanner;
     TextView text_capture_scanner;
-    LinearLayout layout_capture_bluetooth;
-    TextView text_capture_bluetooth;
-    public BluetoothDevice connectedDevice = null;
     ToggleButton toggle_btn_capture_camera_flash;
 
     LinearLayout layout_capture_scanner_mode;
-    LinearLayout layout_capture_bluetooth_mode;
-    TextView text_capture_bluetooth_connect_state;
-    TextView text_capture_bluetooth_device_name;
-    Button btn_capture_bluetooth_device_find;
 
     EditText edit_capture_type_number;
     Button btn_capture_type_number_add;
@@ -187,8 +152,6 @@ public final class CaptureActivity extends CommonActivity implements DecoratedBa
     private BeepManager beepManagerError;
     private BeepManager beepManagerDuple;
 
-    private BluetoothAdapter mBluetoothAdapter = null;
-    private ArrayList<ChangeDriverResult.Data> changeDriverObjectArrayList = new ArrayList<>();
     // NOTIFICATION.  Click Event
     View.OnClickListener clickListener = new View.OnClickListener() {
         @Override
@@ -203,77 +166,29 @@ public final class CaptureActivity extends CommonActivity implements DecoratedBa
 
                 layout_capture_camera.setBackgroundResource(R.drawable.bg_tab_bottom_ff0000);
                 layout_capture_scanner.setBackgroundResource(R.drawable.bg_ffffff);
-                layout_capture_bluetooth.setBackgroundResource(R.drawable.bg_ffffff);
                 text_capture_camera.setTextColor(getResources().getColor(R.color.color_ff0000));
                 text_capture_camera.setTypeface(text_capture_camera.getTypeface(), Typeface.BOLD);
                 text_capture_scanner.setTextColor(getResources().getColor(R.color.color_303030));
                 text_capture_scanner.setTypeface(text_capture_scanner.getTypeface(), Typeface.NORMAL);
-                text_capture_bluetooth.setTextColor(getResources().getColor(R.color.color_303030));
-                text_capture_bluetooth.setTypeface(text_capture_bluetooth.getTypeface(), Typeface.NORMAL);
 
                 layout_capture_scanner_mode.setVisibility(View.GONE);
-                layout_capture_bluetooth_mode.setVisibility(View.GONE);
 
-                // bluetooth
-                if (KTSyncData.mChatService != null)
-                    KTSyncData.mChatService.stop();
-                KTSyncData.bIsRunning = false;
 
                 onResume();
             } else if (id == R.id.layout_capture_scanner) {
 
                 layout_capture_camera.setBackgroundResource(R.drawable.bg_ffffff);
                 layout_capture_scanner.setBackgroundResource(R.drawable.bg_tab_bottom_ff0000);
-                layout_capture_bluetooth.setBackgroundResource(R.drawable.bg_ffffff);
                 text_capture_camera.setTextColor(getResources().getColor(R.color.color_303030));
                 text_capture_camera.setTypeface(text_capture_camera.getTypeface(), Typeface.NORMAL);
                 text_capture_scanner.setTextColor(getResources().getColor(R.color.color_ff0000));
                 text_capture_scanner.setTypeface(text_capture_scanner.getTypeface(), Typeface.BOLD);
-                text_capture_bluetooth.setTextColor(getResources().getColor(R.color.color_303030));
-                text_capture_bluetooth.setTypeface(text_capture_bluetooth.getTypeface(), Typeface.NORMAL);
 
                 layout_capture_scanner_mode.setVisibility(View.VISIBLE);
-                layout_capture_bluetooth_mode.setVisibility(View.GONE);
 
                 // Camera
                 cameraManager.onPause();
 
-                // bluetooth
-                if (KTSyncData.mChatService != null)
-                    KTSyncData.mChatService.stop();
-                KTSyncData.bIsRunning = false;
-            } else if (id == R.id.layout_capture_bluetooth) {
-
-                layout_capture_camera.setBackgroundResource(R.drawable.bg_ffffff);
-                layout_capture_scanner.setBackgroundResource(R.drawable.bg_ffffff);
-                layout_capture_bluetooth.setBackgroundResource(R.drawable.bg_tab_bottom_ff0000);
-                text_capture_camera.setTextColor(getResources().getColor(R.color.color_303030));
-                text_capture_camera.setTypeface(text_capture_camera.getTypeface(), Typeface.NORMAL);
-                text_capture_scanner.setTextColor(getResources().getColor(R.color.color_303030));
-                text_capture_scanner.setTypeface(text_capture_scanner.getTypeface(), Typeface.NORMAL);
-                text_capture_bluetooth.setTextColor(getResources().getColor(R.color.color_ff0000));
-                text_capture_bluetooth.setTypeface(text_capture_bluetooth.getTypeface(), Typeface.BOLD);
-
-                layout_capture_scanner_mode.setVisibility(View.GONE);
-                layout_capture_bluetooth_mode.setVisibility(View.VISIBLE);
-
-                // Camera
-                cameraManager.onPause();
-
-                // Bluetooth 지원 && 비활성화 상태
-                if (mBluetoothAdapter != null) {
-                    if (!mBluetoothAdapter.isEnabled()) {
-                        Intent intent = new Intent(BluetoothAdapter.ACTION_REQUEST_ENABLE);
-                        startActivityForResult(intent, REQUEST_ENABLE_BT);
-                    }
-                }
-
-                KTSyncData.bIsRunning = true;
-            } else if (id == R.id.btn_capture_bluetooth_device_find) {
-
-                mIsScanDeviceListActivityRun = true;
-                Intent intent = new Intent(CaptureActivity.this, DeviceListActivity.class);
-                startActivityForResult(intent, REQUEST_CONNECT_DEVICE);
             } else if (id == R.id.btn_capture_type_number_add) {
 
                 onAddButtonClick();
@@ -315,101 +230,7 @@ public final class CaptureActivity extends CommonActivity implements DecoratedBa
             PermissionChecker.READ_EXTERNAL_STORAGE, PermissionChecker.WRITE_EXTERNAL_STORAGE, PermissionChecker.CAMERA};
     // -------------------------------------------
     private String connectedDeviceName = null;
-    private Runnable mUpdateTimeTask = () -> {
 
-        if (KTSyncData.AutoConnect && KTSyncData.bIsRunning)
-            KTSyncData.mChatService.connect(connectedDevice);
-    };
-    // Bluetooth
-    @SuppressLint("HandlerLeak")
-    private final Handler bluetoothHandler = new Handler() {
-        @SuppressLint("SetTextI18n")
-        @Override
-        public void handleMessage(Message msg) {
-            Log.i(bluetoothTAG, "handleMessage " + msg.what);
-
-            switch (msg.what) {
-                case BluetoothChatService.MESSAGE_STATE_CHANGE:
-                    Log.i(bluetoothTAG, "MESSAGE_STATE_CHANGE: " + msg.arg1);
-                    switch (msg.arg1) {
-                        case BluetoothChatService.STATE_CONNECTED:
-
-                            text_capture_bluetooth_connect_state.setText(getResources().getString(R.string.text_connected));
-                            text_capture_bluetooth_device_name.setVisibility(View.VISIBLE);
-                            text_capture_bluetooth_device_name.setText("(" + connectedDeviceName + ")");
-                            btn_capture_bluetooth_device_find.setVisibility(View.GONE);
-
-                            removeCallbacks(mUpdateTimeTask);
-                            KTSyncData.mKScan.DeviceConnected(true);
-                            break;
-                        case BluetoothChatService.STATE_CONNECTING:
-
-                            text_capture_bluetooth_connect_state.setText(getResources().getString(R.string.text_connecting));
-                            text_capture_bluetooth_device_name.setVisibility(View.GONE);
-                            btn_capture_bluetooth_device_find.setVisibility(View.GONE);
-                            break;
-                        case BluetoothChatService.STATE_LISTEN:
-                        case BluetoothChatService.STATE_NONE:
-
-                            text_capture_bluetooth_connect_state.setText(getResources().getString(R.string.text_disconnected));
-                            text_capture_bluetooth_device_name.setVisibility(View.GONE);
-                            btn_capture_bluetooth_device_find.setVisibility(View.VISIBLE);
-
-                            break;
-                        case BluetoothChatService.STATE_LOST:
-
-                            text_capture_bluetooth_connect_state.setText(getResources().getString(R.string.text_disconnected));
-                            text_capture_bluetooth_device_name.setVisibility(View.GONE);
-                            btn_capture_bluetooth_device_find.setVisibility(View.VISIBLE);
-
-                            KTSyncData.bIsConnected = false;
-                            postDelayed(mUpdateTimeTask, 2000);
-                            break;
-                        case BluetoothChatService.STATE_FAILED:
-
-                            text_capture_bluetooth_connect_state.setText(getResources().getString(R.string.text_disconnected));
-                            text_capture_bluetooth_device_name.setVisibility(View.GONE);
-                            btn_capture_bluetooth_device_find.setVisibility(View.VISIBLE);
-
-                            postDelayed(mUpdateTimeTask, 5000);
-                            break;
-                    }
-                    break;
-
-                case BluetoothChatService.MESSAGE_READ:
-
-                    byte[] readBuf = (byte[]) msg.obj;
-
-                    for (int i = 0; i < msg.arg1; i++)
-                        KTSyncData.mKScan.HandleInputData(readBuf[i]);
-                    break;
-
-                case BluetoothChatService.MESSAGE_DEVICE_NAME:
-                    // save the connected device's name
-                    connectedDeviceName = msg.getData().getString(BluetoothChatService.DEVICE_NAME);
-                    Toast.makeText(CaptureActivity.this, getResources().getString(R.string.text_connected_to) + connectedDeviceName, Toast.LENGTH_SHORT).show();
-                    break;
-
-                case BluetoothChatService.MESSAGE_TOAST:
-                    Toast.makeText(CaptureActivity.this, msg.getData().getString(BluetoothChatService.TOAST), Toast.LENGTH_SHORT).show();
-                    break;
-
-                case KScan.MESSAGE_DISPLAY:
-
-                    byte[] displayBuf = (byte[]) msg.obj;
-                    String displayMessage = new String(displayBuf, 0, msg.arg1);
-                    onBluetoothBarcodeAdd(displayMessage);
-                    KTSyncData.bIsSyncFinished = true;
-                    break;
-
-                case KScan.MESSAGE_SEND:
-
-                    byte[] sendBuf = (byte[]) msg.obj;
-                    KTSyncData.mChatService.write(sendBuf);
-                    break;
-            }
-        }
-    };
 
     /*
      * Qxpress송장번호 규칙(범용)
@@ -454,17 +275,11 @@ public final class CaptureActivity extends CommonActivity implements DecoratedBa
         text_capture_camera = findViewById(R.id.text_capture_camera);
         layout_capture_scanner = findViewById(R.id.layout_capture_scanner);
         text_capture_scanner = findViewById(R.id.text_capture_scanner);
-        layout_capture_bluetooth = findViewById(R.id.layout_capture_bluetooth);
-        text_capture_bluetooth = findViewById(R.id.text_capture_bluetooth);
 
         barcode_scanner = findViewById(R.id.barcode_scanner);
         toggle_btn_capture_camera_flash = findViewById(R.id.toggle_btn_capture_camera_flash);
 
         layout_capture_scanner_mode = findViewById(R.id.layout_capture_scanner_mode);
-        layout_capture_bluetooth_mode = findViewById(R.id.layout_capture_bluetooth_mode);
-        text_capture_bluetooth_connect_state = findViewById(R.id.text_capture_bluetooth_connect_state);
-        text_capture_bluetooth_device_name = findViewById(R.id.text_capture_bluetooth_device_name);
-        btn_capture_bluetooth_device_find = findViewById(R.id.btn_capture_bluetooth_device_find);
 
         edit_capture_type_number = findViewById(R.id.edit_capture_type_number);
         btn_capture_type_number_add = findViewById(R.id.btn_capture_type_number_add);
@@ -480,13 +295,10 @@ public final class CaptureActivity extends CommonActivity implements DecoratedBa
         layout_top_back.setOnClickListener(clickListener);
         layout_capture_camera.setOnClickListener(clickListener);
         layout_capture_scanner.setOnClickListener(clickListener);
-        layout_capture_bluetooth.setOnClickListener(clickListener);
-        btn_capture_bluetooth_device_find.setOnClickListener(clickListener);
         edit_capture_type_number.setOnClickListener(clickListener);
         btn_capture_type_number_add.setOnClickListener(clickListener);
         btn_capture_barcode_reset.setOnClickListener(clickListener);
         btn_capture_barcode_confirm.setOnClickListener(clickListener);
-
 
         edit_capture_type_number.setOnTouchListener(this);
         edit_capture_type_number.addTextChangedListener(this);
@@ -494,7 +306,7 @@ public final class CaptureActivity extends CommonActivity implements DecoratedBa
         edit_capture_type_number.setLongClickable(false);
         edit_capture_type_number.setTextIsSelectable(false);
 
-        editTextDelButtonDrawable = getResources().getDrawable(R.drawable.btn_delete);
+        editTextDelButtonDrawable = ContextCompat.getDrawable(this, R.drawable.btn_delete);
         editTextDelButtonDrawable.setBounds(0, 0, editTextDelButtonDrawable.getIntrinsicWidth(), editTextDelButtonDrawable.getIntrinsicHeight());
 
 
@@ -624,9 +436,6 @@ public final class CaptureActivity extends CommonActivity implements DecoratedBa
             }
         });
 
-
-        // 블루투스 초기화
-        initBluetoothDevice();
         // 초기화
         initManualScanViews(mScanType);
 
@@ -645,42 +454,6 @@ public final class CaptureActivity extends CommonActivity implements DecoratedBa
         }
     }
 
-    private void initBluetoothDevice() {
-        // Get local Bluetooth adapter        // Bluetooth 지원 여부 확인
-        mBluetoothAdapter = BluetoothAdapter.getDefaultAdapter();
-
-        // If the adapter is null, then Bluetooth is not supported          // Bluetooth 지원하지 않음
-        if (mBluetoothAdapter == null && !BuildConfig.DEBUG) {
-
-            Toast.makeText(CaptureActivity.this, getResources().getString(R.string.msg_bluetooth_not_supported), Toast.LENGTH_LONG).show();
-            finish();
-            return;
-        }
-
-
-        KTSyncData.mKScan = new KScan(this, bluetoothHandler);
-
-        for (int i = 0; i < 10; i++) {
-            KTSyncData.SerialNumber[i] = '0';
-            KTSyncData.FWVersion[i] = '0';
-        }
-
-
-        byte[] temp;
-
-        SharedPreferences app_preferences = PreferenceManager.getDefaultSharedPreferences(this);
-        KTSyncData.AutoConnect = app_preferences.getBoolean("Auto Connect", false);
-        KTSyncData.AttachTimestamp = app_preferences.getBoolean("AttachTimeStamp", false);
-        KTSyncData.AttachType = app_preferences.getBoolean("AttachBarcodeType", false);
-        KTSyncData.AttachSerialNumber = app_preferences.getBoolean("AttachSerialNumber", false);
-        temp = app_preferences.getString("Data Delimiter", "4").getBytes();
-        KTSyncData.DataDelimiter = temp[0] - '0';
-        temp = app_preferences.getString("Record Delimiter", "1").getBytes();
-        KTSyncData.RecordDelimiter = temp[0] - '0';
-        KTSyncData.AttachLocation = app_preferences.getBoolean("AttachLocationData", false);
-        KTSyncData.SyncNonCompliant = app_preferences.getBoolean("SyncNonCompliant", false);
-        KTSyncData.AttachQuantity = app_preferences.getBoolean("AttachQuantity", false);
-    }
 
     private void initManualScanViews(String scanType) {
 
@@ -720,10 +493,7 @@ public final class CaptureActivity extends CommonActivity implements DecoratedBa
     public void onStart() {
         super.onStart();
 
-        if (mBluetoothAdapter != null && mBluetoothAdapter.isEnabled()) {
-            if (KTSyncData.mChatService == null)
-                setupChat();
-        }
+
     }
 
     @Override
@@ -755,31 +525,6 @@ public final class CaptureActivity extends CommonActivity implements DecoratedBa
         beepManager.updatePrefs();
         beepManagerError.updatePrefs();
         beepManagerDuple.updatePrefs();
-
-        // Bluetooth
-        if (KTSyncData.bIsRunning)
-            return;
-
-        // Performing this check in onResume() covers the case in which BT was
-        // not enabled during onStart(), so we were paused to enable it...
-        // onResume() will be called when ACTION_REQUEST_ENABLE activity
-        // returns.
-        if (KTSyncData.mChatService != null) {
-            // Only if the state is STATE_NONE, do we know that we haven't
-            // started already
-            if (KTSyncData.mChatService.getState() == BluetoothChatService.STATE_NONE) {
-                // Start the Bluetooth chat services
-                KTSyncData.mChatService.start();
-            }
-        }
-
-        if (KTSyncData.bIsConnected && KTSyncData.LockUnlock) {
-            // Toast.makeText(this, "KTDemo Main Screen",
-            // Toast.LENGTH_LONG).show();
-            KTSyncData.mKScan.LockUnlockScanButton(true);
-        }
-        KTSyncData.mKScan.mHandler = bluetoothHandler;
-
 
         if (isPermissionTrue) {
             // Camera
@@ -897,12 +642,6 @@ public final class CaptureActivity extends CommonActivity implements DecoratedBa
             scanBarcodeArrayList.clear();
             adapter.notifyDataSetChanged();
         }
-    }
-
-    private void setupChat() {
-
-        // Initialize the BluetoothChatService to perform bluetooth connections
-        KTSyncData.mChatService = new BluetoothChatService(this, bluetoothHandler);
     }
 
     // EditText
@@ -1032,32 +771,6 @@ public final class CaptureActivity extends CommonActivity implements DecoratedBa
         return false;
     }
 
-    // Bluetooth
-    private void onBluetoothBarcodeAdd(String strBarcodeNo) {
-
-        // bluetooth "\n"이 포함되어서 다른번호로 인식 > trim 으로 공백 없애기
-        strBarcodeNo = strBarcodeNo.trim();
-
-        if (!strBarcodeNo.isEmpty()) {
-
-            boolean isDuplicate = false;
-
-            for (int i = 0; i < scannedBarcode.size(); i++) {
-
-                if (scannedBarcode.get(i).equalsIgnoreCase(strBarcodeNo)) {
-                    isDuplicate = true;
-                }
-            }
-
-            if (!isDuplicate) {
-
-                scannedBarcode.add(strBarcodeNo);
-            }
-            Log.i(TAG, "  onBluetoothBarcodeAdd > " + strBarcodeNo + " / " + isDuplicate);
-
-            checkValidation(strBarcodeNo, isDuplicate, "onBluetoothBarcodeAdd");
-        }
-    }
 
     // EditText
     public void onAddButtonClick() {
@@ -1091,35 +804,10 @@ public final class CaptureActivity extends CommonActivity implements DecoratedBa
         Log.e(TAG, "onActivityResult " + requestCode + " / " + resultCode);
 
         switch (requestCode) {
-            case REQUEST_CONNECT_DEVICE: {
-                //  Bluetooth Device 연결
-                if (resultCode == Activity.RESULT_OK) {
 
-                    String address = data.getExtras().getString(DeviceListActivity.EXTRA_DEVICE_ADDRESS);
-
-                    connectedDevice = mBluetoothAdapter.getRemoteDevice(address);
-                    KTSyncData.mChatService.connect(connectedDevice);
-                }
-            }
-            break;
-
-            case REQUEST_ENABLE_BT: {
-
-                if (resultCode == Activity.RESULT_OK) {
-                    // Bluetooth 승인 요청 'YES'
-                    setupChat();
-                } else {
-                    // Bluetooth 승인 요청 'NO'
-                    Toast.makeText(CaptureActivity.this, R.string.msg_bluetooth_enabled, Toast.LENGTH_SHORT).show();
-                    finish();
-                }
-            }
-            break;
 
             case REQUEST_DELIVERY_DONE: {
-
                 if (resultCode == Activity.RESULT_OK) {
-
                     finish();
                 }
             }
@@ -1191,7 +879,6 @@ public final class CaptureActivity extends CommonActivity implements DecoratedBa
                 if (mScanType.equals(CaptureType.CHANGE_DELIVERY_DRIVER)) {
 
                     barcodeList.add(changeDriverResult.getTrackingNo() + "  |  " + changeDriverResult.getStatus() + "  |  " + changeDriverResult.getCurrentDriver());
-                    changeDriverObjectArrayList.add(changeDriverResult);
                 } else {
 
                     barcodeList.add(barcodeNo);
@@ -2045,9 +1732,6 @@ public final class CaptureActivity extends CommonActivity implements DecoratedBa
 
         cameraManager.onPause();
 
-        if (mIsScanDeviceListActivityRun || KTSyncData.bIsRunning) {
-            mIsScanDeviceListActivityRun = false;
-        }
     }
 
     @Override
@@ -2064,13 +1748,6 @@ public final class CaptureActivity extends CommonActivity implements DecoratedBa
         onResetButtonClick();
 
         DataUtil.stopGPSManager(gpsTrackerManager);
-
-        // Stop the Bluetooth chat services
-        if (KTSyncData.mChatService != null)
-            KTSyncData.mChatService.stop();
-        KTSyncData.mChatService = null;
-        KTSyncData.bIsRunning = false;
-
 
         if (beepManager != null) {
             beepManager.destroy();
