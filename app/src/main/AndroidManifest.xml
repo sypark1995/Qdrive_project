@@ -50,6 +50,18 @@
         android:theme="@style/AppTheme"
         android:usesCleartextTraffic="true">
 
+        <meta-data
+            android:name="com.google.android.maps.v2.API_KEY"
+            android:value="AIzaSyA1NWLPCM1Ng4go6Al3CxR36_C9Us0BTk0" />
+
+        <meta-data
+            android:name="com.google.android.gms.version"
+            android:value="@integer/google_play_services_version" />
+
+        <uses-library
+            android:name="org.apache.http.legacy"
+            android:required="false" />
+
         <activity
             android:name=".push.AlertDialogActivity"
             android:launchMode="singleTop"
@@ -75,14 +87,6 @@
             android:configChanges="orientation|keyboardHidden"
             android:label="@string/app_name"
             android:screenOrientation="portrait" />
-
-        <meta-data
-            android:name="com.google.android.maps.v2.API_KEY"
-            android:value="AIzaSyA1NWLPCM1Ng4go6Al3CxR36_C9Us0BTk0" />
-
-        <meta-data
-            android:name="com.google.android.gms.version"
-            android:value="@integer/google_play_services_version" />
 
         <receiver
             android:name="com.giosis.util.qdrive.singapore.AlarmReceiver"
@@ -317,9 +321,6 @@
         <service android:name="com.giosis.util.qdrive.singapore.gps.FusedProviderService" />
         <service android:name="com.giosis.util.qdrive.singapore.gps.LocationManagerService" />
 
-        <uses-library
-            android:name="org.apache.http.legacy"
-            android:required="false" />
     </application>
 
 </manifest>
