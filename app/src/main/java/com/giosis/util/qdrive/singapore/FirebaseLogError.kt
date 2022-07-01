@@ -32,7 +32,6 @@ object FirebaseLogError {
                 val proc = runTime.exec(cmd)
                 proc.waitFor()
 
-
                 proc.exitValue().toString()
             } catch (e: Exception) {
                 e.toString()
@@ -46,19 +45,29 @@ object FirebaseLogError {
             }
 
             FirebaseCrashlytics.getInstance().setCustomKey(
-                "PING",
+                "PING qxapi",
                 returnString
             )
 
+            nowTimeCheck()
+            urlConnectionCheck()
+            telephonyInfo()
+
             if (result != "0") {
-                urlConnectionCheck()
-                nowTimeCheck()
-                telephonyInfo()
+
                 delay(1000)
+
+                val resultString = qoo10Result + daumResult + nowTime + teleInfo
                 FirebaseCrashlytics.getInstance().setCustomKey(
-                    "ERROR INFO",
-                    qoo10Result + daumResult + nowTime + teleInfo
+                    "ERROR INFO", resultString
                 )
+
+                RetrofitClient.instanceDynamic().requestWriteLog(
+                    "1", "PING ERROR", "DNS error in RetrofitClient",
+                    resultString
+                ).subscribeOn(Schedulers.io())
+                    .observeOn(AndroidSchedulers.mainThread())
+                    .subscribe({ }) {}
             }
         }
     }
@@ -69,18 +78,17 @@ object FirebaseLogError {
                 val url = URL("https://www.qoo10.com")
                 val urlConnection: HttpURLConnection = url.openConnection() as HttpURLConnection
                 qoo10Result = try {
-                    "qoo10 url connection / ${urlConnection.responseCode}"
+                    "qoo10 connect / ${urlConnection.responseCode}"
                 } catch (e: java.lang.Exception) {
-                    "qoo10 url connection $e"
+                    "qoo10 connect $e"
                 }
 
                 val url1 = URL("https://www.daum.net")
                 val urlConnection1: HttpURLConnection = url1.openConnection() as HttpURLConnection
                 daumResult = try {
-                    "daum url connection / ${urlConnection1.responseCode}"
+                    "daum connect / ${urlConnection1.responseCode}"
                 } catch (e: java.lang.Exception) {
-
-                    "daum url connection $e"
+                    "daum connect $e"
                 }
             }
         }
@@ -90,20 +98,20 @@ object FirebaseLogError {
         val dateFormat = SimpleDateFormat("yyyy-MM-dd HH:mm:ss")
         val regDataString = dateFormat.format(Date())
 
-        nowTime = " / now Time : $regDataString"
+        nowTime = " / Time : $regDataString"
     }
 
     private fun telephonyInfo() {
         val tm =
             MyApplication.context.getSystemService(Context.TELEPHONY_SERVICE) as TelephonyManager
 
-        teleInfo = "TelephonyManager" + tm.simOperatorName
+        teleInfo = "Telephony " + tm.simOperatorName
     }
 
     fun adminLogCallApi(string: String) {
         RetrofitClient.instanceDynamic().requestWriteLog(
-            "1", string, "DNS error in RetrofitClient",
-            qoo10Result + daumResult + nowTime + teleInfo
+            "1", " ERROR", "DNS error in RetrofitClient",
+            string + " / "+ qoo10Result + daumResult + nowTime + teleInfo
         ).subscribeOn(Schedulers.io())
             .observeOn(AndroidSchedulers.mainThread())
             .subscribe({ }) {}
