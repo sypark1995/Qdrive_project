@@ -121,7 +121,7 @@ object MainActivityServer {
 
             } catch (e: java.lang.Exception) {
                 delay(1000)
-                FirebaseLogError.adminLogCallApi("DOWNLOAD")
+                FirebaseLogError.adminLogCallApi("DOWNLOAD $e")
                 e.printStackTrace()
             }
         }

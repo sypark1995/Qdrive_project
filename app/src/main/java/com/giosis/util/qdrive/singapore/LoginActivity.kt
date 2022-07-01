@@ -385,7 +385,7 @@ class LoginActivity : CommonActivity() {
 
             } catch (e: Exception) {
                 delay(1000)
-                FirebaseLogError.adminLogCallApi("LOGIN")
+                FirebaseLogError.adminLogCallApi("LOGIN ${e}")
             }
         }
     }

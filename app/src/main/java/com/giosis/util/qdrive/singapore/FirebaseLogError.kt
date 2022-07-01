@@ -2,6 +2,7 @@ package com.giosis.util.qdrive.singapore
 
 import android.content.Context
 import android.telephony.TelephonyManager
+import android.util.Log
 import com.giosis.util.qdrive.singapore.server.RetrofitClient
 import com.google.firebase.crashlytics.FirebaseCrashlytics
 import io.reactivex.rxjava3.android.schedulers.AndroidSchedulers
@@ -111,9 +112,35 @@ object FirebaseLogError {
     fun adminLogCallApi(string: String) {
         RetrofitClient.instanceDynamic().requestWriteLog(
             "1", " ERROR", "DNS error in RetrofitClient",
-            string + " / "+ qoo10Result + daumResult + nowTime + teleInfo
+            string + " / " + qoo10Result + daumResult + nowTime + teleInfo
         ).subscribeOn(Schedulers.io())
             .observeOn(AndroidSchedulers.mainThread())
             .subscribe({ }) {}
+    }
+
+
+    fun adminLogImage(string: String) {
+
+        nowTimeCheck()
+
+        CoroutineScope(Dispatchers.IO).launch {
+            delay(1000)
+            
+            urlConnectionCheck()
+            telephonyInfo()
+
+            RetrofitClient.instanceMobileService()
+                .requestWriteLog(
+                    "1",
+                    "IMAGEUPLOAD",
+                    "image upload error in RetrofitClient",
+                    qoo10Result + daumResult + nowTime + teleInfo + "RetrofitClient Exception $string"
+                )
+                .subscribeOn(Schedulers.io())
+                .observeOn(AndroidSchedulers.mainThread())
+                .subscribe({ })
+                { }
+        }
+
     }
 }

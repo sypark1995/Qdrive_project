@@ -16,6 +16,7 @@ import android.util.Log;
 import android.view.View;
 
 import com.giosis.util.qdrive.singapore.BuildConfig;
+import com.giosis.util.qdrive.singapore.FirebaseLogError;
 import com.giosis.util.qdrive.singapore.R;
 import com.giosis.util.qdrive.singapore.data.CaptureData;
 import com.giosis.util.qdrive.singapore.data.FailedCodeData;
@@ -145,21 +146,8 @@ public class DataUtil {
 
             try {
                 tempFile = File.createTempFile("temp", ".jpg", outputDir);
-
             } catch (IOException ioException) {
-
-                RetrofitClient.INSTANCE.instanceMobileService()
-                        .requestWriteLog("1", "IMAGEUPLOAD", "image upload error", "image file ioException " + ioException.getLocalizedMessage())
-                        .subscribeOn(Schedulers.io())
-                        .observeOn(AndroidSchedulers.mainThread())
-                        .subscribe(it -> {
-                            Log.e("imageUpload", "result  ${it.resultCode}");
-                        }, it -> {
-                            Log.e("imageUpload", it.getMessage());
-                        });
-
             }
-
 
             if (tempFile != null) {
 
@@ -192,39 +180,12 @@ public class DataUtil {
                     e.printStackTrace();
                 }
 
-                long size2 = tempFile.length();
-
-                Log.e("imageUpload", "size2 11111 " + size2);
-
                 imagePath = ImageUpload.INSTANCE.upload(tempFile, basePath, path, trackNo);
-
-            } else {
-
-                Log.e("ImageUpload", "tempFile is NULL why?");
-                RetrofitClient.INSTANCE.instanceMobileService()
-                        .requestWriteLog("1", "IMAGEUPLOAD", "image upload error", " tempFile is NULL why? ")
-                        .subscribeOn(Schedulers.io())
-                        .observeOn(AndroidSchedulers.mainThread())
-                        .subscribe(it -> {
-                            Log.e("imageUpload", "result  ${it.resultCode}");
-                        }, it -> {
-                            Log.e("imageUpload", it.getMessage());
-                        });
-
             }
 
         } catch (Exception e) {
             Log.e("ImageUpload", e.getLocalizedMessage());
-
-            RetrofitClient.INSTANCE.instanceMobileService()
-                    .requestWriteLog("1", "IMAGEUPLOAD", "image upload error", " Exception " + e.getLocalizedMessage())
-                    .subscribeOn(Schedulers.io())
-                    .observeOn(AndroidSchedulers.mainThread())
-                    .subscribe(it -> {
-                        Log.e("imageUpload", "result  ${it.resultCode}");
-                    }, it -> {
-                        Log.e("imageUpload", it.getMessage());
-                    });
+            FirebaseLogError.INSTANCE.adminLogImage(e.getLocalizedMessage());
         }
         return imagePath;
     }
