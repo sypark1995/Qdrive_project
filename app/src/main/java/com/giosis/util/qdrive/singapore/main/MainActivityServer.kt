@@ -23,15 +23,12 @@ import com.giosis.util.qdrive.singapore.server.RetrofitClient
 import com.giosis.util.qdrive.singapore.util.*
 import com.google.gson.Gson
 import com.google.gson.reflect.TypeToken
-import kotlinx.coroutines.CoroutineScope
-import kotlinx.coroutines.Dispatchers
-import kotlinx.coroutines.launch
-import kotlinx.coroutines.withContext
 import com.google.firebase.crashlytics.FirebaseCrashlytics
 import io.reactivex.rxjava3.android.schedulers.AndroidSchedulers
 import io.reactivex.rxjava3.schedulers.Schedulers
 import kotlinx.android.synthetic.main.activity_main.*
 import kotlinx.android.synthetic.main.activity_main_home.view.*
+import kotlinx.coroutines.*
 import java.net.HttpURLConnection
 import java.net.URL
 import java.text.SimpleDateFormat
@@ -126,9 +123,10 @@ object MainActivityServer {
                 }
 
             } catch (e: java.lang.Exception) {
+                delay(1000)
                 RetrofitClient.instanceDynamic().requestWriteLog(
                     "1", "DOWNLOAD", "DNS error in RetrofitClient",
-                    "RetrofitClient Exception $e"
+                    qoo10Result + daumResult + nowTime + teleInfo
                 )
                     .subscribeOn(Schedulers.io())
                     .observeOn(AndroidSchedulers.mainThread())
@@ -625,42 +623,51 @@ object MainActivityServer {
         }
     }
 
+    var qoo10Result = ""
+    var daumResult = ""
     private fun urlConnectionCheck() {
         CoroutineScope(Dispatchers.IO).launch {
             runCatching {
                 val url = URL("https://www.qoo10.com")
                 val urlConnection: HttpURLConnection = url.openConnection() as HttpURLConnection
                 try {
-                    Log.e("url", urlConnection.responseCode.toString())
                     FirebaseCrashlytics.getInstance().setCustomKey(
                         "qoo10 url connection",
                         urlConnection.responseCode
                     )
+
+                    qoo10Result = "qoo10 url connection / ${urlConnection.responseCode}"
                 } catch (e: java.lang.Exception) {
                     FirebaseCrashlytics.getInstance().setCustomKey(
                         "qoo10 url connection",
                         "error / $e"
                     )
+
+                    qoo10Result = "qoo10 url connection $e"
                 }
 
                 val url1 = URL("https://www.daum.net")
                 val urlConnection1: HttpURLConnection = url1.openConnection() as HttpURLConnection
                 try {
-                    Log.e("url1", urlConnection1.responseCode.toString())
                     FirebaseCrashlytics.getInstance().setCustomKey(
                         "daum url connection",
                         urlConnection1.responseCode
                     )
+
+                    daumResult = "daum url connection / ${urlConnection.responseCode}"
                 } catch (e: java.lang.Exception) {
                     FirebaseCrashlytics.getInstance().setCustomKey(
                         "daum url connection",
                         "error / $e"
                     )
+
+                    daumResult = "daum url connection $e"
                 }
             }
         }
     }
 
+    var nowTime = ""
     private fun nowTimeCheck() {
         val dateFormat = SimpleDateFormat("yyyy-MM-dd HH:mm:ss")
         val regDataString = dateFormat.format(Date())
@@ -668,8 +675,10 @@ object MainActivityServer {
             "now Time",
             regDataString
         )
+        nowTime = " / now Time : $regDataString"
     }
 
+    var teleInfo = ""
     private fun telephonyInfo() {
         val tm = context.getSystemService(Context.TELEPHONY_SERVICE) as TelephonyManager
 
@@ -686,6 +695,7 @@ object MainActivityServer {
                 )
             }
         }
+        teleInfo = "TelephonyManager" + tm.simOperatorName
     }
 
 }

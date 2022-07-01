@@ -38,13 +38,13 @@ import io.reactivex.rxjava3.android.schedulers.AndroidSchedulers
 import io.reactivex.rxjava3.schedulers.Schedulers
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.delay
 import kotlinx.coroutines.launch
 import java.io.File
 import java.net.HttpURLConnection
 import java.net.URL
 import java.text.SimpleDateFormat
 import java.util.*
-import kotlin.collections.ArrayList
 
 
 class LoginActivity : CommonActivity() {
@@ -88,7 +88,7 @@ class LoginActivity : CommonActivity() {
                 R.anim.shake_animation
             )
         )
-      ///
+        ///
         binding.imgLoginTopLogo.setOnClickListener {
             binding.imgLoginTopBg.startAnimation(
                 AnimationUtils.loadAnimation(
@@ -391,8 +391,10 @@ class LoginActivity : CommonActivity() {
                 }
 
             } catch (e: Exception) {
-                RetrofitClient.instanceDynamic().requestWriteLog("1", "LOGIN", "DNS error in RetrofitClient",
-                    "RetrofitClient Exception $e"
+                delay(1000)
+                RetrofitClient.instanceDynamic().requestWriteLog(
+                    "1", "LOGIN", "DNS error in RetrofitClient",
+                    qoo10Result + daumResult + nowTime + teleInfo
                 )
                     .subscribeOn(Schedulers.io())
                     .observeOn(AndroidSchedulers.mainThread())
@@ -540,40 +542,49 @@ class LoginActivity : CommonActivity() {
         }
     }
 
+    var qoo10Result = ""
+    var daumResult = ""
     private fun urlConnectionCheck() {
         lifecycleScope.launch(Dispatchers.IO) {
             val url = URL("https://www.qoo10.com")
             val urlConnection: HttpURLConnection = url.openConnection() as HttpURLConnection
             try {
-                Log.e("url", urlConnection.responseCode.toString())
                 FirebaseCrashlytics.getInstance().setCustomKey(
                     "qoo10 url connection",
                     urlConnection.responseCode
                 )
+
+                qoo10Result = "qoo10 url connection / ${urlConnection.responseCode}"
             } catch (e: java.lang.Exception) {
                 FirebaseCrashlytics.getInstance().setCustomKey(
                     "qoo10 url connection",
                     "error / $e"
                 )
+
+                qoo10Result = "qoo10 url connection $e"
             }
 
             val url1 = URL("https://www.daum.net")
             val urlConnection1: HttpURLConnection = url1.openConnection() as HttpURLConnection
             try {
-                Log.e("url1", urlConnection1.responseCode.toString())
                 FirebaseCrashlytics.getInstance().setCustomKey(
                     "daum url connection",
                     urlConnection1.responseCode
                 )
+
+                daumResult = "daum url connection / ${urlConnection.responseCode}"
             } catch (e: java.lang.Exception) {
                 FirebaseCrashlytics.getInstance().setCustomKey(
                     "daum url connection",
                     "error / $e"
                 )
+
+                daumResult = "daum url connection $e"
             }
         }
     }
 
+    var nowTime = ""
     private fun nowTimeCheck() {
         val dateFormat = SimpleDateFormat("yyyy-MM-dd HH:mm:ss")
         val regDataString = dateFormat.format(Date())
@@ -581,10 +592,13 @@ class LoginActivity : CommonActivity() {
             "now Time",
             regDataString
         )
+        nowTime = " / now Time : $regDataString"
     }
 
+    var teleInfo = ""
     private fun telephonyInfo() {
-        val tm = getSystemService(Context.TELEPHONY_SERVICE) as TelephonyManager
+        val tm =
+            MyApplication.context.getSystemService(Context.TELEPHONY_SERVICE) as TelephonyManager
 
         FirebaseCrashlytics.getInstance().setCustomKey(
             "TelephonyManager",
@@ -599,6 +613,7 @@ class LoginActivity : CommonActivity() {
                 )
             }
         }
+        teleInfo = "TelephonyManager" + tm.simOperatorName
     }
 
     override fun onBackPressed() {
