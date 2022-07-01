@@ -10,7 +10,6 @@ import android.net.Uri
 import android.os.Build
 import android.os.Bundle
 import android.provider.Settings
-import android.telephony.TelephonyManager
 import android.util.Log
 import android.view.View
 import android.view.ViewGroup
@@ -36,15 +35,9 @@ import com.google.gson.Gson
 import com.google.gson.reflect.TypeToken
 import io.reactivex.rxjava3.android.schedulers.AndroidSchedulers
 import io.reactivex.rxjava3.schedulers.Schedulers
-import kotlinx.coroutines.CoroutineScope
-import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.launch
 import java.io.File
-import java.net.HttpURLConnection
-import java.net.URL
-import java.text.SimpleDateFormat
-import java.util.*
 
 
 class LoginActivity : CommonActivity() {
@@ -295,7 +288,7 @@ class LoginActivity : CommonActivity() {
             }
 
             try {
-                pingCheck()
+                FirebaseLogError.pingCheck()
 
                 val result = RetrofitClient.instanceDynamic().requestServerLogin(
                     userID, userPW, chanel, deviceUUID,
@@ -392,13 +385,7 @@ class LoginActivity : CommonActivity() {
 
             } catch (e: Exception) {
                 delay(1000)
-                RetrofitClient.instanceDynamic().requestWriteLog(
-                    "1", "LOGIN", "DNS error in RetrofitClient",
-                    qoo10Result + daumResult + nowTime + teleInfo
-                )
-                    .subscribeOn(Schedulers.io())
-                    .observeOn(AndroidSchedulers.mainThread())
-                    .subscribe({ }) {}
+                FirebaseLogError.adminLogCallApi("LOGIN")
             }
         }
     }
@@ -506,83 +493,6 @@ class LoginActivity : CommonActivity() {
             isPermissionTrue = true
             Log.e("permission", "$tag   Permission granted")
         }
-    }
-
-    private fun pingCheck() {
-
-        CoroutineScope(Dispatchers.IO).launch {
-            val result: String = try {
-                val runTime = Runtime.getRuntime()
-                val cmd = "ping -c 1 -W 10 qxapi.qxpress.net"
-
-                val proc = runTime.exec(cmd)
-                proc.waitFor()
-
-                proc.exitValue().toString()
-            } catch (e: Exception) {
-                e.toString()
-            }
-            val returnString = when (result) {
-                "0" -> "Ping Success"
-                "1" -> "Ping Fail"
-                "2" -> "Ping Error"
-                else -> result
-            }
-
-            FirebaseCrashlytics.getInstance().setCustomKey(
-                "PING qxapi",
-                returnString
-            )
-
-            if (result != "0") {
-                urlConnectionCheck()
-                nowTimeCheck()
-                telephonyInfo()
-
-                FirebaseCrashlytics.getInstance().setCustomKey(
-                    "ERROR INFO",
-                    qoo10Result + daumResult + nowTime + teleInfo
-                )
-            }
-        }
-    }
-
-    var qoo10Result = ""
-    var daumResult = ""
-    private fun urlConnectionCheck() {
-        lifecycleScope.launch(Dispatchers.IO) {
-            val url = URL("https://www.qoo10.com")
-            val urlConnection: HttpURLConnection = url.openConnection() as HttpURLConnection
-            qoo10Result = try {
-                "qoo10 url connection / ${urlConnection.responseCode}"
-            } catch (e: java.lang.Exception) {
-                "qoo10 url connection $e"
-            }
-
-            val url1 = URL("https://www.daum.net")
-            val urlConnection1: HttpURLConnection = url1.openConnection() as HttpURLConnection
-            daumResult = try {
-                "daum url connection / ${urlConnection1.responseCode}"
-            } catch (e: java.lang.Exception) {
-                "daum url connection $e"
-            }
-        }
-    }
-
-    var nowTime = ""
-    private fun nowTimeCheck() {
-        val dateFormat = SimpleDateFormat("yyyy-MM-dd HH:mm:ss")
-        val regDataString = dateFormat.format(Date())
-
-        nowTime = " / now Time : $regDataString"
-    }
-
-    var teleInfo = ""
-    private fun telephonyInfo() {
-        val tm =
-            MyApplication.context.getSystemService(Context.TELEPHONY_SERVICE) as TelephonyManager
-
-        teleInfo = "TelephonyManager" + tm.simOperatorName
     }
 
     override fun onBackPressed() {
