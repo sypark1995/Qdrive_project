@@ -1,32 +1,69 @@
 <?xml version="1.0" encoding="utf-8"?>
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:tools="http://schemas.android.com/tools"
-    package="com.giosis.util.qdrive.singapore"
-    android:windowSoftInputMode="adjustPan">
+    package="com.giosis.util.qdrive.singapore">
 
-    <queries>
-        <package android:name="net.giosis.qpost" />
-        <intent>
-            <action android:name="android.media.action.IMAGE_CAPTURE" />
-        </intent>
-    </queries>
+    <uses-permission android:name="android.permission.INTERNET" />
+    <uses-permission android:name="android.permission.ACCESS_NETWORK_STATE" />
+    <uses-permission android:name="android.permission.CAMERA" />
+    <uses-permission android:name="android.permission.ACCESS_FINE_LOCATION" />
+    <uses-permission android:name="android.permission.ACCESS_COARSE_LOCATION" />
+    <uses-permission android:name="android.permission.READ_PHONE_STATE" />
+    <uses-permission android:name="android.permission.READ_EXTERNAL_STORAGE" />
+    <uses-permission android:name="android.permission.WRITE_EXTERNAL_STORAGE" />
+    <uses-permission android:name="android.permission.FOREGROUND_SERVICE" />
+    <uses-permission android:name="android.permission.VIBRATE" />
+    <uses-permission android:name="android.permission.ACCESS_LOCATION_EXTRA_COMMANDS" />
+    <uses-permission android:name="android.permission.MODIFY_AUDIO_SETTINGS" />
+    <uses-permission android:name="android.permission.CHANGE_NETWORK_STATE" />
+    <uses-permission android:name="android.permission.BLUETOOTH" />
+    <uses-permission android:name="android.permission.BLUETOOTH_ADMIN" />
+    <uses-permission android:name="android.permission.CHANGE_WIFI_STATE" />
+    <uses-permission android:name="android.permission.ACCESS_WIFI_STATE" />
+    <uses-permission android:name="android.permission.WAKE_LOCK" />
+    <uses-permission android:name="com.google.android.providers.gsf.permission.READ_GSERVICES" />
+    <uses-permission android:name="com.google.android.providers.gsf.permission.WRITE_GSERVICES" />
+    <uses-permission android:name="com.giosis.util.qdrive.singapore.permission.MAPS_RECEIVE" />
+    <uses-permission android:name="android.permission.GET_TASKS" />
+
+    <permission
+        android:name="com.giosis.util.qdrive.singapore.permission.MAPS_RECEIVE"
+        android:protectionLevel="signature" />
+
+    <uses-feature android:name="android.hardware.camera" />
+    <uses-feature android:name="android.hardware.camera.any" />
+    <uses-feature android:name="android.hardware.camera.autofocus" />
+    <uses-feature
+        android:name="android.hardware.camera.flash"
+        android:required="false" />
+
+    <uses-permission
+        android:name="android.permission.READ_PRIVILEGED_PHONE_STATE"
+        tools:ignore="ProtectedPermissions" />
 
     <application
         android:name="com.giosis.util.qdrive.singapore.MyApplication"
-        android:allowBackup="false"
-        android:fullBackupContent="false"
-        android:hardwareAccelerated="true"
         android:icon="@drawable/qdrive_icon"
         android:label="@string/app_name"
         android:largeHeap="true"
-        android:networkSecurityConfig="@xml/network_security_config"
         android:requestLegacyExternalStorage="true"
         android:theme="@style/AppTheme"
-        tools:replace="android:allowBackup"
-        tools:targetApi="n">
+        android:usesCleartextTraffic="true">
+
+        <meta-data
+            android:name="com.google.android.maps.v2.API_KEY"
+            android:value="AIzaSyA1NWLPCM1Ng4go6Al3CxR36_C9Us0BTk0" />
+
+        <meta-data
+            android:name="com.google.android.gms.version"
+            android:value="@integer/google_play_services_version" />
+
+        <uses-library
+            android:name="org.apache.http.legacy"
+            android:required="false" />
 
         <activity
-            android:name=".AlertDialogActivity"
+            android:name=".push.AlertDialogActivity"
             android:launchMode="singleTop"
             android:theme="@android:style/Theme.Dialog">
             <intent-filter>
@@ -51,25 +88,9 @@
             android:label="@string/app_name"
             android:screenOrientation="portrait" />
 
-        <meta-data
-            android:name="com.google.android.maps.v2.API_KEY"
-            android:value="AIzaSyA1NWLPCM1Ng4go6Al3CxR36_C9Us0BTk0" />
-        <meta-data
-            android:name="com.google.android.gms.version"
-            android:value="@integer/google_play_services_version" />
-
-        <receiver
-            android:name="com.giosis.util.qdrive.singapore.DeviceBootReceiver"
-            android:enabled="false">
-            <intent-filter>
-                <action android:name="android.intent.action.BOOT_COMPLETED" />
-            </intent-filter>
-        </receiver>
-
         <receiver
             android:name="com.giosis.util.qdrive.singapore.AlarmReceiver"
             tools:ignore="Instantiatable" />
-
 
         <service android:name=".FCMIntentService">
             <intent-filter>
@@ -78,66 +99,228 @@
             </intent-filter>
         </service>
 
+        <activity
+            android:name="com.giosis.util.qdrive.singapore.setting.ChangePwdActivity"
+            android:screenOrientation="portrait" />
 
-        <uses-library
-            android:name="org.apache.http.legacy"
-            android:required="false" />
+        <activity
+            android:name="com.giosis.util.qdrive.singapore.setting.DeveloperModeActivity"
+            android:screenOrientation="portrait" />
+
+        <activity
+            android:name="com.giosis.util.qdrive.singapore.setting.LockerUserInfoActivity"
+            android:screenOrientation="portrait" />
+
+        <activity
+            android:name="com.giosis.util.qdrive.singapore.setting.ModifyUserInfoActivity"
+            android:screenOrientation="portrait" />
+
+        <activity
+            android:name="com.giosis.util.qdrive.singapore.setting.NoticeActivity"
+            android:screenOrientation="portrait" />
+
+        <activity
+            android:name="com.giosis.util.qdrive.singapore.setting.NoticeDetailActivity"
+            android:screenOrientation="portrait" />
+
+        <activity
+            android:name="com.giosis.util.qdrive.singapore.setting.ScanSettingActivity"
+            android:screenOrientation="portrait" />
+
+        <activity
+            android:name="com.giosis.util.qdrive.singapore.setting.bluetooth.PrinterSettingActivity"
+            android:screenOrientation="portrait" />
+
+        <activity
+            android:name="com.giosis.util.qdrive.singapore.setting.bluetooth.ModifyDeviceInfoActivity"
+            android:screenOrientation="portrait" />
+
+        <activity
+            android:name="com.giosis.util.qdrive.singapore.pickup.CreatePickupOrderActivity"
+            android:screenOrientation="portrait" />
+
+        <activity
+            android:name="com.giosis.util.qdrive.singapore.pickup.AddressDialogActivity"
+            android:screenOrientation="portrait"
+            android:theme="@style/CustomDialog" />
+
+        <activity
+            android:name="com.giosis.util.qdrive.singapore.setting.SettingActivity"
+            android:screenOrientation="portrait" />
+
+        <activity
+            android:name="com.giosis.util.qdrive.singapore.setting.LanguageSettingActivity"
+            android:screenOrientation="portrait" />
+
+        <activity
+            android:name="com.giosis.util.qdrive.singapore.TestActivity"
+            android:screenOrientation="portrait" />
+
+        <activity
+            android:name="com.giosis.util.qdrive.singapore.message.MessageListActivity"
+            android:screenOrientation="portrait" />
+
+        <activity
+            android:name="com.giosis.util.qdrive.singapore.message.CustomerMessageListDetailActivity"
+            android:screenOrientation="portrait" />
+
+        <activity
+            android:name="com.giosis.util.qdrive.singapore.message.AdminMessageListDetailActivity"
+            android:screenOrientation="portrait" />
+
+        <activity
+            android:name="com.giosis.util.qdrive.singapore.main.submenu.ListNotInHousedActivity"
+            android:screenOrientation="portrait" />
+
+        <activity
+            android:name="com.giosis.util.qdrive.singapore.main.submenu.OutletOrderStatusActivity"
+            android:screenOrientation="portrait" />
+
+        <activity
+            android:name="com.giosis.util.qdrive.singapore.main.submenu.RpcListActivity"
+            android:screenOrientation="portrait" />
+
+        <activity
+            android:name="com.giosis.util.qdrive.singapore.main.submenu.SelfCollectionDoneActivity"
+            android:screenOrientation="portrait" />
+
+        <activity
+            android:name="com.giosis.util.qdrive.singapore.main.submenu.StatisticsActivity"
+            android:screenOrientation="portrait" />
+
+        <activity
+            android:name="com.giosis.util.qdrive.singapore.main.MainActivity"
+            android:screenOrientation="portrait" />
+
+        <activity
+            android:name="com.giosis.util.qdrive.singapore.main.ScanActivity"
+            android:screenOrientation="portrait" />
+
+        <activity
+            android:name="com.giosis.util.qdrive.singapore.main.SMSVerificationActivity"
+            android:screenOrientation="portrait" />
+
+        <activity
+            android:name="com.giosis.util.qdrive.singapore.util.PermissionActivity"
+            android:configChanges="orientation|screenSize|screenLayout|keyboard|keyboardHidden"
+            android:screenOrientation="unspecified"
+            android:theme="@style/Theme.AppCompat.Transparent" />
+
+        <activity
+            android:name="com.giosis.util.qdrive.singapore.list.delivery.DeliveryDoneActivity2"
+            android:configChanges="orientation|keyboardHidden"
+            android:screenOrientation="portrait"
+            android:windowSoftInputMode="stateAlwaysHidden|adjustPan" />
+
+        <activity
+            android:name="com.giosis.util.qdrive.singapore.list.delivery.QuickReturnedActivity"
+            android:screenOrientation="portrait" />
+
+        <activity
+            android:name="com.giosis.util.qdrive.singapore.list.pickup.CnRPickupDoneActivity"
+            android:configChanges="orientation|keyboardHidden"
+            android:screenOrientation="portrait"
+            android:windowSoftInputMode="stateAlwaysHidden|adjustPan" />
+
+        <activity
+            android:name="com.giosis.util.qdrive.singapore.list.pickup.OutletPickupStep1Activity"
+            android:configChanges="orientation|keyboardHidden"
+            android:screenOrientation="portrait"
+            android:windowSoftInputMode="stateAlwaysHidden|adjustPan" />
+
+        <activity
+            android:name="com.giosis.util.qdrive.singapore.list.pickup.OutletPickupStep3Activity"
+            android:configChanges="orientation|keyboardHidden"
+            android:screenOrientation="portrait"
+            android:windowSoftInputMode="stateAlwaysHidden|adjustPan" />
+
+        <activity
+            android:name="com.giosis.util.qdrive.singapore.list.pickup.PickupAddScanActivity"
+            android:configChanges="orientation|keyboardHidden"
+            android:screenOrientation="portrait"
+            android:windowSoftInputMode="stateAlwaysHidden|adjustPan" />
+
+        <activity
+            android:name="com.giosis.util.qdrive.singapore.list.pickup.PickupDoneActivity"
+            android:configChanges="orientation|keyboardHidden"
+            android:screenOrientation="portrait"
+            android:windowSoftInputMode="stateAlwaysHidden|adjustPan" />
+
+        <activity
+            android:name="com.giosis.util.qdrive.singapore.list.pickup.PickupFailedActivity"
+            android:configChanges="orientation|keyboardHidden"
+            android:screenOrientation="portrait"
+            android:windowSoftInputMode="stateAlwaysHidden|adjustPan" />
+
+        <activity
+            android:name="com.giosis.util.qdrive.singapore.list.pickup.PickupTakeBackActivity"
+            android:configChanges="orientation|keyboardHidden"
+            android:screenOrientation="portrait"
+            android:windowSoftInputMode="stateAlwaysHidden|adjustPan" />
+
+        <activity
+            android:name="com.giosis.util.qdrive.singapore.list.pickup.PickupZeroQtyActivity"
+            android:configChanges="orientation|keyboardHidden"
+            android:screenOrientation="portrait"
+            android:windowSoftInputMode="stateAlwaysHidden|adjustPan" />
+
+        <activity
+            android:name="com.giosis.util.qdrive.singapore.list.delivery.DeliveryFailedActivity"
+            android:configChanges="orientation|keyboardHidden"
+            android:screenOrientation="portrait"
+            android:windowSoftInputMode="stateAlwaysHidden|adjustPan" />
+
+        <activity
+            android:name="com.giosis.util.qdrive.singapore.list.delivery.QuickReturnFailedActivity"
+            android:configChanges="orientation|keyboardHidden"
+            android:screenOrientation="portrait"
+            android:windowSoftInputMode="stateAlwaysHidden|adjustPan" />
+
+        <activity
+            android:name="com.giosis.util.qdrive.singapore.list.TodayDonePickupScanListActivity"
+            android:configChanges="orientation|keyboardHidden"
+            android:screenOrientation="portrait"
+            android:windowSoftInputMode="adjustNothing" />
+
+        <activity
+            android:name="com.giosis.util.qdrive.singapore.list.ListActivity"
+            android:configChanges="orientation|keyboardHidden"
+            android:label="@string/app_name"
+            android:screenOrientation="portrait">
+            <intent-filter>
+                <action android:name="android.intent.action.VIEW" />
+
+                <category android:name="android.intent.category.DEFAULT" />
+                <category android:name="android.intent.category.BROWSABLE" />
+
+                <data
+                    android:host="qtalk_call"
+                    android:scheme="qtalk" />
+                <data
+                    android:host="link"
+                    android:scheme="qtalk" />
+            </intent-filter>
+        </activity>
+
+        <activity
+            android:name="com.giosis.util.qdrive.singapore.barcodescanner.CaptureActivity"
+            android:configChanges="orientation|keyboardHidden"
+            android:screenOrientation="portrait"
+            android:windowSoftInputMode="adjustNothing" />
+
+        <activity
+            android:name="com.giosis.util.qdrive.singapore.barcodescanner.CaptureActivity1"
+            android:configChanges="orientation|keyboardHidden"
+            android:screenOrientation="portrait"
+            android:windowSoftInputMode="adjustNothing" />
+
+        <activity
+            android:name="com.giosis.util.qdrive.singapore.barcodescanner.DeviceListActivity1"
+            android:theme="@android:style/Theme.Dialog" />
+
+        <service android:name="com.giosis.util.qdrive.singapore.gps.FusedProviderService" />
+        <service android:name="com.giosis.util.qdrive.singapore.gps.LocationManagerService" />
+
     </application>
-
-    <permission
-        android:name="com.giosis.util.qdrive.singapore.permission.MAPS_RECEIVE"
-        android:protectionLevel="signature" />
-
-    <supports-screens
-        android:anyDensity="true"
-        android:largeScreens="true"
-        android:normalScreens="true"
-        android:resizeable="true"
-        android:smallScreens="true"
-        android:xlargeScreens="true" />
-
-    <uses-feature android:name="android.hardware.camera" />
-    <uses-feature android:name="android.hardware.camera.autofocus" />
-    <uses-feature
-        android:name="android.hardware.camera.flash"
-        android:required="false" />
-    <uses-feature
-        android:glEsVersion="0x00020000"
-        android:required="true" />
-
-    <uses-permission android:name="com.giosis.util.qdrive.singapore.permission.MAPS_RECEIVE" />
-    <uses-permission android:name="android.permission.CAMERA" />
-    <uses-permission android:name="android.permission.READ_CONTACTS" />
-    <uses-permission android:name="android.permission.WRITE_CONTACTS" />
-    <uses-permission android:name="android.permission.GET_ACCOUNTS" />
-    <uses-permission android:name="android.permission.ACCESS_FINE_LOCATION" />
-    <uses-permission android:name="android.permission.ACCESS_COARSE_LOCATION" />
-    <uses-permission android:name="android.permission.RECORD_AUDIO" />
-    <uses-permission android:name="android.permission.READ_PHONE_STATE" />
-    <uses-permission android:name="android.permission.READ_EXTERNAL_STORAGE" />
-    <uses-permission android:name="android.permission.WRITE_EXTERNAL_STORAGE" />
-    <uses-permission android:name="android.permission.FOREGROUND_SERVICE" />
-    <uses-permission android:name="android.permission.VIBRATE" />
-    <uses-permission android:name="android.permission.ACCESS_LOCATION_EXTRA_COMMANDS" />
-    <uses-permission android:name="android.permission.INTERNET" />
-    <uses-permission android:name="android.permission.RECORD_VIDEO" />
-    <uses-permission android:name="android.permission.MODIFY_AUDIO_SETTINGS" />
-    <uses-permission android:name="android.permission.ACCESS_NETWORK_STATE" />
-    <uses-permission android:name="android.permission.CHANGE_NETWORK_STATE" />
-    <uses-permission android:name="android.permission.BROADCAST_STICKY" />
-    <uses-permission android:name="android.permission.FLASHLIGHT" />
-    <uses-permission android:name="android.permission.BLUETOOTH" />
-    <uses-permission android:name="android.permission.BLUETOOTH_ADMIN" />
-    <uses-permission android:name="android.permission.CHANGE_WIFI_STATE" />
-
-    <uses-permission android:name="android.permission.ACCESS_WIFI_STATE" />
-    <uses-permission android:name="android.permission.WAKE_LOCK" />
-    <uses-permission android:name="com.google.android.providers.gsf.permission.READ_GSERVICES" />
-    <uses-permission android:name="com.google.android.providers.gsf.permission.WRITE_GSERVICES" />
-
-    <uses-permission android:name="android.permission.GET_TASKS" />
-    <uses-permission
-        android:name="android.permission.QUERY_ALL_PACKAGES"
-        tools:ignore="QueryAllPackagesPermission" />
 
 </manifest>

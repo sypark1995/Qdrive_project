@@ -7,6 +7,9 @@ import android.content.Context
 import android.content.Intent
 import android.os.Bundle
 import android.util.Log
+import com.giosis.util.qdrive.singapore.push.AlertDialogActivity
+import com.giosis.util.qdrive.singapore.push.PushData
+import com.giosis.util.qdrive.singapore.util.Preferences
 
 
 class AlarmReceiver : BroadcastReceiver() {
@@ -19,20 +22,17 @@ class AlarmReceiver : BroadcastReceiver() {
         if (isRunning(context)) {
 
             val bun = Bundle()
-            bun.putString("notiTitle", "")
-            bun.putString("notiMessage", context.resources.getString(R.string.msg_qdrive_auto_logout))
-            bun.putString("actionKey", "LOGOUT")
-            bun.putString("actionValue", null)
+            bun.putString(PushData.ACTION_KEY, PushData.LOGOUT)
 
             // Alert Dialog
             val popupIntent = Intent(context, AlertDialogActivity::class.java)
             popupIntent.putExtras(bun)
-            val pendingIntent = PendingIntent.getActivity(context, 0, popupIntent, PendingIntent.FLAG_ONE_SHOT)
+            val pendingIntent =
+                PendingIntent.getActivity(context, 0, popupIntent, PendingIntent.FLAG_ONE_SHOT)
             pendingIntent.send()
         } else {
-
-            MyApplication.preferences.userId = ""
-            MyApplication.preferences.autoLogout = true
+            Preferences.userId = ""
+            Preferences.userPw = ""
         }
     }
 
