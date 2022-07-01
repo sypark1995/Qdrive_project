@@ -538,6 +538,11 @@ class LoginActivity : CommonActivity() {
                 urlConnectionCheck()
                 nowTimeCheck()
                 telephonyInfo()
+
+                FirebaseCrashlytics.getInstance().setCustomKey(
+                    "ERROR INFO",
+                    qoo10Result + daumResult + nowTime + teleInfo
+                )
             }
         }
     }
@@ -548,38 +553,18 @@ class LoginActivity : CommonActivity() {
         lifecycleScope.launch(Dispatchers.IO) {
             val url = URL("https://www.qoo10.com")
             val urlConnection: HttpURLConnection = url.openConnection() as HttpURLConnection
-            try {
-                FirebaseCrashlytics.getInstance().setCustomKey(
-                    "qoo10 url connection",
-                    urlConnection.responseCode
-                )
-
-                qoo10Result = "qoo10 url connection / ${urlConnection.responseCode}"
+            qoo10Result = try {
+                "qoo10 url connection / ${urlConnection.responseCode}"
             } catch (e: java.lang.Exception) {
-                FirebaseCrashlytics.getInstance().setCustomKey(
-                    "qoo10 url connection",
-                    "error / $e"
-                )
-
-                qoo10Result = "qoo10 url connection $e"
+                "qoo10 url connection $e"
             }
 
             val url1 = URL("https://www.daum.net")
             val urlConnection1: HttpURLConnection = url1.openConnection() as HttpURLConnection
-            try {
-                FirebaseCrashlytics.getInstance().setCustomKey(
-                    "daum url connection",
-                    urlConnection1.responseCode
-                )
-
-                daumResult = "daum url connection / ${urlConnection.responseCode}"
+            daumResult = try {
+                "daum url connection / ${urlConnection1.responseCode}"
             } catch (e: java.lang.Exception) {
-                FirebaseCrashlytics.getInstance().setCustomKey(
-                    "daum url connection",
-                    "error / $e"
-                )
-
-                daumResult = "daum url connection $e"
+                "daum url connection $e"
             }
         }
     }
@@ -588,10 +573,7 @@ class LoginActivity : CommonActivity() {
     private fun nowTimeCheck() {
         val dateFormat = SimpleDateFormat("yyyy-MM-dd HH:mm:ss")
         val regDataString = dateFormat.format(Date())
-        FirebaseCrashlytics.getInstance().setCustomKey(
-            "now Time",
-            regDataString
-        )
+
         nowTime = " / now Time : $regDataString"
     }
 
@@ -600,19 +582,6 @@ class LoginActivity : CommonActivity() {
         val tm =
             MyApplication.context.getSystemService(Context.TELEPHONY_SERVICE) as TelephonyManager
 
-        FirebaseCrashlytics.getInstance().setCustomKey(
-            "TelephonyManager",
-            tm.simOperatorName
-        )
-
-        if (Build.VERSION.SDK_INT > Build.VERSION_CODES.P) {
-            if (tm.signalStrength != null) {
-                FirebaseCrashlytics.getInstance().setCustomKey(
-                    "level (0~4)",
-                    tm.signalStrength!!.level
-                )
-            }
-        }
         teleInfo = "TelephonyManager" + tm.simOperatorName
     }
 
