@@ -1,14 +1,14 @@
 package com.giosis.util.qdrive.singapore
 
 import android.annotation.SuppressLint
+import android.app.Application
 import android.content.Context
-import androidx.multidex.MultiDexApplication
 import com.giosis.util.qdrive.singapore.database.DatabaseHelper
 import com.giosis.util.qdrive.singapore.util.LocaleManager
 import com.giosis.util.qdrive.singapore.util.Preferences
 import com.google.firebase.crashlytics.FirebaseCrashlytics
 
-class MyApplication : MultiDexApplication() {
+class MyApplication : Application() {
 
     companion object {
         @SuppressLint("StaticFieldLeak")
