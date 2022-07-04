@@ -34,10 +34,10 @@ android {
         }
     }
 
-//    lintOptions {
-//        checkReleaseBuilds false
-//        abortOnError false
-//    }
+    lintOptions {
+        checkReleaseBuilds false
+        abortOnError false
+    }
 
     buildFeatures {
         dataBinding true
