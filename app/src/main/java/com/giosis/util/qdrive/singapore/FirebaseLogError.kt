@@ -31,7 +31,7 @@ object FirebaseLogError {
         CoroutineScope(Dispatchers.IO).launch {
             val result: String = try {
                 val runTime = Runtime.getRuntime()
-                val cmd = "ping -c 1 -W 10 qxapi.qxpress.net"
+                val cmd = "ping -c 1 -W 10 api.qxpress.net"
 
                 val proc = runTime.exec(cmd)
                 proc.waitFor()
@@ -62,7 +62,8 @@ object FirebaseLogError {
 
                 delay(1000)
 
-                val resultString = qoo10Result + daumResult + nowTime + teleInfo + qxpressUrl + apiQxpressUrl
+                val resultString =
+                    qoo10Result + daumResult + nowTime + teleInfo + qxpressUrl + apiQxpressUrl
                 FirebaseCrashlytics.getInstance().setCustomKey(
                     "ERROR INFO", resultString
                 )
@@ -82,19 +83,23 @@ object FirebaseLogError {
             runCatching {
                 val url = URL("https://www.qoo10.com")
                 val urlConnection: HttpURLConnection = url.openConnection() as HttpURLConnection
-                qoo10Result = try {
-                    "qoo10 connect / ${urlConnection.responseCode}"
-                } catch (e: java.lang.Exception) {
-                    "qoo10 connect $e"
-                }
+                urlConnection.responseCode
 
+            }.onSuccess {
+                qoo10Result = "qoo10 connect / $it"
+            }.onFailure {
+                qoo10Result = "qoo10 connect $it"
+            }
+
+            runCatching {
                 val url1 = URL("https://www.daum.net")
                 val urlConnection1: HttpURLConnection = url1.openConnection() as HttpURLConnection
-                daumResult = try {
-                    "daum connect / ${urlConnection1.responseCode}"
-                } catch (e: java.lang.Exception) {
-                    "daum connect $e"
-                }
+                urlConnection1.responseCode
+
+            }.onSuccess {
+                daumResult = "daum connect / $it"
+            }.onFailure {
+                daumResult = "daum connect $it"
             }
         }
     }
@@ -116,22 +121,23 @@ object FirebaseLogError {
     private fun nsLookup() {
         CoroutineScope(Dispatchers.IO).launch {
             runCatching {
-                qxpressUrl = try {
-                    val ipAddress = InetAddress.getByName("qxpress.net")
-                    ipAddress.hostName + " / " + ipAddress.hostAddress
-                } catch (e: Exception) {
-                    "qxpress.net : $e"
-                }
-                Log.e("qxpressUrl", qxpressUrl)
+                val ipAddress = InetAddress.getByName("qxpress.net")
+                ipAddress.hostName + " / " + ipAddress.hostAddress
 
-                apiQxpressUrl = try {
-                    val ipAddress = InetAddress.getByName("api.qxpress.net")
-                    ipAddress.hostName + " / " + ipAddress.hostAddress
-                } catch (e: Exception) {
-                    "api.qxpress.net : $e"
-                }
+            }.onSuccess {
+                qxpressUrl = it
+            }.onFailure {
+                qxpressUrl = "api.qxpress.net : $it"
+            }
 
-                Log.e("apiQxpressUrl", apiQxpressUrl)
+            runCatching {
+                val ipAddress = InetAddress.getByName("api.qxpress.net")
+                ipAddress.hostName + " / " + ipAddress.hostAddress
+
+            }.onSuccess {
+                apiQxpressUrl = it
+            }.onFailure {
+                apiQxpressUrl = "api.qxpress.net :$it"
             }
         }
     }
@@ -139,7 +145,7 @@ object FirebaseLogError {
     fun adminLogCallApi(string: String) {
         RetrofitClient.instanceDynamic().requestWriteLog(
             "1", " ERROR", "DNS error in RetrofitClient",
-            string + " / " + qoo10Result + daumResult + nowTime + teleInfo +  qxpressUrl + apiQxpressUrl
+            "$string / $qoo10Result\n$daumResult\n$nowTime\n$teleInfo\n$qxpressUrl\n$apiQxpressUrl"
         ).subscribeOn(Schedulers.io())
             .observeOn(AndroidSchedulers.mainThread())
             .subscribe({ }) {}
@@ -152,7 +158,7 @@ object FirebaseLogError {
 
         CoroutineScope(Dispatchers.IO).launch {
             delay(1000)
-            
+
             urlConnectionCheck()
             telephonyInfo()
 
@@ -161,7 +167,7 @@ object FirebaseLogError {
                     "1",
                     "IMAGEUPLOAD",
                     "image upload error in RetrofitClient",
-                    qoo10Result + daumResult + nowTime + teleInfo + qxpressUrl + apiQxpressUrl + "RetrofitClient Exception $string"
+                    "$qoo10Result\n$daumResult\n$nowTime\n$teleInfo\n$qxpressUrl\n$apiQxpressUrl\nRetrofitClient Exception $string"
                 )
                 .subscribeOn(Schedulers.io())
                 .observeOn(AndroidSchedulers.mainThread())

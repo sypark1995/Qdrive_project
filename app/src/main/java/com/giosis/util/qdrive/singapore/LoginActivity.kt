@@ -33,8 +33,6 @@ import com.giosis.util.qdrive.singapore.util.*
 import com.google.firebase.crashlytics.FirebaseCrashlytics
 import com.google.gson.Gson
 import com.google.gson.reflect.TypeToken
-import kotlinx.coroutines.CoroutineScope
-import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.launch
 import java.io.File
@@ -286,18 +284,7 @@ class LoginActivity : CommonActivity() {
             } else {
                 Common.QDRIVE_V2
             }
-//            val response = RetrofitClient.instanceDynamic().requestServerLogin2(
-//                userID, userPW, chanel, deviceUUID,
-//                latitude.toString(), longitude.toString(), userNationCode
-//            ).subscribeOn(Schedulers.io())
-//                .retryWhen(
-//
-//                ).observeOn(AndroidSchedulers.mainThread())
-//                .subscribe({
-//
-//                }) {
-//
-//                }
+
             try {
                 FirebaseLogError.pingCheck()
 
