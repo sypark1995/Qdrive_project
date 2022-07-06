@@ -25,6 +25,7 @@ object FirebaseLogError {
     var nowTime = ""
     var qxpressUrl = ""
     var apiQxpressUrl = ""
+    var sgQxpressUrl = ""
 
     fun pingCheck() {
 
@@ -139,13 +140,23 @@ object FirebaseLogError {
             }.onFailure {
                 apiQxpressUrl = "api.qxpress.net :$it"
             }
+
+            runCatching {
+                val ipAddress = InetAddress.getByName("qoo10.sg")
+                ipAddress.hostName + " / " + ipAddress.hostAddress
+
+            }.onSuccess {
+                sgQxpressUrl = it
+            }.onFailure {
+                sgQxpressUrl = "qoo10.sg :$it"
+            }
         }
     }
 
     fun adminLogCallApi(string: String) {
         RetrofitClient.instanceDynamic().requestWriteLog(
             "1", " ERROR", "DNS error in RetrofitClient",
-            "$string / $qoo10Result\n$daumResult\n$nowTime\n$teleInfo\n$qxpressUrl\n$apiQxpressUrl"
+            "$string / $qoo10Result\n$daumResult\n$nowTime\n$teleInfo\n$qxpressUrl\n$apiQxpressUrl\n$sgQxpressUrl"
         ).subscribeOn(Schedulers.io())
             .observeOn(AndroidSchedulers.mainThread())
             .subscribe({ }) {}
@@ -167,7 +178,7 @@ object FirebaseLogError {
                     "1",
                     "IMAGEUPLOAD",
                     "image upload error in RetrofitClient",
-                    "$qoo10Result\n$daumResult\n$nowTime\n$teleInfo\n$qxpressUrl\n$apiQxpressUrl\nRetrofitClient Exception $string"
+                    "$qoo10Result\n$daumResult\n$nowTime\n$teleInfo\n$qxpressUrl\n$apiQxpressUrl\n$sgQxpressUrl\nRetrofitClient Exception $string"
                 )
                 .subscribeOn(Schedulers.io())
                 .observeOn(AndroidSchedulers.mainThread())
