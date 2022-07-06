@@ -23,7 +23,6 @@ import com.giosis.util.qdrive.singapore.data.FailedCodeData;
 import com.giosis.util.qdrive.singapore.database.DatabaseHelper;
 import com.giosis.util.qdrive.singapore.gps.GPSTrackerManager;
 import com.giosis.util.qdrive.singapore.server.ImageUpload;
-import com.giosis.util.qdrive.singapore.server.RetrofitClient;
 import com.google.gson.Gson;
 import com.google.gson.reflect.TypeToken;
 
@@ -37,9 +36,6 @@ import java.util.ArrayList;
 import java.util.Date;
 import java.util.TimeZone;
 
-import io.reactivex.rxjava3.android.schedulers.AndroidSchedulers;
-import io.reactivex.rxjava3.schedulers.Schedulers;
-
 public class DataUtil {
 
     public static String appID = "QDRIVE";
@@ -47,7 +43,7 @@ public class DataUtil {
     public static String SERVER_LOCAL = "http://kwher-dev.qxpress.net";
     public static String SERVER_TEST = "https://test-api.qxpress.net";
     public static String SERVER_STAGING = "http://staging-qxapi.qxpress.net";
-    public static String SERVER_REAL = "https://qxapi.qxpress.net";
+    public static String SERVER_REAL = "https://api.qxpress.net";
 
     public static String API_ADDRESS = "/GMKT.INC.GLPS.MobileApiService/GlobalMobileService.qapi/";
     public static String API_ADDRESS_MOBILE_SERVICE = "/GMKT.INC.GLPS.MobileApiService/GlobalMobileService.qapi/";

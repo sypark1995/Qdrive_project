@@ -12,6 +12,7 @@ import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.launch
 import java.net.HttpURLConnection
+import java.net.InetAddress
 import java.net.URL
 import java.text.SimpleDateFormat
 import java.util.*
@@ -22,6 +23,8 @@ object FirebaseLogError {
     var daumResult = ""
     var teleInfo = ""
     var nowTime = ""
+    var qxpressUrl = ""
+    var apiQxpressUrl = ""
 
     fun pingCheck() {
 
@@ -53,12 +56,13 @@ object FirebaseLogError {
             nowTimeCheck()
             urlConnectionCheck()
             telephonyInfo()
+            nsLookup()
 
             if (result != "0") {
 
                 delay(1000)
 
-                val resultString = qoo10Result + daumResult + nowTime + teleInfo
+                val resultString = qoo10Result + daumResult + nowTime + teleInfo + qxpressUrl + apiQxpressUrl
                 FirebaseCrashlytics.getInstance().setCustomKey(
                     "ERROR INFO", resultString
                 )
@@ -109,10 +113,33 @@ object FirebaseLogError {
         teleInfo = "Telephony " + tm.simOperatorName
     }
 
+    private fun nsLookup() {
+        CoroutineScope(Dispatchers.IO).launch {
+            runCatching {
+                qxpressUrl = try {
+                    val ipAddress = InetAddress.getByName("qxpress.net")
+                    ipAddress.hostName + " / " + ipAddress.hostAddress
+                } catch (e: Exception) {
+                    "qxpress.net : $e"
+                }
+                Log.e("qxpressUrl", qxpressUrl)
+
+                apiQxpressUrl = try {
+                    val ipAddress = InetAddress.getByName("api.qxpress.net")
+                    ipAddress.hostName + " / " + ipAddress.hostAddress
+                } catch (e: Exception) {
+                    "api.qxpress.net : $e"
+                }
+
+                Log.e("apiQxpressUrl", apiQxpressUrl)
+            }
+        }
+    }
+
     fun adminLogCallApi(string: String) {
         RetrofitClient.instanceDynamic().requestWriteLog(
             "1", " ERROR", "DNS error in RetrofitClient",
-            string + " / " + qoo10Result + daumResult + nowTime + teleInfo
+            string + " / " + qoo10Result + daumResult + nowTime + teleInfo +  qxpressUrl + apiQxpressUrl
         ).subscribeOn(Schedulers.io())
             .observeOn(AndroidSchedulers.mainThread())
             .subscribe({ }) {}
@@ -134,7 +161,7 @@ object FirebaseLogError {
                     "1",
                     "IMAGEUPLOAD",
                     "image upload error in RetrofitClient",
-                    qoo10Result + daumResult + nowTime + teleInfo + "RetrofitClient Exception $string"
+                    qoo10Result + daumResult + nowTime + teleInfo + qxpressUrl + apiQxpressUrl + "RetrofitClient Exception $string"
                 )
                 .subscribeOn(Schedulers.io())
                 .observeOn(AndroidSchedulers.mainThread())
