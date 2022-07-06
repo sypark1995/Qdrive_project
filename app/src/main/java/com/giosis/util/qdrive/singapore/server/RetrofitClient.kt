@@ -67,22 +67,20 @@ object RetrofitClient {
         }
 
 
-    private lateinit var instanceDynamic: RetrofitService
+//    private lateinit var instanceDynamic: RetrofitService
 
     fun instanceDynamic(): RetrofitService {
 
         val serverURL = Preferences.serverURL + DataUtil.API_ADDRESS
         //   Log.e("Server", "Server URL  $serverURL")
 
-        val retrofit = Retrofit.Builder()
+        return Retrofit.Builder()
             .baseUrl(serverURL)
             .client(provideOkHttpClient(AppInterceptor()))
             .addConverterFactory(GsonConverterFactory.create())
             .addCallAdapterFactory(RxJava3CallAdapterFactory.create())
             .build()
-
-        instanceDynamic = retrofit.create(RetrofitService::class.java)
-        return instanceDynamic
+            .create(RetrofitService::class.java)
     }
 
     fun instanceCoroutine(): RetrofitService {
@@ -104,15 +102,14 @@ object RetrofitClient {
         // "http://image.qxpress.net/code128/code128.php?no="
         val barcodeUrl = "http://image.qxpress.net/"
 
-        val retrofit = Retrofit.Builder()
+        return Retrofit.Builder()
             .baseUrl(barcodeUrl)
             .client(provideOkHttpClient(AppInterceptor()))
             .addConverterFactory(GsonConverterFactory.create())
             .addCallAdapterFactory(RxJava3CallAdapterFactory.create())
             .build()
+            .create(RetrofitService::class.java)
 
-        instanceDynamic = retrofit.create(RetrofitService::class.java)
-        return instanceDynamic
     }
 
     fun instanceImageUpload(): RetrofitService {
@@ -121,15 +118,13 @@ object RetrofitClient {
 
         val imageUrl = "http://encoding.image-gmkt.com/"
 
-        val retrofit = Retrofit.Builder()
+        return Retrofit.Builder()
             .baseUrl(imageUrl)
             .client(provideOkHttpClient(AppInterceptor(), true))
             .addConverterFactory(GsonConverterFactory.create(gson))
             .addCallAdapterFactory(RxJava3CallAdapterFactory.create())
             .build()
-
-        instanceDynamic = retrofit.create(RetrofitService::class.java)
-        return instanceDynamic
+            .create(RetrofitService::class.java)
     }
 
     fun instanceXRoute(): RetrofitService {
@@ -138,15 +133,13 @@ object RetrofitClient {
 //        val xRouteUrl = "http://211.115.100.24/"
         val xRouteUrl = Preferences.xRouteServerURL
 
-        val retrofit = Retrofit.Builder()
+        return Retrofit.Builder()
             .baseUrl(xRouteUrl)
             .client(provideOkHttpClient(AppInterceptor()))
             .addConverterFactory(GsonConverterFactory.create())
             .addCallAdapterFactory(RxJava3CallAdapterFactory.create())
             .build()
-
-        instanceDynamic = retrofit.create(RetrofitService::class.java)
-        return instanceDynamic
+            .create(RetrofitService::class.java)
     }
 
 
@@ -155,14 +148,12 @@ object RetrofitClient {
         val serverURL = Preferences.serverURL + DataUtil.API_ADDRESS_MOBILE_SERVICE
         Log.e("Server", "Server URL  $serverURL")
 
-        val retrofit = Retrofit.Builder()
+        return Retrofit.Builder()
             .baseUrl(serverURL)
             .client(provideOkHttpClient(AppInterceptor()))
             .addConverterFactory(GsonConverterFactory.create())
             .addCallAdapterFactory(RxJava3CallAdapterFactory.create())
             .build()
-
-        instanceDynamic = retrofit.create(RetrofitService::class.java)
-        return instanceDynamic
+            .create(RetrofitService::class.java)
     }
 }
