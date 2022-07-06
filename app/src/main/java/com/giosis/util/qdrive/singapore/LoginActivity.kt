@@ -381,6 +381,7 @@ class LoginActivity : CommonActivity() {
                 }
 
             } catch (e: Exception) {
+                progressBar.visibility = View.GONE
                 delay(1000)
                 FirebaseLogError.adminLogCallApi("LOGIN ${e}")
             }
