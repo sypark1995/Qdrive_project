@@ -4,13 +4,9 @@ import android.content.Context
 import android.telephony.TelephonyManager
 import android.util.Log
 import com.giosis.util.qdrive.singapore.server.RetrofitClient
-import com.google.firebase.crashlytics.FirebaseCrashlytics
 import io.reactivex.rxjava3.android.schedulers.AndroidSchedulers
 import io.reactivex.rxjava3.schedulers.Schedulers
-import kotlinx.coroutines.CoroutineScope
-import kotlinx.coroutines.Dispatchers
-import kotlinx.coroutines.delay
-import kotlinx.coroutines.launch
+import kotlinx.coroutines.*
 import java.net.HttpURLConnection
 import java.net.InetAddress
 import java.net.URL
@@ -19,147 +15,155 @@ import java.util.*
 
 object FirebaseLogError {
 
-    var qoo10Result = ""
-    var daumResult = ""
-    var teleInfo = ""
-    var nowTime = ""
-    var qxpressUrl = ""
-    var apiQxpressUrl = ""
-    var sgQxpressUrl = ""
+//    private suspend fun pingCheck() {
+//        val result: String = try {
+//            val runTime = Runtime.getRuntime()
+//            val cmd = "ping -c 1 -W 10 api.qxpress.net"
+//
+//            val proc = runTime.exec(cmd)
+//            proc.waitFor()
+//
+//            proc.exitValue().toString()
+//        } catch (e: Exception) {
+//            e.toString()
+//        }
+//        val returnString = when (result) {
+//            "0" -> "Ping Success"
+//            "1" -> "Ping Fail"
+//            "2" -> "Ping Error"
+//            else -> result
+//        }
+//
+//        FirebaseCrashlytics.getInstance().setCustomKey(
+//            "PING qxapi",
+//            returnString
+//        )
+//    }
 
-    fun pingCheck() {
+    private fun urlConnectionCheck(): String {
+//        Log.e("TAG", "urlConnectionCheck s")
+        var daum = ""
+        runCatching {
+            val url1 = URL("https://www.daum.net")
+            val urlConnection1: HttpURLConnection = url1.openConnection() as HttpURLConnection
+            urlConnection1.responseCode
 
-        CoroutineScope(Dispatchers.IO).launch {
-            val result: String = try {
-                val runTime = Runtime.getRuntime()
-                val cmd = "ping -c 1 -W 10 api.qxpress.net"
-
-                val proc = runTime.exec(cmd)
-                proc.waitFor()
-
-                proc.exitValue().toString()
-            } catch (e: Exception) {
-                e.toString()
-            }
-
-            val returnString = when (result) {
-                "0" -> "Ping Success"
-                "1" -> "Ping Fail"
-                "2" -> "Ping Error"
-                else -> result
-            }
-
-            FirebaseCrashlytics.getInstance().setCustomKey(
-                "PING qxapi",
-                returnString
-            )
-
-            nowTimeCheck()
-            urlConnectionCheck()
-            telephonyInfo()
-            nsLookup()
-
-            if (result != "0") {
-
-                delay(1000)
-
-                val resultString =
-                    qoo10Result + daumResult + nowTime + teleInfo + qxpressUrl + apiQxpressUrl
-                FirebaseCrashlytics.getInstance().setCustomKey(
-                    "ERROR INFO", resultString
-                )
-
-                RetrofitClient.instanceDynamic().requestWriteLog(
-                    "1", "PING ERROR", "DNS error in RetrofitClient",
-                    resultString
-                ).subscribeOn(Schedulers.io())
-                    .observeOn(AndroidSchedulers.mainThread())
-                    .subscribe({ }) {}
-            }
+        }.onSuccess {
+            daum = "daum connect / $it"
+        }.onFailure {
+            daum = "daum connect $it"
         }
+//        Log.e("TAG", "urlConnectionCheck e")
+        return daum
     }
 
-    private fun urlConnectionCheck() {
-        CoroutineScope(Dispatchers.IO).launch {
-            runCatching {
-                val url = URL("https://www.qoo10.com")
-                val urlConnection: HttpURLConnection = url.openConnection() as HttpURLConnection
-                urlConnection.responseCode
-
-            }.onSuccess {
-                qoo10Result = "qoo10 connect / $it"
-            }.onFailure {
-                qoo10Result = "qoo10 connect $it"
-            }
-
-            runCatching {
-                val url1 = URL("https://www.daum.net")
-                val urlConnection1: HttpURLConnection = url1.openConnection() as HttpURLConnection
-                urlConnection1.responseCode
-
-            }.onSuccess {
-                daumResult = "daum connect / $it"
-            }.onFailure {
-                daumResult = "daum connect $it"
-            }
-        }
-    }
-
-    private fun nowTimeCheck() {
+    private fun nowTimeCheck(): String {
+//        Log.e("TAG", "nowTimeCheck s")
         val dateFormat = SimpleDateFormat("yyyy-MM-dd HH:mm:ss")
         val regDataString = dateFormat.format(Date())
-
-        nowTime = " / Time : $regDataString"
+//        Log.e("TAG", "nowTimeCheck E")
+        return " / Time : $regDataString"
     }
 
-    private fun telephonyInfo() {
+    private fun telephonyInfo(): String {
+//        Log.e("TAG", "telephonyInfo s")
         val tm =
             MyApplication.context.getSystemService(Context.TELEPHONY_SERVICE) as TelephonyManager
 
-        teleInfo = "Telephony " + tm.simOperatorName
+//        Log.e("TAG", "telephonyInfo e")
+        return "Telephony " + tm.simOperatorName
     }
 
-    private fun nsLookup() {
-        CoroutineScope(Dispatchers.IO).launch {
-            runCatching {
-                val ipAddress = InetAddress.getByName("qxpress.net")
-                ipAddress.hostName + " / " + ipAddress.hostAddress
+    private fun nsLookup1(): String {
+//        Log.e("TAG", "nsLookup1 s")
+        var lookup = ""
+        runCatching {
+            val ipAddress = InetAddress.getByName("qxpress.net")
+            ipAddress.hostName + " / " + ipAddress.hostAddress
 
-            }.onSuccess {
-                qxpressUrl = it
-            }.onFailure {
-                qxpressUrl = "api.qxpress.net : $it"
-            }
-
-            runCatching {
-                val ipAddress = InetAddress.getByName("api.qxpress.net")
-                ipAddress.hostName + " / " + ipAddress.hostAddress
-
-            }.onSuccess {
-                apiQxpressUrl = it
-            }.onFailure {
-                apiQxpressUrl = "api.qxpress.net :$it"
-            }
-
-            runCatching {
-                val ipAddress = InetAddress.getByName("qoo10.sg")
-                ipAddress.hostName + " / " + ipAddress.hostAddress
-
-            }.onSuccess {
-                sgQxpressUrl = it
-            }.onFailure {
-                sgQxpressUrl = "qoo10.sg :$it"
-            }
+        }.onSuccess {
+            lookup = it
+        }.onFailure {
+            lookup = "qxpress.net : $it"
         }
+//        Log.e("TAG", "nsLookup1 e")
+        return lookup
+    }
+
+    private fun nsLookup2(): String {
+//        Log.e("TAG", "nsLookup2 s")
+        var lookup = ""
+        runCatching {
+            val ipAddress = InetAddress.getByName("api.qxpress.net")
+            ipAddress.hostName + " / " + ipAddress.hostAddress
+
+        }.onSuccess {
+            lookup = it
+        }.onFailure {
+            lookup = "api.qxpress.net :$it"
+        }
+//        Log.e("TAG", "nsLookup2 e")
+        return lookup
+    }
+
+    private fun nsLookup3(): String {
+//        Log.e("TAG", "nsLookup3 s")
+        var lookup = ""
+        runCatching {
+            val ipAddress = InetAddress.getByName("qoo10.sg")
+            ipAddress.hostName + " / " + ipAddress.hostAddress
+
+        }.onSuccess {
+            lookup = it
+        }.onFailure {
+            lookup = "qoo10.sg :$it"
+        }
+//        Log.e("TAG", "nsLookup3 e")
+        return lookup
     }
 
     fun adminLogCallApi(string: String) {
-        RetrofitClient.instanceDynamic().requestWriteLog(
-            "1", " ERROR", "DNS error in RetrofitClient",
-            "$string / $qoo10Result\n$daumResult\n$nowTime\n$teleInfo\n$qxpressUrl\n$apiQxpressUrl\n$sgQxpressUrl"
-        ).subscribeOn(Schedulers.io())
-            .observeOn(AndroidSchedulers.mainThread())
-            .subscribe({ }) {}
+        CoroutineScope(Dispatchers.IO).launch {
+
+            var nsLookup1 = ""
+            var nsLookup2 = ""
+            var nsLookup3 = ""
+            var urlCon = ""
+
+            val time = nowTimeCheck()
+
+            launch {
+                nsLookup1 = nsLookup1()
+            }
+
+            launch {
+                nsLookup2 = nsLookup2()
+            }
+
+            launch {
+                nsLookup3 = nsLookup3()
+            }
+
+            launch {
+                urlCon = urlConnectionCheck()
+            }
+
+            delay(1000)
+
+            val tel = telephonyInfo()
+
+//            Log.e(
+//                "TAG",
+//                "\n $string \n $time \n $nsLookup1 \n $nsLookup2 \n $nsLookup3 \n $urlCon \n $tel "
+//            )
+
+            RetrofitClient.instanceDynamic().requestWriteLog(
+                "1", " ERROR", "string DNS error in RetrofitClient",
+                "\n $string \n $time \n $nsLookup1 \n $nsLookup2 \n $nsLookup3 \n $urlCon \n $tel "
+            ).subscribeOn(Schedulers.io())
+                .observeOn(AndroidSchedulers.mainThread())
+                .subscribe({ }) {}
+        }
     }
 
 
@@ -170,15 +174,39 @@ object FirebaseLogError {
         CoroutineScope(Dispatchers.IO).launch {
             delay(1000)
 
-            urlConnectionCheck()
-            telephonyInfo()
+            var nsLookup1 = ""
+            var nsLookup2 = ""
+            var nsLookup3 = ""
+            var urlCon = ""
+
+            val time = nowTimeCheck()
+
+            launch {
+                nsLookup1 = nsLookup1()
+            }
+
+            launch {
+                nsLookup2 = nsLookup2()
+            }
+
+            launch {
+                nsLookup3 = nsLookup3()
+            }
+
+            launch {
+                urlCon = urlConnectionCheck()
+            }
+
+            delay(1000)
+
+            val tel = telephonyInfo()
 
             RetrofitClient.instanceMobileService()
                 .requestWriteLog(
                     "1",
                     "IMAGEUPLOAD",
                     "image upload error in RetrofitClient",
-                    "$qoo10Result\n$daumResult\n$nowTime\n$teleInfo\n$qxpressUrl\n$apiQxpressUrl\n$sgQxpressUrl\nRetrofitClient Exception $string"
+                    "\n $string \n $time \n $nsLookup1 \n $nsLookup2 \n $nsLookup3 \n $urlCon \n $tel "
                 )
                 .subscribeOn(Schedulers.io())
                 .observeOn(AndroidSchedulers.mainThread())

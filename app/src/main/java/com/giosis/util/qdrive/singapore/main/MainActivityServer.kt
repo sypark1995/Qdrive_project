@@ -96,13 +96,6 @@ object MainActivityServer {
         if (Preferences.userNation == "SG") {
             try {
 
-                FirebaseCrashlytics.getInstance().setCustomKey("network Type", network)
-                try {
-                    FirebaseLogError.pingCheck()
-                } catch (e: Exception) {
-
-                }
-
                 val response =
                     RetrofitClient.instanceCoroutine().requestGetDeliveryOutlet(network)
 
@@ -120,7 +113,6 @@ object MainActivityServer {
                 }
 
             } catch (e: java.lang.Exception) {
-                delay(1000)
                 FirebaseLogError.adminLogCallApi("DOWNLOAD $e")
                 e.printStackTrace()
             }

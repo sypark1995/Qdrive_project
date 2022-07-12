@@ -286,7 +286,6 @@ class LoginActivity : CommonActivity() {
             }
 
             try {
-                FirebaseLogError.pingCheck()
 
                 val result = RetrofitClient.instanceDynamic().requestServerLogin(
                     userID, userPW, chanel, deviceUUID,
